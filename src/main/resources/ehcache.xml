@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../main/config/ehcache.xsd" updateCheck="true"   monitoring="autodetect" dynamicConfig="true">
+    <diskStore path="java.io.tmpdir/SourceLeadEhCache" />
+ 
+ 
+ <!--            timeToIdleSeconds="300"
+           timeToLiveSeconds="600"
+ -->	
+	<!-- Page and Page Fragment Caches -->
+	<cache name="simplePageCache"
+	  maxEntriesLocalHeap="10"
+	  eternal="false"
+	  timeToIdleSeconds="10000"
+	  timeToLiveSeconds="10000"
+	  overflowToDisk="true">
+	</cache>
+	
+<!--  <transactionManagerLookup class= "com.mycompany.transaction.manager.MyTransactionManagerLookupClass" properties="" propertySeparator=":"/> -->
+  
+  <!--in default cache attributes timeToIdleSeconds="120" timeToLiveSeconds="120" to set time to attibutes  diskExpiryThreadIntervalSeconds="120" The interval in seconds between runs of the disk expiry thread. default is 2 min -->
+    <defaultCache maxEntriesLocalHeap="10000" eternal="false"
+        diskSpoolBufferSizeMB="30"
+        maxEntriesLocalDisk="10000000" diskExpiryThreadIntervalSeconds="120"
+        memoryStoreEvictionPolicy="LRU" statistics="true">
+        <persistence strategy="localTempSwap" />
+    </defaultCache>
+<!-- 	Transactions are enabled on a cache-by-cache basis with the transactionalMode cache attribute.
+  	The allowed values are: *xa_strict *xa *local *off The default value is “off.” In the following example, “xa_strict” is enabled.
+  	 timeToIdleSeconds="300" 
+	  timeToLiveSeconds="600"
+	   diskExpiryThreadIntervalSeconds="1"  
+	 -->
+ 		<!--  <cache name="xaCache" 
+	   maxEntriesLocalHeap="10500" 
+	   eternal="false" 
+	   transactionalMode="xa_strict"> 
+	 </cache> -->
+
+	 
+ <!--in default cache attributes timeToIdleSeconds="5" timeToLiveSeconds="120" to set time to attibutes-->
+    <!-- <cache name="com.bis.sourcelead.entity.EntityName" maxEntriesLocalHeap="10000" eternal="false">
+        <persistence strategy="localTempSwap" />
+    </cache> -->
+    
+    
+    <cache name="org.hibernate.cache.internal.StandardQueryCache"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="120">
+        <persistence strategy="localTempSwap" />
+    </cache>
+ 
+    <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+        maxEntriesLocalHeap="5000" eternal="true">
+        <persistence strategy="localTempSwap" />
+    </cache> 
+    
+    <!-- 21600 seconds is 6 hours (6 * 60 * 60) -->
+    <cache name="AuthenticateUserCache"
+           eternal="false"
+           timeToIdleSeconds="21600"
+           timeToLiveSeconds="21600"
+           maxEntriesLocalHeap="30000"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           copyOnRead="true"
+           copyOnWrite="true"
+           />
+</ehcache>
