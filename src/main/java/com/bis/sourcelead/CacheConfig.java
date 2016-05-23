@@ -20,7 +20,7 @@ import org.springframework.core.io.ClassPathResource;
  */
 @Configuration
 @EnableCaching
-//@ComponentScan(basePackages = "com.bis.sourcelead")
+@ComponentScan(basePackages = "com.bis.sourcelead")
 public class CacheConfig {
 	
     @Bean
