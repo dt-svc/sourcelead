@@ -36,8 +36,7 @@ public class LoginServiceTest {
 		public LoginService loginService() {
 			return new LoginServiceImpl();
 		}
-		
-		
+				
 
 	}
 
