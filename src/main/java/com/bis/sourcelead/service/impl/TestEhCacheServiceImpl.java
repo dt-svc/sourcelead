@@ -10,7 +10,7 @@ import com.bis.sourcelead.dao.impl.CustomerDaoImpl;
 import com.bis.sourcelead.entity.Customer;
 import com.bis.sourcelead.service.TestEhCacheService;
 
-@Service
+@Service("testEhCacheService")
 public class TestEhCacheServiceImpl implements TestEhCacheService {
 
 	@Autowired

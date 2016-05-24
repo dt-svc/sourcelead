@@ -33,6 +33,7 @@ public class TestEhCacheServiceTest {
 		public CustomerDao customerDao() {
 			return new CustomerDaoImpl();
 		}
+	}
 		
 		@Autowired
 		TestEhCacheService testEhCacheService;
@@ -52,7 +53,4 @@ public class TestEhCacheServiceTest {
 			
 		}
 				
-
-	}
-
 }

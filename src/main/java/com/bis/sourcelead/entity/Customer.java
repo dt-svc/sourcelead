@@ -12,14 +12,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CUSTOMER")
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="product")
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="product")
 public class Customer {
 	
 	
 	 	@Id
-	    @Column(name = "customer_id", unique = true, nullable = false)
-	    @GeneratedValue(strategy = GenerationType.AUTO)
-	    private long id;
+	    @Column(name = "id", nullable = false)
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private int id;
 	 
 	    @Column(name = "customerName")
 	    private String customerName;
@@ -34,11 +34,11 @@ public class Customer {
 	    private String zipcode;
 	 
 
-		public long getId() {
+		public int getId() {
 			return id;
 		}
 
-		public void setId(long id) {
+		public void setId(int id) {
 			this.id = id;
 		}
 
