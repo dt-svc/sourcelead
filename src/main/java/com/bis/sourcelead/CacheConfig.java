@@ -18,12 +18,12 @@ import org.springframework.core.io.ClassPathResource;
  * @author: Srinivas Vemula
  * @date: 23-May-2016
  */
-@Configuration
+/*@Configuration
 @EnableCaching
-@ComponentScan(basePackages = "com.bis.sourcelead")
+@ComponentScan(basePackages = "com.bis.sourcelead")*/
 public class CacheConfig {
 	
-    @Bean
+    /*@Bean
     public EhCacheManagerFactoryBean ehCacheManagerFactoryBean() {
         EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
         ehCacheManagerFactoryBean.setCacheManagerName("SourceLeadCache");
@@ -34,5 +34,5 @@ public class CacheConfig {
     @Bean
     public EhCacheCacheManager ehCacheCacheManager() {
       return new EhCacheCacheManager(ehCacheManagerFactoryBean().getObject());
-    }
+    }*/
 }
