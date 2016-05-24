@@ -30,7 +30,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		} catch (HibernateException exception) {
              exception.printStackTrace();
 		} finally {
-			session.close();
+			//session.close();
 		}
 		logger.debug("Customer Saving end");
 	}
