@@ -35,4 +35,21 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("Customer Saving end");
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public void updateCustomer() {
+		logger.debug("In Customer update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			Customer customer = session.load(Customer.class,1);
+			customer.setCustomerName("Venkat");
+			session.update(customer);
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer Saving end");
+	}
+
 }

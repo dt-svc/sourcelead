@@ -12,7 +12,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CUSTOMER")
-//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="product")
 public class Customer {
 	
 	

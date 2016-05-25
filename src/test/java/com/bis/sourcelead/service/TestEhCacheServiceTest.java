@@ -40,13 +40,14 @@ public class TestEhCacheServiceTest {
 		
 		@Test
 		public void saveCustomer() throws Exception{
-			testEhCacheService.saveCustomer(buildCustomer());
+			//testEhCacheService.saveCustomer(buildCustomer());
+			testEhCacheService.updateCustomer();
 		}
 		
 		private Customer buildCustomer(){
 			Customer customer = new Customer();
-			customer.setCustomerName("Venkat");
-			customer.setCustomerAddress("Miyapur Allwyn");
+			customer.setCustomerName("Naresh");
+			customer.setCustomerAddress("Kukatpally");
 			customer.setCity("Hyderabad");
 			customer.setZipcode("12345");
 			return customer;

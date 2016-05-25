@@ -27,4 +27,12 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 
 	}
 
+	@Override
+	public void updateCustomer() {
+		//TODO write any business logic here
+				logger.info("in updateCustomer method");
+				customerDao.updateCustomer();
+		
+	}
+
 }

@@ -5,5 +5,7 @@ import com.bis.sourcelead.entity.Customer;
 public interface CustomerDao {
 	
 	public void saveCustomer(Customer customer);
+	
+	public void updateCustomer();
 
 }

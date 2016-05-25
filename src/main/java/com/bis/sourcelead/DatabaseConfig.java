@@ -99,7 +99,7 @@ public class DatabaseConfig {
 		// cache later.
 
 		
-		/* hibernateProperties.setProperty("hibernate.cache.use_query_cache",
+		 hibernateProperties.setProperty("hibernate.cache.use_query_cache",
 		 "true"); hibernateProperties.setProperty(
 		 "hibernate.cache.use_second_level_cache", "true");
 		 hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
@@ -108,7 +108,7 @@ public class DatabaseConfig {
 		 "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
 		 hibernateProperties.setProperty(
 		 "net.sf.ehcache.configurationResourceName", "hibernateCache.xml");
-		  sfb.addProperties(hibernateProperties);*/
+		  sfb.addProperties(hibernateProperties);
 
 		return sfb.buildSessionFactory();
 	}
