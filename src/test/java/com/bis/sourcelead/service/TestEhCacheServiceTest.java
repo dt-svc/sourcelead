@@ -51,6 +51,12 @@ public class TestEhCacheServiceTest {
 			
 			//globlaize calling the second level cahce
 			testEhCacheService.testSecondLevelCache2();
+			
+			//updates in session level
+			testEhCacheService.updateCustomer2();
+			
+			//After db data has updated fetching done from session not from DB
+			testEhCacheService.testSecondLevelCache2();
 		}
 		
 		private Customer buildCustomer(){

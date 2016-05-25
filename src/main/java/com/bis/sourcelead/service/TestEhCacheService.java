@@ -11,5 +11,7 @@ public interface TestEhCacheService {
 	void testSecondLevelCache();
 	
 	void testSecondLevelCache2();
+	
+	void updateCustomer2();
 
 }

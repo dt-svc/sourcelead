@@ -109,4 +109,25 @@ public class CustomerDaoImpl implements CustomerDao{
         System.out.println(count+":: Name="+customer.getCustomerName()+", Address="+customer.getCustomerAddress());
     }
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void updateCustomer2() {
+		logger.debug("In Customer update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			Customer customer = session.load(Customer.class,1);
+			customer.setCustomerName("Venkat Idapalapati");
+			customer.setCustomerAddress("Miyapur");
+			System.out.println("----------------Changes done in session level------------");
+			printData(customer, 7);
+			session.update(customer);
+			System.out.println("----------------Fetch the Updated record form session not from DB------------");
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer Saving end");
+	}
+
 }

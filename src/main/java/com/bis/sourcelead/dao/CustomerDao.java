@@ -11,5 +11,7 @@ public interface CustomerDao {
 	public void testSecondLevelCache();
 	
 	public void testSecondLevelCache2();
+	
+	public void updateCustomer2();
 
 }
