@@ -15,9 +15,9 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @Entity
 @Table(name = "CUSTOMER")
-@Configurable
 @EnableCaching
 @Cacheable("simplePageCache") 
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Customer {
 	
 	

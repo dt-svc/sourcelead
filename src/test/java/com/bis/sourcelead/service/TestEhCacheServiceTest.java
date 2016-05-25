@@ -40,9 +40,16 @@ public class TestEhCacheServiceTest {
 		
 		@Test
 		public void saveCustomer() throws Exception{
+			//for saving customer details
 			//testEhCacheService.saveCustomer(buildCustomer());
+			
+			//for updating customer details
 			//testEhCacheService.updateCustomer();
+			
+			// for enabling second level ehCache
 			testEhCacheService.testSecondLevelCache();
+			
+			//globlaize calling the second level cahce
 			testEhCacheService.testSecondLevelCache2();
 		}
 		

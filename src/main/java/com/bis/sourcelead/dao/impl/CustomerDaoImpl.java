@@ -92,7 +92,7 @@ public class CustomerDaoImpl implements CustomerDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public void testSecondLevelCache2() {
 		logger.debug("In TestSeconLevelCache2 method");
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		try {
 			Customer customer = session.load(Customer.class,1);
 			printData(customer,6);
