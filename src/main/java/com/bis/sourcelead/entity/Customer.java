@@ -9,14 +9,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
 
 @Entity
 @Table(name = "CUSTOMER")
-@EnableCaching
-@Cacheable("simplePageCache") 
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Customer {
 	
