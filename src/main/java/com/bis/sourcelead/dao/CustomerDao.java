@@ -7,5 +7,11 @@ public interface CustomerDao {
 	public void saveCustomer(Customer customer);
 	
 	public void updateCustomer();
+	
+	public void testSecondLevelCache();
+	
+	public void testSecondLevelCache2();
+	
+	public void updateCustomer2();
 
 }

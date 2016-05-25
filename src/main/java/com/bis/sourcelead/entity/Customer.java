@@ -12,6 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CUSTOMER")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Customer {
 	
 	

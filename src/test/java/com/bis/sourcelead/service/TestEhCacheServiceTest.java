@@ -40,8 +40,23 @@ public class TestEhCacheServiceTest {
 		
 		@Test
 		public void saveCustomer() throws Exception{
+			//for saving customer details
 			//testEhCacheService.saveCustomer(buildCustomer());
-			testEhCacheService.updateCustomer();
+			
+			//for updating customer details
+			//testEhCacheService.updateCustomer();
+			
+			// for enabling second level ehCache
+			testEhCacheService.testSecondLevelCache();
+			
+			//globlaize calling the second level cahce
+			testEhCacheService.testSecondLevelCache2();
+			
+			//updates in session level
+			testEhCacheService.updateCustomer2();
+			
+			//After db data has updated fetching done from session not from DB
+			testEhCacheService.testSecondLevelCache2();
 		}
 		
 		private Customer buildCustomer(){

@@ -35,4 +35,28 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 		
 	}
 
+	@Override
+	public void testSecondLevelCache() {
+		// TODO Auto-generated method stub
+		logger.info("in testSecondLevelCache method");
+		customerDao.testSecondLevelCache();
+		
+	}
+
+	@Override
+	public void testSecondLevelCache2() {
+		// TODO Auto-generated method stub
+		logger.info("in testSecondLevelCache2 method");
+		customerDao.testSecondLevelCache2();
+		
+	}
+
+	@Override
+	public void updateCustomer2() {
+		//TODO write any business logic here
+		logger.info("in updateCustomer method");
+		customerDao.updateCustomer2();
+
+}
+
 }
