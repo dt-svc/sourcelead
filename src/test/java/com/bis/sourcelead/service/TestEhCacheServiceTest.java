@@ -41,7 +41,9 @@ public class TestEhCacheServiceTest {
 		@Test
 		public void saveCustomer() throws Exception{
 			//testEhCacheService.saveCustomer(buildCustomer());
-			testEhCacheService.updateCustomer();
+			//testEhCacheService.updateCustomer();
+			testEhCacheService.testSecondLevelCache();
+			testEhCacheService.testSecondLevelCache2();
 		}
 		
 		private Customer buildCustomer(){

@@ -7,5 +7,9 @@ public interface TestEhCacheService {
 	void saveCustomer(Customer customer);
 	
 	void updateCustomer();
+	
+	void testSecondLevelCache();
+	
+	void testSecondLevelCache2();
 
 }
