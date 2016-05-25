@@ -42,7 +42,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			Customer customer = session.load(Customer.class,1);
-			customer.setCustomerName("Venkat");
+			customer.setCustomerName("IVS");
 			session.update(customer);
 		} catch (HibernateException exception) {
              exception.printStackTrace();
