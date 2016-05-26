@@ -42,7 +42,7 @@ public class LoginServiceImpl implements LoginService {
 	public boolean checkAuthentication(String userName, String userPassword) {
 		logger.debug("In Service class...");
 
-		loginDAO.checkAuthentication(userName, userPassword);
+		//loginDAO.checkAuthentication(userName, userPassword);
 		// TODO: temporary purpose
 		if ("admin".equals(userName) && "admin".equals(userPassword)) {
 			return true;
