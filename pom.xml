@@ -8,7 +8,6 @@
 	<packaging>war</packaging>
 	<name>sourcelead</name>
 
-
 	<properties>
 		<java.version>1.7</java.version>
 		<springframework.version>4.2.6.RELEASE</springframework.version>
@@ -31,11 +30,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${springframework.version}</version>
-		</dependency>
-		<dependency>
-    		<groupId>org.springframework</groupId>
-    		<artifactId>spring-context-support</artifactId>
-   		 	<version>${springframework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -233,7 +227,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<!-- The following are Spring Testing dependencies. -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -271,7 +264,7 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat8-maven-plugin</artifactId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
 					<path>/${project.build.finalName}</path>
@@ -318,6 +311,23 @@
 				<configuration>
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
+			</plugin>
+			<plugin>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <version>1.7</version>
+			    <executions>
+				<execution>
+				    <phase>install</phase>
+				    <configuration>
+				          <target>
+				              <copy file="${project.build.directory}/sourcelead.war" todir="/opt/tomcat8/webapps"/>
+				          </target>
+				    </configuration>
+				    <goals>
+				         <goal>run</goal>
+				    </goals>
+				</execution>
+			    </executions>
 			</plugin>
 
 		</plugins>
