@@ -98,17 +98,17 @@ public class DatabaseConfig {
 		// TODO: No caching was configured as of now. But we can configure the
 		// cache later.
 
-		
-		 hibernateProperties.setProperty("hibernate.cache.use_query_cache",
-		 "true"); hibernateProperties.setProperty(
-		 "hibernate.cache.use_second_level_cache", "true");
-		 hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
-		 hibernateProperties.setProperty(
-		 "hibernate.cache.region.factory_class",
-		 "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
-		 hibernateProperties.setProperty(
-		 "net.sf.ehcache.configurationResourceName", "hibernateCache.xml");
-		  sfb.addProperties(hibernateProperties);
+		/*
+		 * hibernateProperties.setProperty("hibernate.cache.use_query_cache",
+		 * "true"); hibernateProperties.setProperty(
+		 * "hibernate.cache.use_second_level_cache", "true");
+		 * hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
+		 * hibernateProperties.setProperty(
+		 * "hibernate.cache.region.factory_class",
+		 * "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+		 * hibernateProperties.setProperty(
+		 * "net.sf.ehcache.configurationResourceName", "hibernateCache.xml");
+		 */ sfb.addProperties(hibernateProperties);
 
 		return sfb.buildSessionFactory();
 	}
