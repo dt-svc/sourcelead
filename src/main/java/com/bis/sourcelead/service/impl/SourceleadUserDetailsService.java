@@ -29,22 +29,19 @@ import com.bis.sourcelead.entity.UserRole;
 		private UserDao userDao;
 		@Override
 		public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-			
-			com.bis.sourcelead.entity.User user = new com.bis.sourcelead.entity.User();
-			
-			if(!isNullOrEmpty(user.getUsername())){
-				try {
-					user = userDao.findByUserName(username);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			try {
+			  com.bis.sourcelead.entity.User user = userDao.findByUserName(username);
+			  if(user != null){
 				List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
 				return buildUserForAuthentication(user, authorities);
+			  }
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
 
-		// Converts com.commons.pojo.User user to
+		// Converts  com.bis.sourcelead.entity.User user to
 		// org.springframework.security.core.userdetails.User
 		private User buildUserForAuthentication(com.bis.sourcelead.entity.User user , List<GrantedAuthority> authorities) {
 			return new User(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
