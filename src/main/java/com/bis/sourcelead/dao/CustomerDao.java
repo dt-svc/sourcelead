@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Collection;
+
 import com.bis.sourcelead.entity.Customer;
 
 public interface CustomerDao {
@@ -17,5 +19,7 @@ public interface CustomerDao {
 	public void updateCustomer2();
 	
 	public void saveOrUpdateCustomer(Customer customer);
+	
+	Collection<Customer> getAllCustomers();
 
 }

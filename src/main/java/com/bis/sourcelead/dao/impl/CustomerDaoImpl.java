@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
+import org.hibernate.Query;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -160,6 +162,17 @@ public class CustomerDaoImpl implements CustomerDao{
 			//session.close();
 		}
 		logger.debug("Customer Update method end");
+	}
+
+	@Override
+	public Collection<Customer> getAllCustomers() {
+		logger.debug("getAllCustomers start");
+		Session session = this.sessionFactory.getCurrentSession();
+		Collection<Customer> customersList = null;
+		Query getAllCustomers= session.createQuery("from Customer");
+		customersList = getAllCustomers.list();;
+		logger.debug("getAllCustomers end");
+		return customersList;
 	}
 
 }
