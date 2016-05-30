@@ -130,4 +130,36 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("Customer Saving end");
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Customer getCustomer(Integer Id) {
+		logger.debug("In Customer get method");
+		Customer customer = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			customer = session.load(Customer.class,Id);
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer get method end");
+		return customer;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveOrUpdateCustomer(Customer customer) {
+		logger.debug("In Customer update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.update(customer);
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer Update method end");
+	}
+
 }
