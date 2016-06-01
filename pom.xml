@@ -10,7 +10,7 @@
 
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>1.7</java.version>
 		<springframework.version>4.2.6.RELEASE</springframework.version>
 		<spring-security.version>4.1.0.RELEASE</spring-security.version>
 		<aspectj.version>1.8.6</aspectj.version>
@@ -265,6 +265,16 @@
 			<version>${dbunit.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		    <version>2.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-core</artifactId>
+		    <version>3.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>sourcelead</finalName>
@@ -318,6 +328,23 @@
 				<configuration>
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
+			</plugin>
+                        <plugin>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <version>1.7</version>
+			    <executions>
+				<execution>
+				    <phase>install</phase>
+				    <configuration>
+				          <target>
+				              <copy file="${project.build.directory}/sourcelead.war" todir="/opt/tomcat8/webapps"/>
+				          </target>
+				    </configuration>
+				    <goals>
+				         <goal>run</goal>
+				    </goals>
+				</execution>
+			    </executions>
 			</plugin>
 
 		</plugins>
