@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
+import org.hibernate.Query;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -128,6 +130,49 @@ public class CustomerDaoImpl implements CustomerDao{
 			//session.close();
 		}
 		logger.debug("Customer Saving end");
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Customer getCustomer(Integer Id) {
+		logger.debug("In Customer get method");
+		Customer customer = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			customer = session.load(Customer.class,Id);
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer get method end");
+		return customer;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveOrUpdateCustomer(Customer customer) {
+		logger.debug("In Customer update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.update(customer);
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer Update method end");
+	}
+
+	@Override
+	public Collection<Customer> getAllCustomers() {
+		logger.debug("getAllCustomers start");
+		Session session = this.sessionFactory.getCurrentSession();
+		Collection<Customer> customersList = null;
+		Query getAllCustomers= session.createQuery("from Customer");
+		customersList = getAllCustomers.list();;
+		logger.debug("getAllCustomers end");
+		return customersList;
 	}
 
 }
