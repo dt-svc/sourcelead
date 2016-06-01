@@ -64,23 +64,28 @@
   <div class="row mt">
     <div class="form-divmain element clearfix">
       <div class="col-xs-12 col-sm-5 col-md-5 center-form">
-      <c:if test="${not empty error}">
+     <%--  <c:if test="${not empty error}">
 			<div class="error">${error}</div>
 		</c:if>
 		<c:if test="${not empty msg}">
 			<div class="msg">${msg}</div>
-		</c:if>
+		</c:if> --%>
 		
-		<%-- <c:if test="${!empty login_blocked_error}">
-				 <font color='red' size='2px;'>Your user account is locked. Please contact your customer relationship manager</font><br>
+		<c:if test="${!empty login_blocked_error}">
+				 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
       	</c:if>
       		
       	<c:if test="${!empty login_inActive_error}">
-      			<font color='red' size='2px;'>You are In Active user</font><br>
+      			<div class="error">You are In Active user</div>
     	</c:if>
         <c:if test="${!empty login_unRegistered_error}">
-         		<font color='red' size='2px;'>You are not registered user. Please get register.</font><br>
-    	</c:if> --%>
+         		<div class="error">You are not registered user. Please get register.</div>
+    	</c:if> 
+       <c:if test="${!empty login_password_error}">
+         		<div class="error">Invalid Username or Password.</div>
+    	</c:if> 
+    	
+    	
 		        				
         <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
           <div class="form-group">

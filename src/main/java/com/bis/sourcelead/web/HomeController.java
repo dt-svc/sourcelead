@@ -57,6 +57,7 @@ public class HomeController {
   	public ModelAndView homePage() {
 
   			ModelAndView model = new ModelAndView();
+  			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
   			model.setViewName("home");
   			return model;
 
@@ -136,10 +137,8 @@ public class HomeController {
 		// check if user is login
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			UserDetails userDetail = (UserDetails) auth.getPrincipal();
-			System.out.println(userDetail);
 
-			model.addObject("username", userDetail.getUsername());
+			model.addObject("username", auth.getPrincipal());
 
 		}
 
