@@ -1,23 +1,26 @@
 package com.bis.sourcelead.web;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dao.CustomerDao;
+import com.bis.sourcelead.entity.Customer;
 import com.bis.sourcelead.service.LoginService;
+import com.bis.sourcelead.service.TestEhCacheService;
 
 /**
  * This class is used for...
@@ -33,6 +36,12 @@ public class HomeController {
 
 	@Autowired
 	public LoginService loginService;
+	
+	@Autowired
+	TestEhCacheService testEhCacheService;
+	
+	@Autowired
+	CustomerDao customerDao;
 
    @RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
 	public ModelAndView defaultPage() {
@@ -48,6 +57,7 @@ public class HomeController {
   	public ModelAndView homePage() {
 
   			ModelAndView model = new ModelAndView();
+  			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
   			model.setViewName("home");
   			return model;
 
@@ -78,7 +88,44 @@ public class HomeController {
 		return model;
 
 	}
+	
+	
+	 @RequestMapping(value = { "/ehCacheTest"}, method = RequestMethod.GET)
+	  	public ModelAndView ehCachePage() {
+	  			ModelAndView model = new ModelAndView();
+	  			model.setViewName("ehCacheTest");
+	  			return model;
 
+	  	}
+	 
+	 
+	 @RequestMapping(value = "/click1", method = RequestMethod.GET)
+	    public ModelAndView handleRequest(HttpServletRequest request,
+	            HttpServletResponse response) throws Exception {
+		 testEhCacheService.testSecondLevelCache2();
+	     return null;     
+	    }
+	 
+	 
+	 @RequestMapping(value = "/editCustomer", method = RequestMethod.GET)
+	    public ModelAndView handleRequest2(HttpServletRequest request,
+	            HttpServletResponse response) throws Exception {
+		 Customer customer = customerDao.getCustomer(1);
+		 ModelAndView model = new ModelAndView("customerForm");
+		 model.addObject("customer", customer);  
+		 return model;
+		 
+		 
+	    }
+	 
+	 
+	 @RequestMapping(value = "/saveCustomer", method = RequestMethod.POST)
+	 public ModelAndView saveCustomer(@ModelAttribute Customer customer) {
+	     customerDao.saveOrUpdateCustomer(customer);
+	     ModelAndView model = new ModelAndView();
+		 model.setViewName("ehCacheTest");
+		 return model;
+	 }
 	
 
 	// for 403 access denied page
@@ -90,10 +137,8 @@ public class HomeController {
 		// check if user is login
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			UserDetails userDetail = (UserDetails) auth.getPrincipal();
-			System.out.println(userDetail);
 
-			model.addObject("username", userDetail.getUsername());
+			model.addObject("username", auth.getPrincipal());
 
 		}
 

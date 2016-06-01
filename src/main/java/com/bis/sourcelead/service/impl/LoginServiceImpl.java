@@ -34,9 +34,6 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private LoginDAO loginDAO;
-	
-	@Autowired
-	private UserDao userDao;
 
 	@Override
 	public boolean checkAuthentication(String userName, String userPassword) {
