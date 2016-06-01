@@ -46,9 +46,10 @@ public class UserServiceTest {
 
 	@Test
 	public void findByUserName() {
-		String username = "Naresh";
+		String username = "SourceLeadAdmin";
 		logger.debug("In UserServiceTest class...");
 		User user = userService.findByUserName(username);
+		Assert.assertEquals("SourceLeadAdmin",user.getUsername());
 		
 	}
 
