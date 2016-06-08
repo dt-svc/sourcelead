@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,7 +9,6 @@ import java.util.Date;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -52,7 +50,7 @@ public class CustomerDaoImpl implements CustomerDao{
 			cal1.setTime(new Date());
 			System.out.println(dateFormat1.format(cal1.getTimeInMillis()));
 			
-			if(resultCount == 0){
+			if(resultCount == null){
 				resultCount = 1;
 				customer.setId("Slead"+resultCount);
 			}else{
