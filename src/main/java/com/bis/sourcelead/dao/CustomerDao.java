@@ -21,5 +21,8 @@ public interface CustomerDao {
 	public void saveOrUpdateCustomer(Customer customer);
 	
 	Collection<Customer> getAllCustomers();
+	
+	
+	public void testMultiTenentSessionFactory();
 
 }

@@ -18,9 +18,8 @@ public class Customer {
 	
 	 	@Id
 	    @Column(name = "id", nullable = false)
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private int id;
-	 
+	    private String id;
+	 	
 	    @Column(name = "customerName")
 	    private String customerName;
 	 
@@ -32,13 +31,18 @@ public class Customer {
 	    
 	    @Column(name = "zipcode")
 	    private String zipcode;
+	    
+	    @Column(name = "autoIncrement")
+	    private Integer autoIncrement;
 	 
 
-		public int getId() {
+		
+
+		public String getId() {
 			return id;
 		}
 
-		public void setId(int id) {
+		public void setId(String id) {
 			this.id = id;
 		}
 
@@ -73,6 +77,16 @@ public class Customer {
 		public void setZipcode(String zipcode) {
 			this.zipcode = zipcode;
 		}
+
+		public Integer getAutoIncrement() {
+			return autoIncrement;
+		}
+
+		public void setAutoIncrement(Integer autoIncrement) {
+			this.autoIncrement = autoIncrement;
+		}
+
+		
 
 
 }

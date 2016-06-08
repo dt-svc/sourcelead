@@ -1,18 +1,26 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
-import org.hibernate.Query;
+import java.util.Date;
+
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.MultiTenantConnectionConfig;
 import com.bis.sourcelead.dao.CustomerDao;
 import com.bis.sourcelead.entity.Customer;
 
@@ -30,7 +38,30 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In Customer Save method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
+			//TODO 
+			//For generation of Id for multitenant db by criteria.
+			
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			System.out.println(dateFormat.format(cal.getTimeInMillis()));
+			Criteria criteria = session.createCriteria(Customer.class).setProjection(Projections.max("autoIncrement"));;
+			Integer resultCount = (Integer)criteria.uniqueResult();
+			DateFormat dateFormat1 = new SimpleDateFormat("HH:mm:ss.SSS");
+			Calendar cal1 = Calendar.getInstance();
+			cal1.setTime(new Date());
+			System.out.println(dateFormat1.format(cal1.getTimeInMillis()));
+			
+			if(resultCount == 0){
+				resultCount = 1;
+				customer.setId("Slead"+resultCount);
+			}else{
+				resultCount = resultCount+1;
+				customer.setId("Slead"+resultCount);
+				
+			}
 			session.save(customer);
+			
 		} catch (HibernateException exception) {
              exception.printStackTrace();
 		} finally {
@@ -173,6 +204,26 @@ public class CustomerDaoImpl implements CustomerDao{
 		customersList = getAllCustomers.list();;
 		logger.debug("getAllCustomers end");
 		return customersList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void testMultiTenentSessionFactory() {
+		logger.debug("In MultiTenentSessionFactory method");
+		MultiTenantConnectionConfig multiTenantConnectionConfig = new MultiTenantConnectionConfig();
+		SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory();
+		Session session2 = sessionFactory2.getCurrentSession();
+		try {
+			Customer customer = session2.load(Customer.class,3);
+			printData(customer,6);
+			
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("MultiTenentSessionFactory method end");
+		
 	}
 
 }

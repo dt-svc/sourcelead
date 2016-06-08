@@ -105,6 +105,13 @@ public class HomeController {
 	     return null;     
 	    }
 	 
+	 @RequestMapping(value = "/multitenent", method = RequestMethod.GET)
+	    public ModelAndView multiTenentHandleRequest(HttpServletRequest request,
+	            HttpServletResponse response) throws Exception {
+		 testEhCacheService.testMultiTenentSessionFactory();
+	     return null;     
+	    }
+	 
 	 
 	 @RequestMapping(value = "/editCustomer", method = RequestMethod.GET)
 	    public ModelAndView handleRequest2(HttpServletRequest request,
