@@ -224,4 +224,38 @@ public class CustomerDaoImpl implements CustomerDao{
 		
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveMultiTenentCustomer(Customer customer) {
+		logger.debug("In Customer Save method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			//TODO 
+			//For generation of Id for multitenant db by criteria.
+			
+			MultiTenantConnectionConfig multiTenantConnectionConfig = new MultiTenantConnectionConfig();
+			SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory();
+			Session session2 = sessionFactory2.getCurrentSession();
+			
+			Criteria criteria = session2.createCriteria(Customer.class).setProjection(Projections.max("autoIncrement"));;
+			Integer resultCount = (Integer)criteria.uniqueResult();
+			
+			if(resultCount == null){
+				resultCount = 1;
+				customer.setId("tcs"+resultCount);
+			}else{
+				resultCount = resultCount+1;
+				customer.setId("tcs"+resultCount);
+				
+			}
+			session2.save(customer);
+			
+		} catch (HibernateException exception) {
+             exception.printStackTrace();
+		} finally {
+			//session.close();
+		}
+		logger.debug("Customer Saving end");
+	}
+
 }

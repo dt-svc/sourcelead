@@ -15,5 +15,7 @@ public interface TestEhCacheService {
 	void updateCustomer2();
 	
 	void testMultiTenentSessionFactory();
+	
+	void saveMultiTenentCustomer(Customer customer);
 
 }

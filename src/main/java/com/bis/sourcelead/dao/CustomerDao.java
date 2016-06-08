@@ -24,5 +24,7 @@ public interface CustomerDao {
 	
 	
 	public void testMultiTenentSessionFactory();
+	
+	public void saveMultiTenentCustomer(Customer customer);
 
 }

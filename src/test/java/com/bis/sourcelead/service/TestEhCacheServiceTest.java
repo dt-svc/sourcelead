@@ -43,6 +43,8 @@ public class TestEhCacheServiceTest {
 			//for saving customer details
 			testEhCacheService.saveCustomer(buildCustomer());
 			
+			testEhCacheService.saveMultiTenentCustomer(buildCustomer());
+			
 			//for updating customer details
 			//testEhCacheService.updateCustomer();
 			
