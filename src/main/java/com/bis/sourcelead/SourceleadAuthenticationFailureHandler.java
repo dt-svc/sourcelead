@@ -28,15 +28,14 @@ public class SourceleadAuthenticationFailureHandler implements AuthenticationFai
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		request.setAttribute("username", request.getParameter("username"));
-		request.setAttribute("password", request.getParameter("password"));
-		if(exception.getClass().isAssignableFrom(BadCredentialsException.class)) {
+		  request.setAttribute("username", request.getParameter("username"));
+		  request.setAttribute("password", request.getParameter("password"));
+		  if(exception.getClass().isAssignableFrom(BadCredentialsException.class)) {
 			request.setAttribute(exception.getMessage(),true);
-		  } 
-		//request.setAttribute("error", "Invalid username and password!");
-		ServletContext context = request.getServletContext();
-		RequestDispatcher rd = context.getRequestDispatcher("/sourcelead/login");
-		rd.forward(request, response);
+		   } 
+			ServletContext context = request.getServletContext();
+			RequestDispatcher rd = context.getRequestDispatcher("/sourcelead/login");
+			rd.forward(request, response);
 		
 	}
 

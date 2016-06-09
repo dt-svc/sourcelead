@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.GenericFilterBean;
 
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -26,14 +27,13 @@ import com.bis.sourcelead.service.UserService;
  * @date: 26-May-2016
  */
 @Component
-public class SourceleadAuthenticationProvider implements AuthenticationProvider{
+public class SourceleadAuthenticationProvider  implements AuthenticationProvider {
  
     @Autowired
     private UserService userService;
     
     @Autowired
     private SourceleadPasswordEncoder sourceleadPasswordEncoder;
-    
   
     /*@param
      * 
