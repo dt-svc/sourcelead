@@ -59,4 +59,21 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 
 }
 
+	@Override
+	public void testMultiTenentSessionFactory() {
+		// TODO Auto-generated method stub
+		logger.info("in testMultiTenentSessionFactory method");
+		customerDao.testMultiTenentSessionFactory();
+		
+	}
+
+	@Override
+	public void saveMultiTenentCustomer(Customer customer) {
+		
+		//TODO write any business logic here
+		logger.info("in multiTenentCustomer Save method");
+		customerDao.saveMultiTenentCustomer(customer);
+
+	}
+
 }

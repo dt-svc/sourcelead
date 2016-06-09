@@ -22,6 +22,7 @@
         <form:form action="saveCustomer" method="post" modelAttribute="customer">
         <table>
             <form:hidden path="id"/>
+            <form:hidden path="autoIncrement"/>
             <tr>
                 <td>Name:</td>
                 <td><form:input path="customerName" /></td>
