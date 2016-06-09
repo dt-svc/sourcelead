@@ -41,28 +41,30 @@ public class TestEhCacheServiceTest {
 		@Test
 		public void saveCustomer() throws Exception{
 			//for saving customer details
-			//testEhCacheService.saveCustomer(buildCustomer());
+			testEhCacheService.saveCustomer(buildCustomer());
+			
+			testEhCacheService.saveMultiTenentCustomer(buildCustomer());
 			
 			//for updating customer details
 			//testEhCacheService.updateCustomer();
 			
 			// for enabling second level ehCache
-			testEhCacheService.testSecondLevelCache();
+			//testEhCacheService.testSecondLevelCache();
 			
 			//globlaize calling the second level cahce
-			testEhCacheService.testSecondLevelCache2();
+			//testEhCacheService.testSecondLevelCache2();
 			
 			//updates in session level
-			testEhCacheService.updateCustomer2();
+			//testEhCacheService.updateCustomer2();
 			
 			//After db data has updated fetching done from session not from DB
-			testEhCacheService.testSecondLevelCache2();
+			//testEhCacheService.testSecondLevelCache2();
 		}
 		
 		private Customer buildCustomer(){
 			Customer customer = new Customer();
-			customer.setCustomerName("Naresh");
-			customer.setCustomerAddress("Kukatpally");
+			customer.setCustomerName("Venkat");
+			customer.setCustomerAddress("Miyapur");
 			customer.setCity("Hyderabad");
 			customer.setZipcode("12345");
 			return customer;
