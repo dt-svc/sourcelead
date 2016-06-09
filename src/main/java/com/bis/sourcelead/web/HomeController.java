@@ -117,7 +117,7 @@ public class HomeController {
 	 @RequestMapping(value = "/editCustomer", method = RequestMethod.GET)
 	    public ModelAndView handleRequest2(HttpServletRequest request,
 	            HttpServletResponse response) throws Exception {
-		 Customer customer = customerDao.getCustomer(1);
+		 Customer customer = customerDao.getCustomer("Slead1");
 		 ModelAndView model = new ModelAndView("customerForm");
 		 model.addObject("customer", customer);  
 		 return model;

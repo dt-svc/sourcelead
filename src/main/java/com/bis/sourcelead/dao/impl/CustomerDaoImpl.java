@@ -74,7 +74,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In Customer update method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,1);
+			Customer customer = session.load(Customer.class,"Slead1");
 			customer.setCustomerName("IVS");
 			session.update(customer);
 		} catch (HibernateException exception) {
@@ -92,21 +92,21 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In TestSeconLevelCache method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,1);
+			Customer customer = session.load(Customer.class,"Slead1");
 			printData(customer,1);
 			
-			customer = (Customer) session.load(Customer.class, 1);
+			customer = (Customer) session.load(Customer.class, "Slead1");
 		    printData(customer, 2);
 			
 		  //clear first level cache, so that second level cache is used
 	        session.evict(customer);
-	        customer = (Customer) session.load(Customer.class, 1);
+	        customer = (Customer) session.load(Customer.class, "Slead1");
 	        printData(customer, 3);
 	         
-	        customer = (Customer) session.load(Customer.class, 2);
+	        customer = (Customer) session.load(Customer.class, "Slead2");
 	        printData(customer, 4);
 	         
-	        customer = (Customer) session.load(Customer.class, 1);
+	        customer = (Customer) session.load(Customer.class, "Slead1");
 	        printData(customer, 5);
 	        
 	        
@@ -125,7 +125,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In TestSeconLevelCache2 method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,1);
+			Customer customer = session.load(Customer.class,"Slead1");
 			printData(customer,6);
 			
 		} catch (HibernateException exception) {
@@ -146,7 +146,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In Customer update method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,1);
+			Customer customer = session.load(Customer.class,"Slead1");
 			customer.setCustomerName("Venkat Idapalapati");
 			customer.setCustomerAddress("Miyapur");
 			System.out.println("----------------Changes done in session level------------");
@@ -163,7 +163,7 @@ public class CustomerDaoImpl implements CustomerDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Customer getCustomer(Integer Id) {
+	public Customer getCustomer(String Id) {
 		logger.debug("In Customer get method");
 		Customer customer = null;
 		Session session = this.sessionFactory.getCurrentSession();
@@ -212,7 +212,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory();
 		Session session2 = sessionFactory2.getCurrentSession();
 		try {
-			Customer customer = session2.load(Customer.class,3);
+			Customer customer = session2.load(Customer.class,"tcs1");
 			printData(customer,6);
 			
 		} catch (HibernateException exception) {

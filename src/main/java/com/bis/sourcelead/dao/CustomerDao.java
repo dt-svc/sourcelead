@@ -8,7 +8,7 @@ public interface CustomerDao {
 	
 	public void saveCustomer(Customer customer);
 	
-	public Customer getCustomer(Integer Id);
+	public Customer getCustomer(String Id);
 	
 	public void updateCustomer();
 	
