@@ -170,6 +170,9 @@ public class HomeController {
 		catch(FlywayException e){
 			    e.printStackTrace();
                 flyway.repair();
+		}finally {
+			stmt.close();
+			conn.close();
 		}
 	
 		
