@@ -1,6 +1,6 @@
 
-DROP TABLE IF EXISTS sourcelead.CUSTOMER;
-CREATE TABLE `sourcelead`.`CUSTOMER` (
+DROP TABLE IF EXISTS CUSTOMER;
+CREATE TABLE `CUSTOMER` (
   `id` varchar(100) NOT NULL,
   `customerName` varchar(45) DEFAULT NULL,
   `customerAddress` varchar(45) DEFAULT NULL,
