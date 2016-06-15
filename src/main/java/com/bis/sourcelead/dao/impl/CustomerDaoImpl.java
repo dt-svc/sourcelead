@@ -209,7 +209,7 @@ public class CustomerDaoImpl implements CustomerDao{
 	public void testMultiTenentSessionFactory() {
 		logger.debug("In MultiTenentSessionFactory method");
 		MultiTenantConnectionConfig multiTenantConnectionConfig = new MultiTenantConnectionConfig();
-		SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory();
+		SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory("tcs");
 		Session session2 = sessionFactory2.getCurrentSession();
 		try {
 			Customer customer = session2.load(Customer.class,"tcs1");
@@ -234,7 +234,7 @@ public class CustomerDaoImpl implements CustomerDao{
 			//For generation of Id for multitenant db by criteria.
 			
 			MultiTenantConnectionConfig multiTenantConnectionConfig = new MultiTenantConnectionConfig();
-			SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory();
+			SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory("tcs");
 			Session session2 = sessionFactory2.getCurrentSession();
 			
 			Criteria criteria = session2.createCriteria(Customer.class).setProjection(Projections.max("autoIncrement"));;

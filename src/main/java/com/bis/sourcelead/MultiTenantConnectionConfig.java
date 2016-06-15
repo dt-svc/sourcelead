@@ -24,9 +24,6 @@ public class MultiTenantConnectionConfig {
 	@Value("${jdbc.driverClass}")
 	private String driverClass;
 
-	@Value("${jdbc:mysql://127.0.0.1:3306/tcs}")
-	private String jdbcUrl;
-
 	@Value("${jdbc.username}")
 	private String user;
 
@@ -35,8 +32,8 @@ public class MultiTenantConnectionConfig {
 	
 	
 	@Bean
-	public SessionFactory sessionFactory() {
-		LocalSessionFactoryBuilder sfb = new LocalSessionFactoryBuilder(comboPooledDataSource());
+	public SessionFactory sessionFactory(String schemaName) {
+		LocalSessionFactoryBuilder sfb = new LocalSessionFactoryBuilder(comboPooledDataSource(schemaName));
 
 		sfb.scanPackages("com.bis.sourcelead");
 
@@ -44,7 +41,7 @@ public class MultiTenantConnectionConfig {
 		hibernateProperties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
 		hibernateProperties.setProperty("hibernate.connection.username", "root");
 		hibernateProperties.setProperty("hibernate.connection.password", "Peopleaxis!123");
-		hibernateProperties.setProperty("hibernate.connection.url", "jdbc:mysql://127.0.0.1:3306/tcs");
+		hibernateProperties.setProperty("hibernate.connection.url", "jdbc:mysql://127.0.0.1:3306/"+schemaName+"");
 
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
@@ -88,14 +85,14 @@ public class MultiTenantConnectionConfig {
 	}
 
 	@Bean
-	public DataSource comboPooledDataSource() {
+	public DataSource comboPooledDataSource(String schemaName) {
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass("com.mysql.jdbc.Driver");
 		} catch (PropertyVetoException e) {
 			throw new RuntimeException(e);
 		}
-		comboPooledDataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/tcs");
+		comboPooledDataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/"+schemaName+"");
 		comboPooledDataSource.setUser("root");
 		comboPooledDataSource.setPassword("Peopleaxis!123");
 		return comboPooledDataSource;
