@@ -34,39 +34,26 @@ public class HomeController {
 	@Autowired
 	public LoginService loginService;
 
-/*	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String showForm(ModelMap model) {
-		logger.info("in root =========================================>");
-		LoginModel loginModel = new LoginModel();
-		model.put("loginModel", loginModel);
-		return "login";
-	}
-
-	@RequestMapping(method = RequestMethod.POST)
-	public String login(ModelMap modelMap, @ModelAttribute("loginModel") @Valid LoginModel loginModel,
-			BindingResult result) {
-
-		logger.info("========> " + loginModel.getUserName() + " : " + loginModel.getPassword());
-		if (loginService.checkAuthentication(loginModel.getUserName(), loginModel.getPassword())) {
-			modelMap.put("loginModel", loginModel);
-			return "success";
-		} else {
-			// result.rejectValue("userName","invaliduser");
-			modelMap.put("error", "Invalid UserName / Password");
-			return "login";
-		}
-
-	}*/
-	
-	
-	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
+   @RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
 	public ModelAndView defaultPage() {
 
-		ModelAndView model = new ModelAndView();
-		model.setViewName("login");
-		return model;
+			ModelAndView model = new ModelAndView();
+			model.setViewName("login");
+			return model;
 
 	}
+   
+   
+   @RequestMapping(value = { "/home"}, method = RequestMethod.GET)
+  	public ModelAndView homePage() {
+
+  			ModelAndView model = new ModelAndView();
+  			model.setViewName("home");
+  			return model;
+
+  	}
+   
+   
 
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
 	public ModelAndView adminPage() {
@@ -81,39 +68,18 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/login")
-	public ModelAndView login(@RequestParam(value = "error", required = false) String error,
-			@RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
-
+	public ModelAndView login(@RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		if (error != null) {
-			model.addObject("error", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
-		}
 
 		if (logout != null) {
 			model.addObject("msg", "You've been logged out successfully.");
 		}
 		model.setViewName("login");
-
 		return model;
 
 	}
 
-	// customize the error message
-	private String getErrorMessage(HttpServletRequest request, String key) {
-
-		Exception exception = (Exception) request.getSession().getAttribute(key);
-
-		String error = "";
-		if (exception instanceof BadCredentialsException) {
-			error = "Invalid username and password!";
-		} else if (exception instanceof LockedException) {
-			error = exception.getMessage();
-		} else {
-			error = "Invalid username and password!";
-		}
-
-		return error;
-	}
+	
 
 	// for 403 access denied page
 	@RequestMapping(value = "/403", method = RequestMethod.GET)

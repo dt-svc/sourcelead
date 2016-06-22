@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wellcome to SourceLead:: Login Page</title>
+<title>Welcome to SourceLead:: Login Page</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="resources/css/bootstrap.min.css">
 <link rel="stylesheet" href="resources/css/font-awesome.min.css" type="text/css">
 <link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
+
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page session="true"%>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -17,6 +20,18 @@
         <![endif]-->
 </head>
 <body>
+
+<c:url value="/logout" var="logoutUrl" />
+	<form action="${logoutUrl}" method="post" id="logoutForm">
+		<input type="hidden" name="${_csrf.parameterName}"
+			value="${_csrf.token}" />
+	</form>
+	<script>
+		function formSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+	</script>
+	
 <div class="welcome-page">
 <nav class="navbar navbar-inverse mb-none">
   <div class="container">
@@ -44,7 +59,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Sign Up</a></li>
-        <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp;Login</a></li>
+        <li><a href="javascript:formSubmit()"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp;Logout</a></li>
       </ul>
     </div>
   </div>

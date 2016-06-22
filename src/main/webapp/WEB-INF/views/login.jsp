@@ -70,11 +70,23 @@
 		<c:if test="${not empty msg}">
 			<div class="msg">${msg}</div>
 		</c:if>
+		
+		<%-- <c:if test="${!empty login_blocked_error}">
+				 <font color='red' size='2px;'>Your user account is locked. Please contact your customer relationship manager</font><br>
+      	</c:if>
+      		
+      	<c:if test="${!empty login_inActive_error}">
+      			<font color='red' size='2px;'>You are In Active user</font><br>
+    	</c:if>
+        <c:if test="${!empty login_unRegistered_error}">
+         		<font color='red' size='2px;'>You are not registered user. Please get register.</font><br>
+    	</c:if> --%>
+		        				
         <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
           <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-            <input type="text" name="username" class="formcontrol" required>
+            <input type="text" name="username" class="formcontrol" value="${username}" required>
             <span class="highlight"></span>
             <label>Name</label>
           </div>
@@ -82,9 +94,11 @@
           <div class="form-group">
           <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
-            <input type="password"  name="password"  class="formcontrol" required>
+            <input type="password"  name="password"  value="${password}" class="formcontrol" required>
             <span class="highlight"></span>
             <label>Password</label>
+             <input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />
             </div>
           </div>
           
@@ -97,8 +111,7 @@
             </p>
           </div>
           <!-- button -->
-          <input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
+         
         </form>
       </div>
     </div>

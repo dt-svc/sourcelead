@@ -4,6 +4,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
 
-	User findByUserName(String username);
+	User findByUserName(String username) throws Exception;
 
 }

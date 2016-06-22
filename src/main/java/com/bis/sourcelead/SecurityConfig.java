@@ -44,6 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	SourceleadAuthenticationSuccessHandler sourceleadAuthenticationSuccessHandler;
 	
 	@Autowired
+	SourceleadAuthenticationFailureHandler sourceleadAuthenticationFailureHandler;
+
+	
+	
+	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(sourceleadUserDetailsService).passwordEncoder(passwordEncoder());
 	}
@@ -52,16 +57,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+		
+		http
+		.authorizeRequests()                                                                
+			.antMatchers("/login").permitAll()      
+			.antMatchers("/resources/**/**").permitAll() 
+			.antMatchers("/**").access("hasRole('ROLE_ADMIN')")                                  
+			/*.antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")   */         
+			.anyRequest().authenticated()                                                   
+			.and()
+		    .formLogin().loginPage("/login")
+			.usernameParameter("username")
+			.passwordParameter("password")
+			.failureHandler(sourceleadAuthenticationFailureHandler)
+			.successHandler(sourceleadAuthenticationSuccessHandler)
+			.and().logout().logoutSuccessUrl("/logout")
+			.and().csrf()
+			.and().exceptionHandling().accessDeniedPage("/403");;
+		
 
-		http.authorizeRequests().antMatchers("/admin/**")
-			.access("hasRole('ROLE_ADMIN')").and().formLogin()
-			.loginPage("/login").failureUrl("/login?error")
+		/*http.authorizeRequests()
+		         .antMatchers("/**").access("hasRole('ROLE_ADMIN')")
+		        .and().formLogin().loginPage("/login").failureUrl("/login?error")
 				.usernameParameter("username")
 				.passwordParameter("password")
 				.successHandler(sourceleadAuthenticationSuccessHandler)
 				 .and().logout().logoutSuccessUrl("/login?logout")
 				.and().csrf()
-				.and().exceptionHandling().accessDeniedPage("/403");
+				.and().exceptionHandling().accessDeniedPage("/403");*/
 				
 	}
 	

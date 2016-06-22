@@ -20,7 +20,6 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		response.sendRedirect("/sourcelead/admin");
-		
+		response.sendRedirect("/sourcelead/home");
 	}
 }

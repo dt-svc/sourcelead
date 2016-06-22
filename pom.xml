@@ -227,7 +227,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<!-- The following are Spring Testing dependencies. -->
 		<dependency>
 			<groupId>org.springframework</groupId>
