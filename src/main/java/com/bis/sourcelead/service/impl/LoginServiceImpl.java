@@ -1,13 +1,23 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LoginDAO;
-import com.bis.sourcelead.dao.impl.LoginDAoImpl;
+import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.LoginService;
 
 /**
@@ -24,6 +34,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private LoginDAO loginDAO;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@Override
 	public boolean checkAuthentication(String userName, String userPassword) {
@@ -41,4 +54,5 @@ public class LoginServiceImpl implements LoginService {
 		// return false;
 	}
 
+	
 }
