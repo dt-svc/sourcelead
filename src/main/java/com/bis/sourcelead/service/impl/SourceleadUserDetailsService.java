@@ -32,7 +32,7 @@ import com.bis.sourcelead.entity.UserRole;
 			
 			com.bis.sourcelead.entity.User user = new com.bis.sourcelead.entity.User();
 			
-			if(isNullOrEmpty(user.getUsername())){
+			if(!isNullOrEmpty(user.getUsername())){
 				try {
 					user = userDao.findByUserName(username);
 				} catch (Exception e) {
