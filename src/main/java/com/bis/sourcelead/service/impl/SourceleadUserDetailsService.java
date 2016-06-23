@@ -29,17 +29,14 @@ import com.bis.sourcelead.entity.UserRole;
 		private UserDao userDao;
 		@Override
 		public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-			
-			com.bis.sourcelead.entity.User user = new com.bis.sourcelead.entity.User();
-			
-			if(!isNullOrEmpty(user.getUsername())){
-				try {
-					user = userDao.findByUserName(username);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			try {
+			  com.bis.sourcelead.entity.User user = userDao.findByUserName(username);
+			  if(user != null){
 				List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
 				return buildUserForAuthentication(user, authorities);
+			  }
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
