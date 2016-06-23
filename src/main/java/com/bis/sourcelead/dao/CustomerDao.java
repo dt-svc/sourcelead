@@ -8,7 +8,7 @@ public interface CustomerDao {
 	
 	public void saveCustomer(Customer customer);
 	
-	public Customer getCustomer(Integer Id);
+	public Customer getCustomer(String Id);
 	
 	public void updateCustomer();
 	
@@ -21,5 +21,10 @@ public interface CustomerDao {
 	public void saveOrUpdateCustomer(Customer customer);
 	
 	Collection<Customer> getAllCustomers();
+	
+	
+	public void testMultiTenentSessionFactory();
+	
+	public void saveMultiTenentCustomer(Customer customer);
 
 }

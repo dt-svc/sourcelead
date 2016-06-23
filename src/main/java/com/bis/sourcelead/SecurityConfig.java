@@ -7,17 +7,20 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.annotation.Order;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Controller;
-
-import com.bis.sourcelead.service.UserService;
 
 /**
  * This class is used to read the properties from properties file and configures
@@ -30,71 +33,78 @@ import com.bis.sourcelead.service.UserService;
 @Configuration
 @EnableWebSecurity
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
-		@Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
+@Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
 @PropertySource(value = { "classpath:config.properties" })
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
 	
-	
-	/*@Autowired
-	SourceleadUserDetailsService sourceleadUserDetailsService;*/
-
-	@Autowired
-	SourceleadAuthenticationSuccessHandler sourceleadAuthenticationSuccessHandler;
-	
-	@Autowired
-	SourceleadAuthenticationFailureHandler sourceleadAuthenticationFailureHandler;
-	
-	
-	@Bean
-	public AuthenticationProvider authenticator() {
-	    return new SourceleadAuthenticationProvider();
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    	
+    	@Autowired
+    	CustomTokenAuthenticationFilter customTokenAuthenticationFilter;
+    	
+    	@Autowired
+    	RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+	   
+       @Bean
+   	   @Override
+   	   public AuthenticationManager authenticationManagerBean() throws Exception {
+   	       return super.authenticationManagerBean();
+   	   }
+    	
+        protected void configure(HttpSecurity http) throws Exception {
+        	 http
+        	 .antMatcher("/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
+                 .and()
+                 .authorizeRequests().antMatchers("/rest/**").fullyAuthenticated()
+                 .and().anonymous()
+                  .and()
+                   .securityContext()
+                   .and()
+                   .headers().disable()
+                   .rememberMe().disable()
+                   .requestCache().disable()
+                   .x509().disable()
+                   .csrf().disable()
+                   .httpBasic().disable()
+                   .formLogin().disable()
+                   .logout().disable()
+                   .httpBasic();
+        }
     }
-	
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticator());
-	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		
-		
-		http
-		.authorizeRequests()                                                                
-			.antMatchers("/login").permitAll()      
-			.antMatchers("/resources/**/**").permitAll() 
-			.antMatchers("/**").access("hasRole('ROLE_ADMIN')")                                  
-			.anyRequest().authenticated()                                                   
-			.and()
-		    .formLogin().loginPage("/login")
-			.usernameParameter("username")
-			.passwordParameter("password")
-			.failureHandler(sourceleadAuthenticationFailureHandler)
-			.successHandler(sourceleadAuthenticationSuccessHandler)
-			.and().logout().logoutSuccessUrl("/logout")
-			.invalidateHttpSession(true)
-			.and().csrf()
-			.and().exceptionHandling().accessDeniedPage("/403");
-		
-
-		/*http.authorizeRequests()
-		         .antMatchers("/**").access("hasRole('ROLE_ADMIN')")
-		        .and().formLogin().loginPage("/login").failureUrl("/login?error")
-				.usernameParameter("username")
-				.passwordParameter("password")
-				.successHandler(sourceleadAuthenticationSuccessHandler)
-				 .and().logout().logoutSuccessUrl("/login?logout")
-				.and().csrf()
-				.and().exceptionHandling().accessDeniedPage("/403");*/
-				
-	}
-	
-	/*@Bean
-	public PasswordEncoder passwordEncoder(){
-		PasswordEncoder encoder = new SourceleadPasswordEncoder();
-		return encoder;
-	}*/
-	
+    @Configuration
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    	@Autowired
+    	SourceleadAuthenticationProvider sourceleadAuthenticationProvider;
+    	
+    	@Autowired
+    	SourceleadAuthenticationSuccessHandler sourceleadAuthenticationSuccessHandler;
+    	
+    	@Autowired
+    	SourceleadAuthenticationFailureHandler sourceleadAuthenticationFailureHandler;
+    	
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+        	http
+    		.authorizeRequests()                                                                
+    			.antMatchers("/login").permitAll()      
+    			.antMatchers("/resources/**/**").permitAll() 
+    			.antMatchers("/**").access("hasRole('ROLE_ADMIN')") 
+    			.anyRequest().authenticated()                                                   
+    			.and()
+    		    .formLogin().loginPage("/login")
+    			.usernameParameter("username")
+    			.passwordParameter("password")
+    			.failureHandler(sourceleadAuthenticationFailureHandler)
+    			.successHandler(sourceleadAuthenticationSuccessHandler)
+    			.and().logout().logoutSuccessUrl("/logout")
+    			.invalidateHttpSession(true)
+    			.and().csrf()
+    			.and().exceptionHandling().accessDeniedPage("/403");
+        }
+     }
 	@Bean
 	public FormattingConversionService conversionService() {
 		FormattingConversionService conversionService = new DefaultFormattingConversionService();

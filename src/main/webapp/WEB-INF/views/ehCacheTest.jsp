@@ -13,6 +13,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page session="true"%>
 
-<a href="<c:url value='/click1'/>">Click 1</a> &nbsp;&nbsp; <a href="<c:url value='/editCustomer'/>">Edit Customer</a> 
+<a href="<c:url value='/click1'/>">Click 1</a> &nbsp;&nbsp; <a href="<c:url value='/editCustomer'/>">Edit Customer</a> &nbsp;&nbsp; <a href="<c:url value='/multitenent'/>">Multi Tenent</a> &nbsp;&nbsp; <a href="<c:url value='/newSchema?schemaname=bis'/>">Create</a> 
 </body>
 </html>

@@ -1,26 +1,41 @@
 package com.bis.sourcelead.web;
 
+import java.beans.PropertyVetoException;
+import java.sql.Connection;
+import java.sql.Statement;
+
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dao.CustomerDao;
 import com.bis.sourcelead.entity.Customer;
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.TestEhCacheService;
+import com.bis.sourcelead.util.DatabaseConnectionConfig;
+import com.bis.sourcelead.util.PropertyPathConfiguration;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * This class is used for...
@@ -30,6 +45,7 @@ import com.bis.sourcelead.service.TestEhCacheService;
  */
 
 @Controller
+@RestController
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -42,6 +58,17 @@ public class HomeController {
 	
 	@Autowired
 	CustomerDao customerDao;
+	
+	@Autowired
+	private ApplicationContext applicationContext;
+	
+	@Autowired
+	private DataSource dataSource;
+	
+	@PostConstruct
+	public void init() {
+		System.out.println(" *** HomeController.init with: " + applicationContext);
+	}
 
    @RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
 	public ModelAndView defaultPage() {
@@ -106,11 +133,59 @@ public class HomeController {
 	     return null;     
 	    }
 	 
+	 @RequestMapping(value = "/multitenent", method = RequestMethod.GET)
+	    public ModelAndView multiTenentHandleRequest(HttpServletRequest request,
+	            HttpServletResponse response) throws Exception {
+		 testEhCacheService.testMultiTenentSessionFactory();
+	     return null;     
+	    }
+	 
+	 
+	 @RequestMapping(value = "/newSchema", method = RequestMethod.GET)
+	    public ModelAndView newSchemaHandleRequest(@RequestParam("schemaname") String schemaname,HttpServletRequest request,
+	            HttpServletResponse response) throws Exception {
+		 String sql = "CREATE SCHEMA `"+schemaname+"`";
+	     Connection conn = dataSource.getConnection();
+		 Statement stmt = conn.createStatement();
+		 stmt.executeUpdate(sql);
+		 
+		    Flyway flyway = new Flyway();
+			flyway.setDataSource(dataSource);
+			flyway.setTable("schema_history");
+			flyway.setSqlMigrationSuffix(".sql");
+			flyway.setSchemas(schemaname);
+			flyway.setInitVersion("1");
+			flyway.clean();
+			flyway.init();
+		
+		/** TODO
+		  * Way to set migration folder location outside the classpath
+		    Using 'filesystem' keyword we can able set file path
+		  *  
+		  */
+		flyway.setLocations("migrations");
+		try{
+			flyway.migrate();	
+		}
+		catch(FlywayException e){
+			    e.printStackTrace();
+                flyway.repair();
+		}finally {
+			stmt.close();
+			conn.close();
+		}
+	
+		
+			
+		 testEhCacheService.testMultiTenentSessionFactory();
+	     return null;     
+	    }
+	 
 	 
 	 @RequestMapping(value = "/editCustomer", method = RequestMethod.GET)
 	    public ModelAndView handleRequest2(HttpServletRequest request,
 	            HttpServletResponse response) throws Exception {
-		 Customer customer = customerDao.getCustomer(1);
+		 Customer customer = customerDao.getCustomer("Slead1");
 		 ModelAndView model = new ModelAndView("customerForm");
 		 model.addObject("customer", customer);  
 		 return model;
@@ -146,4 +221,13 @@ public class HomeController {
 		return model;
 
 	}
+	
+	@RequestMapping(value = "/rest/{name}", method = RequestMethod.GET)
+	public String getMovie(@PathVariable String name) {
+		return name;
+	}
+
+	
+	
+	
 }
