@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CustomerDao;
+import com.bis.sourcelead.dao.StudentDao;
+import com.bis.sourcelead.dao.SubjectsDao;
 import com.bis.sourcelead.dao.impl.CustomerDaoImpl;
 import com.bis.sourcelead.entity.Customer;
 import com.bis.sourcelead.service.TestEhCacheService;
@@ -15,6 +17,12 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 
 	@Autowired
 	CustomerDao customerDao;
+	
+	@Autowired
+	StudentDao studentDao;
+	
+	@Autowired
+	SubjectsDao subjectsDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(TestEhCacheServiceImpl.class);
 	
@@ -74,6 +82,22 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 		logger.info("in multiTenentCustomer Save method");
 		customerDao.saveMultiTenentCustomer(customer);
 
+	}
+
+	@Override
+	public void getStudent() {
+		//TODO write any business logic here
+		logger.info("in Student get method");
+		studentDao.getStudent();
+		
+	}
+
+	@Override
+	public void getSubjects() {
+		//TODO write any business logic here
+		logger.info("in Subjects get method");
+		subjectsDao.getSubjects();
+		
 	}
 
 }
