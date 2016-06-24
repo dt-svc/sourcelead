@@ -1,15 +1,21 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "SUBJECTS")
@@ -30,6 +36,10 @@ public class Subjects {
 	
 	@Column(name = "marks")
 	private Integer marks;
+	
+    @OneToMany(mappedBy="subjects",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<Courses> courses;
 	
 	
 
@@ -65,6 +75,14 @@ public class Subjects {
 
 	public void setMarks(Integer marks) {
 		this.marks = marks;
+	}
+
+	public Set<Courses> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(Set<Courses> courses) {
+		this.courses = courses;
 	}
 
 }

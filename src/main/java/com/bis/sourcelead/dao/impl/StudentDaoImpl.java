@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.StudentDao;
+import com.bis.sourcelead.entity.Courses;
 import com.bis.sourcelead.entity.Student;
 import com.bis.sourcelead.entity.Subjects;
 
@@ -39,6 +40,11 @@ public class StudentDaoImpl implements StudentDao{
             System.out.println("Subjects for student1: ");
             for(Subjects subjects : subjectsSet) {
             	printSubjectsData(subjects);
+            	System.out.println("---Courses Data---");
+            	Set<Courses> coursesList = subjects.getCourses();
+            	for(Courses courses : coursesList){
+            		printCoursesData(courses);
+            	}
             }
             
             
@@ -53,6 +59,25 @@ public class StudentDaoImpl implements StudentDao{
             System.out.println("Subjects for student  2: ");
             for(Subjects subjects2 : subjectsSet2) {
             	printSubjectsData(subjects2);
+            	System.out.println("---Courses Data---");
+            	Set<Courses> coursesList = subjects2.getCourses();
+            	for(Courses courses : coursesList){
+            		printCoursesData(courses);
+            	}
+            	
+            	  /*TO DO
+                Here buy defalut we gave fetch mode of Subjects is LAZY. To change fetch mode dynamically at method level we need to use Criteria and Restrictions.*/ 
+                
+            	
+            	for(Courses courses : coursesList){
+            		System.out.println("---Courses Data By loading on demand---");
+	            	Criteria criteria2 = session.createCriteria(Courses.class).add(Restrictions.eq("id", new Integer(courses.getId())));
+	                criteria2.setFetchMode("courses", FetchMode.SELECT);
+	                Courses courses2 = (Courses) criteria2.uniqueResult();
+	                printCoursesData(courses2);
+            	}
+            	
+            	
             }
             
 		} catch (HibernateException exception) {
@@ -70,6 +95,10 @@ public class StudentDaoImpl implements StudentDao{
 	
 	private void printSubjectsData(Subjects subjects) {
         System.out.println("Subject Name="+subjects.getSubjectName()+", marks="+subjects.getMarks());
+    }
+	
+	private void printCoursesData(Courses courses) {
+        System.out.println("Course Name="+courses.getCourseName()+", Duration="+courses.getDuration());
     }
 
 }
