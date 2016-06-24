@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.CoursesDao;
 import com.bis.sourcelead.dao.CustomerDao;
 import com.bis.sourcelead.dao.StudentDao;
 import com.bis.sourcelead.dao.SubjectsDao;
@@ -23,6 +24,9 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 	
 	@Autowired
 	SubjectsDao subjectsDao;
+	
+	@Autowired
+	CoursesDao coursesDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(TestEhCacheServiceImpl.class);
 	
@@ -97,6 +101,14 @@ public class TestEhCacheServiceImpl implements TestEhCacheService {
 		//TODO write any business logic here
 		logger.info("in Subjects get method");
 		subjectsDao.getSubjects();
+		
+	}
+
+	@Override
+	public void getCourses() {
+		//TODO write any business logic here
+		logger.info("in Courses get method");
+		coursesDao.getCourses();
 		
 	}
 

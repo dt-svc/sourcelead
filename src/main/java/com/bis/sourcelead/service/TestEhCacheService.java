@@ -21,5 +21,7 @@ public interface TestEhCacheService {
 	void getStudent();
 	
     void getSubjects();
+    
+    void getCourses();
 
 }
