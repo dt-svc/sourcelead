@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public User findByUserName(String username) throws Exception {
+	public User findByUserName(String username) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();

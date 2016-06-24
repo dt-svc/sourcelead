@@ -41,7 +41,7 @@ import com.bis.sourcelead.entity.UserRole;
 			return null;
 		}
 
-		// Converts com.commons.pojo.User user to
+		// Converts  com.bis.sourcelead.entity.User user to
 		// org.springframework.security.core.userdetails.User
 		private User buildUserForAuthentication(com.bis.sourcelead.entity.User user , List<GrantedAuthority> authorities) {
 			return new User(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
