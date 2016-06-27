@@ -10,6 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Custom PasswordEncoder
+ * 
+ * @author: Naresh Bolisetty
+ * @date: 25-May-2016
+ */
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bis.sourcelead")

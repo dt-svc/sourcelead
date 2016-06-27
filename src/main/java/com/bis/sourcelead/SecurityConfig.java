@@ -1,7 +1,6 @@
 package com.bis.sourcelead;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -10,16 +9,15 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
-import com.bis.sourcelead.service.LoginService;
-import com.bis.sourcelead.service.impl.SourceleadUserDetailsService;
+import com.bis.sourcelead.service.UserService;
 
 /**
  * This class is used to read the properties from properties file and configures
@@ -37,23 +35,25 @@ import com.bis.sourcelead.service.impl.SourceleadUserDetailsService;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	
-	@Autowired
-	SourceleadUserDetailsService sourceleadUserDetailsService;
+	/*@Autowired
+	SourceleadUserDetailsService sourceleadUserDetailsService;*/
 
 	@Autowired
 	SourceleadAuthenticationSuccessHandler sourceleadAuthenticationSuccessHandler;
 	
 	@Autowired
 	SourceleadAuthenticationFailureHandler sourceleadAuthenticationFailureHandler;
-
 	
+	
+	@Bean
+	public AuthenticationProvider authenticator() {
+	    return new SourceleadAuthenticationProvider();
+    }
 	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(sourceleadUserDetailsService).passwordEncoder(passwordEncoder());
+		auth.authenticationProvider(authenticator());
 	}
-	
-	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -64,7 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/login").permitAll()      
 			.antMatchers("/resources/**/**").permitAll() 
 			.antMatchers("/**").access("hasRole('ROLE_ADMIN')")                                  
-			/*.antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")   */         
 			.anyRequest().authenticated()                                                   
 			.and()
 		    .formLogin().loginPage("/login")
@@ -73,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.failureHandler(sourceleadAuthenticationFailureHandler)
 			.successHandler(sourceleadAuthenticationSuccessHandler)
 			.and().logout().logoutSuccessUrl("/logout")
+			.invalidateHttpSession(true)
 			.and().csrf()
 			.and().exceptionHandling().accessDeniedPage("/403");;
 		
@@ -89,11 +89,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 	}
 	
-	@Bean
+	/*@Bean
 	public PasswordEncoder passwordEncoder(){
 		PasswordEncoder encoder = new SourceleadPasswordEncoder();
 		return encoder;
-	}
+	}*/
 	
 	@Bean
 	public FormattingConversionService conversionService() {

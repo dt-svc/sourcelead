@@ -12,6 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Custom AuthenticationSuccessHandler
+ * 
+ * @author: Naresh Bolisetty
+ * @date: 25-May-2016
+ */
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bis.sourcelead")
