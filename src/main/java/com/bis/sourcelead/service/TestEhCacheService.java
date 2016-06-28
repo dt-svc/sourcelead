@@ -17,5 +17,11 @@ public interface TestEhCacheService {
 	void testMultiTenentSessionFactory();
 	
 	void saveMultiTenentCustomer(Customer customer);
+	
+	void getStudent();
+	
+    void getSubjects();
+    
+    void getCourses();
 
 }

@@ -74,7 +74,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In Customer update method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,"Slead1");
+			Customer customer = (Customer) session.load(Customer.class,"Slead1");
 			customer.setCustomerName("IVS");
 			session.update(customer);
 		} catch (HibernateException exception) {
@@ -92,7 +92,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In TestSeconLevelCache method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,"Slead1");
+			Customer customer = (Customer) session.load(Customer.class,"Slead1");
 			printData(customer,1);
 			
 			customer = (Customer) session.load(Customer.class, "Slead1");
@@ -125,7 +125,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In TestSeconLevelCache2 method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,"Slead1");
+			Customer customer = (Customer) session.load(Customer.class,"Slead1");
 			printData(customer,6);
 			
 		} catch (HibernateException exception) {
@@ -146,7 +146,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		logger.debug("In Customer update method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Customer customer = session.load(Customer.class,"Slead1");
+			Customer customer = (Customer) session.load(Customer.class,"Slead1");
 			customer.setCustomerName("Venkat Idapalapati");
 			customer.setCustomerAddress("Miyapur");
 			System.out.println("----------------Changes done in session level------------");
@@ -168,7 +168,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		Customer customer = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			customer = session.load(Customer.class,Id);
+			customer = (Customer) session.load(Customer.class,Id);
 		} catch (HibernateException exception) {
              exception.printStackTrace();
 		} finally {
@@ -212,7 +212,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		SessionFactory sessionFactory2 = multiTenantConnectionConfig.sessionFactory("tcs");
 		Session session2 = sessionFactory2.getCurrentSession();
 		try {
-			Customer customer = session2.load(Customer.class,"tcs1");
+			Customer customer = (Customer) session2.load(Customer.class,"tcs1");
 			printData(customer,6);
 			
 		} catch (HibernateException exception) {

@@ -12,7 +12,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.dao.CustomerDao;
+import com.bis.sourcelead.dao.StudentDao;
 import com.bis.sourcelead.dao.impl.CustomerDaoImpl;
+import com.bis.sourcelead.dao.impl.StudentDaoImpl;
 import com.bis.sourcelead.entity.Customer;
 import com.bis.sourcelead.service.impl.TestEhCacheServiceImpl;
 
@@ -33,6 +35,11 @@ public class TestEhCacheServiceTest {
 		public CustomerDao customerDao() {
 			return new CustomerDaoImpl();
 		}
+		
+		@Bean
+		public StudentDao studentDao() {
+			return new StudentDaoImpl();
+		}
 	}
 		
 		@Autowired
@@ -41,9 +48,9 @@ public class TestEhCacheServiceTest {
 		@Test
 		public void saveCustomer() throws Exception{
 			//for saving customer details
-			testEhCacheService.saveCustomer(buildCustomer());
+			//testEhCacheService.saveCustomer(buildCustomer());
 			
-			testEhCacheService.saveMultiTenentCustomer(buildCustomer());
+			//testEhCacheService.saveMultiTenentCustomer(buildCustomer());
 			
 			//for updating customer details
 			//testEhCacheService.updateCustomer();
@@ -59,6 +66,9 @@ public class TestEhCacheServiceTest {
 			
 			//After db data has updated fetching done from session not from DB
 			//testEhCacheService.testSecondLevelCache2();
+			
+			testEhCacheService.getStudent();
+			testEhCacheService.getSubjects();
 		}
 		
 		private Customer buildCustomer(){
