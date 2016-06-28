@@ -39,7 +39,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @Configuration
 @ComponentScan(basePackages = "com.bis.sourcelead")
-@PropertySource(value = { "classpath:application.properties" })
+@PropertySource(value = { "classpath:config/application.properties" })
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurationSupport {
 
