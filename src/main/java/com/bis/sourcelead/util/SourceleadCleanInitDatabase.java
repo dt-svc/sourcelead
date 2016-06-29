@@ -11,6 +11,13 @@ import org.springframework.context.annotation.Bean;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+/**@param
+ *  Flyway Cleaner
+ *  Using this we can able flush schema totally
+ *  
+ *  @author: Naresh Bolisetty
+ *  @date: 01-June-2016
+ */
 public class SourceleadCleanInitDatabase {
 	
 	private ComboPooledDataSource comboPooledDataSource;
@@ -35,6 +42,10 @@ public class SourceleadCleanInitDatabase {
 		
 	}
 	
+	/*@param
+	 * Bean intantiation for standalone simple spring application
+	 * We can able to create bean with out using servletcontext(no need to run server at all)
+	 */
 	@Bean
 	public DataSource comboPooledDataSource() {
 		

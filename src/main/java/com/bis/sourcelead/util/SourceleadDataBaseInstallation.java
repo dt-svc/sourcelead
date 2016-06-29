@@ -12,6 +12,14 @@ import org.springframework.context.annotation.Bean;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+/**@param
+ *  Flyway migrator
+ *  Using this we can able add fresh migrations under src\\main\\resources\\migrations folder
+ *  migration history will be maintain in schema_history table
+ 
+ *  @author: Naresh Bolisetty
+ *  @date: 01-June-2016
+ */
 public class SourceleadDataBaseInstallation {
 	
 	    private ComboPooledDataSource comboPooledDataSource;
@@ -26,6 +34,11 @@ public class SourceleadDataBaseInstallation {
 			flyway.setDataSource(comboPooledDataSource());
 			flyway.setTable("schema_history");
 			flyway.setSqlMigrationSuffix(".sql");
+			 /** TODO
+			  * Way to set migration folder location outside the classpath
+			    Using 'filesystem' keyword we can able set file path
+			  *  
+			  */
 			flyway.setLocations("filesystem:src\\main\\resources\\migrations");
 			try{
 				flyway.migrate();	
