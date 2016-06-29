@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2016, Business Intelli Solutions India Pvt. Ltd., and/or its affiliates. All rights reserved.
+ * Business Intelli Solutions India Pvt. Ltd. PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+package com.bis.sourcelead.util;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
+/**
+ * This class is used to read the properties from properties file and configures
+ * 
+ * 
+ * @author: Naresh Bolisetty
+ * @date: 30-May-2016
+ */
+
+@Configuration
+@PropertySource(value = { "classpath:config/db.properties" })
+public class DatabaseConnectionConfig {
+
+	private ComboPooledDataSource comboPooledDataSource;
+
+	@Value("${jdbc.driverClass}")
+	private String driverClass;
+
+	@Value("${jdbc.url}")
+	private String jdbcUrl;
+
+	@Value("${jdbc.username}")
+	private String user;
+
+	@Value("${jdbc.password}")
+	private String password;
+
+	public ComboPooledDataSource getComboPooledDataSource() {
+		return comboPooledDataSource;
+	}
+
+	public String getDriverClass() {
+		return driverClass;
+	}
+
+	public String getJdbcUrl() {
+		return jdbcUrl;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+	
+	
+}
