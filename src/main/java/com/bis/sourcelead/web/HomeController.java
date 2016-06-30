@@ -59,6 +59,15 @@ public class HomeController {
 	}
    
    
+   @RequestMapping(value = "/registration")
+	public ModelAndView registration() {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("registration");
+		return model;
+
+	}
+   
+   
    @RequestMapping(value = { "/home"}, method = RequestMethod.GET)
   	public ModelAndView homePage() {
 

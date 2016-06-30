@@ -1,128 +1,136 @@
-<!doctype html>
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to SourceLead:: Login Page</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="resources/css/bootstrap.min.css">
-<link rel="stylesheet" href="resources/css/font-awesome.min.css" type="text/css">
-<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page session="true"%>
-
-<style>
-.error {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #a94442;
-	background-color: #f2dede;
-	border-color: #ebccd1;
-}
-
-.msg {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #31708f;
-	background-color: #d9edf7;
-	border-color: #bce8f1;
-}
-
-#login-box {
-	width: 300px;
-	padding: 20px;
-	margin: 100px auto;
-	background: #fff;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border: 1px solid #000;
-}
-</style>
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>::. Sing In .::</title>
+    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="resources/css/register-style.css" rel="stylesheet">
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@page session="true"%>
 </head>
-<body class="login-bg">
-<div class="container parent">
 
-<!-- Logo Ends --> 
-<div class="row"> 
-        <div class="col-lg-12 element">
-      <div class="col-sm-2"> <img src="resources/images/logo-sourcelead.png" alt="Source Lead" class="img-responsive"> </div>
+<body>
+  
+<div class="regis_bg">
+	<div class="regis_logo"><img src="resources/images/logo-regis.png" alt=""/></div>
+    <div class="regis_wrap">
+    	<div class="signin_wrap" id="signin">
+        	<h1>Sign In</h1>
+	       	<c:if test="${not empty error}">
+				<div class="error">${error}</div>
+			</c:if>
+			<c:if test="${not empty msg}">
+				<div class="msg">${msg}</div>
+			</c:if>
+			
+			<c:if test="${!empty login_blocked_error}">
+					 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
+	      	</c:if>
+	      		
+	      	<c:if test="${!empty login_inActive_error}">
+	      			<div class="error">You are In Active user</div>
+	    	</c:if>
+	        <c:if test="${!empty login_unRegistered_error}">
+	         		<div class="error"><font color="red">You are not registered user. Please get register.</font></div>
+	    	</c:if> 
+	       <c:if test="${!empty login_password_error}">
+	         		<div class="error"><font color="red">Invalid Username or Password.</font></div>
+	    	</c:if> 
+    	<br/>
+        	 <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
+	            <span>
+	            	<label>User name</label>
+	                <i class="fa fa-user"></i>
+	                <input type="text" name="username"  value="${username}" class="signin_fild" required />
+	                <b></b>
+	            </span>
+	            <span>
+	            	<label>Password</label>
+	                <i class="fa fa-key si-pass"></i>
+	                <input type="Password"  name="password"  value="${password}"  class="signin_fild" required />
+	                <b></b>
+	            </span>
+	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+	            
+	            <div class="for-pas-text"><strong id="fp-click"><i class="fa fa-question"></i>Forgot Password</strong></div>
+	            <input type="submit" value="Sumbit" class="sign_btn" />
+	            <div class="for-pas-text">Not have an account <a href="<c:url value='/registration'/>">Register Now</a></div>  
+            </form>          
+        </div>
+    	<div class="signin_wrap" id="forgot-pass">
+        	<h1>Forgot Password</h1>
+            <span>
+            	<label>Email/Phone</label>
+                <i class="fa fa-envelope"></i>
+                <input type="text" class="signin_fild" />
+                <b></b>
+                <p>User name incorrect.</p>
+            </span>
+            <input type="button" value="Sumbit" class="sign_btn sign_btn_for" />
+            <div class="cancel_for">Cancel</div>            
+        </div>        
     </div>
-  </div>
-  <!-- Logo Ends --> 
-  <!-- Form Starts here -->
-  <div class="row mt">
-    <div class="form-divmain element clearfix">
-      <div class="col-xs-12 col-sm-5 col-md-5 center-form">
-     <%--  <c:if test="${not empty error}">
-			<div class="error">${error}</div>
-		</c:if>
-		<c:if test="${not empty msg}">
-			<div class="msg">${msg}</div>
-		</c:if> --%>
-		
-		<c:if test="${!empty login_blocked_error}">
-				 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
-      	</c:if>
-      		
-      	<c:if test="${!empty login_inActive_error}">
-      			<div class="error">You are In Active user</div>
-    	</c:if>
-        <c:if test="${!empty login_unRegistered_error}">
-         		<div class="error">You are not registered user. Please get register.</div>
-    	</c:if> 
-       <c:if test="${!empty login_password_error}">
-         		<div class="error">Invalid Username or Password.</div>
-    	</c:if> 
-    	
-    	
-		        				
-        <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
-          <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-            <input type="text" name="username" class="formcontrol" value="${username}" required>
-            <span class="highlight"></span>
-            <label>Name</label>
-          </div>
-          </div>
-          <div class="form-group">
-          <div class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
-            <input type="password"  name="password"  value="${password}" class="formcontrol" required>
-            <span class="highlight"></span>
-            <label>Password</label>
-             <input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
-            </div>
-          </div>
-          
-          <!-- button -->
-          <div class="clearfix mt">
-            <button type="submit" class="btn btn-info" >Login</button>
-            <p class="mt clearfix">
-            <a href="#" class="pull-left forgot" title="Forgot Password ?">Forgot Password ?</a>
-            <a href="#" class="pull-right btn btn-warning" title="Click for Help">Click for Help</a>
-            </p>
-          </div>
-          <!-- button -->
-         
-        </form>
-      </div>
-    </div>
-    </div>
-      <!-- Form Starts here --> 
-</div>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</div>  
+  
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="resources/js/bootstrap.min.js"></script>
+    <script src="resources/js/jquery.autocomplete.min.js"></script>
+    <script src="resources/js/jquery-fun.js"></script>
+    
 </body>
+
+<script>
+$(function () {
+     applyInputSlide();
+});
+
+function applyInputSlide() {
+    $(".signin_wrap span input").each(function (i) {
+        if ($(this).val().trim() !== "")
+            $(this).parent(".signin_wrap span").find('label').addClass('test');
+    });
+    $(".signin_wrap span input").on('focus', function () {
+        $(this).parent(".signin_wrap span").find('label').addClass('test');
+    });
+    $(".signin_wrap span input").on('blur', function () {
+        if ($(this).val().trim() === "")
+            $(this).parent(".signin_wrap span").find('label').removeClass('test');
+    });	    
+}
+</script>
+   
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
