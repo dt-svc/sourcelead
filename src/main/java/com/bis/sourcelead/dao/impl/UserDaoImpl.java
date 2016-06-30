@@ -34,7 +34,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("findByUserName start");
-		users = session.createQuery("from User where userName=?").setParameter(0, username).list();
+		users = session.createQuery("from User where userName=:username" ).setString( "username", username ).list();
 		logger.debug("findByUserName end");
 		if (users.size() > 0) {
 			return users.get(0);
