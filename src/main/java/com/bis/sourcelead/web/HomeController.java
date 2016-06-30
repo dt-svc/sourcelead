@@ -46,7 +46,7 @@ public class HomeController {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** HomeController.init with: " + applicationContext);
+		System.out.println(" *** HomeController init with: " + applicationContext);
 	}
 
    @RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
