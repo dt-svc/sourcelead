@@ -91,7 +91,7 @@ public class OrgServiceTest {
 	public void findOrgById() throws Exception {
 		Long l = 3L;
 		orgService.findOrgByID(l);
-		logger.debug("Record found Successfully.!!");
+		logger.debug("Record found Successfully.!");
 	}
 
 	@Test
