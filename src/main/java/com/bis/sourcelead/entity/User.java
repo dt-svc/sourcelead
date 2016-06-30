@@ -1,64 +1,227 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
-@Table(name = "users", catalog = "sourcelead")
+@Table(name = "USER", catalog = "sourcelead")
 public class User {
 
-	private String username;
-	private String password;
-	private Set<UserRole> userRole = new HashSet<UserRole>(0);
-
-	public User() {
-	}
-
-	public User(String username, String password, boolean enabled) {
-		this.username = username;
-		this.password = password;
-	}
-
-	public User(String username, String password, boolean enabled, Set<UserRole> userRole) {
-		this.username = username;
-		this.password = password;
-		this.userRole = userRole;
-	}
-
 	@Id
-	@Column(name = "username", unique = true, nullable = false, length = 45)
-	public String getUsername() {
-		return this.username;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+	private Long id;
+	
+	@Column(name = "FIRST_NAME")
+	private String firstName;
+	
+	@Column(name = "LAST_NAME")
+	private String lastName;
+	
+	@Column(name = "EMAIL")
+	private String email;
+	
+	@Column(name = "WORK_PHONE")
+	private String workPhone;
+	
+	@Column(name = "MOBILE_PHONE")
+	private String mobilePhone;
+	
+	@Column(name = "USER_STATE")
+	private String userState;
+	
+	@Column(name = "USER_TYPE")
+	private String userType;
+	
+	@Column(name = "USER_NAME",unique = true, nullable = false)
+	private String userName;
+	
+	@Column(name = "PASSWORD", nullable = false)
+	private String password;
+	
+	@Column(name = "STATUS")
+	private String status;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+	private String createdBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Column(name = "UPDATED_BY")
+	private String updatedBy;
+	
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.JOIN)
+	private Set<UserRole> userRole = new HashSet<UserRole>(0);
+	
+	@Column(name = "DOC_FILE")
+	private transient byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+	
+	
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	@Column(name = "password", nullable = false, length = 500)
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getWorkPhone() {
+		return workPhone;
+	}
+
+	public void setWorkPhone(String workPhone) {
+		this.workPhone = workPhone;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getUserState() {
+		return userState;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	public String getPassword() {
-		return this.password;
+		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	public String getStatus() {
+		return status;
+	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
 	public Set<UserRole> getUserRole() {
-		return this.userRole;
+		return userRole;
 	}
 
 	public void setUserRole(Set<UserRole> userRole) {
 		this.userRole = userRole;
 	}
+	
 
 }

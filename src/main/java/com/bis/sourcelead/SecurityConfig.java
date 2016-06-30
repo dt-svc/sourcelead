@@ -92,6 +92,7 @@ public class SecurityConfig  {
     			.antMatchers("/login").permitAll()      
     			.antMatchers("/resources/**/**").permitAll() 
     			.antMatchers("/**").access("hasRole('ROLE_ADMIN')") 
+    			.antMatchers("/**").access("hasRole('ROLE_USER')") 
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")
