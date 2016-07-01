@@ -1,0 +1,144 @@
+package com.bis.sourcelead.service;
+
+import java.util.Date;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
+public class ProjectsServiceTest {
+	
+	@Configuration
+	static class ProjectServiceTestContextConfiguration {
+		
+		@Bean
+		public ProjectsService projectsService() {
+			return new ProjectsServiceImpl();
+		}
+		
+		@Bean
+		public ProjectsDao projectsDao() {
+			return new ProjectsDaoImpl();
+		}
+	}
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	/**
+	 * this method for save project
+	 * @throws Exception
+	 */
+	@Test
+	public void saveProject() throws Exception{
+		
+		Projects projects = new Projects();
+		
+		User superiorUser = new User();
+		superiorUser.setId(1L);
+		projects.setSuperiorUser(superiorUser);
+		
+		User projectManagerUser = new User();
+		projectManagerUser.setId(2L);
+		projects.setProjectManagerUser(projectManagerUser);
+		
+		Org org = new Org();
+		org.setId(1L);
+		projects.setOrg(org);
+		
+		projects.setProjectName("XYZ");
+		projects.setProjectStatus("Open");
+		projects.setDescription("sourcelead desc");
+		projects.setStatus("0");
+		projects.setStartDate(new Date());
+		projects.setEndDate(new Date());
+		projects.setTimesheetFrequency("Monthly");
+		projects.setCreatedDate(new Date());
+		projects.setCreatedBy("prasad");
+		projects.setUpdatedDate(new Date());
+		projects.setUpdatedBy("Raj");
+		
+		projectsService.saveProject(projects);
+	}
+
+	/**
+	 * this method for updateProject
+	 * @throws Exception
+	 */
+	//@Test
+	public void updateProject() throws Exception{
+		Projects projects = new Projects();
+		projects.setId(9L);
+		User superiorUser = new User();
+		superiorUser.setId(1L);
+		projects.setSuperiorUser(superiorUser);
+		
+		User projectManagerUser = new User();
+		projectManagerUser.setId(2L);
+		projects.setProjectManagerUser(projectManagerUser);
+		
+		Org org = new Org();
+		org.setId(1L);
+		projects.setOrg(org);
+		
+		projects.setProjectName("XYZ Updated");
+		projects.setDescription("project desc");
+		projects.setProjectStatus("Open");
+		projects.setStatus("0");
+		projects.setStartDate(new Date());
+		projects.setEndDate(new Date());
+		projects.setTimesheetFrequency("Monthly");
+		projects.setCreatedDate(new Date());
+		projects.setCreatedBy("prasad");
+		projects.setUpdatedDate(new Date());
+		projects.setUpdatedBy("Yaswanth");
+		
+		projectsService.updateProject(projects);
+	}
+	
+	/**
+	 * this method for get project by id
+	 * @throws Exception
+	 */
+	//@Test
+	public void getProjectById() throws Exception{
+		projectsService.getProjectById(1L);
+	}
+	
+	/**
+	 * this method for delete project by id
+	 * @return
+	 * @throws Exception
+	 */
+	//@Test
+	public Boolean getDeleteProject() throws Exception{
+		Boolean isDeleted = projectsService.deleteProjectById(9L);
+		return isDeleted;
+	}
+	
+	/**
+	 * this method for get all projects
+	 * @throws Exception
+	 */
+	//@Test
+	public void getProjects() throws Exception{
+		projectsService.getAllProjects();
+	}
+}
