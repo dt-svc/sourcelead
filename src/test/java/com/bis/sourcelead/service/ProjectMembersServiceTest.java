@@ -15,7 +15,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectMembersDaoImpl;
-import com.bis.sourcelead.entity.Employee;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.impl.ProjectMembersServiceImpl;
@@ -50,7 +50,7 @@ public class ProjectMembersServiceTest {
 		projects.setId(1L);
 		projectMembers.setProjects(projects);
 		
-		Employee employee = new Employee();
+		Employees employee = new Employees();
 		employee.setId(1L);
 		projectMembers.setEmployee(employee);
 		
@@ -76,7 +76,7 @@ public class ProjectMembersServiceTest {
 		projects.setId(1L);
 		projectMembers.setProjects(projects);
 		
-		Employee employee = new Employee();
+		Employees employee = new Employees();
 		employee.setId(1L);
 		projectMembers.setEmployee(employee);
 		

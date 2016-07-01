@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.entity.Employee;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -62,7 +62,7 @@ public class ProjectMembersController {
 			projects.setId(13L);
 			projectMembers.setProjects(projects);
 			
-			Employee employee = new Employee();
+			Employees employee = new Employees();
 			employee.setId(1L);
 			projectMembers.setEmployee(employee);
 			
@@ -94,7 +94,7 @@ public class ProjectMembersController {
 			projects.setId(13L);
 			projectMembers.setProjects(projects);
 			
-			Employee employee = new Employee();
+			Employees employee = new Employees();
 			employee.setId(1L);
 			projectMembers.setEmployee(employee);
 			
