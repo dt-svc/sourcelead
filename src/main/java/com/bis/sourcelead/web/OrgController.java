@@ -37,7 +37,7 @@ public class OrgController {
       * @throws NullPointerException
       */
 	@RequestMapping(value = "/getById/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-	public @ResponseBody Org getAllOrgLocations(@PathVariable String id) throws Exception {
+	public @ResponseBody Org getOrgById(@PathVariable String id) throws Exception {
 		logger.info("Orgnanization by Id");
 		return orgService.findOrgByID(Long.parseLong(id));
 	}
@@ -60,7 +60,7 @@ public class OrgController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/saveOrg", method = RequestMethod.GET, headers = "Accept=application/json")
-	public @ResponseBody Org createUser() throws Exception {
+	public @ResponseBody Org createOrg() throws Exception {
 		Org org = new Org();
 		org.setId(4L);
 		org.setCreatedDate(new Date());
