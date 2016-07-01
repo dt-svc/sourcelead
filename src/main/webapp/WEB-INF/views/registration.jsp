@@ -2,7 +2,7 @@
 
 <html>
 <head>
-
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,6 +13,8 @@
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="resources/css/register-style.css" rel="stylesheet">
      <link href="resources/css/jquery-ui.css" rel="stylesheet">
+     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@page session="true"%>
 </head>
 
 <body>
@@ -78,7 +80,7 @@
         </div> -->
         
 <div style="padding:20px 0px 0px 0px;">
-		<form class="login-form clearfix" action="addCompanyRegistration" method='POST'>    
+       <form:form class="login-form clearfix"  id="companyRegistration_form"  name="companyRegistration_form" method="post" >
 	            <div>
 	            <span>
 	            	<label>First Name</label>
@@ -126,15 +128,15 @@
 	            </span>
 	            <span>
 	            	<label>Confirm password</label>
-	                <input type="password" name="confirmPassword"  value="" id="confirmPassword" class="signin_fild"  onblur="$(this).checkPass();" required/>
+	                <input type="password"  value="" id="confirmPassword" class="signin_fild"  onblur="$(this).checkPass();" required/>
 	                <b></b>
 	            </span>
 	            </div>  
 	            <div class="clearfix"></div>
-		<div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
+		    <div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
 		            <input type="submit" value="Register" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div> 
 		   
-		   </form>        
+		   </form:form>        
         </div>            
                        
         </div>       
@@ -165,6 +167,27 @@ function applyInputSlide() {
             $(this).parent(".signin_wrap span").find('label').removeClass('test');
     });	    
 }
+</script>
+
+
+<script type="text/javascript">
+
+        $('#companyRegistration_form')
+           .submit(function(e) {
+        	    e.preventDefault(); 
+        	    var frm = $('#companyRegistration_form').serialize();
+        	    frm = "testvalue=testvalue&"+frm;
+        		var con = JSON.stringify(frm);
+                $.ajax({
+            	      type: "GET",
+            	      contentType : 'application/json; charset=utf-8',
+            	      dataType : 'json',
+                  	  url: "http://localhost:8080/sourcelead"+"/companyRegistration",
+                  	  data:con
+                  			  
+                });
+            
+            });
 </script>
 
 
