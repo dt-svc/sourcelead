@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
-
+/**
+ * project entity
+ */
 import java.util.Date;
 import java.util.Set;
 
