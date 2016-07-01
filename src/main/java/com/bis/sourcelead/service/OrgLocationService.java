@@ -1,0 +1,15 @@
+package com.bis.sourcelead.service;
+
+import java.util.List;
+
+import com.bis.sourcelead.entity.Cities;
+import com.bis.sourcelead.entity.OrgLocations;
+
+public interface OrgLocationService {
+	
+	public OrgLocations addOrgLocations(OrgLocations orgLocations)throws Exception;
+    public OrgLocations updateOrgLocations(OrgLocations orgLocations)throws Exception;
+    public OrgLocations getOrgLocations(Long id)throws Exception;
+    public Boolean deleteOrgLocations(Long id)throws Exception;
+    public List<OrgLocations> getAllOrgLocations()throws Exception; 
+}
