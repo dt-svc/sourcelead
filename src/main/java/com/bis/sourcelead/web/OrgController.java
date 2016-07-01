@@ -32,35 +32,32 @@ public class OrgController {
 	/*----------------Retrieve Single Org-----------------------------------------*/
      /**
       * Handles request to get Org by using Id
-      * @param id
-      * @return
-      * @throws Exception
+      * @param String id
+      * @return Org
+      * @throws NullPointerException
       */
 	@RequestMapping(value = "/getById/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org getAllOrgLocations(@PathVariable String id) throws Exception {
 		logger.info("Orgnanization by Id");
-		Org org = orgService.findOrgByID(Long.parseLong(id));
-		return org;
+		return orgService.findOrgByID(Long.parseLong(id));
 	}
 
 	/*--------------Retrieve All Orgs---------------------------------------*/
 	/**
 	 * Handles request for getting all orgs
-	 * @return
-	 * @throws Exception
+	 * @return org
+	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody List<Org> listAllOrgs() throws Exception {
-		List<Org> org = orgService.getOrgs();
-		return org;
-
+	  return  orgService.getOrgs();
 	}
 
 	/*------------Create a Org--------------------------------*/
 	/**
 	 * Handles request for storing org into Database
-	 * @return
-	 * @throws Exception
+	 * @return org
+	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/saveOrg", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org createUser() throws Exception {
@@ -68,15 +65,14 @@ public class OrgController {
 		org.setId(4L);
 		org.setCreatedDate(new Date());
 		org.setOrgName("Srinivas Borra");
-		Org org1 = orgService.addOrganization(org);
-		return org1;
+		return  orgService.addOrganization(org);
 	}
 
 	// ------------ Update a Org-----------
 	/**
 	 * Handles request for update on org
-	 * @return
-	 * @throws Exception
+	 * @return org
+	 * @throws NullPointerException
 	 */
 
 	@RequestMapping(value = "/updateOrg", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -85,25 +81,23 @@ public class OrgController {
 		org.setId(4L);
 		org.setCreatedDate(new Date());
 		org.setOrgName("Munnii");
-		Org org1 = orgService.updateOrg(org);
-		return org1;
+		return orgService.updateOrg(org);
 
 	}
 
 	// ------------------- Delete an Org ------------------------
 	/**
 	 * Handles request for delete an Org
-	 * @param id
-	 * @return
-	 * @throws Exception
+	 * @param String id
+	 * @return boolean
+	 * @throws NullPointerException
 	 */
 
 	@RequestMapping(value = "/deleteOrg/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Boolean deleteOrg(@PathVariable String id) throws Exception {
 
-		Boolean isDeleted = orgService.deleteOrg(Long.parseLong(id));
+		return orgService.deleteOrg(Long.parseLong(id));
 
-		return isDeleted;
 
 	}
 }
