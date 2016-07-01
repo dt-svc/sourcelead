@@ -134,7 +134,7 @@
 	            </div>  
 	            <div class="clearfix"></div>
 		    <div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
-		            <input type="submit" value="Register" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div> 
+		            <input type="submit" value="Register" id="register_button" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div> 
 		   
 		   </form:form>        
         </div>            
@@ -203,6 +203,7 @@ function applyInputSlide() {
 			 $('#passwordDiv').find('span.jquery_form_error_message').remove(); 
 			 document.getElementById("confirmPassword").setAttribute('class','valid signin_fild');
 			 $("input#confirmPassword").removeAttr("style");
+			 document.getElementById('register_button').disabled = false;
 	    }
 	    else{ 
 		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -211,6 +212,7 @@ function applyInputSlide() {
 				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
 				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
 				$("input#confirmPassword").removeAttr("style");
+				document.getElementById('register_button').disabled = true;
 	    }
    }
 	
