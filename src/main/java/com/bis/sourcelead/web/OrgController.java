@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.OrgService;
-
 /**
  * Handles requests for the Organization service.
+ * 
+ * @author Rajashekar
+ * @date 30th June 2016
+ *
  */
+
 @RestController
 @RequestMapping(value = "/org")
 public class OrgController {
