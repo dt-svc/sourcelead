@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,14 +24,7 @@ public class OrgLocationController {
 	
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET,headers="Accept=application/json")
 	public @ResponseBody List<OrgLocations> getAllOrgLocations() throws Exception {
-		System.out.println("Start get all org locations.");
 		List<OrgLocations> orgLocationsList  = orgLocationService.getAllOrgLocations();
-		System.out.println("all values"+orgLocationsList.size());
-		for(OrgLocations orgLocations : orgLocationsList){
-			System.out.println(orgLocations.getOrg().getOrgName());
-			System.out.println(orgLocations.getUser().getUserName());
-			
-		}
 		return orgLocationsList;
 	}
 	
