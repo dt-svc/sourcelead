@@ -26,7 +26,12 @@ public class OrgController {
 	private OrgService orgService;
 
 	/*----------------Retrieve Single Org-----------------------------------------*/
-
+     /**
+      * Handles request to get Org by using Id
+      * @param id
+      * @return
+      * @throws Exception
+      */
 	@RequestMapping(value = "/getById/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org getAllOrgLocations(@PathVariable String id) throws Exception {
 		logger.info("Orgnanization by Id");
@@ -35,6 +40,11 @@ public class OrgController {
 	}
 
 	/*--------------Retrieve All Orgs---------------------------------------*/
+	/**
+	 * Handles request for getting all orgs
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody List<Org> listAllOrgs() throws Exception {
 		List<Org> org = orgService.getOrgs();
@@ -43,6 +53,11 @@ public class OrgController {
 	}
 
 	/*------------Create a Org--------------------------------*/
+	/**
+	 * Handles request for storing org into Database
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveOrg", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org createUser() throws Exception {
 		Org org = new Org();
@@ -54,6 +69,11 @@ public class OrgController {
 	}
 
 	// ------------ Update a Org-----------
+	/**
+	 * Handles request for update on org
+	 * @return
+	 * @throws Exception
+	 */
 
 	@RequestMapping(value = "/updateOrg", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org updateOrg() throws Exception {
@@ -67,13 +87,19 @@ public class OrgController {
 	}
 
 	// ------------------- Delete an Org ------------------------
+	/**
+	 * Handles request for delete an Org
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 
 	@RequestMapping(value = "/deleteOrg/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Boolean deleteOrg(@PathVariable String id) throws Exception {
 
-		Boolean deleted = orgService.deleteOrg(Long.parseLong(id));
+		Boolean isDeleted = orgService.deleteOrg(Long.parseLong(id));
 
-		return deleted;
+		return isDeleted;
 
 	}
 }

@@ -79,9 +79,6 @@ public class OrgDaoImpl implements OrgDao {
 			isDeleted = true;
 			logger.info("Successfully deleted..!");
 		}
-		else {
-			isDeleted = false;
-		}
 		return isDeleted;
 	}
 	
