@@ -142,24 +142,18 @@ body {
 	font-size:13px; font-weight:500; color:#666; padding:2px 0px 12px 5px;
 	}
 
-.autocomplete-suggestions {
+.ui-autocomplete {
     border: 1px solid #999;
     background: #fff; width:325px !important; box-sizing:border-box;
     cursor: default;
     overflow: auto;
 }	
-.autocomplete-suggestion {
-    padding: 3px 12px; background-color:#FFF;
+.ui-menu .ui-menu-item {
+    padding: 3px 12px;
     font-size:13px; 
     white-space: nowrap; 
     overflow: hidden;
-	}
-.autocomplete-suggestion:hover {
-	background-color:#D8D8D8;
-	}	
-.autocomplete-suggestions strong {
-	font-size:14px; font-weight:400; color:#333;
-	}				
+	}					
 	
 	
 
@@ -192,7 +186,10 @@ body {
 	}
 .signin_wrap {
     width: auto; padding: 30px 20px 30px;
-	}		
+	}
+.autocomplete-suggestions {
+	width:78% !important;
+}				
 	
 }			
 
