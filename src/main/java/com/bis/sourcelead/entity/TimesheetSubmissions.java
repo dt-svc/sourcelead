@@ -1,17 +1,24 @@
 package com.bis.sourcelead.entity;
 
-import java.math.BigInteger;
-import java.sql.Date;
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
@@ -24,12 +31,17 @@ public class TimesheetSubmissions {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@Column(name = "PROJECT_MEMBER_ID")
-	private Long projectMemberId;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
+	private ProjectMembers projectMembers;
 	
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "START_DATE")
 	private Date startDate;
 	
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
@@ -39,12 +51,16 @@ public class TimesheetSubmissions {
 	@Column(name = "STATUS")
 	private String status;
 	 
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = " CREATED_DATE")
 	private Date createdDate; 
 	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	  
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate; 
 	
@@ -58,13 +74,14 @@ public class TimesheetSubmissions {
 	public void setId(Long id) {
 		Id = id;
 	}
-
-	public Long getProjectMemberId() {
-		return projectMemberId;
+	
+	@JsonIgnore
+	public ProjectMembers getProjectMembers() {
+		return projectMembers;
 	}
 
-	public void setProjectMemberId(Long projectMemberId) {
-		this.projectMemberId = projectMemberId;
+	public void setProjectMembers(ProjectMembers projectMembers) {
+		this.projectMembers = projectMembers;
 	}
 
 	public Date getStartDate() {
