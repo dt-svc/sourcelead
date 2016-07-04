@@ -10,8 +10,9 @@
     <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-    <link href="resources/css/register-style.css" rel="stylesheet">
+     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+     <link href="resources/css/register-style.css" rel="stylesheet">
+     <link href="resources/css/jquery-ui.css" rel="stylesheet">
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <%@page session="true"%>
 </head>
@@ -80,9 +81,9 @@
 </div>  
   
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
     <script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/jquery.autocomplete.min.js"></script>
-    <script src="resources/js/jquery-fun.js"></script>
+    <script src="resources/js/jquery-fun.js"></script> 
     
 </body>
 

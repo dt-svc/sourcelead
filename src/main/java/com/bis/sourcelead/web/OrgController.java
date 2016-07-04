@@ -38,7 +38,7 @@ public class OrgController {
       */
 	@RequestMapping(value = "/getById/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org getOrgById(@PathVariable String id) throws Exception {
-		logger.info("Orgnanization by Id");
+		logger.info("Orgnanization by Id is "+id);
 		return orgService.findOrgByID(Long.parseLong(id));
 	}
 

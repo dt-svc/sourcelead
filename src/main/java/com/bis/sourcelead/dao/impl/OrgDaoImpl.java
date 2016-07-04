@@ -59,7 +59,7 @@ public class OrgDaoImpl implements OrgDao {
 	public Org findOrgByID(Long id) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		logger.info("Record updated successfully..!");
+		logger.info("Record fetched successfully..!");
 		if (id != null) {
 			Org org1 = session.get(Org.class, id);
 		}

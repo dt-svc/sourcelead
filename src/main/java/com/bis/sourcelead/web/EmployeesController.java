@@ -2,12 +2,9 @@ package com.bis.sourcelead.web;
 
 import java.util.Collection;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,26 +16,14 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
 
 @RestController
-@RequestMapping("/EmployeeController")
+@RequestMapping("/EmployeesController")
 public class EmployeesController {
 
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeesController.class);
 	
 	@Autowired
-	public EmployeesService eployeeService;
-	
-	@Autowired
-	private ApplicationContext applicationContext;
-	
-	@Autowired
-	private DataSource dataSource;
-	
-	
-	
-	
-	@Autowired
-	 EmployeesService employeeService;
+	public EmployeesService employeesService;
 	
 	
 	@RequestMapping(value = "/addEmployee",  method = RequestMethod.GET)
@@ -50,7 +35,7 @@ public class EmployeesController {
 		employee.setUser(user);
 		employee.setCountry("INDIA");
 		employee.setCity("VSKP");
-		Employees  emp=	employeeService.addEmployee(employee);
+		Employees  emp=	employeesService.addEmployee(employee);
 		return emp;
 	}
 	
@@ -68,7 +53,7 @@ public class EmployeesController {
 			employee.setCountry("USA");
 			employee.setCity("AA");
             
-			Employees updateEmployee = employeeService.updateEmployee(employee);
+			Employees updateEmployee = employeesService.updateEmployee(employee);
             return updateEmployee;
     }
 	
@@ -78,7 +63,7 @@ public class EmployeesController {
                     
     {
             
-		    Boolean flag = employeeService.deleteEmployee(id);
+		    Boolean flag = employeesService.deleteEmployee(id);
             return flag;
     }
 
@@ -87,7 +72,7 @@ public class EmployeesController {
     public @ResponseBody Collection<Employees> getAllEmployees() throws Exception
                     
     {
-              Collection<Employees> employeesList = employeeService.getAllEmployees();
+              Collection<Employees> employeesList = employeesService.getAllEmployees();
               return employeesList;
     }
 
