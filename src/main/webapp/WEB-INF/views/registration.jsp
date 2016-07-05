@@ -228,14 +228,6 @@ function applyInputSlide() {
 </script>
 
 
-
-
-
-
-
-
-
-
 <script type="text/javascript">
 function validateWebsite(){
       var website = document.getElementById("companyWebsite").value; 
@@ -251,18 +243,13 @@ function validateWebsite(){
 				    type: "GET",
        	            url: sourceleadUrl+"/validateOrgWebsite?website="+website,
 			        success: function(data) {
-			        	alert("david"+data);
+			        	
 			        	 var result = "["+data+"]";
-			        		alert("result"+result);
-			        	if((result == '[true]')){
 			        		
-			        		alert("inside");
+			        	if((result == '[true]')){
 							  
 			        	}
 			        	else{
-			        		
-			        		alert("else");
-			        		 
 			        		
 			        		
 			        	} 
