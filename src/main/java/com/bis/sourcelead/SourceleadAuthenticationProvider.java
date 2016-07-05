@@ -70,7 +70,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     	if(userRoles != null && !userRoles.isEmpty()){
     		// Build user's authorities
     		for (UserRole userRole : userRoles) {
-    			setAuths.add(new SimpleGrantedAuthority(userRole.getRole()));
+    			setAuths.add(new SimpleGrantedAuthority(userRole.getRoles().getRoleName()));
     		}
     	}
     	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);

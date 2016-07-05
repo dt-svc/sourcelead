@@ -1,61 +1,145 @@
 package com.bis.sourcelead.entity;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+
+import com.bis.sourcelead.enums.Primary;
 
 @Entity
-@Table(name = "user_roles", catalog = "sourcelead", uniqueConstraints = @UniqueConstraint(columnNames = { "role", "username" }))
+@Table(name = "USER_ROLE", catalog = "sourcelead")
 public class UserRole{
-
-	private Integer userRoleId;
-	private User user;
-	private String role;
-
-	public UserRole() {
-	}
-
-	public UserRole(User user, String role) {
-		this.user = user;
-		this.role = role;
-	}
-
+	
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "user_role_id", unique = true, nullable = false)
-	public Integer getUserRoleId() {
-		return this.userRoleId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User user;
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ROLE_ID", nullable = false)
+	private Roles roles;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
+	private OrgLocations orgLocations;
+    
+    @Column(name = "IS_PRIMARY")
+    private Integer isPrimary;
+    
+    @Column(name = "STATUS")
+	private String status;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+	private String createdBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Column(name = "UPDATED_BY")
+	private String updatedBy;
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setUserRoleId(Integer userRoleId) {
-		this.userRoleId = userRoleId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "username", nullable = false)
 	public User getUser() {
-		return this.user;
+		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	@Column(name = "role", nullable = false, length = 45)
-	public String getRole() {
-		return this.role;
+	public Roles getRoles() {
+		return roles;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setRoles(Roles roles) {
+		this.roles = roles;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+
+	
+
+	public Integer getIsPrimary() {
+		return isPrimary;
+	}
+
+	public void setIsPrimary(Integer isPrimary) {
+		this.isPrimary = isPrimary;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
+	
+	
+	
 
 }

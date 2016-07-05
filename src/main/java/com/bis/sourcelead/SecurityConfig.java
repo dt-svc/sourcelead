@@ -89,9 +89,11 @@ public class SecurityConfig  {
         protected void configure(HttpSecurity http) throws Exception {
         	http
     		.authorizeRequests()                                                                
-    			.antMatchers("/login").permitAll()      
+    			.antMatchers("/login").permitAll() 
+    			.antMatchers("/registration").permitAll() 
+    			.antMatchers("/companyRegistration").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
-    			.antMatchers("/**").access("hasRole('ROLE_ADMIN')") 
+    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')") 
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")

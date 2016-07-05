@@ -1,0 +1,51 @@
+package com.bis.sourcelead.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
+
+@Service
+public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsService {
+
+	@Autowired
+	TimesheetSubmissionsDao timesheetSubmissionsDao;
+	
+	
+	@Override
+	public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
+		return timesheetSubmissionsDao.addTimesheetSubmissions(timesheetSubmissions);
+	}
+
+	@Override
+	public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
+		// TODO Auto-generated method stub
+		return timesheetSubmissionsDao.updateTimesheetSubmissions(timesheetSubmissions);
+	}
+
+	@Override
+	public TimesheetSubmissions getTimesheetSubmissions(String id) throws Exception {
+		// TODO Auto-generated method stub
+		return timesheetSubmissionsDao.getTimesheetSubmissions(id);
+	}
+
+	@Override
+	public Boolean deleteTimesheetSubmissions(String id) throws Exception {
+		Boolean status = timesheetSubmissionsDao.deleteTimesheetSubmissions(id);
+		return status;
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception {
+		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions();
+		// TODO Auto-generated method stub
+		return list;
+	}
+
+}

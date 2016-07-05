@@ -1,0 +1,26 @@
+package com.bis.sourcelead.service.impl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.dao.CountriesDao;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.service.CountriesService;
+
+@Service
+public class CountriesServiceImpl implements CountriesService{
+	
+	@Autowired
+	CountriesDao countriesDao;
+	
+	private static final Logger logger = LoggerFactory.getLogger(CountriesServiceImpl.class);
+
+	@Override
+	public Countries getCountriesByCountryName(String name) {
+		logger.debug("In Countries class...");
+		return countriesDao.getCountriesByCountryName(name);
+	}
+
+}

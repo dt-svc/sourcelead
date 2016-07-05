@@ -42,7 +42,7 @@ public class SourceleadUserDetailsService implements UserDetailsService {
 	// Converts com.mkyong.users.model.User user to
 	// org.springframework.security.core.userdetails.User
 	private User buildUserForAuthentication(com.bis.sourcelead.entity.User user, List<GrantedAuthority> authorities) {
-		return new User(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
+		return new User(user.getUserName(), user.getPassword(), true, true, true, true, authorities);
 	}
 
 	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
@@ -51,7 +51,7 @@ public class SourceleadUserDetailsService implements UserDetailsService {
 
 		// Build user's authorities
 		for (UserRole userRole : userRoles) {
-			setAuths.add(new SimpleGrantedAuthority(userRole.getRole()));
+			setAuths.add(new SimpleGrantedAuthority(userRole.getRoles().getRoleName()));
 		}
 
 		List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);

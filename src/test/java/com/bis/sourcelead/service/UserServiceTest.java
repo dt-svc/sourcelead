@@ -49,7 +49,7 @@ public class UserServiceTest {
 		String username = "SourceLeadAdmin";
 		logger.debug("In UserServiceTest class...");
 		User user = userService.findByUserName(username);
-		Assert.assertEquals("SourceLeadAdmin",user.getUsername());
+		Assert.assertEquals("SourceLeadAdmin",user.getUserName());
 		
 	}
 

@@ -34,7 +34,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("findByUserName start");
-		users = session.createQuery("from User where username=?").setParameter(0, username).list();
+		users = session.createQuery("from User where userName=:username" ).setString( "username", username ).list();
 		logger.debug("findByUserName end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -42,6 +42,22 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User addUser(User user) throws Exception {
+		logger.debug("Adding User");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (user != null) {
+				session.save(user);
+			}
+			logger.debug("User Added Successfully");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
 	
 	
 
