@@ -27,16 +27,12 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Employees addEmployee(Employees employee) throws Exception {
 	    logger.debug("In Employee Save method");
-		System.out.println("testing hibernet ad0d");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.save(employee);
 		}
 		catch(HibernateException exception)	{
 		}
-		
-		logger.debug("Employee Saving end");
-		
 		return employee;
 		
 	}
@@ -44,9 +40,10 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Employees updateEmployee(Employees employee) throws Exception {
-		// TODO Auto-generated method stub
+		logger.debug("In Employee Update method");
 		Session session = this.sessionFactory.getCurrentSession();
 	    session.merge(employee);
+	    logger.info("Record updated successfully..!");
 	    return employee;
 		
 	}
@@ -54,7 +51,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Employees getEmployee(String id) throws Exception {
-		// TODO Auto-generated method stub
+		logger.debug("In Employee getEmployee method");
 		Session session = this.sessionFactory.getCurrentSession();
 		return (Employees) session.get(Employees.class, Long.parseLong(id));
 	}
@@ -62,8 +59,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteEmployee(String id) throws Exception {
-		// TODO Auto-generated method stub
-		
+		logger.debug("In Employee deleteEmployee method");
 		Session session = this.sessionFactory.getCurrentSession();
 		Employees employee = (Employees)session.get(Employees.class, Long.parseLong(id));
 		employee.setEmployeeState("prasad");
@@ -76,7 +72,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Employees> getAllEmployees() throws Exception {
-		// TODO Auto-generated method stub
+		logger.debug("In Employee getAllEmployees method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
 		Query employeesListQuery= session.createQuery("from Employee");

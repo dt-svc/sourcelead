@@ -91,6 +91,7 @@ public class SecurityConfig  {
     		.authorizeRequests()                                                                
     			.antMatchers("/login").permitAll() 
     			.antMatchers("/registration").permitAll() 
+    			.antMatchers("/companyRegistration").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
     			.antMatchers("/**").access("hasRole('ROLE_ADMIN')") 
     			.antMatchers("/**").access("hasRole('ROLE_USER')") 
