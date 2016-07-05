@@ -298,14 +298,13 @@ INSERT INTO `sourcelead`.`USER` (`ID`, `FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `
 INSERT INTO `sourcelead`.`USER` (`ID`, `FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `PASSWORD`) VALUES ('2', 'SourceLead', 'User', 'SourceLeadUser', 'c9436c72cea8f1f90296f70c2acb902cq7bff165a0b9c02b4da1a6bc299652afffq73f719ffdc2520d71b0d78f871ac9f0ecq710277cf00cdc41a422eefee6c7a1de11q7');
 
 
-INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('1', 'ROLE_USER');
-INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('2', 'ROLE_ADMIN');
-INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('3', 'ROLE_USER');
+INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('1', 'ROLE_ADMIN');
+INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('2', 'ROLE_USER');
 
 
 INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('1', '1', '1');
 INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('2', '2', '1');
-INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('3', '3', '2');
+INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('3', '2', '2');
 
  
 

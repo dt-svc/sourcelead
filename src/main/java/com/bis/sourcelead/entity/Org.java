@@ -4,10 +4,17 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.bis.sourcelead.enums.Status;
 
 /**
  * 
@@ -36,7 +43,12 @@ public class Org {
 	private String orgCode;
 	
 	@Column(name = "STATUS",nullable = false)
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private Status status;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
+    private User user;
 	
 	@Column(name = "CREATED_DATE",nullable = false)
 	private Date createdDate;
@@ -90,11 +102,12 @@ public class Org {
 		this.orgCode = orgCode;
 	}
 
-	public String getStatus() {
+
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
@@ -128,6 +141,14 @@ public class Org {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

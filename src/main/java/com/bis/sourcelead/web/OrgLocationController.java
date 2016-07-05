@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 
 @RestController
@@ -51,7 +52,7 @@ public class OrgLocationController {
 		orgLocations.setState("AP");
 		orgLocations.setCity("Vizag");
 		orgLocations.setZipCode("503111");
-		orgLocations.setStatus("blocked");
+		orgLocations.setStatus(Status.ACTIVE);
 		orgLocations.setCreatedBy("Prashanthi");
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setUpdatedBy("Prasanna");

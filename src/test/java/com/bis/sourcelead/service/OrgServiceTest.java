@@ -18,6 +18,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.impl.OrgDaoImpl;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.impl.OrgServiceImpl;
 
 /**
@@ -60,7 +61,7 @@ public class OrgServiceTest {
 		organization.setOrgName("BIS");
 		organization.setOrgCode("dell.com");
 		organization.setOrgType("IT");
-		organization.setStatus("1");
+		organization.setStatus(Status.ACTIVE);
 		organization.setCreatedDate(new Date());
 		organization.setCreatedBy("Prasad");
 		organization.setWebSite("www.dell.com");
@@ -77,7 +78,7 @@ public class OrgServiceTest {
 		organization.setOrgName("HP");
 		organization.setOrgCode("wwwbiscom");
 		organization.setOrgType("IT");
-		organization.setStatus("1");
+		organization.setStatus(Status.ACTIVE);
 		organization.setCreatedDate(new Date());
 		organization.setCreatedBy("sairam");
 		organization.setWebSite("www.business.com");
