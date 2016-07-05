@@ -1,29 +1,40 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailMessageService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @RestController
 @RequestMapping(value = "/projects")
 public class ProjectsController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
-	
 	 @Autowired
 	 private ProjectsService projectsService; 
+	 
+	 @Autowired
+	 EmailScenerioUtil emailScenerioUtil;
+	 
 	 
 	 /**
 	  * This method for get project by id
@@ -86,6 +97,47 @@ public class ProjectsController {
 
 		    return projectsService.saveProject(projects);
 	  }
+	 
+	/**
+	 * This method for test email  
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/email", method = RequestMethod.GET,headers="Accept=application/json")
+	 public void getEmail() throws Exception{
+			
+			EmailMessage emailMessage = new EmailMessage();
+			
+			 emailMessage.setToEmail("prasad.salina@gmail.com");
+			 emailMessage.setFirstName("Prasad");
+			 emailMessage.setLastName("Salina");
+			 
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("firstName", emailMessage.getFirstName());
+			 globalVarsMap.put("lastName",emailMessage.getLastName());
+				
+			
+			ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			EmailRecipient emailRecipient = new EmailRecipient();
+			emailRecipient.setEmail(emailMessage.getToEmail());
+			emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			emailRecipientList.add(emailRecipient);
+			
+			
+			Org org = new Org();
+			List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+			
+			EmailScenario emailScenario =  emailScenerioUtil.validateEmailscenerioExists(Constants.ORG_REGISTRATION,"sourcelead.com" , "in.sourcelead.com" , emailMessage , "userCode");
+			
+			String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+			String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			String url = null;
+			
+			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org);
+			emailMessage.setSubject(subject);
+			emailMessage.setMessageBody(emailTemplate);
+			emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,attachmentList);
+	}
 	 
 	 /**
 	  * This method for update project
