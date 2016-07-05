@@ -21,4 +21,7 @@ public interface OrgDao {
 	public Boolean deleteOrg(Long id) throws Exception;
 
 	public List<Org> getOrgs() throws Exception;
+	
+	String websiteValidation(String website);
+	
 }

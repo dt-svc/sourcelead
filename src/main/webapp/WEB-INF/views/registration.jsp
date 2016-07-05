@@ -100,17 +100,19 @@
 	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild" required />
 	                <b></b>
 	            </span>
+	            <div  id="companyWebsiteDiv">
 	            <span>
 	            	<label>Company website</label>
-	                <input type="text" name="website"  value="${website}" class="signin_fild" required />
+	                <input type="text" name="website"  value="${website}"   id="companyWebsite"   onblur="validateWebsite();"   class="signin_fild" required />
 	                <b></b>
 	            </span>
+	            </div>
 	            </div>
 	            
 	            <div>
 	            <span>
 	            	<label>Company email</label>
-	                <input type="text" name="email"  value="${email}" class="signin_fild" required />
+	                <input type="text" name="email" id="email"   value="${email}" class="signin_fild" required />
 	                <b></b>
 	            </span>
 	            <span>
@@ -226,6 +228,50 @@ function applyInputSlide() {
 </script>
 
 
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+function validateWebsite(){
+      var website = document.getElementById("companyWebsite").value; 
+     
+     var sourceleadUrl ='${sourceleadUrl}';
+     
+     var hireWinLocationCode = '${hireWinLocationCode}';
+	 $('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
+	 if(website != null && website != ''){
+
+			 $("#register_button").attr("disabled", "disabled");
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website,
+			        success: function(data) {
+			        	alert("david"+data);
+			        	 var result = "["+data+"]";
+			        		alert("result"+result);
+			        	if((result == '[true]')){
+			        		
+			        		alert("inside");
+							  
+			        	}
+			        	else{
+			        		
+			        		alert("else");
+			        		 
+			        		
+			        		
+			        	} 
+			        },
+			        
+			    }); 
+	    }
+    }
+</script>
 
 
 
