@@ -164,7 +164,11 @@ public class HomeController {
 		return name;
 	}
 
+	//fileUpload
 	
-	
+	@RequestMapping(value = "/fileUpload", method = RequestMethod.GET)
+	public ModelAndView fileUpload() {
+		return new ModelAndView("FileUploadForm");
+	}
 	
 }
