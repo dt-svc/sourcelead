@@ -36,7 +36,7 @@ public class SourceleadDataBaseInstallation {
 			flyway.setSqlMigrationSuffix(".sql");
 			 /** TODO
 			  * Way to set migration folder location outside the classpath
-			    Using 'filesystem' keyword we can able set file path
+			    Using 'filesystem' keyword we can able set file path..
 			  *  
 			  */
 			flyway.setLocations("filesystem:src\\main\\resources\\migrations");
