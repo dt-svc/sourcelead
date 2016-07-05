@@ -59,7 +59,7 @@ public class Employees {
 	private Date createdDate;
 	
 	@Column(name="CREATED_BY")
-	private String createdBY;
+	private String createdBy;
 	
 	@Column(name="UPDATED_DATE")
 	private Date updatedDate;
@@ -147,12 +147,13 @@ public class Employees {
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBY() {
-		return createdBY;
+
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setCreatedBY(String createdBY) {
-		this.createdBY = createdBY;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Date getUpdatedDate() {

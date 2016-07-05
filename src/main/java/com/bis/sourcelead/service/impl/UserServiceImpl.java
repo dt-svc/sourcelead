@@ -31,5 +31,12 @@ public class UserServiceImpl implements UserService {
 		return userDao.findByUserName(username);
 	}
 
+
+	@Override
+	public User addUser(User user) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.addUser(user);
+	}
+
 	
 }

@@ -16,10 +16,10 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.impl.OrgLocationsServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,7 +57,7 @@ public class OrgLocationsServiceTest {
 			orgLocations.setState("TG");
 			orgLocations.setCity("HYD");
 			orgLocations.setZipCode("55555");
-			orgLocations.setStatus("active");
+			orgLocations.setStatus(Status.ACTIVE);
 			orgLocations.setCreatedBy("Vinu");
 			orgLocations.setCreatedDate(new Date());
 			orgLocations.setUpdatedBy("Prasanna");
@@ -96,7 +96,7 @@ public class OrgLocationsServiceTest {
 			orgLocations.setState("TG");
 			orgLocations.setCity("NZB");
 			orgLocations.setZipCode("22222");
-			orgLocations.setStatus("in-active");
+			orgLocations.setStatus(Status.INACTIVE);
 			orgLocations.setCreatedBy("Laxman");
 			orgLocations.setCreatedDate(new Date());
 			orgLocations.setUpdatedBy("Prasanna");

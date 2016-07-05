@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.enums.Status;
 
 /**
  * 
@@ -74,7 +75,7 @@ public class OrgDaoImpl implements OrgDao {
 		boolean isDeleted = false;
 		if (id != null) {
 			Org org = (Org) session.get(Org.class, id);
-			org.setStatus("0");
+			org.setStatus(Status.INACTIVE);
 			session.saveOrUpdate(org);
 			isDeleted = true;
 			logger.info("Successfully deleted..!");

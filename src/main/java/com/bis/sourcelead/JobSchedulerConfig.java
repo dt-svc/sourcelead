@@ -10,8 +10,7 @@ import com.bis.sourcelead.util.EMailJobScheduler;
 *
 * <b>Purpose:</b><br>
 *
-* Spring Job Scheduler configuration class for refreshing location(LRD) data. 
-* This class enables the job scheduling.
+* Spring Job Scheduler configuration class. This class enables the job scheduling.
 * 
 *
 * <b>CopyRights:</b><br>

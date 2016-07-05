@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -52,21 +55,22 @@ public class OrgLocations {
 	
 	
 	@Column(name = "STATUS")
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private Status status;
+	
+	
+	@Column(name = "LOCATION_CODE")
+	private String locationCode;
 	
 	@Column(name = "CREATED_BY", nullable = false)
 	private String createdBy;
 	
-	@NotNull
-    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
     @Column(name = "CREATED_DATE", nullable = false)
 	private Date createdDate;
 	
 	@Column(name = "UPDATED_BY", nullable = false)
 	private String updatedBy;
 	
-	@NotNull
-    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
     @Column(name = "UPDATED_DATE", nullable = false)
 	private Date updatedDate;
 
@@ -129,12 +133,20 @@ public class OrgLocations {
 		this.city = city;
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
 	}
 
 	public String getCreatedBy() {

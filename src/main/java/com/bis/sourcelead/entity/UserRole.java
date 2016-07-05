@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.bis.sourcelead.enums.Primary;
 
 @Entity
 @Table(name = "USER_ROLE", catalog = "sourcelead")
@@ -29,6 +33,12 @@ public class UserRole{
    	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
+	private OrgLocations orgLocations;
+    
+    @Column(name = "IS_PRIMARY")
+    private Integer isPrimary;
     
     @Column(name = "STATUS")
 	private String status;
@@ -75,6 +85,25 @@ public class UserRole{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+
+	
+
+	public Integer getIsPrimary() {
+		return isPrimary;
+	}
+
+	public void setIsPrimary(Integer isPrimary) {
+		this.isPrimary = isPrimary;
 	}
 
 	public Date getCreatedDate() {

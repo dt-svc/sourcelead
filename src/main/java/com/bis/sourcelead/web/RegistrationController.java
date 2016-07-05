@@ -1,20 +1,28 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
-import com.bis.sourcelead.service.CountriesService;
-import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
 
 @Controller
@@ -22,38 +30,32 @@ import com.bis.sourcelead.service.UserService;
 public class RegistrationController {
 	
 	@Autowired
-	private OrgService orgService;
+	private RegistrationService registrationService;
 	
-	@Autowired
-	private OrgLocationService orgLocationService;
-	
-	@Autowired
-	private UserService userService;
-	
-	@Autowired
-	private UserRoleService userRoleService;
-	
-	@Autowired
-	private CountriesService countriesService;
-	
-	@Autowired
-	private EmployeesService employeesService;
-	
-	@Autowired
-	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
-	
+	 @Autowired
+	 private UserService userService;
+	 
+	 @Autowired
+	 SourceleadAuthenticationProvider surceleadAuthenticationProvider;
+	 
 	
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.GET)
-	   public @ResponseBody  void addCompanyRegistration(Registration registration) {
-		
-			User user = new User();
-			user.setFirstName(registration.getFirstName());
-			user.setLastName(registration.getLastName());
-			user.setEmail(registration.getEmail());
-			user.setUserName(registration.getEmail());
-			user.setPassword(sourceleadPasswordEncoder.encode(registration.getPassword()));
-		
+	   public ModelAndView addCompanyRegistration(Registration registration) {
+			
+			try {
+				registrationService.addRegistration(registration);
+				
+				Authentication authentication = new UsernamePasswordAuthenticationToken(registration.getEmail(), registration.getPassword());
+				authentication = surceleadAuthenticationProvider.authenticate(authentication);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return new ModelAndView("redirect:/home");
 	     
 	   }
-
+	
+	
 }
