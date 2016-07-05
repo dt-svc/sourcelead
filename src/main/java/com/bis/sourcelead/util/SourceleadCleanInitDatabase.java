@@ -50,7 +50,7 @@ public class SourceleadCleanInitDatabase {
 	public DataSource comboPooledDataSource() {
 		
 		 @SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 		 DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 		 
 		this.comboPooledDataSource = new ComboPooledDataSource();
