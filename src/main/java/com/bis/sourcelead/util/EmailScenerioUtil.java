@@ -69,7 +69,7 @@ public class EmailScenerioUtil {
 	
 public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,String orgCode,String locationCode , EmailMessage message , String userCode) throws Exception{
 	
-	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, "bis.com", locationCode);
+	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, orgCode, locationCode);
 	    
 		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, Constants.SOURCELEAD_ORGCODE, Constants.SOURCELEAD_LOCATIONCODE_IN);
 		
@@ -92,7 +92,7 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
     		scenario.setDisclaimerText(emailScenario.getDisclaimerText());
     		scenario.setCreatedDate(new Date());
     		scenario.setCreatedBy(userCode);
-    		scenario.setOrgCode("bis.com");
+    		scenario.setOrgCode(orgCode);
 			
     		emailScenarioService.save(scenario);
 			
