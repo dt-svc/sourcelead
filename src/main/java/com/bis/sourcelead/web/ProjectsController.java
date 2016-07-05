@@ -20,8 +20,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.EmailMessageService;
-import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;

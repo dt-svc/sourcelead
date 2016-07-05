@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.bis.sourcelead.entity.ClassField;
 import com.bis.sourcelead.service.ClassFieldService;
@@ -19,7 +19,7 @@ import com.bis.sourcelead.service.ClassFieldService;
  * @author Prasad salina
  *
  */
-@Component
+@Repository
 public class EmailMessageBodyConverter {
 	
 	@Autowired 
