@@ -58,7 +58,7 @@ public class HomeController {
 	
 	
 	@Value("${sourceleadUrl}")
-	private String DAvidRaju;
+	private String sourceleadUrl;
 	
 	
 	@Autowired
@@ -85,11 +85,8 @@ public class HomeController {
    @RequestMapping(value = "/registration")
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
-		System.out.println(" *** HomeController init with: ");
-		String david = user;
-		System.out.println(" *** HomeController init with: " + david);
 		model.setViewName("registration");
-		model.addObject("sourceleadUrl", DAvidRaju);
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}
