@@ -15,19 +15,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.TasksService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 
 @RestController 
-@RequestMapping("/TimesheetEntries")
 public class TimesheetEntriesController {
 	
 	 
 	@Autowired
 	public TimesheetEntriesService timesheetEntriesService;
+	
+	@Autowired
+	public ProjectsService projectsService;
+	
+	@Autowired
+	public TasksService tasksService;
 	
 	
 	@Autowired
@@ -36,7 +45,20 @@ public class TimesheetEntriesController {
 	@Autowired
 	private DataSource dataSource;
 
-	
+
+	@RequestMapping(value = "/timesheet")
+	public ModelAndView registration() throws Exception {
+			ModelAndView model = new ModelAndView();
+			Collection<Projects> projectsList =   projectsService.getAllProjects();
+			model.addObject("sourcelead_projectsList", projectsList);
+			
+			Collection<Tasks> tasksList = tasksService.getAllTasks();
+			model.addObject("sourcelead_tasksList", tasksList);
+			
+			model.setViewName("timesheet");
+			return model;
+
+	}
 	
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception

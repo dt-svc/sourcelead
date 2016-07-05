@@ -5,6 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Welcome to SourceLead:: Login Page</title>
+
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="resources/css/bootstrap.min.css">
 <link rel="stylesheet" href="resources/css/font-awesome.min.css" type="text/css">
@@ -55,6 +56,8 @@
         </li>
         <li><a href="#">Page 2</a></li>
         <li><a href="#">Page 3</a></li>
+        <li> <a href="<c:url value='/userAutoComplete'/>">userAutoComplete</a> </li>
+        <li> <a href="<c:url value='/timesheet'/>">timesheet</a> </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Sign Up</a></li>
