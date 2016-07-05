@@ -1,4 +1,4 @@
-package com.bis.sourcelead.util;
+package com.bis.sourcelead.emailutil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.util.EmailMessageBodyConverter;
-import com.bis.sourcelead.util.EmailTemplateHTMLConversionUtil;
+import com.bis.sourcelead.util.Constants;
 
 /**
  * This class is for covert subject,body,signature
