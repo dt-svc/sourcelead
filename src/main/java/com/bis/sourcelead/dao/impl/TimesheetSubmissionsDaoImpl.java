@@ -42,7 +42,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-	    session.merge(timesheetSubmissions);
+	    session.update(timesheetSubmissions);
 	    return timesheetSubmissions;
 		
 	}

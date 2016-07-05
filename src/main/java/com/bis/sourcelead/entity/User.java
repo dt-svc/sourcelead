@@ -12,11 +12,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -79,8 +81,9 @@ public class User {
 	@Fetch(FetchMode.JOIN)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	@Column(name = "DOC_FILE")
-	private transient byte[] docFile;
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;

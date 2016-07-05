@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,10 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -33,12 +36,16 @@ public class TimesheetEntries {
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="TIMESHEET_SUBMISSION_ID", nullable=false ) 
+	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "START_DATE")
 	private Date startDate;
 	
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
@@ -53,9 +60,9 @@ public class TimesheetEntries {
 	private String entryStatus;
 	
 	 
-	@Column(name = "MON_TASK")
-	@Type(type="text")
-	private String monTask;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "MON_TASK")
+	private Tasks monTask;
 	 
 	@Column(name = "MON_HOURS")
     private Integer monHours;
@@ -65,9 +72,9 @@ public class TimesheetEntries {
     private String moncomments;
 	 
 	 
-	@Column(name = "TUE_TASK")
-	@Type(type="text")
-	private String tueTask;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "TUE_TASK")
+	private Tasks tueTask;
 	  
 	@Column(name = "TUE_HOURS")
 	private Integer tueHours;
@@ -76,9 +83,9 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String tuecomments;
 	  
-	@Column(name = "WED_TASK")
-	@Type(type="text")
-	private String wedTask;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "WED_TASK")
+	private Tasks wedTask;
 	  
 	@Column(name = "WED_HOURS")
 	private Integer wedHours;
@@ -87,9 +94,10 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String wedcomments;
 	  
-    @Column(name = "THU_TASK")
-    @Type(type="text")
-	private String thuTask;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "THU_TASK")
+	private Tasks thuTask;
 	  
 	@Column(name = "THU_HOURS")
 	private Integer thuHours;
@@ -98,9 +106,9 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String thucomments;
 	  
-	@Column(name = "FRI_TASK")
-	@Type(type="text")
-	private String friTask;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "FRI_TASK")
+	private Tasks friTask;
 	  
 	@Column(name = "FRI_HOURS")
 	private Integer friHours;
@@ -109,9 +117,9 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String fricomments;
 	  
-	@Column(name = "SAT_TASK")
-	@Type(type="text")
-	private String satTask;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "SAT_TASK")
+	private Tasks satTask;
 	  
 	@Column(name = "SAT_HOURS")
 	private Integer satHours;
@@ -119,10 +127,10 @@ public class TimesheetEntries {
 	@Column(name = "SAT_COMMENTS")
 	@Type(type="text")
 	private String satcomments;
-	  
-	@Column(name = "SUN_TASK")
-	@Type(type="text")
-	private String sunTask;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "SUN_TASK")
+	private Tasks sunTask;
 	  
 	@Column(name = "SUN_HOURS")
 	private Integer sunHours;
@@ -137,12 +145,16 @@ public class TimesheetEntries {
 	@Column(name = "STATUS")
 	private String status;
 	  
-	@Column(name = " CREATED_DATE")
+	@NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
+	@Column(name = "CREATED_DATE")
     private Date createdDate; 
 		
     @Column(name = "CREATED_BY")
 	private String createdBy;
 		
+    @NotNull
+    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "UPDATED_DATE")
     private Date updatedDate; 
 		
@@ -207,11 +219,12 @@ public class TimesheetEntries {
 		this.entryStatus = entryStatus;
 	}
 
-	public String getMonTask() {
+	@JsonIgnore
+	public Tasks getMonTask() {
 		return monTask;
 	}
 
-	public void setMonTask(String monTask) {
+	public void setMonTask(Tasks monTask) {
 		this.monTask = monTask;
 	}
 
@@ -231,13 +244,6 @@ public class TimesheetEntries {
 		this.moncomments = moncomments;
 	}
 
-	public String getTueTask() {
-		return tueTask;
-	}
-
-	public void setTueTask(String tueTask) {
-		this.tueTask = tueTask;
-	}
 
 	public Integer getTueHours() {
 		return tueHours;
@@ -253,14 +259,6 @@ public class TimesheetEntries {
 
 	public void setTuecomments(String tuecomments) {
 		this.tuecomments = tuecomments;
-	}
-
-	public String getWedTask() {
-		return wedTask;
-	}
-
-	public void setWedTask(String wedTask) {
-		this.wedTask = wedTask;
 	}
 
 	public Integer getWedHours() {
@@ -279,14 +277,6 @@ public class TimesheetEntries {
 		this.wedcomments = wedcomments;
 	}
 
-	public String getThuTask() {
-		return thuTask;
-	}
-
-	public void setThuTask(String thuTask) {
-		this.thuTask = thuTask;
-	}
-
 	public Integer getThuHours() {
 		return thuHours;
 	}
@@ -303,13 +293,6 @@ public class TimesheetEntries {
 		this.thucomments = thucomments;
 	}
 
-	public String getFriTask() {
-		return friTask;
-	}
-
-	public void setFriTask(String friTask) {
-		this.friTask = friTask;
-	}
 
 	public Integer getFriHours() {
 		return friHours;
@@ -327,14 +310,6 @@ public class TimesheetEntries {
 		this.fricomments = fricomments;
 	}
 
-	public String getSatTask() {
-		return satTask;
-	}
-
-	public void setSatTask(String satTask) {
-		this.satTask = satTask;
-	}
-
 	public Integer getSatHours() {
 		return satHours;
 	}
@@ -349,14 +324,6 @@ public class TimesheetEntries {
 
 	public void setSatcomments(String satcomments) {
 		this.satcomments = satcomments;
-	}
-
-	public String getSunTask() {
-		return sunTask;
-	}
-
-	public void setSunTask(String sunTask) {
-		this.sunTask = sunTask;
 	}
 
 	public Integer getSunHours() {
@@ -421,6 +388,54 @@ public class TimesheetEntries {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+	@JsonIgnore
+	public Tasks getTueTask() {
+		return tueTask;
+	}
+
+	public void setTueTask(Tasks tueTask) {
+		this.tueTask = tueTask;
+	}
+	@JsonIgnore
+	public Tasks getWedTask() {
+		return wedTask;
+	}
+
+	public void setWedTask(Tasks wedTask) {
+		this.wedTask = wedTask;
+	}
+	@JsonIgnore
+	public Tasks getThuTask() {
+		return thuTask;
+	}
+
+	public void setThuTask(Tasks thuTask) {
+		this.thuTask = thuTask;
+	}
+	@JsonIgnore
+	public Tasks getFriTask() {
+		return friTask;
+	}
+
+	public void setFriTask(Tasks friTask) {
+		this.friTask = friTask;
+	}
+	@JsonIgnore
+	public Tasks getSatTask() {
+		return satTask;
+	}
+
+	public void setSatTask(Tasks satTask) {
+		this.satTask = satTask;
+	}
+	@JsonIgnore
+	public Tasks getSunTask() {
+		return sunTask;
+	}
+
+	public void setSunTask(Tasks sunTask) {
+		this.sunTask = sunTask;
 	}
 	 
 }
