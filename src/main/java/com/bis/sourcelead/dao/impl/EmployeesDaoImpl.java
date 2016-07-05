@@ -27,7 +27,6 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Employees addEmployee(Employees employee) throws Exception {
 	    logger.debug("In Employee Save method");
-		System.out.println("testing hibernet ad0d");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.save(employee);
