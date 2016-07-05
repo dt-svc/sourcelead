@@ -1,6 +1,7 @@
-package com.bis.sourcelead.emailutil;
+package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -68,31 +69,35 @@ public class EmailScenerioUtil {
 	
 public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,String orgCode,String locationCode , EmailMessage message , String userCode) throws Exception{
 	
-	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, orgCode, locationCode);
+	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, "bis.com", locationCode);
 	    
 		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, Constants.SOURCELEAD_ORGCODE, Constants.SOURCELEAD_LOCATIONCODE_IN);
 		
-		/*if(scenarioTemplates == null){
+		if(scenarioTemplates == null){
 			
 			EmailScenario scenario = new EmailScenario();
 			
-			scenario.setBody(emailScenario.getBody());
+			scenario.setScenarioName(emailScenario.getScenarioName());
+			scenario.setUniqueScenarioName(emailScenario.getUniqueScenarioName());
+			scenario.setDescription(emailScenario.getDescription());
 			scenario.setSubject(emailScenario.getSubject());
+			scenario.setTemplateType("Org");
 			scenario.setSignature(emailScenario.getSignature());
+			scenario.setBody(emailScenario.getBody());
+			scenario.setIsTemplateModified("N");
 			scenario.setCallToActionText(emailScenario.getCallToActionText());
 			scenario.setButtonText(emailScenario.getButtonText());
-			scenario.setFromCompanyEmail(user.getEmail());
     		scenario.setLocationCode(locationCode);
     		scenario.setUseLogo("Yes");
-    		scenario.setConfigureTemplate("N");
+    		scenario.setDisclaimerText(emailScenario.getDisclaimerText());
     		scenario.setCreatedDate(new Date());
     		scenario.setCreatedBy(userCode);
-    		scenario.setOrgCode(orgCode);
+    		scenario.setOrgCode("bis.com");
 			
-			orgEmailScenarioTemplatesDao.store(scenario);
+    		emailScenarioService.save(scenario);
 			
 			scenarioTemplates = scenario;
-		}*/
+		}
 		
 		return scenarioTemplates;
 	}

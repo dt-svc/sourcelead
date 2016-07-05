@@ -28,4 +28,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 		return emailScenario;
 	}
 
+	@Override
+	public EmailScenario save(EmailScenario scenario) throws Exception {
+		return emailScenarioDao.save(scenario);
+	}
+
 }
