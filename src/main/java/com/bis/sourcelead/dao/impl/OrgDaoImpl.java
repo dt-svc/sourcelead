@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.enums.Status;
 
 /**
  * 
@@ -59,7 +62,7 @@ public class OrgDaoImpl implements OrgDao {
 	public Org findOrgByID(Long id) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		logger.info("Record updated successfully..!");
+		logger.info("Record fetched successfully..!");
 		if (id != null) {
 			Org org1 = session.get(Org.class, id);
 		}
@@ -74,13 +77,34 @@ public class OrgDaoImpl implements OrgDao {
 		boolean isDeleted = false;
 		if (id != null) {
 			Org org = (Org) session.get(Org.class, id);
-			org.setStatus("0");
+			org.setStatus(Status.INACTIVE);
 			session.saveOrUpdate(org);
 			isDeleted = true;
 			logger.info("Successfully deleted..!");
 		}
 		return isDeleted;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String websiteValidation(String webSite) {
+		Collection<Org> orgList =null;
+				Session session = this.sessionFactory.getCurrentSession();
+				Criteria crit = session.createCriteria(Org.class);
+				 orgList = crit.list();
+				
+		String flag = null;
+		if (orgList != null && orgList.size() > 0) {
+		    for(Org org :orgList){
+		    	if((org.getWebSite()!= null && (org.getWebSite().equalsIgnoreCase(webSite)))){
+					   flag ="Website Duplicated"; 
+			    }
+		    }
+		}
+		return flag;
+	}	
+	
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

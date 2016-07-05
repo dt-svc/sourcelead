@@ -13,6 +13,8 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.impl.EmployeesDaoImpl;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.EmployeesServiceImpl;
@@ -25,8 +27,13 @@ public class EmployeesServiceTest {
 	
 	@Configuration
 	static class EmployeeServiceConfigTest {
+		
 		@Bean
-		public EmployeesService emplosyeeService() {
+		public EmployeesDao employeesDao(){
+			return new EmployeesDaoImpl();
+		}
+		@Bean
+		public EmployeesService employeesService() {
 			return new EmployeesServiceImpl();
 		}
 		
@@ -34,10 +41,15 @@ public class EmployeesServiceTest {
 	}
 	
 	
+	
 	@Autowired
-	EmployeesService employeeService;
+	EmployeesService employeesService;
+	
+	@Autowired
+	
+	EmployeesDao employeesDao;
 
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(EmployeesServiceTest.class);
 
 	@Test
 	public void addEmployee() throws Exception{
@@ -50,22 +62,22 @@ public class EmployeesServiceTest {
 		employee.setCity("hyd");
 		employee.setCountry("Ind");
 		employee.setEmployeeState("active");
-		employeeService.addEmployee(employee);
+		employeesService.addEmployee(employee);
 		System.out.println("Successfully Added!!!!");
 	}
 	
 	
-	@Test
+	//@Test
 	public void getEmployee() throws Exception{
-		Employees employee =	employeeService.getEmployee("2");
+		Employees employee =	employeesService.getEmployee("2");
 		User user = new User();
 		user.setId(1L);
 		System.out.println("get value of ind"+employee.getCountry());
 	}
 
-	@Test
+	//@Test
 	public void deleteEmployee() throws Exception{
-		Boolean flag =	employeeService.deleteEmployee("1");
+		Boolean flag =	employeesService.deleteEmployee("1");
 	}
 	
 	

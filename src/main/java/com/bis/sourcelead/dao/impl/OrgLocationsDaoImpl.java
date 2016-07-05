@@ -16,6 +16,7 @@ import com.bis.sourcelead.dao.CitiesDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.enums.Status;
 
 @Repository
 public class OrgLocationsDaoImpl implements OrgLocationsDao {
@@ -28,12 +29,15 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
-		// TODO Auto-generated method stub
+		logger.debug("Adding orgLocations");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(orgLocations);
-		}
-		catch(HibernateException exception)	{
+			if (orgLocations != null) {
+				session.save(orgLocations);
+			}
+			logger.debug("orgLocations Added Successfully");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return orgLocations;
 	}
@@ -62,7 +66,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		boolean isDeleted = false;
 		if (id != null) {
 			OrgLocations orgLocations = (OrgLocations) session.get(OrgLocations.class, id);
-			orgLocations.setStatus("0");
+			orgLocations.setStatus(Status.INACTIVE);
 			session.saveOrUpdate(orgLocations);
 			isDeleted = true;
 			logger.info("Successfully deleted..!");

@@ -11,9 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -57,7 +59,7 @@ public class Employees {
 	private Date createdDate;
 	
 	@Column(name="CREATED_BY")
-	private String createdBY;
+	private String createdBy;
 	
 	@Column(name="UPDATED_DATE")
 	private Date updatedDate;
@@ -145,12 +147,13 @@ public class Employees {
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBY() {
-		return createdBY;
+
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setCreatedBY(String createdBY) {
-		this.createdBY = createdBY;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Date getUpdatedDate() {

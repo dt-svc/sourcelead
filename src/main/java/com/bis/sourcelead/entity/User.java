@@ -7,14 +7,20 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
+
+import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
@@ -41,7 +47,8 @@ public class User {
 	private String mobilePhone;
 	
 	@Column(name = "USER_STATE")
-	private String userState;
+	@Enumerated(EnumType.STRING)
+	private Status userState;
 	
 	@Column(name = "USER_TYPE")
 	private String userType;
@@ -51,6 +58,9 @@ public class User {
 	
 	@Column(name = "PASSWORD", nullable = false)
 	private String password;
+	
+	@Column(name = "USER_CODE",unique = true, nullable = false)
+	private String userCode;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -71,8 +81,9 @@ public class User {
 	@Fetch(FetchMode.JOIN)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	@Column(name = "DOC_FILE")
-	private transient byte[] docFile;
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -127,11 +138,11 @@ public class User {
 		this.mobilePhone = mobilePhone;
 	}
 
-	public String getUserState() {
+	public Status getUserState() {
 		return userState;
 	}
 
-	public void setUserState(String userState) {
+	public void setUserState(Status userState) {
 		this.userState = userState;
 	}
 
@@ -157,6 +168,15 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 	public String getStatus() {

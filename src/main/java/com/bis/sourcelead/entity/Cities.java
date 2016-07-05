@@ -9,20 +9,22 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "CITIES")
+@Table(name = "cities")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Cities {
 
 	@Id
-    @Column(name = "COUNTRY_CODE", nullable = false)
+    @Column(name = "countryCode", nullable = false)
 	private String countryCode;
 	
 	
-	@Column(name = "STATE_CODE")
+	@Column(name = "stateCode")
 	private String stateCode;
 	
-	@Column(name = "CITY_NAME")
+	@Column(name = "cityName")
 	private String cityName;
+	
+	
 
 	public String getCountryCode() {
 		return countryCode;
@@ -47,8 +49,7 @@ public class Cities {
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
 	}
-	
-	
+
 	
 	
 }

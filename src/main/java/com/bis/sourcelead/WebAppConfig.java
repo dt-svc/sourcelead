@@ -68,7 +68,7 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	 * messageSource = new ResourceBundleMessageSource();
 	 * messageSource.setBasename("messages"); return messageSource; }
 	 */
-
+	
 	@Override
 	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.add(mappingJackson2HttpMessageConverter());

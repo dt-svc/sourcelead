@@ -1,31 +1,44 @@
 
- DROP TABLE IF EXISTS `sourcelead`.`COUNTRIES`;
-CREATE TABLE `sourcelead`.`COUNTRIES` (
+DROP TABLE IF EXISTS `sourcelead`.`countries`;
+CREATE TABLE `sourcelead`.`countries` (
   ID BIGINT NOT NULL AUTO_INCREMENT,
-  CODE VARCHAR(3) DEFAULT NULL,
-  NAME VARCHAR(52) DEFAULT NULL,
-  CONTINENT VARCHAR(50) DEFAULT NULL,
+  Code VARCHAR(3) DEFAULT NULL,
+  Name VARCHAR(52) DEFAULT NULL,
+  Continent VARCHAR(50) DEFAULT NULL,
+  Region VARCHAR(30) DEFAULT NULL,
+  LocalName VARCHAR(45) DEFAULT NULL,
+  Code2 VARCHAR(2) DEFAULT NULL,
+  flagPath varchar(250) DEFAULT NULL,
   PRIMARY KEY (`ID`) 
 ); 
 
-DROP TABLE IF EXISTS `sourcelead`.`STATES`;
-CREATE TABLE `sourcelead`.`STATES` (
+DROP TABLE IF EXISTS `sourcelead`.`states`;
+CREATE TABLE `sourcelead`.`states` (
   ID BIGINT(20) NOT NULL AUTO_INCREMENT,
-  COUNTRY_CODE VARCHAR(5) NOT NULL,
-  STATE_CODE VARCHAR(20) NOT NULL,
-  STATE_NAME VARCHAR(100) DEFAULT NULL,
+  countryCode VARCHAR(5) NOT NULL,
+  stateCode VARCHAR(20) NOT NULL,
+  stateName VARCHAR(100) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ;
 
-DROP TABLE IF EXISTS `sourcelead`.`CITIES`;
-CREATE TABLE `sourcelead`.`CITIES` (
-  COUNTRY_CODE VARCHAR(10) NOT NULL,
-  STATE_CODE VARCHAR(10) NOT NULL,
-  CITY_NAME VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`COUNTRY_CODE`,`STATE_CODE`,`CITY_NAME`),
-  KEY `COUNTRY_CODE` (`COUNTRY_CODE`,`STATE_CODE`,`CITY_NAME`)
+DROP TABLE IF EXISTS `sourcelead`.`cities`;
+CREATE TABLE `sourcelead`.`cities` (
+  countryCode VARCHAR(10) NOT NULL,
+  stateCode VARCHAR(10) NOT NULL,
+  cityName VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`countryCode`,`stateCode`,`cityName`),
+  KEY `countryCode` (`countryCode`,`stateCode`,`cityName`)
 );
 
+
+DROP TABLE IF EXISTS `sourcelead`.`timezone`;
+CREATE TABLE `sourcelead`.`timezone` (
+  `countryCode` varchar(2)  DEFAULT NULL,
+  `timezoneid` varchar(255)  DEFAULT NULL,
+  `gmtoffset` float DEFAULT NULL,
+  `dstoffest` float DEFAULT NULL,
+  `rawoffset` float DEFAULT NULL
+);
 
 
 DROP TABLE IF EXISTS `sourcelead`.`ORG`;
@@ -285,14 +298,13 @@ INSERT INTO `sourcelead`.`USER` (`ID`, `FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `
 INSERT INTO `sourcelead`.`USER` (`ID`, `FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `PASSWORD`) VALUES ('2', 'SourceLead', 'User', 'SourceLeadUser', 'c9436c72cea8f1f90296f70c2acb902cq7bff165a0b9c02b4da1a6bc299652afffq73f719ffdc2520d71b0d78f871ac9f0ecq710277cf00cdc41a422eefee6c7a1de11q7');
 
 
-INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('1', 'ROLE_USER');
-INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('2', 'ROLE_ADMIN');
-INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('3', 'ROLE_USER');
+INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('1', 'ROLE_ADMIN');
+INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('2', 'ROLE_USER');
 
 
 INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('1', '1', '1');
 INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('2', '2', '1');
-INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('3', '3', '2');
+INSERT INTO `sourcelead`.`USER_ROLE` (`ID`, `ROLE_ID`, `USER_ID`) VALUES ('3', '2', '2');
 
  
 
