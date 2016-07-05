@@ -4,9 +4,11 @@
  */
 package com.bis.sourcelead.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -23,6 +25,9 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class DatabaseConnectionConfig {
 
 	private ComboPooledDataSource comboPooledDataSource;
+	
+	@Autowired
+	private Environment env;
 
 	@Value("${jdbc.driverClass}")
 	private String driverClass;
@@ -54,6 +59,14 @@ public class DatabaseConnectionConfig {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public Environment getEnv() {
+		return env;
+	}
+
+	public void setEnv(Environment env) {
+		this.env = env;
 	}
 	
 	

@@ -266,6 +266,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+	        <groupId>org.json</groupId>
+	        <artifactId>json</artifactId>
+	        <version>20090211</version>
+   		 </dependency>
+		<dependency>
 		    <groupId>commons-lang</groupId>
 		    <artifactId>commons-lang</artifactId>
 		    <version>2.6</version>
@@ -329,7 +334,7 @@
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
 			</plugin>
-                    <!--     <plugin>
+                 <!--        <plugin>
 			    <artifactId>maven-antrun-plugin</artifactId>
 			    <version>1.7</version>
 			    <executions>
@@ -337,7 +342,7 @@
 				    <phase>install</phase>
 				    <configuration>
 				          <target>
-				              <copy file="${project.build.directory}/sourcelead.war" todir="/opt/tomcat8/webapps"/>
+				              <copy file="${project.build.directory}/sourcelead.war" todir="/home/apache-tomcat-8.0.36/webapps"/>
 				          </target>
 				    </configuration>
 				    <goals>

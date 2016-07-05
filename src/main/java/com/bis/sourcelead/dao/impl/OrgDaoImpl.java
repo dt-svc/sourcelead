@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -82,6 +84,27 @@ public class OrgDaoImpl implements OrgDao {
 		}
 		return isDeleted;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String websiteValidation(String webSite) {
+		Collection<Org> orgList =null;
+				Session session = this.sessionFactory.getCurrentSession();
+				Criteria crit = session.createCriteria(Org.class);
+				 orgList = crit.list();
+				
+		String flag = null;
+		if (orgList != null && orgList.size() > 0) {
+		    for(Org org :orgList){
+		    	if((org.getWebSite()!= null && (org.getWebSite().equalsIgnoreCase(webSite)))){
+					   flag ="Website Duplicated"; 
+			    }
+		    }
+		}
+		return flag;
+	}	
+	
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

@@ -1,13 +1,21 @@
 package com.bis.sourcelead.web;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,10 +24,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.service.LoginService;
+import com.bis.sourcelead.service.OrgService;
 
 /**
  * This class is used for...
@@ -30,12 +40,25 @@ import com.bis.sourcelead.service.LoginService;
 
 @Controller
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 	@Autowired
 	public LoginService loginService;
+	
+
+	@Autowired
+	private OrgService orgService;
+	
+	
+	@Value("${jdbc.username}")
+	private String user;
+	
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	
 	@Autowired
@@ -63,9 +86,13 @@ public class HomeController {
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}
+   
+  
+   
    
    
    @RequestMapping(value = { "/home"}, method = RequestMethod.GET)

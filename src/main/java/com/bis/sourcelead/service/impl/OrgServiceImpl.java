@@ -48,4 +48,8 @@ public class OrgServiceImpl implements OrgService {
 		return orgDao.getOrgs();
 	}
 
+	@Override
+	public String websiteValidation(String website) {
+		return orgDao.websiteValidation(website);
+	}
 }
