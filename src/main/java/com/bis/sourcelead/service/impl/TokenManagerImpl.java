@@ -75,7 +75,6 @@ public class TokenManagerImpl implements TokenManager {
 
 	@Override
 	public UserDetails getUserDetails(String token) {
-		System.out.println(validUsers.get(token));
 		return validUsers.get(token);
 	}
 

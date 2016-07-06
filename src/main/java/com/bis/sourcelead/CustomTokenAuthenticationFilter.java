@@ -23,7 +23,7 @@ import com.bis.sourcelead.service.AuthenticationService;
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bis.sourcelead")
 public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
-	private static final String REQUEST_ATTR_DO_NOT_CONTINUE = "MyAuthenticationFilter-doNotContinue";
+	private static final String REQUEST_ATTR_DO_NOT_CONTINUE = "CustomTokenAuthenticationFilter-doNotContinue";
 	
 	@Autowired
 	AuthenticationService authenticationService;
@@ -45,20 +45,23 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 		if (authenticated) {
 			checkLogout(httpRequest);
 		}
-		checkLogin(httpRequest, httpResponse);
+		checkLogin(httpRequest, httpResponse,chain);
 		if (canRequestProcessingContinue(httpRequest)) {
 			chain.doFilter(request, response);
 		}
 	}
-	private void checkLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+	private void checkLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse,FilterChain chain) throws IOException, ServletException {
 		String username = httpRequest.getHeader(HEADER_USERNAME);
 		String password = httpRequest.getHeader(HEADER_PASSWORD);
 	   if (username != null && password != null) {
-			checkUsernameAndPassword(username, password, httpResponse);
+			checkUsernameAndPassword(username, password,httpRequest, httpResponse);
 			doNotContinueWithRequestProcessing(httpRequest);
+			httpRequest.setAttribute(REQUEST_ATTR_DO_NOT_CONTINUE, null);
+			checkToken(httpRequest, httpResponse);
+			
 		}
 	}
-	private void checkUsernameAndPassword(String username, String password, HttpServletResponse httpResponse) throws IOException {
+	private void checkUsernameAndPassword(String username, String password,HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
 		TokenInfo tokenInfo = authenticationService.authenticate(username, password);
 		if (tokenInfo != null) {
 			httpResponse.setHeader(HEADER_TOKEN, tokenInfo.getToken());
@@ -71,7 +74,10 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	private boolean checkToken(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
 		String token = httpRequest.getHeader(HEADER_TOKEN);
 		if (token == null) {
-			return false;
+			token = httpResponse.getHeader(HEADER_TOKEN);
+			 if (token == null) {
+				 return false;
+			}
 		}
 
 		if (authenticationService.checkToken(token)) {
@@ -107,6 +113,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	}
 
 	private boolean canRequestProcessingContinue(HttpServletRequest httpRequest) {
+		System.out.println(httpRequest.getAttribute(REQUEST_ATTR_DO_NOT_CONTINUE) );
 		return httpRequest.getAttribute(REQUEST_ATTR_DO_NOT_CONTINUE) == null;
 	}
  
