@@ -33,6 +33,7 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public EmailScenario getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(String uniqueScenarioName,
 			String orgCode, String locationCode) throws Exception {
+		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -49,12 +50,16 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 		return emailScenario;
 	}
 
+	/**
+	 * This method for save the EmailScenario
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public EmailScenario save(EmailScenario scenario) throws Exception {
+		logger.debug("In EmailScenarioDaoImpl class save method");
 		Session session = this.sessionFactory.getCurrentSession();
 		session.save(scenario);
 		return scenario;	
-		}
+	}
 
 }
