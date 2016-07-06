@@ -105,9 +105,10 @@ public class ProjectsController {
 			
 			EmailMessage emailMessage = new EmailMessage();
 			
-			 emailMessage.setToEmail("prasad.salina@gmail.com");
+			
 			 emailMessage.setFirstName("Prasad");
 			 emailMessage.setLastName("Salina");
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -116,10 +117,20 @@ public class ProjectsController {
 			
 			ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			EmailRecipient emailRecipient = new EmailRecipient();
+			 emailMessage.setToEmail("prasad.salina@gmail.com");
 			emailRecipient.setEmail(emailMessage.getToEmail());
 			emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
 			emailRecipientList.add(emailRecipient);
 			
+			EmailRecipient emailRecipient1 = new EmailRecipient();
+			emailRecipient1.setEmail("prasadsalina859@gmail.com");
+			emailRecipient1.setName("yaswanth");
+			emailRecipientList.add(emailRecipient1);
+			
+			EmailRecipient emailRecipient2 = new EmailRecipient();
+			emailRecipient2.setEmail("spd.salina@gmail.com");
+			emailRecipient2.setName("yaswanth");
+			emailRecipientList.add(emailRecipient2);
 			
 			Org org = new Org();
 			List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();

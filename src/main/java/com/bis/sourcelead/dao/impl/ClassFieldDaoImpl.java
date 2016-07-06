@@ -32,7 +32,7 @@ public class ClassFieldDaoImpl implements ClassFieldDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ClassField getClassFieldByDelimiterStr(String delimiterStr) throws Exception{
-		
+		logger.debug("In ClassFieldDaoImpl class getClassFieldByDelimiterStr method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " select cf  from ClassField cf left join fetch cf.entityTypeId where cf.delimStr = :delimiterStr";
 		List cfList = session.createQuery(query)

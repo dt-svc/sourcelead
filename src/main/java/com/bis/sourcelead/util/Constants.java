@@ -31,4 +31,7 @@ public class Constants {
 	
 	/**Constants values for unique emails and notification **/
 	
+	public static String NOTIFICATION_UNREAD = "unread";
+	public static String NOTIFICATION_READ = "read";
+	
 }

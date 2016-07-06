@@ -60,9 +60,7 @@ public class EmailScenerioUtil {
 		return emailTemplate ;
 	} 
 	
-	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList){
-		
-		   //storeEmailInfoInDB(emailTemplate , emailMessage , emailScenario);
+	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
 			emailMessageService.sendEmail(emailMessage,emailRecipientList,attachmentList);
 		}
 	
