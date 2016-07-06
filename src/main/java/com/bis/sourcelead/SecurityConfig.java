@@ -33,7 +33,7 @@ import org.springframework.stereotype.Controller;
 @Configuration
 @EnableWebSecurity
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
-		@Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
+@Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
 @PropertySource(value = { "classpath:config.properties" })
 public class SecurityConfig  {
 	
@@ -55,7 +55,7 @@ public class SecurityConfig  {
     	
         protected void configure(HttpSecurity http) throws Exception {
         	 http
-        	 .antMatcher("/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
+        	 .antMatcher("/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
                  .and()
                  .authorizeRequests().antMatchers("/rest/**").fullyAuthenticated()
                  .and().anonymous()
