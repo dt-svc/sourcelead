@@ -155,7 +155,9 @@ body {
     overflow: hidden;
 	}					
 	
-	
+.reset_wrap_a label{
+left:12px
+}	
 
 @media screen and (max-width: 767px){
 .regis_wrap.regis_wrap_a {

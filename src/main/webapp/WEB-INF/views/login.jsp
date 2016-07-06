@@ -60,23 +60,11 @@
 	            </span>
 	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	            
-	            <div class="for-pas-text"><strong id="fp-click"><i class="fa fa-question"></i>Forgot Password</strong></div>
+	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
 	            <input type="submit" value="Sumbit" class="sign_btn" />
-	            <div class="for-pas-text">Not have an account <a href="<c:url value='/registration'/>">Register Now</a></div>  
+	            <div class="for-pas-text">Not have an account <a href="<c:url value='/registration'/>">Register Now</a></div> 
             </form>          
         </div>
-    	<div class="signin_wrap" id="forgot-pass">
-        	<h1>Forgot Password</h1>
-            <span>
-            	<label>Email/Phone</label>
-                <i class="fa fa-envelope"></i>
-                <input type="text" class="signin_fild" />
-                <b></b>
-                <p>User name incorrect.</p>
-            </span>
-            <input type="button" value="Sumbit" class="sign_btn sign_btn_for" />
-            <div class="cancel_for">Cancel</div>            
-        </div>        
     </div>
 </div>  
   
@@ -106,7 +94,7 @@ function applyInputSlide() {
     });	    
 }
 </script>
-   
+
 </html>
 
 

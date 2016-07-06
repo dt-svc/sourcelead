@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -19,6 +21,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -53,9 +56,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private RolesService rolesService;
 	
+	@Autowired
+	private PasswordResetsSevice passwordResetsSevice;
+	
 	@Override
 	public void addRegistration(Registration registration) throws Exception {
 		
+		//For Saving of Org Details
 		Org org = getOrgDetails(registration);
 		try {
 			orgService.addOrganization(org);
@@ -63,6 +70,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		//For Saving of User Details
 		User user = getUserDetails(registration);
 		try {
 			userService.addUser(user);
@@ -78,6 +86,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		//For saving of orgLocation Details which location has choose in the registration
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
 		try {
 			orgLocationService.addOrgLocations(orgLocations);
@@ -85,6 +94,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		//For saving the User Role (At registration user will have Admin Role)
 		UserRole userRole = getUserRoleDetails(user,orgLocations);
 		try {
 			userRoleService.addUserRole(userRole);
@@ -92,6 +102,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		//For saving Employee details (Every User is an Employee)
 		Employees employee = getEmployeeDetails(user);
 		try {
 			employeesService.addEmployee(employee);
@@ -136,7 +147,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setStatus(Status.ACTIVE);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(org.getOrgCode()+countries.getCode2());
-		orgLocations.setCreatedBy(user.getCreatedBy());
+		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		return orgLocations;
 	}
@@ -155,7 +166,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setRoles(roles);
 		userRole.setIsPrimary(1);
 		userRole.setCreatedDate(new Date());
-		userRole.setCreatedBy(user.getCreatedBy());
+		userRole.setCreatedBy(user.getUserCode());
 		return userRole;
 		
 	}
@@ -164,9 +175,48 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		Employees employees = new Employees();
 		employees.setUser(user);
-		employees.setCreatedBy(user.getCreatedBy());
+		employees.setCreatedBy(user.getUserCode());
 		employees.setCreatedDate(new Date());
 		return employees;
+	}
+
+
+	@Override
+	public void addPasswordResets(User user) throws Exception {
+		
+		PasswordResets passwordResets = getPasswordResetsDetails(user);
+		passwordResetsSevice.savePasswordResets(passwordResets);
+		
+		
+	}
+	
+	private PasswordResets getPasswordResetsDetails(User user){
+		
+		PasswordResets passwordResets = new PasswordResets();
+		passwordResets.setUser(user);
+		passwordResets.setEmail(user.getEmail());
+		passwordResets.setStatus("Open");
+		passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+		passwordResets.setCreatedDate(new Date());
+		passwordResets.setCreatedBy(user.getUserCode());
+		return passwordResets;
+		
+	}
+
+
+	@Override
+	public void resetPassword(PasswordResets passwordResets,String password) throws Exception {
+		
+		User user = userService.getUserById(passwordResets.getUser().getId());
+		user.setPassword(sourceleadPasswordEncoder.encode(password));
+		userService.addUser(user);
+		
+	}
+
+
+	@Override
+	public void deletePasswordResets(PasswordResets passwordResets) throws Exception {
+		passwordResetsSevice.savePasswordResets(passwordResets);
 	}
 
 }
