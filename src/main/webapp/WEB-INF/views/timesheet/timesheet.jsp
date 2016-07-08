@@ -1,57 +1,22 @@
-
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>::. Timesheets .::</title>
-    <link rel="icon" type="image/png" href="images/fav.png" />
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    
-    <!--  <link href="css/bootstrap.min.css" rel="stylesheet"> -->
-    <!-- <link href="css/timesheet.css" rel="stylesheet"> -->
     <link href="resources/css/jquery-ui.css" rel="stylesheet">
-    <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-   
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/jquery-fun.js"></script>
-    
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
-	<link rel="stylesheet" href="resources/css/font-awesome.min.css" type="text/css">
+	<!-- <link rel="stylesheet" href="resources/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 	<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
-	
-	<!-- for mask -->
-	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.js"></script>
-	<script src="https://cloud.github.com/downloads/digitalBush/jquery.maskedinput/jquery.maskedinput-1.3.min.js"></script>
-	
-	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" type="text/css" >
-    <script src="https://raw.githubusercontent.com/igorescobar/jQuery-Mask-Plugin/master/src/jquery.mask.js"></script>
- -->
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  
     <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-  <!--   <link rel="stylesheet" href="resources/css/jquery-ui.css"> -->
-    
-   
     
     <script>
-	$(document).ready(function() {  alert("one");
+	$(document).ready(function() {
 			    $.mask.definitions['H'] = "[0-9]";
 			    $.mask.definitions['h'] = "[0-9]";
 			    $.mask.definitions['M'] = "[0-9]";
@@ -62,15 +27,22 @@
 	 });
     </script>
  
-</head>
 
 <body>
+
+<section class="content-wraper">
  <form id="timesheet_form" name="timesheet_form" >
+     <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Timesheets</h2>
+      </div>
+      <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Form</div>
+    </section>
 
  
 <div class="timesheet_out">   
-<input class="timepicker" type="text" size="10" placeholder="hh:mm" />
-<input class="timepicker" type="text" size="10" placeholder="hh:mm" />
+<!-- <input class="timepicker" type="text" size="10" placeholder="hh:mm" />
+<input class="timepicker" type="text" size="10" placeholder="hh:mm" /> -->
 	<div class="timesheet_wrap">
     	<div class="timesheet_head">
         	<ul>
@@ -601,8 +573,10 @@
 </div>  
 
  </form>   
+ </section>
 </body>
 
+<jsp:include page="../masterFooter.jsp" />
 
 <script>
 
@@ -803,5 +777,14 @@ $(document).ready(function() {
     });	 */
 });	 
 </script>	
+
+
+<script type="text/javascript">
+function timesheetComment(){
+	
+	
+} 
+</script>	
+
    
 </html>

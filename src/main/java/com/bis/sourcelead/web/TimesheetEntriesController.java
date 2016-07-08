@@ -75,7 +75,7 @@ public class TimesheetEntriesController {
 			Collection<Tasks> tasksList = tasksService.getAllTasks();
 			model.addObject("sourcelead_tasksList", tasksList);
 			
-			model.setViewName("timesheet");
+			model.setViewName("timesheet/timesheet");
 			return model;
 
 	}
