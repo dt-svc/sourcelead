@@ -49,11 +49,7 @@ public class UserDaoImpl implements UserDao {
 		logger.debug("Adding User");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			if (null == user.getId()) {
-				session.save(user);
-			}else{
-				session.update(user);
-			}
+			session.saveOrUpdate(user);
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {
 			e.printStackTrace();

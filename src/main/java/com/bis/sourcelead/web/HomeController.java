@@ -110,19 +110,6 @@ public class HomeController {
   	}
     
    
-   
-   
-   @RequestMapping(value = { "/home"}, method = RequestMethod.GET)
-  	public ModelAndView homePage() {
-
-  			ModelAndView model = new ModelAndView();
-  			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-  			model.setViewName("home");
-  			return model;
-
-  	}
-   
-   
 
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
 	public ModelAndView adminPage() {

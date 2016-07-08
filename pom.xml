@@ -234,6 +234,34 @@
 		</dependency>
 
 
+<!--  The following are Gson object for json dependencies -->
+		<dependency>
+	        <groupId>com.google.code.gson</groupId>
+	        <artifactId>gson</artifactId>
+	        <version>1.7.1</version>
+	    </dependency>
+
+	    <dependency>
+	        <groupId>org.json</groupId>
+	        <artifactId>json</artifactId>
+	        <version>20090211</version>
+	    </dependency>
+	    
+	    
+	    <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+		<dependency>
+		    <groupId>com.thoughtworks.xstream</groupId>
+		    <artifactId>xstream</artifactId>
+		    <version>1.4.8</version>
+		</dependency>
+		
+		
+		<dependency>
+		   <groupId>info.cukes</groupId>
+		   <artifactId>cucumber-jruby</artifactId>
+		   <version>1.0.13</version>
+		</dependency>
+		
 		<!-- The following are Spring Testing dependencies. -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -339,7 +367,7 @@
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
 			</plugin>
-              <plugin>
+               <plugin>
 			    <artifactId>maven-antrun-plugin</artifactId>
 			    <version>1.7</version>
 			    <executions>
@@ -355,7 +383,7 @@
 				    </goals>
 				</execution>
 			    </executions>
-			</plugin> 
+			</plugin>
 
 		</plugins>
 
