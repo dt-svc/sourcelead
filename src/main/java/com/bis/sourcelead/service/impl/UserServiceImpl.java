@@ -38,5 +38,12 @@ public class UserServiceImpl implements UserService {
 		return userDao.addUser(user);
 	}
 
+
+	@Override
+	public User getUserById(Long Id) throws Exception{
+		logger.debug("In UserService class...");
+		return userDao.getUserById(Id);
+	}
+
 	
 }
