@@ -181,10 +181,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 
 	@Override
-	public void addPasswordResets(User user) throws Exception {
+	public String addPasswordResets(User user) throws Exception {
 		
 		PasswordResets passwordResets = getPasswordResetsDetails(user);
 		passwordResetsSevice.savePasswordResets(passwordResets);
+		return passwordResets.getVerificationCode(); 
 		
 		
 	}
@@ -216,7 +217,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	@Override
 	public void deletePasswordResets(PasswordResets passwordResets) throws Exception {
-		passwordResetsSevice.savePasswordResets(passwordResets);
+		passwordResetsSevice.deletePasswordResets(passwordResets);
 	}
 
 }

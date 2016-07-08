@@ -1,6 +1,7 @@
 package com.bis.sourcelead;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,10 +15,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
 
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.UserLoginAttemptsService;
 import com.bis.sourcelead.service.UserService;
 
 /**
@@ -34,6 +37,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     
     @Autowired
     private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+    
+    @Autowired
+    private UserLoginAttemptsService userLoginAttemptsService;
   
     /*@param
      * 
@@ -44,18 +50,61 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           String username = authentication.getName();
           String password = (String) authentication.getCredentials();
      
+          UserLoginAttempts userLoginAttempts = null;
           User  user = userService.findByUserName(username);
           if(user == null){
         	  throw new BadCredentialsException("login_unRegistered_error");
           }
-          else{
+          else if(!user.getUserState().equals(Status.BLOCKED)){
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole()); 
+        		  try {
+					userLoginAttempts = userLoginAttemptsService.getUserLoginAttemptsByUserId(user.getId());
+					if(userLoginAttempts != null){
+						userLoginAttemptsService.deleteUserLoginAttempts(userLoginAttempts);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        		  
         		  return new UsernamePasswordAuthenticationToken(username, password, authorities);
         	  }
         	  else{
-        		  throw new BadCredentialsException("login_password_error");
+				try {
+					userLoginAttempts = userLoginAttemptsService.getUserLoginAttemptsByUserId(user.getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if(userLoginAttempts == null){
+					userLoginAttempts = getUserLoginAttemptsDetails(user);
+				}else{
+					Integer attemptsCount = userLoginAttempts.getAttemptsCount()+1;
+					userLoginAttempts.setAttemptsCount(attemptsCount);
+				}
+				try {
+					userLoginAttemptsService.addUserLoginAttempts(userLoginAttempts);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				if(userLoginAttempts.getAttemptsCount() == 3){
+					 try {
+						user = userLoginAttempts.getUser();
+						user.setUserState(Status.BLOCKED);
+						userService.addUser(user);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if(!user.getUserState().equals(Status.BLOCKED)){
+					throw new BadCredentialsException("login_password_error");
+				}else{
+					throw new BadCredentialsException("login_blocked_user_error");
+				}
+        		  
         	  }
+          }else{
+        	  throw new BadCredentialsException("login_blocked_user_error");
           }
     }
  
@@ -77,7 +126,15 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     	return Result;
     }
 
-
+    private UserLoginAttempts getUserLoginAttemptsDetails(User user){
+    	
+    	UserLoginAttempts userLoginAttempts = new UserLoginAttempts();
+    	userLoginAttempts.setUser(user);
+    	userLoginAttempts.setAttemptsCount(1);
+    	userLoginAttempts.setCreatedDate(new Date());
+    	return userLoginAttempts;
+    	
+    }
 
 	
 
