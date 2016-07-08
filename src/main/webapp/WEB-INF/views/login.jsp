@@ -44,6 +44,9 @@
 	       <c:if test="${!empty login_password_error}">
 	         		<div class="error"><font color="red">Invalid Username or Password.</font></div>
 	    	</c:if> 
+	    	 <c:if test="${!empty login_blocked_user_error}">
+	         		<div class="error"><font color="red">Your User has blocked. Please contact your admin</font></div>
+	    	</c:if> 
     	<br/>
         	 <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
 	            <span>
