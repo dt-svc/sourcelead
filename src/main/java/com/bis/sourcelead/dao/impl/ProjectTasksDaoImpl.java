@@ -12,20 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.dao.TasksDao;
-import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.entity.ProjectTasks;
 
 @Repository
-public class TasksDaoImpl implements TasksDao {
+public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private static final Logger logger = LoggerFactory.getLogger(TasksDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProjectTasksDaoImpl.class);
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Tasks addTasks(Tasks tasks) throws Exception {
+	public ProjectTasks addTasks(ProjectTasks tasks) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.save(tasks);
@@ -36,7 +36,7 @@ public class TasksDaoImpl implements TasksDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Tasks updateTasks(Tasks tasks) throws Exception {
+	public ProjectTasks updateTasks(ProjectTasks tasks) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.saveOrUpdate(tasks);
 		return tasks;
@@ -44,16 +44,16 @@ public class TasksDaoImpl implements TasksDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Tasks getTasksId(String id) throws Exception {
+	public ProjectTasks getTasksId(String id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Tasks) session.get(Tasks.class, Long.valueOf(id));
+		return (ProjectTasks) session.get(ProjectTasks.class, Long.valueOf(id));
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteTask(String id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		Tasks tasks = (Tasks) session.get(Tasks.class, Long.valueOf(id));
+		ProjectTasks tasks = (ProjectTasks) session.get(ProjectTasks.class, Long.valueOf(id));
 		tasks.setStatus("1");
 		System.out.println("in timesheetEntriesdddddd " + tasks.getId());
 		session.saveOrUpdate(tasks);
@@ -63,9 +63,9 @@ public class TasksDaoImpl implements TasksDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> getAllTasks() throws Exception {
+	public List<ProjectTasks> getAllTasks() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Tasks> adTaskList = null;
+		List<ProjectTasks> adTaskList = null;
 		Query taskListQuery = session.createQuery("from Tasks");
 		adTaskList = taskListQuery.list();
 		;
