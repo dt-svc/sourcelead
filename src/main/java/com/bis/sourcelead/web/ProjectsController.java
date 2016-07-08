@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.emailutil.EmailScenerioUtil;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -23,6 +22,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @RestController
 @RequestMapping(value = "/projects")
@@ -105,9 +105,10 @@ public class ProjectsController {
 			
 			EmailMessage emailMessage = new EmailMessage();
 			
-			 emailMessage.setToEmail("prasad.salina@gmail.com");
+			
 			 emailMessage.setFirstName("Prasad");
 			 emailMessage.setLastName("Salina");
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -116,6 +117,7 @@ public class ProjectsController {
 			
 			ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			EmailRecipient emailRecipient = new EmailRecipient();
+			 emailMessage.setToEmail("prasad.salina@gmail.com");
 			emailRecipient.setEmail(emailMessage.getToEmail());
 			emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
 			emailRecipientList.add(emailRecipient);

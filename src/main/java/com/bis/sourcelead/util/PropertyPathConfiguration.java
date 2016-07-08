@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 
@@ -12,7 +13,12 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  * @date: 01-June-2016
  */
 @Configuration
-@ComponentScan
+@ComponentScan(
+basePackages = {"com.bis.sourcelead.util"},
+useDefaultFilters = false,
+includeFilters = {
+@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DatabaseConnectionConfig.class)
+})
 public class PropertyPathConfiguration {
 
   @Bean
