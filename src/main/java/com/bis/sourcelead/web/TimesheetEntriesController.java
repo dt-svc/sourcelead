@@ -119,12 +119,12 @@ public class TimesheetEntriesController {
 				TimesheetEntries timesheetEntries = new TimesheetEntries();
 				timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 				
-				/*timesheetEntries.setMonHours(monHours);
-				timesheetEntries.setMoncomments(moncomments);
-				timesheetEntries.setMoncomments(moncomments);
+			    /*timesheetEntries.setMonHours(c+"project"+projectId+"timeSheetDay1Id");
+				timesheetEntries.setMoncomments(c+"project"+projectId+"timeSheetDay1Id");
+				timesheetEntries.setMoncomments(c+"project"+projectId+"timeSheetDay1Id");
 				
-				1project${project.id}timeSheetDay1Id*/
-				
+				1project${project.id}timeSheetDay1Id
+				*/
 				
 				 
 				timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));

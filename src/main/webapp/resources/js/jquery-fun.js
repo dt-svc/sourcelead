@@ -35,18 +35,6 @@ $(document).ready(function() {
 	});	
 });*/	
 
-// timesheet comment
-$(document).ready(function() {
-    $(".timesheet_comm i").click(function(){
-		$("#teskcomment").slideToggle(200);
-	});
-    $("html").click(function() {
-        $("#teskcomment").slideUp(200);
-    });
-    $(".timesheet_comm i, #teskcomment").click(function(e) {
-        e.stopPropagation();
-    });	
-});	
 
 // Approved Popup
 $(document).ready(function() {
