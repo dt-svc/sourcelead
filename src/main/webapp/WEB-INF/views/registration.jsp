@@ -97,7 +97,7 @@
 	            <div>
 	            <span>
 	            	<label>Company Name</label>
-	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild" required />
+	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild" data-validation="required" />
 	                <b></b>
 	            </span>
 	            <div  id="companyWebsiteDiv">
@@ -112,7 +112,7 @@
 	            <div>
 	            <span>
 	            	<label>Company email</label>
-	                <input type="text" name="email" id="email"   value="${email}" class="signin_fild" required />
+	                <input type="text" name="email" id="email"   onblur="validateCompanyEmail();"   value="${email}" class="signin_fild" required />
 	                <b></b>
 	            </span>
 	            <span>
@@ -156,6 +156,7 @@ $(function () {
      applyInputSlide();
 });
 
+
 function applyInputSlide() {
     $(".signin_wrap span input").each(function (i) {
         if ($(this).val().trim() !== "")
@@ -173,22 +174,25 @@ function applyInputSlide() {
 
 
 <script type="text/javascript">
-
         $('#companyRegistration_form')
            .submit(function(e) {
         	    e.preventDefault(); 
         	    var frm = $('#companyRegistration_form').serialize();
         	    frm = "testvalue=testvalue&"+frm;
         		var con = JSON.stringify(frm);
+        		var sourceleadUrl ='${sourceleadUrl}';
                 $.ajax({
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: "http://localhost:8080/sourcelead"+"/companyRegistration",
-                  	  data:con
-                  			  
+                  	  url: sourceleadUrl+"/companyRegistration",
+                  	  data:con,
+                    	success: function(result) {
+			        	if((result == 'home')){
+			        		location.replace(sourceleadUrl+"/home");  
+			        	}
+			        },  
                 });
-            
             });
 </script>
 
@@ -227,40 +231,65 @@ function applyInputSlide() {
 })(jQuery);
 </script>
 
+<!--   Starts This Script is for validating the Company web site , to find the Duplicate values -->
 
 <script type="text/javascript">
 function validateWebsite(){
       var website = document.getElementById("companyWebsite").value; 
-     
      var sourceleadUrl ='${sourceleadUrl}';
-     
-     var hireWinLocationCode = '${hireWinLocationCode}';
+     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
 	 $('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
 	 if(website != null && website != ''){
-
-			 $("#register_button").attr("disabled", "disabled");
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
-			        	
-			        	 var result = "["+data+"]";
-			        		
-			        	if((result == '[true]')){
-							  
+			        	 var result = data;
+		        		if(result == "success"){
+			        		//existed website
 			        	}
 			        	else{
-			        		
-			        		
-			        	} 
-			        },
+			        		//New WebSite
+			        	}  
+			       },
 			        
-			    }); 
-	    }
-    }
+		   }); 
+	}
+}
 </script>
+<!--   Ends  This Script is for validating the Company web site , to find the Duplicate values -->
 
-
-
-
+<!--    Starts Ends of validating the Company Email i,e removing duplicate values--->
+<script type="text/javascript">
+function validateCompanyEmail(){
+    var websiteValue = document.getElementById("companyWebsite").value;
+    var emailValue = document.getElementById("email").value;
+    var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
+    var sourceleadUrl ='${sourceleadUrl}';
+		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid Email'){
+					    	 //Invalid Email
+					     } 
+					     else if(data == 'Existed Email'){
+					    	 //Existed Email
+					     }
+				       	else{
+				       		//Valid Email
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+}
+</script>
+<!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>
