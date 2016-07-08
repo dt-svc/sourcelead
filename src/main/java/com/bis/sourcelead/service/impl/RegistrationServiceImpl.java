@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -207,7 +206,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void resetPassword(PasswordResets passwordResets,String password) throws Exception {
 		
-		User user = userService.getUserById(passwordResets.getUser().getId());
+		//Here user will loaded automatically without any DB hit. beacuse user fetchtype is declared as Eager in PasswordResets.s 
+		User user = passwordResets.getUser();
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		userService.addUser(user);
 		

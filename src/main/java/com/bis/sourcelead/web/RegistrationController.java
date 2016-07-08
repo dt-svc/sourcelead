@@ -82,6 +82,7 @@ public class RegistrationController {
 	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
 	   public String verifyResetPassword(Registration registration) {
 		
+		//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
 		PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());
 		
 		if(null != passwordResets){
