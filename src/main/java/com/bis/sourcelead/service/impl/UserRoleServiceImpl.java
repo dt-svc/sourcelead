@@ -17,6 +17,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole addUserRole(UserRole userRole) throws Exception {
 		return userRoleDao.addUserRole(userRole);
 	}
+
+	@Override
+	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception{
+		return userRoleDao.getLoginUserPrimaryRole(userId);
+	}
 	
 
 }

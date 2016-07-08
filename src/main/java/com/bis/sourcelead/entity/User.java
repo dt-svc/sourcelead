@@ -18,7 +18,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -80,6 +79,11 @@ public class User {
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.JOIN)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
+	
+	
+	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<PasswordResets> passwordResets;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
@@ -241,6 +245,14 @@ public class User {
 
 	public void setUserRole(Set<UserRole> userRole) {
 		this.userRole = userRole;
+	}
+
+	public Set<PasswordResets> getPasswordResets() {
+		return passwordResets;
+	}
+
+	public void setPasswordResets(Set<PasswordResets> passwordResets) {
+		this.passwordResets = passwordResets;
 	}
 	
 

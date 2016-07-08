@@ -49,15 +49,29 @@ public class UserDaoImpl implements UserDao {
 		logger.debug("Adding User");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			if (user != null) {
-				session.save(user);
-			}
+			session.saveOrUpdate(user);
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return user;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserById start");
+		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		logger.debug("getUserById end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
 	
 	
 
