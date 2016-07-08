@@ -12,7 +12,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UserService;
 
 /**
- * This Service Class is used to get User Object 
+ * This Service Class is used to get User Object
  * 
  * @author: Naresh Bolisetty
  * @date: 27-May-2016
@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
-	
 
 	@Override
 	public User findByUserName(String username) {
@@ -33,20 +32,18 @@ public class UserServiceImpl implements UserService {
 		return userDao.findByUserName(username);
 	}
 
-
 	@Override
 	public User addUser(User user) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.addUser(user);
 	}
 
-
 	@Override
-	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites,User user) throws Exception {
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites, User user)
+			throws Exception {
 		logger.debug("In UserService class...");
-		return userDao.validateEmailandCandidate(website,email,sourceleadBLockedwebsites,user);
+		return userDao.validateEmailandCandidate(website, email, sourceleadBLockedwebsites, user);
 	}
-
 
 	@Override
 	public Collection<User> getUsers() throws Exception {
@@ -54,16 +51,16 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUsers();
 	}
 
-
 	@Override
 	public User findByEmail(String email) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.findByEmail(email);
+	}
 
-		public User getUserById(Long Id) throws Exception{
+	@Override
+	public User getUserById(Long Id) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.getUserById(Id);
 	}
 
-	
 }

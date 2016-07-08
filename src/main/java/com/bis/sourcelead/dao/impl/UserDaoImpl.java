@@ -77,15 +77,59 @@ public class UserDaoImpl implements UserDao {
 			if (user != null) {
 				session.save(user);
 			}
-			if (user != null) {
-				session.save(user);
-			}
-			session.saveOrUpdate(user);
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return user;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites,User  user) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
+		if(!website.startsWith("http") && !website.startsWith("https")){
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String status = " ";
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+ 	    if(email.equalsIgnoreCase("@"+host)){
+ 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+ 	    		status="Invalid Email";
+ 	    	}else{
+		 	      	if( user.getEmail().equalsIgnoreCase(email)){
+		 	    		status="Existed Email";
+		 	    	}else{
+		 	    		status="Valid Email";
+		 	    	}
+	 	    }
+ 	    }else{
+ 	    	status="Invalid Email";
+ 	    }
+	    
+	return status;
+		
+}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<User> getUsers() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(User.class);
+		Collection<User> orgList = crit.list();
+		return orgList;
 	}
 
 	@Override
