@@ -81,7 +81,7 @@ public class ProjectsController {
 			org.setId(1L);
 			projects.setOrg(org);
 			
-			projects.setProjectName("VADALU");
+			projects.setProjectName("Sourcelead");
 			projects.setProjectStatus("Open");
 			projects.setDescription("sourcelead desc");
 			projects.setStatus("1");
@@ -89,9 +89,9 @@ public class ProjectsController {
 			projects.setEndDate(new Date());
 			projects.setTimesheetFrequency("Monthly");
 			projects.setCreatedDate(new Date());
-			projects.setCreatedBy("OfferTab");
+			projects.setCreatedBy("prasad");
 			projects.setUpdatedDate(new Date());
-			projects.setUpdatedBy("Idly");
+			projects.setUpdatedBy("prasad");
 
 		    return projectsService.saveProject(projects);
 	  }
