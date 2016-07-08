@@ -25,11 +25,13 @@ public class Notifications {
 	@JoinColumn(name="NOTIFICATION_SCENARIO_ID", nullable=false )	
 	private EntityType notificationScenarioId;
 	
-	@Column(name="NOTIFICATION_TO")
-	private String notificationTo;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="NOTIFICATION_TO", nullable=false )	
+	private User notificationTo;
 	
-	@Column(name="NOTIFICATION_FORM")
-	private String notificationFrom;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="NOTIFICATION_FORM", nullable=false )	
+	private User notificationFrom;
 	
 	@Column(name="BODY", columnDefinition = "TEXT default NULL")
 	private String body;
@@ -68,19 +70,19 @@ public class Notifications {
 		this.notificationScenarioId = notificationScenarioId;
 	}
 
-	public String getNotificationTo() {
+	public User getNotificationTo() {
 		return notificationTo;
 	}
 
-	public void setNotificationTo(String notificationTo) {
+	public void setNotificationTo(User notificationTo) {
 		this.notificationTo = notificationTo;
 	}
 
-	public String getNotificationFrom() {
+	public User getNotificationFrom() {
 		return notificationFrom;
 	}
 
-	public void setNotificationFrom(String notificationFrom) {
+	public void setNotificationFrom(User notificationFrom) {
 		this.notificationFrom = notificationFrom;
 	}
 

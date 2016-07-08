@@ -122,15 +122,6 @@ public class ProjectsController {
 			emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
 			emailRecipientList.add(emailRecipient);
 			
-			EmailRecipient emailRecipient1 = new EmailRecipient();
-			emailRecipient1.setEmail("prasadsalina859@gmail.com");
-			emailRecipient1.setName("yaswanth");
-			emailRecipientList.add(emailRecipient1);
-			
-			EmailRecipient emailRecipient2 = new EmailRecipient();
-			emailRecipient2.setEmail("spd.salina@gmail.com");
-			emailRecipient2.setName("yaswanth");
-			emailRecipientList.add(emailRecipient2);
 			
 			Org org = new Org();
 			List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
