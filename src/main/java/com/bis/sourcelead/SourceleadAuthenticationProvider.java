@@ -60,7 +60,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         		  List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole()); 
         		  try {
 					userLoginAttempts = userLoginAttemptsService.getUserLoginAttemptsByUserId(user.getId());
-					userLoginAttemptsService.deleteUserLoginAttempts(userLoginAttempts);
+					if(userLoginAttempts != null){
+						userLoginAttemptsService.deleteUserLoginAttempts(userLoginAttempts);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

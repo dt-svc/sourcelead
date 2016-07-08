@@ -8,6 +8,7 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -53,7 +54,7 @@
             </div>
             <ul class="list-unstyled">
               <li><a href="javascript:void(0)"><span><i class="fa fa fa-user"></i></span>&nbsp;View Profile</a></li>
-              <li><a href="javascript:void(0)"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
+              <li><a href="<c:url value='/logout'/>"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
             </ul>
           </div>
         </div>
@@ -179,7 +180,7 @@
               <ul class="list-unstyled">
                 <li><a href="#"><i class="fa fa-key" aria-hidden="true"></i> Change Password</a></li>
                 <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i> View Profile</a></li>
-                <li><a href="#"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
+                <li><a href="<c:url value="/logout" var="logoutUrl" />"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
