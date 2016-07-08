@@ -19,6 +19,8 @@ public class Registration {
 	
 	private String password;
 	
+	private String verificationCode;
+	
 	
 	
 	
@@ -84,6 +86,14 @@ public class Registration {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
 	}
 	
 	

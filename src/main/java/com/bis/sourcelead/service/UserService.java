@@ -7,6 +7,8 @@ public interface UserService  {
 	User findByUserName(String username);
 	
 	public User addUser(User user) throws Exception;
+	
+	User getUserById(Long Id) throws Exception;
 
 }	
 		

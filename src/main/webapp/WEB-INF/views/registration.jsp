@@ -173,22 +173,25 @@ function applyInputSlide() {
 
 
 <script type="text/javascript">
-
         $('#companyRegistration_form')
            .submit(function(e) {
         	    e.preventDefault(); 
         	    var frm = $('#companyRegistration_form').serialize();
         	    frm = "testvalue=testvalue&"+frm;
         		var con = JSON.stringify(frm);
+        		var sourceleadUrl ='${sourceleadUrl}';
                 $.ajax({
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: "http://localhost:8080/sourcelead"+"/companyRegistration",
-                  	  data:con
-                  			  
+                  	  url: sourceleadUrl+"/companyRegistration",
+                  	  data:con,
+                    	success: function(result) {
+			        	if((result == 'home')){
+			        		location.replace(sourceleadUrl+"/home");  
+			        	}
+			        },  
                 });
-            
             });
 </script>
 
