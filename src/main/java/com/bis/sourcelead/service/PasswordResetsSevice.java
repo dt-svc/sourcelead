@@ -9,4 +9,6 @@ public interface PasswordResetsSevice {
 	public PasswordResets getPasswordResetsByUserId(Long userId);
 	
 	public PasswordResets getPasswordResetsByVerificationCode(String verificationCode);
+	
+	public PasswordResets deletePasswordResets(PasswordResets passwordResets);
 }

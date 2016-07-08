@@ -16,6 +16,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Controller
 @RestController
@@ -64,9 +65,10 @@ public class RegistrationController {
 			try {
 				PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
 				if(null == passwordResets){
-					registrationService.addPasswordResets(user);
+					String verificationCode = registrationService.addPasswordResets(user);
 				}else{
-					return "login";
+					passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+					passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
