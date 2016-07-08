@@ -35,10 +35,7 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 			if (null == passwordResets.getId()) {
 				session.save(passwordResets);
 			}else{
-				passwordResets.setStatus("Closed");
-				passwordResets.setUpdatedDate(new Date());
-				passwordResets.setUpdatedBy(passwordResets.getUser().getUserCode());
-				session.update(passwordResets);
+				session.delete(passwordResets);
 			}
 			logger.debug("PasswordResets Added Successfully");
 		} catch (Exception e) {

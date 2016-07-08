@@ -206,7 +206,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void resetPassword(PasswordResets passwordResets,String password) throws Exception {
 		
-		//Here user will loaded automatically without any DB hit. beacuse user fetchtype is declared as Eager in PasswordResets.s 
+		//Here user will loaded automatically without any DB hit. beacuse user fetchtype is declared as Eager in PasswordResets.
 		User user = passwordResets.getUser();
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		userService.addUser(user);
