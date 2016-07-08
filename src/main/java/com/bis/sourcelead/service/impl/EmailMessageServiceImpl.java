@@ -75,7 +75,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("peopleaxisindia@gmail.com", emailMessage.getFirstName()+" "+emailMessage.getLastName()));
+			message.setFrom(new InternetAddress("peopleaxisindia@gmail.com", emailMessage.getFromName()));
 			
             ArrayList<String> recipientList = new ArrayList<String>();
 			

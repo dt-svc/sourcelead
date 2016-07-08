@@ -29,6 +29,9 @@ public class Constants {
 	public static String FORGOT_PASSWORD = "Forgot Password";
 	public static String UPDATE_PASSWORD = "Update Password";
 	
+	public static String ENTITY_TYPE_EMAIL = "Email";
+	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
+	
 	/**Constants values for unique emails and notification **/
 	
 	public static String NOTIFICATION_UNREAD = "unread";

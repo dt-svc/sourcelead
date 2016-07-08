@@ -1,0 +1,77 @@
+@charset "utf-8";
+/* CSS Document */
+.parent-div {
+	position:relative;
+}
+.parent-div i{
+	color: #ff0000;
+    float: left;
+    padding: 10px;
+    position: absolute;
+}
+.parent-div .form-control{
+	padding-left:35px;
+	height:35px;
+}
+.parent-div b{
+	background: #008c07 none repeat scroll 0 0;
+    display: block;
+	opacity:0;
+    height: 1px;
+    margin: 0 auto;
+    width: 1%;
+	transition:all 1s ease-in-out 0s;
+}
+.parent-div .form-control:focus + b{
+	    width: 100%;
+		opacity:1;
+}
+
+
+.parent-div-lbl {
+	position:relative;
+}
+.parent-div-lbl i{
+	color: #ff0000;
+    float: left;
+    padding: 10px;
+    position: absolute;
+}
+.parent-div-lbl .form-control{
+	padding-left:35px;
+	height:35px;
+}
+.parent-div-lbl b{
+	background: #008c07 none repeat scroll 0 0;
+    display: block;
+	opacity:0;
+    height: 1px;
+    margin: 0 auto;
+    width: 1%;
+	transition:all 1s ease-in-out 0s;
+}
+.parent-div-lbl input.form-control{
+	border:0;
+	border-bottom:1px solid #C8C8C8;
+	border-radius:0;
+	box-shadow:none;
+}
+.parent-div-lbl .form-control:focus + b{
+	    width: 100%;
+		opacity:1;
+}
+  .parent-div-lbl label {
+    bottom: 0;
+    left: 0;
+    padding: 7px 10px;
+    position: absolute;
+    top: 5px;
+    transition: all 1s ease-in-out 0s;
+}
+.parent-div-lbl input:not(:focus):valid ~ .lbl{
+	 top:-25px;
+}
+.parent-div-lbl input:focus  ~ .lbl
+ {
+  top:-25px;
+}

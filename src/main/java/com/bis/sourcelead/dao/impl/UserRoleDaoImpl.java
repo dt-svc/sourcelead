@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -34,5 +37,20 @@ public class UserRoleDaoImpl implements UserRoleDao{
 		}
 		return userRole;
 	}
+
+	@Override
+	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getPrimaryRole By UserId start");
+		userRole = session.createQuery("from UserRole userRole where userRole.user.id=:userId and userRole.isPrimary == '1' " ).setLong( "userId", userId ).list();
+		logger.debug("getPrimaryRole By UserId start");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 }
