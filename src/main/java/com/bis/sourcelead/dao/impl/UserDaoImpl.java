@@ -75,7 +75,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (user != null) {
-				session.save(user);
+				session.saveOrUpdate(user);
 			}
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {

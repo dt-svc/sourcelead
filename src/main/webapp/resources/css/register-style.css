@@ -73,6 +73,9 @@ body {
 	}	
 .regis_wrap.regis_wrap_a .signin_fild {
 	padding:5px 5px 0px 15px;
+	}
+	.reset_wrap_a .signin_fild {
+	padding:5px 5px 0px 15px;
 	}		
 .signin_fild:focus + b {
 	width:100%; opacity:1;
