@@ -118,5 +118,14 @@ $(document).ready(function() {
          });
  
  
-
+ $(function() {
+	    $('.time_cont_res').hide();
+	    $('#accordion h2:first').addClass('res-active').next().slideDown('slow');
+	    $('#accordion h2').click(function() {
+	        if($(this).next().is(':hidden')) {
+	            $('#accordion h2').removeClass('res-active').next().slideUp('slow');
+	            $(this).toggleClass('res-active').next().slideDown('slow');
+			}
+		});
+	});
 

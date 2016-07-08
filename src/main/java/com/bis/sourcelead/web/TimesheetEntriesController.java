@@ -1,11 +1,14 @@
 package com.bis.sourcelead.web;
-
-
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
@@ -24,6 +30,13 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TasksService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
+ 
 
 @RestController 
 public class TimesheetEntriesController {
@@ -31,6 +44,13 @@ public class TimesheetEntriesController {
 	 
 	@Autowired
 	public TimesheetEntriesService timesheetEntriesService;
+	
+	@Autowired
+	public TimesheetSubmissionsDao timesheetSubmissionsDao;
+	
+	@Autowired
+	public TimesheetEntriesDao timesheetEntriesDao;
+	
 	
 	@Autowired
 	public ProjectsService projectsService;
@@ -59,6 +79,69 @@ public class TimesheetEntriesController {
 			return model;
 
 	}
+	
+	
+	@RequestMapping(value = "/saveTimesheet",  method = RequestMethod.GET)
+	public @ResponseBody String saveTimesheet(@RequestParam(value="json", required=false) String json) throws Exception {
+		String result = "";
+		String resultJson = null;
+		JSONObject jsonObj = new JSONObject(json);
+    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    	/*String[] projectIds =   jsonObj.getNames("projectId");*/
+    	
+    	//Collection<TimesheetEntries> timesheetEntriesList = timesheetEntries(jsonObj,projectId);
+    	String[] projectIds = new String[2];
+    	projectIds[0] = "1";
+    	projectIds[1] = "2";
+
+    	for(String projectId : projectIds){
+    		
+		    
+	    	TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+	    	timesheetSubmissions.setStatus("agreed");
+	    	timesheetSubmissions.setSubmissionStatus("not agreed");
+	    	ProjectMembers pm = new ProjectMembers();
+	    	pm.setId((long) 1);
+	    	timesheetSubmissions.setProjectMembers(pm);
+	    	timesheetSubmissions.setStartDate(new Date());
+	    	timesheetSubmissions.setEndDate(new Date());
+	    	timesheetSubmissions.setUpdatedDate(new Date());
+	    	timesheetSubmissions.setCreatedDate(new Date());
+	    	timesheetSubmissionsDao.addTimesheetSubmissions(timesheetSubmissions);
+			    
+			String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber"+projectId);
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			int rowNum = 0;
+			
+			for (int c = 1; c <= maxCount; c++) {
+				if (isNullOrEmpty(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id")))
+					continue;
+				TimesheetEntries timesheetEntries = new TimesheetEntries();
+				timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+				
+				/*timesheetEntries.setMonHours(monHours);
+				timesheetEntries.setMoncomments(moncomments);
+				timesheetEntries.setMoncomments(moncomments);
+				
+				1project${project.id}timeSheetDay1Id*/
+				
+				
+				 
+				timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
+				rowNum++;
+				
+				timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
+				
+			}
+    	}
+		
+    	
+    	
+		result =  "success";
+		resultJson = toJSON(result);
+		return resultJson;
+	}
+	
 	
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception
@@ -229,7 +312,42 @@ public class TimesheetEntriesController {
  	     return result.toString();
 	}
 
+	private String toJSON(Object obj){
+	    XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	        public HierarchicalStreamWriter createWriter(Writer writer) {
+	            return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	        }
+	    });
+	    return xstream.toXML(obj);
+	}
 	
+	
+	private List<TimesheetEntries> timesheetEntries(JSONObject json , String[] projectIds) throws JSONException
+	{
+		
+		
+		
+		List<TimesheetEntries> timesheetEntriesList = new ArrayList<TimesheetEntries>();
+		String maxAdminTimeTypeRowNum = json.getString("ss");
+		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+		int rowNum = 0;
+		
+		for (int c = 1; c <= maxCount; c++) {
+			if (isNullOrEmpty(json.getString("name" + c)))
+				continue;
+			TimesheetEntries timesheetEntries = new TimesheetEntries();
+			
+			 
+			timesheetEntries.setFricomments(json.getString("description" + c));
+			rowNum++;
+			
+			timesheetEntriesList.add(timesheetEntries);
+		}
+		return timesheetEntriesList;
+	}
 	 
+	public static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
  
 }

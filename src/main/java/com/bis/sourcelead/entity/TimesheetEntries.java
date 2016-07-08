@@ -160,6 +160,10 @@ public class TimesheetEntries {
 		
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	
+	@javax.persistence.Transient
+	private String[] projectId;
 
 	public Long getId() {
 		return Id;
@@ -436,6 +440,14 @@ public class TimesheetEntries {
 
 	public void setSunTask(Tasks sunTask) {
 		this.sunTask = sunTask;
+	}
+
+	public String[] getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String[] projectId) {
+		this.projectId = projectId;
 	}
 	 
 }
