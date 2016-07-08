@@ -12,4 +12,9 @@ public class SourceLeadRandomCodeHelper {
 		String orgCode = RandomStringUtils.randomAlphanumeric(4);
 		return orgCode;
 	}
+	
+	public static String generateRandomVerificationCode() {
+		String verificatinCode = RandomStringUtils.randomAlphabetic(5);
+		return verificatinCode;
+	}
 }

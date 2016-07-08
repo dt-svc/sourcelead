@@ -128,21 +128,25 @@ public class HomeController {
 		return model;
 
 	}
-   
-  
-   
-   
-   
-   @RequestMapping(value = { "/home"}, method = RequestMethod.GET)
-  	public ModelAndView homePage() {
 
+
+   @RequestMapping(value = "/forgotPassword")
+ 	public ModelAndView forgotPassword() {
+ 			ModelAndView model = new ModelAndView();
+ 			model.setViewName("forgotPassword");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+   
+   
+   @RequestMapping(value = "/resetPassword")
+  	public ModelAndView resetPassword() {
   			ModelAndView model = new ModelAndView();
-  			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-  			model.setViewName("home");
+  			model.setViewName("resetPassword");
+  			model.addObject("sourceleadUrl", sourceleadUrl);
   			return model;
-
   	}
-   
+    
    
 
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)

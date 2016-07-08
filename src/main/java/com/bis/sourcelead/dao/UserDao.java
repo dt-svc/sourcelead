@@ -9,6 +9,8 @@ public interface UserDao {
 	User findByUserName(String username);
 	
 	public User addUser(User user) throws Exception;
+	
+	User getUserById(Long Id) throws Exception;
 
 	String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites,User user) throws Exception;
 	

@@ -77,6 +77,10 @@ public class UserDaoImpl implements UserDao {
 			if (user != null) {
 				session.save(user);
 			}
+			if (user != null) {
+				session.save(user);
+			}
+			session.saveOrUpdate(user);
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,51 +90,19 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites,User  user) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
+	public User getUserById(Long Id) throws Exception {
 		
-		String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
-		if(!website.startsWith("http") && !website.startsWith("https")){
-			 website = "http://" + website;
-	    }        
-	    URL netUrl = null;
-		try {
-			netUrl = new URL(website);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserById start");
+		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		logger.debug("getUserById end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
 		}
-		String status = " ";
-	    String host = netUrl.getHost();
-	    if(host.startsWith("www")){
-	        host = host.substring("www".length()+1);
-	    }
- 	    if(email.equalsIgnoreCase("@"+host)){
- 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
- 	    		status="Invalid Email";
- 	    	}else{
-		 	      	if( user.getEmail().equalsIgnoreCase(email)){
-		 	    		status="Existed Email";
-		 	    	}else{
-		 	    		status="Valid Email";
-		 	    	}
-	 	    }
- 	    }else{
- 	    	status="Invalid Email";
- 	    }
-	    
-	return status;
-		
-}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Collection<User> getUsers() throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(User.class);
-		Collection<User> orgList = crit.list();
-		return orgList;
-	}
+   	}
 	
 	
 

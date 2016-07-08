@@ -49,4 +49,12 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 		return emailScenario;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailScenario save(EmailScenario scenario) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.save(scenario);
+		return scenario;	
+		}
+
 }

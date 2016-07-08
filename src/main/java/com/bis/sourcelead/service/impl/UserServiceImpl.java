@@ -59,6 +59,10 @@ public class UserServiceImpl implements UserService {
 	public User findByEmail(String email) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.findByEmail(email);
+
+		public User getUserById(Long Id) throws Exception{
+		logger.debug("In UserService class...");
+		return userDao.getUserById(Id);
 	}
 
 	
