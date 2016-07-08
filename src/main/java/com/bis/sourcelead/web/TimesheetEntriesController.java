@@ -119,23 +119,19 @@ public class TimesheetEntriesController {
 				TimesheetEntries timesheetEntries = new TimesheetEntries();
 				timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 				
-			    /*timesheetEntries.setMonHours(c+"project"+projectId+"timeSheetDay1Id");
-				timesheetEntries.setMoncomments(c+"project"+projectId+"timeSheetDay1Id");
-				timesheetEntries.setMoncomments(c+"project"+projectId+"timeSheetDay1Id");
+			    timesheetEntries.setMonHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
+				timesheetEntries.setMoncomments(jsonObj.getString(c+"project"+projectId+"comment1Id"));
+				Tasks monTask = new Tasks();
+				monTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setMonTask(monTask);
 				
-				1project${project.id}timeSheetDay1Id
-				*/
-				
-				 
-				timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
+				/*timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));*/
 				rowNum++;
 				
 				timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 				
 			}
     	}
-		
-    	
     	
 		result =  "success";
 		resultJson = toJSON(result);
@@ -153,11 +149,10 @@ public class TimesheetEntriesController {
 		timesheetSubmissions.setId(1l);
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 		
-		Tasks task = new Tasks();
+		/*Tasks task = new Tasks();
 		task.setId(1l);
 		timesheetEntries.setStartDate(new Date());
 		timesheetEntries.setEndDate(new Date());
-		//timesheetEntries.setId((long) 4);
 		timesheetEntries.setTotalHours(5);
 		timesheetEntries.setSubmittedHours(10);
 		timesheetEntries.setEntryStatus("X");
@@ -187,7 +182,7 @@ public class TimesheetEntriesController {
 		timesheetEntries.setCreatedDate(new Date());
 		timesheetEntries.setCreatedBy("prsad k");
 		timesheetEntries.setUpdatedBy("naidu l");
-		timesheetEntries.setUpdatedDate(new Date());
+		timesheetEntries.setUpdatedDate(new Date());*/
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.addTimesheetEntries(timesheetEntries);
 		return savedTimesheetEntries; 
 	}
@@ -206,7 +201,7 @@ public class TimesheetEntriesController {
 		Tasks task = new Tasks();
 		task.setId(1l);
 		
-		timesheetEntries.setStartDate(new Date());
+		/*timesheetEntries.setStartDate(new Date());
 		timesheetEntries.setEndDate(new Date());
 		timesheetEntries.setTotalHours(5);
 		timesheetEntries.setSubmittedHours(10);
@@ -237,7 +232,7 @@ public class TimesheetEntriesController {
 		timesheetEntries.setCreatedDate(new Date());
 		timesheetEntries.setCreatedBy("prsad");
 		timesheetEntries.setUpdatedBy("naidu");
-		timesheetEntries.setUpdatedDate(new Date());
+		timesheetEntries.setUpdatedDate(new Date());*/
 		
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
 		return savedTimesheetEntries; 
