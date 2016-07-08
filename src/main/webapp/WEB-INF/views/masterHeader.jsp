@@ -180,11 +180,11 @@
               <ul class="list-unstyled">
                 <li><a href="#"><i class="fa fa-key" aria-hidden="true"></i> Change Password</a></li>
                 <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i> View Profile</a></li>
-                <li><a href="<c:url value="/logout" var="logoutUrl" />"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
+                <li><a href="<c:url value="/login" />"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="javascript:void(0)" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li  class="hidden-xs"> <a href="<c:url value="/login" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
         </ul>
       </div>
     </nav>
