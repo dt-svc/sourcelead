@@ -1,8 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -42,6 +47,26 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
    	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public User findByEmail(String email) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("findByEmail start");
+		users = session.createQuery("from User where email=:email" ).setString( "email", email ).list();
+		logger.debug("findByEmail end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
+	
+	
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -49,6 +74,12 @@ public class UserDaoImpl implements UserDao {
 		logger.debug("Adding User");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
+			if (user != null) {
+				session.save(user);
+			}
+			if (user != null) {
+				session.save(user);
+			}
 			session.saveOrUpdate(user);
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {
