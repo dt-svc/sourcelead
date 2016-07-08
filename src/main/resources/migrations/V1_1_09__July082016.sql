@@ -17,9 +17,11 @@ UPDATE `sourcelead`.`email_scenario` SET `ENTITY_TYPE`='Email', `TEMPLATE_TYPE`=
 UPDATE `sourcelead`.`email_scenario` SET `ENTITY_TYPE`='Email', `TEMPLATE_TYPE`='org' WHERE  `ID`=6;
 
 UPDATE `sourcelead`.`class_field` SET `FIELD_NAME`='verificationCode', `DELIM_STR`='{{ForgotPassword.verificationCode}}' WHERE  `ID`=5;
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('1', 'loginURL', '{{Registration.LoginURL}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('2', 'resetPasswordURL', '{{ForgotPassword.ResetPasswordURL}}');
 
 UPDATE `sourcelead`.`email_scenario` SET `BODY`='Welcome !!!\nHi {{Registration.FirstName}} {{Registration.LastName}},\nIt\'s great to see that you\'ve started accessing sourcelead\n{{Registration.LoginURL}}\nI hope you have a wonderful time with SourceLead. If you have any questions or comments, feel free to reach out to us at support@sourcelead.com' WHERE  `ID`=1;
-UPDATE `sourcelead`.`email_scenario` SET `BODY`='Hi {{ForgotPassword.FirstName}} {{ForgotPassword.LastName}},\nWe received a request to reset your password for your SourceLead account.\nVerification Code : “{{ForgotPassword.verificationCode}} “\nTo reset your password process simply click the link below\nReset Password\nIf you didn’t ask to change your password ,don’t worry! Your password is still safe and access the sourcelead with existing credentials.' WHERE  `ID`=2;
+UPDATE `sourcelead`.`email_scenario` SET `BODY`='Hi {{ForgotPassword.FirstName}} {{ForgotPassword.LastName}},\nWe received a request to reset your password for your SourceLead account.\nVerification Code : {{ForgotPassword.verificationCode}} \nTo reset your password process simply click the link below\n {{ForgotPassword.ResetPasswordURL}}\nIf you didn\'t ask to change your password ,don\'t worry! Your password is still safe and access the sourcelead with existing credentials.' WHERE  `ID`=2;
 
 #TimeSheetSubmission Email
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimeSheetSubmission', 'Email');

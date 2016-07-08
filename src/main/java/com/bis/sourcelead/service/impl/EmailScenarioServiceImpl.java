@@ -22,15 +22,23 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 	private EmailScenarioDao emailScenarioDao;
 
 	@Override
-	public EmailScenario getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(String uniqueScenarioName,
+	public EmailScenario getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(String uniqueScenarioName,String entityType,
 			String orgCode, String locationsCode) throws Exception{
-		EmailScenario emailScenario = emailScenarioDao.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, orgCode, locationsCode);
+		logger.debug("In EmailScenarioServiceImpl class getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode method");
+		EmailScenario emailScenario = emailScenarioDao.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(uniqueScenarioName, entityType, orgCode, locationsCode);
 		return emailScenario;
 	}
 
 	@Override
 	public EmailScenario save(EmailScenario scenario) throws Exception {
+		logger.debug("In EmailScenarioServiceImpl class save method");
 		return emailScenarioDao.save(scenario);
+	}
+
+	@Override
+	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception {
+		logger.debug("In EmailScenarioServiceImpl class getEmailScenarioByUniqueName method");
+		return emailScenarioDao.getEmailScenarioByUniqueName(uniqueScenarioName, entityType);
 	}
 
 }

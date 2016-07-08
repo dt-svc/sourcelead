@@ -75,6 +75,7 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
    	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public PasswordResets deletePasswordResets(PasswordResets passwordResets) {
 
 		logger.debug("Deleting PasswordResets");
