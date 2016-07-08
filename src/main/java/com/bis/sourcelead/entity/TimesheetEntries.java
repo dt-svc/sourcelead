@@ -62,7 +62,7 @@ public class TimesheetEntries {
 	 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "MON_TASK")
-	private Tasks monTask;
+	private ProjectTasks monTask;
 	 
 	@Column(name = "MON_HOURS")
     private Integer monHours;
@@ -74,7 +74,7 @@ public class TimesheetEntries {
 	 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "TUE_TASK")
-	private Tasks tueTask;
+	private ProjectTasks tueTask;
 	  
 	@Column(name = "TUE_HOURS")
 	private Integer tueHours;
@@ -85,7 +85,7 @@ public class TimesheetEntries {
 	  
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "WED_TASK")
-	private Tasks wedTask;
+	private ProjectTasks wedTask;
 	  
 	@Column(name = "WED_HOURS")
 	private Integer wedHours;
@@ -97,7 +97,7 @@ public class TimesheetEntries {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "THU_TASK")
-	private Tasks thuTask;
+	private ProjectTasks thuTask;
 	  
 	@Column(name = "THU_HOURS")
 	private Integer thuHours;
@@ -108,7 +108,7 @@ public class TimesheetEntries {
 	  
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "FRI_TASK")
-	private Tasks friTask;
+	private ProjectTasks friTask;
 	  
 	@Column(name = "FRI_HOURS")
 	private Integer friHours;
@@ -119,7 +119,7 @@ public class TimesheetEntries {
 	  
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "SAT_TASK")
-	private Tasks satTask;
+	private ProjectTasks satTask;
 	  
 	@Column(name = "SAT_HOURS")
 	private Integer satHours;
@@ -130,7 +130,7 @@ public class TimesheetEntries {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "SUN_TASK")
-	private Tasks sunTask;
+	private ProjectTasks sunTask;
 	  
 	@Column(name = "SUN_HOURS")
 	private Integer sunHours;
@@ -220,11 +220,11 @@ public class TimesheetEntries {
 	}
 
 	@JsonIgnore
-	public Tasks getMonTask() {
+	public ProjectTasks getMonTask() {
 		return monTask;
 	}
 
-	public void setMonTask(Tasks monTask) {
+	public void setMonTask(ProjectTasks monTask) {
 		this.monTask = monTask;
 	}
 
@@ -390,51 +390,51 @@ public class TimesheetEntries {
 		this.updatedBy = updatedBy;
 	}
 	@JsonIgnore
-	public Tasks getTueTask() {
+	public ProjectTasks getTueTask() {
 		return tueTask;
 	}
 
-	public void setTueTask(Tasks tueTask) {
+	public void setTueTask(ProjectTasks tueTask) {
 		this.tueTask = tueTask;
 	}
 	@JsonIgnore
-	public Tasks getWedTask() {
+	public ProjectTasks getWedTask() {
 		return wedTask;
 	}
 
-	public void setWedTask(Tasks wedTask) {
+	public void setWedTask(ProjectTasks wedTask) {
 		this.wedTask = wedTask;
 	}
 	@JsonIgnore
-	public Tasks getThuTask() {
+	public ProjectTasks getThuTask() {
 		return thuTask;
 	}
 
-	public void setThuTask(Tasks thuTask) {
+	public void setThuTask(ProjectTasks thuTask) {
 		this.thuTask = thuTask;
 	}
 	@JsonIgnore
-	public Tasks getFriTask() {
+	public ProjectTasks getFriTask() {
 		return friTask;
 	}
 
-	public void setFriTask(Tasks friTask) {
+	public void setFriTask(ProjectTasks friTask) {
 		this.friTask = friTask;
 	}
 	@JsonIgnore
-	public Tasks getSatTask() {
+	public ProjectTasks getSatTask() {
 		return satTask;
 	}
 
-	public void setSatTask(Tasks satTask) {
+	public void setSatTask(ProjectTasks satTask) {
 		this.satTask = satTask;
 	}
 	@JsonIgnore
-	public Tasks getSunTask() {
+	public ProjectTasks getSunTask() {
 		return sunTask;
 	}
 
-	public void setSunTask(Tasks sunTask) {
+	public void setSunTask(ProjectTasks sunTask) {
 		this.sunTask = sunTask;
 	}
 	 

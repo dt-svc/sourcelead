@@ -62,6 +62,9 @@ public class Projects {
     @Column(name = "PROJECT_STATUS")
     private String projectStatus;
     
+    @Column(name = "ORG_RELATION_ID")
+    private OrgRelations orgRelationId;
+    
     @Column(name = "STATUS")
     private String status;
     
@@ -163,6 +166,14 @@ public class Projects {
 
 	public void setProjectStatus(String projectStatus) {
 		this.projectStatus = projectStatus;
+	}
+
+	public OrgRelations getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(OrgRelations orgRelationId) {
+		this.orgRelationId = orgRelationId;
 	}
 
 	public String getStatus() {
