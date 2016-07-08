@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,27 @@ public class UserServiceImpl implements UserService {
 	public User addUser(User user) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.addUser(user);
+	}
+
+
+	@Override
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites,User user) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.validateEmailandCandidate(website,email,sourceleadBLockedwebsites,user);
+	}
+
+
+	@Override
+	public Collection<User> getUsers() throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.getUsers();
+	}
+
+
+	@Override
+	public User findByEmail(String email) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.findByEmail(email);
 	}
 
 	
