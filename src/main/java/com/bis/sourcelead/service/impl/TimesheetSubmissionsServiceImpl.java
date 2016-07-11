@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 
 	@Override
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception {
-		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions();
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds) throws Exception {
+		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions(startDate ,endDate ,projectMemberIds);
 		// TODO Auto-generated method stub
 		return list;
 	}

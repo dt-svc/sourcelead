@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UserService;
 
 /**
- * This Service Class is used to get User Object 
+ * This Service Class is used to get User Object
  * 
  * @author: Naresh Bolisetty
  * @date: 27-May-2016
@@ -23,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
-	
 
 	@Override
 	public User findByUserName(String username) {
@@ -31,12 +32,35 @@ public class UserServiceImpl implements UserService {
 		return userDao.findByUserName(username);
 	}
 
-
 	@Override
 	public User addUser(User user) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.addUser(user);
 	}
 
-	
+	@Override
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites)
+			throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
+	}
+
+	@Override
+	public Collection<User> getUsers() throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.getUsers();
+	}
+
+	@Override
+	public User findByEmail(String email) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.findByEmail(email);
+	}
+
+	@Override
+	public User getUserById(Long Id) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.getUserById(Id);
+	}
+
 }

@@ -5,9 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Welcome to Source Lead :: The Recruitment Application</title>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -16,6 +18,14 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
+
+
+<script>
+	function predefineProfileImage(imageId){
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
@@ -41,19 +51,19 @@
         </div>
         <!-- login User details -->
         <div class="login-user">
-        <span class="image"> <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> <span class="pull-left login-user-xs"> Pratap Reddy </span>
+        <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src=""> </span> <span class="pull-left login-user-xs"> ${SourceLeadWeb_userName} </span>
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" title="Pratap Reddy" alt="Admin" src="resources/images/pratap-bis.jpg"> </div>
+              <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src=""> </div>
               <div class="user-media-body">
-                <p><span>Pratap Reddy</span></p>
-                <p>Admin</p>
+                <p><span>${SourceLeadWeb_userName}</span></p>
+                <p>${SourceLeadWeb_userType}</p>
               </div>
             </div>
             <ul class="list-unstyled">
-              <li><a href="javascript:void(0)"><span><i class="fa fa fa-user"></i></span>&nbsp;View Profile</a></li>
-              <li><a href="javascript:void(0)"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
+              <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="<c:url value='/logout'/>"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
             </ul>
           </div>
         </div>
@@ -179,11 +189,11 @@
               <ul class="list-unstyled">
                 <li><a href="#"><i class="fa fa-key" aria-hidden="true"></i> Change Password</a></li>
                 <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i> View Profile</a></li>
-                <li><a href="#"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
+                <li><a href="<c:url value="/login" />"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="javascript:void(0)" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li  class="hidden-xs"> <a href="<c:url value="/login" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
         </ul>
       </div>
     </nav>

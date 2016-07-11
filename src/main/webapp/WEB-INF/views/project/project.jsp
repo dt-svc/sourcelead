@@ -342,28 +342,28 @@
                             <div class="form-group">
                             <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Last Name</label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Email <span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
+                              <select class="form-control" name="invoiceFrequency">
+                              	<option value="1">Invoice-1</option>
+                                <option value="2">Invoice-2</option>
+                                <option value="3">Invoice-3</option>
                               </select>
                               </div>
                             </div>
@@ -381,7 +381,7 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                      	<input type="submit" value="Save" id="add_employee" onclick="addEmployee();" class="btn btn-primary">
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -596,12 +596,10 @@ $(document).ready(function(){
  function saveProject() {
      var frm = $('#project_form').serializeFormJSON();
         var con = JSON.stringify(frm);
-        alert("con"+con);
         $.ajax({
 	    	type: "POST",
 	        url: "http://localhost:8080/sourcelead/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(data) {
-	        	alert("data"+data);
 	        	var json = JSON.parse(data);
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
@@ -612,11 +610,34 @@ $(document).ready(function(){
 				}
 	        	$("#maxTsRowNum").empty();
 		        $("#maxTsRowNum").append(output);
-		        alert("output"+output);
-		        
 		        
 	        },
 	    });
     }
- 
+</script>
+
+<script type="text/javascript">
+ function addEmployee() {
+     var frm = $('#project_form').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        alert(con);
+        $.ajax({
+	    	type: "POST",
+	        url: "http://localhost:8080/sourcelead/addNewEmployee?json="+con, 
+	        success: function(data) {
+	        	alert("add employee success");
+	        	/* var json = JSON.parse(data);
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+		        		output = output + "<option value='" +opt.Id+ "'>"+opt.description+"</option>";
+				}
+	        	$("#maxTsRowNum").empty();
+		        $("#maxTsRowNum").append(output); */
+		        
+	        },
+	    });
+    }
 </script>

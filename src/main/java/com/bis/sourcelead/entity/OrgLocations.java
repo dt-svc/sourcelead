@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bis.sourcelead.enums.Status;
@@ -32,7 +34,8 @@ public class OrgLocations {
     @Column(name = "id", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "ORG_ID", nullable = false)
     private Org org;
 	

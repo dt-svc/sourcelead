@@ -98,13 +98,13 @@ public class TimesheetSubmissionsController {
 	}
 	
 	
-	@RequestMapping(value = "/getAll", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception
 			 
 	{
 		  Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissions();
 		  return timesheetSubmissionsList;
-	}
+	}*/
      
 	
  

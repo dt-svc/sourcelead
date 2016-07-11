@@ -65,6 +65,13 @@ public class User {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "JOB_TITLE")
+	private String jobTitle;
+	
+	@Column(name = "LOCATION")
+	@Type(type="text")
+	private String location;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -80,6 +87,11 @@ public class User {
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.JOIN)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
+	
+	
+	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<PasswordResets> passwordResets;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
@@ -241,6 +253,30 @@ public class User {
 
 	public void setUserRole(Set<UserRole> userRole) {
 		this.userRole = userRole;
+	}
+
+	public Set<PasswordResets> getPasswordResets() {
+		return passwordResets;
+	}
+
+	public void setPasswordResets(Set<PasswordResets> passwordResets) {
+		this.passwordResets = passwordResets;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 

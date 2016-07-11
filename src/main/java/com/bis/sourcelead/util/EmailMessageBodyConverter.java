@@ -1,4 +1,4 @@
-package com.bis.sourcelead.emailutil;
+package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

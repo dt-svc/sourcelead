@@ -79,7 +79,7 @@ public class TimesheetSubmissionsServiceTest {
 	}
 	 
 	
-	@Test
+	/*@Test
 	public void getAllTimesheetSubmissions() throws Exception{
 		
 		Collection<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getAllTimesheetSubmissions();
@@ -87,7 +87,7 @@ public class TimesheetSubmissionsServiceTest {
 			System.out.println("Successfully retrived!!!!"+ts.getStatus());
 		}
 		
-	}
+	}*/
 	
 
 	@Test

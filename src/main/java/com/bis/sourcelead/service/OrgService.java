@@ -16,6 +16,6 @@ public interface OrgService {
 
 	public List<Org> getOrgs() throws Exception;
 	
-	String websiteValidation(String host);
+	String websiteValidation(String website,String sourceleadBLockedwebsites);
 
 }
