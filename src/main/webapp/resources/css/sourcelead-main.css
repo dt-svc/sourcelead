@@ -783,7 +783,9 @@ background-repeat:no-repeat;
         }
    /*custom tab styles*/
 
-
+.accountsettings-tab .profile-image img {
+margin: auto;
+}
 
 /* notificaton styles */
 @media (max-width: 320px) {
