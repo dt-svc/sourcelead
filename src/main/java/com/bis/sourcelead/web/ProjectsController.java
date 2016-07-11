@@ -30,7 +30,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
 @RestController
 public class ProjectsController {
 	

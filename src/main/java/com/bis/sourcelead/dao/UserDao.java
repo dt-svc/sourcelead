@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Collection;
+
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -10,4 +12,9 @@ public interface UserDao {
 	
 	User getUserById(Long Id) throws Exception;
 
+	String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites) throws Exception;
+	
+	public Collection<User> getUsers() throws Exception;
+	
+	User findByEmail(String email);
 }

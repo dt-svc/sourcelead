@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -63,6 +64,13 @@ public class User {
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "JOB_TITLE")
+	private String jobTitle;
+	
+	@Column(name = "LOCATION")
+	@Type(type="text")
+	private String location;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -253,6 +261,22 @@ public class User {
 
 	public void setPasswordResets(Set<PasswordResets> passwordResets) {
 		this.passwordResets = passwordResets;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 
