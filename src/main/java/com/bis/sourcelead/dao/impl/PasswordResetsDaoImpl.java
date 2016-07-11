@@ -32,11 +32,7 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 		logger.debug("Adding PasswordResets");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			if (null == passwordResets.getId()) {
-				session.save(passwordResets);
-			}else{
-				session.delete(passwordResets);
-			}
+			session.saveOrUpdate(passwordResets);
 			logger.debug("PasswordResets Added Successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,6 +73,23 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public PasswordResets deletePasswordResets(PasswordResets passwordResets) {
+
+		logger.debug("Deleting PasswordResets");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.delete(passwordResets);
+			logger.debug("PasswordResets Deleting Successfully");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return passwordResets;
+	
+		
+	}
 	
 	
 

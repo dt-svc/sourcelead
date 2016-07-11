@@ -28,4 +28,9 @@ public class PasswordResetsSeviceImpl implements PasswordResetsSevice{
 		return passwordResetsDao.getPasswordResetsByVerificationCode(verificationCode);
 	}
 
+	@Override
+	public PasswordResets deletePasswordResets(PasswordResets passwordResets) {
+		return passwordResetsDao.deletePasswordResets(passwordResets);
+	}
+
 }
