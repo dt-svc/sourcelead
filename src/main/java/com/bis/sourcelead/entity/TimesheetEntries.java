@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -139,6 +140,21 @@ public class TimesheetEntries {
 	private String updatedBy;
 	
 
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	
+	@Column(name = "WEEK_COMMENTS")
+	@Type(type="text")
+	private String weekcomments;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -363,6 +379,38 @@ public class TimesheetEntries {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getWeekcomments() {
+		return weekcomments;
+	}
+
+	public void setWeekcomments(String weekcomments) {
+		this.weekcomments = weekcomments;
 	}
 	 
 	 
