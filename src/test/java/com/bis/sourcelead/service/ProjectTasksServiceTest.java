@@ -16,41 +16,41 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.TasksDao;
-import com.bis.sourcelead.dao.impl.TasksDaoImpl;
-import com.bis.sourcelead.entity.Tasks;
-import com.bis.sourcelead.service.impl.TasksServiceImpl;
+import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.impl.ProjectTasksDaoImpl;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.service.impl.ProjectTasksServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
-public class TasksServiceTest {
+public class ProjectTasksServiceTest {
 
 	
 	@Configuration
 	static class TasksServiceConfigTest {
 		@Bean
-		public TasksService tasksService() {
-			return new TasksServiceImpl();
+		public ProjectTasksService tasksService() {
+			return new ProjectTasksServiceImpl();
 		}
 		@Bean
-		public TasksDao tasksDao() {
-			return new TasksDaoImpl();
+		public ProjectTasksDao tasksDao() {
+			return new ProjectTasksDaoImpl();
 		}	
 
 	}
 	
 	@Autowired
-	TasksService tasksService;
+	ProjectTasksService tasksService;
 	
 	@Autowired
-	TasksDao tasksDao;
+	ProjectTasksDao tasksDao;
 
-	private static final Logger logger = LoggerFactory.getLogger(TasksServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProjectTasksServiceTest.class);
 
 	@Test
 	public void addTasks() throws Exception{
-		Tasks tasks = new Tasks();
+		ProjectTasks tasks = new ProjectTasks();
 		tasks.setId(3l);
 		tasks.setTaskName("timesheet task");
 		tasks.setDescription("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -67,7 +67,7 @@ public class TasksServiceTest {
 	public void updateTimesheetEntries() throws Exception{
 		
 		
-		Tasks tasks = new Tasks();
+		ProjectTasks tasks = new ProjectTasks();
 		tasks.setId(2l);
 		tasks.setTaskName("timesheet task");
 		tasks.setDescription("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -84,7 +84,7 @@ public class TasksServiceTest {
 	public void getTimesheetEntries() throws Exception{
 		
 		String id = "1";
-		Tasks tasks = tasksService.getTasksId(id);
+		ProjectTasks tasks = tasksService.getTasksId(id);
 		System.out.println("Successfully retrived!!!!"+tasks.getStatus());
 	}
 	 
@@ -92,8 +92,8 @@ public class TasksServiceTest {
 	//@Test
 	public void getAllTasks() throws Exception{
 		
-		Collection<Tasks> tasks = tasksService.getAllTasks();
-		for(Tasks  task : tasks ){
+		Collection<ProjectTasks> tasks = tasksService.getAllTasks();
+		for(ProjectTasks  task : tasks ){
 			System.out.println("Successfully retrived!!!!"+task.getStatus());
 		}
 		
