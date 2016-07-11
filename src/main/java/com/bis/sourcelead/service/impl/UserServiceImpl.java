@@ -43,10 +43,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites, User user)
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites)
 			throws Exception {
 		logger.debug("In UserService class...");
-		return userDao.validateEmailandCandidate(website, email, sourceleadBLockedwebsites, user);
+		return userDao.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
 	}
 
 	@Override
