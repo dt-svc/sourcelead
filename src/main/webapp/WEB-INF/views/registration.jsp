@@ -270,7 +270,7 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#companyRegistration_form', function(e){
-        	  if (($(this).validate(false, validationSettings)) && (checkPass() && validateCompanyEmail() && validateWebsite())){
+        	  if ($(this).validate(false, validationSettings)){
         		  e.preventDefault(); 
             	var frm = $('#companyRegistration_form').serialize();
          	    frm = "testvalue=testvalue&"+frm;
