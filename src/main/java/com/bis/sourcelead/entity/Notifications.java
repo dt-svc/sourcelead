@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name="NOTIFICATIONS")
 public class Notifications {
@@ -23,7 +25,7 @@ public class Notifications {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="NOTIFICATION_SCENARIO_ID", nullable=false )	
-	private EntityType notificationScenarioId;
+	private EmailScenario notificationScenarioId;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="NOTIFICATION_TO", nullable=false )	
@@ -48,7 +50,8 @@ public class Notifications {
 	@Column(name="LOCATION_CODE")
 	private String locationCode;
 	
-	@Column(name="CREATED_DATE")
+	@DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss")
+    @Column(name = "CREATED_DATE", nullable = false)
 	private Date createdDate;
 	
 	@Column(name="CREATED_BY")
@@ -62,11 +65,11 @@ public class Notifications {
 		this.id = id;
 	}
 
-	public EntityType getNotificationScenarioId() {
+	public EmailScenario getNotificationScenarioId() {
 		return notificationScenarioId;
 	}
 
-	public void setNotificationScenarioId(EntityType notificationScenarioId) {
+	public void setNotificationScenarioId(EmailScenario notificationScenarioId) {
 		this.notificationScenarioId = notificationScenarioId;
 	}
 

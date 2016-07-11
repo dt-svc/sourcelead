@@ -2,6 +2,8 @@ package com.bis.sourcelead.web;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,11 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -29,6 +35,11 @@ import com.google.gson.GsonBuilder;
 public class ProjectsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
+	@Autowired
+	 EmailScenarioService emailScenarioService;
+	
+	 @Autowired
+	 EmailScenerioUtil emailScenerioUtil;
 	
 	 @Autowired
 	 private ProjectsService projectsService; 
@@ -56,7 +67,6 @@ public class ProjectsController {
 	    	Projects projects = new Projects();
 	    	projects.setProjectName(jsonObj.getString("Project Name"));
 	    	projects.setDescription(jsonObj.getString("Project Description"));
-	    	
 	    	
 	    	projectsService.saveProject(projects);
 	   }
@@ -167,4 +177,22 @@ public class ProjectsController {
 		Boolean isDeleted = projectsService.deleteProjectById(id);
 		return isDeleted;
 	  }
+	 
+	 
+	 @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
+	 public void getNotification() throws Exception{
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		    globalVarsMap.put("firstName", "Vinesh");
+		    globalVarsMap.put("lastName","Kammari");
+			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+			emailScenario.setBody(body);
+			String url = null;
+			String actionLink = "";
+			User user = new User();
+			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
+	}
+	 
+	 
+	 
 }
