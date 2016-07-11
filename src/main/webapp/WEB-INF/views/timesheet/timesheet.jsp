@@ -960,4 +960,17 @@ function dynamicTimesheet(){
 	    }); 
 }
 </script>	
+
+
+<script>	
+function dateFormat(){    
+	   $.ajax({
+	          type : "GET",
+	      	  url: "http://localhost:8080/sourcelead/dateFormat",		
+		      success :function(data) {
+		    	  
+		      }
+	    }); 
+}
+</script>	
 		
