@@ -1,9 +1,9 @@
 package com.bis.sourcelead.web;
 
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,21 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 
 @RestController
 public class ProjectsController {
@@ -39,6 +46,12 @@ public class ProjectsController {
 	 @Autowired
 	 private ProjectsService projectsService; 
 	 
+	 @Autowired
+		private OrgService orgService;
+	 
+	 @Autowired
+	 private ProjectTasksService tasksService;
+	 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -47,24 +60,51 @@ public class ProjectsController {
 	  */
 	 
 	 @RequestMapping(value = "/project")
-		public ModelAndView projects() {
+		public ModelAndView projects() throws Exception {
 
 				ModelAndView model = new ModelAndView();
+				
+				Collection<Org> orgsList = orgService.getOrgs();
+				model.addObject("add_client", orgsList);
+				
 				model.setViewName("project/project");
 				return model;
 	}
 	 
-	 @RequestMapping(value = "/saveProject" , method = RequestMethod.GET)
-	 public @ResponseBody  void saveProject(@RequestParam(value="json", required=false) String json) throws Exception {
+	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json) throws Exception {
 		 	JSONObject jsonObj = new JSONObject(json);
-	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-	    	//Projects projects = gson.fromJson(json, Projects.class);
+		 	
+		 	String resultJson = null;
+		 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectName(jsonObj.getString("Project Name"));
-	    	projects.setDescription(jsonObj.getString("Project Description"));
-	    	
-	    	
+	    	projects.setProjectName(jsonObj.getString("ProjectName"));
+	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
+	    	projects.setStartDate(new Date());
+	    	projects.setEndDate(new Date());
+	    	projects.setProjectStatus(jsonObj.getString("Satatus"));
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
 	    	projectsService.saveProject(projects);
+	    	
+	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			
+			for (int c = 1; c < maxCount; c++) {
+				ProjectTasks  tasks  = new ProjectTasks();
+				tasks.setTaskName(jsonObj.getString(c+"taskName"));
+				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+				tasks.setCreatedDate(new Date());
+				tasks.setUpdatedDate(new Date());
+				tasks.setProjectId(projects);
+				
+				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+			}
+			
+			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
+			
+			 resultJson = toJSON(tasksList);
+			 return resultJson;
 	   }
 	 
 	 
@@ -101,14 +141,6 @@ public class ProjectsController {
 			superiorUser.setId(1L);
 			projects.setSuperiorUser(superiorUser);
 			
-			User projectManagerUser = new User();
-			projectManagerUser.setId(2L);
-			projects.setProjectManagerUser(projectManagerUser);
-			
-			Org org = new Org();
-			org.setId(1L);
-			projects.setOrg(org);
-			
 			projects.setProjectName("VADALU");
 			projects.setProjectStatus("Open");
 			projects.setDescription("sourcelead desc");
@@ -139,14 +171,6 @@ public class ProjectsController {
 			superiorUser.setId(1L);
 			projects.setSuperiorUser(superiorUser);
 			
-			User projectManagerUser = new User();
-			projectManagerUser.setId(2L);
-			projects.setProjectManagerUser(projectManagerUser);
-			
-			Org org = new Org();
-			org.setId(1L);
-			projects.setOrg(org);
-			
 			projects.setProjectName("SOURCELEAD");
 			projects.setProjectStatus("Open");
 			projects.setDescription("sourcelead desc");
@@ -173,4 +197,13 @@ public class ProjectsController {
 		Boolean isDeleted = projectsService.deleteProjectById(id);
 		return isDeleted;
 	  }
+	 
+	 private String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
 }

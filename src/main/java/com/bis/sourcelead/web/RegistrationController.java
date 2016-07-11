@@ -35,7 +35,7 @@ public class RegistrationController {
 	 PasswordResetsSevice passwordResetsSevice;
 	 
 	
-	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.GET)
+	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(Registration registration) {
 			
 			try {

@@ -52,6 +52,13 @@ public class Employees {
 	@Column(name="EMPLOYEE_STATE")
 	private String employeeState;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
+    private OrgLocations orgLocations;
+	
+	@Column(name="Invoice_Frequency")
+	private String InvoiceFrequency;
+	
 	@Column(name="STATUS")
 	private String status;
 	
@@ -129,6 +136,22 @@ public class Employees {
 
 	public void setEmployeeState(String employeeState) {
 		this.employeeState = employeeState;
+	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+
+	public String getInvoiceFrequency() {
+		return InvoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		InvoiceFrequency = invoiceFrequency;
 	}
 
 	public String getStatus() {

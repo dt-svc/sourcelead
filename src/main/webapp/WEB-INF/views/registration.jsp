@@ -278,11 +278,10 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
             	
 	           	$.ajax({
-          	      type: "GET",
+          	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration",
-                	  data:con,
+                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
                   	success: function(result) {
 			        	if((result == 'home')){
 			        		location.replace(sourceleadUrl+"/home");  
