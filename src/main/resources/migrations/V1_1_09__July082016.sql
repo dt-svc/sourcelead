@@ -1,6 +1,9 @@
 UPDATE `sourcelead`.`USER` SET `USER_STATE`='ACTIVE' WHERE `ID`='1';
 UPDATE `sourcelead`.`USER` SET `USER_STATE`='ACTIVE' WHERE `ID`='2';
 
+INSERT INTO `sourcelead`.`ORG` (`ID`, `ORG_NAME`, `PRIMARY_CONTACT_USER_ID`, `WEBSITE`, `ORG_TYPE`, `ORG_CODE`, `STATUS`) VALUES ('1', 'Source Lead', '1', 'sourcelead.com', 'Company', 'slead', 'ACTIVE');
+
+
 INSERT INTO `sourcelead`.`ORG_LOCATIONS` (`ID`, `ORG_ID`, `PRIMARY_CONTACT_USER_ID`, `COUNTRY`, `LOCATION_CODE`, `STATUS`) VALUES ('1', '1', '1', 'India', 'sleadIN', 'ACTIVE');
 INSERT INTO `sourcelead`.`ORG_LOCATIONS` (`ID`, `ORG_ID`, `PRIMARY_CONTACT_USER_ID`, `COUNTRY`, `LOCATION_CODE`, `STATUS`) VALUES ('2', '1', '2', 'United States', 'sleadUS', 'ACTIVE');
 

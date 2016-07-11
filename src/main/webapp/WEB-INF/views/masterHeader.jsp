@@ -17,6 +17,14 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
+
+
+<script>
+	function predefineProfileImage(imageId){
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
@@ -42,14 +50,14 @@
         </div>
         <!-- login User details -->
         <div class="login-user">
-        <span class="image"> <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> <span class="pull-left login-user-xs"> Pratap Reddy </span>
+        <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src=""> </span> <span class="pull-left login-user-xs"> ${SourceLeadWeb_userName} </span>
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" title="Pratap Reddy" alt="Admin" src="resources/images/pratap-bis.jpg"> </div>
+              <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src=""> </div>
               <div class="user-media-body">
-                <p><span>Pratap Reddy</span></p>
-                <p>Admin</p>
+                <p><span>${SourceLeadWeb_userName}</span></p>
+                <p>${SourceLeadWeb_userType}</p>
               </div>
             </div>
             <ul class="list-unstyled">
