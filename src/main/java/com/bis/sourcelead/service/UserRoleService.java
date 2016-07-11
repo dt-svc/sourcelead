@@ -5,5 +5,7 @@ import com.bis.sourcelead.entity.UserRole;
 public interface UserRoleService {
 	
 	public UserRole addUserRole(UserRole userRole) throws Exception;
+	
+	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception;
 
 }

@@ -1,8 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -42,6 +47,26 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
    	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public User findByEmail(String email) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("findByEmail start");
+		users = session.createQuery("from User where email=:email" ).setString( "email", email ).list();
+		logger.debug("findByEmail end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
+	
+	
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -50,7 +75,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (user != null) {
-				session.save(user);
+				session.saveOrUpdate(user);
 			}
 			logger.debug("User Added Successfully");
 		} catch (Exception e) {
@@ -58,6 +83,83 @@ public class UserDaoImpl implements UserDao {
 		}
 		return user;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
+		if(!website.startsWith("http") && !website.startsWith("https")){
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String status = " ";
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+	    
+	    String[] emailHostArray = email.split("@");
+	    if(emailHostArray != null && emailHostArray.length >1 ){
+	    	String emailHost = emailHostArray[1];
+	    	if(emailHost.equalsIgnoreCase(host)){
+	 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+	 	    		status="Invalid Email";
+	 	    	}else{
+	 	    		    User user = findByEmail(email);
+			 	      	if(user != null &&  user.getEmail().equalsIgnoreCase(email)){
+			 	    		status="Existed Email";
+			 	    	}else{
+			 	    		status="Valid Email";
+			 	    	}
+		 	    }
+	 	    }
+	    	else{
+	 	    	status="Invalid Email";
+	 	    }
+	    }
+ 	    else{
+ 	    	status="Invalid Email";
+ 	    }
+	    
+	return status;
+		
+}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<User> getUsers() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(User.class);
+		Collection<User> orgList = crit.list();
+		return orgList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserById start");
+		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		logger.debug("getUserById end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
+	
+	
+	
 	
 	
 

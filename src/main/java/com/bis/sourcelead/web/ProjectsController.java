@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -27,6 +32,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 @RestController

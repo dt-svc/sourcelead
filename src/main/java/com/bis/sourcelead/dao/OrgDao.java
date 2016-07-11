@@ -22,6 +22,6 @@ public interface OrgDao {
 
 	public List<Org> getOrgs() throws Exception;
 	
-	String websiteValidation(String website);
+	String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
 }
