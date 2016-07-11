@@ -55,9 +55,10 @@ public class LoginSessionController {
 	private void setSessionUserAttributes(User user, HttpServletRequest request)
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
+		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 	}
 	
 	private void setSessionOrgLocationAttributes(OrgLocations orgLocations, HttpServletRequest request)
@@ -70,6 +71,7 @@ public class LoginSessionController {
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
+		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 	}
 	
 	

@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -61,6 +62,13 @@ public class Org {
 	
 	@Column(name = "UPDATED_BY",nullable = false)
 	private String updatedBy;
+	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
 
 	public Long getId() {
 		return id;
@@ -149,6 +157,22 @@ public class Org {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
 	}
 	
 	
