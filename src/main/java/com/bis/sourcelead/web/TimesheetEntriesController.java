@@ -1,13 +1,10 @@
 package com.bis.sourcelead.web;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -75,18 +72,28 @@ public class TimesheetEntriesController {
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			model.addObject("sourcelead_tasksList", tasksList);
 			
-			model.setViewName("timesheet");
+			model.setViewName("timesheet/timesheet");
 			return model;
 
 	}
 	
-	
-	@RequestMapping(value = "/saveTimesheet",  method = RequestMethod.GET)
-	public @ResponseBody String saveTimesheet(@RequestParam(value="json", required=false) String json) throws Exception {
+	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.GET )
+	public @ResponseBody String saveTimesheet(@RequestParam(value="json", required=false) String json
+											  ) throws Exception {
 		String result = "";
 		String resultJson = null;
+		/*json=json.replaceAll("\\[", "\\'");
+		json=json.replaceAll("\\]", "\\'");*/
 		JSONObject jsonObj = new JSONObject(json);
     	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    	
+    	/*String proId = jsonObj.getString("projectId");
+    	String[] words = proId.split(",");
+    	Integer[] ids ;
+    	for(String w:words){  
+    		id
+    	}  */
+    	
     	/*String[] projectIds =   jsonObj.getNames("projectId");*/
     	
     	//Collection<TimesheetEntries> timesheetEntriesList = timesheetEntries(jsonObj,projectId);
@@ -113,35 +120,213 @@ public class TimesheetEntriesController {
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 			int rowNum = 0;
 			
-			for (int c = 1; c <= maxCount; c++) {
+			for (int c = 1; c < maxCount; c++) {
 				if (isNullOrEmpty(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id")))
 					continue;
+				
 				TimesheetEntries timesheetEntries = new TimesheetEntries();
 				timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+				timesheetEntries.setStartDate(new Date());
+				timesheetEntries.setEndDate(new Date());
+				timesheetEntries.setCreatedDate(new Date());
+				timesheetEntries.setUpdatedDate(new Date());
 				
-			    /*timesheetEntries.setMonHours(c+"project"+projectId+"timeSheetDay1Id");
-				timesheetEntries.setMoncomments(c+"project"+projectId+"timeSheetDay1Id");
-				timesheetEntries.setMoncomments(c+"project"+projectId+"timeSheetDay1Id");
+			    timesheetEntries.setMonHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
+				timesheetEntries.setMoncomments(jsonObj.getString(c+"project"+projectId+"comment1Id"));
+				Tasks monTask = new Tasks();
+				monTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setMonTask(monTask);
 				
-				1project${project.id}timeSheetDay1Id
-				*/
 				
+				timesheetEntries.setTueHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay2Id"));
+				timesheetEntries.setTuecomments(jsonObj.getString(c+"project"+projectId+"comment2Id"));
+				Tasks tueTask = new Tasks();
+				tueTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setTueTask(tueTask);
+				
+				
+
+				 timesheetEntries.setWedHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay3Id"));
+				 timesheetEntries.setWedcomments(jsonObj.getString(c+"project"+projectId+"comment3Id"));
+				 Tasks wedTask = new Tasks();
+				 wedTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				 timesheetEntries.setWedTask(wedTask);
 				 
-				timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
-				rowNum++;
+				 timesheetEntries.setThuHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				 timesheetEntries.setThucomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				 Tasks thuTask = new Tasks();
+				 thuTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				 timesheetEntries.setThuTask(thuTask);
+				 
+				 
+				 timesheetEntries.setFriHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				 timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				 Tasks friTask = new Tasks();
+				 friTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				 timesheetEntries.setFriTask(friTask);
+				 
+				 
+				 
+				 timesheetEntries.setSatHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				 timesheetEntries.setSatcomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				 Tasks satTask = new Tasks();
+				 satTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				 timesheetEntries.setSatTask(satTask);
+				 
+				 
+				 timesheetEntries.setSunHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				 timesheetEntries.setSuncomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				 Tasks sunTask = new Tasks();
+				 sunTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				 timesheetEntries.setSunTask(sunTask);
+				 
+				
+				 /*timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));*/
+				 rowNum++;
 				
 				timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 				
 			}
     	}
-		
-    	
     	
 		result =  "success";
 		resultJson = toJSON(result);
 		return resultJson;
 	}
 	
+	
+	@RequestMapping(value = "/dynamicTimesheet", method = RequestMethod.GET )
+	public @ResponseBody String dynamicTimesheet() throws Exception {
+											 
+	
+	String result = "";
+	result = result +"<table id='timesheet' cellpadding='0' cellspacing=0'>";
+	result = result +"<tbody>";
+    result = result +"<tr>";
+    result = result +"<th>Projects</th>";
+    result = result +"   <th> ";
+    result = result +"    <table id='1' cellpadding='0' cellspacing='0'>";
+    result = result +"        <th>Tasks </th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Mon<i>15-06-2016</i></th>";
+    result = result +"   <th>Total Hours</th>";
+    result = result +"    </table>";
+    result = result +"   </th> ";
+    result = result +"</tr>";
+    
+    Collection<Projects> projectsList =   projectsService.getAllProjects();
+    for(Projects pro : projectsList){
+    
+      	result = result +"<input type='hidden' name='projectId'  value='"+pro.getId()+"'/>";	  
+        result = result +"<tr id='timesheetRow1'>";
+        result = result +"<td class='pname'> <div>"+pro.getProjectName()+"</div> </td>";
+        result = result +"<td>";
+        result = result +"<input type='hidden' name='maxRowNumber"+pro.getId()+"'  class='initiateTimesheetMax' id='maxRowNumber"+pro.getId()+"'  value='2' />";
+        result = result +"<table id='table"+pro.getId()+"' cellpadding='0' cellspacing='0'>";
+        result = result +"<tr id='timesheetRow1project"+pro.getId()+"'>";
+        result = result +"<td>";
+        result = result +"<div> ";
+        result = result +"<select id='1project"+pro.getId()+"task1Id' name='1project"+pro.getId()+"task1Id' >";
+        Collection<Tasks> tasksList = tasksService.getAllTasks();
+        for(Tasks task : tasksList){
+        	   result = result +"<option value='"+task.getId()+"'>"+task.getTaskName()+"</option>";
+        }
+        result = result +"</select>";
+        result = result +"<input type='button' value='' onClick='addTimeSheetRow("+pro.getId()+")' class='addtaskfield'/>";
+        result = result +"</div>";
+        result = result +"</td> ";
+		result = result +"<td> <div> ";
+		
+		result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay1Id' name='1project"+pro.getId()+"timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment('1project"+pro.getId()+"comment1Id');'></i>";
+        result = result +"  <span class='teskcomment' id='1project"+pro.getId()+"comment1Id'><textarea name='1project"+pro.getId()+"comment1Id' ></textarea></span></div>";
+        result = result +"  </div> </td>";
+        
+        
+       	result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay2Id' name='1project"+pro.getId()+"timeSheetDay2Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"  <div class='timesheet_comm'>";
+        result = result +"  <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment('1project"+pro.getId()+"comment2Id');'></i>";
+        result = result +"  <span class='teskcomment' id='1project"+pro.getId()+"comment2Id'><textarea name='1project"+pro.getId()+"comment2Id'></textarea></span></div>";
+        result = result +"  </div> </td>";
+                  
+        result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay3Id' name='1project"+pro.getId()+"timeSheetDay3Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment' onclick='timesheetComment('1project"+pro.getId()+"comment3Id');'></i>";
+        result = result +"<span class='teskcomment' id='1project"+pro.getId()+"comment3Id'><textarea name='1project"+pro.getId()+"comment3Id'></textarea></span></div>";
+        result = result +"</div> ";
+        result = result +"</td>   ";  
+        
+        result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay4Id' name='1project"+pro.getId()+"timeSheetDay4Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment' onclick='timesheetComment('1project"+pro.getId()+"comment4Id');'></i>";
+        result = result +"<span class='teskcomment' id='1project"+pro.getId()+"comment4Id'><textarea name='1project"+pro.getId()+"comment4Id'></textarea></span></div>";
+        result = result +"</div> ";
+        result = result +"</td>   ";  
+        
+        result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay5Id' name='1project"+pro.getId()+"timeSheetDay5Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment' onclick='timesheetComment('1project"+pro.getId()+"comment5Id');'></i>";
+        result = result +"<span class='teskcomment' id='1project"+pro.getId()+"comment5Id'><textarea name='1project"+pro.getId()+"comment5Id'></textarea></span></div>";
+        result = result +"</div> ";
+        result = result +"</td>   ";  
+        
+        
+        result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay6Id' name='1project"+pro.getId()+"timeSheetDay6Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment' onclick='timesheetComment('1project"+pro.getId()+"comment6Id');'></i>";
+        result = result +"<span class='teskcomment' id='1project"+pro.getId()+"comment6Id'><textarea name='1project"+pro.getId()+"comment6Id'></textarea></span></div>";
+        result = result +"</div> ";
+        result = result +"</td>   ";  
+       
+       
+        result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"timeSheetDay7Id' name='1project"+pro.getId()+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment' onclick='timesheetComment('1project"+pro.getId()+"comment7Id');'></i>";
+        result = result +"<span class='teskcomment' id='1project"+pro.getId()+"comment7Id'><textarea name='1project"+pro.getId()+"comment7Id'></textarea></span></div>";
+        result = result +"</div> ";
+        result = result +"</td>   ";   
+                  
+        
+        result = result +"<td> <div>";
+        result = result +"<input type='text' onkeypress='return isNumber(event)' id='1project"+pro.getId()+"total1Id' name='1project"+pro.getId()+"total1Id' class='inline_field' placeholder='HH:MM' />";	
+        result = result +"<div class='timesheet_comm'>";
+        result = result +"<i class='glyphicon glyphicon-comment' onclick='timesheetComment('1project"+pro.getId()+"comment8Id');'></i>";
+        result = result +"<span class='teskcomment' id='1project"+pro.getId()+"comment8Id'><textarea name='1project"+pro.getId()+"comment8Id'></textarea></span></div>";
+        result = result +"</div> ";
+        result = result +"</td>";                                         
+        result = result +" </tr>";                             
+               
+               
+        result = result +"</table>";
+        result = result +"</td>";   
+        result = result +"</tr> ";
+        
+    }
+    /*add total row*/   
+    result = result +"</tbody>";
+     result = result +"</table>";  
+        
+   return result;
+	}
+
+	
+	@RequestMapping(value = "/dateFormat", method = RequestMethod.GET )
+	public @ResponseBody void dateFormat() throws Exception {
+		  
+		
+	}
 	
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception
@@ -154,10 +339,10 @@ public class TimesheetEntriesController {
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 		
 		ProjectTasks task = new ProjectTasks();
+		/*Tasks task = new Tasks();
 		task.setId(1l);
 		timesheetEntries.setStartDate(new Date());
 		timesheetEntries.setEndDate(new Date());
-		//timesheetEntries.setId((long) 4);
 		timesheetEntries.setTotalHours(5);
 		timesheetEntries.setSubmittedHours(10);
 		timesheetEntries.setEntryStatus("X");
@@ -187,7 +372,7 @@ public class TimesheetEntriesController {
 		timesheetEntries.setCreatedDate(new Date());
 		timesheetEntries.setCreatedBy("prsad k");
 		timesheetEntries.setUpdatedBy("naidu l");
-		timesheetEntries.setUpdatedDate(new Date());
+		timesheetEntries.setUpdatedDate(new Date());*/
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.addTimesheetEntries(timesheetEntries);
 		return savedTimesheetEntries; 
 	}
@@ -206,7 +391,7 @@ public class TimesheetEntriesController {
 		ProjectTasks task = new ProjectTasks();
 		task.setId(1l);
 		
-		timesheetEntries.setStartDate(new Date());
+		/*timesheetEntries.setStartDate(new Date());
 		timesheetEntries.setEndDate(new Date());
 		timesheetEntries.setTotalHours(5);
 		timesheetEntries.setSubmittedHours(10);
@@ -237,7 +422,7 @@ public class TimesheetEntriesController {
 		timesheetEntries.setCreatedDate(new Date());
 		timesheetEntries.setCreatedBy("prsad");
 		timesheetEntries.setUpdatedBy("naidu");
-		timesheetEntries.setUpdatedDate(new Date());
+		timesheetEntries.setUpdatedDate(new Date());*/
 		
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
 		return savedTimesheetEntries; 
@@ -321,31 +506,6 @@ public class TimesheetEntriesController {
 	    return xstream.toXML(obj);
 	}
 	
-	
-	private List<TimesheetEntries> timesheetEntries(JSONObject json , String[] projectIds) throws JSONException
-	{
-		
-		
-		
-		List<TimesheetEntries> timesheetEntriesList = new ArrayList<TimesheetEntries>();
-		String maxAdminTimeTypeRowNum = json.getString("ss");
-		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		int rowNum = 0;
-		
-		for (int c = 1; c <= maxCount; c++) {
-			if (isNullOrEmpty(json.getString("name" + c)))
-				continue;
-			TimesheetEntries timesheetEntries = new TimesheetEntries();
-			
-			 
-			timesheetEntries.setFricomments(json.getString("description" + c));
-			rowNum++;
-			
-			timesheetEntriesList.add(timesheetEntries);
-		}
-		return timesheetEntriesList;
-	}
-	 
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}

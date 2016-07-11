@@ -65,7 +65,7 @@ public class TimesheetEntries {
 	private ProjectTasks monTask;
 	 
 	@Column(name = "MON_HOURS")
-    private Integer monHours;
+    private String monHours;
 	  
 	@Column(name = "MON_COMMENTS")
 	@Type(type="text")
@@ -77,7 +77,7 @@ public class TimesheetEntries {
 	private ProjectTasks tueTask;
 	  
 	@Column(name = "TUE_HOURS")
-	private Integer tueHours;
+	private String tueHours;
 	  
 	@Column(name = "TUE_COMMENTS")
 	@Type(type="text")
@@ -88,7 +88,7 @@ public class TimesheetEntries {
 	private ProjectTasks wedTask;
 	  
 	@Column(name = "WED_HOURS")
-	private Integer wedHours;
+	private String wedHours;
 	  
 	@Column(name = "WED_COMMENTS")
 	@Type(type="text")
@@ -100,7 +100,7 @@ public class TimesheetEntries {
 	private ProjectTasks thuTask;
 	  
 	@Column(name = "THU_HOURS")
-	private Integer thuHours;
+	private String thuHours;
 	  
 	@Column(name = "THU_COMMENTS")
 	@Type(type="text")
@@ -111,7 +111,7 @@ public class TimesheetEntries {
 	private ProjectTasks friTask;
 	  
 	@Column(name = "FRI_HOURS")
-	private Integer friHours;
+	private String friHours;
 	  
 	@Column(name = "FRI_COMMENTS")
 	@Type(type="text")
@@ -122,7 +122,7 @@ public class TimesheetEntries {
 	private ProjectTasks satTask;
 	  
 	@Column(name = "SAT_HOURS")
-	private Integer satHours;
+	private String satHours;
 	  
 	@Column(name = "SAT_COMMENTS")
 	@Type(type="text")
@@ -133,7 +133,7 @@ public class TimesheetEntries {
 	private ProjectTasks sunTask;
 	  
 	@Column(name = "SUN_HOURS")
-	private Integer sunHours;
+	private String sunHours;
 	  
 	@Column(name = "SUN_COMMENTS")
 	@Type(type="text")
@@ -148,7 +148,7 @@ public class TimesheetEntries {
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
-    private Date createdDate; 
+	private Date createdDate;
 		
     @Column(name = "CREATED_BY")
 	private String createdBy;
@@ -231,12 +231,12 @@ public class TimesheetEntries {
 	public void setMonTask(ProjectTasks monTask) {
 		this.monTask = monTask;
 	}
-
-	public Integer getMonHours() {
+	
+	public String getMonHours() {
 		return monHours;
 	}
 
-	public void setMonHours(Integer monHours) {
+	public void setMonHours(String monHours) {
 		this.monHours = monHours;
 	}
 
@@ -248,12 +248,11 @@ public class TimesheetEntries {
 		this.moncomments = moncomments;
 	}
 
-
-	public Integer getTueHours() {
+	public String getTueHours() {
 		return tueHours;
 	}
 
-	public void setTueHours(Integer tueHours) {
+	public void setTueHours(String tueHours) {
 		this.tueHours = tueHours;
 	}
 
@@ -265,11 +264,11 @@ public class TimesheetEntries {
 		this.tuecomments = tuecomments;
 	}
 
-	public Integer getWedHours() {
+	public String getWedHours() {
 		return wedHours;
 	}
 
-	public void setWedHours(Integer wedHours) {
+	public void setWedHours(String wedHours) {
 		this.wedHours = wedHours;
 	}
 
@@ -281,11 +280,11 @@ public class TimesheetEntries {
 		this.wedcomments = wedcomments;
 	}
 
-	public Integer getThuHours() {
+	public String getThuHours() {
 		return thuHours;
 	}
 
-	public void setThuHours(Integer thuHours) {
+	public void setThuHours(String thuHours) {
 		this.thuHours = thuHours;
 	}
 
@@ -297,12 +296,11 @@ public class TimesheetEntries {
 		this.thucomments = thucomments;
 	}
 
-
-	public Integer getFriHours() {
+	public String getFriHours() {
 		return friHours;
 	}
 
-	public void setFriHours(Integer friHours) {
+	public void setFriHours(String friHours) {
 		this.friHours = friHours;
 	}
 
@@ -314,11 +312,11 @@ public class TimesheetEntries {
 		this.fricomments = fricomments;
 	}
 
-	public Integer getSatHours() {
+	public String getSatHours() {
 		return satHours;
 	}
 
-	public void setSatHours(Integer satHours) {
+	public void setSatHours(String satHours) {
 		this.satHours = satHours;
 	}
 
@@ -330,11 +328,11 @@ public class TimesheetEntries {
 		this.satcomments = satcomments;
 	}
 
-	public Integer getSunHours() {
+	public String getSunHours() {
 		return sunHours;
 	}
 
-	public void setSunHours(Integer sunHours) {
+	public void setSunHours(String sunHours) {
 		this.sunHours = sunHours;
 	}
 

@@ -1,22 +1,22 @@
 body {
     font-family: 'Roboto', Arial, Helvetica, sans-serif; font-weight:400; font-size:14px; margin:0px 0px; padding:0px 0px;
-    background-color: #FFF; overflow-x:hidden;
+    background-color: #FFF; overflow-x:hidden; line-height:normal;
 	}
 :focus, a:focus {
 	outline:none;
 	}		
 
 .timesheet_out {
-	width:auto; padding:70px 0px 0px 250px; background-color:#f9f9f9;
+	width:auto; padding:0px 0px 0px 0px;
 	}
 .timesheet_wrap {
-	background-color:#eef1fc; padding:15px;
+	background-color:#eef1fc; padding:12px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.3); border-radius:3px;
 	}
 .timesheet_head {
 	height:40px;
 	}
 .timesheet_head ul {
-	margin:0px 0px; padding:0px; float:right;
+	margin:0px 0px; padding:0px 15px 0px 0px; float:right;
 	}
 .timesheet_head ul li {
 	list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 10px; position:relative;
@@ -183,7 +183,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	}*/	
 	
 .timesheet_bot {
-	padding:15px 0px;
+	padding:15px;
 	}
 .timesheet_week_comm {
 	float:left; width:60%;
