@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 
@@ -15,4 +16,6 @@ public interface ProjectMembersService {
 	public Boolean deleteProjectMemberById(Long id) throws Exception;
 	
 	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
+	
+	List<Integer> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
 }

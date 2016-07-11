@@ -154,85 +154,87 @@ function maskme(){
                         <th>Total Hours</th>
                          </table>
                         </th> 
-                        
                     </tr>
-                    <c:forEach items="${sourcelead_projectsList}" var="project" varStatus="p">
-                    <input type="hidden" name="projectId"  value="${project.id}"/>
+                    <c:forEach items="${sourcelead_timesheetSubmissionsList}" var="submission" varStatus="p">
+                   <%--      ${submission.id}   hai    ${submission.projectMembers.id}  hiii  ${submission.projectMembers.projects.id}
+                    </c:forEach>
+                   <c:forEach items="${sourcelead_projectsList}" var="project" varStatus="p">  --%>
+                    <input type="hidden" name="submissionId"  value="${submission.id}"/>
                     <tr id="timesheetRow1">
-                         <td class="pname"> <div>${project.projectName}</div> </td>
+                         <td class="pname"> <div>${submission.projectMembers.projects.projectName}</div> </td>
                          <td>
-                               <input type="hidden" name="maxRowNumber${project.id}"  class="initiateTimesheetMax" id="maxRowNumber${project.id}"  value="2" />
-                               <table id="table${project.id}" cellpadding="0" cellspacing="0">
-                               <tr id="timesheetRow1project${project.id}">
+                               <input type="hidden" name="maxRowNumber${submission.id}"  class="initiateTimesheetMax" id="maxRowNumber${submission.id}"  value="2" />
+                               <table id="table${submission.id}" cellpadding="0" cellspacing="0">
+                               <tr id="timesheetRow1submission${submission.id}">
                                          <td>
                                               <div> 
-                                               <select id="1project${project.id}task1Id" name="1project${project.id}task1Id" >
-	                                               <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
-	                                                  	<option value="${task.id}">${task.taskName}</option>
-	                                               </c:forEach>
+                                               <select id="1submission${submission.id}task1Id" name="1submission${submission.id}task1Id" >
+		                                               <c:forEach items="${submission.projectTasksList}" var="task" varStatus="t">
+		                                                  	<option value="${task.id}">${task.taskName}</option>
+		                                               </c:forEach>
                                                </select>     
-                                                <input type="button" value="" onClick="addTimeSheetRow(${project.id})" class="addtaskfield"/>
+                                                <input type="button" value="" onClick="addTimeSheetRow(${submission.id})" class="addtaskfield"/>
                                               </div>
                                          </td> 
 										<td> <div>    
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay1Id" name="1project${project.id}timeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay1Id" name="1submission${submission.id}timeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment com_active" onclick="timesheetComment('1project${project.id}comment1Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment1Id"><textarea name="1project${project.id}comment1Id" ></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment com_active" onclick="timesheetComment('1submission${submission.id}comment1Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment1Id"><textarea name="1submission${submission.id}comment1Id" ></textarea></span></div>
                   </div> </td>
                   
 				  <td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay2Id" name="1project${project.id}timeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay2Id" name="1submission${submission.id}timeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment com_active" onclick="timesheetComment('1project${project.id}comment2Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment2Id"><textarea name="1project${project.id}comment2Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment com_active" onclick="timesheetComment('1submission${submission.id}comment2Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment2Id"><textarea name="1submission${submission.id}comment2Id"></textarea></span></div>
                   </div> </td>
                   
  			      <td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay3Id" name="1project${project.id}timeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay3Id" name="1submission${submission.id}timeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1project${project.id}comment3Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment3Id"><textarea name="1project${project.id}comment3Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1submission${submission.id}comment3Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment3Id"><textarea name="1submission${submission.id}comment3Id"></textarea></span></div>
                   </div> 
                   </td>
                   
      			  <td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay4Id" name="1project${project.id}timeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay4Id" name="1submission${submission.id}timeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1project${project.id}comment4Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment4Id" ><textarea name="1project${project.id}comment4Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1submission${submission.id}comment4Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment4Id" ><textarea name="1submission${submission.id}comment4Id"></textarea></span></div>
                   </div> </td>
                   
 										<td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay5Id" name="1project${project.id}timeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay5Id" name="1submission${submission.id}timeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1project${project.id}comment5Id');" ></i>
-                  <span class="teskcomment" id="1project${project.id}comment5Id"><textarea name="1project${project.id}comment5Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1submission${submission.id}comment5Id');" ></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment5Id"><textarea name="1submission${submission.id}comment5Id"></textarea></span></div>
                   </div> </td>
                   
 										<td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay6Id" name="1project${project.id}timeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay6Id" name="1submission${submission.id}timeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1project${project.id}comment6Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment6Id" ><textarea name="1project${project.id}comment6Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1submission${submission.id}comment6Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment6Id" ><textarea name="1submission${submission.id}comment6Id"></textarea></span></div>
                   </div> </td>
                   
 										<td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}timeSheetDay7Id" name="1project${project.id}timeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}timeSheetDay7Id" name="1submission${submission.id}timeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1project${project.id}comment7Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment7Id" ><textarea name="1project${project.id}comment7Id" ></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1submission${submission.id}comment7Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment7Id" ><textarea name="1submission${submission.id}comment7Id" ></textarea></span></div>
                   </div> </td>
                   
 										<td> <div>
-                  <input type="text" onkeypress="return isNumber(event)" id="1project${project.id}total1Id" name="1project${project.id}total1Id" class="inline_field" placeholder="HH:MM" />	
+                  <input type="text" onkeypress="return isNumber(event)" id="1submission${submission.id}total1Id" name="1submission${submission.id}total1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1project${project.id}comment8Id');"></i>
-                  <span class="teskcomment" id="1project${project.id}comment8Id"><textarea name="1project${project.id}comment8Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('1submission${submission.id}comment8Id');"></i>
+                  <span class="teskcomment" id="1submission${submission.id}comment8Id"><textarea name="1submission${submission.id}comment8Id"></textarea></span></div>
                   </div> </td>                                         
                   </tr>              
                                  </table>
-                       </td>   
+                  </td>   
                     </tr>
                     </c:forEach>   
 					<tr class="last_child">
@@ -301,7 +303,7 @@ function maskme(){
         
         <div id="divadttTd1" style="display:none;" >   
                   <div> 
-                   <select id="REPLACEROWIDprojectProjectIdtask1Id" name="REPLACEROWIDprojectProjectIdtask1Id" >
+                   <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" >
                                 <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
                                    	<option value="${task.id}">${task.taskName}</option>
                                 </c:forEach>
@@ -313,59 +315,59 @@ function maskme(){
                           <option value="mercedes">Task3</option>
                           <option value="audi">Task4</option>
                         </select> -->
-                        <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','ProjectId')" class="addtaskfield removetaskfield"/>
+                        <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
                   </div>
                   
              </div>
              <div id="divadttTd2" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay1Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment1Id');"></i>
-	                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment1Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment1Id" ></textarea></span>
+	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ></textarea></span>
                   </div>
 	     	</div>
                   
              <div id="divadttTd3" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay2Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment2Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment2Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment2Id"></textarea></span></div>
+                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id"></textarea></span></div>
              </div>
              <div id="divadttTd4" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay3Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment3Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment3Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment3Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id"></textarea></span></div>
              </div>
              <div id="divadttTd5" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay4Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment4Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment4Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment4Id"></textarea></span></div>           
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id"></textarea></span></div>           
              </div>
              <div id="divadttTd6" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay5Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment5Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment5Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment5Id"></textarea></span></div>  
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id"></textarea></span></div>  
 	    	 </div>
              <div id="divadttTd7" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay6Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment6Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment6Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment6Id"></textarea></span></div>
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id"></textarea></span></div>
               </div>
              <div id="divadttTd8" style="display:none;">
-				  <input type="text" id="REPLACEROWIDprojectProjectIdtimeSheetDay7Id" name="REPLACEROWIDprojectProjectIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment7Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment7Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment7Id"></textarea></span></div>            
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
 	    	 </div>
              <div id="divadttTd9" style="display:none;">
-				  <input type="text"  id="REPLACEROWIDprojectProjectIdtotal1Id" name="REPLACEROWIDprojectProjectIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text"  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDprojectProjectIdcomment8Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDprojectProjectIdcomment8Id" ><textarea name="REPLACEROWIDprojectProjectIdcomment8Id"></textarea></span></div>  
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment8Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id"></textarea></span></div>  
              </div>
       
       
@@ -621,8 +623,8 @@ function maskme(){
             <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
         </div>-->
     	<div class="timesheet_button">
-    	    <input type="submit" name="submit" vaue="save">
-        	<input type="button" value="Draft" class="time_btn time_dra" />
+    	    <input type="submit" name="Draft" vaue="Draft" class="time_btn time_dra" >
+        	<!-- <input type="button" value="Draft" class="time_btn time_dra" /> -->
             <input type="button" value="Submit" class="time_btn" />
             <input type="button" value="Clear" class="time_btn time_cancel" />
         </div>
@@ -673,20 +675,20 @@ function callInlineEdit(local){
 
 <script>
  
-function addTimeSheetRow(projectId) {
+function addTimeSheetRow(submissionId) {
 	          
-		    var tbl = document.getElementById("table"+projectId);
-			var rowNum = $("#maxRowNumber"+projectId).val();
+		    var tbl = document.getElementById("table"+submissionId);
+			var rowNum = $("#maxRowNumber"+submissionId).val();
 			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber"+projectId).val(maxRowNum + 1); 
+			$("#maxRowNumber"+submissionId).val(maxRowNum + 1); 
 			var row = tbl.insertRow(maxRowNum-1);
-			row.setAttribute("id", "timesheetRow"+maxRowNum+"project"+projectId);
+			row.setAttribute("id", "timesheetRow"+maxRowNum+"project"+submissionId);
 			
 			  
 			var cell0 = row.insertCell(0);
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd0Str = divadttTd0Str.replace(/ProjectId/g, (projectId));
+			divadttTd0Str = divadttTd0Str.replace(/submissionId/g, (submissionId));
 			cell0.setAttribute("class", "pname");  
 			cell0.innerHTML = divadttTd0Str;
 			
@@ -695,51 +697,51 @@ function addTimeSheetRow(projectId) {
 			 var cell1 = row.insertCell(1);
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
 			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-            divadttTd1Str = divadttTd1Str.replace(/ProjectId/g, (projectId));
+            divadttTd1Str = divadttTd1Str.replace(/submissionId/g, (submissionId));
 			cell1.innerHTML = divadttTd1Str;
 			
 			
 			var cell2 = row.insertCell(2);
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd2Str = divadttTd2Str.replace(/ProjectId/g, (projectId));
+			divadttTd2Str = divadttTd2Str.replace(/submissionId/g, (submissionId));
 			cell2.innerHTML = divadttTd2Str;
 			
 			
 			var cell3 = row.insertCell(3);
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd3Str = divadttTd3Str.replace(/ProjectId/g, (projectId));
+			divadttTd3Str = divadttTd3Str.replace(/submissionId/g, (submissionId));
 			cell3.innerHTML = divadttTd3Str;
 			
 			var cell4= row.insertCell(4);
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd4Str = divadttTd4Str.replace(/ProjectId/g, (projectId)); 
+			divadttTd4Str = divadttTd4Str.replace(/submissionId/g, (submissionId)); 
 			cell4.innerHTML = divadttTd4Str;
 			
 			var cell5 = row.insertCell(5);
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd5Str = divadttTd5Str.replace(/ProjectId/g, (projectId)); 
+			divadttTd5Str = divadttTd5Str.replace(/submissionId/g, (submissionId)); 
 			cell5.innerHTML = divadttTd5Str;
 			
 			var cell6 = row.insertCell(6);
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd6Str = divadttTd6Str.replace(/ProjectId/g, (projectId));
+			divadttTd6Str = divadttTd6Str.replace(/submissionId/g, (submissionId));
 			cell6.innerHTML = divadttTd6Str;
 			
 			var cell7 = row.insertCell(7);
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd7Str = divadttTd7Str.replace(/ProjectId/g, (projectId));
+			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
 			cell7.innerHTML = divadttTd7Str;
 
 			var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-                        divadttTd8Str = divadttTd8Str.replace(/ProjectId/g,  (projectId));
+                        divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
 			cell8.innerHTML = divadttTd8Str;
 			
 			//var cell9 = row.insertCell(9);
@@ -814,25 +816,22 @@ function addTimeSheetRow(projectId) {
    };
 })(jQuery);
 </script>
-	
+                
+                
 <script type="text/javascript">
         $('#timesheet_form').submit(function(e) {
                e.preventDefault();
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
-       		   var form = $('#timesheet_form')[0];
-       		   var formData = new FormData(form);
+       		  
+       		   /* var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); */
        		   
-       		   var projectIds = $("#projectId").val();
-               
+       		   var submissionIds = $("#submissionId").val();
+       		   
         	   $.ajax({
-	        		  dataType : 'json',
-	      	          data : formData,
 	      	          type : "GET",
-	      	          enctype: 'multipart/form-data',
-	      	          processData: false,
-	      	          contentType:false,
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?json="+mydata+"&projectIds="+projectIds,		
+        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?json="+mydata,		
         		      success :function(result) {
         		    	  
         		      }
@@ -845,7 +844,7 @@ function addTimeSheetRow(projectId) {
    <script type="text/javascript">	
 /* for total hours */
 $(document).click(function(){
-		var projectId = 1;
+		var submissionId = 1;
 		var total;
 		 for (var p = 1; p < 3; p++){
 		 for (var i = 1; i < 3; i++){  
@@ -853,7 +852,7 @@ $(document).click(function(){
 			 var nbsum = 0;
 			 var total = 0;
 			 for (var j = 1; j < 8; j++){
-				    var btemp = $("#"+i+"project"+p+"timeSheetDay"+j+"Id").val();
+				    var btemp = $("#"+i+"submission"+p+"timeSheetDay"+j+"Id").val();
 				    /* var btemp = $("#"+j+"day"+i+"Hours").val(); */
 				    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 				    	/* bsum = parseFloat(bsum) + parseFloat(btemp); */
@@ -877,7 +876,7 @@ $(document).click(function(){
 			var minutes = t % 60;
 			total = hours +"."+ minutes;
 			
-		    $("#"+i+"project"+p+"total1Id").val(total);
+		    $("#"+i+"submission"+p+"total1Id").val(total);
 	 }  
 }	
 		
@@ -894,7 +893,7 @@ $(document).click(function(){
 		 var total = 0;
 	 for (var p = 1; p < 3; p++){  
 		 for (var j = 1; j < 8; j++){
-			    var btemp = $("#"+j+"project"+p+"timeSheetDay"+i+"Id").val();
+			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
 			    	 var split = hours.split(':');
@@ -926,18 +925,18 @@ $(document).click(function(){
 
 <script type="text/javascript">	
 
-function removeTimeSheetRow(rowId,projectId) { 
+function removeTimeSheetRow(rowId,submissionId) { 
 	
 	
-			var rowNum = $("#maxRowNumber"+projectId).val();
+			var rowNum = $("#maxRowNumber"+submissionId).val();
 			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber"+projectId).val(maxRowNum - 1); 
+			$("#maxRowNumber"+submissionId).val(maxRowNum - 1); 
 	
 	
-			 document.getElementById("timesheetRow"+rowId+"project"+projectId).style.display = 'none';
-			 document.getElementById("timesheetRow"+rowId+"project"+projectId).value= '';
-			 var  rId = "timesheetRow"+rowId+"project"+projectId;
-			  var r = document.getElementById("table"+projectId).rows[rId];
+			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).value= '';
+			 var  rId = "timesheetRow"+rowId+"submission"+submissionId;
+			  var r = document.getElementById("table"+submissionId).rows[rId];
 	          var count = 2*(r.cells.length);
 			    for(i=0;i<=count;i++){
 			        r.deleteCell(0);

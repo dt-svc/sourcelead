@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -66,6 +68,9 @@ public class TimesheetSubmissions {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private Collection<ProjectTasks> projectTasksList;
 
 	public Long getId() {
 		return Id;
@@ -148,5 +153,12 @@ public class TimesheetSubmissions {
 		this.updatedBy = updatedBy;
 	}
 
+	public Collection<ProjectTasks> getProjectTasksList() {
+		return projectTasksList;
+	}
+
+	public void setProjectTasksList(Collection<ProjectTasks> projectTasksList) {
+		this.projectTasksList = projectTasksList;
+	}
 	 
 }

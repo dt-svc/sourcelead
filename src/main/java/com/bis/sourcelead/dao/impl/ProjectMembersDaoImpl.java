@@ -93,4 +93,18 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         return projectsMembersList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Integer> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		List<Integer> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
+			    .list(); 
+		return idsList;  
+		
+        
+	}
+
 }
