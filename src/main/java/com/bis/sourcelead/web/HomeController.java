@@ -87,7 +87,7 @@ public class HomeController {
 
 	}
    
-   @RequestMapping(value = "/validateOrgWebsite", method = RequestMethod.GET)
+   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
    public @ResponseBody String validateOrgWebsite(
    		@RequestParam(value="website", required=false) String website,
    		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
@@ -107,14 +107,13 @@ public class HomeController {
    
    
    
-   @RequestMapping(value = "/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
+   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
    public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
    		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
    		@RequestParam(value="email", required=false) String email) throws Exception {
    	
-	  User user = userService.findByEmail(email);
-	  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites,  user);
-	return status;
+	  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
+	  return status;
    }
    
    

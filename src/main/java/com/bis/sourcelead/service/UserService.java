@@ -10,7 +10,7 @@ public interface UserService  {
 	
 	public User addUser(User user) throws Exception;
 	
-	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites,User user) throws Exception;
+	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	User getUserById(Long Id) throws Exception;
 
 	public Collection<User> getUsers() throws Exception;

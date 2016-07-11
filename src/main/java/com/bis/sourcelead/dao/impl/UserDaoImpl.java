@@ -86,7 +86,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites,User  user) throws Exception {
+	public String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
@@ -105,17 +105,27 @@ public class UserDaoImpl implements UserDao {
 	    if(host.startsWith("www")){
 	        host = host.substring("www".length()+1);
 	    }
- 	    if(email.equalsIgnoreCase("@"+host)){
- 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
- 	    		status="Invalid Email";
- 	    	}else{
-		 	      	if( user.getEmail().equalsIgnoreCase(email)){
-		 	    		status="Existed Email";
-		 	    	}else{
-		 	    		status="Valid Email";
-		 	    	}
+	    
+	    String[] emailHostArray = email.split("@");
+	    if(emailHostArray != null && emailHostArray.length >1 ){
+	    	String emailHost = emailHostArray[1];
+	    	if(emailHost.equalsIgnoreCase(host)){
+	 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+	 	    		status="Invalid Email";
+	 	    	}else{
+	 	    		    User user = findByEmail(email);
+			 	      	if(user != null &&  user.getEmail().equalsIgnoreCase(email)){
+			 	    		status="Existed Email";
+			 	    	}else{
+			 	    		status="Valid Email";
+			 	    	}
+		 	    }
 	 	    }
- 	    }else{
+	    	else{
+	 	    	status="Invalid Email";
+	 	    }
+	    }
+ 	    else{
  	    	status="Invalid Email";
  	    }
 	    
@@ -147,6 +157,9 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
    	}
+	
+	
+	
 	
 	
 
