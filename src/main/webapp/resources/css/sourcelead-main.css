@@ -437,7 +437,7 @@ transition:all ease-in-out .3s;
 }
 .login-user .image img {
     height: auto;
-    width: 35px;
+    width: 45px;
 	float:left;
 	margin-right:10px;
 	border:1px solid #3081cb;
