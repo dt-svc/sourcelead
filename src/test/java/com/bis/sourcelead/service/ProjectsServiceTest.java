@@ -55,14 +55,6 @@ public class ProjectsServiceTest {
 		superiorUser.setId(1L);
 		projects.setSuperiorUser(superiorUser);
 		
-		User projectManagerUser = new User();
-		projectManagerUser.setId(2L);
-		projects.setProjectManagerUser(projectManagerUser);
-		
-		Org org = new Org();
-		org.setId(1L);
-		projects.setOrg(org);
-		
 		projects.setProjectName("XYZ");
 		projects.setProjectStatus("Open");
 		projects.setDescription("sourcelead desc");
@@ -89,14 +81,6 @@ public class ProjectsServiceTest {
 		User superiorUser = new User();
 		superiorUser.setId(1L);
 		projects.setSuperiorUser(superiorUser);
-		
-		User projectManagerUser = new User();
-		projectManagerUser.setId(2L);
-		projects.setProjectManagerUser(projectManagerUser);
-		
-		Org org = new Org();
-		org.setId(1L);
-		projects.setOrg(org);
 		
 		projects.setProjectName("XYZ Updated");
 		projects.setDescription("project desc");

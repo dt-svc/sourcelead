@@ -44,6 +44,12 @@ public class ProjectMembers {
 	@Column(name = "PROJECT_ASSIGNED_DATE")
     private Date projectAssignedDate;
 	
+	@Column(name = "PROJECT_END_DATE")
+    private Date projectEndDate;
+	
+	@Column(name = "ROLE")
+	private String role;
+	
 	@Column(name = "CURRENT_BILL_RATE")
     private Float currentBillRate;
 	
@@ -105,6 +111,22 @@ public class ProjectMembers {
 
 	public void setProjectAssignedDate(Date projectAssignedDate) {
 		this.projectAssignedDate = projectAssignedDate;
+	}
+
+	public Date getProjectEndDate() {
+		return projectEndDate;
+	}
+
+	public void setProjectEndDate(Date projectEndDate) {
+		this.projectEndDate = projectEndDate;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public Float getCurrentBillRate() {
