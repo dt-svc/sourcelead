@@ -56,6 +56,9 @@ public class Employees {
     @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
     private OrgLocations orgLocations;
 	
+	@Column(name="Invoice_Frequency")
+	private String InvoiceFrequency;
+	
 	@Column(name="STATUS")
 	private String status;
 	
@@ -141,6 +144,14 @@ public class Employees {
 
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
+	}
+
+	public String getInvoiceFrequency() {
+		return InvoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		InvoiceFrequency = invoiceFrequency;
 	}
 
 	public String getStatus() {

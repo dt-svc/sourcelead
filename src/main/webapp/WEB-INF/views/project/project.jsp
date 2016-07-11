@@ -1,5 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
   <!-- Content Area -->
   <section class="content-wraper">
@@ -60,7 +61,7 @@
               <div class="col-md-9">
                 <div class="input-group">
                   <div class="input-group-btn">
-                    <button class="btn btn-default" type="button"> <span class="badge">4444</span></button>
+                    <button class="btn btn-default" type="button"> <span class="badge" id="addTaskCount">0</button>
                     <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks </button>
                   </div>
                 </div>
@@ -76,87 +77,40 @@
                       </div>
                       <div class="modal-body clearfix">
                         <div class="modal-body-custom custom-table">
-                          <table class="table table-bordered table-striped  clearfix" cols="0">
-                            <tr>
-                              <th>Task Name</th>
+                          <table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
+                            <tr id="divTsRow0">
+                              <th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1"/>Task Name</th>
                               <th>Description</th>
                               <th>Action</th>
                             </tr>
-                            <tr>
+                           <!--  <tr>
                               <td>Task Name</td>
                               <td>The home page has a section in the middle of the page that needs to be to the right.</td>
                               <td>
                               <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
                               <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
                               </td>
-                            </tr>
-                            <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr>
+                            </tr> -->
+                           
                           </table>
                         </div>
                         <div class="form-horizontal row custom-form">
                           <div class="col-xs-12 col-lg-7">
                           <div class="form-group">
                             <label class="col-md-3">Task Name</label>
-                            <div class="col-md-9">
-                              <input type="text" value="" class="form-control">
+                            <div class="col-md-9"> 
+                              <input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
                             </div>
                           </div>
                           <div class="form-group">
                             <label class="col-md-3">Description</label>
                             <div class="col-md-9">
-                              <textarea class="form-control" rows="2"></textarea>
+                              <textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription" rows="2"></textarea>
                             </div>
                           </div>
                           </div>
                           <div class="col-xs-12 col-lg-5">
-                          <a href="javascript:void(0)" class="btn btn-primary"> <i class="fa fa-plus"></i> Add Task</a>
+                          <a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask" > <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
                           </div>
                         </div>
                       </div>
@@ -213,46 +167,46 @@
               <label class="col-md-3">Client</label>
               <div class="col-md-9">
                 <div class="form-icon">
-                  <select class="form-control select-bg">
-                    <option>Client Name</option>
-                    <option>Client Name-2</option>
-                    <option>Client Name-3</option>
-                    <option>Client Name-4</option>
+                  <select class="form-control select-bg" id="addClientId">
+                  <option>-- Select Client --</option>
+                  <c:forEach var="option" items="${add_client}">
+  						<option value="${option.id}"}>${option.orgName}</option>
+				  </c:forEach>
                   </select>
                   <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" data-target="#addClient"></i> </div>
                 <span class="hidden">Enter Project Id</span>
 				<div class="modal fade" id="addClient" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h4 class="modal-title">Add Client</h4>
-      </div>
-      <div class="modal-body clearfix">
-        <div class="form-horizontal custom-form clearfix">
-          <div class="col-xs-12 col-md-12 col-lg-12">
-            <div class="form-group">
-              <label class="col-lg-3">Client Name</label>
-              <div class="col-lg-9">
-                <input type="text" value="" class="form-control">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-lg-3">Client Website</label>
-              <div class="col-lg-9">
-                <input type="text" value="" class="form-control">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal">×</button>
+				        <h4 class="modal-title">Add Client</h4>
+				      </div>
+				      <div class="modal-body clearfix">
+				        <div class="form-horizontal custom-form clearfix">
+				          <div class="col-xs-12 col-md-12 col-lg-12">
+				            <div class="form-group">
+				              <label class="col-lg-3">Client Name</label>
+				              <div class="col-lg-9">
+				                 <input type="text" id="orgName" name="orgName" value="" class="form-control">
+				              </div>
+				            </div>
+				            <div class="form-group">
+				              <label class="col-lg-3">Client Website</label>
+				              <div class="col-lg-9">
+				                <input type="text" id="webSite" name="webSite" value="" class="form-control">
+				              </div>
+				            </div>
+				          </div>
+				        </div>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" id="save_client" class="btn btn-primary" data-dismiss="modal" onclick = "addclient();">Save</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
                 </div>
             </div>
             <div class="form-group">
@@ -505,4 +459,132 @@
                 });
             
             });
+</script>
+
+
+
+<!-- =============================== AddTask Divs  ============================ -->
+       <div id="divTaskTd1" style="display:none; float:left;">
+            <input type="hidden" id="REPLACEROWIDtaskName" name="REPLACEROWIDtaskName" value="TASKNAMEVALUE"/><span id="REPLACEROWIDtaskNameValue">TASKNAMEVALUE</span> 
+      </div>
+       <div id="divTaskTd2" style="display:none; float:left;">
+        <input type="hidden" id="REPLACEROWIDtaskDescription" name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE"/><span id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span> 
+      </div>
+       <div id="divTaskTd3" style="display:none; float:left;">
+            <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+            <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+      </div>
+  <!-- =============================== AddTask Divs  ============================ -->     
+
+<script type="text/javascript">
+function addTasks(){
+    	var tbl = document.getElementById("projectTaskTbl");
+    	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+    	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+    	$("#addTaskCount").html(maxRowNum);
+    	var row = tbl.insertRow(maxRowNum);
+    	row.setAttribute("id", "divTsRow" + maxRowNum);
+	
+		var taskName = $('#taskName').val();
+	    var taskDescription = $('#taskDescription').val();
+			
+		var cell0 = row.insertCell(0);
+		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
+		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
+		cell0.innerHTML = divTsTd1Str;
+		
+		
+		var cell1 = row.insertCell(1);
+		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g, (taskDescription));
+		cell1.innerHTML = divTsTd2Str;
+		
+		
+		var cell2 = row.insertCell(2);
+		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell2.innerHTML = divTsTd3Str;
+		
+		$("#taskName").val('');
+		$("#taskDescription").val('');
+}
+</script>
+<script type="text/javascript">
+ function removeRow(rowId) {
+		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		  var r = document.getElementById('projectTaskTbl').rows[rowId];
+             var count = 2*(r.cells.length);
+			    for(i=0;i<=count;i++){
+			        r.deleteCell(0);
+			    }
+	}
+ 
+</script>
+<script type="text/javascript">
+ function editTask(rowId) {
+	 var updateTaskName = $("#"+rowId+"taskName").val(); 
+	 var updateTaskDescription = $("#"+rowId+"taskDescription").val(); 
+	 $("#taskName").val('');
+	 $("#taskDescription").val('');
+	 $("#addTaskText").html('Update Task');
+	 $("#taskName").val(updateTaskName);
+	 $("#taskDescription").val(updateTaskDescription);
+	 $("#taskId").val(rowId);
+	 $("#save_task").removeAttr('onclick');
+	 $("#save_task").attr('onclick','updateTask('+rowId+');');
+  }
+ 
+</script>
+
+<script type="text/javascript">
+ function updateTask(rowId) {
+	 $("#"+rowId+"taskName").val($("#taskName").val()); 
+	 $("#"+rowId+"taskDescription").val($("#taskDescription").val());
+	 $("#"+rowId+"taskNameValue").html($("#taskName").val()); 
+	 $("#"+rowId+"taskDescriptionValue").html($("#taskDescription").val());
+	 $("#taskName").val('');
+	 $("#taskDescription").val('');
+	 $("#addTaskText").html('Add Task');
+	 $("#save_task").removeAttr('onclick');
+	 $("#save_task").attr('onclick','addTasks();');
+	 
+ }
+ </script>
+<script> 
+$(document).ready(function(){
+	 $("#maxTsRowNum").val('1');
+	document.getElementById("project_form").reset();
+});
+</script>
+
+<script type="text/javascript">
+ function addclient() {
+     var frm = $('#project_form').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        $.ajax({
+	    	type: "GET",
+	        url: "http://localhost:8080/sourcelead/saveOrgRelations?json="+con, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Clinet --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+				}
+	        	$("#addClientId").empty();
+		        $("#addClientId").append(output);
+	        },
+	        error: function(e){
+	            
+	        }
+	    });
+	 $('#save_client').attr('data-dismiss','modal');
+	 $('#orgName').attr('');
+	 $('#webSite').attr('');
+    }
+ 
 </script>

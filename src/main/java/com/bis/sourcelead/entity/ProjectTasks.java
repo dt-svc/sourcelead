@@ -20,7 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
-@Table(name = "TASKS")
+@Table(name = "PROJECT_TASKS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class ProjectTasks {
 	

@@ -3,7 +3,6 @@ package com.bis.sourcelead.web;
 import java.util.Collection;
 import java.util.Date;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,6 +31,9 @@ public class ProjectsController {
 	 @Autowired
 	 private ProjectsService projectsService; 
 	 
+	 @Autowired
+		private OrgService orgService;
+	 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -41,9 +42,11 @@ public class ProjectsController {
 	  */
 	 
 	 @RequestMapping(value = "/project")
-		public ModelAndView projects() {
+		public ModelAndView projects() throws Exception {
 
 				ModelAndView model = new ModelAndView();
+				Collection<Org> orgsList = orgService.getOrgs();
+				model.addObject("add_client", orgsList);
 				model.setViewName("project/project");
 				return model;
 	}
@@ -95,14 +98,6 @@ public class ProjectsController {
 			superiorUser.setId(1L);
 			projects.setSuperiorUser(superiorUser);
 			
-			User projectManagerUser = new User();
-			projectManagerUser.setId(2L);
-			projects.setProjectManagerUser(projectManagerUser);
-			
-			Org org = new Org();
-			org.setId(1L);
-			projects.setOrg(org);
-			
 			projects.setProjectName("VADALU");
 			projects.setProjectStatus("Open");
 			projects.setDescription("sourcelead desc");
@@ -132,14 +127,6 @@ public class ProjectsController {
 			User superiorUser = new User();
 			superiorUser.setId(1L);
 			projects.setSuperiorUser(superiorUser);
-			
-			User projectManagerUser = new User();
-			projectManagerUser.setId(2L);
-			projects.setProjectManagerUser(projectManagerUser);
-			
-			Org org = new Org();
-			org.setId(1L);
-			projects.setOrg(org);
 			
 			projects.setProjectName("SOURCELEAD");
 			projects.setProjectStatus("Open");
