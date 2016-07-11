@@ -58,6 +58,12 @@ public class ProjectsController {
 	 @Autowired
 	 private ProjectTasksService tasksService;
 	 
+	 @Autowired
+	public UserService userService;
+	
+	@Autowired
+	public EmployeesService employeesService;
+	 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -203,6 +209,27 @@ public class ProjectsController {
 		Boolean isDeleted = projectsService.deleteProjectById(id);
 		return isDeleted;
 	  }
+	  
+	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json) throws Exception {
+		 	JSONObject jsonObj = new JSONObject(json);
+			
+			Employees employee  = new Employees();
+			User user= new User();
+			
+			user.setFirstName(jsonObj.getString("employeeFirstName"));
+			user.setLastName(jsonObj.getString("employeeLastName"));
+			user.setEmail(jsonObj.getString("employeeEmail"));
+			user.setCreatedDate(new Date());
+			User  usr=	userService.addUser(user);
+			
+			employee.setUser(user);
+			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			employee.setCreatedDate(new Date());
+			Employees  emp=	employeesService.addEmployee(employee);
+			
+			return null;
+		}
 	 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
