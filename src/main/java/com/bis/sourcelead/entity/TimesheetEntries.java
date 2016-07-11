@@ -140,7 +140,7 @@ public class TimesheetEntries {
 	private String updatedBy;
 	
 
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	/*@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
 	private  byte[] docFile;
 		
@@ -153,7 +153,7 @@ public class TimesheetEntries {
 	
 	@Column(name = "WEEK_COMMENTS")
 	@Type(type="text")
-	private String weekcomments;
+	private String weekcomments;*/
 	
 	public Long getId() {
 		return Id;
@@ -381,7 +381,7 @@ public class TimesheetEntries {
 		this.updatedBy = updatedBy;
 	}
 
-	public byte[] getDocFile() {
+	/*public byte[] getDocFile() {
 		return docFile;
 	}
 
@@ -400,8 +400,8 @@ public class TimesheetEntries {
 	public String getFileName() {
 		return fileName;
 	}
-
-	public void setFileName(String fileName) {
+*/
+	/*public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
 
@@ -411,7 +411,7 @@ public class TimesheetEntries {
 
 	public void setWeekcomments(String weekcomments) {
 		this.weekcomments = weekcomments;
-	}
+	}*/
 	 
 	 
 }

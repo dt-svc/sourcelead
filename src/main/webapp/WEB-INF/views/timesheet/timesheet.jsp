@@ -823,15 +823,22 @@ function addTimeSheetRow(submissionId) {
                e.preventDefault();
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
-       		  
-       		   /* var form = $('#timesheet_form')[0];
-       		   var formData = new FormData(form); */
+       		   mydata = mydata.replace(/[{}]/g, "");
+       		
+       		   var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); 
        		   
        		   var submissionIds = $("#submissionId").val();
        		   
         	   $.ajax({
-	      	          type : "GET",
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?json="+mydata,		
+	      	          type : "POST",
+	          	      data: formData,
+	          	      contentType : 'application/json; charset=utf-8',
+	          	      enctype: 'multipart/form-data',
+	      	          processData: false,
+	      	          contentType:false,
+	          	      dataType : 'json',
+        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
         		      success :function(result) {
         		    	  
         		      }

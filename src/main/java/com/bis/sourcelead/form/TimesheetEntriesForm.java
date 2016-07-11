@@ -1,11 +1,15 @@
 package com.bis.sourcelead.form;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class TimesheetEntriesForm {
 	
 	
 	private Integer id;
 	
 	private String[] submissionId;
+	
+	private MultipartFile file;
 
 	public Integer getId() {
 		return id;
@@ -23,6 +27,11 @@ public class TimesheetEntriesForm {
 		this.submissionId = submissionId;
 	}
 
-	 
-	
+	public MultipartFile getFile() {
+		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
+	}
 }

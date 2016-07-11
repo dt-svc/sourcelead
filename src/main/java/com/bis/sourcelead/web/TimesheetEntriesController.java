@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
@@ -77,7 +80,6 @@ public class TimesheetEntriesController {
 	@Autowired
 	private DataSource dataSource;
 
-
 	@RequestMapping(value = "/timesheet")
 	public ModelAndView registration(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
@@ -107,10 +109,27 @@ public class TimesheetEntriesController {
 
 	}
 	
-	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.GET )
-	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json
-											  ) throws Exception {
+
+	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST)
+	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
+			MultipartHttpServletRequest request) throws Exception {
+											
 		
+		
+		Iterator<String> itrator = request.getFileNames();
+        MultipartFile multiFile = request.getFile(itrator.next());
+        if(null != multiFile.getContentType()){
+    	  try {
+    		    System.out.println("file name"+multiFile.getOriginalFilename());
+    	   		/*user.setFileContentType(multiFile.getContentType());
+    	   		user.setDocFile(multiFile.getBytes());*/
+    	   
+	       }catch (Exception e) {
+    	      	 e.printStackTrace();
+			    }
+        }
+		
+		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
     	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     	TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);
