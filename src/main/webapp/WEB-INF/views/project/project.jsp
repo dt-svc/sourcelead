@@ -2,6 +2,63 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+ -->
+ 
+ <script type="text/javascript">
+function validateProjectId(){
+     var ProjectId = document.getElementById("ProjectId").value;
+     alert("hhhhhhi"+ProjectId);
+	 $('input#ProjectId').removeAttr( "record-exist record-exist-errormsg");
+	 if(ProjectId != null && ProjectId != ''){ 
+		    $( "#save_button","#save_button_draft").attr("disabled", "disabled");
+			 $("input#ProjectId").attr('style','background:url(${styleFolderName}/img/ajax-loader.gif) right center no-repeat;');
+			 $( "#save_button","#save_button_draft" ).addClass('button').val('Processing..');
+			 $.ajax({
+			    	type: "POST",
+			        url: "http://localhost:8080/sourcelead/validateProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ProjectId,
+			        contentType: "application/json; charset=utf-8",
+			        dataType: "json",
+			        /* success: function(data) {
+			        	 var result = "["+data+"]";
+			        	if((result == '[true]')){
+			        		  document.getElementById("ProjectId").setAttribute('class','error');
+							  $("input#ProjectId").after("<span class='jquery_form_error_message'>"+ProjectId+" is Already Existed</span>");
+							  document.getElementById("ProjectId").setAttribute('record-exist','yes');
+							  document.getElementById("ProjectId").setAttribute('record-exist-errorMsg',ProjectId+' is Already Existed'); 
+							  $("input#ProjectId").removeAttr("style");
+							  $("#save_button","#save_button_draft").removeAttr("disabled");
+							  $("#save_button","#save_button_draft").addClass('jobs-applybtn21 left');
+							  $("#save_button").val('Post Job');
+							  $("#save_button_draft").val('Save To Draft');
+							  
+			        	}
+			        	else{
+			        		 $('input#ProjectId').removeAttr( "class record-exist record-exist-errormsg");
+							 $('#jobSequenceNumberDiv').find('span.jquery_form_error_message').remove(); 
+							 document.getElementById("ProjectId").setAttribute('class','valid');
+							 $("input#ProjectId").removeAttr("style");
+							 $("#save_button","#save_button_draft").removeAttr("disabled");
+							 $("#save_button","#save_button_draft").removeAttr("style");
+							 $("#save_button","#save_button_draft").addClass('jobs-applybtn21 left');
+							 $("#save_button").val('Post Job');
+							 $("#save_button_draft").val('Save To Draft');
+							 $("#save_button","#save_button_draft").click(function() {
+								  if ($('#custom_form').validate(false, validationSettings)){
+								  }
+							 });
+			        	} 
+			        }, */
+			    }); 
+	    }
+    }
+</script> 	
+
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -24,13 +81,13 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Id"> Project Id </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectId" value="">
+                <input type="text" class="form-control" name="ProjectId" id="ProjectId"  onblur="validateProjectId();" value="">
                 <span class="hidden">Enter Project Id</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3"> Project Name <span class="text-danger">*</span> </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectName" value="">
+                <input type="text" class="form-control" name="ProjectName" field-name="Porject Name" data-validation="required" value="">
                 <span class="hidden">Project Name</span> </div>
             </div>
             <div class="form-group">
@@ -594,6 +651,13 @@ $(document).ready(function(){
 
 <script type="text/javascript">
  function saveProject() {
+ var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   }; 
+	 if ($('#project_form').validate(false, validationSettings)){ 
      var frm = $('#project_form').serializeFormJSON();
         var con = JSON.stringify(frm);
         $.ajax({
@@ -613,31 +677,29 @@ $(document).ready(function(){
 		        
 	        },
 	    });
+       		 return true;
+		}else{
+			return false;
+		}
     }
+ $('body').on('blur', '#project_form', function() {
+		$("#project_form").showHelpOnFocus();;
+		$("#project_form").validateOnBlur(false, validationSettings);  
+	});
 </script>
 
+
 <script type="text/javascript">
- function addEmployee() {
-     var frm = $('#project_form').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        alert(con);
-        $.ajax({
-	    	type: "POST",
-	        url: "http://localhost:8080/sourcelead/addNewEmployee?json="+con, 
-	        success: function(data) {
-	        	alert("add employee success");
-	        	/* var json = JSON.parse(data);
-	        	var output = "";
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
-		        		output = output + "<option value='" +opt.Id+ "'>"+opt.description+"</option>";
-				}
-	        	$("#maxTsRowNum").empty();
-		        $("#maxTsRowNum").append(output); */
-		        
-	        },
-	    });
-    }
+function addEmployee() {
+var frm = $('#project_form').serializeFormJSON();
+var con = JSON.stringify(frm);
+$.ajax({
+type: "POST",
+url: "http://localhost:8080/sourcelead/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
+success: function(data) {
+alert("add employee success");
+
+},
+});
+}
 </script>

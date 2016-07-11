@@ -1,9 +1,12 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,31 +19,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
-import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
-
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-
+import com.bis.sourcelead.service.UserService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
-
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 
 
@@ -118,6 +110,21 @@ public class ProjectsController {
 			 resultJson = toJSON(tasksList);
 			 return resultJson;
 	   }
+	 
+	 
+    @RequestMapping(value = "/validateProjectId",  method = RequestMethod.POST)
+    public @ResponseBody String validateJobSequenceNumber(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
+	    	
+	        String result = "";
+	        ArrayList<String> info = new ArrayList<String>();
+			Boolean flag = projectsService.projectIdValidation(projectId);
+			info.add(Boolean.toString(flag));
+			String[] temp = (String[]) info.toArray(new String[] {});
+			JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+			result = mJSONArray.toString();
+			return result;
+	    }
+		
 	 
 	 
 	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
