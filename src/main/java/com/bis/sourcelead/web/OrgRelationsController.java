@@ -108,6 +108,123 @@ public class OrgRelationsController {
         });
         return xstream.toXML(obj);
     }
-	
+	/*
+	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.GET )
+	public @ResponseBody String saveTimesheet(@RequestParam(value="json", required=false) String json
+											 ) throws Exception {
+		String result = "";
+		String resultJson = null;
+		json=json.replaceAll("\\[", "\\'");
+		json=json.replaceAll("\\]", "\\'");
+		JSONObject jsonObj = new JSONObject(json);
+    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    	
+    	String proId = jsonObj.getString("projectId");
+    	String[] words = proId.split(",");
+    	Integer[] ids ;
+    	for(String w:words){  
+    		id
+    	}  
+    	
+    	String[] projectIds =   jsonObj.getNames("projectId");
+    	
+    	//Collection<TimesheetEntries> timesheetEntriesList = timesheetEntries(jsonObj,projectId);
+    	String[] projectIds = new String[2];
+    	projectIds[0] = "1";
+    	projectIds[1] = "2";
+
+    	for(String projectId : projectIds){
+    		
+		   
+	   	TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+	   	timesheetSubmissions.setStatus("agreed");
+	   	timesheetSubmissions.setSubmissionStatus("not agreed");
+	   	ProjectMembers pm = new ProjectMembers();
+	   	pm.setId((long) 1);
+	   	timesheetSubmissions.setProjectMembers(pm);
+	   	timesheetSubmissions.setStartDate(new Date());
+	   	timesheetSubmissions.setEndDate(new Date());
+	   	timesheetSubmissions.setUpdatedDate(new Date());
+	   	timesheetSubmissions.setCreatedDate(new Date());
+	   	timesheetSubmissionsDao.addTimesheetSubmissions(timesheetSubmissions);
+			   
+			String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber"+projectId);
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			int rowNum = 0;
+			
+			for (int c = 1; c < maxCount; c++) {
+				if (isNullOrEmpty(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id")))
+					continue;
+				
+				TimesheetEntries timesheetEntries = new TimesheetEntries();
+				timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+				timesheetEntries.setStartDate(new Date());
+				timesheetEntries.setEndDate(new Date());
+				timesheetEntries.setCreatedDate(new Date());
+				timesheetEntries.setUpdatedDate(new Date());
+				
+			   timesheetEntries.setMonHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
+				timesheetEntries.setMoncomments(jsonObj.getString(c+"project"+projectId+"comment1Id"));
+				Tasks monTask = new Tasks();
+				monTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setMonTask(monTask);
+				
+				
+				timesheetEntries.setTueHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay2Id"));
+				timesheetEntries.setTuecomments(jsonObj.getString(c+"project"+projectId+"comment2Id"));
+				Tasks tueTask = new Tasks();
+				tueTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setTueTask(tueTask);
+				
+				
+
+				timesheetEntries.setWedHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay3Id"));
+				timesheetEntries.setWedcomments(jsonObj.getString(c+"project"+projectId+"comment3Id"));
+				Tasks wedTask = new Tasks();
+				wedTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setWedTask(wedTask);
+				 
+				timesheetEntries.setThuHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				timesheetEntries.setThucomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				Tasks thuTask = new Tasks();
+				thuTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setThuTask(thuTask);
+				 
+				 
+				timesheetEntries.setFriHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				Tasks friTask = new Tasks();
+				friTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setFriTask(friTask);
+				 
+				 
+				 
+				timesheetEntries.setSatHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				timesheetEntries.setSatcomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				Tasks satTask = new Tasks();
+				satTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setSatTask(satTask);
+				 
+				 
+				timesheetEntries.setSunHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
+				timesheetEntries.setSuncomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
+				Tasks sunTask = new Tasks();
+				sunTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
+				timesheetEntries.setSunTask(sunTask);
+				 
+				
+				timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
+				rowNum++;
+				
+				timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
+				
+			}
+    	}
+    	
+		result =  "success";
+		resultJson = toJSON(result);
+		return resultJson;
+	}
+	*/
 	
 }

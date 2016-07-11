@@ -66,7 +66,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public List<ProjectTasks> getAllTasks() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ProjectTasks> adTaskList = null;
-		Query taskListQuery = session.createQuery("from Tasks");
+		Query taskListQuery = session.createQuery("from ProjectTasks");
 		adTaskList = taskListQuery.list();
 		;
 		return adTaskList;

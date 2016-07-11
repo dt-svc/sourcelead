@@ -44,7 +44,6 @@ public class ProjectTasks {
 	@Column(name = "STATUS")
 	private String status;
 	
-	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
     private Date createdDate; 
@@ -52,7 +51,6 @@ public class ProjectTasks {
     @Column(name = "CREATED_BY")
 	private String createdBy;
 		
-    @NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "UPDATED_DATE")
     private Date updatedDate; 
