@@ -1,9 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
-import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 @Repository
@@ -76,13 +75,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		List<TimesheetSubmissions> timesheetSubmissionsList = null;
-		Query timesheetSubmissionsListQuery= session.createQuery("from TimesheetSubmissions");
-		timesheetSubmissionsList=timesheetSubmissionsListQuery.list();;
-		return timesheetSubmissionsList;
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds) throws Exception {
+			
+		    // TODO Auto-generated method stub
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TimesheetSubmissions ts where ts.projectMembers.id IN(:projectMemberIds)";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setParameterList("projectMemberIds", projectMemberIds).list();
+			return timesheetSubmissionsList;
+			
+			/*and (DATE(ts.endDate) BETWEEN :startDate and :endDate)*/
 	}
 
 }

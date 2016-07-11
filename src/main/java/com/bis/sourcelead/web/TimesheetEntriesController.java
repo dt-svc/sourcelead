@@ -20,19 +20,23 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
-import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+import antlr.collections.List;
  
 
 @RestController 
@@ -44,6 +48,12 @@ public class TimesheetEntriesController {
 	
 	@Autowired
 	public TimesheetSubmissionsDao timesheetSubmissionsDao;
+	
+	@Autowired
+	public TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	public ProjectMembersService projectMembersService;
 	
 	@Autowired
 	public TimesheetEntriesDao timesheetEntriesDao;
@@ -66,6 +76,14 @@ public class TimesheetEntriesController {
 	@RequestMapping(value = "/timesheet")
 	public ModelAndView registration() throws Exception {
 			ModelAndView model = new ModelAndView();
+			
+			
+			/*Integer employeeId = 1;
+			java.util.List<Integer> projectMemberIds =  projectMembersService.getAllProjectMembers();
+			
+			timesheetSubmissionsService.getAllTimesheetSubmissions(new Date(), new Date(), projectMemberIds);*/
+			
+			
 			Collection<Projects> projectsList =   projectsService.getAllProjects();
 			model.addObject("sourcelead_projectsList", projectsList);
 			
@@ -133,52 +151,52 @@ public class TimesheetEntriesController {
 				
 			    timesheetEntries.setMonHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));
 				timesheetEntries.setMoncomments(jsonObj.getString(c+"project"+projectId+"comment1Id"));
-				Tasks monTask = new Tasks();
+				/*Tasks monTask = new Tasks();
 				monTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				timesheetEntries.setMonTask(monTask);
+				timesheetEntries.setMonTask(monTask);*/
 				
 				
 				timesheetEntries.setTueHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay2Id"));
 				timesheetEntries.setTuecomments(jsonObj.getString(c+"project"+projectId+"comment2Id"));
-				Tasks tueTask = new Tasks();
+				/*Tasks tueTask = new Tasks();
 				tueTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				timesheetEntries.setTueTask(tueTask);
+				timesheetEntries.setTueTask(tueTask);*/
 				
 				
 
 				 timesheetEntries.setWedHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay3Id"));
 				 timesheetEntries.setWedcomments(jsonObj.getString(c+"project"+projectId+"comment3Id"));
-				 Tasks wedTask = new Tasks();
+				 /*Tasks wedTask = new Tasks();
 				 wedTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				 timesheetEntries.setWedTask(wedTask);
+				 timesheetEntries.setWedTask(wedTask);*/
 				 
 				 timesheetEntries.setThuHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
 				 timesheetEntries.setThucomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
-				 Tasks thuTask = new Tasks();
+				 /*Tasks thuTask = new Tasks();
 				 thuTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				 timesheetEntries.setThuTask(thuTask);
+				 timesheetEntries.setThuTask(thuTask);*/
 				 
 				 
 				 timesheetEntries.setFriHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
 				 timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
-				 Tasks friTask = new Tasks();
+				 /*Tasks friTask = new Tasks();
 				 friTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				 timesheetEntries.setFriTask(friTask);
+				 timesheetEntries.setFriTask(friTask);*/
 				 
 				 
 				 
 				 timesheetEntries.setSatHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
 				 timesheetEntries.setSatcomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
-				 Tasks satTask = new Tasks();
+				 /*Tasks satTask = new Tasks();
 				 satTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				 timesheetEntries.setSatTask(satTask);
+				 timesheetEntries.setSatTask(satTask);*/
 				 
 				 
 				 timesheetEntries.setSunHours(jsonObj.getString(c+"project"+projectId+"timeSheetDay4Id"));
 				 timesheetEntries.setSuncomments(jsonObj.getString(c+"project"+projectId+"comment4Id"));
-				 Tasks sunTask = new Tasks();
+				 /*Tasks sunTask = new Tasks();
 				 sunTask.setId(Long.parseLong(jsonObj.getString(c+"project"+projectId+"task1Id")));
-				 timesheetEntries.setSunTask(sunTask);
+				 timesheetEntries.setSunTask(sunTask);*/
 				 
 				
 				 /*timesheetEntries.setFricomments(jsonObj.getString(c+"project"+projectId+"timeSheetDay1Id"));*/
@@ -232,8 +250,8 @@ public class TimesheetEntriesController {
         result = result +"<td>";
         result = result +"<div> ";
         result = result +"<select id='1project"+pro.getId()+"task1Id' name='1project"+pro.getId()+"task1Id' >";
-        Collection<Tasks> tasksList = tasksService.getAllTasks();
-        for(Tasks task : tasksList){
+        Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
+        for(ProjectTasks task : tasksList){
         	   result = result +"<option value='"+task.getId()+"'>"+task.getTaskName()+"</option>";
         }
         result = result +"</select>";

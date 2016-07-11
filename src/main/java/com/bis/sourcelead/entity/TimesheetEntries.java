@@ -39,6 +39,10 @@ public class TimesheetEntries {
 	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_TASK")
+	private ProjectTasks projectTask;
+	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "START_DATE")
@@ -60,10 +64,6 @@ public class TimesheetEntries {
 	private String entryStatus;
 	
 	 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "MON_TASK")
-	private ProjectTasks monTask;
-	 
 	@Column(name = "MON_HOURS")
     private String monHours;
 	  
@@ -71,10 +71,6 @@ public class TimesheetEntries {
 	@Type(type="text")
     private String moncomments;
 	 
-	 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "TUE_TASK")
-	private ProjectTasks tueTask;
 	  
 	@Column(name = "TUE_HOURS")
 	private String tueHours;
@@ -83,9 +79,6 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String tuecomments;
 	  
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "WED_TASK")
-	private ProjectTasks wedTask;
 	  
 	@Column(name = "WED_HOURS")
 	private String wedHours;
@@ -94,10 +87,6 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String wedcomments;
 	  
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "THU_TASK")
-	private ProjectTasks thuTask;
 	  
 	@Column(name = "THU_HOURS")
 	private String thuHours;
@@ -106,20 +95,12 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String thucomments;
 	  
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "FRI_TASK")
-	private ProjectTasks friTask;
-	  
 	@Column(name = "FRI_HOURS")
 	private String friHours;
 	  
 	@Column(name = "FRI_COMMENTS")
 	@Type(type="text")
 	private String fricomments;
-	  
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "SAT_TASK")
-	private ProjectTasks satTask;
 	  
 	@Column(name = "SAT_HOURS")
 	private String satHours;
@@ -128,10 +109,6 @@ public class TimesheetEntries {
 	@Type(type="text")
 	private String satcomments;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "SUN_TASK")
-	private ProjectTasks sunTask;
-	  
 	@Column(name = "SUN_HOURS")
 	private String sunHours;
 	  
@@ -161,9 +138,6 @@ public class TimesheetEntries {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	
-	@javax.persistence.Transient
-	private String[] projectId;
 
 	public Long getId() {
 		return Id;
@@ -173,7 +147,6 @@ public class TimesheetEntries {
 		Id = id;
 	}
 
-
 	@JsonIgnore
 	public TimesheetSubmissions getTimesheetSubmissions() {
 		return timesheetSubmissions;
@@ -181,6 +154,15 @@ public class TimesheetEntries {
 
 	public void setTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) {
 		this.timesheetSubmissions = timesheetSubmissions;
+	}
+    
+	@JsonIgnore
+	public ProjectTasks getProjectTask() {
+		return projectTask;
+	}
+
+	public void setProjectTask(ProjectTasks projectTask) {
+		this.projectTask = projectTask;
 	}
 
 	public Date getStartDate() {
@@ -223,15 +205,6 @@ public class TimesheetEntries {
 		this.entryStatus = entryStatus;
 	}
 
-	@JsonIgnore
-	public ProjectTasks getMonTask() {
-		return monTask;
-	}
-
-	public void setMonTask(ProjectTasks monTask) {
-		this.monTask = monTask;
-	}
-	
 	public String getMonHours() {
 		return monHours;
 	}
@@ -391,61 +364,6 @@ public class TimesheetEntries {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	@JsonIgnore
-	public ProjectTasks getTueTask() {
-		return tueTask;
-	}
-
-	public void setTueTask(ProjectTasks tueTask) {
-		this.tueTask = tueTask;
-	}
-	@JsonIgnore
-	public ProjectTasks getWedTask() {
-		return wedTask;
-	}
-
-	public void setWedTask(ProjectTasks wedTask) {
-		this.wedTask = wedTask;
-	}
-	@JsonIgnore
-	public ProjectTasks getThuTask() {
-		return thuTask;
-	}
-
-	public void setThuTask(ProjectTasks thuTask) {
-		this.thuTask = thuTask;
-	}
-	@JsonIgnore
-	public ProjectTasks getFriTask() {
-		return friTask;
-	}
-
-	public void setFriTask(ProjectTasks friTask) {
-		this.friTask = friTask;
-	}
-	@JsonIgnore
-	public ProjectTasks getSatTask() {
-		return satTask;
-	}
-
-	public void setSatTask(ProjectTasks satTask) {
-		this.satTask = satTask;
-	}
-	@JsonIgnore
-	public ProjectTasks getSunTask() {
-		return sunTask;
-	}
-
-	public void setSunTask(ProjectTasks sunTask) {
-		this.sunTask = sunTask;
-	}
-
-	public String[] getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(String[] projectId) {
-		this.projectId = projectId;
-	}
+	 
 	 
 }
