@@ -47,27 +47,6 @@ public class EmployeesController {
 		return emp;
 	}
 	
-	@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
-	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json) throws Exception {
-	 	JSONObject jsonObj = new JSONObject(json);
-		
-		Employees employee  = new Employees();
-		User user= new User();
-		
-		user.setId(1l);
-		user.setFirstName(jsonObj.getString("employeeFirstName"));
-		user.setLastName(jsonObj.getString("employeeLastName"));
-		user.setEmail(jsonObj.getString("employeeEmail"));
-		user.setCreatedDate(new Date());
-		User  usr=	userService.addUser(user);
-		
-		employee.setUser(user);
-		employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		employee.setCreatedDate(new Date());
-		Employees  emp=	employeesService.addEmployee(employee);
-		
-		return null;
-	}
 	
 	@RequestMapping(value = "/updateEmployee", method = RequestMethod.GET)
     public @ResponseBody  Employees updateEmployee() throws Exception
