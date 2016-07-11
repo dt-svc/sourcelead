@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -58,24 +59,34 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	{
 		
 		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.socketFactory.port", "465");
-		props.put("mail.smtp.socketFactory.class",
-				"javax.net.ssl.SSLSocketFactory");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", "465");
+		
+		
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.stmp.user", "sourcelead.bis@gmail.com");          
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.password", "password");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class",
+                   "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+	        
+	        
+        Session session = Session.getDefaultInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                String username = "sourcelead.bis@gmail.com";
+                String password = "Pwd1234567";
+                return new PasswordAuthentication(username,password); 
+            }
+        });
 
-		Session session = Session.getDefaultInstance(props,
-			new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("peopleaxisindia@gmail.com","Peopleaxis!123");
-				}
-			});
 
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("peopleaxisindia@gmail.com", emailMessage.getFromName()));
+			message.setFrom(new InternetAddress("sourcelead.bis@gmail.com", emailMessage.getFromName()));
 			
             ArrayList<String> recipientList = new ArrayList<String>();
 			
