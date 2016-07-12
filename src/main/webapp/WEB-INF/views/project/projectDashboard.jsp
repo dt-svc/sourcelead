@@ -685,12 +685,18 @@ $(document).ready(function() {
 </script> 
 
 <script>
-  function pojectDetails(projectId){   
+  function pojectDetails(projectId){  
+	  
+    $.ajax({
+   	type: "POST",
+    url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
+    		   success: function(data) {
+	           alert("json"+data.id);
 	var result = ""; 
-	result = result + '      <div class="project_tabs_inn_table">';
+    result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>Active</b><i id="ac-drop" class="fa fa-edit">';
+	result = result + '					<strong>Status:</strong><span><b>'+data.status+'</b><i id="ac-drop" class="fa fa-edit">';
 	result = result + '						<ul>';
 	result = result + '							<li>Option 1</li>';
 	result = result + '							<li>Option 2</li>';
@@ -701,7 +707,7 @@ $(document).ready(function() {
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" value="BIS India" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project manager:</strong>';
@@ -716,18 +722,16 @@ $(document).ready(function() {
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
-	result = result + '					<span><input type="text" value="DD/MM/YY" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" value="'+data.startDate+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+data.endDate+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description">';
-	result = result + 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
-	result = result + 'Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.';
-	result = result + 'a reader will be distracted by the readable content of a page when looking at its layout a reader will be distracted by the readable content of a page when looking at its layout  ';
+	result = result + data.description;
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
@@ -743,11 +747,13 @@ $(document).ready(function() {
 	result = result + '			</div>';
 	result = result + '      </div>';
 	result = result + '  </div>   ';     
-	result = result + '</div>';
+	result = result + '</div>'; 
 		
 	$("#tab-3").empty();  
 	$("#tab-3").append(result);
 	
+  }
+   });
   }
 </script>  
 

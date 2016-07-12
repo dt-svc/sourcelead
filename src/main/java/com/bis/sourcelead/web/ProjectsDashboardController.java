@@ -5,9 +5,9 @@ import java.io.Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -61,20 +61,19 @@ public class ProjectsDashboardController {
     }
 	
 	/**
-	 * this method for get project details by Id
+	 * get project details by Id
 	 * @param id
 	 * @return
 	 * @throws Exception
 	 */
-	
-	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
-	 public Projects getProjectById(@PathVariable Long id) throws Exception { 
-		    Projects projects = projectsService.getProjectById(id);
+	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
+	 public Projects getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
+		    Projects projects = projectsService.getProjectById(projectId);
 		    return projects;
 	  }
 	 
 	 
-	 private String toJSON(Object obj){
+	private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
 	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
