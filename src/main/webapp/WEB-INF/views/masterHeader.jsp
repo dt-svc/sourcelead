@@ -135,18 +135,19 @@
               <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
+          <li> <a href="#" title="Alerts" id="alert" onclick="filter();"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
                <c:if test="${!empty notificationList}">
-                <c:forEach var="report" items="${notificationList}" varStatus="theCount" end="4">
+                <c:forEach var="report" items="${notificationList}" end="4">
                 <li>
                   <div class="clearfix msg">
                     <div class="msg-img"> <span>
                     <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
                     <div class="msg-content">
                       <p>${report.body}</p>
-                      <span>3 days ago at 7:58 pm - ,${report.createdDate}</span> </div>
+                     <c:out value="${userId}" /></p>
+                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span> </div>
                   </div>
                 </li>
                 </c:forEach>
@@ -169,4 +170,20 @@
       </div>
     </nav>
   </header>
+  
+  <script>
+function filter(){   
+	var sourceleadUrl = '${sourceleadUrl}';
+	var  orgCode ='sourcelead.com';
+	var locationCode = 'in.sourcelead.com';
+	 $.ajax({
+	      type: "POST",
+	  	  url: "${sourceleadUrl}"+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&userId=2&orgCode="+orgCode+"&locationCode="+locationCode,
+	  			  success :function(data) {
+	    	      			
+      			 }							     
+	});  
+}
+</script>
+}
   <!-- Header Area --> 

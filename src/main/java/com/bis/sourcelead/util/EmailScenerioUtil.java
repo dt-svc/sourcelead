@@ -113,7 +113,7 @@ public void sendNotification(String actionLink,User loginUser,EmailScenario emai
 		User u1 = new User();
 		u.setId(1L);
 		u1.setId(2L);
-	//new email logic
+	//new Notification logic
 	Notifications notification = new Notifications();
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
