@@ -5,10 +5,13 @@ import java.io.Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -56,6 +59,20 @@ public class ProjectsDashboardController {
 			model.setViewName("project/projectDashboard");
 			return model;
     }
+	
+	/**
+	 * get project details by Id
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	
+	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
+	 public Projects getProjectById(@PathVariable Long id) throws Exception { 
+		    Projects projects = projectsService.getProjectById(id);
+		    return projects;
+	  }
+	 
 	 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
