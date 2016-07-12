@@ -267,9 +267,14 @@ function validateProjectId(){
             </div>
             <div class="form-group">
               <label class="col-md-3">Assign Team</label>
+              
+              <div id="assignTeamSavingDiv" style="display:none;">
+              </div>
+              <input type="hidden" name="team" value=""/>
+              
               <div class="col-md-9">
                 <div class="form-icon"> <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Select Team" class="form-control" data-target="#assignTeam" data-toggle="modal">
+                  <input type="text" value="Select Team" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();">
                   </span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span> </div>
                 <span class="hidden">Select Team</span> 
                 <!-- Modal content Assign Team-->
@@ -288,95 +293,10 @@ function validateProjectId(){
                               <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
                           </div>
                         </div>
-                        <div class="modal-body-custom mt clearfix">
-                          <table cols="0" class="table table-bordered table-striped  clearfix">
-                            <tbody>
-                              <tr>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                        <div class="modal-body-custom mt clearfix" id="employeesList"></div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -436,7 +356,7 @@ function validateProjectId(){
                         </div>
                       </div>
                       <div class="modal-footer">
-                      	<input type="submit" value="Save" id="add_employee" onclick="addEmployee();" class="btn btn-primary">
+                      	<button type="button" id="add_employee" class="btn btn-primary" data-dismiss="modal" onclick="addEmployee();">Save</button>
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -695,9 +615,81 @@ $.ajax({
 type: "POST",
 url: "http://localhost:8080/sourcelead/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
 success: function(data) {
-alert("add employee success");
 
 },
 });
+}
+</script>
+
+<script type="text/javascript">
+function getTeamMembers() {
+    $.ajax({
+    	type: "POST",
+        url: "http://localhost:8080/sourcelead/getEmployeesList?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	
+        	output = output+' <table cols="0" class="table table-bordered table-striped  clearfix">';
+            output = output+' <tbody>';
+            output = output+' <tr>';
+            output = output+' <th>&nbsp;&nbsp;</th>';
+            output = output+' <th>Name</th>';
+            output = output+' <th>Email</th>';
+            output = output+' <th>Role</th>';
+            output = output+' <th>Start Date</th>';
+            output = output+' <th>End Date</th>';
+            output = output+' </tr>';
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<tr>"+
+                    "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
+                    "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
+                    "<td>"+opt.user.email+"</td>"+
+                    "<td>Senior Recruiter</td>"+
+                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                    "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
+                    "</div></td>"+
+                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                    "<input id='dummyendDate"+opt.id+"' type='text' name='Date' value='' class='form-control'>"+
+                    "</div></td>"+
+                    "</tr>";
+			}
+        	output = output+' </tbody>';
+	        output = output+' </table>';
+	        
+        	$("#employeesList").empty();
+	        $("#employeesList").append(output);
+        },
+        error: function(e){
+        }
+    });
+    $('#add_employee').attr('data-dismiss','modal');
+	$('#employeeFirstName').val('');
+	$('#employeeLastName').val('');
+	$('#employeeEmail').val('');
+}
+</script>
+
+
+<script>
+function assignEmployee(){
+	    var result = "";
+	    var count = 1;
+	    $(".myCheckbox").each(function(){
+	        var localId =this.id;
+	        if($(this).is(':checked')){
+		        var startDate = $("#dummystartDate"+localId).val();
+		        var endDate = $("#dummyendDate"+localId).val();
+				result = result +"<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+				result = result +"<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+				result = result +"<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+				count++;
+	        }
+	    });
+	    result = result +"<input type='hidden' name='employeeMaxCount' id='employeeMaxCount' value='"+count+"'/>";
+	    $("#assignTeamSavingDiv").empty();
+	    $("#assignTeamSavingDiv").append(result);
 }
 </script>

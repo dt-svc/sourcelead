@@ -75,8 +75,8 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.debug("In Employee getAllEmployees method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
-		Query employeesListQuery= session.createQuery("from Employee");
-		addItemsList=employeesListQuery.list();;
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user");
+		addItemsList=employeesListQuery.list();
 		return addItemsList;
 	}
 

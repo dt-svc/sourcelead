@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -62,6 +64,9 @@ public class ProjectsController {
 
 	 @Autowired
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 
+	 @Autowired
+		public ProjectMembersService projectMembersService;
 	 
 	 /**
 	  * This method for get project by id
@@ -135,6 +140,26 @@ public class ProjectsController {
 				tasks.setProjectId(projects);
 				
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+			}
+			
+			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+			int empMaxCount = Integer.parseInt(employeeMaxCount);
+			for (int c = 1; c < empMaxCount; c++) {
+				
+				ProjectMembers pm = new ProjectMembers();
+				
+				Employees emp = new Employees();
+				emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
+				pm.setEmployee(emp);
+				
+				pm.setProjects(projects);
+				
+				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
+				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
+				pm.setCreatedDate(new Date());
+				pm.setUpdatedDate(new Date());
+				
+				projectMembersService.saveProjectMember(pm);
 			}
 			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
@@ -270,6 +295,14 @@ public class ProjectsController {
 			Employees  emp=	employeesService.addEmployee(employee);
 			
 			return null;
+		}
+	  
+	  @RequestMapping(value = "/getEmployeesList",  method = RequestMethod.POST)
+		public @ResponseBody  String getEmployeesList() throws Exception {
+		 	String resultJson = null;
+			Collection<Employees> employeeList = employeesService.getAllEmployees();
+			resultJson = toJSON(employeeList);
+			return resultJson;
 		}
 	 
 	 private String toJSON(Object obj){
