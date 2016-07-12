@@ -682,7 +682,7 @@ function addTimeSheetRow(submissionId) {
 			var maxRowNum = parseInt(rowNum);
 			$("#maxRowNumber"+submissionId).val(maxRowNum + 1); 
 			var row = tbl.insertRow(maxRowNum-1);
-			row.setAttribute("id", "timesheetRow"+maxRowNum+"project"+submissionId);
+			row.setAttribute("id", "timesheetRow"+maxRowNum+"submission"+submissionId);
 			
 			  
 			var cell0 = row.insertCell(0);
@@ -829,7 +829,7 @@ function addTimeSheetRow(submissionId) {
        		   var formData = new FormData(form); 
        		   
        		   var submissionIds = $("#submissionId").val();
-       		   
+       		   alert("data"+mydata);
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -934,12 +934,10 @@ $(document).click(function(){
 
 function removeTimeSheetRow(rowId,submissionId) { 
 	
-	
 			var rowNum = $("#maxRowNumber"+submissionId).val();
 			var maxRowNum = parseInt(rowNum);
 			$("#maxRowNumber"+submissionId).val(maxRowNum - 1); 
-	
-	
+			
 			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).style.display = 'none';
 			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).value= '';
 			 var  rId = "timesheetRow"+rowId+"submission"+submissionId;

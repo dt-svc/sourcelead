@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -53,5 +54,15 @@ public class UserRoleDaoImpl implements UserRoleDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN'";
+	    List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+        return userRoleList;
+	}
 
 }

@@ -52,9 +52,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	@Override
-	public Boolean projectIdValidation(Long projectId) throws Exception {
+	public Integer projectIdValidation(Long projectId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class deleteProject method...");
-		Boolean validation = projectsDao.projectIdValidation(projectId);
+		Integer validation = projectsDao.projectIdValidation(projectId);
 		return validation;
 	}
 	
