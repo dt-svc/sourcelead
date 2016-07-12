@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Account Settings</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/home'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">
@@ -105,7 +105,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" value="Save">
-							  <input type="submit" class="btn btn-default" value="Cancel">
+							  <input type="submit" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
 							</div>
 					  </div>
 			 </div>
@@ -147,7 +147,7 @@
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'">
 					</div>
 				  </div>
 				  </form:form>

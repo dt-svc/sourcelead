@@ -99,7 +99,7 @@ public class UserProfileController {
 			try {
 				user = userService.getUserById(userId);
 				
-				if(user != null && user.getDocFile() !=null)
+				if(user != null && user.getDocFile() != null)
 				{
 					user.setFileContentType("image/jpeg");
 					InputStream in = new ByteArrayInputStream(user.getDocFile());

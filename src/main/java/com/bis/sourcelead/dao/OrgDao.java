@@ -24,4 +24,6 @@ public interface OrgDao {
 	
 	String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
+	public Org getOrgByOrgCode(String orgCode) throws Exception;
+	
 }

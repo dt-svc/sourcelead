@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 
 /**
@@ -145,4 +147,20 @@ public class OrgDaoImpl implements OrgDao {
 		List<Org> orgList = crit.list();
 		return orgList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Org getOrgByOrgCode(String orgCode) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Org> org = new ArrayList<Org>();
+		logger.debug("getOrgByOrgCode start");
+		org = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).list();
+		logger.debug("getOrgByOrgCode end");
+		if (org.size() > 0) {
+			return org.get(0);
+		} else {
+			return null;
+		}
+   	}
 }
