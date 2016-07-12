@@ -35,109 +35,35 @@
 			</thead>	
                 <tr>
                 	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
+                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('1');">Vannam<i class="fa fa-binoculars"></i></div></td>
                     <td data-title="Manager"><div>Mahesh</div></td>
                     <td data-title="Date"><div>form 15/9 to 20/9</div></td>
                     <td data-title="Client"><div>Client 1</div></td>
                     <td data-title="Team"><div>Team a</div></td>
                     <td data-title="Status"><div><b class="proj_active">Active</b></div></td>
                 </tr>
+                
                 <tr>
                 	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
+                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar();">Vannam<i class="fa fa-binoculars"></i></div></td>
                     <td data-title="Manager"><div>Mahesh</div></td>
                     <td data-title="Date"><div>form 15/9 to 20/9</div></td>
                     <td data-title="Client"><div>Client 1</div></td>
                     <td data-title="Team"><div>Team a</div></td>
                     <td data-title="Status"><div><b class="proj_active">Active</b></div></td>
                 </tr>
-                <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_deactivate">Deactivate</b></div></td>
-                </tr>
-                <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b>Option</b></div></td>
-                </tr> 
-                <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_process">Process</b></div></td>
-                </tr> 
-                <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_active">Active</b></div></td>
-                </tr>                                                                                                
+                
             </tbody>
         </table>
 	</div>
-    <div class="project_table_res">
-		<table>
-			<tbody>
-				<tr>
-					<th>Project name</th>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>
-				<tr>
-					<td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-				</tr>				
-			</tbody>
-		</table>
-	</div>
-	
-	
 </div>
 
 <div class="project_side_wrap">
 	<div class="project_side_wrap_inn">
-    	<h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
-        
-<div class="project_side_wrap_inn_tabs">
+    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+     <div id="projectSideDiv">
+     </div>   
+  <!-- <div class="project_side_wrap_inn_tabs">
     <ul class="project-tabs-menu">
         <li class="current"><a href="#tab-1">Employees</a></li>
         <li><a href="#tab-2">Tasks</a></li>
@@ -333,7 +259,7 @@ a reader will be distracted by the readable content of a page when looking at it
             </div>
         </div>        
     </div>
-</div>        
+</div>       -->  
       
 
 	<div class="project_inn_mask"></div>
@@ -600,9 +526,9 @@ a reader will be distracted by the readable content of a page when looking at it
 
 //project side bar
 $(document).ready(function() {
- $(".proj_show").click(function(){
+ /* $(".proj_show").click(function(){
 		$(".project_side_wrap").addClass("project_side_wrap_active");
-	});
+	}); */
  $(".proj_close").click(function(){
 		$(".project_side_wrap").removeClass("project_side_wrap_active");
 	});	
@@ -610,7 +536,7 @@ $(document).ready(function() {
 
 //project side bar tabs
 $(document).ready(function() {
-	$("#tab-1").show()
+	$("#tab-1").show();
  $(".project-tabs-menu a").click(function(event) {
      event.preventDefault();
      $(this).parent().addClass("current");
@@ -649,5 +575,183 @@ $(document).ready(function() {
 
 </script> 
  
+ <script>
+ function projectSideBar(projectId){
+	  	    var result = "";
+	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
+		  	result = result + '<ul class="project-tabs-menu">';
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+');" >Employees</a></li>';
+		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+');">Tasks</a></li>';
+		  	result = result + ' <li><a href="#tab-3" onClick="pojectDetails('+projectId+');" >Details</a></li>';
+		  	result = result + ' <div class="clearfix"></div>';
+		  	result = result + ' </ul>';
+		  	 
+		  	result = result + '<div class="project_tabs">';
+		  	result = result + ' <div id="tab-1" class="project_tabs_inn">';
+		  	result = result + '</div>';
+		  	
+		  	result = result + '<div id="tab-2" class="project_tabs_inn">';
+		  	result = result + '</div>';
+		  	
+		  	result = result + '<div id="tab-3" class="project_tabs_inn">';
+		  	result = result + '</div>';
+		  	
+		  	result = result + '</div>'; 
+		  	$("#projectSideDiv").empty(); 
+		    $("#projectSideDiv").append(result);  	
+		    $(".project_side_wrap").addClass("project_side_wrap_active");
+			
+		    projectEmployee(projectId);
+ }
+ </script> 
+<script>
+  function projectEmployee(projectId){
+	    var result = "";
+	    result = result + '    	<div class="project_tabs_inn_head">';
+		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+		result = result + '		</div>';
+	    result = result + '        <div class="project_tabs_inn_table">';
+		result = result + '	<table>';
+		result = result + '	<tbody>';
+		result = result + '		<tr>';
+        result = result + '	 	<th>Emp name</th>';
+        result = result + '	     <th>Start Date</th>';
+        result = result + '	     <th>End Date</th>';
+        result = result + '	     <th>Approved hrs</th>';
+        result = result + '	     <th>Rejected hrs</th>';
+        result = result + '	     <th>Open hrs</th>';
+        result = result + '	     <th>Wait for approval</th>';
+        result = result + '	     <th>Edit</th>';
+        result = result + '	 </tr>';
+        result = result + '	 <tr>';
+        result = result + '	 	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>';
+        result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
+        result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
+        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+        result = result + '	     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+        result = result + '	 </tr>';
+	    result = result + '	     </tbody>';
+	    result = result + '	 </table>   ';         
+	    result = result + '	     </div>';
+	    $("#tab-1").empty();  
+	    $("#tab-1").append(result);  
+	    
+	    $("#tab-1").show();
+		$(".project-tabs-menu a").click(function(event) {
+		     event.preventDefault();
+		     $(this).parent().addClass("current");
+		     $(this).parent().siblings().removeClass("current");
+		     var tab = $(this).attr("href");
+		     $(".project_tabs_inn").not(tab).css("display", "none");
+		     $(tab).fadeIn();
+		 });
+  }
+  
+</script>
 
-    </html>
+<script>
+  function projectTask(projectId){
+	var result = "";
+	result = result + '	<div class="project_tabs_inn_head">';
+	result = result + '		<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
+	result = result + '    <div class="project_tabs_inn_table">';
+	result = result + '	<table>';
+	result = result + '	<tbody>';
+	result = result + '    	<tr>';
+	result = result + '        	<th>Task name</th>';
+	result = result + '            <th>Task description</th>';
+	result = result + '            <th>Edit</th>';
+	result = result + '        </tr>';
+	result = result + '        <tr>';
+	result = result + '        	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>';
+	result = result + '            <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>';
+	result = result + '            <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	result = result + '        </tr>';
+	result = result + '        <tr>';
+	result = result + '        	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>';
+	result = result + '            <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>';
+	result = result + '            <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	result = result + '        </tr>';
+	result = result + '    </tbody>';
+	result = result + '</table>   ';         
+	result = result + '    </div>';
+	$("#tab-2").empty();  
+	$("#tab-2").append(result);
+  }
+</script> 
+
+<script>
+  function pojectDetails(projectId){   
+	var result = ""; 
+	result = result + '      <div class="project_tabs_inn_table">';
+	result = result + '			<div class="project_details">';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Status:</strong><span><b>Active</b><i id="ac-drop" class="fa fa-edit">';
+	result = result + '						<ul>';
+	result = result + '							<li>Option 1</li>';
+	result = result + '							<li>Option 2</li>';
+	result = result + '							<li>Option 3</li>';
+	result = result + '							<li>Option 4</li>';
+	result = result + '						</ul>';
+	result = result + '					</i></span>';
+	result = result + '				</div></span><div class="clearfix"></div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Project name:</strong>';
+	result = result + '					<span><input type="text" value="BIS India" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Project manager:</strong>';
+	result = result + '					<span><input type="text" value="Srinivas" placeholder="Project manager" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Client:</strong>';
+	result = result + '					<span><input type="text" value="Cognizant" placeholder="Client" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Team members:</strong><span>25</span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Start date:</strong>';
+	result = result + '					<span><input type="text" value="DD/MM/YY" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>End date:</strong>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="clearfix"></div>';
+	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
+	result = result + '				<textarea placeholder="Description">';
+	result = result + 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
+	result = result + 'Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.';
+	result = result + 'a reader will be distracted by the readable content of a page when looking at its layout a reader will be distracted by the readable content of a page when looking at its layout  ';
+	result = result + '				</textarea>';
+	result = result + '				<div class="clearfix"></div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Created By:</strong><span>Srinivas</span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Created date:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Last Updated:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>';
+	result = result + '				</div>';					
+	result = result + '				<div class="clearfix"></div>';
+	result = result + '			</div>';
+	result = result + '      </div>';
+	result = result + '  </div>   ';     
+	result = result + '</div>';
+		
+	$("#tab-3").empty();  
+	$("#tab-3").append(result);
+	
+  }
+</script>  
+
+  
+  
+ 
+</html>
