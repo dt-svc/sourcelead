@@ -115,20 +115,6 @@ public class TimesheetEntriesController {
 			MultipartHttpServletRequest request) throws Exception {
 											
 		
-		
-		Iterator<String> itrator = request.getFileNames();
-        MultipartFile multiFile = request.getFile(itrator.next());
-        if(null != multiFile.getContentType()){
-    	  try {
-    		    System.out.println("file name"+multiFile.getOriginalFilename());
-    	   		/*user.setFileContentType(multiFile.getContentType());
-    	   		user.setDocFile(multiFile.getBytes());*/
-    	   
-	       }catch (Exception e) {
-    	      	 e.printStackTrace();
-			    }
-        }
-		
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
     	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -185,6 +171,21 @@ public class TimesheetEntriesController {
 				 
 				timesheetEntries.setSunHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id"));
 				timesheetEntries.setSuncomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
+				
+				
+				timesheetEntries.setWeekcomments(jsonObj.getString("weekComment"));
+				Iterator<String> itrator = request.getFileNames();
+		        MultipartFile multiFile = request.getFile(itrator.next());
+		        if(null != multiFile.getContentType()){
+		    	  try {
+		    		    timesheetEntries.setFileName(multiFile.getOriginalFilename());
+		    	   		timesheetEntries.setFileContentType(multiFile.getContentType());
+		    	   		timesheetEntries.setDocFile(multiFile.getBytes());
+			       }catch (Exception e) {
+		    	      	 e.printStackTrace();
+					    }
+		        }
+				
 				
 				rowNum++;
 				

@@ -612,7 +612,7 @@ function maskme(){
         
     <div class="timesheet_bot">
     	<div class="timesheet_week_comm">
-        	<textarea placeholder="comments here..."></textarea>
+        	<textarea name="weekComment" placeholder="comments here..."></textarea>
             <span>
             	<input type="file" name="docFile" ><label><i class="glyphicon glyphicon-save"></i>Choose file</label>
             </span>
