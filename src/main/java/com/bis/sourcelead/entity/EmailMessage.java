@@ -18,6 +18,8 @@ public class EmailMessage implements Serializable {
 	
 	private String fromEmail;
 	
+	private String fromName;
+	
 	private String subject;
 	
 	private String messageBody;
@@ -58,6 +60,14 @@ public class EmailMessage implements Serializable {
 
 	public void setFromEmail(String fromEmail) {
 		this.fromEmail = fromEmail;
+	}
+
+	public String getFromName() {
+		return fromName;
+	}
+
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
 	}
 
 	public String getSubject() {

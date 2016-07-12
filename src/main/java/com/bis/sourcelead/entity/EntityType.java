@@ -18,6 +18,9 @@ public class EntityType {
 	
 	@Column(name = "ENTITY_NAME", nullable = false)
 	private String entityName;
+	
+	@Column(name = "ENTITY_TYPE", nullable = false)
+	private String entityType;
 
 	public Long getId() {
 		return id;
@@ -35,4 +38,11 @@ public class EntityType {
 		this.entityName = entityName;
 	}
 
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
+	}
 }

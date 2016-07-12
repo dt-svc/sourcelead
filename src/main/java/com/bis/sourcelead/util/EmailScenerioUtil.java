@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,12 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.util.Constants;
 
 /**
@@ -33,7 +37,9 @@ public class EmailScenerioUtil {
 	
 	@Autowired
 	EmailMessageService emailMessageService;
-
+	
+	@Autowired
+	NotificationsService notificationsService;
   
 	public String bulidSubject(String subject,Map<String, String> globalVarsMap) throws Exception{
 		
@@ -60,18 +66,16 @@ public class EmailScenerioUtil {
 		return emailTemplate ;
 	} 
 	
-	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList){
-		
-		   //storeEmailInfoInDB(emailTemplate , emailMessage , emailScenario);
+	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
 			emailMessageService.sendEmail(emailMessage,emailRecipientList,attachmentList);
 		}
 	
 	
-public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,String orgCode,String locationCode , EmailMessage message , String userCode) throws Exception{
+public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,String entityType,String orgCode,String locationCode , EmailMessage message , String userCode) throws Exception{
 	
-	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, orgCode, locationCode);
+	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(uniqueScenarioName, entityType, orgCode, locationCode);
 	    
-		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, Constants.SOURCELEAD_ORGCODE, Constants.SOURCELEAD_LOCATIONCODE_IN);
+		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(uniqueScenarioName, entityType, Constants.SOURCELEAD_ORGCODE, Constants.SOURCELEAD_LOCATIONCODE_IN);
 		
 		if(scenarioTemplates == null){
 			
@@ -101,4 +105,30 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 		
 		return scenarioTemplates;
 	}
+
+
+public void sendNotification(String actionLink,User loginUser,EmailScenario emailScenario) throws Exception{
+	
+		User u = new User();
+		User u1 = new User();
+		u.setId(1L);
+		u1.setId(2L);
+	//new email logic
+	Notifications notification = new Notifications();
+	notification.setActionLink(actionLink);
+	notification.setBody(emailScenario.getBody());
+	notification.setNotificationFrom(u);
+	notification.setNotificationTo(u1);
+	notification.setNotificationScenarioId(emailScenario);
+	notification.setMode(Constants.NOTIFICATION_UNREAD);
+	notification.setCreatedBy("usercode");
+	notification.setCreatedDate(new Date());
+	notification.setLocationCode(emailScenario.getLocationCode());
+	notification.setOrgCode(emailScenario.getOrgCode());
+	
+	Notifications notification1 = notificationsService.saveNotification(notification);
+	
+	}
+
+
 }
