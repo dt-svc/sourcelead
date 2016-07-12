@@ -700,7 +700,7 @@ $(document).ready(function() {
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onfocusout="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project manager:</strong>';
@@ -751,6 +751,19 @@ $(document).ready(function() {
   }
 </script>     
 
+<script> 
+function  inlineEditForProjects(projectId,localFieldName){
+	var fieldName = localFieldName;
+	var fieldValue = $("#"+localFieldName).val();
+	 $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 }); 
+}
+</script> 
   
   
  

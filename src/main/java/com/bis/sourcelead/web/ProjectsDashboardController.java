@@ -75,6 +75,16 @@ public class ProjectsDashboardController {
 		    return projects;
 	  }
 	 
+	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
+	 public String updateProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
+		    Projects projects = projectsService.getProjectById(projectId);
+		    if(fieldName.equalsIgnoreCase("projectName")){
+		    	projects.setProjectName(fieldValue);
+		    }
+		    projectsService.updateProject(projects);
+		    return null;
+	  }
+	 
 	 
 	private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
