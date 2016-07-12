@@ -683,8 +683,7 @@ $(document).ready(function() {
     $.ajax({
    	type: "POST",
     url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
-    		   success: function(data) {
-	           alert("json"+data.id);
+    success: function(data) {
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
@@ -723,7 +722,7 @@ $(document).ready(function() {
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
-	result = result + '				<textarea placeholder="Description">';
+	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
 	result = result + data.description;
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';

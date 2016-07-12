@@ -81,6 +81,9 @@ public class ProjectsDashboardController {
 		    if(fieldName.equalsIgnoreCase("projectName")){
 		    	projects.setProjectName(fieldValue);
 		    }
+		    else if (fieldName.equalsIgnoreCase("description")) {
+		    	projects.setDescription(fieldValue);
+			}     
 		    projectsService.updateProject(projects);
 		    return null;
 	  }
