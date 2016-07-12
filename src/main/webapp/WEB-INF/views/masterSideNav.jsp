@@ -27,7 +27,7 @@
           <li><a href="javascript:void(0)"><span><i class="fa fa-envelope"></i></span>Mailbox</a></li>
           <li><a href="javascript:void(0)"><span><i class="fa fa-calendar"></i></span>Calendar</a></li>
           <li><a href="javascript:void(0)"><span><i class="fa fa-users"></i></span>Users</a></li>
-          <li><a href="<c:url value='/project'/>"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
+          <li><a href="<c:url value='/projectDashboard'/>"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
           <li><a href="<c:url value='/timesheet'/>"><span><i class="fa fa-bar-chart"></i></span>Timesheet</a></li>
           <li><a href="javascript:void(0)"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
           <li><a href="javascript:void(0)"><span><i class="fa fa-file-text"></i></span>Documentation</a></li>
