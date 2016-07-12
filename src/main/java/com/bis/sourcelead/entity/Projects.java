@@ -32,6 +32,9 @@ public class Projects {
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	@Column(name = "PROJECT_SEQUENCE_NUMBER")
+	private String projectSequeneNumber;
+	
     @Column(name = "PROJECT_NAME")
     private String projectName;
  
@@ -80,6 +83,16 @@ public class Projects {
 	public Long getId() {
 		return id;
 	}
+	
+	public String getProjectSequeneNumber() {
+		return projectSequeneNumber;
+	}
+
+	public void setProjectSequeneNumber(String projectSequeneNumber) {
+		this.projectSequeneNumber = projectSequeneNumber;
+	}
+
+
 
 	public void setId(Long id) {
 		this.id = id;

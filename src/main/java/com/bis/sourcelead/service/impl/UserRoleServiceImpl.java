@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception{
 		return userRoleDao.getLoginUserPrimaryRole(userId);
 	}
-	
+
+	@Override
+	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
+		// TODO Auto-generated method stub
+		return userRoleDao.getUsersBasedOnUserRoles();
+	}
 
 }

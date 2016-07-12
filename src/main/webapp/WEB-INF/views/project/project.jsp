@@ -2,57 +2,55 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
- -->
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ 
  
  <script type="text/javascript">
 function validateProjectId(){
-     var ProjectId = document.getElementById("ProjectId").value;
-     alert("hhhhhhi"+ProjectId);
-	 $('input#ProjectId').removeAttr( "record-exist record-exist-errormsg");
-	 if(ProjectId != null && ProjectId != ''){ 
-		    $( "#save_button","#save_button_draft").attr("disabled", "disabled");
-			 $("input#ProjectId").attr('style','background:url(${styleFolderName}/img/ajax-loader.gif) right center no-repeat;');
-			 $( "#save_button","#save_button_draft" ).addClass('button').val('Processing..');
+     var projectId = document.getElementById("CreateProjectId").value;
+	 $('input#CreateProjectId').removeAttr( "record-exist record-exist-errormsg");
+	 if(projectId != null && projectId != ''){ 
 			 $.ajax({
 			    	type: "POST",
-			        url: "http://localhost:8080/sourcelead/validateProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ProjectId,
+			        url: "http://localhost:8080/sourcelead/validateProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId,
 			        contentType: "application/json; charset=utf-8",
 			        dataType: "json",
-			        /* success: function(data) {
-			        	 var result = "["+data+"]";
-			        	if((result == '[true]')){
-			        		  document.getElementById("ProjectId").setAttribute('class','error');
-							  $("input#ProjectId").after("<span class='jquery_form_error_message'>"+ProjectId+" is Already Existed</span>");
-							  document.getElementById("ProjectId").setAttribute('record-exist','yes');
-							  document.getElementById("ProjectId").setAttribute('record-exist-errorMsg',ProjectId+' is Already Existed'); 
-							  $("input#ProjectId").removeAttr("style");
-							  $("#save_button","#save_button_draft").removeAttr("disabled");
-							  $("#save_button","#save_button_draft").addClass('jobs-applybtn21 left');
-							  $("#save_button").val('Post Job');
-							  $("#save_button_draft").val('Save To Draft');
-							  
-			        	}
-			        	else{
-			        		 $('input#ProjectId').removeAttr( "class record-exist record-exist-errormsg");
-							 $('#jobSequenceNumberDiv').find('span.jquery_form_error_message').remove(); 
-							 document.getElementById("ProjectId").setAttribute('class','valid');
-							 $("input#ProjectId").removeAttr("style");
-							 $("#save_button","#save_button_draft").removeAttr("disabled");
-							 $("#save_button","#save_button_draft").removeAttr("style");
-							 $("#save_button","#save_button_draft").addClass('jobs-applybtn21 left');
-							 $("#save_button").val('Post Job');
-							 $("#save_button_draft").val('Save To Draft');
-							 $("#save_button","#save_button_draft").click(function() {
-								  if ($('#custom_form').validate(false, validationSettings)){
-								  }
-							 });
-			        	} 
-			        }, */
+			        success: function(data) {
+			        	
+				        	 if(data == 'duplicate'){
+				        		 document.getElementById("CreateProjectId").setAttribute('class','error form_input');
+								 $("input#CreateProjectId").after("<span class='jquery_form_error_message'>"+projectId+" is Already Existed</span>");
+								  document.getElementById("CreateProjectId").setAttribute('record-exist','yes');
+								 document.getElementById("CreateProjectId").setAttribute('record-exist-errorMsg',projectId+' is Already Existed'); 
+								  $("input#CreateProjectId").removeAttr("style");
+			        		 }
+				        	 else{
+				        		 $('input#CreateProjectId').removeAttr( "class record-exist record-exist-errormsg");
+								 $('#CreateProjectId').find('span.jquery_form_error_message').remove(); 
+								 $('#CreateProjectId').find('span.record-exist-errorMsg').remove(); 
+								 document.getElementById("CreateProjectId").setAttribute('class','valid form-control');
+								 $("input#CreateProjectId").removeAttr("style");
+								 $( "#CreateProjectId" ).removeAttr("style");
+								 $( "#CreateProjectId" ).removeAttr("jquery_form_error_message");
+								 $( "#CreateProjectId" ).click(function() {
+									  if ($('#project_form').validate(false, validationSettings)){
+									  }
+								 });
+				        	} 
+				        	 
+				       },
+						error: function(e){
+									            
+					  }
 			    }); 
 	    }
     }
@@ -81,13 +79,13 @@ function validateProjectId(){
             <div class="form-group">
               <label class="col-md-3" for="Project Id"> Project Id </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectId" id="ProjectId"  onblur="validateProjectId();" value="">
+                <input type="text" class="form-control" name="ProjectId" id="CreateProjectId"  onblur="validateProjectId();" value="">
                 <span class="hidden">Enter Project Id</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3"> Project Name <span class="text-danger">*</span> </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectName" field-name="Porject Name" data-validation="required" value="">
+                <input type="text" class="form-control" name="ProjectName" field-name="Project Name" data-validation="required" value="">
                 <span class="hidden">Project Name</span> </div>
             </div>
             <div class="form-group">
@@ -199,11 +197,11 @@ function validateProjectId(){
               <label class="col-md-3" for="Project Manager">Manager</label>
               <div class="col-md-9">
               <div class="form-icon-min">
-                <select class="form-control select-bg">
-                  <option>Level Manager</option>
-                  <option>Manager-2</option>
-                  <option>Manager-3</option>
-                  <option>Manager-4</option>
+                <select class="form-control select-bg" name="level1Manager">
+                  <option>-- Select Manager --</option>
+	                  <c:forEach var="option" items="${user_RoleList}">
+	                     <option value="${option.id}"}>${option.user.firstName}</option>
+	                  </c:forEach>
                 </select>
                     <span class="btn btn-default formic1 addLevel">Add Level-II</span>
                     </div>
@@ -213,11 +211,11 @@ function validateProjectId(){
             <div class="form-group level-second">
               <label class="col-md-3" for="Level-II">Level-II</label>
               <div class="col-md-9">
-                <select class="form-control select-bg">
-                  <option>Level-II</option>
-                  <option>Manager-2</option>
-                  <option>Manager-3</option>
-                  <option>Manager-4</option>
+                <select class="form-control select-bg" name="level2Manager">
+              		<option value='' >-- Select Manager --</option>
+	                  <c:forEach var="option" items="${user_RoleList}">
+	                     <option value="${option.id}"}>${option.user.firstName}</option>
+	                  </c:forEach>
                 </select>
                 </div>
             </div>

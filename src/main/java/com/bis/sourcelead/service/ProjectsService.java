@@ -14,7 +14,7 @@ public interface ProjectsService {
 	
 	public Boolean deleteProjectById(Long id) throws Exception;
 	
-	public Boolean projectIdValidation(Long id) throws Exception;
+	public Integer projectIdValidation(Long id) throws Exception;
 	
 	Collection<Projects> getAllProjects() throws Exception;
 }

@@ -96,24 +96,21 @@ public class ProjectsDaoImpl implements ProjectsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Boolean projectIdValidation(Long projectId) throws Exception {
+	public Integer projectIdValidation(Long projectId) throws Exception {
 		
-	  StringBuilder queryString = new StringBuilder().append("from Projects projects where projects.id = :projectId");
-		
-		FilterNameValueMap<String, Object> filterNameValueMap = new FilterNameValueMap<String, Object>();
-		filterNameValueMap.put("projectId", projectId);
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects projects where projects.id = :projectId";
-		List results = session.createQuery(query).setLong("projectId", projectId).list();
 		
+		String query ="select count(*)from Projects projects where projects.projectSequeneNumber = :projectId";
 		
-		Boolean flag = false;
-		if(results != null && !results.isEmpty()){
-			flag = true;
-		}
+		List<Long> deptCount =   session.createQuery(query.toString()).setLong("projectId", projectId)
+        										.list();
+			Integer count = 0;
+			if(deptCount != null && !deptCount.isEmpty()){
+					count = deptCount.get(0).intValue();
+			}
+			return count;
 		
-		return flag;
 	}
 
      public class FilterNameValueMap<key,value> extends HashMap<key,value>{
