@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.Projects;
 
 @Repository
 public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchyDao{
@@ -27,6 +31,17 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 			Session session = this.sessionFactory.getCurrentSession();
 			session.save(projectApproverHierarchy);
 			return projectApproverHierarchy;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy  left join fetch projectHirachy.approverUserId  where   projectHirachy.projectId =:projectId";
+	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).list();
+	        return projectHirachyList;
+		
 	}
 	
 }

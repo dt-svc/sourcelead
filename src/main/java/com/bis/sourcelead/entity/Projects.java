@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -79,6 +80,13 @@ public class Projects {
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private Set<ProjectMembers> projectMembers;
+    
+    @Transient
+    private String managerLevel1;
+    
+    @Transient
+    private String managerLevel2;
+    
 
 	public Long getId() {
 		return id;
@@ -212,5 +220,22 @@ public class Projects {
 	public void setProjectMembers(Set<ProjectMembers> projectMembers) {
 		this.projectMembers = projectMembers;
 	}
+
+	public String getManagerLevel1() {
+		return managerLevel1;
+	}
+
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
+	}
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
+	}
+	
 	
 }

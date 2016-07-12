@@ -17,4 +17,8 @@ public interface ProjectsDao {
 	public Integer projectIdValidation(Long projectId) throws Exception;
 	
 	Collection<Projects> getAllProjects() throws Exception;
+	
+	Collection<Projects> getAllProjectsAndManagers() throws Exception;
+	
+	
 }

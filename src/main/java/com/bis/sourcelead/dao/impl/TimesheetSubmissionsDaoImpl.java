@@ -79,8 +79,8 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from TimesheetSubmissions ts where ts.projectMembers.id IN(:projectMemberIds)";  
-			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setParameterList("projectMemberIds", projectMemberIds).list();
+			String query = "from TimesheetSubmissions ts ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).list();
 			return timesheetSubmissionsList;
 			
 			/*and (DATE(ts.endDate) BETWEEN :startDate and :endDate)*/

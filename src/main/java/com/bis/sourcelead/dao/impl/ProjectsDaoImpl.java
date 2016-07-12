@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 
 @Repository
@@ -21,6 +24,10 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+
+    @Autowired
+	private ProjectApproverHierarchyDao projectApproverHierarchyDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 
@@ -91,6 +98,34 @@ public class ProjectsDaoImpl implements ProjectsDao{
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Projects.class);
         List<Projects> projectsList = crit.list();
+        return projectsList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<Projects> getAllProjectsAndManagers() throws Exception {
+		logger.debug("In Projects getAllProjects method");
+        Session session = this.sessionFactory.getCurrentSession();
+        
+        String query = "from  Projects projects";
+        List<Projects> projectsList  =   session.createQuery(query.toString()).list();
+        ArrayList<Projects> jobsList = new ArrayList<Projects>();
+        
+        for(Projects projects: projectsList){
+        	
+        	Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
+            for(ProjectApproverHierarchy projectApproverHierarchy : projectApproverHierarchiesList){
+            	if(projectApproverHierarchy.getLevel().equalsIgnoreCase("Level1")){
+            			projects.setManagerLevel1(projectApproverHierarchy.getApproverUserId().getFirstName() +""+projectApproverHierarchy.getApproverUserId().getLastName());
+            	}
+            	if(projectApproverHierarchy.getLevel().equalsIgnoreCase("Level2")){
+        			projects.setManagerLevel2(projectApproverHierarchy.getApproverUserId().getFirstName() +""+projectApproverHierarchy.getApproverUserId().getLastName());
+            	}
+            }
+        
+            jobsList.add(projects);
+        }
+        
         return projectsList;
 	}
 

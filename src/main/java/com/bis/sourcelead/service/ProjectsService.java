@@ -17,4 +17,6 @@ public interface ProjectsService {
 	public Integer projectIdValidation(Long id) throws Exception;
 	
 	Collection<Projects> getAllProjects() throws Exception;
+	
+	Collection<Projects> getAllProjectsAndManagers() throws Exception;
 }

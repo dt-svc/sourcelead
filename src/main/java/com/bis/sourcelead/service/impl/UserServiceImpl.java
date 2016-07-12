@@ -97,4 +97,10 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	@Override
+	public Collection<User> getUsersByUserRoles() throws Exception {
+		// TODO Auto-generated method stub
+		return userDao.getUsersByUserRoles();
+	}
+
 }

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -157,6 +158,18 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<User> getUsersByUserRoles() throws Exception {
+		// TODO Auto-generated method stub
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles = '1') ";
+	    List<User> userRoleList = session.createQuery(query.toString()).list();
+        return userRoleList;
+        
+	}
 	
 	
 	

@@ -199,8 +199,8 @@ function validateProjectId(){
               <div class="form-icon-min">
                 <select class="form-control select-bg" name="level1Manager">
                   <option>-- Select Manager --</option>
-	                  <c:forEach var="option" items="${user_RoleList}">
-	                     <option value="${option.id}"}>${option.user.firstName}</option>
+	                  <c:forEach var="option" items="${user_List}">
+	                     <option value="${option.id}">${option.firstName}</option>
 	                  </c:forEach>
                 </select>
                     <span class="btn btn-default formic1 addLevel">Add Level-II</span>
@@ -213,8 +213,8 @@ function validateProjectId(){
               <div class="col-md-9">
                 <select class="form-control select-bg" name="level2Manager">
               		<option value='' >-- Select Manager --</option>
-	                  <c:forEach var="option" items="${user_RoleList}">
-	                     <option value="${option.id}"}>${option.user.firstName}</option>
+	                  <c:forEach var="option" items="${user_List}">
+	                     <option value="${option.id}">${option.firstName}</option>
 	                  </c:forEach>
                 </select>
                 </div>
@@ -224,9 +224,9 @@ function validateProjectId(){
               <div class="col-md-9">
                 <div class="form-icon">
                   <select class="form-control select-bg" name="selectClient" id="addClientId">
-                  <option>-- Select Client --</option>
+                  <option value=''>-- Select Client --</option>
                   <c:forEach var="option" items="${add_client}">
-  						<option value="${option.id}"}>${option.orgName}</option>
+  						<option value="${option.id}">${option.orgName}</option>
 				  </c:forEach>
                   </select>
                   <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" data-target="#addClient"></i> </div>
@@ -392,7 +392,8 @@ function validateProjectId(){
           <div class="col-lg-12">
             <div class="pull-right">
               <input type="submit" value="Save" id="save_project" onclick="saveProject();"  class="btn btn-primary">
-              <input type="button" value="Cancel" class="btn btn-default ml">
+              <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"  class="btn btn-default ml">
+              
             </div>
           </div>
         </div>

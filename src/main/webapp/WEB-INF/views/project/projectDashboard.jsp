@@ -39,8 +39,7 @@
                 <tr>
                 	<td data-title="Id"><div>${report.id}</div></td>
                     <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>${report.superiorUser.firstName} &nbsp;&nbsp;${report.superiorUser.lastName}</div></td>
-                    <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
+					<td data-title="Manager"><div>${report.managerLevel1} &nbsp;,&nbsp;${report.managerLevel2}</div></td>                    <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
                     <td data-title="Client"><div>Client 1</div></td>
                     <td data-title="Team"><div>Team a</div></td>
                     <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>

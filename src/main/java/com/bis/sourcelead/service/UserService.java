@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -22,6 +23,8 @@ public interface UserService  {
 	public User findByEmail(String email)  throws Exception;
 	
 	public User saveUserProfile(UserProfile userProfile,MultipartHttpServletRequest request,User user) throws Exception;
+	
+	public Collection<User> getUsersByUserRoles() throws Exception;
 	
 }	
 		

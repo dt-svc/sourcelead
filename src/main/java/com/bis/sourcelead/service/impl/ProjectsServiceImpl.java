@@ -51,6 +51,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsList;
 	}
 	
+	public Collection<Projects> getAllProjectsAndManagers() throws Exception {
+		logger.debug("In ProjectsServiceImpl class getAllProjectsAndManagers method...");
+		Collection<Projects> projectsList = projectsDao.getAllProjectsAndManagers();
+		return projectsList;
+	}
+	
 	@Override
 	public Integer projectIdValidation(Long projectId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class deleteProject method...");

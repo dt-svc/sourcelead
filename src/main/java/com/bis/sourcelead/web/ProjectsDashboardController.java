@@ -68,11 +68,14 @@ public class ProjectsDashboardController {
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard() throws Exception {
 
+
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
-		Collection<Projects> projectsList = projectsService.getAllProjects();
+		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagers();
 		model.addObject(projectsList);
 		return model;
+
+
     }
 	
 	/**
