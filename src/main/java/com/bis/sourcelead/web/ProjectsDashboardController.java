@@ -104,6 +104,20 @@ public class ProjectsDashboardController {
 	  }
 	 
 	 
+	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
+	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
+		    
+		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
+		    if(fieldName.equalsIgnoreCase("taskName")){  
+		    	projectTasks.setTaskName(fieldValue);
+		    }
+		    else if (fieldName.equalsIgnoreCase("description")) {
+		    	projectTasks.setDescription(fieldValue);
+			}     
+		    tasksService.updateTasks(projectTasks);
+		    return null;
+	  }
+	 
 	 
 	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,

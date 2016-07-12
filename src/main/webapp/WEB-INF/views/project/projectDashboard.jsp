@@ -674,9 +674,9 @@ function projectEmployee(projectId){
 			   	        	for (var i=0; i<json.length; i++)
 			   				{
 			   		        		var opt = json[i];
-			   		        		result = result + '<tr>';
-			   		        		result = result + '<td><div><input type="text" value="'+opt.taskName+'" class="project_inline_field"></div></td>';
-			   		        		result = result + '<td><div><input type="text" value="'+opt.description+'" class="project_inline_field"></div></td>';
+			   		        		result = result + '<tr>';        
+			   		        		result = result + '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.Id+',\'taskName\');"  id="taskName'+opt.Id+'" value="'+opt.taskName+'"  class="project_inline_field"></div></td>';
+			   		        		result = result + '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.Id+',\'description\');" id="description'+opt.Id+'" value="'+opt.description+'" class="project_inline_field"></div></td>';
 			   		        		result = result + '<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
 			   		        		result = result + '</tr>'; 
 			   		        		
@@ -940,4 +940,18 @@ $(document).ready(function(){
 		});
 	}
 </script>
+
+<script> 
+function  inlineEditForProjectsTasks(taskId,localFieldName){
+	var fieldName = localFieldName;
+	var fieldValue = $("#"+localFieldName+""+taskId).val();
+	 $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 }); 
+}
+</script> 
 </html>
