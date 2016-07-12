@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.NotificationsDao;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class NotificationsDaoImpl implements NotificationsDao{
@@ -40,8 +42,10 @@ public class NotificationsDaoImpl implements NotificationsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer getNotificationsCountByUserId(Long userId, String orgCode, String locationCode) {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "select count(*)  from Notifications nf where nf.notificationScenarioId = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode ";
+		String mode = Constants.NOTIFICATION_UNREAD;
+		String query = "select count(*)  from Notifications nf where nf.notificationScenarioId = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.mode =:mode ";
 		List<Long> notificationList = (List<Long>)session.createQuery(query).setLong("userId", userId)
+																	.setString("mode", mode)
 				   													.setString("orgCode", orgCode)
 				   													.setString("locationCode", locationCode).list();
 		Integer notificationCount = null;
@@ -61,11 +65,31 @@ public class NotificationsDaoImpl implements NotificationsDao{
 	public List<Notifications> getNotificationsListByUserId(Long notificationTo, String orgCode, String locationCode) {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Notifications nf where nf.notificationTo = :notificationTo  and nf.orgCode = :orgCode and nf.locationCode = :locationCode ";
+		String mode = Constants.NOTIFICATION_UNREAD;
+		String query = "from Notifications nf where nf.notificationTo = :notificationTo  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.mode =:mode";
 		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("notificationTo", notificationTo)
+																	.setString("mode", mode)
 				   													.setString("orgCode", orgCode)
 				   													.setString("locationCode", locationCode).list();
 		return notificationList;
+	}
+
+	/**
+	 * used for change the notifications mode as read
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateNotificationStatusAsRead(Long userId, String orgCode, String locationCode) {
+		// TODO Auto-generated method stub
+		Session session =  this.sessionFactory.getCurrentSession();
+		String mode = Constants.NOTIFICATION_READ;
+		Query query = session.createQuery("update Notifications nf set nf.mode =:mode where nf.notificationTo = :userId and nf.orgCode = :orgCode and nf.locationCode = :locationCode ");
+		query.setLong("userId", userId);
+		query.setString("mode", mode);
+		query.setString("orgCode", orgCode);
+		query.setString("locationCode", locationCode);
+		int result = query.executeUpdate();
+		return result;			  
 	}
 
 }

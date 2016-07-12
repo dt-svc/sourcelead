@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -56,6 +57,43 @@ public class Notifications {
 	
 	@Column(name="CREATED_BY")
 	private String createdBy;
+	
+	//to get only time from datetime
+	@Transient
+	private String time;
+	
+	//to get only date from datetime
+	@Transient
+	private String dateValue;
+	
+	//to calculate days
+	@Transient
+	private Long calDays;
+
+	
+	public Long getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(Long calDays) {
+		this.calDays = calDays;
+	}
+
+	public String getDateValue() {
+		return dateValue;
+	}
+
+	public void setDateValue(String dateValue) {
+		this.dateValue = dateValue;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
 
 	public Long getId() {
 		return id;
