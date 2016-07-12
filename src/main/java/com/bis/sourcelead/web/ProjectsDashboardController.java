@@ -61,7 +61,7 @@ public class ProjectsDashboardController {
     }
 	
 	/**
-	 * get project details by Id
+	 * this method for get project details by Id
 	 * @param id
 	 * @return
 	 * @throws Exception
