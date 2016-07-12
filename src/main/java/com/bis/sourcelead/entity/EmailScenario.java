@@ -21,6 +21,9 @@ public class EmailScenario {
 	@Column(name="SCENARIO_NAME")
 	private String scenarioName;
 	
+	@Column(name = "ENTITY_TYPE", nullable = false)
+	private String entityType;
+	
 	@Column(name="UNIQUE_SCENARIO_NAME")
 	private String uniqueScenarioName;
 	
@@ -80,6 +83,14 @@ public class EmailScenario {
 
 	public void setScenarioName(String scenarioName) {
 		this.scenarioName = scenarioName;
+	}
+
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
 	}
 
 	public String getUniqueScenarioName() {
