@@ -2,16 +2,21 @@ package com.bis.sourcelead.web;
 
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
@@ -75,6 +80,46 @@ public class ProjectsDashboardController {
 		    return projects;
 	  }
 	 
+	 
+	 
+	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
+			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		 	String resultJson = null;
+		 	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			
+			for (int c = 1; c < maxCount; c++) {
+				ProjectTasks  tasks  = new ProjectTasks();
+				tasks.setTaskName(jsonObj.getString(c+"taskName"));
+				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+				tasks.setCreatedDate(new Date());
+				tasks.setUpdatedDate(new Date());
+				Projects projects = projectsService.getProjectById(projectId);
+				tasks.setProjectId(projects);	
+				
+				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+			}
+			List<ProjectTasks> taskList=tasksService.getAllTasks();
+		 	
+			 resultJson = toJSON(taskList);
+			 return resultJson;
+		 	
+	 }
+	 
+	 
+	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
+	 public @ResponseBody  String getProjectTasks(
+			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+		 	
+		 	 String resultJson = null;
+			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
+			 resultJson = toJSON(taskList);
+			 return resultJson;
+		 	
+	 }
 	 
 	private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
