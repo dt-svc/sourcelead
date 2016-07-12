@@ -10,6 +10,7 @@
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Projects</h2>
+             <a href="<c:url value='/project'/>"><span><i class="fa fa-bar-chart"></i></span>New Projects</a>
           </div>
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
@@ -33,27 +34,19 @@
                     <th>Status</th>
                 </tr>
 			</thead>	
+              
+			<c:forEach var="report" items="${projectsList}" varStatus="raId">	
                 <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('1');">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
+                	<td data-title="Id"><div>${report.id}</div></td>
+                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+                    <td data-title="Manager"><div>${report.superiorUser.firstName} &nbsp;&nbsp;${report.superiorUser.lastName}</div></td>
+                    <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
                     <td data-title="Client"><div>Client 1</div></td>
                     <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_active">Active</b></div></td>
+                    <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
                 </tr>
-                
-                <tr>
-                	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar();">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td data-title="Manager"><div>Mahesh</div></td>
-                    <td data-title="Date"><div>form 15/9 to 20/9</div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                
-            </tbody>
+            </c:forEach>          
+           </tbody>
         </table>
 	</div>
 </div>

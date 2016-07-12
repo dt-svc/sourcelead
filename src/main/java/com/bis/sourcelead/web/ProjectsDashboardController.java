@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +56,11 @@ public class ProjectsDashboardController {
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard() throws Exception {
 
-			ModelAndView model = new ModelAndView();
-			model.setViewName("project/projectDashboard");
-			return model;
+		ModelAndView model = new ModelAndView();
+		model.setViewName("project/projectDashboard");
+		Collection<Projects> projectsList = projectsService.getAllProjects();
+		model.addObject(projectsList);
+		return model;
     }
 	
 	/**
