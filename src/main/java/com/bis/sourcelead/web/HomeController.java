@@ -127,7 +127,16 @@ public class HomeController {
 		return model;
 
 	}
+   
+   @RequestMapping(value = "/userRegistration")
+	public ModelAndView userRegistration() {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("registration/userCreation");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+//		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+		return model;
 
+	}
 
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
