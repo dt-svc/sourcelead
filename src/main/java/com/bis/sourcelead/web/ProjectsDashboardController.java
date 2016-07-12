@@ -16,10 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -49,6 +53,9 @@ public class ProjectsDashboardController {
 	
 	@Autowired
 	public EmployeesService employeesService;
+	
+	@Autowired
+	public ProjectMembersService projectMembersService;
 	 
 	 /**
 	  * This method for get project by id
@@ -133,6 +140,35 @@ public class ProjectsDashboardController {
 			 return resultJson;
 		 	
 	 }
+	 
+	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
+	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
+		 String resultJson = null;
+		 Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+		 resultJson = toJSON(projectMembersList);
+		 return resultJson;
+	  }
+	 
+	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
+		public @ResponseBody  String addEmployeeForProjectDashboard(@RequestParam(value="json", required=false) String json) throws Exception {
+		 	JSONObject jsonObj = new JSONObject(json);
+			
+			Employees employee  = new Employees();
+			User user= new User();
+			
+			user.setFirstName(jsonObj.getString("employeeFirstName"));
+			user.setLastName(jsonObj.getString("employeeLastName"));
+			user.setEmail(jsonObj.getString("employeeEmail"));
+			user.setCreatedDate(new Date());
+			User  usr=	userService.addUser(user);
+			
+			employee.setUser(user);
+			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			employee.setCreatedDate(new Date());
+			Employees  emp=	employeesService.addEmployee(employee);
+			
+			return null;
+		}
 	 
 	private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

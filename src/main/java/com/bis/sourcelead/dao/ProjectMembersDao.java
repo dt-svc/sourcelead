@@ -17,6 +17,8 @@ public interface ProjectMembersDao {
 	
 	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
 	
+	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	
 	List<Integer> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
 	
 }

@@ -53,6 +53,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembers();
 		return projectMembersList;
 	}
+	
+	@Override
+	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+		logger.debug("In ProjectMembersServiceImpl class getAllProjectMembersByProjectId method...");
+		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectId(id);
+		return projectMembersList;
+	}
 
 	@Override
 	public List<Integer> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {

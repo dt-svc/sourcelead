@@ -392,58 +392,60 @@ a reader will be distracted by the readable content of a page when looking at it
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">X</button>
-                        <h4 class="modal-title">Add Employees</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                            <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Last Name</label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Email <span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
-                              </select>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3"></label>
-                            <div class="col-lg-9">
-                              <div class="checkbox">
-                              <label>
-                                <input type="checkbox" value="" checked>
-                                Send Invitation</label>
-               					 </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
+	                    <form name="employee_form" id="employee_form" method="post">
+	                      <div class="modal-header">
+	                        <button data-dismiss="modal" class="close" type="button">X</button>
+	                        <h4 class="modal-title">Add Employees</h4>
+	                      </div>
+	                      <div class="modal-body clearfix">
+	                        <div class="form-horizontal custom-form clearfix">
+	                          <div class="col-xs-12 col-md-12 col-lg-12">
+	                            <div class="form-group">
+	                            <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
+	                            <div class="col-lg-9">
+	                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName">
+	                              </div>
+	                            </div>
+	                            <div class="form-group">
+	                            <label class="col-lg-3">Last Name</label>
+	                            <div class="col-lg-9">
+	                              <input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
+	                              </div>
+	                            </div>
+	                            <div class="form-group">
+	                            <label class="col-lg-3">Email <span class="text-danger">*</span></label>
+	                            <div class="col-lg-9">
+	                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail">
+	                              </div>
+	                            </div>
+	                            <div class="form-group">
+	                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
+	                            <div class="col-lg-9">
+	                              <select class="form-control" name="invoiceFrequency">
+	                              	<option>Invoice-1</option>
+	                                <option>Invoice-2</option>
+	                                <option>Invoice-3</option>
+	                              </select>
+	                              </div>
+	                            </div>
+	                            <div class="form-group">
+	                            <label class="col-lg-3"></label>
+	                            <div class="col-lg-9">
+	                              <div class="checkbox">
+	                              <label>
+	                                <input type="checkbox" value="" checked>
+	                                Send Invitation</label>
+	               					 </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                        </div>
+	                      </div>
+	                      <div class="modal-footer">
+	                        <button data-dismiss="modal" class="btn btn-primary" type="button" id="add_employee" onclick="addEmployee();">Save</button>
+	                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+	                      </div>
+	                      </form>
                     </div>
                   </div>
                 </div>
@@ -587,52 +589,64 @@ $(document).ready(function() {
  }
  </script> 
 <script>
-  function projectEmployee(projectId){
-	    var result = "";
-	    result = result + '    	<div class="project_tabs_inn_head">';
-		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
-		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
-		result = result + '		</div>';
-	    result = result + '        <div class="project_tabs_inn_table">';
-		result = result + '	<table>';
-		result = result + '	<tbody>';
-		result = result + '		<tr>';
-        result = result + '	 	<th>Emp name</th>';
-        result = result + '	     <th>Start Date</th>';
-        result = result + '	     <th>End Date</th>';
-        result = result + '	     <th>Approved hrs</th>';
-        result = result + '	     <th>Rejected hrs</th>';
-        result = result + '	     <th>Open hrs</th>';
-        result = result + '	     <th>Wait for approval</th>';
-        result = result + '	     <th>Edit</th>';
-        result = result + '	 </tr>';
-        result = result + '	 <tr>';
-        result = result + '	 	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>';
-        result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-        result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-        result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-        result = result + '	     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-        result = result + '	 </tr>';
-	    result = result + '	     </tbody>';
-	    result = result + '	 </table>   ';         
-	    result = result + '	     </div>';
-	    $("#tab-1").empty();  
-	    $("#tab-1").append(result);  
-	    
-	    $("#tab-1").show();
-		$(".project-tabs-menu a").click(function(event) {
-		     event.preventDefault();
-		     $(this).parent().addClass("current");
-		     $(this).parent().siblings().removeClass("current");
-		     var tab = $(this).attr("href");
-		     $(".project_tabs_inn").not(tab).css("display", "none");
-		     $(tab).fadeIn();
-		 });
-  }
-  
+function projectEmployee(projectId){
+    $.ajax({
+    	type: "POST",
+        url: "http://localhost:8080/sourcelead/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+        success: function(data) {
+        	
+        	var json = JSON.parse(data);
+        	var result = "";
+        	result = result + '    	<div class="project_tabs_inn_head">';
+    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result + '		</div>';
+    	    result = result + '        <div class="project_tabs_inn_table">';
+    		result = result + '	<table>';
+    		result = result + '	<tbody>';
+    		result = result + '		<tr>';
+            result = result + '	 	<th>Emp name</th>';
+            result = result + '	     <th>Start Date</th>';
+            result = result + '	     <th>End Date</th>';
+            result = result + '	     <th>Approved hrs</th>';
+            result = result + '	     <th>Rejected hrs</th>';
+            result = result + '	     <th>Open hrs</th>';
+            result = result + '	     <th>Wait for approval</th>';
+            result = result + '	     <th>Edit</th>';
+            result = result + '	 </tr>';
+        	for (var i=0; i<json.length; i++)
+			{        
+	        		var opt = json[i];
+	        		
+	        		result = result + '	 <tr>';
+	                result = result + '	 	<td><div><input type="text"  value="Name" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	                result = result + '	 </tr>';
+			}
+        	result = result + '	     </tbody>';
+    	    result = result + '	 </table>   ';         
+    	    result = result + '	     </div>';
+    	    $("#tab-1").empty();
+    	    $("#tab-1").append(result);  
+    	    
+    	    $("#tab-1").show();
+    		$(".project-tabs-menu a").click(function(event) {
+    		     event.preventDefault();
+    		     $(this).parent().addClass("current");
+    		     $(this).parent().siblings().removeClass("current");
+    		     var tab = $(this).attr("href");
+    		     $(".project_tabs_inn").not(tab).css("display", "none");
+    		     $(tab).fadeIn();
+    		 });
+        },
+    });
+    }	
 </script>
 
 <script>
@@ -912,5 +926,19 @@ $(document).ready(function(){
        return o;
    };
 })(jQuery);
+</script>
+
+<script type="text/javascript">
+	function addEmployee() {
+		var frm = $('#employee_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		$.ajax({
+		type: "POST",
+		url: "http://localhost:8080/sourcelead/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
+			success: function(data) {
+			
+			},
+		});
+	}
 </script>
 </html>

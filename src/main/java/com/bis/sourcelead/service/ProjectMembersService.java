@@ -17,5 +17,7 @@ public interface ProjectMembersService {
 	
 	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
 	
+	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	
 	List<Integer> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
 }

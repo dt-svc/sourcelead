@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 
 @Repository
@@ -91,6 +93,21 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         Criteria crit = session.createCriteria(ProjectMembers.class);
         List<ProjectMembers> projectsMembersList = crit.list();
         return projectsMembersList;
+	}
+	
+	/**
+	 * This method for get all the project members by project id
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<ProjectMembers> projectsMembersList = null;
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user");
+		projectsMembersList=projectsMembersListQuery.list();
+		return projectsMembersList;
+        
 	}
 
 	@Override
