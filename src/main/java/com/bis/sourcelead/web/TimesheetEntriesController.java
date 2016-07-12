@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.TasksService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 
 @RestController 
@@ -36,7 +36,7 @@ public class TimesheetEntriesController {
 	public ProjectsService projectsService;
 	
 	@Autowired
-	public TasksService tasksService;
+	public ProjectTasksService tasksService;
 	
 	
 	@Autowired
@@ -52,7 +52,7 @@ public class TimesheetEntriesController {
 			Collection<Projects> projectsList =   projectsService.getAllProjects();
 			model.addObject("sourcelead_projectsList", projectsList);
 			
-			Collection<Tasks> tasksList = tasksService.getAllTasks();
+			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			model.addObject("sourcelead_tasksList", tasksList);
 			
 			model.setViewName("timesheet");
@@ -70,7 +70,7 @@ public class TimesheetEntriesController {
 		timesheetSubmissions.setId(1l);
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 		
-		Tasks task = new Tasks();
+		ProjectTasks task = new ProjectTasks();
 		task.setId(1l);
 		timesheetEntries.setStartDate(new Date());
 		timesheetEntries.setEndDate(new Date());
@@ -120,7 +120,7 @@ public class TimesheetEntriesController {
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 		timesheetEntries.setId(1l);
 		
-		Tasks task = new Tasks();
+		ProjectTasks task = new ProjectTasks();
 		task.setId(1l);
 		
 		timesheetEntries.setStartDate(new Date());

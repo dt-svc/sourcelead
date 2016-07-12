@@ -49,7 +49,7 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public String websiteValidation(String website) {
-		return orgDao.websiteValidation(website);
+	public String websiteValidation(String website,String sourceleadBLockedwebsites) {
+		return orgDao.websiteValidation(website,sourceleadBLockedwebsites);
 	}
 }

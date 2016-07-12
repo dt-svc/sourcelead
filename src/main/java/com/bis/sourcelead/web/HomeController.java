@@ -2,8 +2,6 @@ package com.bis.sourcelead.web;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +27,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.service.UserService;
 
 /**
  * This class is used for...
@@ -55,6 +55,9 @@ public class HomeController {
 	@Autowired
 	private OrgService orgService;
 	
+	@Autowired
+	private UserService userService;
+	
 	
 	@Value("${jdbc.username}")
 	private String user;
@@ -62,6 +65,10 @@ public class HomeController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceLeadBlockedSocialDomains}")
+	private String sourceLeadBlockedSocialDomains;
+	
 	
 	
 	@Autowired
@@ -85,12 +92,43 @@ public class HomeController {
 
 	}
    
+   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
+   public @ResponseBody String validateOrgWebsite(
+   		@RequestParam(value="website", required=false) String website,
+   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
+	
+		String status = null;
+	    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+		if (orgInfo != null) {
+			status = "success";
+		}
+		else{
+			status = "failure";
+		}
+		
+    return status;
+   }
+   
+   
+   
+   
+   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
+   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
+   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
+   		@RequestParam(value="email", required=false) String email) throws Exception {
+   	
+	  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
+	  return status;
+   }
+   
+   
    
    @RequestMapping(value = "/registration")
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;
 
 	}
@@ -172,7 +210,11 @@ public class HomeController {
 		return name;
 	}
 
+	//fileUpload
 	
-	
+	@RequestMapping(value = "/fileUpload", method = RequestMethod.GET)
+	public ModelAndView fileUpload() {
+		return new ModelAndView("FileUploadForm");
+	}
 	
 }

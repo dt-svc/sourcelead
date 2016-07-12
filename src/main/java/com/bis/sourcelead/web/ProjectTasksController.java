@@ -14,22 +14,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.entity.Tasks;
-import com.bis.sourcelead.service.TasksService;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.service.ProjectTasksService;
 
 @RestController 
-@RequestMapping("/Tasks")
-public class TasksController {
+@RequestMapping("/ProjectTasks")
+public class ProjectTasksController {
 	
 	 
 	@Autowired
-	public TasksService tasksService;
+	public ProjectTasksService tasksService;
 	
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
-	public @ResponseBody  Tasks addTasks() throws Exception
+	public @ResponseBody  ProjectTasks addTasks() throws Exception
 			 
 	{
-		Tasks  tasks  = new Tasks();
+		ProjectTasks  tasks  = new ProjectTasks();
 		tasks.setTaskName("task1");
 		tasks.setDescription("hi this is first description");
 		tasks.setStatus("accept");
@@ -37,16 +37,16 @@ public class TasksController {
 		tasks.setCreatedDate(new Date());
 		tasks.setUpdatedBy("prasad");
 		tasks.setUpdatedDate(new Date());
-		Tasks savedtasks = tasksService.addTasks(tasks);
+		ProjectTasks savedtasks = tasksService.addTasks(tasks);
 		return savedtasks; 
 	}
 	
 	
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
-	public @ResponseBody  Tasks updateTasks() throws Exception
+	public @ResponseBody  ProjectTasks updateTasks() throws Exception
 			 
 	{
-		Tasks  tasks  = new Tasks();
+		ProjectTasks  tasks  = new ProjectTasks();
 		tasks.setId(1l);
 		tasks.setTaskName("task2");
 		tasks.setDescription("hi this is first description");
@@ -56,16 +56,16 @@ public class TasksController {
 		tasks.setUpdatedBy("laxman");
 		tasks.setUpdatedDate(new Date());
 		
-		Tasks updatetasks = tasksService.updateTasks(tasks);
+		ProjectTasks updatetasks = tasksService.updateTasks(tasks);
 		return updatetasks; 
 	}
 	
 	
 	@RequestMapping(value = "/getTasks/{id}", method = RequestMethod.GET)
-	public @ResponseBody  Tasks getTasksId(@PathVariable String id) throws Exception
+	public @ResponseBody  ProjectTasks getTasksId(@PathVariable String id) throws Exception
 			 
 	{
-		Tasks tasks = tasksService.getTasksId(id);
+		ProjectTasks tasks = tasksService.getTasksId(id);
 		return tasks; 
 	}
 
@@ -80,10 +80,10 @@ public class TasksController {
 	
 	
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET)
-	public @ResponseBody Collection<Tasks> getAllTasks() throws Exception
+	public @ResponseBody Collection<ProjectTasks> getAllTasks() throws Exception
 			 
 	{
-		  Collection<Tasks> tasksList = tasksService.getAllTasks();
+		  Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 		  return tasksList;
 	}
 }

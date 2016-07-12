@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PasswordResetsDao;
 import com.bis.sourcelead.entity.PasswordResets;
-import com.bis.sourcelead.entity.User;
 
 @Repository
 public class PasswordResetsDaoImpl implements PasswordResetsDao{

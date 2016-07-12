@@ -437,7 +437,7 @@ transition:all ease-in-out .3s;
 }
 .login-user .image img {
     height: auto;
-    width: 35px;
+    width: 45px;
 	float:left;
 	margin-right:10px;
 	border:1px solid #3081cb;
@@ -749,6 +749,42 @@ background-repeat:no-repeat;
   75%  {transform: rotate(15deg)}
   100% {transform: rotate(0)}
 }
+
+
+/*custom tab styles*/
+        .accountsettings-tab {
+                margin-bottom:15px;
+        }
+        .accountsettings-tab .tab-content {
+                background:#fff;
+                border:1px solid #ddd;
+                border-top:0;
+                border-radius:0 0 4px 4px;
+        }
+        .accountsettings-tab .nav-tabs li a{
+                font-weight:bold;
+                font-size:15px;
+        }
+        .accountsettings-tab hr{
+                margin-top:5px;
+                margin-bottom:15px;
+        }
+        .accountsettings-tab h4{
+                margin-top:0;
+                margin-bottom:20px;
+
+        }
+        .accountsettings-tab .password-icon .fa-lock{
+        background-color: #556080;
+    border-radius: 50%;
+    color: #e8eceb;
+    font-size: 100px;
+    padding: 20px 35px;
+        }
+   /*custom tab styles*/
+
+
+
 /* notificaton styles */
 @media (max-width: 320px) {
   .hidden-xs {

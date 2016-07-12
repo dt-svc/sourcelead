@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,7 +136,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	private Org getOrgDetails(Registration registration){
 		Org org = new Org();
 		org.setOrgName(registration.getCompanyName());
-		org.setWebSite(registration.getWebsite());
+		org.setWebSite(convertWebsite(registration.getWebsite()));
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
@@ -149,6 +151,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setEmail(registration.getEmail());
 		user.setUserName(registration.getEmail());
 		user.setUserState(Status.ACTIVE);
+		user.setUserType("Admin");
 		user.setPassword(sourceleadPasswordEncoder.encode(registration.getPassword()));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(user.getUserCode());
@@ -196,6 +199,25 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employees.setCreatedBy(user.getUserCode());
 		employees.setCreatedDate(new Date());
 		return employees;
+	}
+	
+	
+	private String convertWebsite(String website){
+		if(!website.startsWith("http") && !website.startsWith("https")){
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+	    return host;
 	}
 
 	@Override

@@ -48,19 +48,15 @@ public class Projects {
     private String timesheetFrequency;
     
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="PROJECT_MANAGER_USER_ID", nullable=false )	
-	private User projectManagerUser;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="CLIENT_ORG_ID", nullable=false )	
-	private Org org;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPERIOR_USER_ID", nullable = false)
    	private User superiorUser;
     
     @Column(name = "PROJECT_STATUS")
     private String projectStatus;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORG_RELATION_ID")
+    private OrgRelations orgRelationId;
     
     @Column(name = "STATUS")
     private String status;
@@ -130,24 +126,6 @@ public class Projects {
 	}
 	
 	
-    @JsonIgnore
-	public User getProjectManagerUser() {
-		return projectManagerUser;
-	}
-
-	public void setProjectManagerUser(User projectManagerUser) {
-		this.projectManagerUser = projectManagerUser;
-	}
-	
-	@JsonIgnore
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
-	}
-
 	@JsonIgnore
 	public User getSuperiorUser() {
 		return superiorUser;
@@ -163,6 +141,15 @@ public class Projects {
 
 	public void setProjectStatus(String projectStatus) {
 		this.projectStatus = projectStatus;
+	}
+
+	@JsonIgnore
+	public OrgRelations getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(OrgRelations orgRelationId) {
+		this.orgRelationId = orgRelationId;
 	}
 
 	public String getStatus() {
