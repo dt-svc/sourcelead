@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.UserService;
@@ -40,6 +41,10 @@ public class UserProfileController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+    private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	    
 
 	   @RequestMapping(value = "/userProfile")
 	 	public ModelAndView userProfile() {
@@ -62,6 +67,27 @@ public class UserProfileController {
 			e.printStackTrace();
 		}
 		   return "home";
+	   }
+	   
+	   
+	   
+	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
+	   public String passwordSettings(UserProfile userProfile,HttpServletRequest request) {
+		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   
+		   if(sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())){
+			   user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
+			   try {
+				userService.addUser(user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			   
+			   return "home";
+		   }else{
+			   return "Invalid Password";
+		   }
+		   
 	   }
 	   
 	   
