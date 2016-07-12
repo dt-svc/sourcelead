@@ -68,7 +68,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Legal Notices</a> |");
 			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Terms of Use</a> |");
 			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Your Privacy Rights</a>");
-			     tempHTML.append("<p>For more information about SourceLead, go to <a href='#' target='_blank' style='color:rgb(126, 117, 117)'>sourcelead.com</a></p>");
+			     tempHTML.append("<p>For more information about SourceLead, go to <a href='#' target='_blank' style='color:rgb(126, 117, 117)'>sourcelead.com</a></p>");
 			     tempHTML.append("</td>");
 		     tempHTML.append("</tr>");
 		tempHTML.append("</table>");
