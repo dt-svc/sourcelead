@@ -276,6 +276,8 @@ var validationSettings = {
          	    frm = "testvalue=testvalue&"+frm;
          		var con = JSON.stringify(frm);
          		var sourceleadUrl ='${sourceleadUrl}';
+         		$("#register_button").attr("disabled", "disabled");
+         		$( "#register_button" ).addClass('button').val('Processing..');
             	
 	           	$.ajax({
           	      type: "POST",
