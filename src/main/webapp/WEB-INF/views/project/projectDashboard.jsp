@@ -35,7 +35,7 @@
 			</thead>	
                 <tr>
                 	<td data-title="Id"><div>BIS2616464165</div></td>
-                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar();">Vannam<i class="fa fa-binoculars"></i></div></td>
+                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('1');">Vannam<i class="fa fa-binoculars"></i></div></td>
                     <td data-title="Manager"><div>Mahesh</div></td>
                     <td data-title="Date"><div>form 15/9 to 20/9</div></td>
                     <td data-title="Client"><div>Client 1</div></td>
@@ -576,13 +576,13 @@ $(document).ready(function() {
 </script> 
  
  <script>
- function projectSideBar(){
+ function projectSideBar(projectId){
 	  	    var result = "";
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="employee();" >Employees</a></li>';
-		  	result = result + '<li><a href="#tab-2" onClick="task();">Tasks</a></li>';
-		  	result = result + ' <li><a href="#tab-3" onClick="Details();" >Details</a></li>';
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+');" >Employees</a></li>';
+		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+');">Tasks</a></li>';
+		  	result = result + ' <li><a href="#tab-3" onClick="pojectDetails('+projectId+');" >Details</a></li>';
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
 		  	 
@@ -601,12 +601,11 @@ $(document).ready(function() {
 		    $("#projectSideDiv").append(result);  	
 		    $(".project_side_wrap").addClass("project_side_wrap_active");
 			
-		    employee();
+		    projectEmployee(projectId);
  }
  </script> 
 <script>
-  function employee(){
-	    
+  function projectEmployee(projectId){
 	    var result = "";
 	    result = result + '    	<div class="project_tabs_inn_head">';
 		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
@@ -655,7 +654,7 @@ $(document).ready(function() {
 </script>
 
 <script>
-  function task(){
+  function projectTask(projectId){
 	var result = "";
 	result = result + '	<div class="project_tabs_inn_head">';
 	result = result + '		<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
@@ -686,8 +685,7 @@ $(document).ready(function() {
 </script> 
 
 <script>
-  function Details(){
-	  
+  function pojectDetails(projectId){   
 	var result = ""; 
 	result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
