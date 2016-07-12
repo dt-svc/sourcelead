@@ -31,16 +31,18 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public EmailScenario getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(String uniqueScenarioName,
+	public EmailScenario getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(String uniqueScenarioName,String entityType,
 			String orgCode, String locationCode) throws Exception {
+		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from EmailScenario es where es.uniqueScenarioName = :uniqueScenarioName and es.locationCode = :locationCode and es.orgCode =:orgCode";
+		String query = "from EmailScenario es where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType and es.locationCode = :locationCode and es.orgCode =:orgCode";
 		 
 		List<EmailScenario> emailScenariosList =  session.createQuery(query.toString()) .setString("uniqueScenarioName", uniqueScenarioName)
-																												.setString("locationCode", locationCode)
-																												.setString("orgCode", orgCode).list();
+				                                                                        .setString("entityType", entityType)
+																	                    .setString("locationCode", locationCode)
+																	                    .setString("orgCode", orgCode).list();
 		EmailScenario emailScenario = null;
 		if(emailScenariosList != null && !emailScenariosList.isEmpty())
 		{
@@ -49,12 +51,37 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 		return emailScenario;
 	}
 
+	/**
+	 * This method for save the EmailScenario
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public EmailScenario save(EmailScenario scenario) throws Exception {
+		logger.debug("In EmailScenarioDaoImpl class save method");
 		Session session = this.sessionFactory.getCurrentSession();
 		session.save(scenario);
 		return scenario;	
+	}
+
+	/**
+	 * This method for get the EmailScenario by using uniqueScenarioName
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) {
+		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueName method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenario es where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType";
+		List<EmailScenario> emailScenariosList =  session.createQuery(query.toString())
+				                                         .setString("uniqueScenarioName", uniqueScenarioName)
+				                                         .setString("entityType", entityType).list();
+		EmailScenario emailScenario = null;
+		if(emailScenariosList != null && !emailScenariosList.isEmpty())
+		{
+			emailScenario = (EmailScenario) emailScenariosList.iterator().next();
 		}
+		return emailScenario;
+	
+	}
 
 }

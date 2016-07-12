@@ -9,8 +9,10 @@ import com.bis.sourcelead.entity.EmailScenario;
  */
 public interface EmailScenarioService {
 	
-	EmailScenario getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(String uniqueScenarioName, String orgCode, String locationCode) throws Exception;
+	EmailScenario getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(String uniqueScenarioName,String entityType, String orgCode, String locationCode) throws Exception;
 	
 	EmailScenario save(EmailScenario scenario) throws Exception;
+	
+	EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception;
 
 }

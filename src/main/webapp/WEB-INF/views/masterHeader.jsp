@@ -135,50 +135,22 @@
               <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert"> <i class="fa fa-bell bell"></i> <span class="label label-warning">4</span></a>
+          <li> <a href="#" title="Alerts" id="alert"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
+               <c:if test="${!empty notificationList}">
+                <c:forEach var="report" items="${notificationList}" varStatus="theCount" end="4">
                 <li>
                   <div class="clearfix msg">
                     <div class="msg-img"> <span>
                     <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
                     <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
+                      <p>${report.body}</p>
+                      <span>3 days ago at 7:58 pm - ,${report.createdDate}</span> </div>
                   </div>
                 </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                  </div>
-                </li>
+                </c:forEach>
+                </c:if>
               </ul>
               <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
             </div>
