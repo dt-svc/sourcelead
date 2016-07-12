@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Controller
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class RegistrationController {
 	
 	 @Autowired
@@ -34,6 +36,7 @@ public class RegistrationController {
 	 @Autowired
 	 PasswordResetsSevice passwordResetsSevice;
 	 
+	 
 	
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(Registration registration) {
@@ -46,6 +49,8 @@ public class RegistrationController {
 				authentication = surceleadAuthenticationProvider.authenticate(authentication);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 				
+				//email to user
+				registrationService.sendEmail(registration);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -66,9 +71,15 @@ public class RegistrationController {
 				PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
 				if(null == passwordResets){
 					String verificationCode = registrationService.addPasswordResets(user);
+					
+					//email to user
+					registrationService.sendResetPasswordEmail(user,verificationCode);
 				}else{
 					passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
 					passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
+					
+					//email to user
+					registrationService.sendResetPasswordEmail(user,passwordResets.getVerificationCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -80,7 +91,7 @@ public class RegistrationController {
 		
 	}
 	
-	
+
 	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
 	   public String verifyResetPassword(Registration registration) {
 		
@@ -92,6 +103,9 @@ public class RegistrationController {
 				registrationService.resetPassword(passwordResets, registration.getPassword());
 				registrationService.deletePasswordResets(passwordResets);
 				
+				//email to user
+				User user = userService.findByUserName(passwordResets.getEmail());
+				registrationService.sendUpdatePasswordEmail(user);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

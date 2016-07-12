@@ -26,6 +26,7 @@ public class ClassFieldServiceImpl implements ClassFieldService{
 	
 	@Override
 	public ClassField getClassFieldByDelimiterStr(String delimiterStr) throws Exception{
+		logger.debug("In ClassFieldServiceImpl class getClassFieldByDelimiterStr method");
 		ClassField classField = classFieldDao.getClassFieldByDelimiterStr(delimiterStr);
 		return classField;
 	}
