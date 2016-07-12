@@ -686,8 +686,7 @@ $(document).ready(function() {
     $.ajax({
    	type: "POST",
     url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
-    		   success: function(data) {
-	           alert("json"+data.id);
+    success: function(data) {
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
@@ -703,7 +702,7 @@ $(document).ready(function() {
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onfocusout="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project manager:</strong>';
@@ -726,18 +725,19 @@ $(document).ready(function() {
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
-	result = result + '				<textarea placeholder="Description">';
+	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
 	result = result + data.description;
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created By:</strong><span>Srinivas</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created By:</strong><span>'+data.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+data.endDate+'</span><div class="clearfix"></div>';
+                                                     
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Last Updated:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>';
+	result = result + '					<strong>Last Updated:</strong><span>'+data.updatedDate+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';					
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
@@ -751,8 +751,21 @@ $(document).ready(function() {
   }
    });
   }
-</script>  
+</script>     
 
+<script> 
+function  inlineEditForProjects(projectId,localFieldName){
+	var fieldName = localFieldName;
+	var fieldValue = $("#"+localFieldName).val();
+	 $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 }); 
+}
+</script> 
   
   
 <!-- =============================== AddTask Divs  ============================ -->
