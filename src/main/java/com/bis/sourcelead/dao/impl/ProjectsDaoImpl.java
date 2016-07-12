@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -92,5 +93,33 @@ public class ProjectsDaoImpl implements ProjectsDao{
         List<Projects> projectsList = crit.list();
         return projectsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean projectIdValidation(Long projectId) throws Exception {
+		
+	  StringBuilder queryString = new StringBuilder().append("from Projects projects where projects.id = :projectId");
+		
+		FilterNameValueMap<String, Object> filterNameValueMap = new FilterNameValueMap<String, Object>();
+		filterNameValueMap.put("projectId", projectId);
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects projects where projects.id = :projectId";
+		List results = session.createQuery(query).setLong("projectId", projectId).list();
+		
+		
+		Boolean flag = false;
+		if(results != null && !results.isEmpty()){
+			flag = true;
+		}
+		
+		return flag;
+	}
+
+     public class FilterNameValueMap<key,value> extends HashMap<key,value>{
+
+	private static final long serialVersionUID = -2650993424650202629L;
+
+     }
 
 }

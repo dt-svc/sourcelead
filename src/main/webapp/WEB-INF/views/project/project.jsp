@@ -2,6 +2,63 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+ -->
+ 
+ <script type="text/javascript">
+function validateProjectId(){
+     var ProjectId = document.getElementById("ProjectId").value;
+     alert("hhhhhhi"+ProjectId);
+	 $('input#ProjectId').removeAttr( "record-exist record-exist-errormsg");
+	 if(ProjectId != null && ProjectId != ''){ 
+		    $( "#save_button","#save_button_draft").attr("disabled", "disabled");
+			 $("input#ProjectId").attr('style','background:url(${styleFolderName}/img/ajax-loader.gif) right center no-repeat;');
+			 $( "#save_button","#save_button_draft" ).addClass('button').val('Processing..');
+			 $.ajax({
+			    	type: "POST",
+			        url: "http://localhost:8080/sourcelead/validateProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ProjectId,
+			        contentType: "application/json; charset=utf-8",
+			        dataType: "json",
+			        /* success: function(data) {
+			        	 var result = "["+data+"]";
+			        	if((result == '[true]')){
+			        		  document.getElementById("ProjectId").setAttribute('class','error');
+							  $("input#ProjectId").after("<span class='jquery_form_error_message'>"+ProjectId+" is Already Existed</span>");
+							  document.getElementById("ProjectId").setAttribute('record-exist','yes');
+							  document.getElementById("ProjectId").setAttribute('record-exist-errorMsg',ProjectId+' is Already Existed'); 
+							  $("input#ProjectId").removeAttr("style");
+							  $("#save_button","#save_button_draft").removeAttr("disabled");
+							  $("#save_button","#save_button_draft").addClass('jobs-applybtn21 left');
+							  $("#save_button").val('Post Job');
+							  $("#save_button_draft").val('Save To Draft');
+							  
+			        	}
+			        	else{
+			        		 $('input#ProjectId').removeAttr( "class record-exist record-exist-errormsg");
+							 $('#jobSequenceNumberDiv').find('span.jquery_form_error_message').remove(); 
+							 document.getElementById("ProjectId").setAttribute('class','valid');
+							 $("input#ProjectId").removeAttr("style");
+							 $("#save_button","#save_button_draft").removeAttr("disabled");
+							 $("#save_button","#save_button_draft").removeAttr("style");
+							 $("#save_button","#save_button_draft").addClass('jobs-applybtn21 left');
+							 $("#save_button").val('Post Job');
+							 $("#save_button_draft").val('Save To Draft');
+							 $("#save_button","#save_button_draft").click(function() {
+								  if ($('#custom_form').validate(false, validationSettings)){
+								  }
+							 });
+			        	} 
+			        }, */
+			    }); 
+	    }
+    }
+</script> 	
+
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -24,19 +81,19 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Id"> Project Id </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="Project Id" value="">
+                <input type="text" class="form-control" name="ProjectId" id="ProjectId"  onblur="validateProjectId();" value="">
                 <span class="hidden">Enter Project Id</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3"> Project Name <span class="text-danger">*</span> </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="Project Name" value="">
+                <input type="text" class="form-control" name="ProjectName" field-name="Porject Name" data-validation="required" value="">
                 <span class="hidden">Project Name</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3"> Project Description </label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="3" name="Project Description"></textarea>
+                <textarea class="form-control" rows="3" name="ProjectDescription"></textarea>
                 <span class="hidden">Project Description</span> </div>
             </div>
             <div class="form-group">
@@ -45,12 +102,12 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                      <input type="text" class="form-control" value="" name="Date">
+                      <input type="text" class="form-control" value="" name="StartDate">
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                      <input type="text" class="form-control" value="" name="Date">
+                      <input type="text" class="form-control" value="" name="EndDate">
                     </div>
                   </div>
                   <span class="hidden">Enter Project Id</span> </div>
@@ -83,6 +140,7 @@
                               <th>Description</th>
                               <th>Action</th>
                             </tr>
+                            
                            <!--  <tr>
                               <td>Task Name</td>
                               <td>The home page has a section in the middle of the page that needs to be to the right.</td>
@@ -167,7 +225,7 @@
               <label class="col-md-3">Client</label>
               <div class="col-md-9">
                 <div class="form-icon">
-                  <select class="form-control select-bg" id="addClientId">
+                  <select class="form-control select-bg" name="selectClient" id="addClientId">
                   <option>-- Select Client --</option>
                   <c:forEach var="option" items="${add_client}">
   						<option value="${option.id}"}>${option.orgName}</option>
@@ -341,28 +399,28 @@
                             <div class="form-group">
                             <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Last Name</label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Email <span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
+                              <select class="form-control" name="invoiceFrequency">
+                              	<option value="1">Invoice-1</option>
+                                <option value="2">Invoice-2</option>
+                                <option value="3">Invoice-3</option>
                               </select>
                               </div>
                             </div>
@@ -380,7 +438,7 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                      	<input type="submit" value="Save" id="add_employee" onclick="addEmployee();" class="btn btn-primary">
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -392,11 +450,11 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Id">Status</label>
               <div class="col-md-9">
-                <select class="form-control select-bg">
-                  <option>Status-1</option>
-                  <option>Status-2</option>
-                  <option>Status-3</option>
-                  <option>Status-4</option>
+                <select class="form-control select-bg" name="Satatus">
+                  <option>Started</option>
+                  <option>In-Progress</option>
+                  <option>Completed</option>
+                  <option>On-Hold</option>
                 </select>
                 <span class="hidden">Select Status</span> </div>
             </div>
@@ -415,7 +473,7 @@
         <div class="form-footer clearfix row">
           <div class="col-lg-12">
             <div class="pull-right">
-              <input type="submit" value="Save" class="btn btn-primary">
+              <input type="submit" value="Save" id="save_project" onclick="saveProject();"  class="btn btn-primary">
               <input type="button" value="Cancel" class="btn btn-default ml">
             </div>
           </div>
@@ -475,7 +533,7 @@
             <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
       </div>
   <!-- =============================== AddTask Divs  ============================ -->     
-
+<!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
     	var tbl = document.getElementById("projectTaskTbl");
@@ -558,6 +616,7 @@ $(document).ready(function(){
 	document.getElementById("project_form").reset();
 });
 </script>
+<!-- Add Task Script Ends -->
 
 <script type="text/javascript">
  function addclient() {
@@ -587,4 +646,60 @@ $(document).ready(function(){
 	 $('#webSite').attr('');
     }
  
+</script>
+
+
+<script type="text/javascript">
+ function saveProject() {
+ var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   }; 
+	 if ($('#project_form').validate(false, validationSettings)){ 
+     var frm = $('#project_form').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        $.ajax({
+	    	type: "POST",
+	        url: "http://localhost:8080/sourcelead/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+		        		output = output + "<option value='" +opt.Id+ "'>"+opt.description+"</option>";
+				}
+	        	$("#maxTsRowNum").empty();
+		        $("#maxTsRowNum").append(output);
+		        
+	        },
+	    });
+       		 return true;
+		}else{
+			return false;
+		}
+    }
+ $('body').on('blur', '#project_form', function() {
+		$("#project_form").showHelpOnFocus();;
+		$("#project_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
+
+
+<script type="text/javascript">
+function addEmployee() {
+var frm = $('#project_form').serializeFormJSON();
+var con = JSON.stringify(frm);
+$.ajax({
+type: "POST",
+url: "http://localhost:8080/sourcelead/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
+success: function(data) {
+alert("add employee success");
+
+},
+});
+}
 </script>

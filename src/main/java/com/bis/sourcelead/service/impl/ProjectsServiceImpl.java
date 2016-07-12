@@ -50,5 +50,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<Projects> projectsList = projectsDao.getAllProjects();
 		return projectsList;
 	}
-
+	
+	@Override
+	public Boolean projectIdValidation(Long projectId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class deleteProject method...");
+		Boolean validation = projectsDao.projectIdValidation(projectId);
+		return validation;
+	}
+	
+	
 }

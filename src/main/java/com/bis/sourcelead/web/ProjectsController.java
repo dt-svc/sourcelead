@@ -1,8 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,20 +19,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
-import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.bis.sourcelead.service.UserService;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
+
+
 
 @RestController
 public class ProjectsController {
@@ -41,6 +47,15 @@ public class ProjectsController {
 	 @Autowired
 		private OrgService orgService;
 	 
+	 @Autowired
+	 private ProjectTasksService tasksService;
+	 
+	 @Autowired
+	public UserService userService;
+	
+	@Autowired
+	public EmployeesService employeesService;
+	 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -52,24 +67,64 @@ public class ProjectsController {
 		public ModelAndView projects() throws Exception {
 
 				ModelAndView model = new ModelAndView();
+				
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);
+				
 				model.setViewName("project/project");
 				return model;
 	}
 	 
-	 @RequestMapping(value = "/saveProject" , method = RequestMethod.GET)
-	 public @ResponseBody  void saveProject(@RequestParam(value="json", required=false) String json) throws Exception {
+	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json) throws Exception {
 		 	JSONObject jsonObj = new JSONObject(json);
-	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-	    	//Projects projects = gson.fromJson(json, Projects.class);
+		 	
+		 	String resultJson = null;
+		 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectName(jsonObj.getString("Project Name"));
-	    	projects.setDescription(jsonObj.getString("Project Description"));
-	    	
-	    	
+	    	projects.setProjectName(jsonObj.getString("ProjectName"));
+	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
+	    	projects.setStartDate(new Date());
+	    	projects.setEndDate(new Date());
+	    	projects.setProjectStatus(jsonObj.getString("Satatus"));
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
 	    	projectsService.saveProject(projects);
+	    	
+	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			
+			for (int c = 1; c < maxCount; c++) {
+				ProjectTasks  tasks  = new ProjectTasks();
+				tasks.setTaskName(jsonObj.getString(c+"taskName"));
+				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+				tasks.setCreatedDate(new Date());
+				tasks.setUpdatedDate(new Date());
+				tasks.setProjectId(projects);
+				
+				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+			}
+			
+			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
+			
+			 resultJson = toJSON(tasksList);
+			 return resultJson;
 	   }
+	 
+	 
+    @RequestMapping(value = "/validateProjectId",  method = RequestMethod.POST)
+    public @ResponseBody String validateJobSequenceNumber(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
+	    	
+	        String result = "";
+	        ArrayList<String> info = new ArrayList<String>();
+			Boolean flag = projectsService.projectIdValidation(projectId);
+			info.add(Boolean.toString(flag));
+			String[] temp = (String[]) info.toArray(new String[] {});
+			JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+			result = mJSONArray.toString();
+			return result;
+	    }
+		
 	 
 	 
 	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
@@ -161,4 +216,34 @@ public class ProjectsController {
 		Boolean isDeleted = projectsService.deleteProjectById(id);
 		return isDeleted;
 	  }
+	  
+	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json) throws Exception {
+		 	JSONObject jsonObj = new JSONObject(json);
+			
+			Employees employee  = new Employees();
+			User user= new User();
+			
+			user.setFirstName(jsonObj.getString("employeeFirstName"));
+			user.setLastName(jsonObj.getString("employeeLastName"));
+			user.setEmail(jsonObj.getString("employeeEmail"));
+			user.setCreatedDate(new Date());
+			User  usr=	userService.addUser(user);
+			
+			employee.setUser(user);
+			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			employee.setCreatedDate(new Date());
+			Employees  emp=	employeesService.addEmployee(employee);
+			
+			return null;
+		}
+	 
+	 private String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
 }

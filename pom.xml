@@ -431,7 +431,7 @@
 				    <phase>install</phase>
 				    <configuration>
 				          <target>
-				              <copy file="${project.build.directory}/sourcelead.war" todir="/home/tomcat8/webapps"/>
+				              <copy file="${project.build.directory}/sourcelead.war" todir="/home/apache-tomcat-8.0.36/webapps"/>
 				          </target>
 				    </configuration>
 				    <goals>

@@ -14,5 +14,7 @@ public interface ProjectsDao {
 	
 	public Boolean deleteProjectById(Long id) throws Exception;
 	
+	public Boolean projectIdValidation(Long projectId) throws Exception;
+	
 	Collection<Projects> getAllProjects() throws Exception;
 }
