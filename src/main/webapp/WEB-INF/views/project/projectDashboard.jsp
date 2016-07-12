@@ -728,13 +728,14 @@ $(document).ready(function() {
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created By:</strong><span>Srinivas</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created By:</strong><span>'+data.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+data.endDate+'</span><div class="clearfix"></div>';
+                                                     
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Last Updated:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>';
+	result = result + '					<strong>Last Updated:</strong><span>'+data.updatedDate+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';					
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
@@ -748,7 +749,7 @@ $(document).ready(function() {
   }
    });
   }
-</script>  
+</script>     
 
   
   
