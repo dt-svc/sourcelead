@@ -1,12 +1,9 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +18,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -45,16 +46,22 @@ public class ProjectsController {
 	 private ProjectsService projectsService; 
 	 
 	 @Autowired
-		private OrgService orgService;
+	 private OrgService orgService;
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
 	 
 	 @Autowired
-	public UserService userService;
+	 public UserService userService;
 	
-	@Autowired
-	public EmployeesService employeesService;
+	 @Autowired
+	 public EmployeesService employeesService;
+	 
+	 @Autowired
+	 public UserRoleService userRoleService;
+
+	 @Autowired
+	 public ProjectApproverHierarchyService projectApproverHierarchyService;
 	 
 	 /**
 	  * This method for get project by id
@@ -71,6 +78,9 @@ public class ProjectsController {
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);
 				
+				Collection<UserRole> userRoleList = userRoleService.getUsersBasedOnUserRoles();
+				model.addObject("user_RoleList", userRoleList);
+				
 				model.setViewName("project/project");
 				return model;
 	}
@@ -82,6 +92,7 @@ public class ProjectsController {
 		 	String resultJson = null;
 		 	
 	    	Projects projects = new Projects();
+	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectId"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
 	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
 	    	projects.setStartDate(new Date());
@@ -89,7 +100,28 @@ public class ProjectsController {
 	    	projects.setProjectStatus(jsonObj.getString("Satatus"));
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
-	    	projectsService.saveProject(projects);
+	    	Projects updatedProjects = projectsService.saveProject(projects);
+	    	
+	    	
+	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
+	    	pah1.setProjectId(updatedProjects);
+	    	User approverUserId1 = new User();
+	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
+	    	pah1.setApproverUserId(approverUserId1);
+	    	pah1.setLevel("Level1");
+	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+	    	
+		if(!jsonObj.getString("level2Manager").isEmpty()){
+			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+			pah2.setProjectId(updatedProjects);
+			User approverUserId2 = new User();
+			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+			pah2.setApproverUserId(approverUserId2);
+			pah2.setLevel("Level2");
+			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+		}
+	    	
+	    	
 	    	
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
@@ -114,15 +146,17 @@ public class ProjectsController {
 	 
     @RequestMapping(value = "/validateProjectId",  method = RequestMethod.POST)
     public @ResponseBody String validateJobSequenceNumber(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
-	    	
-	        String result = "";
-	        ArrayList<String> info = new ArrayList<String>();
-			Boolean flag = projectsService.projectIdValidation(projectId);
-			info.add(Boolean.toString(flag));
-			String[] temp = (String[]) info.toArray(new String[] {});
-			JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
-			result = mJSONArray.toString();
-			return result;
+	    	String result = "";
+			String resultJson = "";
+			Integer projectIdCount = projectsService.projectIdValidation(projectId);
+			if(projectIdCount>0){
+				result = "duplicate";
+			}
+			else{
+				result = "unique";
+			}
+			resultJson = toJSON(result);
+			return resultJson;
 	    }
 		
 	 
