@@ -276,13 +276,14 @@ var validationSettings = {
          	    frm = "testvalue=testvalue&"+frm;
          		var con = JSON.stringify(frm);
          		var sourceleadUrl ='${sourceleadUrl}';
+         		$("#register_button").attr("disabled", "disabled");
+         		$( "#register_button" ).addClass('button').val('Processing..');
             	
 	           	$.ajax({
-          	      type: "GET",
+          	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration",
-                	  data:con,
+                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
                   	success: function(result) {
 			        	if((result == 'home')){
 			        		location.replace(sourceleadUrl+"/home");  

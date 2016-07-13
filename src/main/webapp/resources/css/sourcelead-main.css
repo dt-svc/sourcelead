@@ -207,13 +207,14 @@ transform: translateY(-3px);
 .header-widget{
 	background:#eef1fc;
 	position: absolute;
-	min-width:400px;
+	min-width:350px;
 	top:50px;
 	right:0;
 	padding-top:0px;
 	height:350px;
 	overflow-y: scroll;
 	box-shadow: -2px 3px 3px #a6a6a6;
+	font-size:12px;
 }
 .note-area {
 	transform: translateY(-1000px);
@@ -229,7 +230,7 @@ transform: translateY(-3px);
 	 -webkit-transform: translateY(0px);
 }
 .header-widget ul li{
-	padding:5px !important;
+	padding:6px 5px !important;
 	border-bottom:1px dotted #333;
 }
 .header-widget ul li a{
@@ -238,17 +239,17 @@ transform: translateY(-3px);
 	color:#333 !important;
 }
 .header-widget ul li:hover{
-	background:#eee !important;
+	background:#fdfdfd !important;
 }
 .header-widget .msg div.msg-img{
 	float:left;
-	width:55px;
-	margin-right:5px;
+	width:40px;
+	margin-right:10px;
 	text-align:center;
 }
 .header-widget .msg div.msg-content{
 	float:left;
-	width:250px;
+	width:215px;
 	margin-right:5px;
 }
 .header-widget .msg div.msg-content span{
@@ -262,10 +263,9 @@ transform: translateY(-3px);
 }
 .header-widget .msg div.msg-time{
 	float:left;
-	width:55px;
+	width:50px;
 	text-align:center;
 	color:#909090;
-	font-size:14px;
 }
 .header-widget .headerwidget-footer{
 	background:#dbe1fa;
@@ -398,7 +398,8 @@ transform: translateY(-3px);
     z-index: 810;
     padding-top: 50px;
 	box-shadow:1px 1px 2px #707070;
-	overflow:hidden;
+	overflow-x:hidden;
+	overflow-y:auto;
 }
 .side-bar.side-bar-active{
 	width:65px;
@@ -418,8 +419,10 @@ transition:all ease-in-out .3s;
 	padding:15px 10px;
 }
 .side-bar .user-panel .image img, .msg-img img {
-    height: auto;
-    width: 45px;
+    /* height:35px;
+    width:35px; */
+    height:50px;
+    width:200px;
 }
 .img-circle {
     border-radius: 50%;
@@ -912,6 +915,39 @@ background-repeat:no-repeat;
 	font-weight:600;
 }
 /*custom tab styles*/
+<<<<<<< HEAD
+=======
+
+/*custom scroll bar styles
+::-webkit-scrollbar{ width: 5px;}
+::-webkit-scrollbar-track {
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+-webkit-border-radius: 2px; border-radius: 3px;
+}
+::-webkit-scrollbar-thumb{
+-webkit-border-radius: 2px;
+ border-radius: 2px;
+ background:#3081cb;
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background:#3081cb;
+}
+custom scroll bar ends*/
+
+/* Mail styles */
+.box {
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    margin-bottom:15px;
+    position: relative;
+    width: 100%;
+}
+/* Mail styles ends */
+
+
+
 /* users dashboard styles ends */
 @media (max-width: 320px) {
   .hidden-xs {

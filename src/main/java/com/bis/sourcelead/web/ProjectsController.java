@@ -3,6 +3,8 @@ package com.bis.sourcelead.web;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -16,15 +18,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+
 import com.bis.sourcelead.entity.Employees;
+
+import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.dao.ProjectsDao;
+
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
+
+import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ProjectsService;
+
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -38,11 +56,15 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
-
 @RestController
 public class ProjectsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
+	@Autowired
+	 EmailScenarioService emailScenarioService;
+	
+	 @Autowired
+	 EmailScenerioUtil emailScenerioUtil;
 	
 	 @Autowired
 	 private ProjectsService projectsService; 
@@ -303,8 +325,26 @@ public class ProjectsController {
 			Collection<Employees> employeeList = employeesService.getAllEmployees();
 			resultJson = toJSON(employeeList);
 			return resultJson;
-		}
+	  }
 	 
+ 
+	 @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
+	 public void getNotification() throws Exception{
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		    globalVarsMap.put("firstName", "Vinesh");
+		    globalVarsMap.put("lastName","Kammari");
+			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+			emailScenario.setBody(body);
+			String url = null;
+			String actionLink = "";
+			User user = new User();
+			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
+	}
+	 
+	 
+	 
+
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

@@ -16,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.UserService;
@@ -39,6 +41,10 @@ public class UserProfileController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+    private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	    
 
 	   @RequestMapping(value = "/userProfile")
 	 	public ModelAndView userProfile() {
@@ -65,15 +71,35 @@ public class UserProfileController {
 	   
 	   
 	   
-     @RequestMapping(value = "/displayUserImage" , method = RequestMethod.GET)
-     public void displayUserImage(HttpServletRequest request,HttpServletResponse response) {
-    	 Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
+	   public String passwordSettings(UserProfile userProfile,HttpServletRequest request) {
+		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   
+		   if(sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())){
+			   user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
+			   try {
+				userService.addUser(user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			   
+			   return "home";
+		   }else{
+			   return "Invalid Password";
+		   }
+		   
+	   }
+	   
+	   
+	   
+     @RequestMapping(value = "/displayUserImage/{userId}" , method = RequestMethod.GET)
+     public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) {
     	 
     	 User user = null;
 			try {
 				user = userService.getUserById(userId);
 				
-				if(user != null && user.getDocFile() !=null)
+				if(user != null && user.getDocFile() != null)
 				{
 					user.setFileContentType("image/jpeg");
 					InputStream in = new ByteArrayInputStream(user.getDocFile());
