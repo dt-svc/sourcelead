@@ -21,6 +21,11 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			throws Exception {
 		return projectApproverHierarchyDao.saveProjectApproverHierarchy(projectApproverHierarchy);
 	}
+	
+	@Override
+	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception {
+		return projectApproverHierarchyDao.getLevelOneProjectApproverByProjectId(ProjectId);
+	}
 
 
 	@Override

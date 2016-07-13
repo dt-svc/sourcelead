@@ -36,6 +36,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		logger.debug("In ProjectsServiceImpl class getProject method...");
 		return projectsDao.getProjectById(id);
 	}
+	
+	@Override
+	public Collection<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getProject method...");
+		return projectsDao.getProjectByOrgLocationsId(orgLocationsId);
+	}
 
 	@Override
 	public Boolean deleteProjectById(Long Id) throws Exception {
