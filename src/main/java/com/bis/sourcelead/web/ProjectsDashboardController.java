@@ -74,8 +74,7 @@ public class ProjectsDashboardController {
 		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagers();
 		model.addObject(projectsList);
 		return model;
-
-
+		
     }
 	
 	/**

@@ -166,5 +166,20 @@ public class TimesheetSubmissions {
 	public void setProjectTasksList(Collection<ProjectTasks> projectTasksList) {
 		this.projectTasksList = projectTasksList;
 	}
-	 
+
+	public String getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(String estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public String getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours) {
+		this.totalHours = totalHours;
+	}
 }

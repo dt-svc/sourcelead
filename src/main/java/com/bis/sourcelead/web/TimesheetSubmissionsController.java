@@ -4,6 +4,7 @@ package com.bis.sourcelead.web;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController 
-@RequestMapping("/TimesheetSubmissions")
 public class TimesheetSubmissionsController {
 	
 	 
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
-	
 	
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -35,7 +37,21 @@ public class TimesheetSubmissionsController {
 
 	
 	
-	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/timesheetApproval")
+	public ModelAndView timesheetApproval(HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
+			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
+			
+			model.setViewName("timesheet/timesheetApproval");
+	        return model;
+	}
+	
+	
+	@RequestMapping(value = "timesheetSubmissions/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetSubmissions addTimesheetSubmissions() throws Exception
 			 
 	{
@@ -46,7 +62,7 @@ public class TimesheetSubmissionsController {
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		timesheetSubmissions.setStartDate(new Date());
 		timesheetSubmissions.setEndDate(new Date());
-		timesheetSubmissions.setSubmissionStatus("ok");
+		/*timesheetSubmissions.setSubmissionStatus("ok");*/
 		timesheetSubmissions.setStatus("Active");
 		timesheetSubmissions.setCreatedDate(new Date());
 		timesheetSubmissions.setCreatedBy("prasad");
@@ -58,7 +74,7 @@ public class TimesheetSubmissionsController {
 	}
 	
 	
-	@RequestMapping(value = "/update", method = RequestMethod.GET)
+	@RequestMapping(value = "timesheetSubmissions/update", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetSubmissions updateTimesheetSubmissions() throws Exception
 			 
 	{
@@ -69,7 +85,7 @@ public class TimesheetSubmissionsController {
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		timesheetSubmissions.setStartDate(new Date());
 		timesheetSubmissions.setEndDate(new Date());
-		timesheetSubmissions.setSubmissionStatus("False");
+		/*timesheetSubmissions.setSubmissionStatus("False");*/
 		timesheetSubmissions.setStatus("Reject");
 		timesheetSubmissions.setCreatedDate(new Date());
 		timesheetSubmissions.setCreatedBy("Sri");
@@ -89,7 +105,7 @@ public class TimesheetSubmissionsController {
 		return savedTimesheetEntries; 
 	}*/
 	
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "timesheetSubmissions/delete/{id}", method = RequestMethod.GET)
 	public @ResponseBody  Boolean deleteTimesheetSubmissions(@PathVariable String id) throws Exception
 			 
 	{

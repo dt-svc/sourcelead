@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface TimesheetSubmissionsService {
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
     public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds)throws Exception; 
+     
+    public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
     
 }

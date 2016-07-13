@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds) throws Exception {
 		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions(startDate ,endDate ,projectMemberIds);
 		// TODO Auto-generated method stub
+		return list;
+	}
+
+	@Override
+	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getApprovalTimesheetSubmissions(userId);
 		return list;
 	}
 

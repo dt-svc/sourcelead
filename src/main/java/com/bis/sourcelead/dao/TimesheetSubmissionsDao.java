@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,6 @@ public interface TimesheetSubmissionsDao {
     
     public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds)throws Exception; 
     
-    
+    public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
     
 }
