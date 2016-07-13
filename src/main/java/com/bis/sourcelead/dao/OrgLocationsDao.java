@@ -13,4 +13,5 @@ public interface OrgLocationsDao {
     public OrgLocations getOrgLocations(Long id)throws Exception;
     public Boolean deleteOrgLocations(Long id)throws Exception;
     public List<OrgLocations> getAllOrgLocations()throws Exception; 
+    public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
 }
