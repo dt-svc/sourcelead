@@ -79,5 +79,16 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		addItemsList=employeesListQuery.list();
 		return addItemsList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception {
+		logger.debug("In Employee getEmployeesExcludeTeamMembers method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Employees> addItemsList = null;
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId)");
+		addItemsList=employeesListQuery.setLong("projectId", projectId).list();
+		return addItemsList;
+	}
 
 }

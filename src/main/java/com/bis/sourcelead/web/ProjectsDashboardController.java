@@ -27,6 +27,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -156,13 +157,19 @@ public class ProjectsDashboardController {
 			 return resultJson;
 		 	
 	 }
-	 
+	  
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
-		 String resultJson = null;
+	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+		 
 		 Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
-		 resultJson = toJSON(projectMembersList);
-		 return resultJson;
+		 		 
+		 for(ProjectMembers pm : projectMembersList){
+			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
+		 }
+		 ObjectMapper mapper = new ObjectMapper();
+		 String jsonInString = mapper.writeValueAsString(projectMembersList);
+		 
+		 return jsonInString;
 	  }
 	 
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
@@ -184,6 +191,39 @@ public class ProjectsDashboardController {
 			Employees  emp=	employeesService.addEmployee(employee);
 			
 			return null;
+		}
+	 
+	 @RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
+		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
+		 	String resultJson = null;
+			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId);
+			resultJson = toJSON(employeeList);
+			return resultJson;
+		}
+	 
+	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
+		public @ResponseBody  String storeAssignEmployee(
+				@RequestParam(value="ProjectId", required=false) Long projectId,
+				@RequestParam(value="employeeId", required=false) Long employeeId,
+				@RequestParam(value="startDate", required=false) String startDate,
+				@RequestParam(value="endDate", required=false) String endDate) throws Exception {
+		 	
+			 	ProjectMembers pm = new ProjectMembers();
+			 	
+			 	Employees emp = new Employees();
+				emp.setId(employeeId);
+				
+			 	Projects project = new Projects();
+			 	project.setId(projectId);
+				
+			 	pm.setEmployee(emp);
+				pm.setProjects(project);
+				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
+				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
+				pm.setCreatedDate(new Date());
+				pm.setUpdatedDate(new Date());
+				projectMembersService.saveProjectMember(pm);
+				return null;
 		}
 	 
 	private String toJSON(Object obj){
