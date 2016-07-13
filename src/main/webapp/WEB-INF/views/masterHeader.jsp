@@ -50,11 +50,11 @@
         </div>
         <!-- login User details -->
         <div class="login-user">
-        <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage'/>"> </span> <span class="pull-left login-user-xs"> ${SourceLeadWeb_userName} </span>
+        <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </span> <span class="pull-left login-user-xs"> ${SourceLeadWeb_userName} </span>
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage'/>"> </div>
+              <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                 <p>${SourceLeadWeb_userType}</p>
@@ -62,7 +62,7 @@
             </div>
             <ul class="list-unstyled">
               <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
-              <li><a href="<c:url value='/logout'/>"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
+              <li><a href="<c:url value="/login" />"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
             </ul>
           </div>
         </div>
@@ -158,9 +158,7 @@
           <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
             <div class="setting-area">
               <ul class="list-unstyled">
-                <li><a href="#"><i class="fa fa-key" aria-hidden="true"></i> Change Password</a></li>
-                <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i> View Profile</a></li>
-                <li><a href="<c:url value="/login" />"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
+                 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-wrench" aria-hidden="true"></i>Org Settings</a></li>
               </ul>
             </div>
           </li>

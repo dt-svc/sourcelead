@@ -5,7 +5,9 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+    
 <script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','resources/images/userprofile-img.png');
@@ -20,7 +22,7 @@
       <div class="pull-left">
         <h2>Account Settings</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/home'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">
@@ -45,7 +47,7 @@
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 				  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
 				  <div class="profile-image mt mb">
-				    <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage'/>" alt="Profile Image" class="img-circle img-responsive">
+				    <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
 				  </div>
 				  <div class="btn-group mt">
 				  <button type="button" class="btn btn-primary">
@@ -103,7 +105,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" value="Save">
-							  <input type="submit" class="btn btn-default" value="Cancel">
+							  <input type="submit" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
 							</div>
 					  </div>
 			 </div>
@@ -119,33 +121,37 @@
 			  </div>
 			<div class="col-xs-12 col-sm-9 col-md-9">
 				  <div class="row mt">
+					
+					<form:form class="login-form clearfix"  id="passwordSettings_form"  name="passwordSettings_form" method="post" >
 					<div class="col-md-8">
 						<div class="form-group">
 						<label class="col-md-4">Current Password</label>
 						<div class="col-md-6">
-						  <input type="text" value="" class="form-control">
+						  <input type="password" id="currentPassword" name="currentPassword" value="${currentPassword}"  class="form-control"  required >
 						</div>
 						</div>
 						<div class="form-group">
-					<label class="col-md-4">New Password</label>
-					<div class="col-md-6">
-					  <input type="text" value="" class="form-control">
-					</div>
-				  </div>
-				  <div class="form-group">
-					<label class="col-md-4">Confirm Password</label>
-					<div class="col-md-6">
-					<input type="text" value="" class="form-control">
-					</div>
+						<label class="col-md-4">New Password</label>
+						<div class="col-md-6">
+						  <input type="password" name="password"  value="${password}" id="password" class="form-control" required  onkeydown="$(this).clear();" />
+						</div>
+				       </div>
+					  <div class="form-group">
+						<label class="col-md-4">Confirm Password</label>
+						<div class="col-md-6" id="passwordDiv">
+						<input type="password"  value="" id="confirmPassword" class="form-control"  onblur="$(this).checkPass();" required/>
+						</div>
 				  </div>
 					</div>
 				 <div class="col-md-7">
 				 <hr class="mr">
 					<div class="pull-right mr">
-					  <input type="submit" class="btn btn-primary mr" value="Save">
-					  <input type="button" class="btn btn-default" value="Cancel">
+					  <input type="submit" value="Save" id="save_button" class="btn btn-primary mr" />
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'">
 					</div>
 				  </div>
+				  </form:form>
+				  
 				 </div>
 			</div>
 			</div>
@@ -161,6 +167,41 @@
   <!-- Content Area Ends--> 
 
 <jsp:include page="masterFooter.jsp" />
+
+
+
+
+<script type="text/javascript">
+(function($) {
+	$.fn.checkPass = function() {   
+		var pass1 =$('input#password').val();  
+	    var pass2 = $('input#confirmPassword').val();
+	    if(pass1 == pass2){
+	    	 $('input#confirmPassword').removeAttr( "class pass-exist pass-exist-errormsg");
+			 $('#passwordDiv').find('span.jquery_form_error_message').remove(); 
+			 document.getElementById("confirmPassword").setAttribute('class','valid form-control');
+			 $("input#confirmPassword").removeAttr("style");
+			 document.getElementById('save_button').disabled = false;
+	    }
+	    else{ 
+		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
+		        document.getElementById("confirmPassword").setAttribute('class','error form-control');
+		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Passwords Not Matched</font></span>");
+				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
+				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
+				$("input#confirmPassword").removeAttr("style");
+				document.getElementById('save_button').disabled = true;
+	    }
+   }
+	
+    $.fn.clear = function() {   
+         $('#confirmMessage').empty(); 
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
 
 
 
@@ -197,6 +238,38 @@
                     	success: function(result) {
 			        	 if((result == 'home')){
 			        		location.replace(sourceleadUrl+"/userProfile");  
+			        	} 
+			        },  
+                });
+            });
+</script>
+
+
+<script type="text/javascript">
+        $('#passwordSettings_form')
+           .submit(function(e) {
+        	    e.preventDefault(); 
+    		    
+        	    var frm = $('#passwordSettings_form').serialize();
+        	    frm = "testvalue=testvalue&"+frm;
+        		var con = JSON.stringify(frm);
+        		var sourceleadUrl ='${sourceleadUrl}';
+        		
+                $.ajax({
+            	      type: "POST",
+            	      contentType : 'application/json; charset=utf-8',
+            	      dataType : 'json',
+                  	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                    	success: function(result) {
+			        	 if(result == 'home'){
+			        		location.replace(sourceleadUrl+"/home");  
+			        	}else if(result == 'Invalid Password'){
+			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
+             		         document.getElementById("currentPassword").setAttribute('class','error form-control');
+             		         $("input#currentPassword").after("<span class='jquery_form_error_message'> <font color='red'>Invalid Password</font></span>");
+             				 document.getElementById("currentPassword").setAttribute('pass-exist','yes');
+             				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
+             				 $("input#currentPassword").removeAttr("style");
 			        	} 
 			        },  
                 });
