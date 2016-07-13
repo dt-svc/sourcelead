@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.enums.Project_Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -55,15 +58,25 @@ public class Projects {
 	@JoinColumn(name = "SUPERIOR_USER_ID", nullable = false)
    	private User superiorUser;
     
-    @Column(name = "PROJECT_STATUS")
-    private String projectStatus;
+    
+	@Column(name = "PROJECT_STATUS")
+	@Enumerated(EnumType.STRING)
+	private Project_Status projectStatus;
+	
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
     
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORG_LOCATIONS_ID")
+    private OrgLocations orgLocationsId;
+    
     @Column(name = "STATUS")
     private String status;
+    
+    
     
     @Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -156,11 +169,13 @@ public class Projects {
 		this.superiorUser = superiorUser;
 	}
 
-	public String getProjectStatus() {
+	
+
+	public Project_Status getProjectStatus() {
 		return projectStatus;
 	}
 
-	public void setProjectStatus(String projectStatus) {
+	public void setProjectStatus(Project_Status projectStatus) {
 		this.projectStatus = projectStatus;
 	}
 
@@ -235,6 +250,14 @@ public class Projects {
 
 	public void setManagerLevel2(String managerLevel2) {
 		this.managerLevel2 = managerLevel2;
+	}
+
+	public OrgLocations getOrgLocationsId() {
+		return orgLocationsId;
+	}
+
+	public void setOrgLocationsId(OrgLocations orgLocationsId) {
+		this.orgLocationsId = orgLocationsId;
 	}
 	
 	

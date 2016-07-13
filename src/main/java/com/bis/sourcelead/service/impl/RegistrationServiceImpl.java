@@ -1,8 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +22,14 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CountriesService;
@@ -32,6 +38,9 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -64,6 +73,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	 
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
@@ -131,6 +149,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		Projects projects = saveProject(registration, orgLocations, user, employee);
+		
 	}
 	
 	private Org getOrgDetails(Registration registration){
@@ -159,6 +179,56 @@ public class RegistrationServiceImpl implements RegistrationService{
 		return user;
 	}
 	
+	
+	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) {
+		 			 	
+	    	Projects projects = new Projects();
+	    	projects.setProjectSequeneNumber(registration.getCompanyName()+"_Project01");
+	    	projects.setProjectName(registration.getCompanyName()+"_Project");
+	    	projects.setDescription(registration.getCompanyName()+"_Project");
+	    	projects.setStartDate(new Date());
+	    	
+	    	projects.setProjectStatus(Project_Status.STARTED);
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
+	    	projects.setOrgLocationsId(orgLocations);
+	    	Projects updatedProjects = null;
+			try {
+				updatedProjects = projectsService.saveProject(projects);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	
+	    	
+			if(updatedProjects != null){
+				ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
+		    	pah1.setProjectId(updatedProjects);
+		    	pah1.setApproverUserId(approverUser);
+		    	pah1.setLevel("Level1");
+		    	try {
+					ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	ProjectMembers pm = new ProjectMembers();
+				pm.setEmployee(employee);
+				pm.setProjects(projects);
+				pm.setProjectAssignedDate(projects.getStartDate());
+				pm.setCreatedDate(new Date());
+				pm.setUpdatedDate(new Date());
+				try {
+					projectMembersService.saveProjectMember(pm);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+			return updatedProjects;
+	}
+	 
+	 
 	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ){
 		
 		OrgLocations orgLocations = new OrgLocations();

@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 public class Constants {
 	
@@ -12,6 +13,7 @@ public class Constants {
 	public static String TEMP    = "T";
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static DateFormat DF_TM = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getTimeZone("America/Chicago");
 	public static int MAX_RESULTS_FIVE = 5;
 	public static int MAX_RESULTS_TEN = 10;
 	public static int MAX_RESULTS_TWENTY = 20;

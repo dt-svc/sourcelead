@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.EmployeesService;
 
 import com.bis.sourcelead.form.Registration;
@@ -126,7 +127,7 @@ public class ProjectsController {
 	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
 	    	projects.setStartDate(new Date());
 	    	projects.setEndDate(new Date());
-	    	projects.setProjectStatus(jsonObj.getString("Satatus"));
+	    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
 	    	Projects updatedProjects = projectsService.saveProject(projects);
@@ -244,7 +245,7 @@ public class ProjectsController {
 			projects.setSuperiorUser(superiorUser);
 			
 			projects.setProjectName("VADALU");
-			projects.setProjectStatus("Open");
+			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 			projects.setDescription("sourcelead desc");
 			projects.setStatus("1");
 			projects.setStartDate(new Date());
@@ -274,7 +275,7 @@ public class ProjectsController {
 			projects.setSuperiorUser(superiorUser);
 			
 			projects.setProjectName("SOURCELEAD");
-			projects.setProjectStatus("Open");
+			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 			projects.setDescription("sourcelead desc");
 			projects.setStatus("1");
 			projects.setStartDate(new Date());
