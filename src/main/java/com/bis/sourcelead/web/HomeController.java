@@ -132,8 +132,23 @@ public class HomeController {
 		return model;
 
 	}
+   
+   @RequestMapping(value = "/usersList")
+	public ModelAndView userRegistration() {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("registration/usersList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
 
+	}
+   @RequestMapping(value = "/userCreation")
+	public ModelAndView userCreation() {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("registration/userCreation");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
 
+	}
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
