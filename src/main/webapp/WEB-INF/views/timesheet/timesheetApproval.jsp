@@ -96,88 +96,31 @@
                              <fmt:formatDate type="date" value="${approval.endDate}" />
 						 </div>
 					</td>
-                    <td><div><a href="javascript:void(0)"> ${approval.totalHours}/40</a></div></td>
+					<!-- href="javascript:void(0)" -->
+                    <td><div><a    onclick="myTimesheet('${approval.id}');"  id="timesheetPopup${approval.id}"> ${approval.totalHours}/40</a></div></td>
                     <td><div>${approval.status}</div></td>
-                    <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td>
+                    <!-- <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
+					</td> -->
+					<td>
+					 <c:set var="status" value="NEW"/>
+                     <%-- <c:if test="${status=='NEW'}">
+                              <div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
+                     </c:if> --%>
+                     <%-- <c:if test="${status =='NEW'}">
+                              <div><h3 class="reje_color">Rejected</h3>
+								    <i class="glyphicon glyphicon-comment">
+										<strong><p>Rejected message here</p></strong>
+									</i>
+							  </div>
+                     </c:if> --%>
+                     <c:if test="${status =='NEW'}">
+                            <div><h3>Approved</h3></div>
+                     </c:if> 
+                    </td> 
                 </tr>
             </c:forEach>
             
-             <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                    <td><div><input type="text" placeholder="DD/MM/YY" value="31/12/2030" >
-						<input type="text" placeholder="DD/MM/YY" value="31/12/2030" ></div>
-					</td>
-                    <td><div><a href="javascript:void(0)">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td>
-                </tr>
-				<tr>
-                	<td><div class="time_appr_user"><img src="images/userprofile-img.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                    <td><div><input type="text" placeholder="DD/MM/YY" value="31/12/2030" >
-						<input type="text" placeholder="DD/MM/YY" value="31/12/2030" ></div>
-					</td>
-                    <td><div><a href="javascript:void(0)">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td>
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                    <td><div><input type="text" placeholder="DD/MM/YY" value="31/12/2030" >
-						<input type="text" placeholder="DD/MM/YY" value="31/12/2030" ></div>
-					</td>
-                    <td><div><a href="javascript:void(0)">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><h3>Approved</h3></div>
-					</td>
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                    <td><div><input type="text" placeholder="DD/MM/YY" value="31/12/2030" >
-						<input type="text" placeholder="DD/MM/YY" value="31/12/2030" ></div>
-					</td>
-                    <td><div><a href="javascript:void(0)">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><h3 class="reje_color">Rejected</h3>
-					<i class="glyphicon glyphicon-comment">
-							<strong><p>Rejected message here</p></strong>
-						</i></div>
-					</td>
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                    <td><div><input type="text" placeholder="DD/MM/YY" value="31/12/2030" >
-						<input type="text" placeholder="DD/MM/YY" value="31/12/2030" ></div>
-					</td>
-                    <td><div><a href="javascript:void(0)">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td>
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                    <td><div><input type="text" placeholder="DD/MM/YY" value="31/12/2030" >
-						<input type="text" placeholder="DD/MM/YY" value="31/12/2030" ></div>
-					</td>
-                    <td><div><a href="javascript:void(0)">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td>
-                </tr>				
+            			
             </tbody>
         </table>
        
@@ -492,7 +435,29 @@
 	<!--   Timesheet approval popup   -->
 
 	<!--   Timesheet approval seript files   -->
-	
+<!-- sarath custom -->	
+<script>
+function myTimesheet(local){   
+    alert("local"+local);
+    
+    $.ajax({
+   	type: "POST",
+    url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
+    success: function(data) {
+           
+               
+    }
+    });
+    
+	$(".timesheet_appr_table a").click(function(){
+		$(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+	});
+    $(".proj_close").click(function(){
+		$(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	});	
+}    
+</script>	
+
 <script>
 $(document).ready(function() {
     $(".timesheet_appr_table .glyphicon").click(function(){
@@ -520,14 +485,14 @@ $(document).ready(function() {
 });
 
 //  Timesheet approval side bar
-$(document).ready(function() {
+/* $(document).ready(function() {
     $(".timesheet_appr_table a").click(function(){
 		$(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
 	});
     $(".proj_close").click(function(){
 		$(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	});	
-});
+}); */
 
 $(document).ready(function() {
     $("#appro-pop").click(function(){

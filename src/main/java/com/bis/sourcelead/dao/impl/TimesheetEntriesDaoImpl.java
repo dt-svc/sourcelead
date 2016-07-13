@@ -86,6 +86,16 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		return adItemsList;
 	}
 
+	@Override
+	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		List<TimesheetEntries> adItemsList = null;
+		Query citiesListQuery= session.createQuery("from TimesheetEntries");
+		adItemsList=citiesListQuery.list();;
+		return adItemsList;
+	}
+
 	
 	
 

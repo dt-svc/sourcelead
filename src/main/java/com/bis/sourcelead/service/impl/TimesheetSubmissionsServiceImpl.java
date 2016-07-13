@@ -56,4 +56,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return list;
 	}
 
+	@Override
+	public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(projectMemberId,userId);
+		return list;
+	}
+	
+	
+
 }
