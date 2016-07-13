@@ -6,6 +6,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +22,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -54,7 +59,19 @@ public class TimesheetSubmissions {
 	private String totalHours;
 	
 	@Column(name = "SUBMISSION_STATUS")
-	private String submissionStatus;
+	@Enumerated(EnumType.STRING)
+	private Submission_Status submissionStatus;
+	
+	@Column(name = "SUBMISSION_APPROVALSTATUS")
+	@Enumerated(EnumType.STRING)
+	private Submission_ApprovalStatus submissionApprovalStatus;
+	
+	@Column(name = "LEVEL_OF_APPROVER")
+	private Integer levelOfApprover;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
+	private User approverUserId;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -111,12 +128,36 @@ public class TimesheetSubmissions {
 		this.endDate = endDate;
 	}
 
-	public String getSubmissionStatus() {
+	public Submission_Status getSubmissionStatus() {
 		return submissionStatus;
 	}
 
-	public void setSubmissionStatus(String submissionStatus) {
+	public void setSubmissionStatus(Submission_Status submissionStatus) {
 		this.submissionStatus = submissionStatus;
+	}
+
+	public Submission_ApprovalStatus getSubmissionApprovalStatus() {
+		return submissionApprovalStatus;
+	}
+
+	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
+		this.submissionApprovalStatus = submissionApprovalStatus;
+	}
+
+	public Integer getLevelOfApprover() {
+		return levelOfApprover;
+	}
+
+	public void setLevelOfApprover(Integer levelOfApprover) {
+		this.levelOfApprover = levelOfApprover;
+	}
+
+	public User getApproverUserId() {
+		return approverUserId;
+	}
+
+	public void setApproverUserId(User approverUserId) {
+		this.approverUserId = approverUserId;
 	}
 
 	public String getStatus() {
