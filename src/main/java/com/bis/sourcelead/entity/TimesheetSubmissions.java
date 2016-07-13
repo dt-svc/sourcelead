@@ -47,6 +47,12 @@ public class TimesheetSubmissions {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
+	@Column(name = "ESTIMATED_HOURS")
+	private String estimatedHours;
+	
+	@Column(name = "TOTAL_HOURS")
+	private String totalHours;
+	
 	@Column(name = "SUBMISSION_STATUS")
 	private String submissionStatus;
 	
