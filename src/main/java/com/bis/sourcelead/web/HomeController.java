@@ -1,14 +1,10 @@
 package com.bis.sourcelead.web;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
-import org.h2.schema.Constant;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.LoginService;
-import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.service.UserService;
+
+
 
 /**
  * This class is used for...
