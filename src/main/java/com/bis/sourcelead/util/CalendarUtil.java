@@ -10,34 +10,25 @@ import java.util.TimeZone;
 public  class CalendarUtil {
 	
 	public static void main(String[] args) throws Exception{
-		String testDate = "07-03-2016";
-		SimpleDateFormat formatter =  new SimpleDateFormat("MM-dd-yyyy");
+		String testDate = "07/04/2016";
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		Date date = null;
 		try {
-			date = formatter.parse(testDate);
+			date = sdf.parse(testDate);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-         Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		  startCal.setLenient(false);
 		  startCal.setTime(date);
 		  
-		  System.out.println(CalendarUtil.getCurrentWeekDay("MON"));
-		
-		 Calendar startSunDay =  CalendarUtil.getCurrentWeekDayByCalendar(startCal, "SUN");
-          
-         System.out.println(startSunDay.getTime());
-         System.out.println("===================================");
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,1).getTime()+"</n>"); 
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,2).getTime()+"</n>");
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,3).getTime()+"</n>"); 
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,4).getTime()+"</n>"); 
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,5).getTime()+"</n>"); 
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,6).getTime()+"</n>"); 
-         System.out.println(CalendarUtil.getDateIncrementByincrement(startSunDay,7).getTime()+"</n>"); 
          
+		  Calendar test1Date = CalendarUtil.getDateIncrementByincrement(startCal,21);
+		  System.out.println("3rd week monday"+test1Date.getTime());
+		  
+		 
 		
 	}
 	
@@ -96,7 +87,6 @@ public  class CalendarUtil {
 			nowCal.setTime(nowDate);
 			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
 			nowCal.add(Calendar.DATE, dayOfWeek+day_offset-1);
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
 			return nowCal.getTime();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -181,32 +171,19 @@ public  class CalendarUtil {
 	
      public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
 		  
-		int day_offset = getDayOffset(day_Of_Week);
-		Calendar nowCal = new GregorianCalendar(TimeZone.getTimeZone("America/Chicago"), Locale.US);
-		
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-			
-			String nowStr = sdf.format(calendar.getTime());
-			Date nowDate = sdf.parse(nowStr);
-			nowCal.setTime(nowDate);
-			int currentDayOFWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			if(currentDayOFWeek != Calendar.DAY_OF_WEEK ){
-				int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-				nowCal.add(Calendar.DATE, -dayOfWeek);
-			}
-			
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			nowCal.add(Calendar.DATE, -dayOfWeek+day_offset);
-			
-			
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
-			return nowCal;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
+    	 int day_offset = getDayOffset(day_Of_Week);
+ 		try {
+ 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+ 			String nowStr = sdf.format(calendar.getTime());
+ 			Date nowDate = sdf.parse(nowStr);
+ 			calendar.setTime(nowDate);
+ 			calendar.add(Calendar.DATE, -7);
+ 			calendar.set(Calendar.DAY_OF_WEEK, day_offset);
+ 			return calendar;
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
+ 		return null;
 	}
 	
 	public static Calendar getCurrentWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
@@ -217,10 +194,7 @@ public  class CalendarUtil {
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			calendar.setTime(nowDate);
-			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-			// If dayOfWeek is 
-			calendar.add(Calendar.DATE, dayOfWeek+day_offset);
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
+			calendar.set(Calendar.DAY_OF_WEEK, day_offset);
 			return calendar;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,23 +204,20 @@ public  class CalendarUtil {
 	
 
 	public static Calendar getNextWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
-		int day_offset = getDayOffset(day_Of_Week);
-		Calendar nowCal = new GregorianCalendar(TimeZone.getTimeZone("America/Chicago"), Locale.US);
-		
+        int day_offset = getDayOffset(day_Of_Week);
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
-			nowCal.setTime(nowDate);
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			nowCal.add(Calendar.DATE, dayOfWeek+day_offset-1);
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
-			return nowCal;
+			calendar.setTime(nowDate);
+			calendar.add(Calendar.DATE, 7);
+			calendar.set(Calendar.DAY_OF_WEEK, day_offset);
+			return calendar;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return null;
+		
 	}
 	
 	public static Calendar getDateIncrementByincrement(Calendar calendar, int increment) throws Exception {
