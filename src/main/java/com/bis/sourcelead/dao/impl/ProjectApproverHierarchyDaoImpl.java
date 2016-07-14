@@ -43,6 +43,16 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	        return projectHirachyList;
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.approverUserId left join fetch projectHirachy.projectId where (projectHirachy.approverUserId.id =:userId OR projectHirachy.projectId.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("userId", userId).list();
+	        return projectHirachyList;
+	}
 	
 	
 	

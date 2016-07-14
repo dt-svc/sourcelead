@@ -12,8 +12,8 @@
             <h2>Projects</h2>
              <a href="<c:url value='/project'/>"><span><i class="fa fa-bar-chart"></i></span>New Projects</a>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
+
         
 		<!-- Project -->
 <div class="timesheet_out">
@@ -71,205 +71,62 @@
         	<div class="project_tabs_inn_head">
 			<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>
 			<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>
-			</div>
-            <div class="project_tabs_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Emp name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Approved hrs</th>
-                    <th>Rejected hrs</th>
-                    <th>Open hrs</th>
-                    <th>Wait for approval</th>
-                    <th>Edit</th>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                                                                                             
-            </tbody>
-        </table>            
-            </div>
-        </div>
-        <div id="tab-2" class="project_tabs_inn">
-        	<div class="project_tabs_inn_head">
-			<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>
-            <div class="project_tabs_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Task name</th>
-                    <th>Task description</th>
-                    <th>Edit</th>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                                                                                             
-            </tbody>
-        </table>            
-            </div>
-        </div>
-        <div id="tab-3" class="project_tabs_inn">
-            <div class="project_tabs_inn_table">
-				<div class="project_details">
-					<div class="project_details_cta">
-						<strong>Status:</strong><span><b>Active</b><i id="ac-drop" class="fa fa-edit">
-							<ul>
-								<li>Option 1</li>
-								<li>Option 2</li>
-								<li>Option 3</li>
-								<li>Option 4</li>
-							</ul>
-						</i></span>
-					</div></span><div class="clearfix"></div>
-					<div class="project_details_cta">
-						<strong>Project name:</strong>
-						<span><input type="text" value="BIS India" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Project manager:</strong>
-						<span><input type="text" value="Srinivas" placeholder="Project manager" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Client:</strong>
-						<span><input type="text" value="Cognizant" placeholder="Client" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Team members:</strong><span>25</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Start date:</strong>
-						<span><input type="text" value="DD/MM/YY" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>End date:</strong>
-						<span><input type="text" placeholder="DD/MM/YY" value="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="clearfix"></div>
-					<p>Description<i class="fa fa-edit"></i> :</p>
-					<textarea placeholder="Description">
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-a reader will be distracted by the readable content of a page when looking at its layout a reader will be distracted by the readable content of a page when looking at its layout  
-					</textarea>
-					<div class="clearfix"></div>
-					<div class="project_details_cta">
-						<strong>Created By:</strong><span>Srinivas</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Created date:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Last Updated:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>
-					</div>					
-					<div class="clearfix"></div>
-				</div>
-            </div>
-        </div>        
-    </div>
-</div>       -->  
-      
+	   <!-- Project -->
+	   <div class="timesheet_out">
+		<div class="project_wrap">
+			<div class="project_wrap_head"><input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i></div>
+		    <div class="project_wrap_table">
+		    	<table>
+		        	<tbody>
+					<thead>
+		            	<tr>
+		                	<th>Id</th>
+		                    <th>Name</th>
+		                    <th>Manager</th>
+		                    <th>Date</th>
+		                    <th>Client</th>
+		                    <th>Team</th>
+		                    <th>Status</th>
+		                </tr>
+					</thead>	
+		              
+					<c:forEach var="report" items="${projectsList}" varStatus="raId">	
+		                <tr>
+		                	<td data-title="Id"><div>${report.id}</div></td>
+		                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+							<td data-title="Manager">
+							    <div>
+								    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
+								       ${approver.approverUserId.firstName} ${approver.approverUserId.lastName} ,
+								    </c:forEach>
+							
+							   </div>
+							</td>
+							<td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
+		                    <td data-title="Client"><div>Client 1</div></td>
+		                    <td data-title="Team"><div>Team a</div></td>
+		                    <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
+		                </tr>
+		            </c:forEach>          
+		           </tbody>
+		        </table>
 
-	<div class="project_inn_mask"></div>
-	<div class="project_error">
-		<p>User delete message here ....</p>
-		<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
-	</div>	
-    </div>
-</div> 		
-		<!-- Project -->
-		
-      </section>
-      <!-- Content Area Ends--> 
-</body>
-	
+			</div>
+		</div>
+		<div class="project_side_wrap">
+			<div class="project_side_wrap_inn">
+		    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+		     <div id="projectSideDiv">
+		     </div>   
+			<div class="project_inn_mask"></div>
+			<div class="project_error">
+				<p>User delete message here ....</p>
+				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
+			</div>	
+		    </div>
+		   </div> 		
+	   </section>
+	  </body>
 <!--   Popup's   -->
 
 <!-- Modal content Assign Team-->
@@ -361,7 +218,7 @@ a reader will be distracted by the readable content of a page when looking at it
                   </div>
                 </div>
                 <!-- Add Team modal popup ends --> 
-<!-- Modal -->
+               <!-- Modal -->
                 <div class="modal fade" id="addTask" role="dialog">
                   <div class="modal-dialog modal-lg"> 
                     
@@ -411,23 +268,16 @@ a reader will be distracted by the readable content of a page when looking at it
                   </div>
                 </div>
                 <!-- Modal contente Ends--> 
-
-<!--   Popup's   -->	
+               <!--   Popup's   -->	
 <jsp:include page="../masterFooter.jsp" />	
 	
 <script>
-
-
 //project side bar
 $(document).ready(function() {
- /* $(".proj_show").click(function(){
-		$(".project_side_wrap").addClass("project_side_wrap_active");
-	}); */
- $(".proj_close").click(function(){
+     $(".proj_close").click(function(){
 		$(".project_side_wrap").removeClass("project_side_wrap_active");
 	});	
 });
-
 //project side bar tabs
 $(document).ready(function() {
 	$("#tab-1").show();
@@ -465,10 +315,7 @@ $(document).ready(function() {
 		$(".project_inn_mask").fadeOut(200);
  });
 });
-
-
 </script> 
- 
  <script>
  function projectSideBar(projectId){
 	  	    var result = "";
@@ -562,7 +409,6 @@ function projectEmployee(projectId){
 
 <script>
   function projectTask(projectId){
-	  
 	  var result = ""; 
 	  $.ajax({
 		   	type: "POST",

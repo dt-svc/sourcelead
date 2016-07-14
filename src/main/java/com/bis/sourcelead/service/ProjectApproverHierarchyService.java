@@ -9,8 +9,7 @@ public interface ProjectApproverHierarchyService {
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
 
 	public Collection<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
-
-
-
+	
+	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
 
 }

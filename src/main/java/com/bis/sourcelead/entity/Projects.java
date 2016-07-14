@@ -94,6 +94,10 @@ public class Projects {
     @Fetch(FetchMode.JOIN)
     private Set<ProjectMembers> projectMembers;
     
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<ProjectApproverHierarchy> projectApprovers;
+    
     @Transient
     private String managerLevel1;
     
@@ -258,6 +262,14 @@ public class Projects {
 
 	public void setOrgLocationsId(OrgLocations orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
+	}
+
+	public Set<ProjectApproverHierarchy> getProjectApprovers() {
+		return projectApprovers;
+	}
+
+	public void setProjectApprovers(Set<ProjectApproverHierarchy> projectApprovers) {
+		this.projectApprovers = projectApprovers;
 	}
 	
 	

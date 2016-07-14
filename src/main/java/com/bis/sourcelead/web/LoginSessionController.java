@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +37,8 @@ import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@PropertySource(value = { "classpath:config/application.properties" })
 public class LoginSessionController {
-	
 	@Autowired
 	UserRoleService userRoleService;
 	
@@ -62,7 +63,7 @@ public class LoginSessionController {
 		
 		
 		User user = userService.findByUserName(authentication.getName());
-		setSessionUserAttributes(user,request);
+		setSessionUserAttributes(user,request,sourceleadUrl);
 		
 		try {
 			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
@@ -88,7 +89,6 @@ public class LoginSessionController {
 		calculateDays(notificationList);
 		storeTimesheetSubmissionRecords(user);
 		model.addObject("notificationList", notificationList);
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("home");
 	    return model;
 		
@@ -178,8 +178,10 @@ public class LoginSessionController {
 	}
 
 
-	private void setSessionUserAttributes(User user, HttpServletRequest request)
+	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl)
 	{
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());

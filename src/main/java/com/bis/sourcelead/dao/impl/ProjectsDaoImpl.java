@@ -103,29 +103,13 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<Projects> getAllProjectsAndManagers() throws Exception {
+	public Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception {
 		logger.debug("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
-        String query = "from  Projects projects";
-        List<Projects> projectsList  =   session.createQuery(query.toString()).list();
-        ArrayList<Projects> jobsList = new ArrayList<Projects>();
-        
-        for(Projects projects: projectsList){
-        	
-        	Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
-            for(ProjectApproverHierarchy projectApproverHierarchy : projectApproverHierarchiesList){
-            	if(projectApproverHierarchy.getLevel().equalsIgnoreCase("Level1")){
-            			projects.setManagerLevel1(projectApproverHierarchy.getApproverUserId().getFirstName() +""+projectApproverHierarchy.getApproverUserId().getLastName());
-            	}
-            	if(projectApproverHierarchy.getLevel().equalsIgnoreCase("Level2")){
-        			projects.setManagerLevel2(projectApproverHierarchy.getApproverUserId().getFirstName() +""+projectApproverHierarchy.getApproverUserId().getLastName());
-            	}
-            }
-        
-            jobsList.add(projects);
-        }
-        
+        String query = "from  Projects projects right join fetch projects.projectMembers right join fetch projects.projectApprovers   where (projects.id IN(select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId.id =:userId)  OR projects.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
+        List<Projects> projectsList  =   session.createQuery(query.toString()).setLong("userId", userId).list();
+       
         return projectsList;
 	}
 

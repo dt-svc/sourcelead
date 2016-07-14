@@ -18,7 +18,7 @@ public interface ProjectsDao {
 	
 	Collection<Projects> getAllProjects() throws Exception;
 	
-	Collection<Projects> getAllProjectsAndManagers() throws Exception;
+	Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception;
 	
 	
 }
