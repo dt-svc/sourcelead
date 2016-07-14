@@ -328,8 +328,8 @@ function validateProjectId(){
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Email <span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail">
+                            <div class="col-lg-9" id="EmailIdDiv">
+                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
                               </div>
                             </div>
                             <div class="form-group">
@@ -694,3 +694,28 @@ function assignEmployee(){
 	    $("#assignTeamSavingDiv").append(result);
 }
 </script>
+
+<script type="text/javascript">
+ function emailVerification() {
+	 var email = $("#employeeEmail").val();
+     $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+     var sourceleadUrl ='${sourceleadUrl}';
+     if(email != null && email != ""){
+         $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/sourcelead/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&email="+email,
+                success: function(data) {
+                    if(data == 'true'){
+                          $("input#employeeEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+                          document.getElementById("employeeEmail").setAttribute('record-exist','yes');
+                          document.getElementById("employeeEmail").setAttribute('record-exist-errorMsg',email+' is Already Existed');
+                    }
+                    else{
+                         $('input#employeeEmail').removeAttr( "record-exist record-exist-errormsg");
+                         $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+                    }
+                },
+            });
+     }
+ }
+ </script> 
