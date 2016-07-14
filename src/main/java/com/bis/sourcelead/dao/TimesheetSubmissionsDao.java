@@ -16,7 +16,7 @@ public interface TimesheetSubmissionsDao {
     
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
-    public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds)throws Exception; 
+    public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , Long userId)throws Exception; 
     
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 

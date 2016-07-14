@@ -11,6 +11,22 @@
 	}
 </script>
 
+<script>
+$(document).ready(function() {
+    alert("hi");
+    var startDate;
+    $.ajax({
+   	type: "POST",
+    url: "http://localhost:8080/sourcelead/newTimesheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate, 	   
+    success: function(data) {
+               alert("data"+data); 
+    }
+    });
+    
+});
+
+</script>
+
 <body onclick="bodyClick();">
 <!-- Content Area -->
       <section class="content-wraper">
