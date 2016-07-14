@@ -62,6 +62,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		
 		
         props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.localhost", "localhost");
         props.put("mail.stmp.user", "sourcelead.bis@gmail.com");          
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");

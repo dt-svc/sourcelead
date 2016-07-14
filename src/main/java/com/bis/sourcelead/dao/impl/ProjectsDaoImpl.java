@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -67,6 +68,38 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return (Projects) session.get(Projects.class, id);
 	}
+	
+	/**
+	 * This method for get project by orgLocationsId
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId ";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
+		
+		return projectsList;
+	}
+	
+	/**
+	 * This method for get primary project by orgLocationsId
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsDaoImpl getPrimaryProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.isPrimary = '1' ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
+
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
+	}
 
 	/**
 	 * This method for delete project by id.
@@ -86,6 +119,27 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			 isDeleted = true;
 		 }
 		return isDeleted;
+	}
+	
+	
+	/**
+	 * This method for validate project by projectSequeneNumber. It returns boolean value
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception {
+		 logger.debug("In ProjectsDaoImpl validateProjectSequeneNumber method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(projectSequeneNumber != null && orgLocationsId != null){
+				String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectSequeneNumber = :projectSequeneNumber ";
+				Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectSequeneNumber", projectSequeneNumber).list();
+
+				if (projectsList != null && projectsList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 
 	/**

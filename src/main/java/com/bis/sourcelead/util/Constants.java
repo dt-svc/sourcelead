@@ -30,6 +30,7 @@ public class Constants {
 	public static String ORG_REGISTRATION = "Org Registration";
 	public static String FORGOT_PASSWORD = "Forgot Password";
 	public static String UPDATE_PASSWORD = "Update Password";
+	public static String INVITE_USER = "Invite User";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
