@@ -107,7 +107,8 @@
 					<td>
 					 <c:set var="status" value="NEW"/>
                       <c:if test="${status=='NEW'}">
-                              <div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission();"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission();"></i></div>
+                              <div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('${approval.id}');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('${approval.id}');"></i></div>
+                              <div id="rejectedPopup"></div>
                      </c:if> 
                     <%--  working
                     <c:if test="${status =='NEW'}">
@@ -499,10 +500,11 @@
 	<!--   Timesheet approval popup   -->
 
 <div class="mask_time"></div>	
-<div class="time_appr_rejct_pop">
+
+<!-- <div class="time_appr_rejct_pop">
 	<textarea placeholder="Enter comment here"></textarea>
 	<a href="javascript:void(0)">Submit</a><a class="close_color" href="javascript:void(0)">Cancel</a>
-</div>	
+</div> -->	
 	
 	<!--   Timesheet approval popup   -->
 
@@ -694,34 +696,40 @@ function saveMyTimesheet(){
 </script>
 
 
-    rejecteSubmission
- 
 <script>
-function approveSubmission(){
-     
-    $.ajax({
-   	type: "POST",
-    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
-    success: function(data) {
-              $("#myId").empty();
-              $("#myId").append(data); 
-              maskme();   
-    }
-    });
-     
+function saveRejectSubmission(local){
 
+         var msg = $("#reject"+local+"panel").val();    
+         alert("msg"+msg);
+         $(".mask_time").fadeOut(200);
+		 $("#reject"+local+"panel").slideUp(200);
+         $.ajax({
+	   	 type: "POST",
+	     url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
+	     success: function(data) {
+	               
+	               //laxman need to write service code at timesheet submission column : submission approval statu
+	               //  put column rejected reason ..500 
+	     }
+	     });
 }
 
-function rejecteSubmission(){
-        $.ajax({
-	   	type: "POST",
-	    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
-	    success: function(data) {
-	              $("#myId").empty();
-	              $("#myId").append(data); 
-	              maskme();   
-	    }
-	    });
+function cancelRejectSubmission(local){
+		 $(".mask_time").fadeOut(200);
+		 $("#reject"+local+"panel").slideUp(200);
+}
+
+function rejecteSubmission(local){
+        
+        var result = "";
+        result = result +'<div class="time_appr_rejct_pop" id="reject'+local+'panel" >';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+local+'message" ></textarea>';
+		result = result +'<a href="#" onClick="saveRejectSubmission(\''+local+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
+		result = result +'</div>';
+		alert("result"+result);
+		$("#rejectedPopup").append(result);
+	    $(".mask_time").fadeIn(200); 
+		$("#reject"+local+"panel").slideToggle(200);
 }
 </script>
  
@@ -746,12 +754,12 @@ $(document).ready(function() {
 });
 
 
-// close popup
+// close popup for close
 $(document).ready(function() {
-    $(".timesheet_appr_table .fa-times").click(function(){
-		$(".mask_time").fadeIn(200);
+    /* $(".timesheet_appr_table .fa-times").click(function(){
+		$(".mask_time").fadeIn(200); 
 		$(".time_appr_rejct_pop").slideToggle(200);
-	});
+	}); */
     $(".time_appr_rejct_pop a").click(function(){
 		$(".mask_time").fadeOut(200);
 		$(".time_appr_rejct_pop").slideUp(200);
