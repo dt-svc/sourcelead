@@ -106,6 +106,29 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			
 			return orgLocation;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationsByOrgCode(String orgCode) throws Exception {
+		
+
+		  Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgLocations orgLocations where  orgLocations.org =:orgCode");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("orgCode", orgCode).list();
+	     
+	       OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
+		
+		
+	}
+	
+	
 	
 	
 

@@ -12,6 +12,7 @@ public interface OrgRelationsDao {
 
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception;
 
+	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId,Long clientOrgLocationId)throws Exception;
 	
 	
 }

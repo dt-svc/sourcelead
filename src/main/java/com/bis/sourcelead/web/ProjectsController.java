@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,8 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.dao.ProjectsDao;
 
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -39,7 +43,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.EmployeesService;
-
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -53,6 +58,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -74,6 +80,12 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 private OrgService orgService;
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
@@ -116,10 +128,12 @@ public class ProjectsController {
 	}
 	 
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json) throws Exception {
+	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
+		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	
 		 	
 	    	Projects projects = new Projects();
 	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectId"));
@@ -130,8 +144,21 @@ public class ProjectsController {
 	    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
-	    	Projects updatedProjects = projectsService.saveProject(projects);
 	    	
+	    	// Saving of Client by bringing OrgRelation id based on Client OrgId
+		    String clientOrgCode = jsonObj.getString("selectClient");	
+		    if(!clientOrgCode.isEmpty() && clientOrgCode!=null){
+		    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocationsByOrgCode(clientOrgCode);
+		    	  if(clientOrgLocations!=null){
+		    		  OrgRelations  orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(loginOrgLocation.getId(), clientOrgLocations.getId());
+			    		  if(orgRelations!=null){
+			    			  projects.setOrgRelationId(orgRelations);
+			    		  }
+		    	  }
+		    	  
+		    }
+	    	
+	    	Projects updatedProjects = projectsService.saveProject(projects);
 	    	
 	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 	    	pah1.setProjectId(updatedProjects);
@@ -151,7 +178,8 @@ public class ProjectsController {
 			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 		}
 	    	
-	    	
+		
+	    
 	    	
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);

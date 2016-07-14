@@ -56,4 +56,14 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		return orgLocationsDao.getOrgLocationsByLocationCode(locationCode);
 	}
 	
+
+	@Override
+	public OrgLocations getOrgLocationsByOrgCode(String  locationCode) throws Exception {
+		// TODO Auto-generated method stub
+		return orgLocationsDao.getOrgLocationsByOrgCode(locationCode);
+	}
+	
+	
+	
+	
 }

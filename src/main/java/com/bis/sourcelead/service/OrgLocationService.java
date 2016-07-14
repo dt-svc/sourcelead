@@ -13,4 +13,5 @@ public interface OrgLocationService {
     public Boolean deleteOrgLocations(Long id)throws Exception;
     public List<OrgLocations> getAllOrgLocations()throws Exception; 
     public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
+    public  OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception;
 }
