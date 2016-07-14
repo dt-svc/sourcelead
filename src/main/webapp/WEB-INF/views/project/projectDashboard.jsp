@@ -50,6 +50,9 @@
 	</div>
 </div>
 
+
+
+
 <div class="project_side_wrap">
 	<div class="project_side_wrap_inn">
     <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
