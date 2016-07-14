@@ -22,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
@@ -99,4 +100,16 @@ public class UploadController {
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
 	}
+	
+	//cancelImport
+	
+	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
+	public ModelAndView cancelImport() throws IOException {
+		logger.info("+++++++++++++++++++++++++++++++++++++++");
+		logger.info("=======================================================");
+		ModelAndView view = new ModelAndView("redirect:/timesheetexcel/excelDownload");
+		return view;
+		
+	}
+	
 }

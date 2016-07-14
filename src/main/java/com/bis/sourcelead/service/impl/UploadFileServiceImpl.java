@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UploadFileService;
 
 /**

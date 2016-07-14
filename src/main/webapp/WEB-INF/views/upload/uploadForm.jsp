@@ -80,7 +80,7 @@
 			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
@@ -92,8 +92,8 @@
             </label>
 			</div>
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
-			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /> &hellip;</p>
-			<p class="text-danger text-center mt" id="success">${msg} &hellip;</p> 
+			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
+			<p class="text-danger text-center mt" id="success">${msg}</p> 
 		
 			</div>
 			

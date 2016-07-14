@@ -33,6 +33,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -62,7 +65,10 @@ import com.mysql.fabric.xmlrpc.base.Array;
 public class UploadFileDaoImpl implements UploadFileDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadFileDaoImpl.class);
-
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
 	@Autowired
 	private UserService userService;
 
@@ -84,7 +90,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		if (!fileName.toLowerCase().endsWith("csv")) {
 			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations);
 		} else {
-			// userImports = parseCSVData(multipartFile);
+			//isFileCreated = parseCSVData(multipartFile,orgLocations);
 		}
 		return isFileCreated;
 	}
@@ -93,13 +99,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	 * Handles CSV files
 	 * 
 	 * @param multipartFile
+	 * @param orgLocations 
 	 * @return List<UserImports>
 	 * @throws FileNotFoundException
 	 */
-	private List<UsersImport> parseCSVData(MultipartFile multipartFile) throws Exception {
+	private String parseCSVData(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception {
 
-		List<UsersImport> userImportList = new ArrayList<UsersImport>();
-
+	//	List<UsersImport> userImportList = new ArrayList<UsersImport>();
 		CSVParser csvFileParser = null;
 		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(Constants.FILE_HEADER_MAPPING);
 		try {
@@ -117,21 +123,45 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setMobileNumber(record.get(Constants.PHONE_NUMBER));
 				userImport.setRate(record.get(Constants.RATE));
 				userImport.setRatePer(record.get(Constants.RATEPER));
-				String joinDate = record.get(Constants.DATEOFJOIN);
-				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-				Date date = sdf.parse(joinDate);
-				sdf = new SimpleDateFormat("MM/dd/yyyy");
+//				String joinDate = record.get(Constants.DATEOFJOIN);
+//				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+//				Date date = sdf.parse(joinDate);
+//				sdf = new SimpleDateFormat("MM/dd/yyyy");
+				String startDateString = record.get(Constants.DATEOFJOIN);
+			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+			    Date date = null;
+			    try {
+			    	date = df.parse(startDateString);
+			        String newDateString = df.format(date);
+			        System.out.println(newDateString);
+			    } catch (ParseException e) {
+			        e.printStackTrace();
+			    }
 				userImport.setDateOfJoin(date);
 				userImport.setRole(record.get(Constants.ROLE));
 				userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 				userImport.setDayHours(record.get(Constants.DAY_HOURS));
-				userImportList.add(userImport);
+				
+				 boolean isUserFound = validateDuplicateUser(userImport.getEmailId());
+				 if(isUserFound){
+				 }else{
+					 saveBulkUser(userImport,orgLocations);
+				 }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return userImportList;
+		return "success";
 
+	}
+
+	private boolean validateDuplicateUser(String email) throws Exception {
+		boolean isUserFound = false;
+		User user = userService.findByEmail(email);
+		if(user != null){
+			isUserFound = true;
+		}
+		return isUserFound;
 	}
 
 	/**
@@ -250,7 +280,16 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							} else {
 								userImport.setDayHours("");
 							}
-							saveBulkUser(userImport, orgLocations);
+							 boolean isUserFound = validateDuplicateUser(userImport.getEmailId());
+							 if(isUserFound){
+								 if (row.getRowNum() > 0) {
+										count++;
+									}
+									createXlsxSheet(row, createExcelsheet, count);
+							 }else{
+								 saveBulkUser(userImport,orgLocations);
+							 }
+//							saveBulkUser(userImport, orgLocations);
 						}
 					} else {
 						if (row.getRowNum() > 0) {
@@ -273,9 +312,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return isFileCreated;
 
 	}
-
+/**
+ * Handles bulk user savings
+ * @param userImport
+ * @param orgLocations
+ * @throws Exception
+ */
 	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations) throws Exception {
-
 		User user = new User();
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
@@ -317,7 +360,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employeesService.addEmployee(employee);
 
 	}
-
+/**
+ * write excel sheet when validation fails
+ * @param row
+ * @param createExcelsheet
+ * @param rowIndex
+ * @throws IOException
+ */
 	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
@@ -438,7 +487,11 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 		}
 	}
-
+/**
+ * Validate Excel data whle storing it into Database
+ * @param row
+ * @return
+ */
 	private boolean validateExeclData(Row row) {
 
 		logger.info("Reading Row :" + row.getRowNum() + " records");
@@ -461,14 +514,22 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		}
 		return true;
 	}
-
+/**
+ * validate email
+ * @param email
+ * @return
+ */
 	private boolean validateEmail(String email) {
 		Pattern pattern = Pattern.compile(
 				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
 	}
-
+/**
+ * validate Date
+ * @param strDate
+ * @return
+ */
 	public static boolean validateJavaDate(String strDate) {
 		/* Check if date is 'null' */
 		if (strDate.trim().equals("")) {
@@ -496,5 +557,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			return true;
 		}
 	} // end ValidateJavaDate
+
 
 }

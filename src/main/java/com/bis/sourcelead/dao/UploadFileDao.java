@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 /**
  * 
