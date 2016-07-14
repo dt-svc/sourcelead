@@ -502,7 +502,7 @@
 	<!--   Timesheet approval seript files   -->
 <!-- sarath custom -->	
 <script>
-function myTimesheet(local){   
+function myTimesheet(local){      
     
     $.ajax({
    	type: "POST",
@@ -510,6 +510,7 @@ function myTimesheet(local){
     success: function(data) {
               $("#myId").empty();
               $("#myId").append(data); 
+              alert("data"+data);
               maskme();   
     }
     });
@@ -721,6 +722,10 @@ function rejecteSubmission(local){
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
 		$("#reject"+local+"panel").slideToggle(200);
+}
+function approveSubmission(local){
+         
+          //laxman need to write service code at timesheet submission column : submission approval statu
 }
 </script>
  
