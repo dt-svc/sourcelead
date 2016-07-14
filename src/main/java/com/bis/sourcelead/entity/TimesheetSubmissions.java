@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -65,6 +66,11 @@ public class TimesheetSubmissions {
 	@Enumerated(EnumType.STRING)
 	private Submission_ApprovalStatus submissionApprovalStatus;
 	
+  
+	@Column(name = "REJECTED_REASON")
+	@Type(type="text")
+	private String rejectedReason;
+		
 	@Column(name = "LEVEL_OF_APPROVER")
 	private Integer levelOfApprover;
 	
@@ -141,6 +147,14 @@ public class TimesheetSubmissions {
 
 	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
 		this.submissionApprovalStatus = submissionApprovalStatus;
+	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
 	}
 
 	public Integer getLevelOfApprover() {

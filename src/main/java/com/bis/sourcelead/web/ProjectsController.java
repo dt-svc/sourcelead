@@ -165,7 +165,7 @@ public class ProjectsController {
 	    	User approverUserId1 = new User();
 	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
 	    	pah1.setApproverUserId(approverUserId1);
-	    	pah1.setLevel("Level1");
+	    	pah1.setLevel(1);
 	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 	    	
 		if(!jsonObj.getString("level2Manager").isEmpty()){
@@ -174,7 +174,7 @@ public class ProjectsController {
 			User approverUserId2 = new User();
 			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 			pah2.setApproverUserId(approverUserId2);
-			pah2.setLevel("Level2");
+			pah2.setLevel(2);
 			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 		}
 	    	
