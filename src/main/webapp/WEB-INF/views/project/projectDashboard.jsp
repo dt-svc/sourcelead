@@ -16,43 +16,6 @@
 
         
 		<!-- Project -->
-<div class="timesheet_out">
-
-<div class="project_wrap">
-	<div class="project_wrap_head"><input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i></div>
-    <div class="project_wrap_table">
-    	<table>
-        	<tbody>
-			<thead>
-            	<tr>
-                	<th>Id</th>
-                    <th>Name</th>
-                    <th>Manager</th>
-                    <th>Date</th>
-                    <th>Client</th>
-                    <th>Team</th>
-                    <th>Status</th>
-                </tr>
-			</thead>	
-              
-			<c:forEach var="report" items="${projectsList}" varStatus="raId">	
-                <tr>
-                	<td data-title="Id"><div>${report.id}</div></td>
-                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
-					<td data-title="Manager"><div>${report.managerLevel1} &nbsp;,&nbsp;${report.managerLevel2}</div></td>                    <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
-                </tr>
-            </c:forEach>          
-           </tbody>
-        </table>
-	</div>
-</div>
-
-
-
-
 <div class="project_side_wrap">
 	<div class="project_side_wrap_inn">
     <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
@@ -124,7 +87,8 @@
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
 			</div>	
 		    </div>
-		   </div> 		
+		   </div> 
+		   </div>		
 	   </section>
 	  </body>
 <!--   Popup's   -->
