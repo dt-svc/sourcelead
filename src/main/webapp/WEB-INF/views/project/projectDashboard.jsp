@@ -16,11 +16,11 @@
 
         
 		<!-- Project -->
-<div class="project_side_wrap">
+<!-- <div class="project_side_wrap">
 	<div class="project_side_wrap_inn">
     <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
      <div id="projectSideDiv">
-     </div>   
+     </div>   --> 
   <!-- <div class="project_side_wrap_inn_tabs">
     <ul class="project-tabs-menu">
         <li class="current"><a href="#tab-1">Employees</a></li>
