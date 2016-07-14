@@ -1,19 +1,17 @@
 package com.bis.sourcelead.dao;
 
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.entity.OrgLocations;
 
 /**
  * 
  * @author Rajashekar
- * @date 6th July 2016 
+ * @date 6th July 2016
  */
 
 public interface UploadFileDao {
-	
-	public List<UsersImport> uploadFile(MultipartFile multipartFile) throws Exception;
+
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception;
 
 }
