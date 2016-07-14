@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 		user.setLocation(userProfile.getLocation());
 		Iterator<String> itrator = request.getFileNames();
         MultipartFile multiFile = request.getFile(itrator.next());
-        if(null != multiFile.getContentType()){
+        if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
     	   		user.setDocFile(multiFile.getBytes());

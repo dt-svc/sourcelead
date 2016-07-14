@@ -86,6 +86,7 @@ public class LoginSessionController {
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+		SourceLeadSessionManager.setSessionAttribute(request, "country", orgLocations.getCountry());
 	}
 	
 	private void setSessionOrgAttributes(Org org, HttpServletRequest request)
@@ -93,6 +94,7 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
+		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
 	}
 	
 	

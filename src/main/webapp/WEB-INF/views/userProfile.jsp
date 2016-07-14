@@ -105,7 +105,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" value="Save">
-							  <input type="submit" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
 							</div>
 					  </div>
 			 </div>

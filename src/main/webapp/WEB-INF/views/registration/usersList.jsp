@@ -26,9 +26,8 @@ window.onload = function () {
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>List of Users</h2>
+        <h2>Users List</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Users Dashboard</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="clearfix section-action-btns">
