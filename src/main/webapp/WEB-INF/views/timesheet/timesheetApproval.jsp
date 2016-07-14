@@ -23,38 +23,38 @@
 		<div class="timesheet_appr_wrap">
 		<div class="timesheet_head">
         	<ul>
-                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+                	<div id="filter1ApprovedPop" class="approved_pop">  
                     	<ul>
-                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">All</label></li>
-							<li><input type="checkbox" id="c2"><label for="c2">Approved</label></li>
-							<li><input type="checkbox" id="c3"><label for="c3">Draft</label></li>
-							<li><input type="checkbox" id="c4"><label for="c4">Rejected</label></li>
+                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">client1</label></li>
+							<li><input type="checkbox" id="c2"><label for="c2">client2</label></li>
+							<li><input type="checkbox" id="c3"><label for="c3">client3</label></li>
+							<li><input type="checkbox" id="c4"><label for="c4">client4</label></li>
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>
-							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>
-							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>
-							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>
+                        	<li><input type="checkbox" value="None" id="c5"><label for="c5">project1</label></li>
+							<li><input type="checkbox" id="c6"><label for="c6">project2</label></li>
+							<li><input type="checkbox" id="c7"><label for="c7">project3</label></li>
+							<li><input type="checkbox" id="c8"><label for="c8">project4</label></li>
                         </ul>
                     </div>                	
                 </li>				
-                <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+                <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+                	<div id="filter3ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input type="checkbox" value="None" id="c9"><label for="c9">All</label></li>
-							<li><input type="checkbox" id="c10"><label for="c10">Approved</label></li>
-							<li><input type="checkbox" id="c11"><label for="c11">Draft</label></li>
-							<li><input type="checkbox" id="c12"><label for="c12">Rejected</label></li>
+                        	<li><input type="checkbox" value="None" id="c9"><label for="c9">employee1</label></li>
+							<li><input type="checkbox" id="c10"><label for="c10">employee2</label></li>
+							<li><input type="checkbox" id="c11"><label for="c11">employee3</label></li>
+							<li><input type="checkbox" id="c12"><label for="c12">employee4</label></li>
                         </ul>
                     </div>                	
                 </li>				
-                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+                	<div id="filter4ApprovedPop" class="approved_pop" >
                     	<ul>
                         	<li><input type="checkbox" value="None" id="c13"><label for="c13">All</label></li>
 							<li><input type="checkbox" id="c14"><label for="c14">Approved</label></li>
@@ -63,7 +63,7 @@
                         </ul>
                     </div>                	
                 </li>				
-                <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+               <!--  <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
                 	<div class="export_pop">
                     	<ul>
                         	<li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -71,7 +71,7 @@
                             <li>Word<i class="fa fa-file-word-o"></i></li>
                         </ul>
                     </div>
-                </li>                
+                </li>   -->              
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -775,6 +775,68 @@ $(document).ready(function() {
 		$(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	});	
 }); */
+
+/* $(document).ready(function() {
+    $("#appro-pop").click(function(){
+		$(".approved_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".approved_pop").slideUp(200);
+    });
+    $(".approved_pop, #appro-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+}); */
+
+$(document).ready(function() {
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter3ApprovePop").click(function(){
+		$("#filter3ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter3ApprovedPop").slideUp(200);
+    });
+    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+     $("#filter4ApprovePop").click(function(){
+		$("#filter4ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter4ApprovedPop").slideUp(200);
+    });
+    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+});
+
+
+  
+
 
 $(document).ready(function() {
     $("#appro-pop").click(function(){
