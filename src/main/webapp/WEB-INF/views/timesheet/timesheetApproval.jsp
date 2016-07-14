@@ -11,22 +11,6 @@
 	}
 </script>
 
-<script>
-$(document).ready(function() {
-    alert("hi");
-    var startDate;
-    $.ajax({
-   	type: "POST",
-    url: "http://localhost:8080/sourcelead/newTimesheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate, 	   
-    success: function(data) {
-               alert("data"+data); 
-    }
-    });
-    
-});
-
-</script>
-
 <body onclick="bodyClick();">
 <!-- Content Area -->
       <section class="content-wraper">
@@ -706,19 +690,18 @@ function saveMyTimesheet(){
 <script>
 function saveRejectSubmission(local){
 
-         var msg = $("#reject"+local+"panel").val();    
+          var msg = $("#reject"+local+"panel").val();    
           
          $(".mask_time").fadeOut(200);
-		 $("#reject"+local+"panel").slideUp(200);
+         $("#reject"+local+"panel").slideUp(200);
          $.ajax({
-	   	 type: "POST",
-	     url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
-	     success: function(data) {
-	               
-	               //laxman need to write service code at timesheet submission column : submission approval statu
-	               //  put column rejected reason ..500 
-	     }
-	     });
+            type: "POST",
+         url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+         success: function(data) {
+         			
+         }
+         });
+	     
 }
 
 function cancelRejectSubmission(local){
@@ -740,7 +723,15 @@ function rejecteSubmission(local){
 }
 function approveSubmission(local){
          
-          //laxman need to write service code at timesheet submission column : submission approval statu
+	    $.ajax({
+	    type: "POST",
+	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&approvalStatus=APPROVED",        
+	    success: function(data) {
+	              
+	              //laxman need to write service code at timesheet submission column : submission approval statu
+	              //  put column rejected reason ..500 
+	    }
+	    });
 }
 </script>
  

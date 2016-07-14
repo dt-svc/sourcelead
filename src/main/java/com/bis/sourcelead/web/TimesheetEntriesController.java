@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -86,17 +87,95 @@ public class TimesheetEntriesController {
 	
 	
 	
-	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )
-	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
+	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
+	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		/*Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId, user.getId());*/
 		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissions(new Date(), new Date(), user.getId());
 		
-		StringBuilder sb = new StringBuilder();	  
-		sb.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
-		sb.append("<div class='time_appr_side_wrap_inn'>");
-	    sb.append("<div class='proj_close'><i class='glyphicon glyphicon-share-alt'></i></div>");
+		  StringBuilder sb1 = new StringBuilder();
+		  
+		   StringBuilder startDateBuilder = new StringBuilder();
+		   StringBuilder endDateBuilder = new StringBuilder();
+		  
+		  String pattern = "dd-MM-yyyy";
+          SimpleDateFormat format = new SimpleDateFormat(pattern);
+		  if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+		         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayForTimesheets("MON")));
+		         endDateBuilder.append(format.format(CalendarUtil.getNextWeekDayForTimesheet("SUN")));
+                 sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
+                 sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDayForTimesheets("TUE"))+"</i></th>"); 
+                 sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDayForTimesheets("WED"))+"</i></th>"); 
+                 sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDayForTimesheets("THU"))+"</i></th>"); 
+                 sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDayForTimesheets("FRI"))+"</i></th>"); 
+                 sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDayForTimesheets("SAT"))+"</i></th>"); 
+                 sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
+                 
+        }
+        else{
+                
+                 if(navigation.equalsIgnoreCase("left")){
+                     
+                     
+                     Date sDate  =  Constants.DMY.parse(startDate);
+	                  Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					  startCal.setLenient(false);
+					  startCal.setTime(sDate);
+					  
+					 	                 
+	                 startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
+			         endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
+	                 sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
+	                 sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-6).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-5).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-4).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-3).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-2).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>");
+	                
+                 }
+                 else{ 
+                 
+	                  Date sDate  =  Constants.DMY.parse(startDate);
+	                  Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					  startCal.setLenient(false);
+					  startCal.setTime(sDate);
+					  
+					 	                 
+	                 startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
+			         endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
+	                 sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
+	                 sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,8).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,9).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,10).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,11).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,12).getTime())+"</i></th>"); 
+	                 sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
+	                 
+                 }
+        }
+        
+		StringBuilder sb = new StringBuilder();	
+		sb.append("	<div class='timesheet_head'>");
+		sb.append("   	<ul>");
+		sb.append("       	<li><i class='glyphicon glyphicon-print'></i></li>");
+		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop'></i>|");
+		sb.append("           	<div class='export_pop'>");
+		sb.append("               	<ul>");
+		sb.append("                   	<li>PDF<i class='fa fa-file-pdf-o'></i></li>");
+		sb.append("                       <li>Excel<i class='fa fa-file-excel-o'></i></li>");
+		sb.append("                       <li>Word<i class='fa fa-file-word-o'></i></li>");
+		sb.append("                   </ul>");
+		sb.append("               </div>");
+		sb.append("           </li>");
+		sb.append("       	<li><i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\");'></i><span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+"-"+endDateBuilder+"</span>");
+		sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\");'></i><abbr>|</abbr></li> ");               
+		sb.append("           <div class='clearfix'></div>");
+		sb.append("       </ul>");
+		sb.append("       <div class='clearfix'></div>");
+		sb.append("   </div>");
+					
 		sb.append("<div class='timesheet_table' id='dynamic'>");
         sb.append("<table id='timesheet' cellpadding='0' cellspacing='0'>");
         sb.append("<tbody>");
@@ -105,40 +184,7 @@ public class TimesheetEntriesController {
         sb.append("        <th> ");
         sb.append("         <table id='1' cellpadding='0' cellspacing='0'>");
         sb.append("             <th>Tasks </th>");
-        
-        if(startDate == null || startDate == "undefined" || startDate.isEmpty() ){   
-                 String pattern = "MM/dd/yyyy";
-                 SimpleDateFormat format = new SimpleDateFormat(pattern);
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.getCurrentWeekDay("MON"))+"</i></th>"); 
-                 sb.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDay("TUE"))+"</i></th>"); 
-                 sb.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDay("WED"))+"</i></th>"); 
-                 sb.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDay("THU"))+"</i></th>"); 
-                 sb.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDay("FRI"))+"</i></th>"); 
-                 sb.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDay("SAT"))+"</i></th>"); 
-                 sb.append("<th>Sun<i>"+format.format(CalendarUtil.getNextWeekDay("SUN"))+"</i></th>"); 
-        }
-        else{
-                 
-                 Date sDate  =  Constants.DF.parse(startDate);
-                 String pattern = "MM/dd/yyyy";
-                 SimpleDateFormat format = new SimpleDateFormat(pattern);
-                 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 0))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 1))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 2))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 3))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 4))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 5))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 6))+"</i></th>"); 
-                 sb.append("<th>Mon<i>"+format.format(CalendarUtil.addDays(sDate, 7))+"</i></th>");       
-        }
-        
-        sb.append("        <th>Mon<i>15-06-2016</i></th>");
-        sb.append("        <th>Mon<i>15-06-2016</i></th>");
-        sb.append("        <th>Mon<i>15-06-2016</i></th>");
-        sb.append("        <th>Mon<i>15-06-2016</i></th>");
-        sb.append("        <th>Mon<i>15-06-2016</i></th>");
-        sb.append("        <th>Mon<i>15-06-2016</i></th>");
+        sb.append(sb1); // add builder1
         sb.append("        <th>Total Hours</th>");
         sb.append("         </table>");
         sb.append("        </th> ");
@@ -246,9 +292,6 @@ public class TimesheetEntriesController {
 			sb.append("     </table>");
 			
 			sb.append("<div class='timesheet_bot'>");
-			
-			
-			 
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			sb.append("     	<textarea name='weekComment' placeholder='comments here...'></textarea>");
 			sb.append("         <span>");
@@ -266,8 +309,6 @@ public class TimesheetEntriesController {
 			
 			sb.append(" </div>");
 			sb.append(" </div>");
-			sb.append(" </div>");	
-			sb.append(" </form>");	
 			return sb.toString();
 	 }
 	

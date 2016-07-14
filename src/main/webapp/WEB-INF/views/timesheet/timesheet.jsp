@@ -14,20 +14,42 @@
 	<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
   
     <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-	        
-	<script type="text/javascript">
-	function timesheetComment(local){ 
-		$('.teskcomment').each(function() {
-		    var currentId = this.id;
-		    var localId = local;
-		    if(localId.trim() == currentId.trim()){
-	       	 		$("#"+local).slideToggle(200); 
-	        }else{
-	       	    $("#"+currentId).slideUp(200); 
-	        }
-		});
-	} 
-	</script>	
+
+
+<script>
+$(document).ready(function() {
+	var startdate;
+	var navigation;
+	dynamicTimesheet(navigation,startdate);  
+});
+</script>
+
+<script type="text/javascript">
+function dynamicTimesheet(navigation , startDate){   
+	        $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
+				    success: function(data) {
+				               $("#dynamic").empty();
+						       $("#dynamic").append(data);
+						       maskme();  
+				    }
+		    });
+}
+</script>	        
+<script type="text/javascript">
+function timesheetComment(local){ 
+	$('.teskcomment').each(function() {
+	    var currentId = this.id;
+	    var localId = local;
+	    if(localId.trim() == currentId.trim()){
+       	 		$("#"+local).slideToggle(200); 
+        }else{
+       	    $("#"+currentId).slideUp(200); 
+        }
+	});
+} 
+</script>	
 	
 	<!--  <script type="text/javascript">
 		$(document).ready(function() {  
@@ -108,7 +130,7 @@ function maskme(){
 <!--  <input class="timepicker" type="text" size="10" placeholder="hh:mm" />
 <input class="timepicker" type="text" size="10" placeholder="hh:mm" />  -->
 	<div class="timesheet_wrap">
-    	<div class="timesheet_head">
+    	<!-- <div class="timesheet_head">
         	<ul>
             	<li><i class="glyphicon glyphicon-print"></i></li>
                 <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
@@ -120,23 +142,14 @@ function maskme(){
                         </ul>
                     </div>
                 </li>
-                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li>All <b>50</b></li>
-                            <li>Approved <b>30</b></li>
-                            <li>Draft <b>10</b></li>
-                            <li>Rejected <b>10</b></li>
-                        </ul>
-                    </div>                	
-                </li>                
             	<li><i class="glyphicon glyphicon-chevron-left" onclick="dynamicTimesheet();"></i><span class="res_date"><i class="fa fa-calendar"></i>15/06 - 21/06</span>
                 <i class="glyphicon glyphicon-chevron-right"></i><abbr>|</abbr></li>                
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
-        </div>
-        <div class="timesheet_table" id="dynamic">
+        </div> -->
+         <div id="dynamic"> 
+        <div class="timesheet_table">
               <table id="timesheet" cellpadding="0" cellspacing="0">
             	<tbody>
                 	<tr>
@@ -300,6 +313,27 @@ function maskme(){
           
              <!--<div id="divadttTd1" style="display:none;"  > <div id="projectName">Sourcelead </div></div>-->
         </div>
+        <div class="timesheet_bot">
+    	<div class="timesheet_week_comm">
+        	<textarea name="weekComment" placeholder="comments here..."></textarea>
+            <span>
+            	<input type="file" name="docFile" ><label><i class="glyphicon glyphicon-save"></i>Choose file</label>
+            </span>
+            <div class="clearfix"></div>
+        </div>
+<!--    	<div class="timesheet_sub_other">
+        	Submit to others <a href="javascript:void(0)"><i class="fa fa-envelope"></i> Email</a>
+            <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
+        </div>-->
+    	<div class="timesheet_button">
+    	    <input type="submit" name="Draft" vaue="Draft" class="time_btn time_dra" >
+        	<!-- <input type="button" value="Draft" class="time_btn time_dra" /> -->
+            <input type="button" value="Submit" class="time_btn" />
+            <input type="button" value="Clear" class="time_btn time_cancel" />
+        </div>
+    	<div class="clearfix"></div>
+     </div>        
+     </div>   
         
               <div id="divadttTd1" style="display:none;" >   
                   <div> 
@@ -610,27 +644,7 @@ function maskme(){
       
       
         
-    <div class="timesheet_bot">
-    	<div class="timesheet_week_comm">
-        	<textarea name="weekComment" placeholder="comments here..."></textarea>
-            <span>
-            	<input type="file" name="docFile" ><label><i class="glyphicon glyphicon-save"></i>Choose file</label>
-            </span>
-            <div class="clearfix"></div>
-        </div>
-<!--    	<div class="timesheet_sub_other">
-        	Submit to others <a href="javascript:void(0)"><i class="fa fa-envelope"></i> Email</a>
-            <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
-        </div>-->
-    	<div class="timesheet_button">
-    	    <input type="submit" name="Draft" vaue="Draft" class="time_btn time_dra" >
-        	<!-- <input type="button" value="Draft" class="time_btn time_dra" /> -->
-            <input type="button" value="Submit" class="time_btn" />
-            <input type="button" value="Clear" class="time_btn time_cancel" />
-        </div>
-    	<div class="clearfix"></div>
-    </div>        
-        
+    
         <div class="res_total_hours">
 	<i></i>
 	<p>Total hours</p>
@@ -951,7 +965,7 @@ function removeTimeSheetRow(rowId,submissionId) {
 </script>		
 
 <!-- dynamic timesheet -->
-<script>	
+<!-- <script>	
 function dynamicTimesheet(){    
 	   $.ajax({
 	          type : "GET",
@@ -963,7 +977,7 @@ function dynamicTimesheet(){
 		      }
 	    }); 
 }
-</script>	
+</script> -->	
 
 
 <script>	
