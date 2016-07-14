@@ -14,7 +14,11 @@ public interface ProjectsService {
 	
 	Collection<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+    Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	
 	public Boolean deleteProjectById(Long id) throws Exception;
+	
+	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
 	
 	public Integer projectIdValidation(Long id) throws Exception;
 	

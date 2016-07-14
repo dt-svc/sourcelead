@@ -27,14 +27,102 @@
               <li><a href="#" class="collpase-div"><i aria-hidden="true" class="fa fa-angle-down"></i></a></li>
             </ul>
           </section>
-          <div class="clearfix form-area form-horizontal toggle-div remove-div">
+          
+          
+      <!-- modal dialog box start -->    
+        <div class="modal fade" id="addProject" role="dialog">
+          <div class="modal-dialog">
+           <form:form id="addProject_form"  name="addProject_form" method="post">
+             <div class="modal-content" id="newProject">
+		          <div class="modal-header">
+		            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+		            <h4 class="modal-title">Add Project</h4>
+		          </div>
+          <div class="modal-body clearfix">
+            <div class="form-horizontal custom-form clearfix">
+              <div class="col-xs-12 col-md-12 col-lg-12">
+                <div class="form-group" id="ProjectIdDiv">
+                  <label class="col-lg-3">Project Id</label>
+                  <div class="col-lg-9">
+                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" class="form-control" onblur="validateProjectSequeneNumber();">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-lg-3">Project Name<span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-lg-9">
+                    <input type="text" value="" id="ProjectName" name="ProjectName" class="form-control" field-name="Project Name" data-validation="required">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-md-3"> Date<span class="text-danger">&nbsp; *</span> </label>
+		              <div class="col-md-9">
+		                <div class="row">
+		                  <div class="col-lg-6">
+		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required">
+		                    </div>
+		                  </div>
+		                  <div class="col-lg-6">
+		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" data-validation="required">
+		                    </div>
+		                  </div>
+		                  <span class="hidden">Enter Project Id</span> </div>
+		              </div>
+                 </div>
+                 
+                <div class="form-group">
+              <label class="col-md-3" for="Project Manager">Manager<span class="text-danger">&nbsp; *</span></label>
+              <div class="col-md-9">
+              <div class="form-icon-min">
+                <select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required">
+                  <option value="">-Select Manager-</option>
+                      <c:forEach var="option" items="${user_List}">
+	                     <option value="${option.id}">${option.firstName}</option>
+	                  </c:forEach>
+                </select>
+                    <span class="btn btn-default formic1 addLevel">Add Level-II</span>
+                    </div>
+                    <span class="hidden">Select Project Manager</span>
+                </div>
+            </div>
+            <div class="form-group level-second">
+              <label class="col-md-3" for="Level-II">Level-II Manager</label>
+              <div class="col-md-9">
+                <select class="form-control select-bg"  name="level2Manager" id="level2Manager">
+                  <option value="">-Select Manager-</option>
+                      <c:forEach var="option" items="${user_List}">
+	                     <option value="${option.id}">${option.firstName}</option>
+	                  </c:forEach>
+                </select>
+                </div>
+            </div>
+                
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="save_project" class="btn btn-primary" data-dismiss="modal" onclick = "addProject();">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+        </form:form>
+      </div>
+    </div>
+<!-- modal dialog box end -->          
+          
+          
+          
+        <div class="clearfix form-area form-horizontal toggle-div remove-div">
           <form:form id="createUser_form"  name="createUser_form" method="post">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <div class="form-group">
+                <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="EmployeeId" value="">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" value="" onblur="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
@@ -54,10 +142,10 @@
                   </div>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="EmailId" value="" field-name="Email Id" data-validation="required">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_email" onblur="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -75,12 +163,12 @@
                      <div class="col-md-9">
                          <div class="row">
 		                        <div class="col-md-6">
-				                    <input type="text" class="form-control" name="Rate" value="">
+				                    <input type="text" class="form-control" id="Rate"  name="Rate" value="" data-validation="validate_float validate_length length2-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        </div>
 		                        <div class="col-md-6">
-				                     <select class="form-control select-bg" name="RatePer">
-				                        <option>Rate Per</option>
+				                     <select class="form-control select-bg" id="RatePer" name="RatePer" field-name="Rate Per">
+				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
 				                        <option>Daily</option>
 				                        <option>Monthly</option>
@@ -97,7 +185,7 @@
 		              <div class="col-md-9">
 		                <div class="checkbox">
 		                  <label>
-		                    <input type="checkbox" value="">
+		                    <input type="checkbox" value="Y" name="isMailSent" checked="checked">
 		                    Send Mail to User</label>
 		                </div>
 		                <span class="hidden">Select Check Box</span> </div>
@@ -164,15 +252,18 @@
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                     <label class="radio-inline">
-                      <input type="radio" name="role" value="Admin">Admin
+                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);">Admin
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="role" value="Approver">Approver/Manager
+                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);">Approver/Manager
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" name="role" value="Employee">Employee
+                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
                     </label>
                     <span class="hidden">Select Role</span> 
+                    <input type="hidden" name="roleType" id="roleValue" field-name="Role" data-validation="required" />
+                    
+                    
                   </div>
                 </div>
                 <div class="form-group">
@@ -185,87 +276,12 @@
   						   <option value="${option.id}">${option.projectName}</option>
 				        </c:forEach>
                       </select>
-                      <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" data-target="#addProject"></i> </div>
+                      <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addProject"></i> </div>
                     <span class="hidden">Select Project</span>
-                    <div class="modal fade" id="addProject" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="modal-title">Add Project</h4>
-          </div>
-          <div class="modal-body clearfix">
-            <div class="form-horizontal custom-form clearfix">
-              <div class="col-xs-12 col-md-12 col-lg-12">
-                <div class="form-group">
-                  <label class="col-lg-3">Project Id</label>
-                  <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" class="form-control">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-lg-3">Project Name</label>
-                  <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectName" name="ProjectName"  class="form-control">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-md-3"> Date </label>
-		              <div class="col-md-9">
-		                <div class="row">
-		                  <div class="col-lg-6">
-		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate">
-		                    </div>
-		                  </div>
-		                  <div class="col-lg-6">
-		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate">
-		                    </div>
-		                  </div>
-		                  <span class="hidden">Enter Project Id</span> </div>
-		              </div>
-                 </div>
-                 
-                <div class="form-group">
-              <label class="col-md-3" for="Project Manager">Manager</label>
-              <div class="col-md-9">
-              <div class="form-icon-min">
-                <select class="form-control select-bg" name="level1Manager" id="level1Manager">
-                  <option>-Select Manager-</option>
-                      <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
-	                  </c:forEach>
-                </select>
-                    <span class="btn btn-default formic1 addLevel">Add Level-II</span>
-                    </div>
-                    <span class="hidden">Select Project Manager</span>
-                </div>
-            </div>
-            <div class="form-group level-second">
-              <label class="col-md-3" for="Level-II">Level-II Manager</label>
-              <div class="col-md-9">
-                <select class="form-control select-bg"  name="level2Manager" id="level2Manager">
-                  <option>-Select Manager-</option>
-                      <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
-	                  </c:forEach>
-                </select>
-                </div>
-            </div>
-                
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" id="save_project" class="btn btn-primary" data-dismiss="modal" onclick = "addProject();">Save</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </div>
+                    
+                    
+         
+        
                     </div>
                 </div>
                   
@@ -288,15 +304,16 @@
                       <span class="hidden">Invoice Frequency</span> 
               </div>
             </div>
-                  <div class="form-group">
+                  <div class="form-group" id="DayHoursDiv">
                   <label class="col-md-3">Day Hours</label>
                   <div class="col-md-9">
                       <div class="input-group">
-                      <input type="text" value="" name="DayHours" class="form-control" id="datetimepicker3">
-                      <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                          <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
+                          <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
                       </div>
-              </div>
-            </div>
+                       <span class="hidden">Day Hours</span>
+                  </div>
+               </div>
             </div>
             </div>
                 
@@ -321,6 +338,14 @@
       </footer>
       <!-- Footer Area --> 
       
+      
+<script type="text/javascript">
+function roleTypeValidation(id){
+	document.getElementById("roleValue").value = id.value;
+} 
+</script>      
+      
+      
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -342,46 +367,80 @@
 })(jQuery);
 </script>
 
-
 <script type="text/javascript">
- function addProject() {
-     var frm = $('#createUser_form').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        var sourceleadUrl ='${sourceleadUrl}';
-        $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-- Select Project --</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-				}
-	        	$("#proId").empty();
-		        $("#proId").append(output);
-	        },
-	        error: function(e){
-	            
-	        }
-	    });
-	 $('#save_project').attr('data-dismiss','modal');
-	 $('#ProjectSequeneNumber').val('');
+function flushProject(){
+	$('#ProjectSequeneNumber').val('');
 	 $('#ProjectName').val('');
 	 $('#level1Manager').val('');
 	 $('#StartDate').val('');
 	 $('#EndDate').val('');
 	 $('#level2Manager').val('');
+	 $(".error").removeClass("error");
+	 $('#newProject').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+
+<script type="text/javascript">
+ function addProject() {
 	 
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	
+	
+	 /*  ('#save_project').attr('data-dismiss','modal'); */
+	 if ($('#addProject_form').validate(false, validationSettings)){ 
+		    var frm = $('#addProject_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Project --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
+		        	$("#proId").empty();
+			        $("#proId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	       return true;
+	  }else{
+		 $("#save_project").removeAttr('data-dismiss','modal');
+		return false;
+	  }
     }
+
+    $('body').on('blur', '#addProject_form', function() {
+		$("#addProject_form").showHelpOnFocus();;
+		$("#addProject_form").validateOnBlur(false, validationSettings);  
+	});
  
 </script>
 
 
 <script type="text/javascript">
  function createUser() {
+	 var Rate = document.getElementById("Rate").value; 
+	 if(Rate != null && Rate != ""){
+		 $('#RatePer').removeAttr('data-validation-optional');
+		 $('#RatePer').attr("data-validation","required"); 
+	 }else{
+		 $('#RatePer').removeAttr('data-validation');
+		 $('#RatePer').attr("data-validation-optional","true"); 
+	 }
 	 
 	var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -390,23 +449,23 @@
 				dateFormat : 'yyyy/mm/dd' 
 		   }; 
 	 
-	if ($('#createUser_form').validate(false, validationSettings)){ 
+	   if ($('#createUser_form').validate(false, validationSettings)){ 
+		 var frm = $('#createUser_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+			        
+		        },
+		    });
+	        return true;
 		
-	}else{
+	  }else{
 		return false;
-	}
-	 
-     var frm = $('#createUser_form').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        var sourceleadUrl ='${sourceleadUrl}';
-        $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-		        
-	        },
-	    });
+	  }
     }
  
     $('body').on('blur', '#createUser_form', function() {
@@ -433,7 +492,98 @@
 		    });
 	 }
  }
-</script>  
-  
+</script> 
 
-    
+<script type="text/javascript">
+ function validateDayHours() {
+	 var DayHours = document.getElementById("DayHours").value; 
+	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+	if(DayHours > 24){
+		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
+	}else{
+		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
+	}
+	
+ }
+</script>  
+
+
+<script type="text/javascript">
+ function validateEmployeeId() {
+	 var EmployeeId = document.getElementById("EmployeeId").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
+	 if(EmployeeId != null && EmployeeId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
+		        success: function(data) {
+		        	if(data == true){
+						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
+						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	} 
+		        },
+		    });
+	 }
+ }
+ </script>  
+ 
+<script type="text/javascript">
+ function validateUserEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ 
+ 
+ <script type="text/javascript">
+ function validateProjectSequeneNumber() {
+	 var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateProjectSequeneNumber?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
+		        success: function(data) {
+		        	if(data == true){
+						  $("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");
+						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist','yes');
+						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	} 
+		        },
+		    });
+	 }
+ }
+ </script> 

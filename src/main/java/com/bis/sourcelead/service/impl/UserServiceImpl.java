@@ -1,22 +1,31 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -25,11 +34,15 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -62,6 +75,18 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
+	@Autowired
+	private ProjectsService projectsService;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	 
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+	
 	
 
 	@Override
@@ -77,11 +102,11 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void createUser(JSONObject jsonObj, String userCode, Long orgLocationsId) throws JSONException {
+	public void createUser(JSONObject jsonObj,User loginUser , Long orgLocationsId) throws Exception {
 		logger.debug("In UserService class createUser method...");
 		//For Saving of User Details
-		User user = getUserDetails(jsonObj,userCode);
-		String password = SourceLeadRandomCodeHelper.generateRandomVerificationCode();
+		User user = getUserDetails(jsonObj,loginUser.getUserCode());
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		try {
 			userDao.addUser(user);
@@ -90,7 +115,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//For saving the User Role 
-		UserRole userRole = getUserRoleDetails(user,userCode,orgLocationsId);
+		UserRole userRole = getUserRoleDetails(user,loginUser.getUserCode(),orgLocationsId);
 		try {
 			userRoleService.addUserRole(userRole);
 		} catch (Exception e) {
@@ -98,7 +123,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	   //For saving Employee details (Every User is an Employee)
-		Employees employee = getEmployeeDetails(user,jsonObj,orgLocationsId,userCode);
+		Employees employee = getEmployeeDetails(user,jsonObj,orgLocationsId,loginUser.getUserCode());
 		try {
 			employeesService.addEmployee(employee);
 		} catch (Exception e) {
@@ -107,12 +132,63 @@ public class UserServiceImpl implements UserService {
 		
 		
 		//For saving Employee details (Every User is an Employee)
-		ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,userCode);
+		ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,loginUser.getUserCode(),orgLocationsId);
 		try {
 			projectMembersService.saveProjectMember(pm);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		//send mail to user
+		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+			sendEmail(user,loginUser,password);
+		}
+		 
+	}
+
+	private void sendEmail(User user, User loginUser,String password) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("role",user.getUserType());
+		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"'>Login</a>");
+		 globalVarsMap.put("userEmailId",user.getEmail());
+		 globalVarsMap.put("password",password);
+		
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = null;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		
 	}
 
 	private User getUserDetails(JSONObject jsonObj,String userCode) throws JSONException {
@@ -123,7 +199,13 @@ public class UserServiceImpl implements UserService {
 		user.setMobilePhone(jsonObj.getString("PhoneNumber"));
 		user.setUserName(jsonObj.getString("EmailId"));
 		user.setUserState(Status.ACTIVE);
-		user.setUserType(jsonObj.getString("role"));
+		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+			user.setIsMailSent(Status.Y);
+		}else{
+			user.setIsMailSent(Status.N);
+		}
+		
+		user.setUserType(jsonObj.getString("roleType"));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
 		user.setCreatedDate(new Date());
@@ -185,7 +267,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	
-	private ProjectMembers getProjectMembersDetails(Employees employee, JSONObject jsonObj, String userCode) throws NumberFormatException, JSONException {
+	private ProjectMembers getProjectMembersDetails(Employees employee, JSONObject jsonObj, String userCode, Long orgLocationsId) throws Exception {
 		ProjectMembers pm = new ProjectMembers();
 		
 		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
@@ -193,7 +275,9 @@ public class UserServiceImpl implements UserService {
 			project.setId(Long.parseLong(jsonObj.getString("projectId")));
 			pm.setProjects(project);
 		}else{
-			//need to add default project
+			//To add default project
+			Projects project = projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
+			pm.setProjects(project);
 		}
 		
 		pm.setEmployee(employee);

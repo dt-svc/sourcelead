@@ -63,6 +63,9 @@ public class Projects {
 	@Enumerated(EnumType.STRING)
 	private Project_Status projectStatus;
 	
+	@Column(name = "IS_PRIMARY")
+    private Integer isPrimary;
+	
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
@@ -177,6 +180,14 @@ public class Projects {
 
 	public void setProjectStatus(Project_Status projectStatus) {
 		this.projectStatus = projectStatus;
+	}
+
+	public Integer getIsPrimary() {
+		return isPrimary;
+	}
+
+	public void setIsPrimary(Integer isPrimary) {
+		this.isPrimary = isPrimary;
 	}
 
 	@JsonIgnore

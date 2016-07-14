@@ -39,8 +39,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Override
 	public Collection<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
-		logger.debug("In ProjectsServiceImpl class getProject method...");
+		logger.debug("In ProjectsServiceImpl class getProjectByOrgLocationsId method...");
 		return projectsDao.getProjectByOrgLocationsId(orgLocationsId);
+	}
+	
+	@Override
+	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getPrimaryProjectByOrgLocationsId method...");
+		return projectsDao.getPrimaryProjectByOrgLocationsId(orgLocationsId);
 	}
 
 	@Override
@@ -48,6 +54,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		logger.debug("In ProjectsServiceImpl class deleteProject method...");
 		Boolean isDeleted = projectsDao.deleteProjectById(Id);
 		return isDeleted;
+	}
+	
+	@Override
+	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class validateProjectSequeneNumber method...");
+		Boolean flag = projectsDao.validateProjectSequeneNumber(projectSequeneNumber,orgLocationsId);
+		return flag;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Projects;
 
 @Repository
 public class EmployeesDaoImpl implements EmployeesDao{
@@ -67,6 +69,26 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.info("Successfully deleted !!!");
 		return null;
 		
+	}
+	
+	/**
+	 * This method for validate employee by employeeId. It returns boolean value
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception {
+		 logger.debug("In Employee getEmployeeByEmployeeId method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(employeeId != null && orgLocationsId != null){
+				String query = "from Employees emp where emp.orgLocations = :orgLocationsId and emp.employeeId = :employeeId ";
+				Collection<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).list();
+
+				if (employeesList != null && employeesList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 
 	@Override

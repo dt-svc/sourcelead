@@ -22,10 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -54,6 +54,9 @@ public class UserController {
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	@RequestMapping(value = "/usersList")
 	public ModelAndView userRegistration() {
@@ -97,6 +100,7 @@ public class UserController {
 			
 	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
+	    	projects.setProjectStatus(Project_Status.STARTED);
 	    	projects.setStartDate(new Date());
 	    	projects.setEndDate(new Date());
 	    	projects.setCreatedDate(new Date());
@@ -139,7 +143,8 @@ public class UserController {
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	
 		 	//For Saving of User Details
-			userService.createUser(jsonObj,user.getUserCode(),orgLocations.getId());
+			userService.createUser(jsonObj,user,orgLocations.getId());
+			
 			ModelAndView model = new ModelAndView();
 			model.setViewName("users/userCreation");
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -157,6 +162,41 @@ public class UserController {
 		 	}
 		 	resultJson = toJSON(ph);
 			return resultJson;
+	   }
+	 
+	 //to  validate user email
+	 @RequestMapping(value = "/validateUserEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
+		 	
+		 	String result = null;
+		 	User user = userService.findByEmail(EmailId);
+		 	
+		 	if (user != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
+	 
+	 
+	//to validate employee Id
+	 @RequestMapping(value = "/validateEmployeeId" , method = RequestMethod.POST)
+	 public @ResponseBody  Boolean validateEmployeeId(@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	Boolean flag = employeesService.validateEmployeeId(EmployeeId,orgLocations.getId());
+		 	
+			return flag;
+	   }
+	 
+	 
+	//to validate Project SequeneNumber
+	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)
+	 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
+		 	
+			return flag;
 	   }
 
 
