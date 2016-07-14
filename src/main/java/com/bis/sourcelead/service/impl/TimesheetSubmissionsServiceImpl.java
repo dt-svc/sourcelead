@@ -43,8 +43,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 
 	@Override
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds) throws Exception {
-		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions(startDate ,endDate ,projectMemberIds);
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate ,Long userId) throws Exception {
+		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions(startDate ,endDate ,userId);
 		// TODO Auto-generated method stub
 		return list;
 	}

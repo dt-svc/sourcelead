@@ -373,8 +373,13 @@ public class ProjectsController {
 			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
 	}
 	 
-	 
-	 
+	@RequestMapping(value = "/getEmailVerification",  method = RequestMethod.POST)
+	public @ResponseBody  User getEmailVerification(@RequestParam(value="email", required=false) String email) throws Exception {
+		 	
+			User user  = userService.findByEmail(email);
+			return user;
+		  
+	}
 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

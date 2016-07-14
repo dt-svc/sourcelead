@@ -16,7 +16,7 @@ public interface TimesheetSubmissionsService {
     
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
-    public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds)throws Exception; 
+    public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , Long  userId)throws Exception; 
      
     public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
     

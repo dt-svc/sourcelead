@@ -119,7 +119,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds) throws Exception {
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , Long  userId) throws Exception {
 			
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();
