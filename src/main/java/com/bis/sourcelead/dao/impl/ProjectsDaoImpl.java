@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 
 @Repository
@@ -64,8 +65,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	public Projects getProjectById(Long id) throws Exception {
 		logger.debug("In Projects getProject method");
 		Session session = this.sessionFactory.getCurrentSession();
-        Projects projects = session.get(Projects.class, id);
-        return session.get(Projects.class, id);
+		return (Projects) session.get(Projects.class, id);
 	}
 
 	/**

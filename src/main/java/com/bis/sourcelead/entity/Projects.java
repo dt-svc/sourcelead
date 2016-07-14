@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -103,6 +104,24 @@ public class Projects {
     
     @Transient
     private String managerLevel2;
+    
+    @Transient
+    private String createdDateStr;
+    
+    @Transient
+    private String updatedDateStr;
+    
+    @Transient
+    private String startDateStr;
+    
+    @Transient
+    private String endDateStr;
+    
+    @Transient
+    private String[] projectManagerName;
+    
+    @Transient
+    Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList;
     
 
 	public Long getId() {
@@ -231,7 +250,8 @@ public class Projects {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
+	
+	@JsonIgnore
 	public Set<ProjectMembers> getProjectMembers() {
 		return projectMembers;
 	}
@@ -263,7 +283,7 @@ public class Projects {
 	public void setOrgLocationsId(OrgLocations orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
 	}
-
+	@JsonIgnore
 	public Set<ProjectApproverHierarchy> getProjectApprovers() {
 		return projectApprovers;
 	}
@@ -271,6 +291,53 @@ public class Projects {
 	public void setProjectApprovers(Set<ProjectApproverHierarchy> projectApprovers) {
 		this.projectApprovers = projectApprovers;
 	}
-	
+
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getUpdatedDateStr() {
+		return updatedDateStr;
+	}
+
+	public void setUpdatedDateStr(String updatedDateStr) {
+		this.updatedDateStr = updatedDateStr;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String[] getProjectManagerName() {
+		return projectManagerName;
+	}
+
+	public void setProjectManagerName(String[] projectManagerName) {
+		this.projectManagerName = projectManagerName;
+	}
+
+	public Collection<ProjectApproverHierarchy> getProjectApproverHierarchiesList() {
+		return projectApproverHierarchiesList;
+	}
+
+	public void setProjectApproverHierarchiesList(Collection<ProjectApproverHierarchy> projectApproverHierarchiesList) {
+		this.projectApproverHierarchiesList = projectApproverHierarchiesList;
+	}
 	
 }

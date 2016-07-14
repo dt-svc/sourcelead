@@ -18,13 +18,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -60,6 +63,10 @@ public class ProjectsDashboardController {
 	
 	@Autowired
 	public ProjectMembersService projectMembersService;
+	
+	
+	@Autowired
+	public ProjectApproverHierarchyService projectApproverHierarchyService;
 	 
 	 /**
 	  * This method for get project by id
@@ -88,9 +95,25 @@ public class ProjectsDashboardController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
-	 public Projects getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
-		    Projects projects = projectsService.getProjectById(projectId);
-		    return projects;
+	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
+		 Projects projects = projectsService.getProjectById(projectId);
+		    projects.setCreatedDateStr(Constants.DF_STD.format(projects.getCreatedDate()));
+		    projects.setStartDateStr(Constants.DF_STD.format(projects.getStartDate()));
+		    projects.setEndDateStr(Constants.DF_STD.format(projects.getEndDate()));
+		    projects.setUpdatedDateStr(Constants.DF_STD.format(projects.getUpdatedDate()));
+		   
+		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+		    String[] approvers = new String[1];
+		    int i = 0;
+		    for(ProjectApproverHierarchy php : projectApproverHierarchies){
+		    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
+		    	i++;
+		    }
+		    projects.setProjectManagerName(approvers);
+		    
+		    ObjectMapper mapper = new ObjectMapper();
+            String jsonInString = mapper.writeValueAsString(projects);
+			return jsonInString;
 	  }
 	 
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)

@@ -422,11 +422,12 @@ function projectEmployee(projectId){
    	type: "POST",
     url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
     success: function(data) {
+    	var json = JSON.parse(data);
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>'+data.status+'</b><i id="ac-drop" class="fa fa-edit">';
+	result = result + '					<strong>Status:</strong><span><b>'+json.status+'</b><i id="ac-drop" class="fa fa-edit">';
 	result = result + '						<ul>';
 	result = result + '							<li>Option 1</li>';
 	result = result + '							<li>Option 2</li>';
@@ -437,11 +438,21 @@ function projectEmployee(projectId){
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onfocusout="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onBlur="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Project manager:</strong>';
-	result = result + '					<span><input type="text" value="Srinivas" placeholder="Project manager" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<strong>Project manager:</strong><span>';
+					result = result + '<select>';
+						for (var i = 0; i < json.projectManagerName.length; i++) {
+							
+							var managers = json.projectManagerName[i];
+							var projrctmanager = managers.split('&');
+					    	var name = projrctmanager[0];
+					    	var id = projrctmanager[1];
+							result = result+"<option value="+id+">"+name+"</option>";
+						}
+                result = result + '</select>';
+	result = result + '			</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
@@ -452,27 +463,27 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
-	result = result + '					<span><input type="text" value="'+data.startDate+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="projmaxTsRowNumect_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+data.endDate+'" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
-	result = result + data.description;
+	result = result + json.description;
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created By:</strong><span>'+data.createdBy+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span> '+data.endDate+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+json.endDateStr+'</span><div class="clearfix"></div>';
                                                      
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Last Updated:</strong><span>'+data.updatedDate+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';					
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
