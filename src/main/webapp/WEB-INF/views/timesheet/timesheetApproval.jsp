@@ -3,7 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<body>
+
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+<body onclick="bodyClick();">
 <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -103,19 +106,21 @@
 					</td> -->
 					<td>
 					 <c:set var="status" value="NEW"/>
-                     <%-- <c:if test="${status=='NEW'}">
-                              <div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-                     </c:if> --%>
-                     <%-- <c:if test="${status =='NEW'}">
+                      <c:if test="${status=='NEW'}">
+                              <div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission();"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission();"></i></div>
+                     </c:if> 
+                    <%--  working
+                    <c:if test="${status =='NEW'}">
                               <div><h3 class="reje_color">Rejected</h3>
-								    <i class="glyphicon glyphicon-comment">
-										<strong><p>Rejected message here</p></strong>
+								    <i class="glyphicon glyphicon-comment" onclick="rejectedMessage('rejectedMessage${approval.id}');"> 
+										<strong id="rejectedMessage${approval.id}"><p>Rejected message here</p></strong>
 									</i>
 							  </div>
-                     </c:if> --%>
-                     <c:if test="${status =='NEW'}">
+                     </c:if>  --%>
+                     <%-- working
+                      <c:if test="${status =='NEW'}">
                             <div><h3>Approved</h3></div>
-                     </c:if> 
+                     </c:if>  --%>
                     </td> 
                 </tr>
             </c:forEach>
@@ -133,13 +138,79 @@
 		
 		<!-- Project -->
 		
-      </section>
+</section>
       <!-- Content Area Ends--> 
+      
+      
+<!-- dummy divs above -->          
+             <div id="divadttTd1" style="display:none;" >   
+                  <div> 
+                   <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" >
+                                <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
+                                   	<option value="${task.id}">${task.taskName}</option>
+                                </c:forEach>
+                  </select>
+                  <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
+                  </div>
+                  
+             </div>
+             <div id="divadttTd2" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ></textarea></span>
+                  </div>
+	     	</div>
+                  
+             <div id="divadttTd3" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id"></textarea></span></div>
+             </div>
+             <div id="divadttTd4" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id"></textarea></span></div>
+             </div>
+             <div id="divadttTd5" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id"></textarea></span></div>           
+             </div>
+             <div id="divadttTd6" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id"></textarea></span></div>  
+	    	 </div>
+             <div id="divadttTd7" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id"></textarea></span></div>
+              </div>
+             <div id="divadttTd8" style="display:none;">
+				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
+	    	 </div>
+             <div id="divadttTd9" style="display:none;">
+				  <input type="text"  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
+                  <div class="timesheet_comm">
+                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment8Id');"></i>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id"></textarea></span></div>  
+             </div>
+<!-- dummy divs above -->            
 
 	
 <!--   Timesheet approval popup   -->
 	
 <div class="time_appr_side_wrap">
+   <div id="myId">
 	<div class="time_appr_side_wrap_inn">
 	<div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
         <div class="timesheet_table">
@@ -419,6 +490,7 @@
                         
         </div>	
 	</div>
+	</div>
 </div>	
 	
 	<!--   Timesheet approval popup   -->
@@ -438,14 +510,14 @@
 <!-- sarath custom -->	
 <script>
 function myTimesheet(local){   
-    alert("local"+local);
     
     $.ajax({
    	type: "POST",
-    url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
+    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
     success: function(data) {
-           
-               
+              $("#myId").empty();
+              $("#myId").append(data); 
+              maskme();   
     }
     });
     
@@ -459,10 +531,212 @@ function myTimesheet(local){
 </script>	
 
 <script>
+ 
+function addTimeSheetRow(submissionId) {
+	          
+		    var tbl = document.getElementById("table"+submissionId);
+			var rowNum = $("#maxRowNumber"+submissionId).val();
+			var maxRowNum = parseInt(rowNum);
+			$("#maxRowNumber"+submissionId).val(maxRowNum + 1); 
+			var row = tbl.insertRow(maxRowNum-1);
+			row.setAttribute("id", "timesheetRow"+maxRowNum+"submission"+submissionId);
+			
+			  
+			var cell0 = row.insertCell(0);
+			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
+			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd0Str = divadttTd0Str.replace(/submissionId/g, (submissionId));
+			cell0.setAttribute("class", "pname");  
+			cell0.innerHTML = divadttTd0Str;
+			
+			
+			
+			 var cell1 = row.insertCell(1);
+			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
+			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+            divadttTd1Str = divadttTd1Str.replace(/submissionId/g, (submissionId));
+			cell1.innerHTML = divadttTd1Str;
+			
+			
+			var cell2 = row.insertCell(2);
+			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
+			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd2Str = divadttTd2Str.replace(/submissionId/g, (submissionId));
+			cell2.innerHTML = divadttTd2Str;
+			
+			
+			var cell3 = row.insertCell(3);
+			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
+			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd3Str = divadttTd3Str.replace(/submissionId/g, (submissionId));
+			cell3.innerHTML = divadttTd3Str;
+			
+			var cell4= row.insertCell(4);
+			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
+			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd4Str = divadttTd4Str.replace(/submissionId/g, (submissionId)); 
+			cell4.innerHTML = divadttTd4Str;
+			
+			var cell5 = row.insertCell(5);
+			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
+			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd5Str = divadttTd5Str.replace(/submissionId/g, (submissionId)); 
+			cell5.innerHTML = divadttTd5Str;
+			
+			var cell6 = row.insertCell(6);
+			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
+			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd6Str = divadttTd6Str.replace(/submissionId/g, (submissionId));
+			cell6.innerHTML = divadttTd6Str;
+			
+			var cell7 = row.insertCell(7);
+			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
+			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
+			cell7.innerHTML = divadttTd7Str;
+
+			var cell8 = row.insertCell(8);
+			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
+			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+                        divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
+			cell8.innerHTML = divadttTd8Str;
+			
+			maskme();   
+			
+     }	
+</script>
+
+<script>
+function maskme(){  alert("fsdfsd");
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hh:Mm"); 
+}
+</script>
+
+<script type="text/javascript">
+		function bodyClick(){
+		    $(".teskcomment").slideUp(200);   
+		    $("html .timesheet_comm").click(function(event){
+		        event.stopPropagation();
+		    }); 
+		 }
+</script>
+<script type="text/javascript">
+	function timesheetComment(local){   alert("one");
+		$('.teskcomment').each(function() {
+		    var currentId = this.id;
+		    var localId = local;
+		    if(localId.trim() == currentId.trim()){
+	       	 		$("#"+local).slideToggle(200); 
+	        }else{
+	       	    $("#"+currentId).slideUp(200); 
+	        }
+		});
+	} 
+</script>
+
+
+<script type="text/javascript">
+function saveMyTimesheet(){
+			   alert("ggg");
+               var frm = $('#timesheet_form').serializeFormJSON();
+       		   var mydata = JSON.stringify(frm);
+       		   mydata = mydata.replace(/[{}]/g, "");
+       		
+       		   var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); 
+       		   
+       		   var submissionIds = $("#submissionId").val();
+       		   alert("data"+mydata);
+       		   
+       		   $.ajax({
+	      	          type : "POST",
+	          	      data: formData,
+	          	      contentType : 'application/json; charset=utf-8',
+	          	      enctype: 'multipart/form-data',
+	      	          processData: false,
+	      	          contentType:false,
+	          	      dataType : 'json',
+        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+        		      success :function(result) {
+        		    	  
+        		      }
+        	      	  
+        	    }); 
+       		   
+}
+</script>
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {   alert("hii");
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+
+    rejecteSubmission
+ 
+<script>
+function approveSubmission(){
+     
+    $.ajax({
+   	type: "POST",
+    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
+    success: function(data) {
+              $("#myId").empty();
+              $("#myId").append(data); 
+              maskme();   
+    }
+    });
+     
+
+}
+
+function rejecteSubmission(){
+        $.ajax({
+	   	type: "POST",
+	    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
+	    success: function(data) {
+	              $("#myId").empty();
+	              $("#myId").append(data); 
+	              maskme();   
+	    }
+	    });
+}
+</script>
+ 
+ 	
+<!-- this script is for reject msg pop up -->
+
+<script>
+function rejectedMessage(local){
+    $("#"+local).slideToggle(200);
+}
+
 $(document).ready(function() {
-    $(".timesheet_appr_table .glyphicon").click(function(){
+    /* $(".timesheet_appr_table .glyphicon").click(function(){ 
 		$(".timesheet_appr_table .glyphicon strong").slideToggle(200);
-	});
+	}); */
     $("html").click(function() {
         $(".timesheet_appr_table .glyphicon strong").slideUp(200);
     });

@@ -81,19 +81,23 @@ public class TimesheetEntriesController {
 	private DataSource dataSource;
 	
 	
-	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.GET )
-	public @ResponseBody String dynamicTimesheetpopUp() throws Exception {
+	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
+	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId) throws Exception {
 		
-		Long projectMemberId = 1L;
-		Long userId = 1L;
-		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId, userId);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId, user.getId());
 		
-		StringBuilder sb = new StringBuilder();	     
+        	
+		StringBuilder sb = new StringBuilder();	  
+		sb.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
+		sb.append("<div class='time_appr_side_wrap_inn'>");
+	    sb.append("<div class='proj_close'><i class='glyphicon glyphicon-share-alt'></i></div>");
+	    
 		sb.append("<div class='timesheet_table' id='dynamic'>");
-        sb.append("able id='timesheet' cellpadding='0' cellspacing='0'>");
+        sb.append("<table id='timesheet' cellpadding='0' cellspacing='0'>");
         sb.append("<tbody>");
         sb.append("	<tr>");
-        sb.append("    	<th>Projects</th>");
+        sb.append("    	   <th>Projects</th>");
         sb.append("        <th> ");
         sb.append("         <table id='1' cellpadding='0' cellspacing='0'>");
         sb.append("             <th>Tasks </th>");
@@ -107,7 +111,7 @@ public class TimesheetEntriesController {
         sb.append("        <th>Total Hours</th>");
         sb.append("         </table>");
         sb.append("        </th> ");
-        sb.append("    </tr>");
+        sb.append("</tr>");
 		
 		
 		
@@ -117,92 +121,107 @@ public class TimesheetEntriesController {
 			sb.append("<tr id='timesheetRow1'>");
 			sb.append("<td class='pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
-			sb.append("<input type='hidden' name='maxRowNumber${submission.id}'  class='initiateTimesheetMax' id='maxRowNumber${submission.id}'  value='2' />");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
 			 
 			Collection<TimesheetEntries>  timesheetEntriesList =  timesheetEntriesService.getAllTimesheetEntriesBySubmissionId(ts.getId());
+			Integer maxCount = timesheetEntriesList.size();
+			Integer rowCount = 1;
+			maxCount = maxCount+1;
+			sb.append("<input type='hidden' name='maxRowNumber"+ts.getId()+"'  class='initiateTimesheetMax' id='maxRowNumber"+ts.getId()+"'  value='"+maxCount+"' />");
+			sb.append("<table id='table"+ts.getId()+"' cellpadding='0' cellspacing='0'>");
 			for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
-				  
-				    
-	               sb.append("       <table id='table${submission.id}' cellpadding='0' cellspacing='0'>");
-	               sb.append("       <tr id='timesheetRow1submission${submission.id}'>");
-	               sb.append("                 <td>");
-	               sb.append("                      <div> ");
-	               sb.append("                       <select id='1submission${submission.id}task1Id' name='1submission${submission.id}task1Id' >");
-			       
-			       for(ProjectTasks pt   : ProjectTasksList){
-			               sb.append("<option value='${task.id}'>"+pt.getTaskName()+"</option>");   
-			       }
-	               sb.append(" </select>"); 
-	               sb.append("<input type='button' value='' onClick='addTimeSheetRow(${submission.id})' class='addtaskfield'/>"); 
-	               sb.append("                      </div>");
-	               sb.append("                 </td> ");
-				   sb.append("				<td> <div> ");   
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay1Id' name='1submission${submission.id}timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	"); 
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment('1submission${submission.id}comment1Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment1Id'><textarea name='1submission${submission.id}comment1Id' ></textarea></span></div>"); 
-	               sb.append(" </div> </td>"); 
-	               
-				   sb.append(" <td> <div>"); 
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay2Id' name='1submission${submission.id}timeSheetDay2Id' class='inline_field' placeholder='HH:MM' />	"); 
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment('1submission${submission.id}comment2Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment2Id'><textarea name='1submission${submission.id}comment2Id'></textarea></span></div>"); 
-	               sb.append(" </div> </td>"); 
-	               
-	 			   sb.append(" <td> <div>"); 
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay3Id' name='1submission${submission.id}timeSheetDay3Id' class='inline_field' placeholder='HH:MM' />	"); 
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment('1submission${submission.id}comment3Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment3Id'><textarea name='1submission${submission.id}comment3Id'></textarea></span></div>"); 
-	               sb.append(" </div> "); 
-	               sb.append(" </td>"); 
-
-	     		   sb.append(" <td> <div>"); 
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay4Id' name='1submission${submission.id}timeSheetDay4Id' class='inline_field' placeholder='HH:MM' />"); 	
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment('1submission${submission.id}comment4Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment4Id' ><textarea name='1submission${submission.id}comment4Id'></textarea></span></div>"); 
-	               sb.append(" </div> </td>"); 
-	               
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay5Id' name='1submission${submission.id}timeSheetDay5Id' class='inline_field' placeholder='HH:MM' />	"); 
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment('1submission${submission.id}comment5Id');' ></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment5Id'><textarea name='1submission${submission.id}comment5Id'></textarea></span></div>"); 
-	               sb.append(" </div> </td>"); 
-	               
-				   sb.append("<td> <div>"); 
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay6Id' name='1submission${submission.id}timeSheetDay6Id' class='inline_field' placeholder='HH:MM' />	"); 
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment('1submission${submission.id}comment6Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment6Id' ><textarea name='1submission${submission.id}comment6Id'></textarea></span></div>"); 
-	               sb.append(" </div> </td>"); 
-	               
-				   sb.append("						<td> <div>"); 
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}timeSheetDay7Id' name='1submission${submission.id}timeSheetDay7Id' class='inline_field' placeholder='HH:MM' />	"); 
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment('1submission${submission.id}comment7Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment7Id' ><textarea name='1submission${submission.id}comment7Id' ></textarea></span></div>"); 
-	               sb.append(" </div> </td>"); 
-	               
-				   sb.append("<td> <div>"); 
-	               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='1submission${submission.id}total1Id' name='1submission${submission.id}total1Id' class='inline_field' placeholder='HH:MM' />"); 	
-	               sb.append(" <div class='timesheet_comm'>"); 
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment('1submission${submission.id}comment8Id');'></i>"); 
-	               sb.append(" <span class='teskcomment' id='1submission${submission.id}comment8Id'><textarea name='1submission${submission.id}comment8Id'></textarea></span></div>"); 
-	               sb.append(" </div> </td> ");                                         
-	               sb.append(" </tr> ");            
-	               sb.append("                </table>"); 
-	               sb.append(" </td>   "); 
-	               sb.append("   </tr>"); 
-			}		                                                       
+			               sb.append("       <tr id='timesheetRow"+rowCount+"submission"+ts.getId()+"'>");
+			               sb.append("                 <td>");
+			               sb.append("                      <div> ");
+			               sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
+					       
+					       for(ProjectTasks pt   : ProjectTasksList){
+					               sb.append("<option value='${task.id}'>"+pt.getTaskName()+"</option>");   
+					       }
+			               sb.append(" </select>"); 
+			               sb.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getId()+")' class='addtaskfield'/>"); 
+			               sb.append("                      </div>");
+			               sb.append("                 </td> ");
+						   sb.append("				<td> <div> ");   
+			               sb.append(" <input type='text'   onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' class='inline_field' value='"+timesheetEntries.getMonHours()+"'  placeholder='HH:MM' />	"); 
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>"); 
+			               sb.append(" </div> </td>"); 
+			               
+						   sb.append(" <td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' class='inline_field' placeholder='HH:MM' />	"); 
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id'></textarea></span></div>"); 
+			               sb.append(" </div> </td>"); 
+			               
+			 			   sb.append(" <td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay3Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay3Id' class='inline_field' placeholder='HH:MM' />	"); 
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id'></textarea></span></div>"); 
+			               sb.append(" </div> "); 
+			               sb.append(" </td>"); 
+		
+			     		   sb.append(" <td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay4Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay4Id' class='inline_field' placeholder='HH:MM' />"); 	
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id'></textarea></span></div>"); 
+			               sb.append(" </div> </td>"); 
+			               
+			               sb.append(" <td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay5Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay5Id' class='inline_field' placeholder='HH:MM' />	"); 
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id'></textarea></span></div>"); 
+			               sb.append(" </div> </td>"); 
+			               
+						   sb.append("<td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' class='inline_field' placeholder='HH:MM' />	"); 
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id'></textarea></span></div>"); 
+			               sb.append(" </div> </td>"); 
+			               
+						   sb.append("						<td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' />	"); 
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' ></textarea></span></div>"); 
+			               sb.append(" </div> </td>"); 
+			               
+						   sb.append("<td> <div>"); 
+			               sb.append(" <input type='text' onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"total1Id' name='"+rowCount+"submission"+ts.getId()+"total1Id' class='inline_field' placeholder='HH:MM' />"); 	
+			               sb.append(" <div class='timesheet_comm'>"); 
+			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment8Id\");'></i>"); 
+			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment8Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment8Id'></textarea></span></div>"); 
+			               sb.append(" </div> </td> ");                                         
+			               sb.append(" </tr> ");      
+			               rowCount++;      
+			}
+			sb.append("                </table>"); 
+			}
+			sb.append(" </td>   "); 
+			sb.append("   </tr>"); 	
 			sb.append("            </tbody>");
 			sb.append("     </table>");
+			
+			sb.append("<div class='timesheet_bot'>");
+		    sb.append("	<div class='timesheet_button'>");
+		    sb.append("	        <input type='submit' onClick='saveMyTimesheet();'  name='Draft' vaue='Draft' class='time_btn time_dra'>");
+		    sb.append("        <input type='button' onClick='saveMyTimesheet();' value='Submit' class='time_btn'>");
+		    sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");
+		    sb.append("    </div>");
+		    sb.append("	<div class='clearfix'></div>");
+		    sb.append("</div>");
+			
 			sb.append(" </div>");
-				
-			}
+			sb.append(" </div>");
+			sb.append(" </div>");	
+			sb.append(" </form>");	
 			return sb.toString();
 	 }
 

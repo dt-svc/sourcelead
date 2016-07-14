@@ -87,6 +87,7 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
