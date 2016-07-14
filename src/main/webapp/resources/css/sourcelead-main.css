@@ -661,9 +661,12 @@ transition:all ease-in-out .3s;
 	background:none;
 }
 .section-action-btns ul li .action-search .fa-search{
-    position: absolute;
-    top: 1px;
-	left:5px;
+    position: relative;
+    top: 0;
+    left: 0;
+    background: #f5f5f5;
+    padding: 4px 5px;
+    border: 1px solid #ccc;
 }
 .section-action-btns ul li  .fa{
 		color:#909090;
