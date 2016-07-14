@@ -97,27 +97,22 @@
 						 </div>
 					</td>
                     <td><div><a    onclick="myTimesheet('${approval.id}');"  id="timesheetPopup${approval.id}"> ${approval.totalHours}/40</a></div></td>
-                    <td><div>${approval.status}</div></td>
-                    <!-- <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td> -->
+                    <td><div>${approval.submissionApprovalStatus}</div></td>
 					<td>
-					 <c:set var="status" value="NEW"/>
-                      <c:if test="${status=='NEW'}">
+                      <c:if test="${approval.submissionApprovalStatus == 'NEW'}">
                               <div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('${approval.id}');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('${approval.id}');"></i></div>
                               <div id="rejectedPopup"></div>
                      </c:if> 
-                    <%--  working
-                    <c:if test="${status =='NEW'}">
+                    <c:if test="${approval.submissionApprovalStatus=='REJECTED'}">
                               <div><h3 class="reje_color">Rejected</h3>
 								    <i class="glyphicon glyphicon-comment" onclick="rejectedMessage('rejectedMessage${approval.id}');"> 
 										<strong id="rejectedMessage${approval.id}"><p>Rejected message here</p></strong>
 									</i>
 							  </div>
-                     </c:if>  --%>
-                     <%-- working
-                      <c:if test="${status =='NEW'}">
+                     </c:if>  
+                      <c:if test="${approval.submissionApprovalStatus=='APPROVED'}">
                             <div><h3>Approved</h3></div>
-                     </c:if>  --%>
+                     </c:if>  
                     </td> 
                 </tr>
             </c:forEach>
