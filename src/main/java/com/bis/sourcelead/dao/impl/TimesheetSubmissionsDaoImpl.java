@@ -74,7 +74,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions getTimesheetSubmissions(String id) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		return (TimesheetSubmissions) session.get(TimesheetSubmissions.class, id);
+		return (TimesheetSubmissions) session.get(TimesheetSubmissions.class, Long.parseLong(id));
 	}
 
 	@Override

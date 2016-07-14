@@ -106,7 +106,7 @@
                     <c:if test="${approval.submissionApprovalStatus=='REJECTED'}">
                               <div><h3 class="reje_color">Rejected</h3>
 								    <i class="glyphicon glyphicon-comment" onclick="rejectedMessage('rejectedMessage${approval.id}');"> 
-										<strong id="rejectedMessage${approval.id}"><p>Rejected message here</p></strong>
+										<strong id="rejectedMessage${approval.id}"><p>${approval.rejectedReason}</p></strong>
 									</i>
 							  </div>
                      </c:if>  
@@ -690,12 +690,12 @@ function saveMyTimesheet(){
 <script>
 function saveRejectSubmission(local){
 
-          var msg = $("#reject"+local+"panel").val();    
-          
+         var msg = $("#reject"+local+"message").val(); 
+            
          $(".mask_time").fadeOut(200);
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
-            type: "POST",
+         type: "POST",
          url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
          success: function(data) {
          			
@@ -722,14 +722,15 @@ function rejecteSubmission(local){
 		$("#reject"+local+"panel").slideToggle(200);
 }
 function approveSubmission(local){
-         
+        var rejectedReason;
+        alert("data"+local);
 	    $.ajax({
 	    type: "POST",
-	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&approvalStatus=APPROVED",        
+	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
+	    
+					alert("data");	              
 	              
-	              //laxman need to write service code at timesheet submission column : submission approval statu
-	              //  put column rejected reason ..500 
 	    }
 	    });
 }

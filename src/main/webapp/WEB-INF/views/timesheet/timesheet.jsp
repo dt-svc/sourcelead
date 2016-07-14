@@ -638,14 +638,7 @@ function maskme(){
 </div>
         
  <!--   Responsive  --> 
-          
-      
-      
-      
-      
-        
-    
-        <div class="res_total_hours">
+ <div class="res_total_hours">
 	<i></i>
 	<p>Total hours</p>
     <h2>45:30</h2>
@@ -689,7 +682,7 @@ function callInlineEdit(local){
 
 <script>
  
-function addTimeSheetRow(submissionId) {
+function addTimeSheetRow(submissionId,projectId) {
 	          
 		    var tbl = document.getElementById("table"+submissionId);
 			var rowNum = $("#maxRowNumber"+submissionId).val();
@@ -755,60 +748,42 @@ function addTimeSheetRow(submissionId) {
 			var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-                        divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
+            divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
 			cell8.innerHTML = divadttTd8Str;
 			
-			//var cell9 = row.insertCell(9);
-//			var divadttTd9Str = document.getElementById("divadttTd10").innerHTML;
-//			divadttTd9Str = divadttTd9Str.replace("REPLACEROWID", (maxRowNum));
-//			cell9.innerHTML = divadttTd9Str;
 			
-			 //mergeColumns();
-			 maskme();   
+			maskme();   
+		    
+			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			getProjectTasks(projectTaskId,projectId); 
+		  
+			
 		}	
 	 
-       function mergeColumns(){
-		          
-				  var previous = null;
-                  var cellToExtend = null;
-		          $( ".pname" ).each(function() {
-				        
-						var jthis = $(this);
-						var content = jthis.text()
-						var valueOne = $.trim(previous);
-					    var valueTwo = $.trim(content);
-						  
-						 
-						if (valueOne == valueTwo) {     
-							jthis.remove();
-							if (cellToExtend.attr("rowspan") == undefined) {
-								cellToExtend.attr("rowspan", 2);
-							}
-							else {    
-								currentrowspan = parseInt(cellToExtend.attr("rowspan"));
-								cellToExtend.attr("rowspan", currentrowspan + 1);
-							}
-						}
-						else {      
-							previous = content;
-							cellToExtend = jthis;
-						}
-	
-			    });
+        
+	   function getProjectTasks(projectTaskId,projectId){
+		   alert("projectTaskId"+projectTaskId);
+		   $.ajax({
+   	          type : "POST",
+ 	      	  url: "http://localhost:8080/sourcelead/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+ 		      success :function(data) {
+ 		    	    var json = JSON.parse(data);
+ 		    	    var result = ""; 
+ 		    	    for (var i=0; i<json.length; i++)
+ 					{
+ 			        		var opt = json[i];
+ 			        		result = result + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+ 					}
+ 		    	    $("#"+projectTaskId).empty();
+ 		    	    $("#"+projectTaskId).append(result);
+ 		      }
+ 	      	  
+ 	       }); 
+		   
 	   }
+
 	 
-	</script>
-	
-	<!-- <script>
-	  function isNumber(evt) {   
-	    evt = (evt) ? evt : window.event;
-	    var charCode = (evt.which) ? evt.which : evt.keyCode;
-	    if (charCode > 31 && (charCode < 48 || charCode > 59)) {
-	        return false;
-	    }
-	    return true;
-	 }
-	</script> -->
+</script>
 	
 <script type="text/javascript">
 (function ($) {

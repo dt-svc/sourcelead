@@ -38,15 +38,15 @@ public class TimesheetSubmissionsController {
 	private DataSource dataSource;
 
 	
-	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.GET)
-    public   String saveSubmissionApprovalStatus(@RequestParam(value="projectMemberId", required=false) String id,@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
+	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
+    public  String saveSubmissionApprovalStatus(@RequestParam(value="projectMemberId", required=false) String projectMemberId,@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
              
         
-        TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
+        TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(projectMemberId);
         if(timesheetSubmissions!=null){
              if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
                    timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-                  /* timesheetSubmissions.setRejectedReason(rejectedReason);*/
+                   timesheetSubmissions.setRejectedReason(rejectedReason);
              }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
                  
                    timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
