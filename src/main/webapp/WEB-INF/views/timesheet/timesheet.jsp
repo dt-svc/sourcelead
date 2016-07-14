@@ -853,8 +853,8 @@ function addTimeSheetRow(submissionId) {
 $(document).click(function(){
 		var submissionId = 1;
 		var total;
-		 for (var p = 1; p < 3; p++){
-		 for (var i = 1; i < 3; i++){  
+		 for (var p = 1; p < 8; p++){
+		 for (var i = 1; i < 8; i++){  
 			 var bsum = 0;
 			 var nbsum = 0;
 			 var total = 0;
@@ -881,7 +881,7 @@ $(document).click(function(){
 		    var t = bsum; 
 			var hours = Math.floor(t / 60); 
 			var minutes = t % 60;
-			total = hours +"."+ minutes;
+			total = hours +":"+ minutes;
 			
 		    $("#"+i+"submission"+p+"total1Id").val(total);
 	 }  
@@ -894,11 +894,11 @@ $(document).click(function(){
 
 $(document).click(function(){ 
 	var total;
-	 for (var i = 1; i < 3; i++){
+	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 3; p++){  
+	 for (var p = 1; p < 8; p++){  
 		 for (var j = 1; j < 8; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -919,7 +919,7 @@ $(document).click(function(){
 	    var t = bsum; 
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
-		total = hours +"."+ minutes;
+		total = hours +":"+ minutes;
  }  
 	 $("#rowTotal"+i+"Id").val(total);
 }	

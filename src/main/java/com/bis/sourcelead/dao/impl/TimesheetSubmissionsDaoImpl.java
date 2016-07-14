@@ -142,6 +142,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId)
 			throws Exception {
 		// TODO Auto-generated method stub

@@ -510,7 +510,6 @@ function myTimesheet(local){
     success: function(data) {
               $("#myId").empty();
               $("#myId").append(data); 
-              alert("data"+data);
               maskme();   
     }
     });
@@ -601,7 +600,7 @@ function addTimeSheetRow(submissionId) {
 </script>
 
 <script>
-function maskme(){  alert("fsdfsd");
+function maskme(){   
 	$.mask.definitions['H'] = "[0-9]";
     $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['M'] = "[0-9]";
@@ -621,7 +620,7 @@ function maskme(){  alert("fsdfsd");
 		 }
 </script>
 <script type="text/javascript">
-	function timesheetComment(local){   alert("one");
+	function timesheetComment(local){    
 		$('.teskcomment').each(function() {
 		    var currentId = this.id;
 		    var localId = local;
@@ -637,7 +636,7 @@ function maskme(){  alert("fsdfsd");
 
 <script type="text/javascript">
 function saveMyTimesheet(){
-			   alert("ggg");
+			    
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
@@ -646,7 +645,7 @@ function saveMyTimesheet(){
        		   var formData = new FormData(form); 
        		   
        		   var submissionIds = $("#submissionId").val();
-       		   alert("data"+mydata);
+       		    
        		   
        		   $.ajax({
 	      	          type : "POST",
@@ -668,7 +667,7 @@ function saveMyTimesheet(){
 
 <script type="text/javascript">
 (function ($) {
-   $.fn.serializeFormJSON = function () {   alert("hii");
+   $.fn.serializeFormJSON = function () {    
 
        var o = {};
        var a = this.serializeArray();
@@ -692,7 +691,7 @@ function saveMyTimesheet(){
 function saveRejectSubmission(local){
 
          var msg = $("#reject"+local+"panel").val();    
-         alert("msg"+msg);
+          
          $(".mask_time").fadeOut(200);
 		 $("#reject"+local+"panel").slideUp(200);
          $.ajax({
@@ -718,7 +717,7 @@ function rejecteSubmission(local){
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+local+'message" ></textarea>';
 		result = result +'<a href="#" onClick="saveRejectSubmission(\''+local+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
 		result = result +'</div>';
-		alert("result"+result);
+		 
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
 		$("#reject"+local+"panel").slideToggle(200);

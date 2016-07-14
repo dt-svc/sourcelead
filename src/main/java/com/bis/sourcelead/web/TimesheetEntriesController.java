@@ -140,7 +140,12 @@ public class TimesheetEntriesController {
 					               sb.append("<option value='${task.id}'>"+pt.getTaskName()+"</option>");   
 					       }
 			               sb.append(" </select>"); 
-			               sb.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getId()+")' class='addtaskfield'/>"); 
+			               if(rowCount == 1){
+			              	   sb.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getId()+")' class='addtaskfield'/>");
+			               }else{
+			                   sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
+			               }
+			                
 			               sb.append("                      </div>");
 			               sb.append("                 </td> ");
 						   sb.append("				<td> <div> ");   
