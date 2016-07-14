@@ -5,6 +5,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script>
+	function predefineProfileImage(imageId){
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
 
 <body onclick="bodyClick();">
 <!-- Content Area -->
@@ -63,15 +68,6 @@
                         </ul>
                     </div>                	
                 </li>				
-               <!--  <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-                	<div class="export_pop">
-                    	<ul>
-                        	<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                            <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                            <li>Word<i class="fa fa-file-word-o"></i></li>
-                        </ul>
-                    </div>
-                </li>   -->              
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -92,14 +88,14 @@
 			</thead>	
 		<c:forEach items="${sourcelead_timesheetSubmissionsList}" var="approval" varStatus="p">
                 <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
+                	<td><div class="time_appr_user">
+                	<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${approval.projectMembers.employee.user.id}'/>" alt="Profile Image" class="img-circle img-responsive">
 						<span><b>${approval.projectMembers.employee.user.firstName}</b><b>Admin</b></span></div></div>
 					</td>
                     <td><div> <fmt:formatDate type="date" value="${approval.startDate}" />  To
                              <fmt:formatDate type="date" value="${approval.endDate}" />
 						 </div>
 					</td>
-					<!-- href="javascript:void(0)" -->
                     <td><div><a    onclick="myTimesheet('${approval.id}');"  id="timesheetPopup${approval.id}"> ${approval.totalHours}/40</a></div></td>
                     <td><div>${approval.status}</div></td>
                     <!-- <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
