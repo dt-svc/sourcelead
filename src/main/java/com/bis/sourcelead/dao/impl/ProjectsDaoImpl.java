@@ -107,7 +107,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
-        String query = "from  Projects projects right join fetch projects.projectMembers right join fetch projects.projectApprovers   where (projects.id IN(select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId.id =:userId)  OR projects.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
+        String query = "from  Projects projects where (projects.id IN(select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId.id =:userId)  OR projects.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
         List<Projects> projectsList  =   session.createQuery(query.toString()).setLong("userId", userId).list();
        
         return projectsList;
