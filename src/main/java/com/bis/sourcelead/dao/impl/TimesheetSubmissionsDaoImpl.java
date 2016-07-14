@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
@@ -36,6 +39,25 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		return timesheetSubmissions;
 		
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
+					session.save(timesheetSubmissions);
+				}
+				
+			}
+			
+		}
+		catch(HibernateException exception)	{
+		}
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -73,10 +95,31 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		return null;*/
 		
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
+		Session session = this.sessionFactory.getCurrentSession();
+         String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId ";
+         List<java.sql.Timestamp>  wtsList = (List<java.sql.Timestamp>)session.createQuery(query).setLong("pojectMemberId", pojectMemberId).list();
+         Date date = null;
+          if(wtsList != null && !wtsList.isEmpty()){
+            java.sql.Timestamp sqlDate = wtsList.iterator().next();
+         	if(sqlDate != null){
+         		Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				startCal.setLenient(false);
+				startCal.setTime(new Date(sqlDate.getTime()));
+				Calendar monday = CalendarUtil.getNextWeekDayByCalendar(startCal, "MON");
+				date = monday.getTime();
+         	}
+          }
+          return date;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds) throws Exception {
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds) throws Exception {
 			
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();

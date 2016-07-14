@@ -16,10 +16,13 @@ public interface TimesheetSubmissionsService {
     
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
-    public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds)throws Exception; 
+    public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds)throws Exception; 
      
     public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
     
     public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId) throws Exception ;
     
+    public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
+
+    public Date getNextMondayByProjectMemberId(Long pojectMemberId);
 }

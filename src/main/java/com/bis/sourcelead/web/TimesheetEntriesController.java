@@ -214,7 +214,7 @@ public class TimesheetEntriesController {
 			
 			
 			Long userId = user.getId();
-			java.util.List<Integer> projectMemberIds =  projectMembersService.getAllProjectMembersIdsByemployeeId(userId);
+			java.util.List<Long> projectMemberIds =  projectMembersService.getAllProjectMembersIdsByemployeeId(userId);
 			Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissions(new Date(), new Date(), projectMemberIds);
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 					Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());

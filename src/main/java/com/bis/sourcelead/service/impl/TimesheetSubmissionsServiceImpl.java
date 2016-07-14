@@ -43,10 +43,21 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 
 	@Override
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Integer>  projectMemberIds) throws Exception {
+	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , List<Long>  projectMemberIds) throws Exception {
 		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllTimesheetSubmissions(startDate ,endDate ,projectMemberIds);
 		// TODO Auto-generated method stub
 		return list;
+	}
+	
+		@Override
+	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+		 timesheetSubmissionsDao.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+	}
+
+	@Override
+	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
+		// TODO Auto-generated method stub
+		return timesheetSubmissionsDao.getNextMondayByProjectMemberId(pojectMemberId);
 	}
 
 	@Override
@@ -63,6 +74,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(projectMemberId,userId);
 		return list;
 	}
+	
 	
 	
 

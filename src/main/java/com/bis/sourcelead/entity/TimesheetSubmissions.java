@@ -22,7 +22,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -223,4 +222,5 @@ public class TimesheetSubmissions {
 	public void setTotalHours(String totalHours) {
 		this.totalHours = totalHours;
 	}
+	 
 }
