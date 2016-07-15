@@ -9,28 +9,6 @@ import java.util.TimeZone;
 
 public  class CalendarUtil {
 	
-	public static void main(String[] args) throws Exception{
-		String testDate = "07/04/2016";
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		Date date = null;
-		try {
-			date = sdf.parse(testDate);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-		  startCal.setLenient(false);
-		  startCal.setTime(date);
-		  
-         
-		  Calendar test1Date = CalendarUtil.getDateIncrementByincrement(startCal,21);
-		  System.out.println("3rd week monday"+test1Date.getTime());
-		  
-		 
-		
-	}
 	
 	protected static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
@@ -64,9 +42,8 @@ public  class CalendarUtil {
 			String nowStr = sdf.format(new Date().getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			nowCal.add(Calendar.DATE, dayOfWeek+day_offset-1);
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
+			nowCal.add(Calendar.DATE, 7);
+			nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			return nowCal.getTime();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -85,8 +62,8 @@ public  class CalendarUtil {
 			String nowStr = sdf.format(new Date().getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			nowCal.add(Calendar.DATE, dayOfWeek+day_offset-1);
+			nowCal.add(Calendar.DATE, 7);
+			nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			return nowCal.getTime();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -105,10 +82,7 @@ public  class CalendarUtil {
 			String nowStr = sdf.format(nowCal.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			// If dayOfWeek is 
-			nowCal.add(Calendar.DATE, -dayOfWeek+day_offset);
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
+			nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			return nowCal.getTime();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,10 +100,7 @@ public  class CalendarUtil {
 			String nowStr = sdf.format(nowCal.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			// If dayOfWeek is 
-			nowCal.add(Calendar.DATE, -dayOfWeek+day_offset);
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
+			nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			return nowCal.getTime();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,17 +119,8 @@ public  class CalendarUtil {
 			String nowStr = sdf.format(new Date().getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
-			int currentDayOFWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			if(currentDayOFWeek != Calendar.DAY_OF_WEEK ){
-				int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-				nowCal.add(Calendar.DATE, -dayOfWeek);
-			}
-			
-			int dayOfWeek = nowCal.get(Calendar.DAY_OF_WEEK);
-			nowCal.add(Calendar.DATE, -dayOfWeek+day_offset);
-			
-			
-			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
+			nowCal.add(Calendar.DATE, -7);
+			nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			nowCal.getTime();
 			return nowCal.getTime();
 		} catch (Exception e) {
