@@ -249,7 +249,8 @@ public class UserServiceImpl implements UserService {
 		return pm;
 	}
 	
-	private void sendEmail(User user, User loginUser,String password) throws Exception {
+	@Override
+	public void sendEmail(User user, User loginUser, String password) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());

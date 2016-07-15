@@ -20,15 +20,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -57,6 +60,9 @@ public class UserController {
 	
 	@Autowired
 	EmployeesService employeesService;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	
 	@RequestMapping(value = "/userCreation")
@@ -185,6 +191,27 @@ public class UserController {
 		 	
 			return flag;
 	   }
+	 
+	 
+	    //to re send email to user
+		 @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    //get user by userId
+			    User user = userService.getUserById(Long.parseLong(userId));
+			    
+			    //generate random password
+			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		 		if(user != null){
+		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		 			user.setIsMailSent(Status.Y);
+		 			userService.addUser(user);
+		 			userService.sendEmail(user,loginUser,password);
+		 		}
+			
+		 	  return "success";
+		   }
 
 
 	 private String toJSON(Object obj){

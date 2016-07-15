@@ -453,6 +453,8 @@ function flushProject(){
 		 var frm = $('#createUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#create_user").attr("disabled", "disabled");
+     		$( "#create_user" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
