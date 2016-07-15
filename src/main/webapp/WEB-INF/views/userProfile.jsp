@@ -14,7 +14,14 @@
 	}
 </script>
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>::Org Settings</title>
+</head>
 
+<body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->
   <section class="content-wraper">
@@ -163,6 +170,7 @@
 		  </div>
 		  </div>
   </section>
+  </body>
   <!-- Tab for Profile setting-area starts Ends -->
   <!-- Content Area Ends--> 
 
@@ -275,3 +283,4 @@
                 });
             });
 </script>
+</html>

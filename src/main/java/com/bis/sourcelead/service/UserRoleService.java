@@ -15,5 +15,7 @@ public interface UserRoleService {
 	public Collection<UserRole> getUsersListByRoleAndLocationId(String roleName,Long locationId) throws Exception;
 	
 	public Collection<UserRole> getUsersListByUserNameAndLocationId(String userName,Long locationId) throws Exception;
+	
+	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(String roleName,String userName,Long locationId) throws Exception;
 
 }

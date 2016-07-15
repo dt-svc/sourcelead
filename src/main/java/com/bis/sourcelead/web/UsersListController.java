@@ -66,12 +66,17 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		try {
-			if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || userRole.equalsIgnoreCase("All")){
+			if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
 				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId());
-			}else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole)){
+			}
+			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByRoleAndLocationId(userRole, orgLocations.getId());
-			}else if(!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)){
+			}
+			else if((!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)) || ("All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName))){
 				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId());
+			}
+			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
+				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRole, searchByName, orgLocations.getId());
 			}
 			
 			for(UserRole role : rolesList){

@@ -90,4 +90,23 @@ public class UserRoleDaoImpl implements UserRoleDao{
 					.list();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(String roleName, String userName,
+			Long locationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Long roleId = null;
+		if(roleName.equalsIgnoreCase("Administrator")){
+			roleId = 1L;
+		}else if(roleName.equalsIgnoreCase("User")){
+			roleId = 2L;
+		}
+		
+		return session.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId and "
+				+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%')) and userRole.orgLocations.id = :locationId")
+					.setLong("roleId", roleId)	  
+					.setLong("locationId", locationId)
+					.list();
+	}
+
 }
