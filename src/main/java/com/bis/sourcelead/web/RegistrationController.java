@@ -8,12 +8,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
@@ -35,6 +38,10 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 PasswordResetsSevice passwordResetsSevice;
+	 
+	 @Autowired
+	 OrgService orgService;
+	 
 	 
 	 
 	
@@ -115,6 +122,34 @@ public class RegistrationController {
 		}
 		
 	}
+	
+	
+	   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
+	   public @ResponseBody String validateOrgWebsite(
+	   		@RequestParam(value="website", required=false) String website,
+	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
+		
+			String status = null;
+		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+			if (orgInfo != null) {
+				status = "success";
+			}
+			else{
+				status = "failure";
+			}
+			
+	    return status;
+	   }
+	   
+	   
+	   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
+	   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
+	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
+	   		@RequestParam(value="email", required=false) String email) throws Exception {
+	   	
+		  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
+		  return status;
+	   }
 	
 	
 	
