@@ -1,4 +1,3 @@
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -86,15 +85,25 @@
 			  </div>
 			  </div>
 			<div class="file-upload clearfix mt" onclick = "check();">
-			<label class="btn btn-block">
+			<input type="file" name="file">
+			<label class="btn btn-block hidden">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
-                Select files to Import &hellip; <input type="file" name="file" style="display: none;">
+                Select files to Import &hellip; <input type="file" name="file" style="display: block;">
             </label>
 			</div>
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
 			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
 			<p class="text-danger text-center mt" id="success">${msg}</p> 
-		
+		   	 
+		   	 <!--  Downloaded File show here -->
+		   	   <div class="col-xs-3 alert alert-success fade in" style="position:absolute; top:10px;" id="fileAttached">
+				    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				    <div>File Holder</div>
+				</div>
+		   	 <!--  Downloaded File show here -->
+		   	 
+		   	 
+		   	 
 			</div>
 			
 			<!-- =================== -->
@@ -112,16 +121,19 @@
             </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-		  <div id="errorFileDiv" class="errInfo clearfix" style="display: none;" onclick="errorMsgAppend();">
-		  <p><strong>Error Users Dowload</strong></p>
+		  <div class="errInfo clearfix">
+		  <div id="errorFileDiv"  style="display: none;">
+		  <p class="text-danger"><strong>Error File Dowload</strong></p>
 		   <div class="file-upload"> 
-		  <a href="<c:url value='/download'/>"> 
+		  <a href="<c:url value='/download'/>" onclick="errorMsgAppend();"> 
 			<label class="btn btn-block">
 			<i class="fa fa-download" aria-hidden="true"></i> <br>
                ${errorMessage}
             </label>
             </a>
 			</div>
+          </div>
+         <!--  <div id="sucessMsg"><p class="text-success" ><strong>File downloaded successfully</strong></p></div> -->
           </div>
 		  </div>
         </div>
@@ -140,6 +152,7 @@
  <script>
 $(document).ready(function(){
 	var errormsg = '${errorMessage}';
+	$("#fileAttached").hide();
 	if(errormsg){
 		$("#errorFileDiv").show();
 	}
@@ -160,16 +173,14 @@ function check(){
 function errorMsgAppend(){
 	var errormsg = '${errorMessage}';
 	if(errormsg){
-		$("#errorFileDiv").hide();
-		$("#fileExist").empty();
+	    $("#errorFileDiv").hide();
+	 	$("#fileExist").empty();
 		$("#success").empty();
-		
 	}
 	
 }
 
 </script>
-
 
   <!-- Footer Area -->
   <footer class="footer-area clearfix">
@@ -178,6 +189,4 @@ function errorMsgAppend(){
   </footer>
   <!-- Footer Area -->
 
-    
-
-
+   
