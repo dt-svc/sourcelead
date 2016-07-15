@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -36,7 +38,25 @@ public class TimesheetSubmissionsController {
 	private DataSource dataSource;
 
 	
-	
+	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
+    public  String saveSubmissionApprovalStatus(@RequestParam(value="projectMemberId", required=false) String projectMemberId,@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
+             
+        
+        TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(projectMemberId);
+        if(timesheetSubmissions!=null){
+             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
+                   timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+                   timesheetSubmissions.setRejectedReason(rejectedReason);
+             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
+                 
+                   timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
+             }
+             
+             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+        }
+        return null;
+    }
+
 	
 	@RequestMapping(value = "/timesheetApproval")
 	public ModelAndView timesheetApproval(HttpServletRequest request) throws Exception {

@@ -34,6 +34,9 @@ public class Employees {
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	
+	@Column(name ="EMPLOYEE_ID")
+	private String employeeId;
+	
 	@Column(name ="HIRE_DATE")
 	private Date hireDate;	
 	
@@ -73,6 +76,15 @@ public class Employees {
 	
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name="RATE")
+	private String rate;
+	   
+    @Column(name="RATE_PER")
+    private String ratePer;
+   
+    @Column(name="DAILY_HOURS")
+    private String dailyHours;
 
 	public Long getId() {
 		return id;
@@ -193,6 +205,38 @@ public class Employees {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getRatePer() {
+		return ratePer;
+	}
+
+	public void setRatePer(String ratePer) {
+		this.ratePer = ratePer;
+	}
+
+	public String getDailyHours() {
+		return dailyHours;
+	}
+
+	public void setDailyHours(String dailyHours) {
+		this.dailyHours = dailyHours;
 	}
 	
 	

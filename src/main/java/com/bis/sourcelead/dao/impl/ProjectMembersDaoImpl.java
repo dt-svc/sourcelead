@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectMembersDaoImpl implements ProjectMembersDao{
@@ -132,7 +134,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		java.sql.Date  currentMonday = new java.sql.Date(CalendarUtil.getCurrentWeekDay("MON").getTime());
+		
+		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
+		
+		Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startMonday,28);
+		Date endMondayDate = endMonday.getTime();
+		java.sql.Date  currentMonday = new java.sql.Date(endMondayDate.getTime());
 		
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projects.startDate <= :currentDate and (pm.projects.endDate IS NULL OR pm.projects.endDate > :currentDate) and pm.projects.projectStatus ='STARTED') and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :currentMonday))" ;

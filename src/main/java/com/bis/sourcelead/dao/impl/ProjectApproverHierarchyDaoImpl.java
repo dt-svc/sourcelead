@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
 
 @Repository
 public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchyDao{
@@ -32,6 +31,23 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 			session.save(projectApproverHierarchy);
 			return projectApproverHierarchy;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ProjectApproverHierarchy getProjectApproverHierarchyByProjectId method");
+		String query = "from ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.approverUserId where projectHirachy.projectId = :ProjectId and projectHirachy.level = '1' ";
+		Collection<ProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("ProjectId", ProjectId).list();
+
+		ProjectApproverHierarchy ph = null;
+		if (projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
+			ph = (		ProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
+		}
+		return ph;
+
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	

@@ -44,6 +44,12 @@ public class EmployeesServiceImpl implements EmployeesService {
 		Boolean flag = employeesDao.deleteEmployee(id);
 		return flag;
 	}
+	
+	@Override
+	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception {
+		Boolean flag = employeesDao.validateEmployeeId(employeeId,orgLocationsId);
+		return flag;
+	}
 
 	@Override
 	public List<Employees> getAllEmployees() throws Exception {

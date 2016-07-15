@@ -114,10 +114,13 @@ public class LoginSessionController {
 					startCal.setTime(startMondayDate);
 					Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 					
-					Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					endCal.setLenient(false);
-					endCal.setTime(new Date());
-					Calendar endMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
+					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startCal,28);
+					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
+						Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+						startCal.setLenient(false);
+						startCal.setTime(projectMember.getProjectEndDate());
+					    endMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
+					}
 					
 					int totalWeeks = 0; 
 					totalWeeks = (int)((endMonday.getTimeInMillis()-startMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));

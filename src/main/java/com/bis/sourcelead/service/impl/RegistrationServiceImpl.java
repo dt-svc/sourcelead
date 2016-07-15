@@ -189,6 +189,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setStartDate(new Date());
 	    	
 	    	projects.setProjectStatus(Project_Status.STARTED);
+	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
 	    	projects.setOrgLocationsId(orgLocations);

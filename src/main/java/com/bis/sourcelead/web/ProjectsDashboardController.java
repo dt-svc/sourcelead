@@ -103,7 +103,7 @@ public class ProjectsDashboardController {
 		    projects.setUpdatedDateStr(Constants.DF_STD.format(projects.getUpdatedDate()));
 		   
 		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-		    String[] approvers = new String[1];
+		    String[] approvers = new String[projectApproverHierarchies.size()];
 		    int i = 0;
 		    for(ProjectApproverHierarchy php : projectApproverHierarchies){
 		    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
