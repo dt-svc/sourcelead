@@ -54,8 +54,15 @@ public class TimesheetSubmissionsController {
         
         ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
         for(TimesheetSubmissions ts : timesheetSubmissionsList){
-            ts.setStartDateStr(Constants.DF_STD.format(ts.getStartDate()));
-            ts.setEndDateStr(Constants.DF_STD.format(ts.getEndDate()));
+        	if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
+        		ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+        	}
+            if(ts.getStartDate()!=null){
+            	ts.setStartDateStr(Constants.DF_STD.format(ts.getStartDate()));
+            }
+        	if(ts.getEndDate()!=null){
+        		ts.setEndDateStr(Constants.DF_STD.format(ts.getEndDate()));
+        	}
             timesheetSubmissionsArrList.add(ts);
          }
          resultJson = toJSON(timesheetSubmissionsArrList);

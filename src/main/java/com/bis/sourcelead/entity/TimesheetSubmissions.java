@@ -105,6 +105,9 @@ public class TimesheetSubmissions {
 	
 	@Transient
 	private String  startDateStr;
+	
+	@Transient
+	private String  fullName;
 
 	public Long getId() {
 		return Id;
@@ -257,6 +260,14 @@ public class TimesheetSubmissions {
 
 	public void setStartDateStr(String startDateStr) {
 		this.startDateStr = startDateStr;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	 
 }

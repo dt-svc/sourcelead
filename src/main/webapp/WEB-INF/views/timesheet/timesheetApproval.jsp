@@ -45,8 +45,8 @@ $(document).ready(function() {
                          var approval = json[i];
                          output = output+'<tr>';
                          output = output+'<td><div class="time_appr_user">';
-                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${approval.projectMembers.employee.user.id}"/>" alt="Profile Image" class="img-circle img-responsive">';
-                         output = output+    '<span><b>'+approval.projectMembers.employee.user.firstName+' '+approval.projectMembers.employee.user.lastName+'</b></span></div></div>';
+                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/'+approval.projectMembers.employee.user.id+'"/>" alt="Profile Image" class="img-circle img-responsive">';
+                         output = output+    '<span><b>'+approval.fullName+'</b></span></div></div>';
                          output = output+'</td>';
                          output = output+'<td><div> '+approval.startDateStr+'  To  ';
                          output = output+         ''+approval.endDateStr+'';
