@@ -48,7 +48,6 @@ window.onload = function () {
 				<option value="All" >All Roles</option>
 				<option value="Administrator" >Administrator</option>
 				<option value="User">User</option>
-				<option value="Developer">Developer</option>
 				</select>
 		   </li>
 		  
