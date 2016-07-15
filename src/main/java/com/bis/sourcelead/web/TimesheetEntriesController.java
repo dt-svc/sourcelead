@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.json.JSONObject;
@@ -948,6 +949,15 @@ public class TimesheetEntriesController {
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
+	
+	/*Pavan Jampana : This method is for TimeSheet Pdf Download*/
+	
+	@RequestMapping(value = "/downloadTimesheetPdf", method = RequestMethod.GET)
+	public ModelAndView generateAllTimesheetPdf(HttpServletResponse response) throws Exception {
+		ModelAndView view = new ModelAndView("redirect:/timesheetPdf/downloadPdf");
+		return view;
+	}
+	
 	
 	/*shivayogi s kadagad*
 	 * controller to download Exceltimesheet*/
