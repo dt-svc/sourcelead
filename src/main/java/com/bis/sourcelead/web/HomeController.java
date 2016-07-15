@@ -50,6 +50,9 @@ public class HomeController {
 	@Autowired
 	private UserService userService;
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	
 	@Value("${jdbc.username}")
 	private String user;
@@ -121,14 +124,7 @@ public class HomeController {
 	}
    
    
-   @RequestMapping(value = "/userCreation")
-	public ModelAndView userCreation() {
-		ModelAndView model = new ModelAndView();
-		model.setViewName("registration/userCreation");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-
-	}
+   
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();

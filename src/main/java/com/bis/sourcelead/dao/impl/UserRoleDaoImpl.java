@@ -150,7 +150,10 @@ public class UserRoleDaoImpl implements UserRoleDao{
 					  .setLong("locationId", locationId)
 					  .setString("userState", userState)
 					  .list();
+	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();

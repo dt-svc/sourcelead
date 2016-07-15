@@ -40,5 +40,8 @@ ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES`
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
        DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_8`, 
        DROP COLUMN `SUN_TASK`,
-       DROP INDEX `SUN_TASK`;              
-        
+       DROP INDEX `SUN_TASK`;   
+       
+       
+       
+      

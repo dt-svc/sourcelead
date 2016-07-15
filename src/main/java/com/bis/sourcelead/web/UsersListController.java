@@ -47,7 +47,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		model.setViewName("registration/usersList");
+		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 

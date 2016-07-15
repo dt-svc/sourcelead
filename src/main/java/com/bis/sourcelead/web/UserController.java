@@ -58,15 +58,6 @@ public class UserController {
 	@Autowired
 	EmployeesService employeesService;
 	
-	@RequestMapping(value = "/usersList")
-	public ModelAndView userRegistration() {
-		ModelAndView model = new ModelAndView();
-		model.setViewName("registration/usersList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-
-	}
-	
 	
 	@RequestMapping(value = "/userCreation")
 	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
@@ -79,7 +70,7 @@ public class UserController {
 	    Collection<User> userList = userService.getUsersByUserRoles();
 		model.addObject("user_List", userList);
 	    
-		model.setViewName("registration/userCreation");
+		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 

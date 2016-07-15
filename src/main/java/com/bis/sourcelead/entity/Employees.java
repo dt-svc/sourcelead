@@ -77,14 +77,7 @@ public class Employees {
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
-	@Column(name="RATE")
-	private String rate;
-	   
-    @Column(name="RATE_PER")
-    private String ratePer;
-   
-    @Column(name="DAILY_HOURS")
-    private String dailyHours;
+	
 
 	@Column(name="RATE")
 	private String rate;
@@ -98,29 +91,7 @@ public class Employees {
 	
 	
 	
-	public String getRate() {
-		return rate;
-	}
-
-	public void setRate(String rate) {
-		this.rate = rate;
-	}
-
-	public String getRatePer() {
-		return ratePer;
-	}
-
-	public void setRatePer(String ratePer) {
-		this.ratePer = ratePer;
-	}
-
-	public String getDailyHours() {
-		return dailyHours;
-	}
-
-	public void setDailyHours(String dailyHours) {
-		this.dailyHours = dailyHours;
-	}
+	
 
 	public Long getId() {
 		return id;
@@ -137,17 +108,7 @@ public class Employees {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
 	
-	
-	public String getEmployeeId() {
-		return employeeId;
-	}
-
-	public void setEmployeeId(String employeeId) {
-		this.employeeId = employeeId;
-	}
-
 	public Date getHireDate() {
 		return hireDate;
 	}
