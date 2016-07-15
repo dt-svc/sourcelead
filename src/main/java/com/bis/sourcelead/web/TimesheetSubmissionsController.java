@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -49,9 +51,16 @@ public class TimesheetSubmissionsController {
 		String resultJson = null;
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
-        resultJson = toJSON(timesheetSubmissionsList);
-        return resultJson;
-			  
+        
+        ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
+        for(TimesheetSubmissions ts : timesheetSubmissionsList){
+            ts.setStartDateStr(Constants.DF_STD.format(ts.getStartDate()));
+            ts.setEndDateStr(Constants.DF_STD.format(ts.getEndDate()));
+            timesheetSubmissionsArrList.add(ts);
+         }
+         resultJson = toJSON(timesheetSubmissionsArrList);
+         return resultJson;
+         
 	}
 	
 	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)

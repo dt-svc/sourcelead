@@ -19,68 +19,68 @@ $(document).ready(function() {
 
 <script>
   function approvalList(){
-	    $.ajax({
- 	          type : "POST",
-	      	  url: "http://localhost:8080/sourcelead/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(data) {
-		    	  
-		             var json = JSON.parse(data);
-		             var output = "";
-		             
-		             output = output+' <table>';
-		             output = output+' <tbody>';
-		             output = output+' <thead>';
-		             output = output+'     <tr>';
-		             output = output+'         <th>Employee</th>';
-		             output = output+'         <th>Frequency</th>';
-		             output = output+'         <th>Total hours</th>';
-		             output = output+'         <th>Stage</th>';
-		             output = output+'         <th>Action</th>';
-		             output = output+'     </tr>';
-		             output = output+' </thead>';
-		             
-		             
-		             for (var i=0; i<json.length; i++)
-		             {
-		                     var approval = json[i];
-		                     output = output+'<tr>'+
-		                     '<td><div class="time_appr_user">'+
-		                     '<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${approval.projectMembers.employee.user.id}"/>" alt="Profile Image" class="img-circle img-responsive">'+
-		                         '<span><b>${approval.projectMembers.employee.user.firstName}</b><b>Admin</b></span></div></div>'+
-		                     '</td>'+
-		                     '<td><div> <fmt:formatDate type="date" value="${approval.startDate}" />  To'+
-		                              '<fmt:formatDate type="date" value="${approval.endDate}" />'+
-		                          '</div>'+
-		                     '</td>'+
-		                     '<td><div><a    onclick="myTimesheet('+approval.id+');"  id="timesheetPopup'+approval.id+'"> '+approval.totalHours+'/40</a></div></td>'+
-		                     '<td><div>'+approval.submissionApprovalStatus+'</div></td>'+
-		                     '<td>';
-		                       if(approval.submissionApprovalStatus == 'NEW'){
-		                           output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('+approval.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('+approval.id+');"></i></div>'+
-		                               '<div id="rejectedPopup"></div>';
-		                       }
-		                     if(approval.submissionApprovalStatus=='REJECTED'){
-		                         output = output+'<div><h3 class="reje_color">Rejected</h3>'+
-		                                     '<i class="glyphicon glyphicon-comment" onclick="rejectedMessage(rejectedMessage'+approval.id+');">'+
-		                                         '<strong id="rejectedMessage'+approval.id+'"><p>Rejected message here</p></strong>'+
-		                                     '</i>'+
-		                               '</div>';
-		                     }
-		                     if(approval.submissionApprovalStatus=='APPROVED'){
-		                         output = output+'<div><h3>Approved</h3></div>';
-		                     }  
-		                      output = output+'</td>'+  
-		                 '</tr>';
-		             }
-		           
-		             output = output+' </tbody>';
-		             output = output+' </table>';
-		             
-		             $("#timesheetApprList").empty();
-		             $("#timesheetApprList").append(output);
-		      }
-	      	  
-	       }); 
+	   $.ajax({
+           type : "POST",
+            url: "http://localhost:8080/sourcelead/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
+          success :function(data) {
+              
+                 var json = JSON.parse(data);
+                 var output = "";
+                 
+                 output = output+' <table>';
+                 output = output+' <tbody>';
+                 output = output+' <thead>';
+                 output = output+'     <tr>';
+                 output = output+'         <th>Employee</th>';
+                 output = output+'         <th>Frequency</th>';
+                 output = output+'         <th>Total hours</th>';
+                 output = output+'         <th>Stage</th>';
+                 output = output+'         <th>Action</th>';
+                 output = output+'     </tr>';
+                 output = output+' </thead>';
+                 
+                 
+                 for (var i=0; i<json.length; i++)
+                 {
+                         var approval = json[i];
+                         output = output+'<tr>';
+                         output = output+'<td><div class="time_appr_user">';
+                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${approval.projectMembers.employee.user.id}"/>" alt="Profile Image" class="img-circle img-responsive">';
+                         output = output+    '<span><b>'+approval.projectMembers.employee.user.firstName+' '+approval.projectMembers.employee.user.lastName+'</b></span></div></div>';
+                         output = output+'</td>';
+                         output = output+'<td><div> '+approval.startDateStr+'  To  ';
+                         output = output+         ''+approval.endDateStr+'';
+                         output = output+     '</div>';
+                         output = output+ '</td>';
+                         output = output+ '<td><div><a    onclick="myTimesheet('+approval.Id+');"  id="timesheetPopup'+approval.Id+'"> '+approval.totalHours+'/40</a></div></td>';
+                         output = output+'<td><div>'+approval.submissionApprovalStatus+'</div></td>';
+                         output = output+'<td>';
+                           if(approval.submissionApprovalStatus == 'NEW'){
+                               output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('+approval.Id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('+approval.Id+');"></i></div>';
+                               output = output+'<div id="rejectedPopup"></div>';
+                           }
+                         if(approval.submissionApprovalStatus=='REJECTED'){
+                             output = output+'<div><h3 class="reje_color">Rejected</h3>';
+                             output = output+'<i class="glyphicon glyphicon-comment" onclick="rejectedMessage(rejectedMessage'+approval.Id+');">';
+                             output = output+  '<strong id="rejectedMessage'+approval.Id+'"><p>Rejected message here</p></strong>';
+                             output = output+ '</i>';
+                             output = output+'</div>';
+                         }
+                         if(approval.submissionApprovalStatus=='APPROVED'){
+                             output = output+'<div><h3>Approved</h3></div>';
+                         }  
+                          output = output+'</td>' ;
+                          output = output+ '</tr>';
+                 }
+               
+                 output = output+' </tbody>';
+                 output = output+' </table>';
+                 
+                 $("#timesheetApprList").empty();
+                 $("#timesheetApprList").append(output);
+          }
+            
+       }); 
   } 
   </script>
 <body onclick="bodyClick();">
@@ -147,7 +147,7 @@ $(document).ready(function() {
 		
 		<div class="timesheet_appr_table">
 		<div id="timesheetApprList">   </div>
-		<%-- <table>
+	    <%-- <table>
         	<tbody>
 			<thead>
             	<tr>
@@ -168,7 +168,7 @@ $(document).ready(function() {
                              <fmt:formatDate type="date" value="${approval.endDate}" />
 						 </div>
 					</td>
-                    <td><div><a    onclick="myTimesheet('${approval.id}');"  id="timesheetPopup${approval.id}"> ${approval.totalHours}/40</a></div></td>
+                    <td><div><a    onclick="myTimesheet('${approval.id}','12-02-2016', '12-02-2016');"  id="timesheetPopup${approval.id}"> ${approval.totalHours}/40</a></div></td>
                     <td><div>${approval.submissionApprovalStatus}</div></td>
 					<td>
                       <c:if test="${approval.submissionApprovalStatus == 'NEW'}">
@@ -191,7 +191,7 @@ $(document).ready(function() {
             
             			
             </tbody>
-        </table> --%>
+        </table>   --%>
        
 	</div>
 		
@@ -574,25 +574,29 @@ $(document).ready(function() {
 	<!--   Timesheet approval seript files   -->
 <!-- sarath custom -->	
 <script>
-function myTimesheet(local){      
-    
+function myTimesheet(local,startDate,endDate){      
+    alert("endDate"+endDate);
     $.ajax({
    	type: "POST",
-    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local, 	   
+    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
               $("#myId").empty();
               $("#myId").append(data); 
               maskme();   
     }
     });
+    $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
     
-	$(".timesheet_appr_table a").click(function(){
+	/* $(".timesheet_appr_table a").click(function(){ 
 		$(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
-	});
-    $(".proj_close").click(function(){
+	}); */
+    /* $("body.proj_close").click(function(){  alert("hii");
 		$(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
-	});	
-}    
+	});	 */
+} 
+function removeTimesheetPopup(){
+	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+}
 </script>	
 
 <script>

@@ -99,6 +99,12 @@ public class TimesheetSubmissions {
 	
 	@Transient
 	private Collection<ProjectTasks> projectTasksList;
+	
+	@Transient
+	private String  endDateStr;
+	
+	@Transient
+	private String  startDateStr;
 
 	public Long getId() {
 		return Id;
@@ -235,6 +241,22 @@ public class TimesheetSubmissions {
 
 	public void setTotalHours(String totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
 	}
 	 
 }
