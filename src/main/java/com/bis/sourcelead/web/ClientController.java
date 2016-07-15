@@ -1,8 +1,13 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,10 +25,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -54,12 +63,20 @@ public class ClientController {
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	private ProjectsService projectsService;
+	
+	@Autowired
+	private UserService userService;
+	
 	
 	
 	 @RequestMapping(value = "/client")
 		public ModelAndView client() throws Exception {
 
 			ModelAndView model = new ModelAndView();
+			 Collection<User> userList = userService.getUsersByUserRoles();
+			 model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			return model;
 	    }
@@ -128,6 +145,51 @@ public class ClientController {
 			OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
 			
 			Collection<Org> orgsList = orgService.getOrgs();
+			
+			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			logger.info("The projects added by the admin are :"+maxCount);
+			for (int c = 1; c < maxCount; c++) {
+				Projects project = new Projects();
+				ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
+				Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
+				project.setProjectSequeneNumber(jsonObj.getString(c+"projectId"));
+				project.setProjectName(jsonObj.getString(c+"projectName"));
+				String startDateString = jsonObj.getString(c+"projectStartDate");
+				String i = jsonObj.getString(c+"projectManager");
+			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+			    Date startDate = null;
+			    try {
+			        startDate = df.parse(startDateString);
+			        String newDateString = df.format(startDate);
+			        System.out.println(newDateString);
+			    } catch (ParseException e) {
+			        e.printStackTrace();
+			    }
+				project.setStartDate(startDate);
+				projectApproverHierarchy.setProjectId(project);
+				User approverUserId1 = new User();
+		    	approverUserId1.setId(Long.parseLong(jsonObj.getString(c+"projectManager")));
+				projectApproverHierarchy.setApproverUserId(approverUserId1);
+				projectApproverHierarchy.setLevel(1);
+				ProjectApproverHierarchy projectApproverHierarchy1 = new ProjectApproverHierarchy();
+				if(!jsonObj.getString("level2Manager").isEmpty()){
+					projectApproverHierarchy1.setProjectId(project);
+					User approverUserId2 = new User();
+					approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+					projectApproverHierarchy1.setApproverUserId(approverUserId2);
+					projectApproverHierarchy1.setLevel(2);
+					projectApproverSet.add(projectApproverHierarchy1);
+//					ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+				}
+				projectApproverSet.add(projectApproverHierarchy);
+				
+				project.setProjectApprovers(projectApproverSet);
+				
+				projectsService.saveProject(project);
+				
+			}
+
 			
 			 return "clientDashboard";
 	   }

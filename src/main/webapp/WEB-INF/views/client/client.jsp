@@ -38,7 +38,7 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
               <div class="col-md-9">
-                <input type="text" class="form-control" id="orgName" name="orgName" field-name="Client Name" data-validation="required" value="">
+                <input type="text" class="form-control" name="orgName" field-name="Client Name" data-validation="required" value="">
                 <span class="hidden">Enter Client Name</span> </div>
             </div>
             <div class="form-group">
@@ -62,15 +62,13 @@
                 <span class="hidden">Client City</span> </div>
             </div>
             
-           
-
             <div class="form-group">
-              <label class="col-md-3">Add Projects</label>
+              <label class="col-md-3">Projects</label>
               <div class="col-md-9">
                 <div class="input-group">
                   <div class="input-group-btn">
-                    <button class="btn btn-default" type="button"> <span class="badge">10</span></button>
-                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addTask"> <i class="fa fa-plus" title="Add Projects"></i> &nbsp;&nbsp;View / Add Projects</button>
+                    <button class="btn btn-default" type="button"> <span class="badge" id="addTaskCount">0</button>
+                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Projects </button>
                   </div>
                 </div>
                 <!-- Modal -->
@@ -84,46 +82,88 @@
                         <h4 class="modal-title">Add Tasks</h4>
                       </div>
                       <div class="modal-body clearfix">
-                        <div class="modal-body-custom custom-table custom-table-new">
-                          <table class="table table-bordered table-striped  clearfix" cols="0">
-                            <tr>
-                              <th>Project Id</th>
+                        <div class="modal-body-custom custom-table">
+                          <table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
+                            <tr id="divTsRow0">
+                              <th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1"/>Project Id</th>
                               <th>Project Name</th>
-							  <th>Project Description</th>
-							  <th>Manager</th>
-							  <th>Date</th>
+                              <th>Manager</th>
+                              <th>Start Date</th>
                               <th>Action</th>
-                            </tr>
-                            <tr>
-                              <td>001</td>
-							  <td>UI Development</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-							  <td>James Smith</td>
-							  <td>08/07/2016</td>
-							  <td>
-							  <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-trash-o"></i></a></span>
-							  </td>
                             </tr>
                           </table>
                         </div>
                         <div class="form-horizontal row custom-form">
                           <div class="col-xs-12 col-lg-7">
                           <div class="form-group">
-                            <label class="col-md-3">Task Name</label>
-                            <div class="col-md-9">
-                              <input type="text" value="" class="form-control">
+                            <label class="col-md-3">Project Id</label>
+                            <div class="col-md-9"> 
+                              <input type="text" value="" id="projectId" name="projectId" placeholder="Enter Project Id" class="form-control">
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label class="col-md-3">Project Name</label>
+                            <div class="col-md-9"> 
+                              <input type="text" value="" id="projectName" name="projectName" placeholder="Enter Project Name" class="form-control">
                             </div>
                           </div>
                           <div class="form-group">
-                            <label class="col-md-3">Description</label>
+              					<label class="col-md-3" for="Project Manager">Manager</label>
+              						<div class="col-md-9">
+             						 <div class="form-icon-min">
+               					 <select class="form-control select-bg" name="projectManager" id="projectManager">
+                					  <option>-- Select Manager --</option>
+	                  
+	                  				   <option value="1">SourceLead</option>
+	                  
+              					  </select>
+                 		   <span class="btn btn-default formic1 addLevel">Add Level-II</span>
+                  		  </div>
+                  	  <span class="hidden">Select Project Manager</span>
+              		  </div>
+            		</div>
+            		<div class="form-group level-second">
+              			<label class="col-md-3" for="Level-II">Level-II</label>
+              			<div class="col-md-9">
+               				 <select class="form-control select-bg" name="level2Manager" >
+              							<option value='' >-- Select Manager --</option>
+	                			 	 <c:forEach var="option" items="${user_List}">
+	                    				 <option value="${option.id}">${option.firstName}</option>
+	                  				</c:forEach>
+              				  </select>
+               			 </div>
+           			 </div>
+                         <!--  <div class="form-group">
+                            <label class="col-md-3">Manager</label>
                             <div class="col-md-9">
-                              <textarea class="form-control" rows="2"></textarea>
+                              <input type="text" value="" id="projectManager" name="projectManager"  placeholder="Enter Manager Name" class="form-control">
+                            </div>
+                          </div> -->
+                          
+                          <div class="form-group">
+                            <label class="col-md-3">Start Date</label>
+                             <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                      <input type="text" class="form-control" value="" id="projectStartDate" name="projectStartDate" field-name="Start Date" class="form-control" >
+		                    </div>
+                           <!--  <div class="col-md-9">
+                              <input type="text" value="" id="projectStartDate" name="projectStartDate"  placeholder="Enter Project Start Date" class="form-control">
+                            </div> -->
+                          </div>
+                          
+                         <!--  <div class="form-group">
+                            <label class="col-md-3">End Date</label>
+                             <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                      <input type="text" class="form-control" value="" id="projectEndDate" name="projectEndDate" field-name="Start Date" class="form-control" >
+		                    </div>
+                            <div class="col-md-9">
+                              <input type="text" value="" id="projectEndDate" name="projectEndDate"  placeholder="Enter Project End Date" class="form-control">
                             </div>
                           </div>
+                           -->
                           </div>
                           <div class="col-xs-12 col-lg-5">
-                          <a href="javascript:void(0)" class="btn btn-primary"> <i class="fa fa-plus"></i> Add Task</a>
+                          <a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask" > <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
                           </div>
                         </div>
                       </div>
@@ -138,12 +178,14 @@
                 
               </div>
             </div>
+
+            
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
            <div class="form-group">
               <label class="col-md-3">Website</label>
               <div class="col-md-9">
-                 <input type="text" class="form-control" id="webSite" name="webSite" field-name="Website" data-validation="required" value="">
+                <input type="text" class="form-control" name="Website" value="">
                 <span class="hidden">Website</span> </div>
             </div>
             <div class="form-group">
@@ -159,6 +201,13 @@
               <div class="col-md-9">
 			  <input type="text" class="form-control" name="mobileNumber" value="">
                 <span class="hidden">Mobile Number</span> </div>
+              </div>
+			  
+			  <div class="form-group">
+              <label class="col-md-3">Client Status</label>
+              <div class="col-md-9">
+			  <input type="text" class="form-control" name="ClientStatus" value="">
+                <span class="hidden">Client Status</span> </div>
               </div>
 			    </div>
 		</form:form>
@@ -264,48 +313,12 @@
 	    	type: "POST",
 	        url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(data) {
-	        	if(data == 'clientDashboard'){
-	        		location.replace("http://localhost:8080/sourcelead"+"/clientDashboard");  
-	        	}
+	        	
 	        }
      });
      
  }
 </script> 
-
-
-<script type="text/javascript">
- function saveProject() {
- var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-	   }; 
-	 if ($('#client_form').validate(false, validationSettings)){ 
-     var frm = $('#client_form').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        $.ajax({
-	    	type: "POST",
-	    	url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	
-	        	$("#maxTsRowNum").empty();
-		        $("#maxTsRowNum").append(output);
-		        
-	        },
-	    });
-       		 return true;
-		}else{
-			return false;
-		}
-    }
- $('body').on('blur', '#client_form', function() {
-		$("#client_form").showHelpOnFocus();;
-		$("#client_form").validateOnBlur(false, validationSettings);  
-	});
-</script>
 
 <script type="text/javascript">
 (function ($) {
@@ -326,3 +339,159 @@
    };
 })(jQuery);
 </script>
+
+<!-- =============================== AddTask Divs  ============================ -->
+
+       <div id="divTaskTd1" style="display:none; float:left;">
+            <input type="hidden" id="REPLACEROWIDprojectId" name="REPLACEROWIDprojectId" value="PROJECTIDVALUE"/><span id="REPLACEROWIDprojectIdValue">PROJECTIDVALUE</span> 
+      </div>
+      
+       <div id="divTaskTd2" style="display:none; float:left;">
+            <input type="hidden" id="REPLACEROWIDprojectName" name="REPLACEROWIDprojectName" value="TASKNAMEVALUE"/><span id="REPLACEROWIDprojectNameValue">TASKNAMEVALUE</span> 
+      </div>
+       <div id="divTaskTd3" style="display:none; float:left;">
+        <input type="hidden" id="REPLACEROWIDprojectManager" name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE"/><span id="REPLACEROWIDprojectManagerValue">TASKDESCRIPTIONVALUE</span> 
+      </div>
+      
+      <div id="divTaskTd4" style="display:none; float:left;">
+        <input type="hidden" id="REPLACEROWIDprojectStartDate" name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE"/><span id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span> 
+      </div>
+      
+      <!-- <div id="divTaskTd5" style="display:none; float:left;">
+        <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/><span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
+      </div> -->
+     
+       <div id="divTaskTd5" style="display:none; float:left;">
+            <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+            <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+      </div>
+  <!-- =============================== AddTask Divs  ============================ -->     
+<!-- Add Task Script start -->
+<script type="text/javascript">
+function addTasks(){
+    	var tbl = document.getElementById("projectTaskTbl");
+    	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+    	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+    	$("#addTaskCount").html(maxRowNum);
+    	var row = tbl.insertRow(maxRowNum);
+    	row.setAttribute("id", "divTsRow" + maxRowNum);
+	
+    	var projectId = $('#projectId').val();
+		var projectName = $('#projectName').val();
+	    var projectManager = $('#projectManager').val();  
+	    var projectStartDate = $('#projectStartDate').val();
+	  /*   var projectEndDate = $('#projectEndDate').val(); */
+			
+		var cell0 = row.insertCell(0);
+		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
+		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd1Str = divTsTd1Str.replace(/PROJECTIDVALUE/g, (projectId));
+		cell0.innerHTML = divTsTd1Str;
+		
+		
+		var cell1 = row.insertCell(1);
+		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/TASKNAMEVALUE/g, (projectName));
+		cell1.innerHTML = divTsTd2Str;
+		
+		
+		
+		var cell1 = row.insertCell(2);
+		var divTsTd2Str = document.getElementById("divTaskTd3").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g, (projectManager));
+		cell1.innerHTML = divTsTd2Str;
+		
+		var cell1 = row.insertCell(3);
+		var divTsTd2Str = document.getElementById("divTaskTd4").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/PROJECTSTARTDATEVALUE/g, (projectStartDate));
+		cell1.innerHTML = divTsTd2Str;
+		
+	/* 	var cell1 = row.insertCell(4);
+		var divTsTd2Str = document.getElementById("divTaskTd5").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/PROJECTENDDATEVALUE/g, (projectEndDate));
+		cell1.innerHTML = divTsTd2Str; */
+		
+		
+		 var cell2 = row.insertCell(4);
+		var divTsTd3Str = document.getElementById("divTaskTd5").innerHTML;
+		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell2.innerHTML = divTsTd3Str; 
+		
+		$("#projectId").val('');
+		$("#projectName").val('');
+		$("#projectManager").val('');
+		$("#projectStartDate").val('');
+		/* $("#projectEndDate").val(''); */
+}
+</script>
+<script type="text/javascript">
+ function removeRow(rowId) {
+		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		  var r = document.getElementById('projectTaskTbl').rows[rowId];
+             var count = 2*(r.cells.length);
+			    for(i=0;i<=count;i++){
+			        r.deleteCell(0);
+			    }
+	}
+ 
+</script>
+<script type="text/javascript">
+ function editTask(rowId) {
+	 var updateProjectId = $("#"+rowId+"projectId").val(); 
+	 var updateTaskName = $("#"+rowId+"projectName").val(); 
+	 var updateTaskDescription = $("#"+rowId+"projectManager").val(); 
+	 var updateProjectStartDate = $("#"+rowId+"projectStartDate").val(); 
+	/*  var updateProjectEndDate = $("#"+rowId+"projectEndDate").val();  */
+	 
+	 $("#projectId").val('');
+	 $("#projectName").val('');
+	 $("#projectManager").val('');
+	 $("#projectStartDate").val('');
+	 $("#projectEndDate").val('');
+	 $("#addTaskText").html('Update Task');
+	 $("#projectId").val(updateProjectId);
+	 $("#projectName").val(updateTaskName);
+	 $("#projectManager").val(updateTaskDescription);
+	 $("#projectStartDate").val(updateProjectStartDate);
+	/*  $("#projectEndDate").val(updateProjectEndDate); */
+	 $("#taskId").val(rowId);
+	 $("#save_task").removeAttr('onclick');
+	 $("#save_task").attr('onclick','updateTask('+rowId+');');
+  }
+ 
+</script>
+
+<script type="text/javascript">
+ function updateTask(rowId) {
+	 /* $("#"+rowId+"projectManager").val($("#projectManager").val()); */
+	 $("#"+rowId+"projectIdValue").html($("#projectId").val());
+	 
+	 $("#"+rowId+"projectNameValue").html($("#projectName").val()); 
+	 
+	 $("#"+rowId+"projectManagerValue").html($("#projectManager").val());
+	 
+	 $("#"+rowId+"projectStartDateValue").html($("#projectStartDate").val()); 
+	 
+	 $("#"+rowId+"projectEndDateValue").html($("#projectEndDate").val());
+	 $("#projectId").val('');
+	 $("#projectName").val('');
+	 $("#projectManager").val('');
+	 $("#projectStartDate").val('');
+	 $("#projectEndDate").val('');
+	 $("#addTaskText").html('Add Task');
+	 $("#save_task").removeAttr('onclick');
+	 $("#save_task").attr('onclick','addTasks();');
+	 
+ }
+ </script>
+<script> 
+$(document).ready(function(){
+	 $("#maxTsRowNum").val('1');
+	document.getElementById("project_form").reset();
+});
+</script>
+<!-- Add Task Script Ends -->
