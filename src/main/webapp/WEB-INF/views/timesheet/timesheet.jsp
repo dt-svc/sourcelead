@@ -14,20 +14,42 @@
 	<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
   
     <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-	        
-	<script type="text/javascript">
-	function timesheetComment(local){ 
-		$('.teskcomment').each(function() {
-		    var currentId = this.id;
-		    var localId = local;
-		    if(localId.trim() == currentId.trim()){
-	       	 		$("#"+local).slideToggle(200); 
-	        }else{
-	       	    $("#"+currentId).slideUp(200); 
-	        }
-		});
-	} 
-	</script>	
+
+
+<script>
+$(document).ready(function() {
+	var startdate;
+	var navigation;
+	dynamicTimesheet(navigation,startdate);  
+});
+</script>
+
+<script type="text/javascript">
+function dynamicTimesheet(navigation , startDate){   
+	        $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
+				    success: function(data) {
+				               $("#dynamic").empty();
+						       $("#dynamic").append(data);
+						       maskme();  
+				    }
+		    });
+}
+</script>	        
+<script type="text/javascript">
+function timesheetComment(local){ 
+	$('.teskcomment').each(function() {
+	    var currentId = this.id;
+	    var localId = local;
+	    if(localId.trim() == currentId.trim()){
+       	 		$("#"+local).slideToggle(200); 
+        }else{
+       	    $("#"+currentId).slideUp(200); 
+        }
+	});
+} 
+</script>	
 	
 	<!--  <script type="text/javascript">
 		$(document).ready(function() {  
@@ -108,7 +130,7 @@ function maskme(){
 <!--  <input class="timepicker" type="text" size="10" placeholder="hh:mm" />
 <input class="timepicker" type="text" size="10" placeholder="hh:mm" />  -->
 	<div class="timesheet_wrap">
-    	<div class="timesheet_head">
+    	<!-- <div class="timesheet_head">
         	<ul>
             	<li><i class="glyphicon glyphicon-print"></i></li>
                 <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
@@ -120,23 +142,14 @@ function maskme(){
                         </ul>
                     </div>
                 </li>
-                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li>All <b>50</b></li>
-                            <li>Approved <b>30</b></li>
-                            <li>Draft <b>10</b></li>
-                            <li>Rejected <b>10</b></li>
-                        </ul>
-                    </div>                	
-                </li>                
             	<li><i class="glyphicon glyphicon-chevron-left" onclick="dynamicTimesheet();"></i><span class="res_date"><i class="fa fa-calendar"></i>15/06 - 21/06</span>
                 <i class="glyphicon glyphicon-chevron-right"></i><abbr>|</abbr></li>                
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
-        </div>
-        <div class="timesheet_table" id="dynamic">
+        </div> -->
+         <div id="dynamic"> 
+        <div class="timesheet_table">
               <table id="timesheet" cellpadding="0" cellspacing="0">
             	<tbody>
                 	<tr>
@@ -300,8 +313,29 @@ function maskme(){
           
              <!--<div id="divadttTd1" style="display:none;"  > <div id="projectName">Sourcelead </div></div>-->
         </div>
+        <div class="timesheet_bot">
+    	<div class="timesheet_week_comm">
+        	<textarea name="weekComment" placeholder="comments here..."></textarea>
+            <span>
+            	<input type="file" name="docFile" ><label><i class="glyphicon glyphicon-save"></i>Choose file</label>
+            </span>
+            <div class="clearfix"></div>
+        </div>
+<!--    	<div class="timesheet_sub_other">
+        	Submit to others <a href="javascript:void(0)"><i class="fa fa-envelope"></i> Email</a>
+            <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
+        </div>-->
+    	<div class="timesheet_button">
+    	    <input type="submit" name="Draft" vaue="Draft" class="time_btn time_dra" >
+        	<!-- <input type="button" value="Draft" class="time_btn time_dra" /> -->
+            <input type="button" value="Submit" class="time_btn" />
+            <input type="button" value="Clear" class="time_btn time_cancel" />
+        </div>
+    	<div class="clearfix"></div>
+     </div>        
+     </div>   
         
-        <div id="divadttTd1" style="display:none;" >   
+              <div id="divadttTd1" style="display:none;" >   
                   <div> 
                    <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" >
                                 <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
@@ -604,34 +638,7 @@ function maskme(){
 </div>
         
  <!--   Responsive  --> 
-          
-      
-      
-      
-      
-        
-    <div class="timesheet_bot">
-    	<div class="timesheet_week_comm">
-        	<textarea name="weekComment" placeholder="comments here..."></textarea>
-            <span>
-            	<input type="file" name="docFile" ><label><i class="glyphicon glyphicon-save"></i>Choose file</label>
-            </span>
-            <div class="clearfix"></div>
-        </div>
-<!--    	<div class="timesheet_sub_other">
-        	Submit to others <a href="javascript:void(0)"><i class="fa fa-envelope"></i> Email</a>
-            <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
-        </div>-->
-    	<div class="timesheet_button">
-    	    <input type="submit" name="Draft" vaue="Draft" class="time_btn time_dra" >
-        	<!-- <input type="button" value="Draft" class="time_btn time_dra" /> -->
-            <input type="button" value="Submit" class="time_btn" />
-            <input type="button" value="Clear" class="time_btn time_cancel" />
-        </div>
-    	<div class="clearfix"></div>
-    </div>        
-        
-        <div class="res_total_hours">
+ <div class="res_total_hours">
 	<i></i>
 	<p>Total hours</p>
     <h2>45:30</h2>
@@ -675,7 +682,7 @@ function callInlineEdit(local){
 
 <script>
  
-function addTimeSheetRow(submissionId) {
+function addTimeSheetRow(submissionId,projectId) {
 	          
 		    var tbl = document.getElementById("table"+submissionId);
 			var rowNum = $("#maxRowNumber"+submissionId).val();
@@ -741,60 +748,42 @@ function addTimeSheetRow(submissionId) {
 			var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-                        divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
+            divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
 			cell8.innerHTML = divadttTd8Str;
 			
-			//var cell9 = row.insertCell(9);
-//			var divadttTd9Str = document.getElementById("divadttTd10").innerHTML;
-//			divadttTd9Str = divadttTd9Str.replace("REPLACEROWID", (maxRowNum));
-//			cell9.innerHTML = divadttTd9Str;
 			
-			 //mergeColumns();
-			 maskme();   
+			maskme();   
+		    
+			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			getProjectTasks(projectTaskId,projectId); 
+		  
+			
 		}	
 	 
-       function mergeColumns(){
-		          
-				  var previous = null;
-                  var cellToExtend = null;
-		          $( ".pname" ).each(function() {
-				        
-						var jthis = $(this);
-						var content = jthis.text()
-						var valueOne = $.trim(previous);
-					    var valueTwo = $.trim(content);
-						  
-						 
-						if (valueOne == valueTwo) {     
-							jthis.remove();
-							if (cellToExtend.attr("rowspan") == undefined) {
-								cellToExtend.attr("rowspan", 2);
-							}
-							else {    
-								currentrowspan = parseInt(cellToExtend.attr("rowspan"));
-								cellToExtend.attr("rowspan", currentrowspan + 1);
-							}
-						}
-						else {      
-							previous = content;
-							cellToExtend = jthis;
-						}
-	
-			    });
+        
+	   function getProjectTasks(projectTaskId,projectId){
+		   alert("projectTaskId"+projectTaskId);
+		   $.ajax({
+   	          type : "POST",
+ 	      	  url: "http://localhost:8080/sourcelead/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+ 		      success :function(data) {
+ 		    	    var json = JSON.parse(data);
+ 		    	    var result = ""; 
+ 		    	    for (var i=0; i<json.length; i++)
+ 					{
+ 			        		var opt = json[i];
+ 			        		result = result + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+ 					}
+ 		    	    $("#"+projectTaskId).empty();
+ 		    	    $("#"+projectTaskId).append(result);
+ 		      }
+ 	      	  
+ 	       }); 
+		   
 	   }
+
 	 
-	</script>
-	
-	<!-- <script>
-	  function isNumber(evt) {   
-	    evt = (evt) ? evt : window.event;
-	    var charCode = (evt.which) ? evt.which : evt.keyCode;
-	    if (charCode > 31 && (charCode < 48 || charCode > 59)) {
-	        return false;
-	    }
-	    return true;
-	 }
-	</script> -->
+</script>
 	
 <script type="text/javascript">
 (function ($) {
@@ -853,8 +842,8 @@ function addTimeSheetRow(submissionId) {
 $(document).click(function(){
 		var submissionId = 1;
 		var total;
-		 for (var p = 1; p < 3; p++){
-		 for (var i = 1; i < 3; i++){  
+		 for (var p = 1; p < 8; p++){
+		 for (var i = 1; i < 8; i++){  
 			 var bsum = 0;
 			 var nbsum = 0;
 			 var total = 0;
@@ -881,7 +870,7 @@ $(document).click(function(){
 		    var t = bsum; 
 			var hours = Math.floor(t / 60); 
 			var minutes = t % 60;
-			total = hours +"."+ minutes;
+			total = hours +":"+ minutes;
 			
 		    $("#"+i+"submission"+p+"total1Id").val(total);
 	 }  
@@ -894,11 +883,11 @@ $(document).click(function(){
 
 $(document).click(function(){ 
 	var total;
-	 for (var i = 1; i < 3; i++){
+	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 3; p++){  
+	 for (var p = 1; p < 8; p++){  
 		 for (var j = 1; j < 8; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -919,7 +908,7 @@ $(document).click(function(){
 	    var t = bsum; 
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
-		total = hours +"."+ minutes;
+		total = hours +":"+ minutes;
  }  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
@@ -951,7 +940,7 @@ function removeTimeSheetRow(rowId,submissionId) {
 </script>		
 
 <!-- dynamic timesheet -->
-<script>	
+<!-- <script>	
 function dynamicTimesheet(){    
 	   $.ajax({
 	          type : "GET",
@@ -963,7 +952,7 @@ function dynamicTimesheet(){
 		      }
 	    }); 
 }
-</script>	
+</script> -->	
 
 
 <script>	

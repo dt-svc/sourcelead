@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +18,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -56,6 +63,10 @@ public class ProjectsDashboardController {
 	
 	@Autowired
 	public ProjectMembersService projectMembersService;
+	
+	
+	@Autowired
+	public ProjectApproverHierarchyService projectApproverHierarchyService;
 	 
 	 /**
 	  * This method for get project by id
@@ -66,16 +77,15 @@ public class ProjectsDashboardController {
 	 
 	
 	@RequestMapping(value = "/projectDashboard")
-	public ModelAndView projectDashboard() throws Exception {
+	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
 
-
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
-		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagers();
+		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
 		model.addObject(projectsList);
 		return model;
-
-
+		
     }
 	
 	/**
@@ -85,9 +95,25 @@ public class ProjectsDashboardController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
-	 public Projects getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
-		    Projects projects = projectsService.getProjectById(projectId);
-		    return projects;
+	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
+		 Projects projects = projectsService.getProjectById(projectId);
+		    projects.setCreatedDateStr(Constants.DF_STD.format(projects.getCreatedDate()));
+		    projects.setStartDateStr(Constants.DF_STD.format(projects.getStartDate()));
+		    projects.setEndDateStr(Constants.DF_STD.format(projects.getEndDate()));
+		    projects.setUpdatedDateStr(Constants.DF_STD.format(projects.getUpdatedDate()));
+		   
+		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+		    String[] approvers = new String[projectApproverHierarchies.size()];
+		    int i = 0;
+		    for(ProjectApproverHierarchy php : projectApproverHierarchies){
+		    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
+		    	i++;
+		    }
+		    projects.setProjectManagerName(approvers);
+		    
+		    ObjectMapper mapper = new ObjectMapper();
+            String jsonInString = mapper.writeValueAsString(projects);
+			return jsonInString;
 	  }
 	 
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
@@ -157,13 +183,19 @@ public class ProjectsDashboardController {
 			 return resultJson;
 		 	
 	 }
-	 
+	  
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
-		 String resultJson = null;
+	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+		 
 		 Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
-		 resultJson = toJSON(projectMembersList);
-		 return resultJson;
+		 		 
+		 for(ProjectMembers pm : projectMembersList){
+			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
+		 }
+		 ObjectMapper mapper = new ObjectMapper();
+		 String jsonInString = mapper.writeValueAsString(projectMembersList);
+		 
+		 return jsonInString;
 	  }
 	 
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
@@ -185,6 +217,39 @@ public class ProjectsDashboardController {
 			Employees  emp=	employeesService.addEmployee(employee);
 			
 			return null;
+		}
+	 
+	 @RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
+		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
+		 	String resultJson = null;
+			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId);
+			resultJson = toJSON(employeeList);
+			return resultJson;
+		}
+	 
+	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
+		public @ResponseBody  String storeAssignEmployee(
+				@RequestParam(value="ProjectId", required=false) Long projectId,
+				@RequestParam(value="employeeId", required=false) Long employeeId,
+				@RequestParam(value="startDate", required=false) String startDate,
+				@RequestParam(value="endDate", required=false) String endDate) throws Exception {
+		 	
+			 	ProjectMembers pm = new ProjectMembers();
+			 	
+			 	Employees emp = new Employees();
+				emp.setId(employeeId);
+				
+			 	Projects project = new Projects();
+			 	project.setId(projectId);
+				
+			 	pm.setEmployee(emp);
+				pm.setProjects(project);
+				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
+				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
+				pm.setCreatedDate(new Date());
+				pm.setUpdatedDate(new Date());
+				projectMembersService.saveProjectMember(pm);
+				return null;
 		}
 	 
 	private String toJSON(Object obj){

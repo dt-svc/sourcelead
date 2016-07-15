@@ -20,4 +20,6 @@ public interface EmployeesService {
 	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception;
 
 	public List<Employees> getAllEmployees() throws Exception;
+	
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception;
 }

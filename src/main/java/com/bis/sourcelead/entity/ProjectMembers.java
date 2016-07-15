@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -70,6 +71,19 @@ public class ProjectMembers {
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+
+    @Transient
+    private String empName;
+    @Transient
+    private String startDate;
+    @Transient
+    private String endDate;
+    @Transient
+    private String approvedHrs;
+    @Transient
+    private String rejectedHrs;
+    @Transient
+    private String openHrs;
 
 	public Long getId() {
 		return id;
@@ -183,6 +197,54 @@ public class ProjectMembers {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getEmpName() {
+		return empName;
+	}
+
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getApprovedHrs() {
+		return approvedHrs;
+	}
+
+	public void setApprovedHrs(String approvedHrs) {
+		this.approvedHrs = approvedHrs;
+	}
+
+	public String getRejectedHrs() {
+		return rejectedHrs;
+	}
+
+	public void setRejectedHrs(String rejectedHrs) {
+		this.rejectedHrs = rejectedHrs;
+	}
+
+	public String getOpenHrs() {
+		return openHrs;
+	}
+
+	public void setOpenHrs(String openHrs) {
+		this.openHrs = openHrs;
 	}
 
 }

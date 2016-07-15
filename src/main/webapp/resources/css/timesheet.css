@@ -10,13 +10,13 @@ body {
 	width:auto; padding:0px 0px 0px 0px;
 	}
 .timesheet_wrap {
-	background-color:#f5f5f5; padding:6px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.3); border-radius:3px;
+	background-color:#f5f5f5; padding:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.3); border-radius:3px;
 	}
 .timesheet_head {
 	height:40px;
 	}
 .timesheet_head ul {
-	margin:0px 0px; padding:0px 15px 0px 0px; float:right;
+	margin:0px 0px; padding:2px 15px 2px 0px; float:right;
 	}
 .timesheet_head ul li {
 	list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 10px; position:relative;
@@ -66,9 +66,17 @@ body {
 	border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;
 	}	
 .export_pop ul li, .approved_pop ul li {
-	list-style-type:none; padding:3px 10px; margin:0px 0px; cursor:pointer; width:100%; position:relative;
+	list-style-type:none; padding:3px 10px; margin:0px 0px; width:100%; position:relative;
 	font-size:13px; font-weight:500; color:#454545;
 	}
+.export_pop ul li { cursor:pointer;}	
+.approved_pop ul li input[type="checkbox"]{
+	margin:0px; width:15px; height:15px; background-color:#FFF;	
+	}
+.approved_pop ul li label {
+	margin:0px; position:relative; top:-3px; left:5px; font-weight:500;
+	}	
+	
 .approved_pop ul li b {
 	position:absolute; background-color:#3081cb; padding:1px 3px; border-radius:3px; margin:0px 0px 0px 7px; right:10px;
 	font-size:10px; font-weight:600; color:#FFF; line-height:13px; top:5px; text-shadow:0px 1px 1px rgba(0,0,0,0.5);
@@ -80,7 +88,9 @@ body {
 .export_pop ul li i.fa-file-word-o { color:#454545;}		
 .export_pop ul li:hover, .approved_pop ul li:hover {
 	background-color:#efefef;
-	}														
+	}
+
+	
 		
 .timesheet_table {
 	width:100%; font-size:14px; font-weight:400;
@@ -100,7 +110,7 @@ body {
 	border:none;
 	}		
 .timesheet_table table tr th {
-	background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px;
+	background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:45px;
 	}
 .timesheet_table table tr th i {
 	display:block; font-style:normal; font-size:12px; line-height:14px;
@@ -306,9 +316,132 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	font-size:13px; font-weight:500; color:#333; display:block; padding-bottom:10px;
 	}	
 	
+	/*    Timesheet approval Css    */
+.timesheet_appr_wrap {
+	background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+	}
+.timesheet_appr_wrap .timesheet_head {
+	padding: 2px 0px; height:auto;	
+	}
+.timesheet_appr_wrap .timesheet_head ul {
+	padding:0px;
+	}	
+.timesheet_appr_wrap .timesheet_head ul li {
+	float:left; margin:5px 0px 5px 5px;
+	}
+.timesheet_appr_wrap .timesheet_head ul li span {
+	padding:0px 30px 0px 0px; 
+	}
+.timesheet_appr_wrap .timesheet_head .glyphicon-play {
+	right:20px;
+	}
+.timesheet_appr_wrap .export_pop {
+	right:6px;
+	}
+.timesheet_appr_wrap .approved_pop {
+	right:-4px;
+	}	
+.timesheet_appr_wrap .export_pop ul li, .timesheet_appr_wrap .approved_pop ul li { margin:0px;}
 
+.timesheet_appr_table {}	
+.timesheet_appr_table table {
+	width:100%; font-size:14px; font-weight:400; border:1px solid #CCC; border-top:none;
+	}
+.timesheet_appr_table table tr:nth-child(even) {background: #eef1fc;}
+.timesheet_appr_table table tr:nth-child(odd) {background: #fff;}			
+.timesheet_appr_table table tr th {
+	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
+	border-right:1px solid #4576a4; 
+	}
+.timesheet_appr_table table tr th:last-child { text-align:center; border-left:none; }	
+.timesheet_appr_table table tr td {
+	color:#333; padding:7px 15px; border-left:1px solid #eae6e6; height:40px; font-weight:500; text-align:center;
+	}
+.timesheet_appr_table table tr td:last-child {
+	width:120px; text-align:left; padding:7px 10px;
+	}	
+.timesheet_appr_table div input {
+	width:95px; padding: 7px 10px; font-size: 13px; border: none; overflow: hidden; background-color: transparent;
+    color: #454545; font-weight: 500; box-sizing:border-box;
+	}
+.timesheet_appr_table div input:focus {	
+    border: 1px solid #dedede; background-color: #fff; padding: 6px 9px;	
+	}
+.timesheet_appr_table div a {
+	display:inline-block; background-color:#368ee0; border-radius:3px; color:#FFF; padding:3px 10px;
+	}
+.timesheet_appr_table .fa {
+	font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#30c453;
+	}
+.timesheet_appr_table .fa.fa-times {
+	color:#f04d4d;
+	}
+.timesheet_appr_table table tr td div h3 {
+    font-weight: 400; display: inline-block; padding: 5px 0px; color: #FFF; font-size: 13px; border-radius: 3px; background-color: #30c453;
+	margin:0px; text-align:center; width:75px;
+	}
+.timesheet_appr_table table tr td div h3.reje_color{
+    background-color: #d94747;
+}	
+.timesheet_appr_table .glyphicon {
+	font-size:12px; padding:2px; cursor:pointer; margin:0px 1px; color:#368ee0; position:relative; 
+	}
+.timesheet_appr_table .glyphicon strong {
+	position:absolute; right:-10px; top:25px; display:none;
+	}
+.timesheet_appr_table .glyphicon p {
+	background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+	color:#333; font-size:13px; font-weight:500; font-family:roboto; margin:0px; min-height:100px;
+	}
+.timesheet_appr_table .glyphicon p:after {
+	bottom: 100%; right: 12px; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-bottom-color: #adadad; border-width: 7px; margin-left: -7px;
+}	
+.time_appr_user {
+	text-align:left;
+	}
+.time_appr_user img {
+	float:left; width:42px; height:42px; border-radius:50%;
+	}
+.time_appr_user span {
+	float:left; padding:2px 0px 0px 10px;
+	}
+.time_appr_user span b {
+	display:block; font-weight:500; padding:1px 0xp;
+	}
+.mask_time {
+	position:fixed; width:100%; height:100%; background:rgba(0,0,0,0.4); left:0px; top:0px; z-index:1500; display:none;
+}	
+.time_appr_rejct_pop {
+	position:absolute; width:400px; left:0px; right:0px; margin:0px auto; display:none;
+	background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); z-index:2000; top:30%;
+	}
+.time_appr_rejct_pop textarea {
+	width:100%; resize:none; border:none; padding:10px; font-size:14px; font-weight:500;
+	}	
+.time_appr_rejct_pop a {
+	display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
+	font-size:14px; font-weight:500;
+	}
+.time_appr_rejct_pop a.close_color {
+	background-color:#ff4b4b;
+	}
+.time_appr_side_wrap {
+	width:1100px; position:absolute; right:-1200px; top:70px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+	transition:all 0.2s ease-in-out; -webkit-transition:all 0.2s ease-in-out; -moz-transition:all 0.2s ease-in-out;
+	z-index:10000;
+	}
+.time_appr_side_wrap.time_appr_side_wrap_active {
+	right:0px;
+	}
+.time_appr_side_wrap_inn {
+	position:relative; padding:10px;
+	}	
+	
+	
+	/*    Timesheet approval Css    */
 
-/*    Project Css    */
+	/*    Project Css    */
 
 .project_wrap {
 	background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
@@ -320,10 +453,11 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	position:absolute; right:22px; font-size:18px; top:19px; color:#505050;
 	}	
 .project_field {
-	border:none; border-bottom:1px solid #b9b9b9; width:35%; height:35px; padding:0px 32px 0px 10px;
+	border:none; border-bottom:1px solid #b9b9b9; width:8%; height:35px; padding:0px 32px 0px 10px;
+	transition:0.2s ease-in-out all; -webkit-transition:0.2s ease-in-out all; -moz-transition:0.2s ease-in-out all;
 	}
 .project_field:focus {
-	border-color:#368ee0; background:#f9f9f9; box-shadow:0px 0px 2px rgba(0,0,0,0.2);
+	border-color:#368ee0; background:#f9f9f9; box-shadow:0px 0px 2px rgba(0,0,0,0.2); width:40%;
 	}					
 .project_wrap_table {}	
 .project_wrap_table table {
@@ -332,7 +466,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project_wrap_table table tr:nth-child(even) {background: #fff;}
 .project_wrap_table table tr:nth-child(odd) {background: #eef1fc;}			
 .project_wrap_table table tr th {
-	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; text-align:left; height:45px;
+	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
 	border-right:1px solid #4576a4; 
 	}
 .project_wrap_table table tr th:last-child { text-align:center;}	
@@ -370,6 +504,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project_side_wrap_inn {
 	position:relative; padding:10px;
 	}
+	
+	
 .project_inn_mask {
 	position:absolute; width:100%; height:100%; background-color:rgba(0,0,0,0.4); left:0px; top:0px; z-index:150; display:none;
 	}
@@ -431,6 +567,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	color:#375d81; text-decoration:none;
 	}
 .project_tabs_inn_table {}	
+.project_tabs_inn_table.project_tabs_inn_table_a {}
 .project_tabs_inn_table table {
 	width:100%; font-size:14px; font-weight:400; border:none;
 	}
@@ -440,12 +577,16 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 10px; text-align:left; height:45px;
 	border-right:1px solid #4576a4; font-size:13px;
 	}
-.project_tabs_inn_table table tr th:last-child { text-align:center;}	
+.project_tabs_inn_table table tr th:last-child { text-align:center;}
+.project_tabs_inn_table.project_tabs_inn_table_a table tr th:last-child { text-align:left;}	
 .project_tabs_inn_table table tr td {
 	color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400; 
 	}
 .project_tabs_inn_table table tr td:last-child {
 	width:50px; padding:0px 10px; text-align:center;
+	}
+.project_tabs_inn_table.project_tabs_inn_table_a table tr td:last-child {
+	color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400; width:50%;
 	}	
 .project_tabs_inn_table table tr td div {
 	position:relative;
@@ -596,3 +737,13 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 
 }
 
+			
+	
+												
+								 
+			
+
+
+
+
+		

@@ -9,6 +9,7 @@
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -164,7 +165,7 @@
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="<c:url value="/login" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li  class="hidden-xs"> <a href="<c:url value="/login?${_csrf.parameterName}=${_csrf.token}" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
         </ul>
       </div>
     </nav>

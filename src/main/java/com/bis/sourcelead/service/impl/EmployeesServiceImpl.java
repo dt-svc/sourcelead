@@ -57,7 +57,12 @@ public class EmployeesServiceImpl implements EmployeesService {
 		List<Employees> emplist= employeesDao.getAllEmployees();
 		return emplist;
 	}
-
-
+	
+	@Override
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception {
+		logger.debug("In EmployeesServiceImpl class getEmployeesExcludeTeamMembers method...");
+		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembers(projectId);
+		return emplist;
+	}
 	
 }

@@ -12,49 +12,15 @@
             <h2>Projects</h2>
              <a href="<c:url value='/project'/>"><span><i class="fa fa-bar-chart"></i></span>New Projects</a>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
+
         
 		<!-- Project -->
-<div class="timesheet_out">
-
-<div class="project_wrap">
-	<div class="project_wrap_head"><input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i></div>
-    <div class="project_wrap_table">
-    	<table>
-        	<tbody>
-			<thead>
-            	<tr>
-                	<th>Id</th>
-                    <th>Name</th>
-                    <th>Manager</th>
-                    <th>Date</th>
-                    <th>Client</th>
-                    <th>Team</th>
-                    <th>Status</th>
-                </tr>
-			</thead>	
-              
-			<c:forEach var="report" items="${projectsList}" varStatus="raId">	
-                <tr>
-                	<td data-title="Id"><div>${report.id}</div></td>
-                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
-					<td data-title="Manager"><div>${report.managerLevel1} &nbsp;,&nbsp;${report.managerLevel2}</div></td>                    <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
-                    <td data-title="Client"><div>Client 1</div></td>
-                    <td data-title="Team"><div>Team a</div></td>
-                    <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
-                </tr>
-            </c:forEach>          
-           </tbody>
-        </table>
-	</div>
-</div>
-
-<div class="project_side_wrap">
+<!-- <div class="project_side_wrap">
 	<div class="project_side_wrap_inn">
     <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
      <div id="projectSideDiv">
-     </div>   
+     </div>   --> 
   <!-- <div class="project_side_wrap_inn_tabs">
     <ul class="project-tabs-menu">
         <li class="current"><a href="#tab-1">Employees</a></li>
@@ -68,205 +34,63 @@
         	<div class="project_tabs_inn_head">
 			<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>
 			<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>
-			</div>
-            <div class="project_tabs_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Emp name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Approved hrs</th>
-                    <th>Rejected hrs</th>
-                    <th>Open hrs</th>
-                    <th>Wait for approval</th>
-                    <th>Edit</th>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Name" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                                                                                             
-            </tbody>
-        </table>            
-            </div>
-        </div>
-        <div id="tab-2" class="project_tabs_inn">
-        	<div class="project_tabs_inn_head">
-			<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>
-            <div class="project_tabs_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Task name</th>
-                    <th>Task description</th>
-                    <th>Edit</th>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><input type="text" value="Task name here" class="project_inline_field"></div></td>
-                    <td><div><input type="text" value="Task description here" class="project_inline_field"></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                                                                                             
-            </tbody>
-        </table>            
-            </div>
-        </div>
-        <div id="tab-3" class="project_tabs_inn">
-            <div class="project_tabs_inn_table">
-				<div class="project_details">
-					<div class="project_details_cta">
-						<strong>Status:</strong><span><b>Active</b><i id="ac-drop" class="fa fa-edit">
-							<ul>
-								<li>Option 1</li>
-								<li>Option 2</li>
-								<li>Option 3</li>
-								<li>Option 4</li>
-							</ul>
-						</i></span>
-					</div></span><div class="clearfix"></div>
-					<div class="project_details_cta">
-						<strong>Project name:</strong>
-						<span><input type="text" value="BIS India" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Project manager:</strong>
-						<span><input type="text" value="Srinivas" placeholder="Project manager" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Client:</strong>
-						<span><input type="text" value="Cognizant" placeholder="Client" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Team members:</strong><span>25</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Start date:</strong>
-						<span><input type="text" value="DD/MM/YY" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>End date:</strong>
-						<span><input type="text" placeholder="DD/MM/YY" value="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="clearfix"></div>
-					<p>Description<i class="fa fa-edit"></i> :</p>
-					<textarea placeholder="Description">
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-a reader will be distracted by the readable content of a page when looking at its layout a reader will be distracted by the readable content of a page when looking at its layout  
-					</textarea>
-					<div class="clearfix"></div>
-					<div class="project_details_cta">
-						<strong>Created By:</strong><span>Srinivas</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Created date:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Last Updated:</strong><span>10.07.2014 23:36:57</span><div class="clearfix"></div>
-					</div>					
-					<div class="clearfix"></div>
-				</div>
-            </div>
-        </div>        
-    </div>
-</div>       -->  
-      
+	   <!-- Project -->
+	   <div class="timesheet_out">
+		<div class="project_wrap">
+			<div class="project_wrap_head"><input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i></div>
+		    <div class="project_wrap_table">
+		    	<table>
+		        	<tbody>
+					<thead>
+		            	<tr>
+		                	<th>Id</th>
+		                    <th>Name</th>
+		                    <th>Manager</th>
+		                    <th>Date</th>
+		                    <th>Client</th>
+		                    <th>Team</th>
+		                    <th>Status</th>
+		                </tr>
+					</thead>	
+		              
+					<c:forEach var="report" items="${projectsList}" varStatus="raId">	
+		                <tr>
+		                	<td data-title="Id"><div>${report.id}</div></td>
+		                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+							<td data-title="Manager">
+							    <div>
+								    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
+								       ${approver.approverUserId.firstName} ${approver.approverUserId.lastName} ,
+								    </c:forEach>
+							
+							   </div>
+							</td>
+							<td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
+		                    <td data-title="Client"><div>Client 1</div></td>
+		                    <td data-title="Team"><div>Team a</div></td>
+		                    <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
+		                </tr>
+		            </c:forEach>          
+		           </tbody>
+		        </table>
 
-	<div class="project_inn_mask"></div>
-	<div class="project_error">
-		<p>User delete message here ....</p>
-		<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
-	</div>	
-    </div>
-</div> 		
-		<!-- Project -->
-		
-      </section>
-      <!-- Content Area Ends--> 
-</body>
-	
+			</div>
+		</div>
+		<div class="project_side_wrap">
+			<div class="project_side_wrap_inn">
+		    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+		     <div id="projectSideDiv">
+		     </div>   
+			<div class="project_inn_mask"></div>
+			<div class="project_error">
+				<p>User delete message here ....</p>
+				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
+			</div>	
+		    </div>
+		   </div> 
+		   </div>		
+	   </section>
+	  </body>
 <!--   Popup's   -->
 
 <!-- Modal content Assign Team-->
@@ -285,102 +109,11 @@ a reader will be distracted by the readable content of a page when looking at it
                               <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
                           </div>
                         </div>
-                        <div class="modal-body-custom mt clearfix" id="no-more-tables">
-                          <table cols="0" class="table table-bordered table-striped  clearfix table-responsive">
-                            <tbody>
-                            <thead>
-                              <tr>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                              </tr>
-                              </thead>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td data-title="Name">Murali Krishna</td>
-                                <td data-title="Email">murali@businessintelli.com</td>
-                                <td data-title="Role">Senior Recruiter</td>
-                                <td data-title="Start Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td data-title="End Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-
- <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td data-title="Name">Murali Krishna</td>
-                                <td data-title="Email">murali@businessintelli.com</td>
-                                <td data-title="Role">Senior Recruiter</td>
-                                <td data-title="Start Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td data-title="End Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-
- <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td data-title="Name">Murali Krishna</td>
-                                <td data-title="Email">murali@businessintelli.com</td>
-                                <td data-title="Role">Senior Recruiter</td>
-                                <td data-title="Start Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td data-title="End Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-
- <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td data-title="Name">Murali Krishna</td>
-                                <td data-title="Email">murali@businessintelli.com</td>
-                                <td data-title="Role">Senior Recruiter</td>
-                                <td data-title="Start Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td data-title="End Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-
- <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td data-title="Name">Murali Krishna</td>
-                                <td data-title="Email">murali@businessintelli.com</td>
-                                <td data-title="Role">Senior Recruiter</td>
-                                <td data-title="Start Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td data-title="End Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-
- <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td data-title="Name">Murali Krishna</td>
-                                <td data-title="Email">murali@businessintelli.com</td>
-                                <td data-title="Role">Senior Recruiter</td>
-                                <td data-title="Start Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td data-title="End Date"><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <div class="modal-body-custom mt clearfix" id="employeesList">
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -449,7 +182,7 @@ a reader will be distracted by the readable content of a page when looking at it
                   </div>
                 </div>
                 <!-- Add Team modal popup ends --> 
-<!-- Modal -->
+               <!-- Modal -->
                 <div class="modal fade" id="addTask" role="dialog">
                   <div class="modal-dialog modal-lg"> 
                     
@@ -499,23 +232,16 @@ a reader will be distracted by the readable content of a page when looking at it
                   </div>
                 </div>
                 <!-- Modal contente Ends--> 
-
-<!--   Popup's   -->	
+               <!--   Popup's   -->	
 <jsp:include page="../masterFooter.jsp" />	
 	
 <script>
-
-
 //project side bar
 $(document).ready(function() {
- /* $(".proj_show").click(function(){
-		$(".project_side_wrap").addClass("project_side_wrap_active");
-	}); */
- $(".proj_close").click(function(){
+     $(".proj_close").click(function(){
 		$(".project_side_wrap").removeClass("project_side_wrap_active");
 	});	
 });
-
 //project side bar tabs
 $(document).ready(function() {
 	$("#tab-1").show();
@@ -553,10 +279,7 @@ $(document).ready(function() {
 		$(".project_inn_mask").fadeOut(200);
  });
 });
-
-
 </script> 
- 
  <script>
  function projectSideBar(projectId){
 	  	    var result = "";
@@ -597,7 +320,7 @@ function projectEmployee(projectId){
         	var json = JSON.parse(data);
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
-    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result + '		</div>';
     	    result = result + '        <div class="project_tabs_inn_table">';
@@ -618,7 +341,7 @@ function projectEmployee(projectId){
 	        		var opt = json[i];
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div><input type="text"  value="Name" class="project_inline_field"></div></td>';
+	                result = result + '	 	<td><div><input type="text"  value="'+json[i].empName+'" class="project_inline_field"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
@@ -650,7 +373,6 @@ function projectEmployee(projectId){
 
 <script>
   function projectTask(projectId){
-	  
 	  var result = ""; 
 	  $.ajax({
 		   	type: "POST",
@@ -700,11 +422,12 @@ function projectEmployee(projectId){
    	type: "POST",
     url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
     success: function(data) {
+    	var json = JSON.parse(data);
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>'+data.status+'</b><i id="ac-drop" class="fa fa-edit">';
+	result = result + '					<strong>Status:</strong><span><b>'+json.status+'</b><i id="ac-drop" class="fa fa-edit">';
 	result = result + '						<ul>';
 	result = result + '							<li>Option 1</li>';
 	result = result + '							<li>Option 2</li>';
@@ -715,11 +438,21 @@ function projectEmployee(projectId){
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onfocusout="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+data.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onBlur="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Project manager:</strong>';
-	result = result + '					<span><input type="text" value="Srinivas" placeholder="Project manager" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<strong>Project manager:</strong><span>';
+					result = result + '<select>';
+						for (var i = 0; i < json.projectManagerName.length; i++) {
+							
+							var managers = json.projectManagerName[i];
+							var projrctmanager = managers.split('&');
+					    	var name = projrctmanager[0];
+					    	var id = projrctmanager[1];
+							result = result+"<option value="+id+">"+name+"</option>";
+						}
+                result = result + '</select>';
+	result = result + '			</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
@@ -730,27 +463,27 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
-	result = result + '					<span><input type="text" value="'+data.startDate+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="projmaxTsRowNumect_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+data.endDate+'" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
-	result = result + data.description;
+	result = result + json.description;
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created By:</strong><span>'+data.createdBy+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span> '+data.endDate+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+json.endDateStr+'</span><div class="clearfix"></div>';
                                                      
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Last Updated:</strong><span>'+data.updatedDate+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';					
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
@@ -954,4 +687,74 @@ function  inlineEditForProjectsTasks(taskId,localFieldName){
 	 }); 
 }
 </script> 
+
+<script type="text/javascript">
+function getTeamMembers(projectId) {
+    $.ajax({
+    	type: "POST",
+        url: "http://localhost:8080/sourcelead/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output+' <table cols="0" class="table table-bordered table-striped  clearfix">';
+            output = output+' <tbody>';
+            output = output+' <tr>';
+            output = output+' <th>&nbsp;&nbsp;</th>';
+            output = output+' <th>Name</th>';
+            output = output+' <th>Email</th>';
+            output = output+' <th>Role</th>';
+            output = output+' <th>Start Date</th>';
+            output = output+' <th>End Date</th>';
+            output = output+' </tr>';
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<tr>"+
+                    "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
+                    "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
+                    "<td>"+opt.user.email+"</td>"+
+                    "<td>Senior Recruiter</td>"+
+                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                    "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
+                    "</div></td>"+
+                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                    "<input id='dummyendDate"+opt.id+"' type='text' name='Date' value='' class='form-control'>"+
+                    "</div></td>"+
+                    "</tr>";
+			}
+        	output = output+' </tbody>';
+	        output = output+' </table>';
+        	$("#employeesList").empty();
+	        $("#employeesList").append(output);
+        },
+        error: function(e){
+        }
+    });
+    $('#add_employee').attr('data-dismiss','modal');
+	$('#employeeFirstName').val('');
+	$('#employeeLastName').val('');
+	$('#employeeEmail').val('');
+}
+</script>
+
+<script>
+function assignEmployee(){
+	 	var projectId = $("#projectId").val();
+	    var result = "";
+	    $(".myCheckbox").each(function(){
+	        var employeeId =this.id;
+	        if($(this).is(':checked')){
+		        var startDate = $("#dummystartDate").val();
+		        var endDate = $("#dummyendDate").val();
+				$.ajax({
+		        	type: "POST",
+		            url: "http://localhost:8080/sourcelead/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate, 
+		            success: function(data) {
+		            	projectEmployee(projectId);
+		            }
+				})
+	        }
+	    });
+}
+</script>
 </html>
