@@ -1,10 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 
 /**
@@ -87,20 +91,48 @@ public class OrgDaoImpl implements OrgDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String websiteValidation(String webSite) {
+	public String websiteValidation(String webSite,String sourceleadBLockedwebsites) {
 		Collection<Org> orgList =null;
 				Session session = this.sessionFactory.getCurrentSession();
 				Criteria crit = session.createCriteria(Org.class);
 				 orgList = crit.list();
-				
-		String flag = null;
-		if (orgList != null && orgList.size() > 0) {
-		    for(Org org :orgList){
-		    	if((org.getWebSite()!= null && (org.getWebSite().equalsIgnoreCase(webSite)))){
-					   flag ="Website Duplicated"; 
-			    }
-		    }
-		}
+				  String flag = null;
+				  
+				 if(!webSite.startsWith("http") && !webSite.startsWith("https")){
+						webSite = "http://" + webSite;
+				    }     
+					String status = null;
+				    URL netUrl = null;
+					try {
+						netUrl = new URL(webSite);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				    String host = netUrl.getHost();
+				    if(host.startsWith("www")){
+				    	if(host.length()>3){
+				    		host = host.substring("www".length()+1);
+				    	}else{
+				    		flag="Website Duplicated";
+				    	}
+				    }else{
+				    	host =null;
+				    }
+				    
+				    //for Blocked Websites Domains
+				    String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
+				    if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+				    	flag="Website Duplicated";
+		 	    	}
+					if (orgList != null && orgList.size() > 0 && host !=null) {
+					    for(Org org :orgList){
+					    	if((org.getWebSite()!= null && (org.getWebSite().equalsIgnoreCase(host)))){
+								   flag ="Website Duplicated"; 
+						    }
+					    }
+					}
+		
 		return flag;
 	}	
 	
@@ -115,4 +147,20 @@ public class OrgDaoImpl implements OrgDao {
 		List<Org> orgList = crit.list();
 		return orgList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Org getOrgByOrgCode(String orgCode) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Org> org = new ArrayList<Org>();
+		logger.debug("getOrgByOrgCode start");
+		org = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).list();
+		logger.debug("getOrgByOrgCode end");
+		if (org.size() > 0) {
+			return org.get(0);
+		} else {
+			return null;
+		}
+   	}
 }

@@ -95,6 +95,7 @@ public class SecurityConfig  {
     			.antMatchers("/forgotPassword").permitAll() 
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
+    			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
     			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')") 

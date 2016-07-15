@@ -1,12 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
 
 /**
@@ -49,7 +53,35 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public String websiteValidation(String website) {
-		return orgDao.websiteValidation(website);
+	public String websiteValidation(String website,String sourceleadBLockedwebsites) {
+		return orgDao.websiteValidation(website,sourceleadBLockedwebsites);
 	}
+
+	@Override
+	public Org saveOrgSettings(OrgSettings orgSettings, MultipartHttpServletRequest request, Org org) throws Exception {
+		
+		Iterator<String> itrator = request.getFileNames();
+		MultipartFile multiFile = request.getFile(itrator.next());
+		System.out.println(multiFile.getContentType());
+		
+        if(null != multiFile.getContentType()){
+    	  try {
+    	   		org.setFileContentType(multiFile.getContentType());
+    	   		org.setDocFile(multiFile.getBytes());
+    	   
+	       }catch (Exception e) {
+    	      	 e.printStackTrace();
+			    }
+        }
+        orgDao.updateOrg(org);
+        
+        return org;
+	}
+
+	@Override
+	public Org getOrgByOrgCode(String orgCode) throws Exception {
+		return orgDao.getOrgByOrgCode(orgCode);
+	}
+	
+	
 }

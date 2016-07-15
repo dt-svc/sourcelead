@@ -4,11 +4,22 @@
     <div class="side-bar-inner">
       <div class="user-panel">
         <div class="media">
-          <div class="media-left image"> <img src="resources/images/pratap-bis.jpg" alt="Admin" title="admin" class="img-circle"> </div>
+         <!--  <div class="media-left image"> <img src="resources/images/pratap-bis.jpg" alt="Admin" title="admin" class="img-circle"> </div>
           <div class="media-body">
             <p>Pratap Reddy</p>
             <p>Admin</p>
-          </div>
+          </div> -->
+          
+           <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+		        <div class="media-left image"><img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" /></div>
+		   </c:if>
+		   
+		   <c:if test="${empty SourceLeadWeb_org.fileContentType}">
+	        	<a style="cursor:pointer;  min-width:200px; color:#09C; min-height: 37px; font-size: 24px; padding:18px 35px;" class="dotdot" title="${SourceLeadWeb_orgName}">
+	        	   <font color="white">${SourceLeadWeb_orgName}</font>
+	        	</a>   
+	       </c:if> 	
+	       
         </div>
       </div>
       <div class="side-nav">

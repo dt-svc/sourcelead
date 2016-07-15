@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -17,9 +20,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
-@Table(name = "TASKS")
+@Table(name = "PROJECT_TASKS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
-public class Tasks {
+public class ProjectTasks {
 	
 	@Id
     @Column(name = "ID", nullable = false)
@@ -34,10 +37,13 @@ public class Tasks {
 	@Type(type="text")
 	private String description;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PROJECT_ID", nullable=false )	
+	private Projects projectId;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
-	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
     private Date createdDate; 
@@ -45,7 +51,6 @@ public class Tasks {
     @Column(name = "CREATED_BY")
 	private String createdBy;
 		
-    @NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "UPDATED_DATE")
     private Date updatedDate; 
@@ -75,6 +80,14 @@ public class Tasks {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Projects getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Projects projectId) {
+		this.projectId = projectId;
 	}
 
 	public String getStatus() {
