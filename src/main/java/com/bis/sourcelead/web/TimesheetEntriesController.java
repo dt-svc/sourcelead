@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -85,6 +86,8 @@ public class TimesheetEntriesController {
 	@Autowired
 	private DataSource dataSource;
 	
+	@Autowired
+	public TimeSheetExcelView timeSheetExcelView;
 	
 	
 	
@@ -945,5 +948,16 @@ public class TimesheetEntriesController {
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
+	
+	/*shivayogi s kadagad*
+	 * controller to download Exceltimesheet*/
+	
+	@RequestMapping(value = "/Excel", method = RequestMethod.GET)
+	public ModelAndView getExcel() throws Exception {
+		
+		Collection<TimesheetEntries> timesheetEntriesList = timesheetEntriesService .getAllTimesheetEntries(); 		
+		return new ModelAndView(timeSheetExcelView,"timesheetEntriesList",timesheetEntriesList);
+	}
+
  
 }
