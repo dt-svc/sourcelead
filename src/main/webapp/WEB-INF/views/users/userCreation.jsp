@@ -455,7 +455,7 @@ function flushProject(){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 		        success: function(result) {
 		        	if((result == 'usersList')){
 		        		location.replace(sourceleadUrl+"/usersList");  
