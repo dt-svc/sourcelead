@@ -61,7 +61,7 @@ public class UserController {
 	@RequestMapping(value = "/usersList")
 	public ModelAndView userRegistration() {
 		ModelAndView model = new ModelAndView();
-		model.setViewName("users/usersList");
+		model.setViewName("registration/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
@@ -79,7 +79,7 @@ public class UserController {
 	    Collection<User> userList = userService.getUsersByUserRoles();
 		model.addObject("user_List", userList);
 	    
-		model.setViewName("users/userCreation");
+		model.setViewName("registration/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
@@ -135,20 +135,16 @@ public class UserController {
 
 	  
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	 public @ResponseBody  ModelAndView createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	JSONObject jsonObj = new JSONObject(json);
 		 	
-		 	String resultJson = null;
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	
 		 	//For Saving of User Details
 			userService.createUser(jsonObj,user,orgLocations.getId());
 			
-			ModelAndView model = new ModelAndView();
-			model.setViewName("users/userCreation");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			return model;
+			return "usersList";
 	   }
 	 
 	 //to get the Project Manager Name by using projectId
