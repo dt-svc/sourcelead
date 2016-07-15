@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,15 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		// TODO Auto-generated method stub
 		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
 		return list;
+	}
+
+	@Override
+	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
+		// TODO Auto-generated method stub
+		 
+		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
+		return list;
+		
 	}
 
 }

@@ -2,6 +2,61 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="resources/js/formvalidator.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ 
+ 
+ <script type="text/javascript">
+function validateProjectId(){
+     var projectId = document.getElementById("CreateProjectId").value;
+	 $('input#CreateProjectId').removeAttr( "record-exist record-exist-errormsg");
+	 if(projectId != null && projectId != ''){ 
+			 $.ajax({
+			    	type: "POST",
+			        url: "http://localhost:8080/sourcelead/validateProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId,
+			        contentType: "application/json; charset=utf-8",
+			        dataType: "json",
+			        success: function(data) {
+			        	
+				        	 if(data == 'duplicate'){
+				        		 document.getElementById("CreateProjectId").setAttribute('class','error form_input');
+								 $("input#CreateProjectId").after("<span class='jquery_form_error_message'>"+projectId+" is Already Existed</span>");
+								  document.getElementById("CreateProjectId").setAttribute('record-exist','yes');
+								 document.getElementById("CreateProjectId").setAttribute('record-exist-errorMsg',projectId+' is Already Existed'); 
+								  $("input#CreateProjectId").removeAttr("style");
+			        		 }
+				        	 else{
+				        		 $('input#CreateProjectId').removeAttr( "class record-exist record-exist-errormsg");
+								 $('#CreateProjectId').find('span.jquery_form_error_message').remove(); 
+								 $('#CreateProjectId').find('span.record-exist-errorMsg').remove(); 
+								 document.getElementById("CreateProjectId").setAttribute('class','valid form-control');
+								 $("input#CreateProjectId").removeAttr("style");
+								 $( "#CreateProjectId" ).removeAttr("style");
+								 $( "#CreateProjectId" ).removeAttr("jquery_form_error_message");
+								 $( "#CreateProjectId" ).click(function() {
+									  if ($('#project_form').validate(false, validationSettings)){
+									  }
+								 });
+				        	} 
+				        	 
+				       },
+						error: function(e){
+									            
+					  }
+			    }); 
+	    }
+    }
+</script> 	
+
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -24,13 +79,13 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Id"> Project Id </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectId" value="">
+                <input type="text" class="form-control" name="ProjectId" id="CreateProjectId"  onblur="validateProjectId();" value="">
                 <span class="hidden">Enter Project Id</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3"> Project Name <span class="text-danger">*</span> </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectName" value="">
+                <input type="text" class="form-control" name="ProjectName" field-name="Project Name" data-validation="required" value="">
                 <span class="hidden">Project Name</span> </div>
             </div>
             <div class="form-group">
@@ -142,11 +197,11 @@
               <label class="col-md-3" for="Project Manager">Manager</label>
               <div class="col-md-9">
               <div class="form-icon-min">
-                <select class="form-control select-bg">
-                  <option>Level Manager</option>
-                  <option>Manager-2</option>
-                  <option>Manager-3</option>
-                  <option>Manager-4</option>
+                <select class="form-control select-bg" name="level1Manager">
+                  <option>-- Select Manager --</option>
+	                  <c:forEach var="option" items="${user_List}">
+	                     <option value="${option.id}">${option.firstName}</option>
+	                  </c:forEach>
                 </select>
                     <span class="btn btn-default formic1 addLevel">Add Level-II</span>
                     </div>
@@ -156,11 +211,11 @@
             <div class="form-group level-second">
               <label class="col-md-3" for="Level-II">Level-II</label>
               <div class="col-md-9">
-                <select class="form-control select-bg">
-                  <option>Level-II</option>
-                  <option>Manager-2</option>
-                  <option>Manager-3</option>
-                  <option>Manager-4</option>
+                <select class="form-control select-bg" name="level2Manager">
+              		<option value='' >-- Select Manager --</option>
+	                  <c:forEach var="option" items="${user_List}">
+	                     <option value="${option.id}">${option.firstName}</option>
+	                  </c:forEach>
                 </select>
                 </div>
             </div>
@@ -169,9 +224,9 @@
               <div class="col-md-9">
                 <div class="form-icon">
                   <select class="form-control select-bg" name="selectClient" id="addClientId">
-                  <option>-- Select Client --</option>
+                  <option value=''>-- Select Client --</option>
                   <c:forEach var="option" items="${add_client}">
-  						<option value="${option.id}"}>${option.orgName}</option>
+  						<option value="${option.id}">${option.orgName}</option>
 				  </c:forEach>
                   </select>
                   <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" data-target="#addClient"></i> </div>
@@ -212,9 +267,14 @@
             </div>
             <div class="form-group">
               <label class="col-md-3">Assign Team</label>
+              
+              <div id="assignTeamSavingDiv" style="display:none;">
+              </div>
+              <input type="hidden" name="team" value=""/>
+              
               <div class="col-md-9">
                 <div class="form-icon"> <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Select Team" class="form-control" data-target="#assignTeam" data-toggle="modal">
+                  <input type="text" value="Select Team" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();">
                   </span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span> </div>
                 <span class="hidden">Select Team</span> 
                 <!-- Modal content Assign Team-->
@@ -233,95 +293,10 @@
                               <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
                           </div>
                         </div>
-                        <div class="modal-body-custom mt clearfix">
-                          <table cols="0" class="table table-bordered table-striped  clearfix">
-                            <tbody>
-                              <tr>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                        <div class="modal-body-custom mt clearfix" id="employeesList"></div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -342,28 +317,28 @@
                             <div class="form-group">
                             <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Last Name</label>
                             <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                              <input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Email <span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
+                            <div class="col-lg-9" id="EmailIdDiv">
+                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
+                              <select class="form-control" name="invoiceFrequency">
+                              	<option value="1">Invoice-1</option>
+                                <option value="2">Invoice-2</option>
+                                <option value="3">Invoice-3</option>
                               </select>
                               </div>
                             </div>
@@ -381,7 +356,7 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                      	<button type="button" id="add_employee" class="btn btn-primary" data-dismiss="modal" onclick="addEmployee();">Save</button>
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
@@ -417,7 +392,8 @@
           <div class="col-lg-12">
             <div class="pull-right">
               <input type="submit" value="Save" id="save_project" onclick="saveProject();"  class="btn btn-primary">
-              <input type="button" value="Cancel" class="btn btn-default ml">
+              <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"  class="btn btn-default ml">
+              
             </div>
           </div>
         </div>
@@ -594,14 +570,19 @@ $(document).ready(function(){
 
 <script type="text/javascript">
  function saveProject() {
+ var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   }; 
+	 if ($('#project_form').validate(false, validationSettings)){ 
      var frm = $('#project_form').serializeFormJSON();
         var con = JSON.stringify(frm);
-        alert("con"+con);
         $.ajax({
 	    	type: "POST",
 	        url: "http://localhost:8080/sourcelead/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(data) {
-	        	alert("data"+data);
 	        	var json = JSON.parse(data);
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
@@ -612,11 +593,129 @@ $(document).ready(function(){
 				}
 	        	$("#maxTsRowNum").empty();
 		        $("#maxTsRowNum").append(output);
-		        alert("output"+output);
-		        
 		        
 	        },
 	    });
+       		 return true;
+		}else{
+			return false;
+		}
     }
- 
+ $('body').on('blur', '#project_form', function() {
+		$("#project_form").showHelpOnFocus();;
+		$("#project_form").validateOnBlur(false, validationSettings);  
+	});
 </script>
+
+
+<script type="text/javascript">
+function addEmployee() {
+var frm = $('#project_form').serializeFormJSON();
+var con = JSON.stringify(frm);
+$.ajax({
+type: "POST",
+url: "http://localhost:8080/sourcelead/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
+success: function(data) {
+
+},
+});
+}
+</script>
+
+<script type="text/javascript">
+function getTeamMembers() {
+    $.ajax({
+    	type: "POST",
+        url: "http://localhost:8080/sourcelead/getEmployeesList?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	
+        	output = output+' <table cols="0" class="table table-bordered table-striped  clearfix">';
+            output = output+' <tbody>';
+            output = output+' <tr>';
+            output = output+' <th>&nbsp;&nbsp;</th>';
+            output = output+' <th>Name</th>';
+            output = output+' <th>Email</th>';
+            output = output+' <th>Role</th>';
+            output = output+' <th>Start Date</th>';
+            output = output+' <th>End Date</th>';
+            output = output+' </tr>';
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<tr>"+
+                    "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
+                    "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
+                    "<td>"+opt.user.email+"</td>"+
+                    "<td>Senior Recruiter</td>"+
+                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                    "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
+                    "</div></td>"+
+                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                    "<input id='dummyendDate"+opt.id+"' type='text' name='Date' value='' class='form-control'>"+
+                    "</div></td>"+
+                    "</tr>";
+			}
+        	output = output+' </tbody>';
+	        output = output+' </table>';
+	        
+        	$("#employeesList").empty();
+	        $("#employeesList").append(output);
+        },
+        error: function(e){
+        }
+    });
+    $('#add_employee').attr('data-dismiss','modal');
+	$('#employeeFirstName').val('');
+	$('#employeeLastName').val('');
+	$('#employeeEmail').val('');
+}
+</script>
+
+
+<script>
+function assignEmployee(){
+	    var result = "";
+	    var count = 1;
+	    $(".myCheckbox").each(function(){
+	        var localId =this.id;
+	        if($(this).is(':checked')){
+		        var startDate = $("#dummystartDate"+localId).val();
+		        var endDate = $("#dummyendDate"+localId).val();
+				result = result +"<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+				result = result +"<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+				result = result +"<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+				count++;
+	        }
+	    });
+	    result = result +"<input type='hidden' name='employeeMaxCount' id='employeeMaxCount' value='"+count+"'/>";
+	    $("#assignTeamSavingDiv").empty();
+	    $("#assignTeamSavingDiv").append(result);
+}
+</script>
+
+<script type="text/javascript">
+ function emailVerification() {
+	 var email = $("#employeeEmail").val();
+     $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+     var sourceleadUrl ='${sourceleadUrl}';
+     if(email != null && email != ""){
+         $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/sourcelead/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&email="+email,
+                success: function(data) {
+                    if(data == 'true'){
+                          $("input#employeeEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+                          document.getElementById("employeeEmail").setAttribute('record-exist','yes');
+                          document.getElementById("employeeEmail").setAttribute('record-exist-errorMsg',email+' is Already Existed');
+                    }
+                    else{
+                         $('input#employeeEmail').removeAttr( "record-exist record-exist-errormsg");
+                         $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+                    }
+                },
+            });
+     }
+ }
+ </script> 

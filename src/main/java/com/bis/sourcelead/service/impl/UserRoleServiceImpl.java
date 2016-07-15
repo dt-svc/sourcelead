@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
+
 	public Collection<UserRole> getUsersListByLocationId(Long locationId,String userState) throws Exception {
 		logger.debug("In UserRoleService class...");
 		return userRoleDao.getUsersListByLocationId(locationId,userState);
@@ -61,5 +63,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUsersListByUserStateAndLocationId(userState, locationId);
 	}
 	
+	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
+		// TODO Auto-generated method stub
+		return userRoleDao.getUsersBasedOnUserRoles();
+	}
 
 }

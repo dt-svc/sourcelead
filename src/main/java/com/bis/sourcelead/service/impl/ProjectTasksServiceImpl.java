@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,15 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		List<ProjectTasks> list = tasksDao.getAllTasks();
 		return list;
 	}
+
+	@Override
+	public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
+		// TODO Auto-generated method stub
+		Collection<ProjectTasks> list = tasksDao.getAllTasksByProjectId(projectId);
+		return list;
+	}
+	
+	
 	
 
 }

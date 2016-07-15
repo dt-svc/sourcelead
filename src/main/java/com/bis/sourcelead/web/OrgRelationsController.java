@@ -4,6 +4,8 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +15,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
@@ -48,7 +54,11 @@ public class OrgRelationsController {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private CountriesService countriesService;
 
+	
 	
 	/*------------Create a OrgRelations--------------------------------*/
 	/**
@@ -68,31 +78,52 @@ public class OrgRelationsController {
 	
 	@RequestMapping(value = "/saveOrgRelations", method = RequestMethod.GET)
 	public @ResponseBody  String addModelDialogTasks(
-			@RequestParam(value="json", required=false) String json ) throws Exception
+			@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception
 			 
 	{
 		String resultJson = null;
 		
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+       
+		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		
 		JSONObject jsonObj = new JSONObject(json);
 		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		
+		
+		/*Saving for Org*/
 		Org org = new Org();
 		org.setOrgName(jsonObj.getString("orgName"));
 		org.setWebSite(jsonObj.getString("webSite"));
-		
+		org.setOrgType("Guest");
+		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
+		org.setStatus(Status.ACTIVE);
+		org.setCreatedDate(new Date());
+		org.setCreatedBy(loginUserCode);
 		Org addOrg = orgService.addOrganization(org);
 		
-		/*OrgLocations  orgLocations = new OrgLocations();
-		orgLocations.setId(5l);;
-		
+		/*Saving for OrgLocations*/
+		OrgLocations  orgLocations = new OrgLocations();
+		orgLocations.setOrg(addOrg);
+		orgLocations.setCountry(loginOrgLocations.getCountry());
+		String clientCountry = loginOrgLocation.substring(Math.max(loginOrgLocation.length() - 2, 0));
+		orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
+		orgLocations.setStatus(Status.ACTIVE);
+		orgLocations.setCreatedDate(new Date());
+		orgLocations.setCreatedBy(loginUserCode);
 		OrgLocations addOrgLocations=orgLocationService.addOrgLocations(orgLocations);
+		
+		/*Saving for OrgRelations*/
 		
 		OrgRelations orgRelations = new OrgRelations();
 		orgRelations.setRelationType("Customer");
+		orgRelations.setClientLocationId(orgLocations);
+		orgRelations.setLocationId(loginOrgLocations);
+		orgRelations.setStatus("ACTIVE");
+		orgRelations.setCreatedBy(loginUserCode);
 		orgRelations.setCreatedDate(new Date());
-		orgRelations.setUpdatedDate(new Date());
-		
-		OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);*/
+		OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
 		
 		Collection<Org> orgsList = orgService.getOrgs();
 		

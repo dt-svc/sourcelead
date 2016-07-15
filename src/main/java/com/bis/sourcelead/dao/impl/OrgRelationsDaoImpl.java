@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 
 /**
@@ -38,6 +41,28 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			e.printStackTrace();
 		}
 		return orgRelations;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId, Long clientOrgLocationId)
+			throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgRelations orgrelation where  orgrelation.locationId =:orgLocationId and  orgrelation.clientLocationId =:clientOrgLocationId");
+		  
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("clientOrgLocationId", clientOrgLocationId).list();
+	     
+	       OrgRelations orgLocation = null;
+			if(orgRelations != null && !orgRelations.isEmpty())
+			{
+				orgLocation = (OrgRelations) orgRelations.iterator().next();
+			}
+			
+			return orgLocation;
+
+		
+		
 	}
 	
 	

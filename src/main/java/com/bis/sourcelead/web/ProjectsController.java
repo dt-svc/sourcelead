@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+
+import com.bis.sourcelead.entity.Employees;
+
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -25,24 +30,40 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.dao.ProjectsDao;
+
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
+
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 
 @RestController
 public class ProjectsController {
@@ -58,10 +79,31 @@ public class ProjectsController {
 	 private ProjectsService projectsService; 
 	 
 	 @Autowired
-		private OrgService orgService;
+	 private OrgService orgService;
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
+	 
+	 @Autowired
+	 public UserService userService;
+	
+	 @Autowired
+	 public EmployeesService employeesService;
+	 
+	 @Autowired
+	 public UserRoleService userRoleService;
+
+	 @Autowired
+	 public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 
+	 @Autowired
+		public ProjectMembersService projectMembersService;
 	 
 	 /**
 	  * This method for get project by id
@@ -78,25 +120,66 @@ public class ProjectsController {
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);
 				
+                Collection<User> userList = userService.getUsersByUserRoles();
+				model.addObject("user_List", userList);
+				
 				model.setViewName("project/project");
 				return model;
 	}
 	 
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json) throws Exception {
+	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
+		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	
 		 	
 	    	Projects projects = new Projects();
+	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectId"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
 	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
 	    	projects.setStartDate(new Date());
 	    	projects.setEndDate(new Date());
-	    	projects.setProjectStatus(jsonObj.getString("Satatus"));
+	    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
-	    	projectsService.saveProject(projects);
+	    	
+	    	// Saving of Client by bringing OrgRelation id based on Client OrgId
+		    String clientOrgCode = jsonObj.getString("selectClient");	
+		    if(!clientOrgCode.isEmpty() && clientOrgCode!=null){
+		    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocationsByOrgCode(clientOrgCode);
+		    	  if(clientOrgLocations!=null){
+		    		  OrgRelations  orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(loginOrgLocation.getId(), clientOrgLocations.getId());
+			    		  if(orgRelations!=null){
+			    			  projects.setOrgRelationId(orgRelations);
+			    		  }
+		    	  }
+		    	  
+		    }
+	    	
+	    	Projects updatedProjects = projectsService.saveProject(projects);
+	    	
+	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
+	    	pah1.setProjectId(updatedProjects);
+	    	User approverUserId1 = new User();
+	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
+	    	pah1.setApproverUserId(approverUserId1);
+	    	pah1.setLevel(1);
+	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+	    	
+		if(!jsonObj.getString("level2Manager").isEmpty()){
+			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+			pah2.setProjectId(updatedProjects);
+			User approverUserId2 = new User();
+			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+			pah2.setApproverUserId(approverUserId2);
+			pah2.setLevel(2);
+			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+		}
+	    	
+		
+	    
 	    	
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
@@ -112,11 +195,48 @@ public class ProjectsController {
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
 			}
 			
+			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+			int empMaxCount = Integer.parseInt(employeeMaxCount);
+			for (int c = 1; c < empMaxCount; c++) {
+				
+				ProjectMembers pm = new ProjectMembers();
+				
+				Employees emp = new Employees();
+				emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
+				pm.setEmployee(emp);
+				
+				pm.setProjects(projects);
+				
+				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
+				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
+				pm.setCreatedDate(new Date());
+				pm.setUpdatedDate(new Date());
+				
+				projectMembersService.saveProjectMember(pm);
+			}
+			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
 			 resultJson = toJSON(tasksList);
 			 return resultJson;
 	   }
+	 
+	 
+    @RequestMapping(value = "/validateProjectId",  method = RequestMethod.POST)
+    public @ResponseBody String validateJobSequenceNumber(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
+	    	String result = "";
+			String resultJson = "";
+			Integer projectIdCount = projectsService.projectIdValidation(projectId);
+			if(projectIdCount>0){
+				result = "duplicate";
+			}
+			else{
+				result = "unique";
+			}
+			resultJson = toJSON(result);
+			return resultJson;
+	    }
+		
 	 
 	 
 	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
@@ -153,7 +273,7 @@ public class ProjectsController {
 			projects.setSuperiorUser(superiorUser);
 			
 			projects.setProjectName("VADALU");
-			projects.setProjectStatus("Open");
+			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 			projects.setDescription("sourcelead desc");
 			projects.setStatus("1");
 			projects.setStartDate(new Date());
@@ -183,7 +303,7 @@ public class ProjectsController {
 			projects.setSuperiorUser(superiorUser);
 			
 			projects.setProjectName("SOURCELEAD");
-			projects.setProjectStatus("Open");
+			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 			projects.setDescription("sourcelead desc");
 			projects.setStatus("1");
 			projects.setStartDate(new Date());
@@ -208,6 +328,35 @@ public class ProjectsController {
 		Boolean isDeleted = projectsService.deleteProjectById(id);
 		return isDeleted;
 	  }
+	  
+	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json) throws Exception {
+		 	JSONObject jsonObj = new JSONObject(json);
+			
+			Employees employee  = new Employees();
+			User user= new User();
+			
+			user.setFirstName(jsonObj.getString("employeeFirstName"));
+			user.setLastName(jsonObj.getString("employeeLastName"));
+			user.setEmail(jsonObj.getString("employeeEmail"));
+			user.setCreatedDate(new Date());
+			User  usr=	userService.addUser(user);
+			
+			employee.setUser(user);
+			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			employee.setCreatedDate(new Date());
+			Employees  emp=	employeesService.addEmployee(employee);
+			
+			return null;
+		}
+	  
+	  @RequestMapping(value = "/getEmployeesList",  method = RequestMethod.POST)
+		public @ResponseBody  String getEmployeesList() throws Exception {
+		 	String resultJson = null;
+			Collection<Employees> employeeList = employeesService.getAllEmployees();
+			resultJson = toJSON(employeeList);
+			return resultJson;
+	  }
 	 
  
 	 @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
@@ -224,8 +373,13 @@ public class ProjectsController {
 			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
 	}
 	 
-	 
-	 
+	@RequestMapping(value = "/getEmailVerification",  method = RequestMethod.POST)
+	public @ResponseBody  User getEmailVerification(@RequestParam(value="email", required=false) String email) throws Exception {
+		 	
+			User user  = userService.findByEmail(email);
+			return user;
+		  
+	}
 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

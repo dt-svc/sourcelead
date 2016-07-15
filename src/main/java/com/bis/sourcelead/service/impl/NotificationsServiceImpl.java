@@ -31,5 +31,11 @@ public class NotificationsServiceImpl implements NotificationsService{
 		return notificationDao.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
 	}
 
+	@Override
+	public Integer updateNotificationStatusAsRead(Long userId, String orgCode, String locationCode) {
+		// TODO Auto-generated method stub
+		return notificationDao.updateNotificationStatusAsRead(userId,orgCode,locationCode);
+	}
+
 
 }

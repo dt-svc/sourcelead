@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -71,5 +72,20 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		;
 		return adTaskList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
+		// TODO Auto-generated method stub
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId )" ;
+		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()) 
+			    .list(); 
+		return projectTasksList;  
+		
+	}
+	
+	
 
 }

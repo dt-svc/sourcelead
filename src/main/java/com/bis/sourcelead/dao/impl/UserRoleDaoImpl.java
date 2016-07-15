@@ -61,6 +61,7 @@ public class UserRoleDaoImpl implements UserRoleDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+
 	public Collection<UserRole> getUsersListByLocationId(Long locationId,String userState) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -149,6 +150,14 @@ public class UserRoleDaoImpl implements UserRoleDao{
 					  .setLong("locationId", locationId)
 					  .setString("userState", userState)
 					  .list();
+
+	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN'";
+	    List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+        return userRoleList;
+
 	}
 
 }

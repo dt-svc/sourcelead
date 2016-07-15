@@ -54,6 +54,13 @@ public class EmailScenerioUtil {
 		return body ;
 	}
 	
+	public String buildTempBody(String body,Map<String, String> globalVarsMap) throws Exception{
+		body = body.replaceAll("\n", "<br/>");
+		body = body.replaceAll(" ", "&nbsp;");
+		body = emailMessageBodyConverter.convertTempBodyOfEmailTemplate(body,globalVarsMap);
+		return body ;
+	}
+	
 	public String buildSignature(String signature,Map<String, String> globalVarsMap) throws Exception{
 		signature = signature.replaceAll("\n", "<br/>");
 		signature = signature.replaceAll(" ", "&nbsp;");
@@ -113,7 +120,7 @@ public void sendNotification(String actionLink,User loginUser,EmailScenario emai
 		User u1 = new User();
 		u.setId(1L);
 		u1.setId(2L);
-	//new email logic
+	//new Notification logic
 	Notifications notification = new Notifications();
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());

@@ -5,9 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Welcome to Source Lead :: The Recruitment Application</title>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -135,18 +137,19 @@
               <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
+          <li> <a href="#" title="Alerts" id="alert" onclick="filter();"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
                <c:if test="${!empty notificationList}">
-                <c:forEach var="report" items="${notificationList}" varStatus="theCount" end="4">
+                <c:forEach var="report" items="${notificationList}" end="4">
                 <li>
                   <div class="clearfix msg">
                     <div class="msg-img"> <span>
                     <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
                     <div class="msg-content">
                       <p>${report.body}</p>
-                      <span>3 days ago at 7:58 pm - ,${report.createdDate}</span> </div>
+                     <c:out value="${userId}" /></p>
+                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span> </div>
                   </div>
                 </li>
                 </c:forEach>
@@ -162,9 +165,25 @@
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="<c:url value="/login" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li  class="hidden-xs"> <a href="<c:url value="/login?${_csrf.parameterName}=${_csrf.token}" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
         </ul>
       </div>
     </nav>
   </header>
+  
+  <script>
+function filter(){   
+	var sourceleadUrl = '${sourceleadUrl}';
+	var  orgCode ='sourcelead.com';
+	var locationCode = 'in.sourcelead.com';
+	 $.ajax({
+	      type: "POST",
+	  	  url: "${sourceleadUrl}"+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&userId=2&orgCode="+orgCode+"&locationCode="+locationCode,
+	  			  success :function(data) {
+	    	      			
+      			 }							     
+	});  
+}
+</script>
+}
   <!-- Header Area --> 
