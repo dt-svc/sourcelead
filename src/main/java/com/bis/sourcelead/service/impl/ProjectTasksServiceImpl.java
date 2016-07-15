@@ -58,6 +58,12 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		return list;
 		
 	}
+
+	@Override
+	public void saveAll(Collection<ProjectTasks> taskList) throws Exception {
+		// TODO Auto-generated method stub
+		tasksDao.saveAll(taskList);
+	}
 	
 	
 	

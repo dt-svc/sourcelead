@@ -95,6 +95,22 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).list();
 		return projectTasksList; 
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveAll(Collection<ProjectTasks> taskList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(taskList != null && !taskList.isEmpty()){
+				for(ProjectTasks tasks :taskList){
+					session.save(tasks);
+				}
+			}
+		
+		} catch (HibernateException exception) {
+		}
+		
+	}
 	
 	
 

@@ -7,7 +7,9 @@ import com.bis.sourcelead.entity.ProjectTasks;
 
 public interface ProjectTasksService {
 	
-public ProjectTasks addTasks(ProjectTasks tasks)throws Exception;
+    public ProjectTasks addTasks(ProjectTasks tasks)throws Exception;
+    
+    public void saveAll(Collection<ProjectTasks> taskList)throws Exception;
 	
     public ProjectTasks updateTasks(ProjectTasks tasks)throws Exception;
     
