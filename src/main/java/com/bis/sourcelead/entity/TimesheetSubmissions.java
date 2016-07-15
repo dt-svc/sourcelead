@@ -115,6 +115,9 @@ public class TimesheetSubmissions {
 	@Transient
 	private String combinedStatus;
 	
+	@Transient
+	private String employeeId;
+	
 
 	public Long getId() {
 		return Id;
@@ -291,6 +294,14 @@ public class TimesheetSubmissions {
 
 	public void setCombinedStatus(String combinedStatus) {
 		this.combinedStatus = combinedStatus;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 	}
 	
 }

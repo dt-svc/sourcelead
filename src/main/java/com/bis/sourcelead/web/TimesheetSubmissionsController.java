@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -54,6 +55,7 @@ public class TimesheetSubmissionsController {
         
         ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
         for(TimesheetSubmissions ts : timesheetSubmissionsList){
+        	ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
         	if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
         		ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
         	}
@@ -71,20 +73,31 @@ public class TimesheetSubmissionsController {
 	}
 	
 	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
-    public  String saveSubmissionApprovalStatus(@RequestParam(value="projectMemberId", required=false) String projectMemberId,@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
-             
+    public  String saveSubmissionApprovalStatus(HttpServletRequest request,
+									    		@RequestParam(value="employeeId", required=false) Long employeeId,
+												@RequestParam(value="startDate", required=false) String startDate,
+												@RequestParam(value="endDate", required=false) String endDate,
+												@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
+									             
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        Date sDate  =  Constants.DMY.parse(startDate);
         
-        TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(projectMemberId);
-        if(timesheetSubmissions!=null){
-             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
-                   timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-                   timesheetSubmissions.setRejectedReason(rejectedReason);
-             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
-                 
-                   timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
-             }
-             
-             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+        
+        Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(), sDate);
+        if(timesheetSubmissionsList!=null){
+        	for(TimesheetSubmissions timesheetSubmissions :timesheetSubmissionsList){
+	             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
+	            	 	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+	            	 	timesheetSubmissions.setRejectedReason(rejectedReason);
+	             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
+	                 
+	            	 timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
+	             }
+	             
+	             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+        	}  
         }
         return null;
     }

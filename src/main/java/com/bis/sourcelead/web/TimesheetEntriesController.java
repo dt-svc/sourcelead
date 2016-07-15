@@ -353,14 +353,17 @@ public class TimesheetEntriesController {
 	
 	
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
-	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="employeeId", required=false) Long employeeId,
 																				 @RequestParam(value="startDate", required=false) String startDate,
 																				 @RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId, user.getId());
 		
-        	
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        Date sDate  =  Constants.DMY.parse(startDate);
+		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(),sDate);
+		
 		StringBuilder sb = new StringBuilder();	  
 		sb.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
 		sb.append("<div class='time_appr_side_wrap_inn'>");
@@ -370,13 +373,13 @@ public class TimesheetEntriesController {
         sb.append("<table id='timesheet' cellpadding='0' cellspacing='0'>");
         sb.append("<tbody>");
         
-        String pattern = "dd-MM-yyyy";
+        /*String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 		  
         Date sDate  =  Constants.DMY.parse(startDate);
         Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		startCal.setLenient(false);
-		startCal.setTime(sDate);
+		startCal.setTime(sDate);*/
 		 
 	     /*		                
         startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));

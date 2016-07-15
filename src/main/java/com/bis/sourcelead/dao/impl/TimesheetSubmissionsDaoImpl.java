@@ -186,22 +186,25 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			*/
 			
 			return timesheetSubmissionsList;
-			
-			
-			
 	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId)
+	public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId,Date startDate)
 			throws Exception {
 		// TODO Auto-generated method stub
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TimesheetSubmissions ts ";  
-		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).list();
-		return timesheetSubmissionsList;
+		java.sql.Date sDate = new java.sql.Date(startDate.getTime());
+		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+		List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
+																		  .setLong("empId", projectMemberId)	
+					                                                      .setLong("userId", userId)
+					                                                      .setParameter("startDate", startDate).list();
+		  return timesheetSubmissionsList1;
+   }
+	
 		
-	}
 	
 }

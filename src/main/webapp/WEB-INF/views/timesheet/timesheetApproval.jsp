@@ -52,21 +52,21 @@ $(document).ready(function() {
                          output = output+         ''+approval.endDateStr+'';
                          output = output+     '</div>';
                          output = output+ '</td>';
-                         output = output+ '<td><div><a    onclick="myTimesheet('+approval.Id+','+approval.startDateStr+','+approval.endDateStr+');"  id="timesheetPopup'+approval.Id+'"> '+approval.combinedTotalHours+'</a></div></td>';
+                         output = output+ '<td><div><a onclick="myTimesheet(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"  id="timesheetPopup'+approval.Id+'"> '+approval.combinedTotalHours+'</a></div></td>';
                          output = output+'<td><div>'+approval.combinedStatus+'</div></td>';
                          output = output+'<td>';
-                           if(approval.submissionApprovalStatus == 'NEW'){
-                               output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('+approval.Id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('+approval.Id+');"></i></div>';
+                           if(approval.combinedStatus == 'NEW'){
+                               output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission(\''+approval.Id+'\',\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i></div>';
                                output = output+'<div id="rejectedPopup"></div>';
                            }
-                         if(approval.submissionApprovalStatus=='REJECTED'){
+                         if(approval.combinedStatus =='REJECTED'){
                              output = output+'<div><h3 class="reje_color">Rejected</h3>';
-                             output = output+'<i class="glyphicon glyphicon-comment" onclick="rejectedMessage(rejectedMessage'+approval.Id+');">';
-                             output = output+  '<strong id="rejectedMessage'+approval.Id+'"><p>Rejected message here</p></strong>';
+                             output = output+'<i class="glyphicon glyphicon-comment" onclick="rejectedMessage(\'rejectedMessage'+approval.Id+'\');">';
+                             output = output+  '<strong id="rejectedMessage'+approval.Id+'"><p>'+approval.rejectedReason+'</p></strong>';
                              output = output+ '</i>';
                              output = output+'</div>';
                          }
-                         if(approval.submissionApprovalStatus=='APPROVED'){
+                         if(approval.combinedStatus =='APPROVED'){
                              output = output+'<div><h3>Approved</h3></div>';
                          }  
                           output = output+'</td>' ;
@@ -574,11 +574,10 @@ $(document).ready(function() {
 	<!--   Timesheet approval seript files   -->
 <!-- sarath custom -->	
 <script>
-function myTimesheet(local,startDate,endDate){      
-    alert("endDate"+endDate);
+function myTimesheet(local,startDate,endDate){
     $.ajax({
    	type: "POST",
-    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
+    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
               $("#myId").empty();
               $("#myId").append(data); 
@@ -764,7 +763,7 @@ function saveMyTimesheet(){
 
 
 <script>
-function saveRejectSubmission(local){
+function saveRejectSubmission(local,employeeId,startDate,endDate){
 
          var msg = $("#reject"+local+"message").val(); 
             
@@ -772,7 +771,7 @@ function saveRejectSubmission(local){
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
          type: "POST",
-         url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+         url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
          success: function(data) {
          			
          }
@@ -785,28 +784,24 @@ function cancelRejectSubmission(local){
 		 $("#reject"+local+"panel").slideUp(200);
 }
 
-function rejecteSubmission(local){
+function rejecteSubmission(local,employeeId,startDate,endDate){  
         
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+local+'panel" >';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+local+'message" ></textarea>';
-		result = result +'<a href="#" onClick="saveRejectSubmission(\''+local+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="saveRejectSubmission(\''+local+'\',\''+employeeId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
 		result = result +'</div>';
 		 
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
 		$("#reject"+local+"panel").slideToggle(200);
 }
-function approveSubmission(local){
+function approveSubmission(employeeId,startDate,endDate){
         var rejectedReason;
-        alert("data"+local);
 	    $.ajax({
 	    type: "POST",
-	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+local+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
-	    
-					alert("data");	              
-	              
 	    }
 	    });
 }
@@ -816,8 +811,12 @@ function approveSubmission(local){
 <!-- this script is for reject msg pop up -->
 
 <script>
-function rejectedMessage(local){
+function rejectedMessage(local){ 
     $("#"+local).slideToggle(200);
+    $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+        e.stopPropagation();
+    });	
+    
 }
 
 $(document).ready(function() {
