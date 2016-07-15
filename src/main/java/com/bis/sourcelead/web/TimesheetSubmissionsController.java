@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
 
@@ -23,6 +24,10 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController 
 public class TimesheetSubmissionsController {
@@ -37,6 +42,17 @@ public class TimesheetSubmissionsController {
 	@Autowired
 	private DataSource dataSource;
 
+	
+	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
+	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request) throws Exception {
+		
+		String resultJson = null;
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
+        resultJson = toJSON(timesheetSubmissionsList);
+        return resultJson;
+			  
+	}
 	
 	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
     public  String saveSubmissionApprovalStatus(@RequestParam(value="projectMemberId", required=false) String projectMemberId,@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
@@ -142,6 +158,14 @@ public class TimesheetSubmissionsController {
 		  return timesheetSubmissionsList;
 	}*/
      
+	 private String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	 }
 	
  
 }

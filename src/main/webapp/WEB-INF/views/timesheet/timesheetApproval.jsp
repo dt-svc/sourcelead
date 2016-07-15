@@ -11,6 +11,78 @@
 	}
 </script>
 
+<script>
+$(document).ready(function() {
+      approvalList();
+});
+</script>
+
+<script>
+  function approvalList(){
+	    $.ajax({
+ 	          type : "POST",
+	      	  url: "http://localhost:8080/sourcelead/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",		
+		      success :function(data) {
+		    	  
+		             var json = JSON.parse(data);
+		             var output = "";
+		             
+		             output = output+' <table>';
+		             output = output+' <tbody>';
+		             output = output+' <thead>';
+		             output = output+'     <tr>';
+		             output = output+'         <th>Employee</th>';
+		             output = output+'         <th>Frequency</th>';
+		             output = output+'         <th>Total hours</th>';
+		             output = output+'         <th>Stage</th>';
+		             output = output+'         <th>Action</th>';
+		             output = output+'     </tr>';
+		             output = output+' </thead>';
+		             
+		             
+		             for (var i=0; i<json.length; i++)
+		             {
+		                     var approval = json[i];
+		                     output = output+'<tr>'+
+		                     '<td><div class="time_appr_user">'+
+		                     '<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${approval.projectMembers.employee.user.id}"/>" alt="Profile Image" class="img-circle img-responsive">'+
+		                         '<span><b>${approval.projectMembers.employee.user.firstName}</b><b>Admin</b></span></div></div>'+
+		                     '</td>'+
+		                     '<td><div> <fmt:formatDate type="date" value="${approval.startDate}" />  To'+
+		                              '<fmt:formatDate type="date" value="${approval.endDate}" />'+
+		                          '</div>'+
+		                     '</td>'+
+		                     '<td><div><a    onclick="myTimesheet('+approval.id+');"  id="timesheetPopup'+approval.id+'"> '+approval.totalHours+'/40</a></div></td>'+
+		                     '<td><div>'+approval.submissionApprovalStatus+'</div></td>'+
+		                     '<td>';
+		                       if(approval.submissionApprovalStatus == 'NEW'){
+		                           output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('+approval.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('+approval.id+');"></i></div>'+
+		                               '<div id="rejectedPopup"></div>';
+		                       }
+		                     if(approval.submissionApprovalStatus=='REJECTED'){
+		                         output = output+'<div><h3 class="reje_color">Rejected</h3>'+
+		                                     '<i class="glyphicon glyphicon-comment" onclick="rejectedMessage(rejectedMessage'+approval.id+');">'+
+		                                         '<strong id="rejectedMessage'+approval.id+'"><p>Rejected message here</p></strong>'+
+		                                     '</i>'+
+		                               '</div>';
+		                     }
+		                     if(approval.submissionApprovalStatus=='APPROVED'){
+		                         output = output+'<div><h3>Approved</h3></div>';
+		                     }  
+		                      output = output+'</td>'+  
+		                 '</tr>';
+		             }
+		           
+		             output = output+' </tbody>';
+		             output = output+' </table>';
+		             
+		             $("#timesheetApprList").empty();
+		             $("#timesheetApprList").append(output);
+		      }
+	      	  
+	       }); 
+  } 
+  </script>
 <body onclick="bodyClick();">
 <!-- Content Area -->
       <section class="content-wraper">
@@ -74,8 +146,8 @@
         </div>
 		
 		<div class="timesheet_appr_table">
-		
-		<table>
+		<div id="timesheetApprList">   </div>
+		<%-- <table>
         	<tbody>
 			<thead>
             	<tr>
@@ -86,7 +158,7 @@
                     <th>Action</th>
                 </tr>
 			</thead>	
-		<c:forEach items="${sourcelead_timesheetSubmissionsList}" var="approval" varStatus="p">
+		    <c:forEach items="${sourcelead_timesheetSubmissionsList}" var="approval" varStatus="p">
                 <tr>
                 	<td><div class="time_appr_user">
                 	<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${approval.projectMembers.employee.user.id}'/>" alt="Profile Image" class="img-circle img-responsive">
@@ -119,7 +191,7 @@
             
             			
             </tbody>
-        </table>
+        </table> --%>
        
 	</div>
 		
