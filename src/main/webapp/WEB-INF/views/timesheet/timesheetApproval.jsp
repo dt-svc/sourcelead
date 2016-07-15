@@ -52,8 +52,8 @@ $(document).ready(function() {
                          output = output+         ''+approval.endDateStr+'';
                          output = output+     '</div>';
                          output = output+ '</td>';
-                         output = output+ '<td><div><a    onclick="myTimesheet('+approval.Id+');"  id="timesheetPopup'+approval.Id+'"> '+approval.totalHours+'/40</a></div></td>';
-                         output = output+'<td><div>'+approval.submissionApprovalStatus+'</div></td>';
+                         output = output+ '<td><div><a    onclick="myTimesheet('+approval.Id+','+approval.startDateStr+','+approval.endDateStr+');"  id="timesheetPopup'+approval.Id+'"> '+approval.combinedTotalHours+'</a></div></td>';
+                         output = output+'<td><div>'+approval.combinedStatus+'</div></td>';
                          output = output+'<td>';
                            if(approval.submissionApprovalStatus == 'NEW'){
                                output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission('+approval.Id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission('+approval.Id+');"></i></div>';

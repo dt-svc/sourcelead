@@ -30,4 +30,6 @@ public class Constants {
 	public static DateFormat DF_STD = new SimpleDateFormat("yyyy/MM/dd");
 	public static DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+	
+	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 }

@@ -353,7 +353,9 @@ public class TimesheetEntriesController {
 	
 	
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
-	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId) throws Exception {
+	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+																				 @RequestParam(value="startDate", required=false) String startDate,
+																				 @RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId, user.getId());
@@ -362,11 +364,32 @@ public class TimesheetEntriesController {
 		StringBuilder sb = new StringBuilder();	  
 		sb.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
 		sb.append("<div class='time_appr_side_wrap_inn'>");
-	    sb.append("<div class='proj_close'><i class='glyphicon glyphicon-share-alt'></i></div>");
+	    sb.append("<div class='proj_close'><i class='glyphicon glyphicon-share-alt' onClick='removeTimesheetPopup();' ></i></div>");
 	    
 		sb.append("<div class='timesheet_table' id='dynamic'>");
         sb.append("<table id='timesheet' cellpadding='0' cellspacing='0'>");
         sb.append("<tbody>");
+        
+        String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		  
+        Date sDate  =  Constants.DMY.parse(startDate);
+        Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		startCal.setLenient(false);
+		startCal.setTime(sDate);
+		 
+	     /*		                
+        startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
+        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
+        sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
+        sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-6).getTime())+"</i></th>"); 
+        sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-5).getTime())+"</i></th>"); 
+        sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-4).getTime())+"</i></th>"); 
+        sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-3).getTime())+"</i></th>"); 
+        sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-2).getTime())+"</i></th>"); 
+        sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>");
+       */
+        
         sb.append("	<tr>");
         sb.append("    	   <th>Projects</th>");
         sb.append("        <th> ");
@@ -482,17 +505,52 @@ public class TimesheetEntriesController {
 			}
 			sb.append(" </td>   "); 
 			sb.append("   </tr>"); 	
+			
+			
+			sb.append("	  <tr class='last_child'>"); 
+			sb.append("    <td></td>"); 
+			sb.append("    <td> "); 
+			sb.append("    <table id='1' cellpadding='0' cellspacing='0'>"); 
+			sb.append("     <td class='total_field'>Total</td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    </div> </td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    </div> </td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    </div> </td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    </div> </td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    </div> </td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    </div> </td>"); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' id='rowTotal8Id' name='rowTotal8Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    </div> </td>    ");              
+			sb.append("    </table>"); 
+			sb.append("           </td> "); 
+			sb.append("      </tr> "); 
+			
+			
 			sb.append("            </tbody>");
 			sb.append("     </table>");
 			
-			sb.append("<div class='timesheet_bot'>");
+			/*sb.append("<div class='timesheet_bot'>");
 		    sb.append("	<div class='timesheet_button'>");
 		    sb.append("	        <input type='submit' onClick='saveMyTimesheet();'  name='Draft' vaue='Draft' class='time_btn time_dra'>");
 		    sb.append("        <input type='button' onClick='saveMyTimesheet();' value='Submit' class='time_btn'>");
 		    sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");
 		    sb.append("    </div>");
 		    sb.append("	<div class='clearfix'></div>");
-		    sb.append("</div>");
+		    sb.append("</div>");*/
 			
 			sb.append(" </div>");
 			sb.append(" </div>");

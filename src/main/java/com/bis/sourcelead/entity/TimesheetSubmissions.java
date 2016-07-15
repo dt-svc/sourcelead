@@ -108,6 +108,13 @@ public class TimesheetSubmissions {
 	
 	@Transient
 	private String  fullName;
+	
+	@Transient
+	private String combinedTotalHours;
+	
+	@Transient
+	private String combinedStatus;
+	
 
 	public Long getId() {
 		return Id;
@@ -269,5 +276,21 @@ public class TimesheetSubmissions {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-	 
+
+	public String getCombinedTotalHours() {
+		return combinedTotalHours;
+	}
+
+	public void setCombinedTotalHours(String combinedTotalHours) {
+		this.combinedTotalHours = combinedTotalHours;
+	}
+
+	public String getCombinedStatus() {
+		return combinedStatus;
+	}
+
+	public void setCombinedStatus(String combinedStatus) {
+		this.combinedStatus = combinedStatus;
+	}
+	
 }

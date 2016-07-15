@@ -58,10 +58,10 @@ public class TimesheetSubmissionsController {
         		ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
         	}
             if(ts.getStartDate()!=null){
-            	ts.setStartDateStr(Constants.DF_STD.format(ts.getStartDate()));
+            	ts.setStartDateStr(Constants.DF_DMY.format(ts.getStartDate()));
             }
         	if(ts.getEndDate()!=null){
-        		ts.setEndDateStr(Constants.DF_STD.format(ts.getEndDate()));
+        		ts.setEndDateStr(Constants.DF_DMY.format(ts.getEndDate()));
         	}
             timesheetSubmissionsArrList.add(ts);
          }
