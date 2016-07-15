@@ -85,6 +85,16 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		return projectTasksList;  
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<ProjectTasks> getAllSourceleadTasks() throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks projectsTasks where projectsTasks.projectId IS NULL and  projectsTasks.createdBy = 'SLADMIN'";
+		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).list();
+		return projectTasksList; 
+	}
 	
 	
 

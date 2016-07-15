@@ -19,4 +19,7 @@ public ProjectTasks addTasks(ProjectTasks tasks)throws Exception;
     
     public Collection	<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
     
+    public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
+    
+    
 }
