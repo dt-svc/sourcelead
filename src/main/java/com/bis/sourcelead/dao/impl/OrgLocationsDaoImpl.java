@@ -16,6 +16,7 @@ import com.bis.sourcelead.dao.CitiesDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.enums.Status;
 
 @Repository
@@ -87,6 +88,47 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		orgLocationsList=citiesListQuery.list();;
 		return orgLocationsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgLocations orgLocations where  orgLocations.locationCode =:locationCode");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("locationCode", locationCode).list();
+	     
+	       OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationsByOrgCode(String orgCode) throws Exception {
+		
+
+		  Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgLocations orgLocations where  orgLocations.org =:orgCode");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("orgCode", orgCode).list();
+	     
+	       OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
+		
+		
+	}
+	
+	
 	
 	
 

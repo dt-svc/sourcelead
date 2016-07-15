@@ -35,18 +35,6 @@ $(document).ready(function() {
 	});	
 });*/	
 
-// timesheet comment
-$(document).ready(function() {
-    $(".timesheet_comm i").click(function(){
-		$("#teskcomment").slideToggle(200);
-	});
-    $("html").click(function() {
-        $("#teskcomment").slideUp(200);
-    });
-    $(".timesheet_comm i, #teskcomment").click(function(e) {
-        e.stopPropagation();
-    });	
-});	
 
 // Approved Popup
 $(document).ready(function() {
@@ -118,5 +106,14 @@ $(document).ready(function() {
          });
  
  
-
+ $(function() {
+	    $('.time_cont_res').hide();
+	    $('#accordion h2:first').addClass('res-active').next().slideDown('slow');
+	    $('#accordion h2').click(function() {
+	        if($(this).next().is(':hidden')) {
+	            $('#accordion h2').removeClass('res-active').next().slideUp('slow');
+	            $(this).toggleClass('res-active').next().slideDown('slow');
+			}
+		});
+	});
 

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "USER_ROLE", catalog = "sourcelead")
@@ -21,11 +22,11 @@ public class UserRole{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
     
@@ -50,6 +51,9 @@ public class UserRole{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String userRoleName;
 
 	public Long getId() {
 		return id;
@@ -133,9 +137,14 @@ public class UserRole{
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
-	
+
+	public String getUserRoleName() {
+		return userRoleName;
+	}
+
+	public void setUserRoleName(String userRoleName) {
+		this.userRoleName = userRoleName;
+	}
 	
 
 }

@@ -14,7 +14,14 @@
 	}
 </script>
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>::Org Settings</title>
+</head>
 
+<body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->
   <section class="content-wraper">
@@ -105,7 +112,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" value="Save">
-							  <input type="submit" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
 							</div>
 					  </div>
 			 </div>
@@ -163,6 +170,7 @@
 		  </div>
 		  </div>
   </section>
+  </body>
   <!-- Tab for Profile setting-area starts Ends -->
   <!-- Content Area Ends--> 
 
@@ -275,3 +283,4 @@
                 });
             });
 </script>
+</html>

@@ -65,6 +65,10 @@ public class User {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "IS_MAIL_SENT")
+	@Enumerated(EnumType.STRING)
+	private Status isMailSent;
+	
 	@Column(name = "JOB_TITLE")
 	private String jobTitle;
 	
@@ -199,6 +203,14 @@ public class User {
 		this.status = status;
 	}
 	
+	public Status getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(Status isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
 	public byte[] getDocFile() {
 		return docFile;
 	}

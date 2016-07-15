@@ -5,9 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Welcome to Source Lead :: The Recruitment Application</title>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -163,7 +165,7 @@
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="<c:url value="/login" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li  class="hidden-xs"> <a href="<c:url value="/login?${_csrf.parameterName}=${_csrf.token}" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
         </ul>
       </div>
     </nav>

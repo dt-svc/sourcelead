@@ -17,4 +17,6 @@ public interface UserDao {
 	public Collection<User> getUsers() throws Exception;
 	
 	User findByEmail(String email);
+	
+	public Collection<User> getUsersByUserRoles() throws Exception;
 }

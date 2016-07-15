@@ -1,20 +1,14 @@
 package com.bis.sourcelead.web;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
-import org.h2.schema.Constant;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,12 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.LoginService;
-import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.service.UserService;
+
+
 
 /**
  * This class is used for...
@@ -43,7 +36,6 @@ import com.bis.sourcelead.service.UserService;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -58,13 +50,12 @@ public class HomeController {
 	@Autowired
 	private UserService userService;
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	
 	@Value("${jdbc.username}")
 	private String user;
-	
-	
-	@Value("${sourceleadUrl}")
-	private String sourceleadUrl;
 	
 	@Value("${sourceLeadBlockedSocialDomains}")
 	private String sourceLeadBlockedSocialDomains;
@@ -127,18 +118,17 @@ public class HomeController {
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;
 
 	}
-
-
+   
+   
+   
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
  			model.setViewName("forgotPassword");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
    
@@ -147,7 +137,6 @@ public class HomeController {
   	public ModelAndView resetPassword() {
   			ModelAndView model = new ModelAndView();
   			model.setViewName("resetPassword");
-  			model.addObject("sourceleadUrl", sourceleadUrl);
   			return model;
   	}
     
@@ -212,9 +201,12 @@ public class HomeController {
 
 	//fileUpload
 	
-	@RequestMapping(value = "/fileUpload", method = RequestMethod.GET)
-	public ModelAndView fileUpload() {
-		return new ModelAndView("FileUploadForm");
-	}
-	
+	 @RequestMapping(value = "/uploadForm")
+		public ModelAndView fileUploadForm() {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
 }

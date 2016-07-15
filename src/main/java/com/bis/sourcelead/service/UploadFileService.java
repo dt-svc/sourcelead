@@ -1,13 +1,12 @@
 package com.bis.sourcelead.service;
 
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface UploadFileService {
-	
-	public List<UsersImport> uploadFile(MultipartFile multipartFile)throws Exception;
+
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception;
 
 }

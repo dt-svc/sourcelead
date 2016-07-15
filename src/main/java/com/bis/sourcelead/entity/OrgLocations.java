@@ -61,6 +61,12 @@ public class OrgLocations {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
+	@Column(name = "PHONE")
+	private String phone;
+	
+	@Column(name = "FAX")
+	private String fax;
+	
 	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
@@ -183,6 +189,22 @@ public class OrgLocations {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
 	}
 
 	

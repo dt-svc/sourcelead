@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -21,6 +22,10 @@ public class UserRoleDaoImpl implements UserRoleDao{
 	private SessionFactory sessionFactory;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserRoleDaoImpl.class);
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -53,5 +58,109 @@ public class UserRoleDaoImpl implements UserRoleDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+
+	public Collection<UserRole> getUsersListByLocationId(Long locationId,String userState) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		if(!isNullOrEmpty(userState)){
+			subQuery = "and userRole.user.userState = '"+userState+"'";
+		}
+		
+		return session.createQuery("Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId "+subQuery+" ")
+					  .setLong("locationId", locationId)
+					  .list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersListByRoleAndLocationId(String roleName, Long locationId,String userState) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Long roleId = null;
+		if(roleName.equalsIgnoreCase("Administrator")){
+			roleId = 1L;
+		}else if(roleName.equalsIgnoreCase("User")){
+			roleId = 2L;
+		}
+		
+		String subQuery = "";
+		if(!isNullOrEmpty(userState)){
+			subQuery = "and userRole.user.userState = '"+userState+"'";
+		}
+		
+		return session.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId "
+				+ "and userRole.orgLocations.id = :locationId "+subQuery+"")
+					.setLong("roleId", roleId)	  
+					.setLong("locationId", locationId)
+					.list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId,String userState) throws Exception {
+		
+		String subQuery = "";
+		if(!isNullOrEmpty(userState)){
+			subQuery = "and userRole.user.userState = '"+userState+"'";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("Select userRole from UserRole userRole where "
+				+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%')) "
+						+ "and userRole.orgLocations.id = :locationId "+subQuery+" ")
+					.setLong("locationId", locationId)
+					.list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(String roleName, String userName,
+			Long locationId,String userState) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Long roleId = null;
+		if(roleName.equalsIgnoreCase("Administrator")){
+			roleId = 1L;
+		}else if(roleName.equalsIgnoreCase("User")){
+			roleId = 2L;
+		}
+		
+		String subQuery = "";
+		if(!isNullOrEmpty(userState)){
+			subQuery = "and userRole.user.userState = '"+userState+"'";
+		}
+		
+		return session.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId and "
+				+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%')) "
+						+ "and userRole.orgLocations.id = :locationId "+subQuery+"")
+					.setLong("roleId", roleId)	  
+					.setLong("locationId", locationId)
+					.list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and "
+				+ "userRole.user.userState = :userState")
+					  .setLong("locationId", locationId)
+					  .setString("userState", userState)
+					  .list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN'";
+	    List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+        return userRoleList;
+
+	}
 
 }

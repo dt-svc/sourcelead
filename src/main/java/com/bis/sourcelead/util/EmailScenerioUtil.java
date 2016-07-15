@@ -54,6 +54,13 @@ public class EmailScenerioUtil {
 		return body ;
 	}
 	
+	public String buildTempBody(String body,Map<String, String> globalVarsMap) throws Exception{
+		body = body.replaceAll("\n", "<br/>");
+		body = body.replaceAll(" ", "&nbsp;");
+		body = emailMessageBodyConverter.convertTempBodyOfEmailTemplate(body,globalVarsMap);
+		return body ;
+	}
+	
 	public String buildSignature(String signature,Map<String, String> globalVarsMap) throws Exception{
 		signature = signature.replaceAll("\n", "<br/>");
 		signature = signature.replaceAll(" ", "&nbsp;");
