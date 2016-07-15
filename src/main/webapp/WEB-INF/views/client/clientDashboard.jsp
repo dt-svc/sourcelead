@@ -48,63 +48,17 @@
                     <th>Phone</th>
                     <th>Projects</th>
                 </tr>
-			</thead>	
+			</thead>
+				<c:forEach var="report" items="${clientsList}" varStatus="raId">	
                 <tr>
-                    <td><div class="proj_show">Broadridge<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
+                    <td><div class="proj_show">${report.clientLocationId.org.orgName}<i class="fa fa-binoculars"></i></div></td>
+                    <td><div>${report.clientLocationId.org.webSite}</div></td>
+                    <td><div>${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
                     <td><div>example@domain.com</div></td>
                     <td><div>040 2323 2323</div></td>
                     <td><div>4</td>
                 </tr>
-                <tr>
-                    <td><div class="proj_show">Business Intelli<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show">Vannam<i class="fa fa-binoculars"></i></div></td>
-                    <td><div>clientdomain.com</div></td>
-                    <td><div>Hyderabad</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
-                </tr>                                                                                               
+                </c:forEach>                                                                     
             </tbody>
         </table>
 	</div>

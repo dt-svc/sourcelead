@@ -17,17 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -73,18 +66,24 @@ public class ClientController {
 	 
 	 
 	 @RequestMapping(value = "/clientDashboard")
-		public ModelAndView clientDashboard() throws Exception {
-
+		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
+		   
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
+			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			model.addObject("clientsList", clientsList);
+			
 			return model;
 	    }
+	 
+	 
+	 
 	 
 	 
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
-		 	String resultJson = null;
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
 			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -96,8 +95,9 @@ public class ClientController {
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();   
 		 	
 		 	/*Saving for Org*/
-			 Org org = new Org();
-			 
+		    Org org = new Org();
+			org.setOrgName(jsonObj.getString("orgName"));
+		    org.setWebSite(jsonObj.getString("webSite"));
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(new Date());
 			org.setUpdatedBy(loginUserCode);
@@ -106,6 +106,7 @@ public class ClientController {
 			/*Saving for OrgLocations*/
 			OrgLocations  orgLocations = new OrgLocations();
 			orgLocations.setOrg(addOrg);
+			
 			orgLocations.setCountry(loginOrgLocations.getCountry());
 			orgLocations.setState(loginOrgLocations.getState());
 			orgLocations.setCity(loginOrgLocations.getCity());
@@ -128,8 +129,7 @@ public class ClientController {
 			
 			Collection<Org> orgsList = orgService.getOrgs();
 			
-			resultJson = toJSON(orgsList);
-			 return resultJson;
+			 return "clientDashboard";
 	   }
 	
 	 
@@ -142,6 +142,7 @@ public class ClientController {
 	        });
 	        return xstream.toXML(obj);
 	    }
+		
 
 	
 }

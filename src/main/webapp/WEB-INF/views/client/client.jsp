@@ -38,7 +38,7 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="orgName" field-name="Client Name" data-validation="required" value="">
+                <input type="text" class="form-control" id="orgName" name="orgName" field-name="Client Name" data-validation="required" value="">
                 <span class="hidden">Enter Client Name</span> </div>
             </div>
             <div class="form-group">
@@ -143,7 +143,7 @@
            <div class="form-group">
               <label class="col-md-3">Website</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="Website" value="">
+                 <input type="text" class="form-control" id="webSite" name="webSite" field-name="Website" data-validation="required" value="">
                 <span class="hidden">Website</span> </div>
             </div>
             <div class="form-group">
@@ -159,13 +159,6 @@
               <div class="col-md-9">
 			  <input type="text" class="form-control" name="mobileNumber" value="">
                 <span class="hidden">Mobile Number</span> </div>
-              </div>
-			  
-			  <div class="form-group">
-              <label class="col-md-3">Client Status</label>
-              <div class="col-md-9">
-			  <input type="text" class="form-control" name="ClientStatus" value="">
-                <span class="hidden">Client Status</span> </div>
               </div>
 			    </div>
 		</form:form>
@@ -271,12 +264,48 @@
 	    	type: "POST",
 	        url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(data) {
-	        	
+	        	if(data == 'clientDashboard'){
+	        		location.replace("http://localhost:8080/sourcelead"+"/clientDashboard");  
+	        	}
 	        }
      });
      
  }
 </script> 
+
+
+<script type="text/javascript">
+ function saveProject() {
+ var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   }; 
+	 if ($('#client_form').validate(false, validationSettings)){ 
+     var frm = $('#client_form').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        $.ajax({
+	    	type: "POST",
+	    	url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	
+	        	$("#maxTsRowNum").empty();
+		        $("#maxTsRowNum").append(output);
+		        
+	        },
+	    });
+       		 return true;
+		}else{
+			return false;
+		}
+    }
+ $('body').on('blur', '#client_form', function() {
+		$("#client_form").showHelpOnFocus();;
+		$("#client_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
 
 <script type="text/javascript">
 (function ($) {
