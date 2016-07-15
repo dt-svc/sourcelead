@@ -86,20 +86,24 @@ window.onload = function () {
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
+	        $('#usersListBody').empty();
 	        
 	    	if(json.length > 0)
 	   		{
+	    		var result = "";
+	    		;
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var userRole = json[i];
-	 			    var mobilePhone = '';
-	 			    if(userRole.user.mobilePhone != null){
+	 				var mobilePhone = ""
+	 			    
+	 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
 	 			    	mobilePhone = userRole.user.mobilePhone;
 	 			    }else{
 	 			    	mobilePhone = "NO DATA"
 	 			    }
 	 				 				
-	       	    	var result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 	       	    	result = result +"<div class='user-profile'>";
 	       	    	result = result +"<div class='col-sm-4'>";
 	       	    	result = result +"<div class='text-center image'>";
@@ -120,12 +124,12 @@ window.onload = function () {
 	       	    	result = result +"<div class='clearfix'></div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
+	       	    	
+	       	        
+	       	 	    $('#usersListBody').append(result);
+	       	 	    $("#searchByName").val("");
 				   }
 	   		    } 
-	    	
-	    	$('#usersListBody').empty(); 
-          	$('#usersListBody').append(result);
-          	$("#searchByName").val("");
 
 			 },
 	        error: function(e){

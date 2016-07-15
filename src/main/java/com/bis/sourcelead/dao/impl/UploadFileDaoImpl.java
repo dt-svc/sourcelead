@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -330,7 +331,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		user.setEmail(userImport.getEmailId());
 		user.setMobilePhone(userImport.getMobileNumber());
 		user.setCreatedDate(new Date());
-
+		user.setUserState(Status.NOT_LOGGEDIN);
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
