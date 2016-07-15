@@ -12,15 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -65,22 +64,24 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 	String resultJson = null;
 		Collection<UserRole> rolesList = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		try {
 			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(userRole)){
-				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId());
+				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId());
 			}
 			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState);
+				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState,user.getId());
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndLocationId(userRole, orgLocations.getId(),userState);
+				rolesList = userRoleService.getUsersListByRoleAndLocationId(userRole, orgLocations.getId(),userState,user.getId());
 			}
 			else if((!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)) || ("All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState);
+				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId());
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRole, searchByName, orgLocations.getId(),userState);
+				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRole, searchByName, orgLocations.getId(),userState,user.getId());
 			}
 			 
 			
