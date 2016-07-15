@@ -24,7 +24,7 @@
       </div>
       <div class="side-nav">
         <ul class="list-unstyled">
-          <li><a href="<c:url value='/home'/>"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
+          <li><a href="<c:url value='/dashboard'/>"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
           <li><a href="javascript:void(0)"><span><i class="fa fa-envelope"></i></span>Mailbox</a></li>
           <li><a href="javascript:void(0)"><span><i class="fa fa-calendar"></i></span>Calendar</a></li>
           <li><a href="<c:url value='/usersList'/>"><span><i class="fa fa-users"></i></span>Users</a></li>
