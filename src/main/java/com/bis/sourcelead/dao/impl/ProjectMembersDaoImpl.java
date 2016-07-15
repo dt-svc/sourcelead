@@ -145,7 +145,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		java.sql.Date  currentMonday = new java.sql.Date(endMondayDate.getTime());
 		
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projects.startDate <= :currentDate and (pm.projects.endDate IS NULL OR pm.projects.endDate > :currentDate) and pm.projects.projectStatus ='STARTED') and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :currentMonday))" ;
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :currentDate and (pm.projectEndDate IS NULL OR pm.projectEndDate > :currentDate) and pm.projects.projectStatus ='STARTED') and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :currentMonday))" ;
 		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("currentDate", currentDate).setParameter("currentMonday", currentMonday) 
 			    .list(); 
 		return idsList;  

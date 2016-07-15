@@ -44,14 +44,14 @@
                 <div class="form-group" id="ProjectIdDiv">
                   <label class="col-lg-3">Project Id</label>
                   <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" class="form-control" onblur="validateProjectSequeneNumber();">
+                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_length length2-50" data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-lg-3">Project Name<span class="text-danger">&nbsp; *</span></label>
                   <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectName" name="ProjectName" class="form-control" field-name="Project Name" data-validation="required">
+                    <input type="text" value="" id="ProjectName" name="ProjectName" class="form-control" field-name="Project Name" data-validation="required validate_length length2-250">
                   </div>
                 </div>
                 
@@ -122,14 +122,14 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" value="" onblur="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" value="" onblur="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required">
+                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_length length2-100">
                     <span class="hidden">First Name</span>
                   </div>
                 </div>
@@ -137,7 +137,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="LastName" value="">
+                    <input type="text" class="form-control" name="LastName" data-validation="validate_length length2-100" data-validation-optional="true" value="">
                     <span class="hidden">Last Name</span>
                   </div>
                 </div>
@@ -145,7 +145,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_email" onblur="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_length length2-100 validate_email" onblur="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -153,7 +153,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
-                    <input type="text" class="form-control" name="PhoneNumber" value="">
+                    <input type="text" class="form-control" name="PhoneNumber" value="" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                   </div>
                 </div>
@@ -456,8 +456,10 @@ function flushProject(){
 	        $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(result) {
+		        	if((result == 'usersList')){
+		        		location.replace(sourceleadUrl+"/usersList");  
+		        	}
 			        
 		        },
 		    });
