@@ -114,7 +114,7 @@ public class LoginSessionController {
 					startCal.setTime(startMondayDate);
 					Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 					
-					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startCal,21);
+					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startCal,28);
 					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
 						Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						startCal.setLenient(false);
