@@ -83,41 +83,13 @@ public class HomeController {
 
 	}
    
-   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
-   public @ResponseBody String validateOrgWebsite(
-   		@RequestParam(value="website", required=false) String website,
-   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
-	
-		String status = null;
-	    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-		if (orgInfo != null) {
-			status = "success";
-		}
-		else{
-			status = "failure";
-		}
-		
-    return status;
-   }
-   
-   
-   
-   
-   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
-   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
-   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
-   		@RequestParam(value="email", required=false) String email) throws Exception {
-   	
-	  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
-	  return status;
-   }
-   
    
    
    @RequestMapping(value = "/registration")
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;
 
