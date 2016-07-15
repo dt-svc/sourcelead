@@ -80,7 +80,7 @@ window.onload = function () {
 
 		  </li>
 		  <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
-		  <li><a href="javascript:void(0)"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
+		   <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">

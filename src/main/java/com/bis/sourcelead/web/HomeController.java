@@ -205,9 +205,12 @@ public class HomeController {
 
 	//fileUpload
 	
-	@RequestMapping(value = "/fileUpload", method = RequestMethod.GET)
-	public ModelAndView fileUpload() {
-		return new ModelAndView("FileUploadForm");
-	}
-	
+	 @RequestMapping(value = "/uploadForm")
+		public ModelAndView fileUploadForm() {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
 }
