@@ -59,25 +59,30 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
-			@RequestParam(value="searchByName", required=false) String searchByName) {
+			@RequestParam(value="searchByName", required=false) String searchByName,
+			@RequestParam(value="userState", required=false) String userState) {
 
 	 	String resultJson = null;
 		Collection<UserRole> rolesList = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		try {
-			if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId());
+			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(userRole)){
+				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId());
+			}
+			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
+				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState);
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndLocationId(userRole, orgLocations.getId());
+				rolesList = userRoleService.getUsersListByRoleAndLocationId(userRole, orgLocations.getId(),userState);
 			}
 			else if((!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)) || ("All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId());
+				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState);
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRole, searchByName, orgLocations.getId());
+				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRole, searchByName, orgLocations.getId(),userState);
 			}
+			 
 			
 			for(UserRole role : rolesList){
 				if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")){

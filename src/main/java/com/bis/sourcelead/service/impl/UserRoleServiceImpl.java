@@ -30,28 +30,35 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public Collection<UserRole> getUsersListByLocationId(Long locationId) throws Exception {
+	public Collection<UserRole> getUsersListByLocationId(Long locationId,String userState) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByLocationId(locationId);
+		return userRoleDao.getUsersListByLocationId(locationId,userState);
 	}
 
 	@Override
-	public Collection<UserRole> getUsersListByRoleAndLocationId(String roleName,Long locationId) throws Exception {
+	public Collection<UserRole> getUsersListByRoleAndLocationId(String roleName,Long locationId,String userState) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndLocationId(roleName, locationId);
+		return userRoleDao.getUsersListByRoleAndLocationId(roleName, locationId,userState);
 	}
 
 	@Override
-	public Collection<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId) throws Exception {
+	public Collection<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId,String userState) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByUserNameAndLocationId(userName, locationId);
+		return userRoleDao.getUsersListByUserNameAndLocationId(userName, locationId,userState);
 	}
 
 	@Override
 	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(String roleName, String userName,
-			Long locationId) throws Exception {
+			Long locationId,String userState) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleName, userName, locationId);
+		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleName, userName, locationId,userState);
+	}
+
+	@Override
+	public Collection<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId)
+			throws Exception {
+		logger.debug("In UserRoleService class...");
+		return userRoleDao.getUsersListByUserStateAndLocationId(userState, locationId);
 	}
 	
 

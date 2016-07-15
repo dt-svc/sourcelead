@@ -32,7 +32,15 @@ window.onload = function () {
     <div class="content-dashboard clearfix">
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
-          <li><a href="javascript:void(0)"><i class="fa fa-th"></i>&nbsp;All</a></li>
+          <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Users&nbsp;</a>
+               <select id="userState" onchange="getUsersList();">
+				<option value="">--Select Status--</option>
+				<option value="ACTIVE" >Active</option>
+				<option value="INACTIVE" >In Active</option>
+				<option value="NOT_LOGGEDIN">Not Logged IN</option>
+			   </select>
+          
+          </li>
           
 		   <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Role&nbsp;</a>
 				<select id="userRole" onchange="getUsersList();">
@@ -72,9 +80,10 @@ window.onload = function () {
 		var sourceleadUrl = '${sourceleadUrl}';
 		var userRole = document.getElementById("userRole").value;
 		var searchByName = document.getElementById("searchByName").value;
+		var userState = document.getElementById("userState").value;
 		$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName,
+	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
