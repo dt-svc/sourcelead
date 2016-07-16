@@ -292,7 +292,7 @@ public class Projects {
 	public void setManagerLevel2(String managerLevel2) {
 		this.managerLevel2 = managerLevel2;
 	}
-
+	@JsonIgnore
 	public OrgLocations getOrgLocationsId() {
 		return orgLocationsId;
 	}
@@ -364,7 +364,7 @@ public class Projects {
 	public void setProjectApproverHierarchiesList(Collection<ProjectApproverHierarchy> projectApproverHierarchiesList) {
 		this.projectApproverHierarchiesList = projectApproverHierarchiesList;
 	}
-
+	@JsonIgnore
 	public Collection<OrgRelations> getClientList() {
 		return clientList;
 	}
