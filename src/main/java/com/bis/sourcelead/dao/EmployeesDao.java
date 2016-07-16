@@ -13,6 +13,10 @@ public interface EmployeesDao {
 	public Employees getEmployee(String id) throws Exception;
 
 	public Boolean deleteEmployee(String id) throws Exception;
+	
+	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception;
 
 	public List<Employees> getAllEmployees() throws Exception;
+	
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception;
 }

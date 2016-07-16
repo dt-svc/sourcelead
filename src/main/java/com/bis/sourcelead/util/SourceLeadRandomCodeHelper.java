@@ -17,4 +17,9 @@ public class SourceLeadRandomCodeHelper {
 		String verificatinCode = RandomStringUtils.randomAlphabetic(5);
 		return verificatinCode;
 	}
+	
+	public static String generateRandomPassword() {
+		String password = RandomStringUtils.randomAlphabetic(6);
+		return password;
+	}
 }

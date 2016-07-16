@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 
@@ -15,4 +16,12 @@ public interface ProjectMembersDao {
 	public Boolean deleteProjectMemberById(Long id) throws Exception;
 	
 	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
+	
+	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	
+	List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
+	
+	
+	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	
 }

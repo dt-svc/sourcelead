@@ -39,7 +39,7 @@ public class ProjectApproverHierarchy {
 	private User approverUserId;
  	
     @Column(name = "LEVEL")
-    private String level;
+    private Integer level;
  
     @Column(name = "STATUS")
     private String status;
@@ -84,11 +84,12 @@ public class ProjectApproverHierarchy {
 		this.approverUserId = approverUserId;
 	}
 
-	public String getLevel() {
+
+	public Integer getLevel() {
 		return level;
 	}
 
-	public void setLevel(String level) {
+	public void setLevel(Integer level) {
 		this.level = level;
 	}
 

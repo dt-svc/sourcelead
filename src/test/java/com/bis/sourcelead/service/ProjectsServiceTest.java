@@ -18,6 +18,7 @@ import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -56,7 +57,7 @@ public class ProjectsServiceTest {
 		projects.setSuperiorUser(superiorUser);
 		
 		projects.setProjectName("XYZ");
-		projects.setProjectStatus("Open");
+		projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 		projects.setDescription("sourcelead desc");
 		projects.setStatus("0");
 		projects.setStartDate(new Date());
@@ -84,7 +85,7 @@ public class ProjectsServiceTest {
 		
 		projects.setProjectName("XYZ Updated");
 		projects.setDescription("project desc");
-		projects.setProjectStatus("Open");
+		projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 		projects.setStatus("0");
 		projects.setStartDate(new Date());
 		projects.setEndDate(new Date());

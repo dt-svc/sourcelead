@@ -1,19 +1,24 @@
 package com.bis.sourcelead.web;
 
 import java.util.Collection;
+import java.util.Date;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.UserService;
 
 @RestController
 @RequestMapping("/EmployeesController")
@@ -24,6 +29,9 @@ public class EmployeesController {
 	
 	@Autowired
 	public EmployeesService employeesService;
+	
+	@Autowired
+	public UserService userService;
 	
 	
 	@RequestMapping(value = "/addEmployee",  method = RequestMethod.GET)
@@ -38,7 +46,6 @@ public class EmployeesController {
 		Employees  emp=	employeesService.addEmployee(employee);
 		return emp;
 	}
-	
 	
 	
 	@RequestMapping(value = "/updateEmployee", method = RequestMethod.GET)

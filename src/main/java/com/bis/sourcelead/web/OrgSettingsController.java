@@ -60,6 +60,7 @@ public class OrgSettingsController {
 	   try {
 		org = orgService.saveOrgSettings(orgSettings, request, org);
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+		
 	} catch (Exception e) {
 		e.printStackTrace();
 	}

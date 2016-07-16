@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,5 +53,31 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembers();
 		return projectMembersList;
 	}
+	
+	@Override
+	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+		logger.debug("In ProjectMembersServiceImpl class getAllProjectMembersByProjectId method...");
+		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectId(id);
+		return projectMembersList;
+	}
+
+	@Override
+	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		
+		List<Long> projectMembersList = projectMembersDao.getAllProjectMembersIdsByemployeeId(userId);
+		return projectMembersList;
+		
+	}
+	
+	
+	@Override
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
+		return projectMembersList;
+		
+	}
+	
 
 }

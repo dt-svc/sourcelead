@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 public class Constants {
 	
@@ -10,8 +11,11 @@ public class Constants {
 	public static String WAIT  = "W";
 	public static String REJECT  = "R";
 	public static String TEMP    = "T";
+	public static transient DateFormat STDF = new SimpleDateFormat("MM-dd-yyyy");
+	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static DateFormat DF_TM = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getTimeZone("America/Chicago");
 	public static int MAX_RESULTS_FIVE = 5;
 	public static int MAX_RESULTS_TEN = 10;
 	public static int MAX_RESULTS_TWENTY = 20;
@@ -28,6 +32,7 @@ public class Constants {
 	public static String ORG_REGISTRATION = "Org Registration";
 	public static String FORGOT_PASSWORD = "Forgot Password";
 	public static String UPDATE_PASSWORD = "Update Password";
+	public static String INVITE_USER = "Invite User";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";

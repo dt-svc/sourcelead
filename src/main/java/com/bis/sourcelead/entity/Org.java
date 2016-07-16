@@ -15,6 +15,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.bis.sourcelead.enums.Status;
 
 /**
@@ -69,6 +71,11 @@ public class Org {
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
+	
+	@Column(name = "ORG_DESCRIPTION")
+	@Type(type="text")
+	private String orgDescription;
+	
 
 	public Long getId() {
 		return id;
@@ -173,6 +180,14 @@ public class Org {
 
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+
+	public String getOrgDescription() {
+		return orgDescription;
+	}
+
+	public void setOrgDescription(String orgDescription) {
+		this.orgDescription = orgDescription;
 	}
 	
 	

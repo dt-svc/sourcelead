@@ -25,13 +25,27 @@ private String rate;			// Rate
 
 private String ratePer;			// Rate Per
 
-private String dateOfJoin;		// Date of Join
+private Date dateOfJoin;		// Date of Join
 
 private String role;			// Role
 
 private String invoiceFrequency; //Invoice Frequency
 
-private String dayHours;         // Day Hours
+private String dayHours; 
+// Day Hours
+
+
+private String dateString;
+
+
+
+public String getDateString() {
+	return dateString;
+}
+
+public void setDateString(String dateString) {
+	this.dateString = dateString;
+}
 
 public String getEmployeeId() {
 	return employeeId;
@@ -89,11 +103,11 @@ public void setRatePer(String ratePer) {
 	this.ratePer = ratePer;
 }
 
-public String getDateOfJoin() {
+public Date getDateOfJoin() {
 	return dateOfJoin;
 }
 
-public void setDateOfJoin(String dateOfJoin) {
+public void setDateOfJoin(Date dateOfJoin) {
 	this.dateOfJoin = dateOfJoin;
 }
 

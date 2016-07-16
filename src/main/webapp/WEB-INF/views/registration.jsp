@@ -108,7 +108,7 @@
 	            </span>
 	            <span id="companyWebsiteDiv">
 	            	<label>Company website</label>
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();"  field-name="Company Website" data-validation="required"  onblur="validateWebsite();"   class="signin_fild" />
+	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();"  field-name="Company Website" data-validation="required"    class="signin_fild" />
 	                <b></b>
 	            </span>
 	            <div class="clearfix"></div>
@@ -144,63 +144,6 @@
 		           <div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
 		           <input type="submit" value="Register" id="register_button" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div>   
 		    </div>
-       
-	           <%--  <div>
-	            <span>
-	            	<label>First Name</label>
-	                <input type="text" name="firstName"  value="${firstName}" class="signin_fild" required />
-	                <b></b>
-	            </span>
-	            <span>
-	            	<label>Last Name</label>
-	                <input type="text" name="lastName"  value="${lastName}" class="signin_fild" required />
-	                <b></b>
-	            </span>
-	            </div>
-	            
-	            <div>
-	            <span>
-	            	<label>Company Name</label>
-	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild" data-validation="required" />
-	                <b></b>
-	            </span>
-	            <div  id="companyWebsiteDiv">
-	            <span>
-	            	<label>Company website</label>
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"   onblur="validateWebsite();"   class="signin_fild" required />
-	                <b></b>
-	            </span>
-	            </div>
-	            </div>
-	            
-	            <div>
-	            <span>
-	            	<label>Company email</label>
-	                <input type="text" name="email" id="email"   onblur="validateCompanyEmail();"   value="${email}" class="signin_fild" required />
-	                <b></b>
-	            </span>
-	            <span>
-	            	<label>Select Country</label>
-	                <input id="company-autocomplete" name="country"  value="${country}" type="text" class="signin_fild signin_fild_arrow" required />
-	                <b></b>
-	            </span>
-	            </div>            
-	            
-	            <div id=passwordDiv>
-	            <span>
-	            	<label>Password</label>
-	                <input type="password" name="password"  value="${password}" id="password" class="signin_fild" required  onkeydown="$(this).clear();" />
-	                <b></b>
-	            </span>
-	            <span>
-	            	<label>Confirm password</label>
-	                <input type="password"  value="" id="confirmPassword" class="signin_fild"  onblur="$(this).checkPass();" required/>
-	                <b></b>
-	            </span>
-	            </div>  
-	            <div class="clearfix"></div>
-		    <div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
-		            <input type="submit" value="Register" id="register_button" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div> --%> 
 		   
 		   </form:form>        
         </div>            
@@ -236,31 +179,6 @@ function applyInputSlide() {
     });	    
 }
 </script>
-
-
-<!-- <script type="text/javascript">
-        $('#companyRegistration_form')
-           .submit(function(e) {
-        	    e.preventDefault(); 
-        	    var frm = $('#companyRegistration_form').serialize();
-        	    frm = "testvalue=testvalue&"+frm;
-        		var con = JSON.stringify(frm);
-        		var sourceleadUrl ='${sourceleadUrl}';
-                $.ajax({
-            	      type: "GET",
-            	      contentType : 'application/json; charset=utf-8',
-            	      dataType : 'json',
-                  	  url: sourceleadUrl+"/companyRegistration",
-                  	  data:con,
-                    	success: function(result) {
-			        	if((result == 'home')){
-			        		location.replace(sourceleadUrl+"/home");  
-			        	}
-			        },  
-                });
-            });
-</script> -->
-
 
 <script type="text/javascript">
 var validationSettings = {
@@ -300,16 +218,6 @@ var validationSettings = {
             });
          $('#companyRegistration_form').showHelpOnFocus();
             
-        // $('#companyRegistration_form').validateOnBlur(false, validationSettings); 
-         /*  var validationSettings = {
-	             errorMessagePosition : 'element',
-	            borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-            };         
-            
-	    $('#companyRegistration_form').showHelpOnFocus();
-        $('#companyRegistration_form').validateOnBlur(false, validationSettings);  */
      
 	</script>
 
