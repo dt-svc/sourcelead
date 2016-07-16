@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -77,6 +78,20 @@ public class TimesheetSubmissions {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
 	private User approverUserId;
+	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	@Column(name = "WEEK_COMMENTS")
+	@Type(type="text")
+	private String weekcomments;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -190,6 +205,38 @@ public class TimesheetSubmissions {
 
 	public void setApproverUserId(User approverUserId) {
 		this.approverUserId = approverUserId;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getWeekcomments() {
+		return weekcomments;
+	}
+
+	public void setWeekcomments(String weekcomments) {
+		this.weekcomments = weekcomments;
 	}
 
 	public String getStatus() {
