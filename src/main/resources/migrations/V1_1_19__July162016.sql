@@ -19,3 +19,6 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Hi{{TimesheetScheduler.FirstNam
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Hi {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\n\nYour timesheet have been approved by {{TimesheetApproved.ApproverFirstName}}{{TimesheetApproved.ApproverLastName}}  for the {{TimesheetApproved.WeekFrequency}}' WHERE `ID`='19';
 
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Hi {{TimesheetRejected.FirstName}} {{TimesheetRejected.FirstName}},\n\nYour timesheet has been rejected by {{TimesheetRejected.rejecteduserFirstName}} {{TimesheetRejected.rejecteduserLastName}} of {{TimesheetRejected.WeekFrequency}}\n\nfor the {{TimesheetRejected.ProjectName}} {{TimesheetRejected.Reason}}.' WHERE `ID`='21';
+
+ALTER TABLE `sourcelead`.`NOTIFICATIONS` 
+ADD COLUMN `NOTIFICATION_STATUS` VARCHAR(5) NULL AFTER `CREATED_BY`;
