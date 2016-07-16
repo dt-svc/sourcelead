@@ -46,6 +46,7 @@ import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -95,6 +96,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	private PasswordResetsSevice passwordResetsSevice;
@@ -220,17 +224,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				pm.setUpdatedDate(new Date());
 				projectMembersService.saveProjectMember(pm);
 			}
-			Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
-			if(tasksList != null && !tasksList.isEmpty()){
-				for(ProjectTasks task :tasksList){
-					task.setProjectId(updatedProjects);
-					task.setCreatedBy(approverUser.getCreatedBy());
-					task.setCreatedDate(new Date());
-					task.setUpdatedDate(new Date());
-					task.setUpdatedBy(approverUser.getCreatedBy());
-				}
-			}
-			projectTasksService.saveAll(tasksList);
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
 			return updatedProjects;
 	}
 	 

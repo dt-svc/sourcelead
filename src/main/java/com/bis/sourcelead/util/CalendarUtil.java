@@ -10,6 +10,7 @@ import java.util.TimeZone;
 public  class CalendarUtil {
 	
 	
+	
 	protected static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
         switch (day_Of_Week) {
@@ -25,6 +26,8 @@ public  class CalendarUtil {
                break;
            case "SAT":  day_offset = 6;
                  break;
+           case "SUN":  day_offset = 7;
+                break;
            default:   day_offset = 0;
                     break;
        }
@@ -102,6 +105,22 @@ public  class CalendarUtil {
 			nowCal.setTime(nowDate);
 			nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			return nowCal.getTime();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Calendar getCurrentWeekDayByCalendarForTimesheets(Calendar calendar,String day_Of_Week) {
+		int day_offset = getDayOffset(day_Of_Week);
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			String nowStr = sdf.format(calendar.getTime());
+			Date nowDate = sdf.parse(nowStr);
+			calendar.setTime(nowDate);
+			calendar.set(Calendar.DAY_OF_WEEK, day_offset);
+			return calendar;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

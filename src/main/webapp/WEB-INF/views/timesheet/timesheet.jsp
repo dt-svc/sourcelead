@@ -397,12 +397,12 @@ function maskme(){
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
 	    	 </div>
-             <div id="divadttTd9" style="display:none;">
+             <!-- <div id="divadttTd9" style="display:none;">
 				  <input type="text"  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment8Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id"></textarea></span></div>  
-             </div>
+             </div> -->
       
       
 <!--   Responsive  --> 
@@ -745,11 +745,11 @@ function addTimeSheetRow(submissionId,projectId) {
 			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
 			cell7.innerHTML = divadttTd7Str;
 
-			var cell8 = row.insertCell(8);
+			/* var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
             divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
-			cell8.innerHTML = divadttTd8Str;
+			cell8.innerHTML = divadttTd8Str; */
 			
 			
 			maskme();   

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -118,18 +119,6 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
           return date;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions(Date startDate , Date endDate , Long  userId) throws Exception {
-			
-		    // TODO Auto-generated method stub
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from TimesheetSubmissions ts ";  
-			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).list();
-			return timesheetSubmissionsList;
-			
-			/*and (DATE(ts.endDate) BETWEEN :startDate and :endDate)*/
-	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -204,7 +193,48 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 					                                                      .setParameter("startDate", startDate).list();
 		  return timesheetSubmissionsList1;
    }
+
+
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long  userId) throws Exception {
+			
+		    // TODO Auto-generated method stub
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.user.id = :userId and ts.startDate = :startDate ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).list();
+			return timesheetSubmissionsList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.projectMembers.emp.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		  List results = session.createQuery(query).setLong("userId", userId).list();
+													
+		  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  Object[] list = (Object[])result;
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)list[0];
+				  java.sql.Timestamp endDateTimeStamp = (java.sql.Timestamp)list[1];
+				
+				  Date utilStartDate = new Date(startDateTimeStamp.getTime());
+				  Date utilEndDate = new Date(endDateTimeStamp.getTime());
+				  dateList.put("STARTDATE",utilStartDate);
+				  dateList.put("ENDDATE",utilEndDate);
+			  }
+		  }
+		 return dateList;
+	}
 		
 	
 }
