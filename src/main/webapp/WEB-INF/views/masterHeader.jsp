@@ -166,7 +166,7 @@
               </ul>
             </div>
           </li>
-          <li><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}" width="18px" height="18px"></a></li>
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}"></a></li>
         </ul>
       </div>
     </nav>
@@ -186,5 +186,5 @@ function notificationStatusAsRead(){
 	});  
 }
 </script>
-}
+
   <!-- Header Area --> 
