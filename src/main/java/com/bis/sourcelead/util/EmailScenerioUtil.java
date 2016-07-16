@@ -125,6 +125,7 @@ public void sendNotification(String actionLink,User loginUser,EmailScenario emai
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(emailScenario.getLocationCode());
 	notification.setOrgCode(emailScenario.getOrgCode());
+	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	
 	Notifications notification1 = notificationsService.saveNotification(notification);
 	

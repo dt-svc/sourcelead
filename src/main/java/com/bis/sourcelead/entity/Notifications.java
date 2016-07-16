@@ -74,6 +74,16 @@ public class Notifications {
 	private Long calDays;
 
 	
+	
+	
+	public String getNotificationStatus() {
+		return notificationStatus;
+	}
+
+	public void setNotificationStatus(String notificationStatus) {
+		this.notificationStatus = notificationStatus;
+	}
+
 	public Long getCalDays() {
 		return calDays;
 	}
