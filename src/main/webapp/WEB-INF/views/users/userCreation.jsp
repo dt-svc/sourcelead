@@ -173,6 +173,9 @@
 				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
 				                        <option>Daily</option>
+				                        <option>Weekly</option>
+				                        <option>Bi-Weekly</option>
+				                        <option>Semi-Monthly</option>
 				                        <option>Monthly</option>
 				                        <option>Yearly</option>
 			                         </select>
