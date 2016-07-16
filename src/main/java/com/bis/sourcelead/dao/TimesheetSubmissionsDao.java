@@ -29,6 +29,6 @@ public interface TimesheetSubmissionsDao {
     
     public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
 
-   
-   
+     
+    public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId ,String approvalStatus)throws Exception; 
 }

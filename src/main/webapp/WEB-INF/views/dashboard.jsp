@@ -32,7 +32,7 @@
 			</span>
             <div class="info-box-content text-center">
               <p class="info-box-text">Saved</p>
-              <p class="info-box-number">1000</p>
+              <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
         </div>
@@ -46,7 +46,7 @@
 			</span>
             <div class="info-box-content text-center">
               <p class="info-box-text">Waiting</p>
-              <p class="info-box-number"><strong>90</strong></strong></p>
+              <p class="info-box-number"><span  id="waitingTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@
 			</span>
             <div class="info-box-content text-center">
               <p class="info-box-text">Approved</p>
-              <p class="info-box-number"><strong>900</strong></strong></p>
+              <p class="info-box-number"><span id="approvalTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@
 			</span>
             <div class="info-box-content text-center">
               <p class="info-box-text">Rejected</p>
-              <p class="info-box-number"><strong>10</strong></strong></p>
+              <p class="info-box-number"><span id="rejectedTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
         </div>
@@ -119,5 +119,64 @@
 		<!-- Pie chart -->
   </section>
   <!-- Content Area Ends-->
+  
+  
+  
+  <script> 
+$(document).ready(function(){
+	
+	timeSheetSubmissionStatusCount();
+	
+});
+</script>
+  
+
+<script type="text/javascript">
+
+
+function timeSheetSubmissionStatusCount(){
+		 $.ajax({
+		    	type: "GET",
+		        url: "http://localhost:8080/sourcelead/getTimeSheetSubmissionStatus", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	
+		        	var  savedTimesheetsSubmissionsCount = json[0];
+		        	var  waitingTimesheetsSubmissionsCount = json[1];
+		        	var  approvalTimesheetsSubmissionsCount = json[2];
+		        	var  rejectedTimesheetsSubmissionsCount = json[3];
+		        	
+		        	
+		        	if(savedTimesheetsSubmissionsCount>0){
+	                      $("#savedTimesheetsSubmissionsCount").text(savedTimesheetsSubmissionsCount);
+	                  }else{
+	                      $("#savedTimesheetsSubmissionsCount").html("0");
+	                      $("#savedTimesheetsSubmissionsCount").removeAttr("href");
+	                  }
+		        	if(waitingTimesheetsSubmissionsCount>0){
+	                      $("#waitingTimesheetsSubmissionsCount").text(waitingTimesheetsSubmissionsCount);
+	                  }else{
+	                      $("#waitingTimesheetsSubmissionsCount").html("0");
+	                      $("#waitingTimesheetsSubmissionsCount").removeAttr("href");
+	                  }
+		        	if(approvalTimesheetsSubmissionsCount>0){
+	                      $("#approvalTimesheetsSubmissionsCount").text(approvalTimesheetsSubmissionsCount);
+	                  }else{
+	                      $("#approvalTimesheetsSubmissionsCount").html("0");
+	                      $("#approvalTimesheetsSubmissionsCount").removeAttr("href");
+	                  }
+		        	if(rejectedTimesheetsSubmissionsCount>0){
+	                      $("#rejectedTimesheetsSubmissionsCount").text(rejectedTimesheetsSubmissionsCount);
+	                  }else{
+	                      $("#rejectedTimesheetsSubmissionsCount").html("0");
+	                      $("#rejectedTimesheetsSubmissionsCount").removeAttr("href");
+	                  }
+		        	
+		 		}
+		  });
+		 
+	}
+
+</script>
 
 <jsp:include page="masterFooter.jsp" />

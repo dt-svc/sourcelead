@@ -81,7 +81,17 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(projectMemberId,userId,startDate);
 		return list;
 	}
+	
 
+
+	
+
+	@Override
+	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
+		
+		Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
+		return approvalStatusCount;
+	}
 	
 	
 	
