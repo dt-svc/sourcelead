@@ -19,4 +19,8 @@ public interface NotificationsService {
 
 	Integer updateNotificationStatusAsRead(Long userId, String orgCode, String locationCode);
 
+	Integer updateNotificationDeleteStatus(Long notificationId, String orgCode, String locationCode);
+
+	List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode);
+
 }
