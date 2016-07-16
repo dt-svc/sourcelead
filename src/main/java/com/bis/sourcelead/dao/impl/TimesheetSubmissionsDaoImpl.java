@@ -156,6 +156,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				
 			    
 				for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
+					if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
 					combinedTotalHours = combinedTotalHours + Long.parseLong(ts1.getTotalHours());
 					if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 						isRejected   = true;  
@@ -177,6 +178,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				}
 				ts.setCombinedTotalHours(combinedTotalHours.toString());
 				ts.setCombinedStatus(status);
+			}
 			}
 			
 			
@@ -204,6 +206,24 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 					                                                      .setParameter("startDate", startDate).list();
 		  return timesheetSubmissionsList1;
    }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
+		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
+		      
+		
+	    return tslist.size();
+		  
+		
+	}
+	
+	
 	
 		
 	

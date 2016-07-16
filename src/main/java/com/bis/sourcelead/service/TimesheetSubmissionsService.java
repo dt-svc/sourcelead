@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.aop.ThrowsAdvice;
+
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimesheetSubmissionsService {
@@ -25,4 +27,6 @@ public interface TimesheetSubmissionsService {
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
     public Date getNextMondayByProjectMemberId(Long pojectMemberId);
+    
+    public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus)throws Exception; 
 }
