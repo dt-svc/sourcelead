@@ -62,19 +62,21 @@ public class LoginSessionController {
 		}
 		
 		ModelAndView model = new ModelAndView();
-		//get notification count
-		String orgCode = Constants.SOURCELEAD_ORGCODE;
-		String locationCode = Constants.SOURCELEAD_LOCATIONCODE_IN;
-		Long scenarioId = 8L;
-		Integer notificationCount = notificationsService.getNotificationsCountByUserId(scenarioId,orgCode,locationCode);
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
+		Integer notificationCount = notificationsService.getNotificationsCountByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
 		model.addObject("notificationCount", notificationCount);
 		
 		// get notification list by user id
-		Long notificationTo = 2L;
-		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
-		calculateDays(notificationList);
+		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
+		if(notificationList!=null){
+			calculateDays(notificationList);
+		}
 		model.addObject("notificationList", notificationList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgCode", orgLocations.getOrg().getOrgCode());
+		model.addObject("locationCode", locationCode);
 		model.setViewName("home");
 	    return model;
 		

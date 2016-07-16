@@ -58,6 +58,9 @@ public class Notifications {
 	@Column(name="CREATED_BY")
 	private String createdBy;
 	
+	@Column(name="NOTIFICATION_STATUS")
+	private String notificationStatus;
+	
 	//to get only time from datetime
 	@Transient
 	private String time;
