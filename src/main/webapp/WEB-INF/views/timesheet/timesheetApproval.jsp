@@ -772,8 +772,8 @@ function saveRejectSubmission(local,employeeId,startDate,endDate){
          $.ajax({
          type: "POST",
          url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
-         success: function(data) {
-         			
+         success: function(data) {   alert("one");
+        	    approvalList();
          }
          });
 	     
@@ -802,6 +802,8 @@ function approveSubmission(employeeId,startDate,endDate){
 	    type: "POST",
 	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
+	    	alert("approve");
+	    	  approvalList();
 	    }
 	    });
 }

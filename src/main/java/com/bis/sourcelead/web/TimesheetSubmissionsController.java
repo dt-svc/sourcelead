@@ -105,7 +105,7 @@ public class TimesheetSubmissionsController {
 	             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
         	}  
         }
-        return null;
+        return "success";
     }
 	
 	
