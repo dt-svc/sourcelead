@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
 import com.bis.sourcelead.service.UserService;
 
@@ -56,6 +57,15 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole()); 
+        		  if(user.getUserState().equals(Status.NOT_LOGGEDIN)){
+        			  user.setUserState(Status.ACTIVE);
+        			  try {
+						userService.addUser(user);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+        		  }
+        		  
         		  return new UsernamePasswordAuthenticationToken(username, password, authorities);
         	  }
         	  else{

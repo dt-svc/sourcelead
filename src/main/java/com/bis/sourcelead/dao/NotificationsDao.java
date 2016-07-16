@@ -13,4 +13,9 @@ public interface NotificationsDao {
 	List<Notifications> getNotificationsListByUserId(Long notificationTo, String orgCode, String locationCode);	
 	
 	Integer updateNotificationStatusAsRead(Long userId, String orgCode, String locationCode);
+	
+	Integer updateNotificationDeleteStatus(Long notificationId, String orgCode, String locationCode);
+
+	List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode);
+	
 }

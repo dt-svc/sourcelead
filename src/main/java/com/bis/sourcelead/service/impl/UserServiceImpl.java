@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		userRole.setRoles(roles);
-		userRole.setIsPrimary(0);
+		userRole.setIsPrimary(1);
 		userRole.setCreatedDate(new Date());
 		userRole.setCreatedBy(userCode);
 		return userRole;
@@ -249,7 +249,8 @@ public class UserServiceImpl implements UserService {
 		return pm;
 	}
 	
-	private void sendEmail(User user, User loginUser,String password) throws Exception {
+	@Override
+	public void sendEmail(User user, User loginUser, String password) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());

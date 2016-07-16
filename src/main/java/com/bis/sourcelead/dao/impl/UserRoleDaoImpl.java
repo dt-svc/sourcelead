@@ -85,6 +85,8 @@ public class UserRoleDaoImpl implements UserRoleDao{
 			roleId = 1L;
 		}else if(roleName.equalsIgnoreCase("User")){
 			roleId = 2L;
+		}else if(roleName.equalsIgnoreCase("Approver")){
+			roleId = 3L;
 		}
 		
 		String subQuery = "";
@@ -128,6 +130,8 @@ public class UserRoleDaoImpl implements UserRoleDao{
 			roleId = 1L;
 		}else if(roleName.equalsIgnoreCase("User")){
 			roleId = 2L;
+		}else if(roleName.equalsIgnoreCase("Approver")){
+			roleId = 3L;
 		}
 		
 		String subQuery = "";

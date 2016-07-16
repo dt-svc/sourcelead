@@ -48,6 +48,7 @@ window.onload = function () {
 				<option value="All" >All Roles</option>
 				<option value="Administrator" >Administrator</option>
 				<option value="User">User</option>
+				<option value="Approver">Approver</option>
 				</select>
 		   </li>
 		  
@@ -109,6 +110,18 @@ window.onload = function () {
 	       	    	result = result +"<div class='text-center image'>";
 	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
 	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
+	       	    	
+	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N'){
+	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
+	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
+	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
+	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='#' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
+	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
+	 			    	result = result +"<br/><span class='label label-success'>Active</span>";
+	 			    }else{
+	 			    	result = result +"<br/><span class='label label-danger'>Inactive</span>";
+	 			    }
+	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-sm-8'>";
@@ -138,6 +151,20 @@ window.onload = function () {
 	}
 </script>
 
-  
 
+<script type="text/javascript">
+function resendInvitation(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != ""){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        success: function(result) {
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        },
+			    });
+		 }
+	}
+  
+</script>
     

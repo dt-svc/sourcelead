@@ -102,6 +102,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 					role.setUserRoleName("Administrator");
 				}else if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_USER")){
 					role.setUserRoleName("User");
+				}else if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_APPROVER")){
+					role.setUserRoleName("Approver");
 				}
 				userRolesList.add(role);
 			}

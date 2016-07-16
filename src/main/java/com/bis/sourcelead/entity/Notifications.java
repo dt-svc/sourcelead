@@ -58,6 +58,9 @@ public class Notifications {
 	@Column(name="CREATED_BY")
 	private String createdBy;
 	
+	@Column(name="NOTIFICATION_STATUS")
+	private String notificationStatus;
+	
 	//to get only time from datetime
 	@Transient
 	private String time;
@@ -71,6 +74,16 @@ public class Notifications {
 	private Long calDays;
 
 	
+	
+	
+	public String getNotificationStatus() {
+		return notificationStatus;
+	}
+
+	public void setNotificationStatus(String notificationStatus) {
+		this.notificationStatus = notificationStatus;
+	}
+
 	public Long getCalDays() {
 		return calDays;
 	}

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -15,6 +16,8 @@ public interface UserService  {
 	public User addUser(User user) throws Exception;
 	
 	public void createUser(JSONObject jsonObj, User user, Long orgLocationsId) throws Exception;
+	
+	public void sendEmail(User user, User loginUser, String password) throws Exception;
 	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
