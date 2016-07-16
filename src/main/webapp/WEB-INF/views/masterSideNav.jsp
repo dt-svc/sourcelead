@@ -3,13 +3,7 @@
   <aside class="side-bar">
     <div class="side-bar-inner">
       <div class="user-panel">
-        <div class="media">
-         <!--  <div class="media-left image"> <img src="resources/images/pratap-bis.jpg" alt="Admin" title="admin" class="img-circle"> </div>
-          <div class="media-body">
-            <p>Pratap Reddy</p>
-            <p>Admin</p>
-          </div> -->
-          
+        <%-- <div class="media">
            <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		        <div class="media-left image"><img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" /></div>
 		   </c:if>
@@ -19,8 +13,24 @@
 	        	   <font color="white">${SourceLeadWeb_orgName}</font>
 	        	</a>   
 	       </c:if> 	
-	       
-        </div>
+        </div> --%>
+        
+	<div class="media">
+		<div class="media-body">
+			 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+				<div class="image">
+				<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+				</div>
+			</c:if>
+			<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				<div class="text-logo">
+				<span>${SourceLeadWeb_orgName}</span>
+				</div>
+			</c:if>
+		 </div>
+	 </div>
+
+        
       </div>
       <div class="side-nav">
         <ul class="list-unstyled">
