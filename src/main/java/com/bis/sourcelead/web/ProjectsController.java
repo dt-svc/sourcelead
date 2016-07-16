@@ -136,7 +136,7 @@ public class ProjectsController {
 		 	
 		 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectId"));
+	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
 	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
 	    	projects.setStartDate(new Date());
@@ -195,30 +195,31 @@ public class ProjectsController {
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
 			}
 			
-			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
-			int empMaxCount = Integer.parseInt(employeeMaxCount);
-			for (int c = 1; c < empMaxCount; c++) {
-				
-				ProjectMembers pm = new ProjectMembers();
-				
-				Employees emp = new Employees();
-				emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
-				pm.setEmployee(emp);
-				
-				pm.setProjects(projects);
-				
-				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
-				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
-				pm.setCreatedDate(new Date());
-				pm.setUpdatedDate(new Date());
-				
-				projectMembersService.saveProjectMember(pm);
-			}
-			
+			if (jsonObj.has("employeeMaxCount")){
+				String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+				if(!jsonObj.getString("employeeMaxCount").isEmpty()){
+						int empMaxCount = Integer.parseInt(employeeMaxCount);
+						for (int c = 1; c < empMaxCount; c++) {
+							
+							ProjectMembers pm = new ProjectMembers();
+							Employees emp = new Employees();
+							emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
+							pm.setEmployee(emp);
+							pm.setProjects(projects);
+							pm.setCreatedDate(new Date());
+							pm.setUpdatedDate(new Date());
+							projectMembersService.saveProjectMember(pm);
+					    }
+				 }
+		    }
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
 			 resultJson = toJSON(tasksList);
-			 return resultJson;
+			 
+			 
+			 return "projectDashboard";
+			 
+			 
 	   }
 	 
 	 
@@ -343,7 +344,9 @@ public class ProjectsController {
 			User  usr=	userService.addUser(user);
 			
 			employee.setUser(user);
-			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			if(!jsonObj.getString("invoiceFrequency").isEmpty()){
+				employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			}
 			employee.setCreatedDate(new Date());
 			Employees  emp=	employeesService.addEmployee(employee);
 			
@@ -373,14 +376,48 @@ public class ProjectsController {
 			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
 	}
 	 
-	@RequestMapping(value = "/getEmailVerification",  method = RequestMethod.POST)
-	public @ResponseBody  User getEmailVerification(@RequestParam(value="email", required=false) String email) throws Exception {
+	 //to  validate user email
+	 @RequestMapping(value = "/getEmailVerification" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
 		 	
-			User user  = userService.findByEmail(email);
-			return user;
-		  
-	}
+		 	String result = null;
+		 	User user = userService.findByEmail(EmailId);
+		 	
+		 	if (user != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 
+	//to validate Project SequeneNumber
+		 @RequestMapping(value = "/validateProjectSequeneNumberById" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
+			 	
+				return flag;
+		   }
+
+	//Validate for Cilent Website
+	 @RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
+	   public @ResponseBody String validateOrgWebsite(
+	   		@RequestParam(value="website", required=false) String website,
+	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
+		
+			String status = null;
+		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+			if (orgInfo != null) {
+				status = "success";
+			}
+			else{
+				status = "failure";
+			}
+			
+	    return status;
+	   }
+		 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

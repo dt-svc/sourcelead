@@ -501,6 +501,8 @@ function projectEmployee(projectId){
 
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){
+	
+	alert("sdddd");
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
 	 $.ajax({
