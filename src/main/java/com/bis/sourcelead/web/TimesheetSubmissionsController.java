@@ -1,6 +1,11 @@
 package com.bis.sourcelead.web;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +107,39 @@ public class TimesheetSubmissionsController {
         }
         return null;
     }
+	
+	
+	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
+    public void downloadDocument(@RequestParam(value="submissionId", required=false) Long submissionId ,HttpServletResponse response) throws Exception {
+		
+		    TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+		    
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("Content-Disposition",
+	                "attachment;filename="+timesheetSubmissions.getFileName());
+		    
+			InputStream inputStream = new ByteArrayInputStream(timesheetSubmissions.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}  
+		 
 
 	
 	@RequestMapping(value = "/timesheetApproval")
