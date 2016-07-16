@@ -12,6 +12,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
+<link href="css/jquery-ui.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
@@ -61,12 +63,12 @@
 		                <div class="row">
 		                  <div class="col-lg-6">
 		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required">
+		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly">
 		                    </div>
 		                  </div>
 		                  <div class="col-lg-6">
 		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" data-validation="required">
+		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly">
 		                    </div>
 		                  </div>
 		                  <span class="hidden">Enter Project Id</span> </div>
@@ -197,7 +199,7 @@
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="DateofJoin" class="form-control" id="">
+                              <input type="text" value="" name="DateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
                               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                            </div>
                         </div>
@@ -251,15 +253,23 @@
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
-                    <label class="radio-inline">
-                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);">Admin
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);">Approver/Manager
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
-                    </label>
+                   <c:if test="${SourceLeadWeb_userType == 'Admin'}">
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);">Admin
+	                    </label>
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);">Approver/Manager
+	                    </label>
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
+	                    </label>
+                    </c:if>
+                    
+                    <c:if test="${SourceLeadWeb_userType == 'Approver'}">
+                         <label class="radio-inline">
+	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
+	                    </label>
+                    </c:if>
                     <span class="hidden">Select Role</span> 
                     <input type="hidden" name="roleType" id="roleValue" field-name="Role" data-validation="required" />
                     
@@ -453,6 +463,8 @@ function flushProject(){
 		 var frm = $('#createUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#create_user").attr("disabled", "disabled");
+     		$( "#create_user" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
@@ -589,3 +601,34 @@ function flushProject(){
 	 }
  }
  </script> 
+ 
+
+<script>
+  $( function() {
+	  
+	  $('#DateofJoin').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+	  $('#StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	  
+  } );
+</script>
+

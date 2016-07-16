@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
@@ -20,15 +21,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -57,6 +61,9 @@ public class UserController {
 	
 	@Autowired
 	EmployeesService employeesService;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	
 	@RequestMapping(value = "/userCreation")
@@ -92,8 +99,25 @@ public class UserController {
 	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
 	    	projects.setProjectStatus(Project_Status.STARTED);
-	    	projects.setStartDate(new Date());
-	    	projects.setEndDate(new Date());
+	    	
+	    	if(jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))){
+				try {
+					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					   projects.setStartDate(sdf.parse(jsonObj.getString("StartDate")));
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}
+	    	
+	    	if(jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))){
+				try {
+					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					   projects.setEndDate(sdf.parse(jsonObj.getString("EndDate")));
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}
+	    	
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
 	    	Projects updatedProjects = projectsService.saveProject(projects);
@@ -185,6 +209,27 @@ public class UserController {
 		 	
 			return flag;
 	   }
+	 
+	 
+	    //to re send email to user
+		 @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    //get user by userId
+			    User user = userService.getUserById(Long.parseLong(userId));
+			    
+			    //generate random password
+			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		 		if(user != null){
+		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		 			user.setIsMailSent(Status.Y);
+		 			userService.addUser(user);
+		 			userService.sendEmail(user,loginUser,password);
+		 		}
+			
+		 	  return "success";
+		   }
 
 
 	 private String toJSON(Object obj){
@@ -195,4 +240,8 @@ public class UserController {
 	        });
 	        return xstream.toXML(obj);
 	    }
+	 
+	 protected static boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
 }
