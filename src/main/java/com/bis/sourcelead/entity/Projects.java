@@ -124,8 +124,14 @@ public class Projects {
     private String[] projectManagerName;
     
     @Transient
+    private String[] clientName;
+    
+    
+    @Transient
     Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList;
     
+    @Transient
+    Collection<OrgRelations> clientList;
 
 	public Long getId() {
 		return id;
@@ -343,6 +349,14 @@ public class Projects {
 		this.projectManagerName = projectManagerName;
 	}
 
+	public String[] getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String[] clientName) {
+		this.clientName = clientName;
+	}
+
 	public Collection<ProjectApproverHierarchy> getProjectApproverHierarchiesList() {
 		return projectApproverHierarchiesList;
 	}
@@ -350,5 +364,12 @@ public class Projects {
 	public void setProjectApproverHierarchiesList(Collection<ProjectApproverHierarchy> projectApproverHierarchiesList) {
 		this.projectApproverHierarchiesList = projectApproverHierarchiesList;
 	}
-	
+
+	public Collection<OrgRelations> getClientList() {
+		return clientList;
+	}
+
+	public void setClientList(Collection<OrgRelations> clientList) {
+		this.clientList = clientList;
+	}
 }

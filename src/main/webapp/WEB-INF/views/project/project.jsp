@@ -210,7 +210,7 @@
                 <div class="form-icon">
                   <select class="form-control select-bg" name="selectClient" id="addClientId">
                   <option value=''>-- Select Client --</option>
-                  <c:forEach var="option" items="${add_client}">
+                  <c:forEach var="option" items="${add_clientList}">
   						<option value="${option.id}">${option.orgName}</option>
 				  </c:forEach>
                   </select>

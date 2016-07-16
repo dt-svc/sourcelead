@@ -427,7 +427,7 @@ function projectEmployee(projectId){
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>'+json.status+'</b><i id="ac-drop" class="fa fa-edit">';
+	result = result + '					<strong>Status:</strong><span><b>'+json.projectStatus+'</b><i id="ac-drop" class="fa fa-edit">';
 	result = result + '						<ul>';
 	result = result + '							<li>Option 1</li>';
 	result = result + '							<li>Option 2</li>';
@@ -456,16 +456,28 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-	result = result + '					<span><input type="text" value="Cognizant" placeholder="Client" class="project_detfield"></span><div class="clearfix"></div>';
+		result = result + '<select>';
+					for (var i = 0; i < json.clientName.length; i++) {
+						
+						var managers = json.clientName[i];
+						var projrctmanager = managers.split('&');
+				    	var name = projrctmanager[0];
+				    	var id = projrctmanager[1];
+						result = result+"<option value="+id+">"+name+"</option>";
+					}
+		result = result + '</select>';
+	
+	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Team members:</strong><span>25</span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
 	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	result = result + '				<div class="projmaxTsRowNumect_details_cta">';
+	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
 	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';

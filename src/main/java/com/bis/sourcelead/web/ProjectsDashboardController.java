@@ -20,12 +20,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -67,6 +71,12 @@ public class ProjectsDashboardController {
 	
 	@Autowired
 	public ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	 @Autowired
+	 private OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
 	 
 	 /**
 	  * This method for get project by id
@@ -95,13 +105,17 @@ public class ProjectsDashboardController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception{ 
+	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		 Projects projects = projectsService.getProjectById(projectId);
+		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		   OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
 		    projects.setCreatedDateStr(Constants.DF_STD.format(projects.getCreatedDate()));
 		    projects.setStartDateStr(Constants.DF_STD.format(projects.getStartDate()));
 		    projects.setEndDateStr(Constants.DF_STD.format(projects.getEndDate()));
 		    projects.setUpdatedDateStr(Constants.DF_STD.format(projects.getUpdatedDate()));
-		   
+		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
 		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 		    String[] approvers = new String[projectApproverHierarchies.size()];
 		    int i = 0;
@@ -111,6 +125,16 @@ public class ProjectsDashboardController {
 		    }
 		    projects.setProjectManagerName(approvers);
 		    
+		    
+		    Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+		    String[] clientList = new String[orgClientList.size()];
+		    int j = 0;
+			for(OrgRelations ocl :orgClientList){
+				clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getClientLocationId().getOrg().getId();
+				j++;
+			 }
+			projects.setClientName(clientList);
+			
 		    ObjectMapper mapper = new ObjectMapper();
             String jsonInString = mapper.writeValueAsString(projects);
 			return jsonInString;
