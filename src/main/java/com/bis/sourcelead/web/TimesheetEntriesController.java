@@ -530,7 +530,7 @@ public class TimesheetEntriesController {
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
-			sb.append("     	<textarea style='border: none;background: transparent;color: #333;disabled  name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+			sb.append("     	<textarea disabled style='border: none;background: transparent;color: #333;disabled  name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
 			sb.append("         <span>");
 			sb.append("         	<a href='http://localhost:8080/sourcelead/downloadDocument?submissionId="+tsFirst.getId()+"'><i class='glyphicon glyphicon-save'></i> Download</a>");
 			sb.append("         </span>");

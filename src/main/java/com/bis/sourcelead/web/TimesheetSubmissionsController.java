@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -96,10 +97,11 @@ public class TimesheetSubmissionsController {
         	for(TimesheetSubmissions timesheetSubmissions :timesheetSubmissionsList){
 	             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
 	            	 	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+	            	 	timesheetSubmissions.setSubmissionStatus(Submission_Status.REJECTED);
 	            	 	timesheetSubmissions.setRejectedReason(rejectedReason);
 	             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
-	                 
 	            	 timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
+	            	 timesheetSubmissions.setSubmissionStatus(Submission_Status.APPROVED);
 	             }
 	             
 	             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
