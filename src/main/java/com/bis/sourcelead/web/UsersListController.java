@@ -22,6 +22,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -48,6 +50,16 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
 		return model;
 
 	}
