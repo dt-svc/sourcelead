@@ -17,13 +17,13 @@
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
 	 var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: "http://localhost:8080/sourcelead/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
+		        url: sourceleadUrl+"/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
 		        success: function(data) {
-		        	alert("data"+data);
 		        	if(data == true){
 						  $("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");
 						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist','yes');
@@ -531,9 +531,10 @@ $(document).ready(function(){
 			 if ($('#addClient_form').validate(false, validationSettings)){
 			     var frm = $('#addClient_form').serializeFormJSON();
 			        var con = JSON.stringify(frm);
+			        var sourceleadUrl ='${sourceleadUrl}';
 			        $.ajax({
 				    	type: "GET",
-				        url: "http://localhost:8080/sourcelead/saveOrgRelations?json="+con, 
+				        url: sourceleadUrl+"/saveOrgRelations?json="+con, 
 				        success: function(data) {
 				        	var json = JSON.parse(data);
 				        	var output = "";
@@ -578,9 +579,10 @@ $(document).ready(function(){
  if ($('#project_form').validate(false, validationSettings)){
 	 var frm = $('#project_form').serializeFormJSON();
      var con = JSON.stringify(frm);
+     var sourceleadUrl ='${sourceleadUrl}';
      $.ajax({
 	    	type: "POST",
-	        url: "http://localhost:8080/sourcelead/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(result) {
 	        	if(result == 'projectDashboard'){
 	        		location.replace("http://localhost:8080/sourcelead/projectDashboard");  
@@ -609,12 +611,12 @@ function addEmployee() {
 					dateFormat : 'yyyy/mm/dd' 
 		   }; 
 		 if ($('#addEmployee_form').validate(false, validationSettings)){
-			 alert("ofter");
 			var frm = $('#addEmployee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 				type: "POST",
-				url: "http://localhost:8080/sourcelead/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
+				url: sourceleadUrl+"/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
 			    	},
 				});
@@ -631,9 +633,10 @@ $('body').on('blur', '#addEmployee_form', function() {
 
 <script type="text/javascript">
 function getTeamMembers() {
+	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
     	type: "POST",
-        url: "http://localhost:8080/sourcelead/getEmployeesList?${_csrf.parameterName}=${_csrf.token}", 
+        url: sourceleadUrl+"/getEmployeesList?${_csrf.parameterName}=${_csrf.token}", 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
@@ -706,11 +709,12 @@ function assignEmployee(){
 <script type="text/javascript">
  function emailVerification() {
 	 var EmailId = document.getElementById("EmailId").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: "http://localhost:8080/sourcelead/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
@@ -729,7 +733,7 @@ function assignEmployee(){
  
  <script type="text/javascript">
 function validateWebsite(){
-      var website = document.getElementById("companyWebsite").value; 
+     var website = document.getElementById("companyWebsite").value; 
      var sourceleadUrl ='${sourceleadUrl}';
      var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
 	 $('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
@@ -739,7 +743,7 @@ function validateWebsite(){
 		 $( "#save_client" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: "http://localhost:8080/sourcelead/ws/validateClientWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/ws/validateClientWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 		        		if(result == "success"){

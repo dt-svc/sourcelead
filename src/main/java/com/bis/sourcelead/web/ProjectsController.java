@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,10 +68,15 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class ProjectsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
-	@Autowired
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	 @Autowired
 	 EmailScenarioService emailScenarioService;
 	
 	 @Autowired
@@ -124,6 +131,7 @@ public class ProjectsController {
 				model.addObject("user_List", userList);
 				
 				model.setViewName("project/project");
+				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
 	 
