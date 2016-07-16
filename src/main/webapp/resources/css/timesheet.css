@@ -155,6 +155,15 @@ body {
 	width:60px !important; width:60%; padding:2px 5px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
 	font-weight:500; color:#454545;
 	}
+.inline_field_withoutMask {
+	width:60px !important; width:60%; padding:2px 5px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
+	font-weight:500; color:#454545;
+}
+
+.timesheet_week_comm .glyphicon-save{
+	  padding: 0px 0px 0px 5px;display: inline-block;
+}
+
 .inline_field:focus {
 	width:60px !important; width:60%; padding:1px 5px; font-size:13px; border:1px solid #dedede; overflow: hidden; background-color:#fff;
 	}
