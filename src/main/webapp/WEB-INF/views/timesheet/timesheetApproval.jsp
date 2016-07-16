@@ -582,6 +582,7 @@ function myTimesheet(local,startDate,endDate){
               $("#myId").empty();
               $("#myId").append(data); 
               maskme();   
+              $("html").trigger('click');
     }
     });
     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -772,7 +773,7 @@ function saveRejectSubmission(local,employeeId,startDate,endDate){
          $.ajax({
          type: "POST",
          url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
-         success: function(data) {   alert("one");
+         success: function(data) {    
         	    approvalList();
          }
          });
@@ -802,7 +803,6 @@ function approveSubmission(employeeId,startDate,endDate){
 	    type: "POST",
 	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
-	    	alert("approve");
 	    	  approvalList();
 	    }
 	    });
@@ -942,11 +942,56 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
 });	
-	
-
-
-
 </script>	
+
+
+<script type="text/javascript">	
+
+$(document).click(function(){    
+	var total;
+	var grandTotal;
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+	 for (var p = 1; p < 8; p++){  
+		 for (var j = 1; j < 8; j++){
+			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+		 
+	    var t = bsum; 
+	    grandTotal = grandTotal+bsum;
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		total = hours +":"+ minutes;
+ }  
+	 $("#rowTotal"+i+"Id").val(total);
+}
+	 
+	 var grandhours = Math.floor(grandTotal / 60); 
+	 var grandminutes = grandTotal % 60;
+	 grandTotal = grandhours +":"+ grandminutes;
+	 $("#grandTotal").val(grandTotal);
+	
+	 
+	
+});
+
+</script>
+
 
 
 

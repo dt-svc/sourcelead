@@ -390,9 +390,9 @@ public class TimesheetEntriesController {
         sb.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,4).getTime())+"</i></th>"); 
         sb.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,5).getTime())+"</i></th>"); 
         sb.append("<th>Sun<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,6).getTime())+"</i></th>");
-        sb.append("<th>Total Hours</th>");
         sb.append("         </table>");
         sb.append("        </th> ");
+        sb.append("<th>Status</th>");
         sb.append("</tr>");	
         
 		
@@ -468,18 +468,17 @@ public class TimesheetEntriesController {
 			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>"); 
 			               sb.append(" </div> </td>"); 
 			               
-						   sb.append("<td> <div>"); 
-			               sb.append(" <input type='text' disabled onkeypress='return isNumber(event)' id='"+rowCount+"submission"+ts.getId()+"total1Id' name='"+rowCount+"submission"+ts.getId()+"total1Id' class='inline_field' placeholder='HH:MM' />"); 	
-			               sb.append(" <div class='timesheet_comm'>"); 
-			               sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment8Id\");'></i>"); 
-			               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment8Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment8Id'></textarea></span></div>"); 
-			               sb.append(" </div> </td> ");                                         
 			               sb.append(" </tr> ");      
 			               rowCount++;      
 			}
-			sb.append("                </table>"); 
+			sb.append("</table>"); 
+			sb.append(" </td>   ");
+			sb.append("<td> <div>"); 
+            sb.append(" <input type='text' disabled  value='"+ts.getSubmissionStatus()+"'  class='inline_field' />"); 	
+            sb.append(" </div> </td> "); 
+            
 			}
-			sb.append(" </td>   "); 
+			
 			sb.append("   </tr>"); 	
 			
 			
@@ -489,30 +488,30 @@ public class TimesheetEntriesController {
 			sb.append("    <table id='1' cellpadding='0' cellspacing='0'>"); 
 			sb.append("     <td class='total_field'>Total</td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
-			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal8Id' name='rowTotal8Id' class='inline_field' value='HH:MM' />	"); 
-			sb.append("    </div> </td>    ");              
 			sb.append("    </table>"); 
 			sb.append("           </td> "); 
+			sb.append("    <td> <div>"); 
+			sb.append("    <input type='text' disabled id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    </div> </td>    "); 
 			sb.append("      </tr> "); 
 			
 			
