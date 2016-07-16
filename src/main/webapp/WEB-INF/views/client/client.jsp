@@ -13,9 +13,6 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
  
- 
- 
-
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -31,15 +28,17 @@
           <li><a href="#" class="collpase-div"><i aria-hidden="true" class="fa fa-angle-down"></i></a></li>
         </ul>
       </section>
+      
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
+      <form:form id="client_form"  name="client_form" method="post">
         <div class="row">
-        <form:form id="client_form"  name="client_form" method="post">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <div class="form-group">
               <label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
               <div class="col-md-9">
                 <input type="text" class="form-control" name="orgName" field-name="Client Name" data-validation="required" value="">
-                <span class="hidden">Enter Client Name</span> </div>
+                <span class="hidden">Enter Client Name</span> 
+                </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Client Country</label>
@@ -112,6 +111,7 @@
               					<label class="col-md-3" for="Project Manager">Manager</label>
               						<div class="col-md-9">
              						 <div class="form-icon-min">
+             						 <input id="projectManager" name="projectManager" type="hidden" value="SourceLead"/> 
                					 <select class="form-control select-bg" name="projectManager" id="projectManager">
                 					  <option>-- Select Manager --</option>
 	                  
@@ -182,10 +182,10 @@
             
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-           <div class="form-group">
+           <div class="form-group "  id="companyWebsiteDiv">
               <label class="col-md-3">Website</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="Website" value="">
+                 <input type="text" class="form-control" id="webSite" name="webSite" field-name="Website"  data-validation="required" value="">
                 <span class="hidden">Website</span> </div>
             </div>
             <div class="form-group">
@@ -210,19 +210,19 @@
                 <span class="hidden">Client Status</span> </div>
               </div>
 			    </div>
-		</form:form>
         </div>
         
         <div class="form-footer clearfix row">
           <div class="col-lg-12">
             <div class="pull-right">
-               <input type="submit" value="Save" id="save_client" onclick="saveClient();"  class="btn btn-primary">
+               <input type="button" value="Save" id="save_client" onclick="saveClient();"  class="btn btn-primary">
                <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'"  class="btn btn-default ml">
             </div>
           </div>
         </div>
-        
+        </form:form>
       </div>
+    
     </div>
   </section>
   <!-- Content Area Ends--> 
@@ -230,10 +230,27 @@
   <!-- Footer Area -->
  <jsp:include page="../masterFooter.jsp" />
   <!-- Footer Area --> 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<!-- Include all compiled plugins (below), or include individual files as needed --> 
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 <script type="text/javascript">
 	$(document).ready(function(e) {
 		$('.side-menu').click(function(){
@@ -305,40 +322,43 @@
     });   
    </script>
    
- <script type="text/javascript">
- function saveClient() {
-	 var frm = $('#client_form').serializeFormJSON();
-     var con = JSON.stringify(frm);
-     $.ajax({
-	    	type: "POST",
-	        url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
-	        success: function(data) {
-	        	
-	        }
-     });
-     
- }
-</script> 
+
 
 <script type="text/javascript">
-(function ($) {
-   $.fn.serializeFormJSON = function () {
-       var o = {};
-       var a = this.serializeArray();
-       $.each(a, function () {
-           if (o[this.name]) {
-               if (!o[this.name].push) {
-                   o[this.name] = [o[this.name]];
-               }
-               o[this.name].push(this.value || '');
-           } else {
-               o[this.name] = this.value || '';
-           }
-       });
-       return o;
-   };
-})(jQuery);
+ function saveClient() {
+ var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+   }; 
+ if ($('#client_form').validate(false, validationSettings)){
+	 var frm = $('#client_form').serializeFormJSON();
+     var con = JSON.stringify(frm);
+     var sourceleadUrl ='${sourceleadUrl}';
+     $.ajax({
+	    	type: "POST",
+	    	url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+	        success: function(result) {
+	        	if(result == 'clientDashboard'){
+	        		location.replace("http://localhost:8080/sourcelead/clientDashboard");  
+	        	}
+		        
+	        },
+	     });
+          return true;
+		 }else{
+				return false;
+		 }
+    }
+    $('body').on('blur', '#client_form', function() {
+		$("#client_form").showHelpOnFocus();
+		$("#client_form").validateOnBlur(false, validationSettings);  
+	});
 </script>
+
+
+
 
 <!-- =============================== AddTask Divs  ============================ -->
 
@@ -495,3 +515,4 @@ $(document).ready(function(){
 });
 </script>
 <!-- Add Task Script Ends -->
+

@@ -86,7 +86,7 @@ public class ClientController {
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		   
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			ModelAndView model = new ModelAndView();
+		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			model.addObject("clientsList", clientsList);
@@ -194,7 +194,7 @@ public class ClientController {
 			 return "clientDashboard";
 	   }
 	
-	 
+	
 		
 		private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
