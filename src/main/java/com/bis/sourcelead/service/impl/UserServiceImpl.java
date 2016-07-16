@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		userRole.setRoles(roles);
-		userRole.setIsPrimary(0);
+		userRole.setIsPrimary(1);
 		userRole.setCreatedDate(new Date());
 		userRole.setCreatedBy(userCode);
 		return userRole;

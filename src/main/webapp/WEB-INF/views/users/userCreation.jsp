@@ -253,15 +253,23 @@
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
-                    <label class="radio-inline">
-                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);">Admin
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);">Approver/Manager
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
-                    </label>
+                   <c:if test="${SourceLeadWeb_userType == 'Admin'}">
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);">Admin
+	                    </label>
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);">Approver/Manager
+	                    </label>
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
+	                    </label>
+                    </c:if>
+                    
+                    <c:if test="${SourceLeadWeb_userType == 'Approver'}">
+                         <label class="radio-inline">
+	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
+	                    </label>
+                    </c:if>
                     <span class="hidden">Select Role</span> 
                     <input type="hidden" name="roleType" id="roleValue" field-name="Role" data-validation="required" />
                     
