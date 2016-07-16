@@ -24,6 +24,9 @@ public class Constants {
 	public static int PAGES_INCREMENT = 10;
 	public static int PAGES_DECREMENT = -10;
 	
+	public static  String Dashboard = "Dashboard";
+	public static  String Users = "Users";
+	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	

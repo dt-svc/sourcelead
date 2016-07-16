@@ -29,6 +29,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -58,6 +59,15 @@ public class LoginSessionController {
 	@RequestMapping(value = "/home" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
+		
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		request.getSession().setAttribute("sessionData",sessionData);
 		
 		
 		User user = userService.findByUserName(authentication.getName());

@@ -1,5 +1,15 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>::Org Settings</title>
+</head>
+
+
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
@@ -13,13 +23,6 @@
 		$(imageId).attr('src','resources/images/userprofile-img.png');
 	}
 </script>
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>::Org Settings</title>
-</head>
 
 <body>
   <!-- Content Area -->
