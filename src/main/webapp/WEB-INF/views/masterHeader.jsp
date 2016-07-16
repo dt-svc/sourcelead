@@ -161,11 +161,12 @@
           <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
             <div class="setting-area">
               <ul class="list-unstyled">
-                 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-wrench" aria-hidden="true"></i>Org Settings</a></li>
+                 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+                 <li><a href="<c:url value="login" />"><i class="fa fa-power-off" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="<c:url value="/login?${_csrf.parameterName}=${_csrf.token}" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}" width="18px" height="18px"></a></li>
         </ul>
       </div>
     </nav>
