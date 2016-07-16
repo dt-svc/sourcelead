@@ -192,16 +192,22 @@ public class ProjectsController {
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 			
+
 			for (int c = 1; c < maxCount; c++) {
-				ProjectTasks  tasks  = new ProjectTasks();
-				tasks.setTaskName(jsonObj.getString(c+"taskName"));
-				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
-				tasks.setCreatedDate(new Date());
-				tasks.setUpdatedDate(new Date());
-				tasks.setProjectId(projects);
-				
-				ProjectTasks savedtasks = tasksService.addTasks(tasks);
-			}
+							ProjectTasks  tasks  = new ProjectTasks();
+							if(jsonObj.has(c+"taskName")){
+								 if(jsonObj.has(c+"taskDescription")){
+									tasks.setTaskName(jsonObj.getString(c+"taskName"));
+									tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+									tasks.setCreatedDate(new Date());
+									tasks.setUpdatedDate(new Date());
+									tasks.setProjectId(projects);
+									ProjectTasks savedtasks = tasksService.addTasks(tasks);
+								 }
+							}
+							
+						}
+
 			
 			if (jsonObj.has("employeeMaxCount")){
 				String employeeMaxCount = jsonObj.getString("employeeMaxCount");
@@ -246,7 +252,21 @@ public class ProjectsController {
 			return resultJson;
 	    }
 		
-	 
+
+
+	@RequestMapping(value = "/sourceLeadTasks")
+			public String sourceLeadTasks() throws Exception {
+	
+					ModelAndView model = new ModelAndView();
+					String result = "";
+					String resultJson = "";
+					
+					Collection<ProjectTasks>  sourceleadProjectTasks = tasksService.getAllSourceleadTasks();
+					model.addObject("Tasks_List", sourceleadProjectTasks);
+					
+					resultJson = toJSON(sourceleadProjectTasks);
+					return resultJson;
+		}
 	 
 	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
 	 public Projects getProjectById(@PathVariable Long id) throws Exception { 

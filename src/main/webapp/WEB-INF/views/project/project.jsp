@@ -102,7 +102,7 @@
                 <div class="input-group">
                   <div class="input-group-btn">
                     <button class="btn btn-default" type="button"> <span class="badge" id="addTaskCount">0</button>
-                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks </button>
+                    <button class="btn btn-primary" id ="david" type="button" onclick="addSourceleadTasks();" data-toggle="modal" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks </button>
                   </div>
                 </div>
                 <!-- Modal -->
@@ -514,10 +514,67 @@ function addTasks(){
  </script>
 <script> 
 $(document).ready(function(){
-	 $("#maxTsRowNum").val('1');
+	 $("#maxTsRowNum").val('6');
 	document.getElementById("project_form").reset();
 });
 </script>
+
+<script type="text/javascript">
+
+function addSourceleadTasks(){
+	
+  var checkMaxTsRowNum =	 $("#maxTsRowNum").val();
+	var tbl = document.getElementById("projectTaskTbl");
+	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+	$("#addTaskCount").html(maxRowNum);
+	if(checkMaxTsRowNum == 6){
+	
+	 $.ajax({
+	    	type: "GET",
+	        url: "http://localhost:8080/sourcelead/sourceLeadTasks", 
+	        success: function(data) {
+	        	
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		
+	        			$('david[onclick]').removeAttr('onclick');
+		        		var opt = json[i];
+		        		var row = tbl.insertRow(opt.Id);
+		        		row.setAttribute("id", "divTsRow" + opt.Id);
+		        		var taskName =   opt.taskName;
+		        	    var taskDescription = opt.taskDescription; 
+		        		var cell0 = row.insertCell(0);
+		        		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
+		        		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (opt.Id));
+		        		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (opt.taskName));
+		        		cell0.innerHTML = divTsTd1Str;
+		        		
+		        		
+		        		var cell1 = row.insertCell(1);
+		        		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+		        		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (opt.Id));
+		        		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g, (opt.description));
+		        		cell1.innerHTML = divTsTd2Str;
+		        		
+		        		
+		        		var cell2 = row.insertCell(2);
+		        		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+		        		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (opt.Id));
+		        		cell2.innerHTML = divTsTd3Str;
+				
+				}
+	        	
+	 		}
+	  });
+	}
+	 
+}
+</script>
+
+
 <!-- Add Task Script Ends -->
 
 <script type="text/javascript">
