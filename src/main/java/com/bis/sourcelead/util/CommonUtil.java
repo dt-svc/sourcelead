@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -92,6 +93,7 @@ public class CommonUtil {
 						timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
 						
 						timesheetSubmissions.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+						timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 						timesheetSubmissions.setCreatedDate(new Date());
 						timesheetSubmissions.setCreatedBy(user.getCreatedBy());
 						timesheetSubmissions.setUpdatedDate(new Date());
