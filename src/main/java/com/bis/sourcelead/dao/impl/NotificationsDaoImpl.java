@@ -43,9 +43,11 @@ public class NotificationsDaoImpl implements NotificationsDao{
 	public Integer getNotificationsCountByUserId(Long userId, String orgCode, String locationCode) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String mode = Constants.NOTIFICATION_UNREAD;
-		String query = "select count(*)  from Notifications nf where nf.notificationScenarioId = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.mode =:mode ";
+		String notificationStatus = Constants.NOTIFICATION_NOT_DELETED;
+		String query = "select count(*)  from Notifications nf where nf.notificationTo = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.mode =:mode and nf.notificationStatus =:notificationStatus ";
 		List<Long> notificationList = (List<Long>)session.createQuery(query).setLong("userId", userId)
 																	.setString("mode", mode)
+																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
 				   													.setString("locationCode", locationCode).list();
 		Integer notificationCount = null;
@@ -66,9 +68,11 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		
 		Session session =  this.sessionFactory.getCurrentSession();
 		String mode = Constants.NOTIFICATION_UNREAD;
-		String query = "from Notifications nf where nf.notificationTo = :notificationTo  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.mode =:mode";
+		String notificationStatus = Constants.NOTIFICATION_NOT_DELETED;
+		String query = "from Notifications nf where nf.notificationTo = :notificationTo  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.mode =:mode and nf.notificationStatus =:notificationStatus";
 		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("notificationTo", notificationTo)
 																	.setString("mode", mode)
+																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
 				   													.setString("locationCode", locationCode).list();
 		return notificationList;
@@ -83,13 +87,43 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		// TODO Auto-generated method stub
 		Session session =  this.sessionFactory.getCurrentSession();
 		String mode = Constants.NOTIFICATION_READ;
-		Query query = session.createQuery("update Notifications nf set nf.mode =:mode where nf.notificationTo = :userId and nf.orgCode = :orgCode and nf.locationCode = :locationCode ");
+		String notificationStatus = Constants.NOTIFICATION_NOT_DELETED;
+		Query query = session.createQuery("update Notifications nf set nf.mode =:mode where nf.notificationTo = :userId and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.notificationStatus =:notificationStatus");
 		query.setLong("userId", userId);
 		query.setString("mode", mode);
+		query.setString("notificationStatus", notificationStatus);
 		query.setString("orgCode", orgCode);
 		query.setString("locationCode", locationCode);
 		int result = query.executeUpdate();
 		return result;			  
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateNotificationDeleteStatus(Long notificationId, String orgCode, String locationCode) {
+		// TODO Auto-generated method stub
+		Session session =  this.sessionFactory.getCurrentSession();
+		String status = Constants.NOTIFICATION_DELETED;
+		Query query = session.createQuery("update Notifications nf set nf.notificationStatus =:status where nf.id = :notificationId and nf.orgCode = :orgCode and nf.locationCode = :locationCode ");
+		query.setLong("notificationId", notificationId);
+		query.setString("status", status);
+		query.setString("orgCode", orgCode);
+		query.setString("locationCode", locationCode);
+		int result = query.executeUpdate();
+		return result;	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String notificationStatus = Constants.NOTIFICATION_NOT_DELETED;
+		String query = "from Notifications nf where nf.notificationTo = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.notificationStatus =:notificationStatus";
+		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("userId", userId)
+																	.setString("notificationStatus", notificationStatus)
+				   													.setString("orgCode", orgCode)
+				   													.setString("locationCode", locationCode).list();
+		return notificationList;
 	}
 
 }

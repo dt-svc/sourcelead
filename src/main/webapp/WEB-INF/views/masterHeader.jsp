@@ -134,12 +134,17 @@
                   </div>
                 </li>
               </ul>
-              <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
+              <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
+          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
+              <c:if test="${empty notificationList}">
+              	<div class="clearfix msg">
+                     All Caught UP!!! 
+                  </div>
+              	</c:if>
                <c:if test="${!empty notificationList}">
                 <c:forEach var="report" items="${notificationList}" end="4">
                 <li>
@@ -155,7 +160,7 @@
                 </c:forEach>
                 </c:if>
               </ul>
-              <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
+              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
             </div>
           </li>
           <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
@@ -174,8 +179,8 @@
   <script>
 function notificationStatusAsRead(){   
 	var sourceleadUrl = '${sourceleadUrl}';
-	var  orgCode ='sourcelead.com';
-	var locationCode = 'in.sourcelead.com';
+	var  orgCode ='${orgCode}';
+	 var locationCode = '${locationCode}';
 	 $.ajax({
 	      type: "POST",
 	  	  url: "${sourceleadUrl}"+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&userId=2&orgCode="+orgCode+"&locationCode="+locationCode,
