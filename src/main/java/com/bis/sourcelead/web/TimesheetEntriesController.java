@@ -474,7 +474,7 @@ public class TimesheetEntriesController {
 			sb.append("</table>"); 
 			sb.append(" </td>   ");
 			sb.append("<td> <div>"); 
-            sb.append(" <input type='text' disabled  value='"+ts.getSubmissionStatus()+"'  class='inline_field' />"); 	
+            sb.append(" <input type='text' disabled  value='"+ts.getSubmissionStatus()+"'  class='inline_field_withoutMask' />"); 	
             sb.append(" </div> </td> "); 
             
 			}

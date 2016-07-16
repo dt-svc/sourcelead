@@ -945,11 +945,9 @@ $(document).ready(function() {
 </script>	
 
 
-<script type="text/javascript">	
-
+  <script type="text/javascript">	
 $(document).click(function(){    
-	var total;
-	var grandTotal;
+	 var total;
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
@@ -973,22 +971,40 @@ $(document).click(function(){
 		 }
 		 
 	    var t = bsum; 
-	    grandTotal = grandTotal+bsum;
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
 		total = hours +":"+ minutes;
  }  
 	 $("#rowTotal"+i+"Id").val(total);
-}
+}	
 	 
-	 var grandhours = Math.floor(grandTotal / 60); 
-	 var grandminutes = grandTotal % 60;
-	 grandTotal = grandhours +":"+ grandminutes;
-	 $("#grandTotal").val(grandTotal);
-	
-	 
-	
+grandTotal();	 
 });
+
+function grandTotal(){
+	     var total;
+	     var bsum = 0;
+	     for(var i=1 ;i<8;i++){
+	    	 var hours = $("#rowTotal"+i+"Id").val();
+
+	    	 var split = hours.split(':');
+	    	 var first = split[0];
+	    	 var second = split[1];
+			 
+			 var minute = first * 60;
+			 var minute1 = second;
+			 var finalmin = parseInt(minute) + parseInt(minute1);
+	    	 
+		     bsum = parseFloat(bsum) + parseInt(finalmin);
+	    	 
+	     }
+	     var t = bsum; 
+		 var hours = Math.floor(t / 60); 
+		 var minutes = t % 60;
+		 total = hours +":"+ minutes;
+		 $("#grandTotal").val(total);
+	     
+}
 
 </script>
 
