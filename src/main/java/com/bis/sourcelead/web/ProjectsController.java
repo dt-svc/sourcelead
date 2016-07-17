@@ -209,7 +209,6 @@ public class ProjectsController {
 				
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
 			}
-
 			
 			if (jsonObj.has("employeeMaxCount")){
 				String employeeMaxCount = jsonObj.getString("employeeMaxCount");

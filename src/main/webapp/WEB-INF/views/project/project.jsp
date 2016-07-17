@@ -522,7 +522,6 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-
 function addSourceleadTasks(){
 	
   var checkMaxTsRowNum =	 $("#maxTsRowNum").val();
