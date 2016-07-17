@@ -12,6 +12,7 @@
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
  
  
  <script type="text/javascript">
@@ -85,12 +86,12 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                      <input type="text" class="form-control" value="" name="StartDate" field-name="Start Date" data-validation="required">
+                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required">
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                      <input type="text" class="form-control" value="" name="EndDate">
+                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate">
                     </div>
                   </div>
                   <span class="hidden">Enter Project Id</span> </div>
@@ -515,6 +516,7 @@ function addTasks(){
 <script> 
 $(document).ready(function(){
 	 $("#maxTsRowNum").val('6');
+	 addSourceleadTasks();
 	document.getElementById("project_form").reset();
 });
 </script>
@@ -843,3 +845,26 @@ function flushEmployee(){
 }
 </script>
 
+<script>
+  $( function() {
+	    
+	  $('#StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	  
+  } );
+</script>

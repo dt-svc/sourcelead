@@ -47,6 +47,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -103,6 +104,10 @@ public class ProjectsController {
 	
 	 @Autowired
 	 public RolesService rolesService;
+	 
+	 @Autowired
+	 CommonUtil commonUtil;
+	 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -224,6 +229,9 @@ public class ProjectsController {
 					    }
 				 }
 		    }
+			
+			//commonUtil.storeTimesheetSubmissionRecords(user);
+			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
 			 resultJson = toJSON(tasksList);
