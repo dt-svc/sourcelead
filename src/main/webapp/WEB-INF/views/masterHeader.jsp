@@ -28,7 +28,16 @@
 	}
 </script>
 
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
 <body>
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
@@ -65,7 +74,7 @@
             </div>
             <ul class="list-unstyled">
               <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
-              <li><a href="<c:url value="/login" />"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
+              <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
             </ul>
           </div>
         </div>
@@ -166,7 +175,7 @@
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="<c:url value="/login?${_csrf.parameterName}=${_csrf.token}" />" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li  class="hidden-xs"> <a href="javascript:logoutFormSubmit()" title="log out"><i class="fa fa-power-off"></i></a> </li>
         </ul>
       </div>
     </nav>
