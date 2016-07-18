@@ -11,7 +11,6 @@
     <script src="resources/js/jquery-fun.js"></script>
 	<!-- <link rel="stylesheet" href="resources/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-	<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
   
     <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
