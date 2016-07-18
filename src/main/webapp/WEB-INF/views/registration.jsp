@@ -189,19 +189,20 @@ var validationSettings = {
    };  
          $('body').on('submit', '#companyRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
-        		  e.preventDefault(); 
+        		e.preventDefault(); 
             	var frm = $('#companyRegistration_form').serialize();
          	    frm = "testvalue=testvalue&"+frm;
          		var con = JSON.stringify(frm);
          		var sourceleadUrl ='${sourceleadUrl}';
          		$("#register_button").attr("disabled", "disabled");
          		$( "#register_button" ).addClass('button').val('Processing..');
-            	
 	           	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: "http://localhost:8080/sourcelead/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                			  
+                			  
                   	success: function(result) {
 			        	if((result == 'home')){
 			        		location.replace(sourceleadUrl+"/dashboard");  
