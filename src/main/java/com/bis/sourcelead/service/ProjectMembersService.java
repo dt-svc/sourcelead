@@ -22,4 +22,8 @@ public interface ProjectMembersService {
 	List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
 		
     List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
+
+	public Integer updateProjectMemberStatus(Long projectMemberId);
 }

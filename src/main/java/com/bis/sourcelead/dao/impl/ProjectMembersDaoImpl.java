@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
 
@@ -149,6 +150,28 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("currentDate", currentDate).setParameter("currentMonday", currentMonday) 
 			    .list(); 
 		return idsList;  
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
+			    .list();
+		return allProjectsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateProjectMemberStatus(Long projectMemberId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String status = Constants.MEMBER_NOT_ACTIVE;
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status where pm.id = :projectMemberId ");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setString("status", status);
+		int result = query.executeUpdate();
+		return result;
 	}
 
 }
