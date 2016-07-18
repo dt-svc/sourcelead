@@ -25,6 +25,14 @@
         </section>
         
 		<!-- Timesheet -->
+		
+		
+<script>
+	function predefineProfileImage(imageId){
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+		
 <script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
@@ -106,9 +114,9 @@ $(document).ready(function(){
 				
 				result = result + '  <div class="project_details">';
 				result = result + '	 <div class="user_details_cta_img">';
-				result = result + '		    <div class="user_change_img">';
-				result = result + '			    <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle">';
-				result = result + ' 		    </div>';
+				result = result + '		       <div class="user_change_img">';
+				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
+				result = result + ' 		  </div>';
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
 				result = result + ' 		    <b>'+json.user.email+'</b>';
 				result = result + '		 </div>';
@@ -287,237 +295,7 @@ $(document).ready(function(){
 
 
 		
-<!-- <div class="user_summ_wrap">
-<div class="project_side_wrap_inn_tabs">
-    <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1">Details</a></li>
-        <li><a href="#tab-2">Projects</a></li>
-        <div class="clearfix"></div>
-    </ul>
-    
-    <div class="project_tabs">
-        
-        <div id="tab-1" class="project_tabs_inn">
-            <div class="project_tabs_inn_table">
-				<div class="project_details">
-				
-					<div class="user_details_cta_img">
-						<div class="user_change_img">
-						 <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle">
-							<a>Change</a>
-							<input type="file" />
-						</div>
-						<span>Pratap Reddy</span>
-						<b>pratap@businessintelli.com</b>
-					</div>
-				
-					<div class="user_details_cta">
-					<div class="project_details_cta">
-						<strong>Employed Id:</strong>
-						<span><input type="text" value="BIS1254614841W" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>First Name:</strong>
-						<span><input type="text" value="Srinivas" placeholder="First name" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Last Name:</strong>
-						<span><input type="text" value="Mahesh" placeholder="Client" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Phone number:</strong>
-						<span><input type="text" value="+91 9000 000 000" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Role:</strong>
-						<span class="fix">Employee Role<u class="fa fa-edit"></u>	
-						<div class="user_role">
-							<select>
-								<option>Option 1</option>
-								<option>Option 2</option>
-								<option>Option 3</option>
-								<option>Option 4</option>
-							</select></div>
-						</span><div class="clearfix"></div>
-					</div>
 
-					<div class="project_details_cta">
-						<strong>Invoice frequency:</strong>
-						<span><input type="text" value="+91 9000 000 000" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>date of joining:</strong><span class="fix">15/05/2015</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>Day hours:</strong>
-						<span><input type="text" value="12" placeholder="DD/MM/YY" class="project_detfield hours"></span><div class="clearfix"></div>
-					</div>					
-					</div>
-					<div class="clearfix"></div>
-				</div>
-            </div>
-        </div>
-
-		<div id="tab-2" class="project_tabs_inn">
-	<div class="timesheet_head">
-        	<ul>
-                <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>
-							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>
-							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>
-							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>		
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
-            <div class="user_summ_wrap_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Project Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Approved hrs</th>
-                    <th>Rejected hrs</th>
-                    <th>Wait for approval</th>
-                    <th>Saved</th>
-                    <th>Edit</th>
-                </tr>
-                <tr>
-                	<td><div>Business Intelli Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-				                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-				                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-				                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>				
-                <tr>
-                	<td><div>Business Intelli</div></td>
-                    <td><div>15/08/2016</div></td>
-                    <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>45:50</div></td>
-                    <td><div>Saved text</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-            </tbody>
-        </table>            
-            </div>
-			
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>			
-			
-        </div>
-        
-    </div>
-</div> 
-
-	<div class="project_inn_mask"></div>
-	<div class="project_error">
-		<p>User delete message here ....</p>
-		<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
-	</div>
-
-</div>	 -->	
 		
 		<!-- Timesheet -->
 		
