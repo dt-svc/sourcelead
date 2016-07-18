@@ -468,7 +468,13 @@ public class TimesheetEntriesController {
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			sb.append("     	<textarea name='weekComment' placeholder='comments here...'></textarea>");
 			sb.append("         <span>");
-			sb.append("         	<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
+			if(!isNullOrEmpty(tsFirst.getFileName())){
+				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'><i class='glyphicon glyphicon-save'></i> "+tsFirst.getFileName()+"Download</a>");
+			}else{
+				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+			}
+			/*sb.append("         	<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");*/
 			sb.append("         </span>");
 			sb.append("         <div class='clearfix'></div>");
 			sb.append("     </div>");
@@ -717,7 +723,11 @@ public class TimesheetEntriesController {
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
 			sb.append("     	<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
 			sb.append("         <span>");
-			sb.append("         	<a href='http://localhost:8080/sourcelead/downloadDocument?submissionId="+tsFirst.getId()+"'><i class='glyphicon glyphicon-save'></i> Download</a>");
+			if(!isNullOrEmpty(tsFirst.getFileName())){
+				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'><i class='glyphicon glyphicon-save'></i> "+tsFirst.getFileName()+"Download</a>");
+			}else{
+				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+			}
 			sb.append("         </span>");
 			sb.append("         <div class='clearfix'></div>");
 			sb.append("     </div>");
