@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -78,6 +79,20 @@ public class TimesheetSubmissions {
 	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
 	private User approverUserId;
 	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	@Column(name = "WEEK_COMMENTS")
+	@Type(type="text")
+	private String weekcomments;
+	
 	@Column(name = "STATUS")
 	private String status;
 	 
@@ -99,6 +114,25 @@ public class TimesheetSubmissions {
 	
 	@Transient
 	private Collection<ProjectTasks> projectTasksList;
+	
+	@Transient
+	private String  endDateStr;
+	
+	@Transient
+	private String  startDateStr;
+	
+	@Transient
+	private String  fullName;
+	
+	@Transient
+	private String combinedTotalHours;
+	
+	@Transient
+	private String combinedStatus;
+	
+	@Transient
+	private String employeeId;
+	
 
 	public Long getId() {
 		return Id;
@@ -173,6 +207,38 @@ public class TimesheetSubmissions {
 		this.approverUserId = approverUserId;
 	}
 
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getWeekcomments() {
+		return weekcomments;
+	}
+
+	public void setWeekcomments(String weekcomments) {
+		this.weekcomments = weekcomments;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -236,5 +302,53 @@ public class TimesheetSubmissions {
 	public void setTotalHours(String totalHours) {
 		this.totalHours = totalHours;
 	}
-	 
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getCombinedTotalHours() {
+		return combinedTotalHours;
+	}
+
+	public void setCombinedTotalHours(String combinedTotalHours) {
+		this.combinedTotalHours = combinedTotalHours;
+	}
+
+	public String getCombinedStatus() {
+		return combinedStatus;
+	}
+
+	public void setCombinedStatus(String combinedStatus) {
+		this.combinedStatus = combinedStatus;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	
 }

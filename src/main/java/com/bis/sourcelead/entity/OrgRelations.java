@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -53,6 +54,12 @@ public class OrgRelations {
 	
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+    private String orgName;
+	
+	@Transient
+    private Long orgid;
 
 	public Long getId() {
 		return id;
@@ -126,6 +133,20 @@ public class OrgRelations {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public Long getOrgid() {
+		return orgid;
+	}
+
+	public void setOrgid(Long orgid) {
+		this.orgid = orgid;
+	}
 }

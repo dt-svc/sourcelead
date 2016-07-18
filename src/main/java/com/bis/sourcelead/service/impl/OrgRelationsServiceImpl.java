@@ -1,10 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.service.OrgRelationsService;
 
 @Service
@@ -27,7 +30,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	
-	
+	@Override
+	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception {
+		Collection<OrgRelations> clientssList = orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
+		return clientssList;
+	}
 	
 	
 }

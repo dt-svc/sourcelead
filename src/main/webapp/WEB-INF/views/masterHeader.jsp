@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
@@ -27,7 +28,16 @@
 	}
 </script>
 
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
 <body>
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
@@ -64,7 +74,7 @@
             </div>
             <ul class="list-unstyled">
               <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
-              <li><a href="<c:url value="/login" />"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
+              <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
             </ul>
           </div>
         </div>
@@ -171,7 +181,8 @@
               </ul>
             </div>
           </li>
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}"></a></li>
+          <li  class="hidden-xs"> <a href="javascript:logoutFormSubmit()" title="log out"><i class="fa fa-power-off"></i></a> </li>
+
         </ul>
       </div>
     </nav>

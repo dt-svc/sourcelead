@@ -5,7 +5,7 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Dashboard</h2>
+        <h2>Home</h2>
       </div>
     </section>
     

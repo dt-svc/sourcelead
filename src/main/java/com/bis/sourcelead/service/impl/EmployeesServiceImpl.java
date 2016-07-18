@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.EmployeesService;
 
 @Service
@@ -45,6 +47,15 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return flag;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.bis.sourcelead.service.EmployeesService#getEmployeeByUserId(java.lang.String)
+	 */
+	@Override
+	public Employees getEmployeeByUserId(Long userId) throws Exception {
+		return employeesDao.getEmployeeByUserId(userId);
+	}
+	
 	@Override
 	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception {
 		Boolean flag = employeesDao.validateEmployeeId(employeeId,orgLocationsId);
@@ -63,6 +74,12 @@ public class EmployeesServiceImpl implements EmployeesService {
 		logger.debug("In EmployeesServiceImpl class getEmployeesExcludeTeamMembers method...");
 		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembers(projectId);
 		return emplist;
+	}
+
+	@Override
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId) throws Exception {
+		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationId(orgLocationId);
+		return employeeList;
 	}
 	
 }

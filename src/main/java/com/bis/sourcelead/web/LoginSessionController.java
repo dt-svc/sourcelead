@@ -56,7 +56,7 @@ public class LoginSessionController {
 	@Autowired 
 	private NotificationsService notificationsService;
 	
-	@RequestMapping(value = "/home" , method = RequestMethod.GET)
+	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
@@ -97,7 +97,7 @@ public class LoginSessionController {
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		model.addObject("notificationList", notificationList);
-		model.setViewName("home");
+		model.setViewName("dashboard");
 	    return model;
 		
 	}

@@ -201,7 +201,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                	  url: "http://localhost:8080/sourcelead/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
                   	success: function(result) {
 			        	if((result == 'home')){
 			        		location.replace(sourceleadUrl+"/home");  
