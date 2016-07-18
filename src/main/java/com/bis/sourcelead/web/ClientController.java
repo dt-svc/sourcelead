@@ -101,8 +101,7 @@ public class ClientController {
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
-		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+		 	String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
 			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 
 			
@@ -143,7 +142,7 @@ public class ClientController {
 			orgRelations.setCreatedBy(loginUserCode);
 			orgRelations.setCreatedDate(new Date());
 			OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
-			
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Collection<Org> orgsList = orgService.getOrgs();
 			
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
@@ -155,14 +154,15 @@ public class ClientController {
 				Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
 				project.setProjectSequeneNumber(jsonObj.getString(c+"projectId"));
 				project.setProjectName(jsonObj.getString(c+"projectName"));
+				OrgLocations  orgLocationsID = new OrgLocations();
+				orgLocationsID.setId(orgLocation.getId());
+				project.setOrgLocationsId(orgLocationsID);
 				String startDateString = jsonObj.getString(c+"projectStartDate");
-				String i = jsonObj.getString(c+"projectManager");
-			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+				DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
 			    Date startDate = null;
 			    try {
 			        startDate = df.parse(startDateString);
 			        String newDateString = df.format(startDate);
-			        System.out.println(newDateString);
 			    } catch (ParseException e) {
 			        e.printStackTrace();
 			    }
@@ -194,7 +194,16 @@ public class ClientController {
 			 return "clientDashboard";
 	   }
 	
-	
+
+	//to validate Project SequeneNumber
+		 @RequestMapping(value = "/validateProjectSequeneNumberId" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateProjectSequeneNumberById(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
+			 	
+				return flag;
+		   }
+		
 		
 		private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
