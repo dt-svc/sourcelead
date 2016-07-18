@@ -646,13 +646,11 @@ function inlineEditForUsers(userId,localFieldName){
 
 <script>
 function deleteProjectMemeber(projectMemberId){   
-	alert("projectMemberId"+projectMemberId);
 	var sourceleadUrl = '${sourceleadUrl}';
 	   $.ajax({
 	      type: "POST",
 	  	  url: "${sourceleadUrl}"+"/deleteProjectMemeber?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
 	  			  success :function(data) {
-	  				alert("data"+data);
 	  				  if(data == 'success'){
 		        		//location.replace(sourceleadUrl+"/userSummaryDetails?userId="+userId);  
 		        		
