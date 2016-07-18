@@ -51,4 +51,8 @@ public class Constants {
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
 	
 	
+	/** projectMember  constants**/
+	public static String MEMBER_ACTIVE = "1";
+	public static String  MEMBER_NOT_ACTIVE= "0";
+	
 }

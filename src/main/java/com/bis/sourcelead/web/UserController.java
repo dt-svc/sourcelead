@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,14 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -56,6 +60,9 @@ public class UserController {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
 	
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -243,6 +250,33 @@ public class UserController {
 		 	  return "success";
 		   }
 
+		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
+		 public @ResponseBody String getProjectDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
+			 String resultJson = null;   
+			 List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
+			 for (ProjectMembers projectMembers : allProjectsList) {
+				 if(projectMembers.getProjectAssignedDate()!=null){
+					 projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectAssignedDate())); 
+				 }
+				 if(projectMembers.getProjectEndDate()!=null){
+					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectEndDate()));
+				 }
+				 else {
+					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
+				 }
+			 }
+			 resultJson = toJSON(allProjectsList);
+			 return resultJson;
+		  }
+		 
+		 
+		 @RequestMapping(value = "/deleteProjectMemeber", method = RequestMethod.POST)
+			public @ResponseBody String deleteProjectMemeber(
+					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId){
+					Integer updatedCount = projectMembersService.updateProjectMemberStatus(projectMemberId);
+				return "success";
+			}
+		 
 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

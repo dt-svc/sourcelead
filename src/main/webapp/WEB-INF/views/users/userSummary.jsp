@@ -1,39 +1,44 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+<link
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
+	rel="stylesheet">
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/sourcelead-main.css" rel="stylesheet">
 <link href="css/timesheet.css" rel="stylesheet">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="js/moment.min.js"></script>
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="js/jquery-fun.js"></script>	
-        
-    
- <div class="wraper"> 
-      <!-- Content Area -->
-      <section class="content-wraper">
-        <section class="content-header clearfix">
-          <div class="pull-left">
-            <h2>User Summary</h2>
-          </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
-        </section>
-        
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/jquery-fun.js"></script>
+
+
+<div class="wraper">
+	<!-- Content Area -->
+	<section class="content-wraper">
+		<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>User Summary</h2>
+			</div>
+			<div class="pull-right brud-crum">Home &raquo; General Form
+				&raquo; Create User</div>
+		</section>
+
 		<!-- Timesheet -->
-<script> 
+		<script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 getUserSummaryDetails(userId);
 });
-</script>		
- <div id="projectSideDiv">
-		     </div>  
-<script>
+</script>
+		<div id="projectSideDiv"></div>
+		<script>
  function getUserSummaryDetails(userId){
 	 
 	 var result = "";
@@ -81,9 +86,9 @@ $(document).ready(function(){
 	  	
 	  	userDetails(userId);
  }
-</script> 
-	     
-<script>
+</script>
+
+		<script>
  function userDetails(userId){    
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
@@ -188,98 +193,102 @@ $(document).ready(function(){
 	      },
 	});
  }
-</script> 
- 
- <script>
+</script>
+
+<script>
  function userProjectDetails(userId){    
-	     
-	     var result = "";
- 
- 
-	         
-   result = result + '<div class="timesheet_head">';
-   result = result + '  	<ul>';
-   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|';
-   result = result + '         	<div class="approved_pop">';
-   result = result + '            	<ul>';
-   result = result + '                	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>';
-   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>';
-   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>';
-   result = result + ' 							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>';
-   result = result + '                         </ul>';
-   result = result + '                    </div>                	';
-   result = result + '                </li>';
-   result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
-   result = result + '              <div class="clearfix"></div>';
-   result = result + '            </ul>';
-   result = result + '          <div class="clearfix"></div>';
-   result = result + '     </div>';
-   result = result + '        <div class="user_summ_wrap_table">';
-   result = result + '	<table>';
-   result = result + '    	<tbody>';
-   result = result + '      	<tr>';
-   result = result + '         	<th>Project Name</th>';
-   result = result + '             <th>Start Date</th>';
-   result = result + '            <th>End Date</th>';
-   result = result + '             <th>Approved hrs</th>';
-   result = result + '              <th>Rejected hrs</th>';
-   result = result + '             <th>Wait for approval</th>';
-   result = result + '             <th>Saved</th>';
-   result = result + '                 <th>Edit</th>';
-   result = result + '         </tr>';
-   
-   result = result + '       <tr>';
-   result = result + '    	<td><div>Business Intelli Intelli</div></td>';
-   result = result + '<td><div>15/08/2016</div></td>';
-   result = result + ' <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>Saved text</div></td>';
-   result = result + ' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-   result = result + '   </tr>';
-   result = result + ' <tr>';
-   result = result + '	<td><div>Business Intelli</div></td>';
-   result = result + ' <td><div>15/08/2016</div></td>';
-   result = result + ' <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + '<td><div>45:50</div></td>';
-   result = result + ' <td><div>Saved text</div></td>';
-   result = result + '<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-   result = result + '           </tr>';
-   result = result + '        </tbody>';
-   result = result + '    </table>            ';
-   result = result + '        </div>';
-	 			
-    result = result + ' <nav>';
-    result = result + '<ul id="paging" class="pagination">';
-    result = result + '	<li><a href="#">Previous</a></li>';
-    result = result + '	<li><a href="#">3</a></li>';
-    result = result + '	<li><a href="#">4</a></li>';
-    result = result + '<li><a href="#">5</a></li>';
-    result = result + '<li class="disabled"><a href="#">6</a></li>';
-    result = result + '<li data-page="last"><a href="#">Next</a></li>';
-    result = result + '</ul>';
-    result = result + '<div class="clearfix"></div>';
-    result = result + '</nav>		';	
-
-    result = result + '   </div>';
-    
-    result = result + ' </div>';
-    result = result + '</div> ';
-
-    result = result + '<div class="project_inn_mask"></div>';
-    result = result + '<div class="project_error">';
-    result = result + '	<p>User delete message here ....</p>';
-    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
-    result = result + '</div>';
-
-    result = result + '</div>	';
-    $("#tab-2").empty(); 
-   $("#tab-2").append(result);  	
-	 
- }
+	     alert("hii");
+	     var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        success: function(data) {
+			    var json = JSON.parse(data);
+	    		var result = "";
+	    		if(json.length > 0)
+		   		{
+		    		var result = "";
+		    		;
+		 			for(var i=0; i<json.length; i++){
+			       	 
+		 				var json = json[i];
+	    		
+						   result = result + '<div class="timesheet_head">';
+						   result = result + '  	<ul>';
+						   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|';
+						   result = result + '         	<div class="approved_pop">';
+						   result = result + '            	<ul>';
+						   result = result + '                	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>';
+						   result = result + '                         </ul>';
+						   result = result + '                    </div>                	';
+						   result = result + '                </li>';
+						   result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+						   result = result + '              <div class="clearfix"></div>';
+						   result = result + '            </ul>';
+						   result = result + '          <div class="clearfix"></div>';
+						   result = result + '     </div>';
+						   result = result + '        <div class="user_summ_wrap_table">';
+						   result = result + '	<table>';
+						   result = result + '    	<tbody>';
+						   result = result + '      	<tr>';
+						   result = result + '         	<th>Project Name</th>';
+						   result = result + '             <th>Start Date</th>';
+						   result = result + '            <th>End Date</th>';
+						   result = result + '             <th>Approved hrs</th>';
+						   result = result + '              <th>Rejected hrs</th>';
+						   result = result + '             <th>Wait for approval</th>';
+						   result = result + '             <th>Saved</th>';
+						   result = result + '                 <th>Edit</th>';
+						   result = result + '         </tr>';
+						   
+						   result = result + '       <tr>';
+						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
+						   result = result + '<td><div>'+json.startDate+'</div></td>';
+						   result = result + ' <td><div><input type="text" value="'+json.endDate+'" class="project_inline_field"></div></td>';
+						   result = result + ' <td><div>45:50</div></td>';
+						   result = result + ' <td><div>45:50</div></td>';
+						   result = result + ' <td><div>45:50</div></td>';
+						   result = result + ' <td><div>Saved text</div></td>';
+						   result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
+						   result = result + '   </tr>';
+						   result = result + '        </tbody>';
+						   result = result + '    </table>            ';
+						   result = result + '        </div>';
+							 			
+						    result = result + ' <nav>';
+						    result = result + '<ul id="paging" class="pagination">';
+						    result = result + '	<li><a href="#">Previous</a></li>';
+						    result = result + '	<li><a href="#">3</a></li>';
+						    result = result + '	<li><a href="#">4</a></li>';
+						    result = result + '<li><a href="#">5</a></li>';
+						    result = result + '<li class="disabled"><a href="#">6</a></li>';
+						    result = result + '<li data-page="last"><a href="#">Next</a></li>';
+						    result = result + '</ul>';
+						    result = result + '<div class="clearfix"></div>';
+						    result = result + '</nav>		';	
+						
+						    result = result + '   </div>';
+						    
+						    result = result + ' </div>';
+						    result = result + '</div> ';
+						
+						    result = result + '<div class="project_inn_mask"></div>';
+						    result = result + '<div class="project_error">';
+						    result = result + '	<p>User delete message here ....</p>';
+						    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
+						    result = result + '</div>';
+						
+						    result = result + '</div>	';
+						    $("#tab-2").empty(); 
+						   $("#tab-2").append(result);   
+		 			  }
+		   		}
+	        },
+		});
+	 }
 </script>
 
 
@@ -288,8 +297,8 @@ $(document).ready(function(){
 
 
 
-		
-<!-- <div class="user_summ_wrap">
+
+		<!-- <div class="user_summ_wrap">
 <div class="project_side_wrap_inn_tabs">
     <ul class="project-tabs-menu">
         <li class="current"><a href="#tab-1">Details</a></li>
@@ -519,75 +528,77 @@ $(document).ready(function(){
 		<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
 	</div>
 
-</div>	 -->	
-		
+</div>	 -->
+
 		<!-- Timesheet -->
-		
-      </section>
-      <!-- Content Area Ends--> 
 
-    
-    </div>
+	</section>
+	<!-- Content Area Ends-->
 
-   
-    </div>
-	
-	
-                <!-- Modal content Add Team-->
-                <div role="dialog" id="addTeam" class="modal fade">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">X</button>
-                        <h4 class="modal-title">Assign Project</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                            <label class="col-lg-3">Select Project</label>
-                            <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
-                              </select>
-                              </div>
-                            </div>						  
-                            <div class="form-group">
-                            <label class="col-lg-3">Start date</label>
-                            <div class="col-lg-9">
-							<div class="input-group">
-								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" placeholder="DD/MM/YYYY">
+
+</div>
+
+
+</div>
+
+
+<!-- Modal content Add Team-->
+<div role="dialog" id="addTeam" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button data-dismiss="modal" class="close" type="button">X</button>
+				<h4 class="modal-title">Assign Project</h4>
+			</div>
+			<div class="modal-body clearfix">
+				<div class="form-horizontal custom-form clearfix">
+					<div class="col-xs-12 col-md-12 col-lg-12">
+						<div class="form-group">
+							<label class="col-lg-3">Select Project</label>
+							<div class="col-lg-9">
+								<select class="form-control">
+									<option>Invoice-1</option>
+									<option>Invoice-2</option>
+									<option>Invoice-3</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3">Start date</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<span class="input-group-addon"><i
+										class="fa fa-calendar"></i></span> <input type="text"
+										class="form-control" placeholder="DD/MM/YYYY">
 								</div>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">End date</label>
-                            <div class="col-lg-9">
-							<div class="input-group">
-								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" placeholder="DD/MM/YYYY">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3">End date</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<span class="input-group-addon"><i
+										class="fa fa-calendar"></i></span> <input type="text"
+										class="form-control" placeholder="DD/MM/YYYY">
 								</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Select</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Add Team modal popup ends -->	
-	
-	
-    </body>
-	
-	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button data-dismiss="modal" class="btn btn-primary" type="button">Select</button>
+				<button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Add Team modal popup ends -->
+
+
+</body>
+
+
 <script>
 
 // project side bar tabs
@@ -619,7 +630,7 @@ $(document).ready(function() {
 });
 
 
-</script> 
+</script>
 
 <script> 
 function inlineEditForUsers(userId,localFieldName){
@@ -696,7 +707,22 @@ function inlineEditForUsers(userId,localFieldName){
 
 
 <!-- Scripts for project details -->
-
+<script>
+function deleteProjectMemeber(projectMemberId){   
+	alert("projectMemberId"+projectMemberId);
+	var sourceleadUrl = '${sourceleadUrl}';
+	   $.ajax({
+	      type: "POST",
+	  	  url: "${sourceleadUrl}"+"/deleteProjectMemeber?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+	  			  success :function(data) {
+	  				alert("data"+data);
+	  				  if(data == 'success'){
+		        		location.replace(sourceleadUrl+"/notificationsList");  
+		        	} 		
+      			 }							     
+	});    
+}
+</script>
 
 
 

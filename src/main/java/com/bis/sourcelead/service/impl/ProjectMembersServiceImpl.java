@@ -78,6 +78,17 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersList;
 		
 	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
+		return projectMembersDao.getAllProjectsByUserId(userId);
+	}
+
+	@Override
+	public Integer updateProjectMemberStatus(Long projectMemberId) {
+		// TODO Auto-generated method stub
+		return projectMembersDao.updateProjectMemberStatus(projectMemberId);
+	}
 	
 
 }
