@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -37,6 +38,14 @@ public class RolesDaoImpl implements RolesDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<Roles> getRoles() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("from Roles")
+					  .list();
+	}
 
 
 }

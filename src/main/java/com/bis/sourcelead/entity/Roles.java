@@ -21,6 +21,8 @@ public class Roles {
 	@Column(name = "ROLE_NAME")
 	private String roleName;
 	
+	@Column(name = "DISPLAY_NAME")
+	private String displayName;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -96,6 +98,14 @@ public class Roles {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	
