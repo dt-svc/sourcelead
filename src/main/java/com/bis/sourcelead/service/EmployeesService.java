@@ -1,10 +1,12 @@
 package com.bis.sourcelead.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgRelations;
 
 @Service
 public interface EmployeesService {
@@ -24,4 +26,6 @@ public interface EmployeesService {
 	public List<Employees> getAllEmployees() throws Exception;
 	
 	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception;
+	
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId)throws Exception;
 }

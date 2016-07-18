@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Collection;
+
 import com.bis.sourcelead.entity.OrgRelations;
 
 /**
@@ -14,5 +16,6 @@ public interface OrgRelationsDao {
 
 	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId,Long clientOrgLocationId)throws Exception;
 	
+	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
 	
 }

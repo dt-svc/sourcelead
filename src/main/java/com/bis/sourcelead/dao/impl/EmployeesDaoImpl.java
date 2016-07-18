@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
 
 @Repository
@@ -126,6 +127,17 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId)");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).list();
 		return addItemsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId) throws Exception {
+		logger.debug("In Employees getAllClientsByOrgLocationId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Employees> employeeList = null;
+		Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId");
+		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
+		return employeeList;
 	}
 
 }

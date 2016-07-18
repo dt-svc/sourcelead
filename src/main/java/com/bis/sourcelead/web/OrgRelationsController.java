@@ -1,6 +1,8 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 
@@ -66,16 +68,6 @@ public class OrgRelationsController {
 	 * @return orgRelations
 	 * @throws NullPointerException
 	 */
-	@RequestMapping(value = "/saveOrgRelations", method = RequestMethod.GET, headers = "Accept=application/json")
-	public @ResponseBody OrgRelations createOrgRelations() throws Exception {
-		OrgRelations orgRelations = new OrgRelations();
-		orgRelations.setId(4L);
-		orgRelations.setRelationType("Customer");
-		orgRelations.setCreatedDate(new Date());
-		return  orgRelationsService.addOrgRelations(orgRelations);
-	}
-
-	
 	@RequestMapping(value = "/saveOrgRelations", method = RequestMethod.GET)
 	public @ResponseBody  String addModelDialogTasks(
 			@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception
@@ -95,7 +87,7 @@ public class OrgRelationsController {
 		/*Saving for Org*/
 		Org org = new Org();
 		org.setOrgName(jsonObj.getString("orgName"));
-		org.setWebSite(jsonObj.getString("webSite"));
+		org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
 		org.setOrgType("Guest");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
@@ -139,6 +131,24 @@ public class OrgRelationsController {
         });
         return xstream.toXML(obj);
     }
+	
+	private String convertWebsite(String website){
+		if(!website.startsWith("http") && !website.startsWith("https")){
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+	    return host;
+	}
 	/*
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.GET )
 	public @ResponseBody String saveTimesheet(@RequestParam(value="json", required=false) String json

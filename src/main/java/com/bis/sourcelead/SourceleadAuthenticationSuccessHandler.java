@@ -27,6 +27,6 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		
-		response.sendRedirect("/sourcelead/home");
+		response.sendRedirect("/sourcelead/dashboard");
 	}
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
@@ -21,4 +22,7 @@ public interface EmployeesDao {
 	public List<Employees> getAllEmployees() throws Exception;
 	
 	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception;
+	
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId)throws Exception;
+	
 }

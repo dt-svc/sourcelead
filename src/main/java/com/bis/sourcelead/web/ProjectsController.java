@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,17 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-
-import com.bis.sourcelead.dao.ProjectsDao;
-import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
-import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.dao.ProjectsDao;
-
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -38,24 +31,23 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
-
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.form.Registration;
-import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.ProjectsService;
-
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -66,10 +58,15 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class ProjectsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
-	@Autowired
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	 @Autowired
 	 EmailScenarioService emailScenarioService;
 	
 	 @Autowired
@@ -103,7 +100,13 @@ public class ProjectsController {
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
 	 
 	 @Autowired
-		public ProjectMembersService projectMembersService;
+	 public ProjectMembersService projectMembersService;
+	
+	 @Autowired
+	 public RolesService rolesService;
+	 
+	 @Autowired
+	 CommonUtil commonUtil;
 	 
 	 /**
 	  * This method for get project by id
@@ -113,10 +116,19 @@ public class ProjectsController {
 	  */
 	 
 	 @RequestMapping(value = "/project")
-		public ModelAndView projects() throws Exception {
-
+		public ModelAndView projects(HttpServletRequest request) throws Exception {
+		    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		   
 				ModelAndView model = new ModelAndView();
 				
+				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getClientLocationId().getOrg().getOrgName());
+					ocl.setOrgid(ocl.getClientLocationId().getOrg().getId());
+				 }
+			    model.addObject("add_clientList", orgClientList);
+			    
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);
 				
@@ -124,6 +136,7 @@ public class ProjectsController {
 				model.addObject("user_List", userList);
 				
 				model.setViewName("project/project");
+				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
 	 
@@ -133,10 +146,10 @@ public class ProjectsController {
 		 	
 		 	String resultJson = null;
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectId"));
+	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
 	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
 	    	projects.setStartDate(new Date());
@@ -144,6 +157,8 @@ public class ProjectsController {
 	    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
+	    	projects.setCreatedBy(user.getUserCode());
+	    	projects.setOrgLocationsId(loginOrgLocation);
 	    	
 	    	// Saving of Client by bringing OrgRelation id based on Client OrgId
 		    String clientOrgCode = jsonObj.getString("selectClient");	
@@ -183,7 +198,7 @@ public class ProjectsController {
 	    	
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-			
+
 			for (int c = 1; c < maxCount; c++) {
 				ProjectTasks  tasks  = new ProjectTasks();
 				tasks.setTaskName(jsonObj.getString(c+"taskName"));
@@ -195,30 +210,35 @@ public class ProjectsController {
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
 			}
 			
-			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
-			int empMaxCount = Integer.parseInt(employeeMaxCount);
-			for (int c = 1; c < empMaxCount; c++) {
-				
-				ProjectMembers pm = new ProjectMembers();
-				
-				Employees emp = new Employees();
-				emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
-				pm.setEmployee(emp);
-				
-				pm.setProjects(projects);
-				
-				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
-				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
-				pm.setCreatedDate(new Date());
-				pm.setUpdatedDate(new Date());
-				
-				projectMembersService.saveProjectMember(pm);
-			}
+			if (jsonObj.has("employeeMaxCount")){
+				String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+				if(!jsonObj.getString("employeeMaxCount").isEmpty()){
+						int empMaxCount = Integer.parseInt(employeeMaxCount);
+						for (int c = 1; c < empMaxCount; c++) {
+							
+							ProjectMembers pm = new ProjectMembers();
+							Employees emp = new Employees();
+							emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
+							pm.setEmployee(emp);
+							pm.setProjects(projects);
+							pm.setCreatedDate(new Date());
+							pm.setUpdatedDate(new Date());
+							projectMembersService.saveProjectMember(pm);
+							
+					    }
+				 }
+		    }
+			
+			//commonUtil.storeTimesheetSubmissionRecords(user);
 			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
 			 resultJson = toJSON(tasksList);
-			 return resultJson;
+			 
+			 
+			 return "projectDashboard";
+			 
+			 
 	   }
 	 
 	 
@@ -237,7 +257,21 @@ public class ProjectsController {
 			return resultJson;
 	    }
 		
-	 
+
+
+	@RequestMapping(value = "/sourceLeadTasks")
+			public String sourceLeadTasks() throws Exception {
+	
+					ModelAndView model = new ModelAndView();
+					String result = "";
+					String resultJson = "";
+					
+					Collection<ProjectTasks>  sourceleadProjectTasks = tasksService.getAllSourceleadTasks();
+					model.addObject("Tasks_List", sourceleadProjectTasks);
+					
+					resultJson = toJSON(sourceleadProjectTasks);
+					return resultJson;
+		}
 	 
 	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
 	 public Projects getProjectById(@PathVariable Long id) throws Exception { 
@@ -330,31 +364,57 @@ public class ProjectsController {
 	  }
 	  
 	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
-		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json) throws Exception {
+		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	JSONObject jsonObj = new JSONObject(json);
 			
+		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Employees employee  = new Employees();
-			User user= new User();
 			
+			// User saving
+			User user= new User();
 			user.setFirstName(jsonObj.getString("employeeFirstName"));
 			user.setLastName(jsonObj.getString("employeeLastName"));
-			user.setEmail(jsonObj.getString("employeeEmail"));
+			user.setEmail(jsonObj.getString("EmailId"));
 			user.setCreatedDate(new Date());
+			user.setCreatedBy(users.getUserCode());
 			User  usr=	userService.addUser(user);
 			
+			//Employee Saving
 			employee.setUser(user);
-			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			if(!jsonObj.getString("invoiceFrequency").isEmpty()){
+				employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			}
+			employee.setOrgLocations(loginOrgLocation);
+			employee.setCreatedBy(users.getUserCode());
 			employee.setCreatedDate(new Date());
 			Employees  emp=	employeesService.addEmployee(employee);
+			
+			
+			// UserRoles saving
+			String roleName = "ROLE_USER";
+			Roles roles = rolesService.getRolesByRoleName(roleName);
+			UserRole userRole = new UserRole();
+			userRole.setRoles(roles);
+			userRole.setUser(usr);
+			userRole.setOrgLocations(loginOrgLocation);
+			userRole.setIsPrimary(0);
+			userRole.setCreatedBy(users.getUserCode());
+			userRole.setCreatedDate(new Date());
+			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
 			
 			return null;
 		}
 	  
 	  @RequestMapping(value = "/getEmployeesList",  method = RequestMethod.POST)
-		public @ResponseBody  String getEmployeesList() throws Exception {
+		public @ResponseBody  String getEmployeesList(HttpServletRequest request) throws Exception {
 		 	String resultJson = null;
-			Collection<Employees> employeeList = employeesService.getAllEmployees();
-			resultJson = toJSON(employeeList);
+		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		 	
+		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId());
+			//Collection<Employees> employeeList = employeesService.getAllEmployees();
+			resultJson = toJSON(employeList);
 			return resultJson;
 	  }
 	 
@@ -373,14 +433,48 @@ public class ProjectsController {
 			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
 	}
 	 
-	@RequestMapping(value = "/getEmailVerification",  method = RequestMethod.POST)
-	public @ResponseBody  User getEmailVerification(@RequestParam(value="email", required=false) String email) throws Exception {
+	 //to  validate user email
+	 @RequestMapping(value = "/getEmailVerification" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
 		 	
-			User user  = userService.findByEmail(email);
-			return user;
-		  
-	}
+		 	String result = null;
+		 	User user = userService.findByEmail(EmailId);
+		 	
+		 	if (user != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 
+	//to validate Project SequeneNumber
+		 @RequestMapping(value = "/validateProjectSequeneNumberById" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
+			 	
+				return flag;
+		   }
+
+	//Validate for Cilent Website
+	 @RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
+	   public @ResponseBody String validateOrgWebsite(
+	   		@RequestParam(value="website", required=false) String website,
+	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
+		
+			String status = null;
+		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+			if (orgInfo != null) {
+				status = "success";
+			}
+			else{
+				status = "failure";
+			}
+			
+	    return status;
+	   }
+		 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
