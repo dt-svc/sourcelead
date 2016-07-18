@@ -33,8 +33,17 @@ public class NotificationsServiceImpl implements NotificationsService{
 
 	@Override
 	public Integer updateNotificationStatusAsRead(Long userId, String orgCode, String locationCode) {
-		// TODO Auto-generated method stub
 		return notificationDao.updateNotificationStatusAsRead(userId,orgCode,locationCode);
+	}
+
+	@Override
+	public Integer updateNotificationDeleteStatus(Long notificationId, String orgCode, String locationCode) {
+		return notificationDao.updateNotificationDeleteStatus(notificationId,orgCode,locationCode);
+	}
+
+	@Override
+	public List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode) {
+		return notificationDao.getAllNotificationsListByUserId(userId,orgCode,locationCode);
 	}
 
 

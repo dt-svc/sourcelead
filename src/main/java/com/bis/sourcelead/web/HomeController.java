@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
@@ -51,6 +50,9 @@ public class HomeController {
 	@Autowired
 	private UserService userService;
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	
 	@Value("${jdbc.username}")
 	private String user;
@@ -83,48 +85,21 @@ public class HomeController {
 
 	}
    
-   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
-   public @ResponseBody String validateOrgWebsite(
-   		@RequestParam(value="website", required=false) String website,
-   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
-	
-		String status = null;
-	    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-		if (orgInfo != null) {
-			status = "success";
-		}
-		else{
-			status = "failure";
-		}
-		
-    return status;
-   }
-   
-   
-   
-   
-   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
-   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
-   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
-   		@RequestParam(value="email", required=false) String email) throws Exception {
-   	
-	  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
-	  return status;
-   }
-   
    
    
    @RequestMapping(value = "/registration")
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
-		model.addObject("sourceleadUrl",sourceleadUrl);
+
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;
 
 	}
-
-
+   
+   
+   
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
@@ -201,9 +176,12 @@ public class HomeController {
 
 	//fileUpload
 	
-	@RequestMapping(value = "/fileUpload", method = RequestMethod.GET)
-	public ModelAndView fileUpload() {
-		return new ModelAndView("FileUploadForm");
-	}
-	
+	 @RequestMapping(value = "/uploadForm")
+		public ModelAndView fileUploadForm() {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
 }

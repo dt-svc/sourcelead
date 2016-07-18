@@ -19,7 +19,7 @@
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
 </script>
 
@@ -32,12 +32,16 @@
 
 <body>
 
+
+
+<!-- Content Area -->
+  <!-- Tab for Profile setting-area starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/home'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum">Home &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">
@@ -50,55 +54,97 @@
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
-		  <div class="accountsettings-tab">
+		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
 			<div class="clearfix">
+			  <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
+			  
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
-				  
-			  <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" >
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="img-responsive">
+				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-primary">
-                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;" required>
+                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;">
                 </label>
 				  </div>
 				  </div>
-				  
-				  
-				  <div class="clearfix mt">
-					<div class="text-center">
-					  <input type="submit" class="btn btn-primary mr" value="Save">
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'">
-					</div>
-				  </div>
-			  </form:form>
-				  
 			  </div>
-
-			<div class="col-xs-12 col-sm-9 col-md-9">
-				  <div class="row mt org-details">
-					<div class="col-md-8">
-						<div class="form-group">
-						<span class="col-md-3">Company:</span>
-						<label class="col-md-8">${SourceLeadWeb_orgName}</label>
+			  
+			  			
+				<div class="col-xs-12 col-sm-9 col-md-9">
+					<div class="row">
+						<div class="col-md-7">
+							<div class="form-group">
+							<label class="col-md-3">Company</label>
+							<div class="col-md-9">
+							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required"  value="${SourceLeadWeb_orgName}" />
+							</div>
+							</div>
+							<div class="form-group">
+							<label class="col-md-3">Website</label>
+							<div class="col-md-9">
+							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
+							</div>
+							</div>
+							<div class="form-group comp-textarea">
+							<label class="col-md-3">About</label>
+							<div class="col-md-9">
+							<textarea rows="2" name="aboutCompany" field-name="About" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							</div>
+							</div>
 						</div>
+						<div class="col-md-5">
 						<div class="form-group">
-					<span class="col-md-3">
-					Website:
-					</span>
+							<label class="col-md-3">Country</label>
+							<div class="col-md-9">
+							<input type="text" class="form-control" readonly="readonly" value="${SourceLeadWeb_country}" />
+							</div>
+						</div>
+						<div class="form-group mt">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="state" field-name="State"  value="${SourceLeadWeb_orgLocations.state}" />
+							</div>
+						</div>
+						<div class="form-group mt">
+							<label class="col-md-3">City</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="city" field-name="City"  value="${SourceLeadWeb_orgLocations.city}" />
+							</div>
+						</div>
+						<div class="form-group mt">
+							<label class="col-md-3">Zip</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="zipcode" field-name="Zip"   value="${SourceLeadWeb_orgLocations.zipCode}" />
+							</div>
+						</div>
+						<div class="form-group mt">
+							<label class="col-md-3">Phone</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="phone" field-name="phone"  value="${SourceLeadWeb_orgLocations.phone}" />
+							</div>
+						</div>
+						<div class="form-group mt">
+							<label class="col-md-3">Fax</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="fax" field-name="fax"  value="${SourceLeadWeb_orgLocations.fax}" />
+							</div>
+						</div>
+						</div>
+						</div>
+					<div class="clearfix">
+					<div class="pull-right">
+					<input type="submit" value="Save" class="btn btn-primary mr">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/home'">
+					</div>
+					</div>
+					</div>
+					</form:form>
+				</div>
 
-						<label class="col-md-8">
-					<a href="javascript:void(0)">${SourceLeadWeb_org.webSite}</a>
-					</label>
-				  </div>
-					</div>
-	
-					</div>
-				 
-				 </div>
+			
 			</div>
 			</div>
 		   </div>
@@ -106,45 +152,67 @@
 			<!-- Tab for Profile setting-area ends -->
 		  </div>
 		  </div>
-		  </div>
   </section>
-
+  <!-- Tab for Profile setting-area starts Ends -->
+  <!-- Content Area Ends-->
 
 </body>
-</html>
 
-<jsp:include page="masterFooter.jsp" />
-
-
-
+    
 
 <script type="text/javascript">
-        $('#orgSettings_form')
-           .submit(function(e) {
-        	    e.preventDefault(); 
-    		    
-        	    var frm = $('#orgSettings_form').serialize();
-        	    frm = "testvalue=testvalue&"+frm;
-        		var con = JSON.stringify(frm);
-        		var sourceleadUrl ='${sourceleadUrl}';
-        		var form = $('#orgSettings_form')[0];
-         		var formData = new FormData(form);
-        		
-                $.ajax({
-            	      type: "POST",
-            	      data: formData,
-            	      contentType : 'application/json; charset=utf-8',
-            	      enctype: 'multipart/form-data',
-        	          processData: false,
-        	          contentType:false,
-            	      dataType : 'json',
-            	      
-                  	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
-                    	success: function(result) {
-			        	 if((result == 'home')){
-			        		location.replace(sourceleadUrl+"/orgSettings");  
-			        	} 
-			        },  
-                });
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#orgSettings_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          	    var frm = $('#orgSettings_form').serialize();
+	          	    frm = "testvalue=testvalue&"+frm;
+	          		var con = JSON.stringify(frm);
+	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		var form = $('#orgSettings_form')[0];
+	           		var formData = new FormData(form);
+	          		
+	                  $.ajax({
+	              	      type: "POST",
+	              	      data: formData,
+	              	      contentType : 'application/json; charset=utf-8',
+	              	      enctype: 'multipart/form-data',
+	          	          processData: false,
+	          	          contentType:false,
+	              	      dataType : 'json',
+	              	      
+	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
+	                      	success: function(result) {
+	  			        	 if((result == 'home')){
+	  			        		location.replace(sourceleadUrl+"/orgSettings");  
+	  			        	} 
+	  			        },  
+	                  });
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
             });
-</script>
+         $('#orgSettings_form').showHelpOnFocus();
+         $('#orgSettings_form').validateOnBlur(false, validationSettings); 
+            
+     
+	</script> 
+
+
+
+<jsp:include page="masterFooter.jsp" />
+</html>
+
+
+
+
+
+

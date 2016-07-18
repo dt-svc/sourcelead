@@ -144,12 +144,17 @@
                   </div>
                 </li>
               </ul>
-              <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
+              <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert" onclick="filter();"> <i class="fa fa-bell bell"></i> <span class="label label-warning">${notificationCount}</span></a>
+          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
+              <c:if test="${empty notificationList}">
+              	<div class="clearfix msg">
+                     All Caught UP!!! 
+                  </div>
+              	</c:if>
                <c:if test="${!empty notificationList}">
                 <c:forEach var="report" items="${notificationList}" end="4">
                 <li>
@@ -158,34 +163,36 @@
                     <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
                     <div class="msg-content">
                       <p>${report.body}</p>
-                     <c:out value="${userId}" /></p>
+                     <c:out value="${userId}" />
                       <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span> </div>
                   </div>
                 </li>
                 </c:forEach>
                 </c:if>
               </ul>
-              <div class="headerwidget-footer"> <a href="javascript:void(0)">View All</a> </div>
+              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
             </div>
           </li>
           <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
             <div class="setting-area">
               <ul class="list-unstyled">
-                 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-wrench" aria-hidden="true"></i>Org Settings</a></li>
+                 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+                 <li><a href="<c:url value="login" />"><i class="fa fa-power-off" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
           <li  class="hidden-xs"> <a href="javascript:logoutFormSubmit()" title="log out"><i class="fa fa-power-off"></i></a> </li>
+
         </ul>
       </div>
     </nav>
   </header>
   
   <script>
-function filter(){   
+function notificationStatusAsRead(){   
 	var sourceleadUrl = '${sourceleadUrl}';
-	var  orgCode ='sourcelead.com';
-	var locationCode = 'in.sourcelead.com';
+	var  orgCode ='${orgCode}';
+	 var locationCode = '${locationCode}';
 	 $.ajax({
 	      type: "POST",
 	  	  url: "${sourceleadUrl}"+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&userId=2&orgCode="+orgCode+"&locationCode="+locationCode,
@@ -195,4 +202,5 @@ function filter(){
 	});  
 }
 </script>
+
   <!-- Header Area --> 

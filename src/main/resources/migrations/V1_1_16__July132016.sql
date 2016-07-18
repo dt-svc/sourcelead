@@ -3,7 +3,6 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','TIMESHEET_SUBMISSIONS','LEVEL
 CALL sourcelead.AlterTableAddColumn ('sourcelead','TIMESHEET_SUBMISSIONS','APPROVER_USER_ID','BIGINT NULL AFTER `SUBMISSION_APPROVALSTATUS`');
 ALTER TABLE `sourcelead`.`TIMESHEET_SUBMISSIONS` ADD FOREIGN KEY(APPROVER_USER_ID) REFERENCES USER(id);
 
-
 INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('3', 'ROLE_APPROVER');
 
 ALTER TABLE `sourcelead`.`EMPLOYEE`
@@ -15,6 +14,16 @@ ADD COLUMN `RATE` VARCHAR(20) NULL AFTER `UPDATED_BY`,
 ADD COLUMN `RATE_PER` VARCHAR(20) NULL AFTER `RATE`,
 ADD COLUMN `DAILY_HOURS` VARCHAR(20) NULL AFTER `RATE_PER`;
 
+INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`) VALUES ('3', 'ROLE_APPROVER');
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','EMPLOYEE','EMPLOYEE_ID','VARCHAR(20) NULL AFTER `USER_ID`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','EMPLOYEE','RATE','VARCHAR(20) NULL AFTER `UPDATED_BY`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','EMPLOYEE','RATE_PER','VARCHAR(20) NULL AFTER `RATE`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','EMPLOYEE','DAILY_HOURS','VARCHAR(20) NULL AFTER `RATE_PER`');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','IS_MAIL_SENT','VARCHAR(3) NULL AFTER `STATUS`');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PRIMARY','INT(2) NULL AFTER `STATUS`');

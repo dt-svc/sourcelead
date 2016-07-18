@@ -1,5 +1,17 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>::Org Settings</title>
+</head>
+
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<meta charset="utf-8">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
@@ -14,7 +26,7 @@
 	}
 </script>
 
-
+<body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->
   <section class="content-wraper">
@@ -44,7 +56,7 @@
 		  <div class="tab-content panel-body">
 			<div id="profile" class="tab-pane fade in active">
 		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
+			  <%-- <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 				  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
 				  <div class="profile-image mt mb">
 				    <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
@@ -56,20 +68,36 @@
 				  <input type="file" name="file" onchange="loadFile(event)" style="display:none;">
 				  </label>
 				  </div>
+			  </div> --%>
+			  
+			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
+			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
+				  <div class="profile-img-container" style="position:relative;">
+				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
+				  <div class="btn-group uploadfile">
+				  <button type="button" class="btn btn-primary">
+				  <i class="fa fa-upload"></i></button>
+				  <label class="btn btn-primary">
+                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;">
+                </label>
+				  </div>
+				  </div>
 			  </div>
+			  
+			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
 			   <div class="row mt">
 				<div class="col-md-6">
 					<div class="form-group">
 					<label class="col-md-4">First Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" class="form-control" required>
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required"  >
 					</div>
 					</div>
 				   <div class="form-group">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" class="form-control" required>
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -85,19 +113,19 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" value="${SourceLeadWeb_user.jobTitle}" class="form-control" required>
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" required>
+							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Location</label>
 							<div class="col-md-8">
-							  <textarea rows="1" name="location"  class="form-control" required>${SourceLeadWeb_user.location}</textarea>
+							  <textarea rows="1" name="location" field-name="Location" class="form-control" data-validation="required" />${SourceLeadWeb_user.location}</textarea>
 							</div>
 						</div>
 					</div>
@@ -105,7 +133,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" value="Save">
-							  <input type="submit" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
 							</div>
 					  </div>
 			 </div>
@@ -127,19 +155,19 @@
 						<div class="form-group">
 						<label class="col-md-4">Current Password</label>
 						<div class="col-md-6">
-						  <input type="password" id="currentPassword" name="currentPassword" value="${currentPassword}"  class="form-control"  required >
+						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password" value="${currentPassword}"  class="form-control"  data-validation="required" />
 						</div>
 						</div>
 						<div class="form-group">
 						<label class="col-md-4">New Password</label>
 						<div class="col-md-6">
-						  <input type="password" name="password"  value="${password}" id="password" class="form-control" required  onkeydown="$(this).clear();" />
+						  <input type="password" name="password"  value="${password}" id="password" field-name="New Password" class="form-control" data-validation="required"  onkeydown="$(this).clear();" />
 						</div>
 				       </div>
 					  <div class="form-group">
 						<label class="col-md-4">Confirm Password</label>
 						<div class="col-md-6" id="passwordDiv">
-						<input type="password"  value="" id="confirmPassword" class="form-control"  onblur="$(this).checkPass();" required/>
+						<input type="password"  value="" id="confirmPassword" class="form-control" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required"/>
 						</div>
 				  </div>
 					</div>
@@ -163,6 +191,7 @@
 		  </div>
 		  </div>
   </section>
+  </body>
   <!-- Tab for Profile setting-area starts Ends -->
   <!-- Content Area Ends--> 
 
@@ -213,65 +242,100 @@
 </script>
 
 
-<script type="text/javascript">
-        $('#profileSettings_form')
-           .submit(function(e) {
-        	    e.preventDefault(); 
-    		    
-        	    var frm = $('#profileSettings_form').serialize();
-        	    frm = "testvalue=testvalue&"+frm;
-        		var con = JSON.stringify(frm);
-        		var sourceleadUrl ='${sourceleadUrl}';
-        		var form = $('#profileSettings_form')[0];
-         		var formData = new FormData(form);
-        		
-                $.ajax({
-            	      type: "POST",
-            	      data: formData,
-            	      contentType : 'application/json; charset=utf-8',
-            	      enctype: 'multipart/form-data',
-        	          processData: false,
-        	          contentType:false,
-            	      dataType : 'json',
-            	      
-                  	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}&json="+con,
-                    	success: function(result) {
-			        	 if((result == 'home')){
-			        		location.replace(sourceleadUrl+"/userProfile");  
-			        	} 
-			        },  
-                });
-            });
-</script>
+
+
 
 
 <script type="text/javascript">
-        $('#passwordSettings_form')
-           .submit(function(e) {
-        	    e.preventDefault(); 
-    		    
-        	    var frm = $('#passwordSettings_form').serialize();
-        	    frm = "testvalue=testvalue&"+frm;
-        		var con = JSON.stringify(frm);
-        		var sourceleadUrl ='${sourceleadUrl}';
-        		
-                $.ajax({
-            	      type: "POST",
-            	      contentType : 'application/json; charset=utf-8',
-            	      dataType : 'json',
-                  	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
-                    	success: function(result) {
-			        	 if(result == 'home'){
-			        		location.replace(sourceleadUrl+"/home");  
-			        	}else if(result == 'Invalid Password'){
-			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
-             		         document.getElementById("currentPassword").setAttribute('class','error form-control');
-             		         $("input#currentPassword").after("<span class='jquery_form_error_message'> <font color='red'>Invalid Password</font></span>");
-             				 document.getElementById("currentPassword").setAttribute('pass-exist','yes');
-             				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
-             				 $("input#currentPassword").removeAttr("style");
-			        	} 
-			        },  
-                });
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#profileSettings_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+        		    var frm = $('#profileSettings_form').serialize();
+            	    frm = "testvalue=testvalue&"+frm;
+            		var con = JSON.stringify(frm);
+            		var sourceleadUrl ='${sourceleadUrl}';
+            		var form = $('#profileSettings_form')[0];
+             		var formData = new FormData(form);
+            		
+                    $.ajax({
+                	      type: "POST",
+                	      data: formData,
+                	      contentType : 'application/json; charset=utf-8',
+                	      enctype: 'multipart/form-data',
+            	          processData: false,
+            	          contentType:false,
+                	      dataType : 'json',
+                	      
+                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                        	success: function(result) {
+    			        	 if((result == 'home')){
+    			        		location.replace(sourceleadUrl+"/userProfile");  
+    			        	} 
+    			        },  
+                    });
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
             });
-</script>
+         $('#profileSettings_form').showHelpOnFocus();
+         $('#profileSettings_form').validateOnBlur(false, validationSettings); 
+     
+	</script> 
+	
+	
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#passwordSettings_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+        		    var frm = $('#passwordSettings_form').serialize();
+            	    frm = "testvalue=testvalue&"+frm;
+            		var con = JSON.stringify(frm);
+            		var sourceleadUrl ='${sourceleadUrl}';
+            		
+                    $.ajax({
+                	      type: "POST",
+                	      contentType : 'application/json; charset=utf-8',
+                	      dataType : 'json',
+                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                        	success: function(result) {
+    			        	 if(result == 'home'){
+    			        		location.replace(sourceleadUrl+"/home");  
+    			        	}else if(result == 'Invalid Password'){
+    			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
+                 		         document.getElementById("currentPassword").setAttribute('class','error form-control');
+                 		         $("input#currentPassword").after("<span class='jquery_form_error_message'> <font color='red'>Invalid Password</font></span>");
+                 				 document.getElementById("currentPassword").setAttribute('pass-exist','yes');
+                 				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
+                 				 $("input#currentPassword").removeAttr("style");
+    			        	} 
+    			        },  
+                    });
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#passwordSettings_form').showHelpOnFocus();
+         $('#passwordSettings_form').validateOnBlur(false, validationSettings); 
+            
+     
+	</script> 
+
+</html>

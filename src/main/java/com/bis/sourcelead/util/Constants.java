@@ -24,6 +24,9 @@ public class Constants {
 	public static int PAGES_INCREMENT = 10;
 	public static int PAGES_DECREMENT = -10;
 	
+	public static  String Dashboard = "Dashboard";
+	public static  String Users = "Users";
+	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	
@@ -41,6 +44,9 @@ public class Constants {
 	
 	public static String NOTIFICATION_UNREAD = "unread";
 	public static String NOTIFICATION_READ = "read";
+	public static String  NOTIFICATION_DELETED= "0";
+	public static String  NOTIFICATION_NOT_DELETED= "1";
+	
 	
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
 	

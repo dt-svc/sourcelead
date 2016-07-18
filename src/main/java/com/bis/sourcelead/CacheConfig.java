@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * This class is used to configure the caching with ehcache.
+ * This class is used to configure the caching with ehcache..
  * 
  * 
  * @author: Srinivas Vemula

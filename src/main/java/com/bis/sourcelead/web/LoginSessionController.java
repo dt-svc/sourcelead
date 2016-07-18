@@ -29,6 +29,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -58,6 +59,15 @@ public class LoginSessionController {
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
+		
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		request.getSession().setAttribute("sessionData",sessionData);
 		
 		
 		User user = userService.findByUserName(authentication.getName());
@@ -132,6 +142,7 @@ public class LoginSessionController {
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+		SourceLeadSessionManager.setSessionAttribute(request, "country", orgLocations.getCountry());
 	}
 	
 	private void setSessionOrgAttributes(Org org, HttpServletRequest request)
@@ -139,6 +150,7 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
+		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
 	}
 	
 	
