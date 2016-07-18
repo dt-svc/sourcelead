@@ -185,96 +185,99 @@ $(document).ready(function(){
  }
 </script> 
  
- <script>
+<script>
  function userProjectDetails(userId){    
-	     
-	     var result = "";
- 
- 
-	         
-   result = result + '<div class="timesheet_head">';
-   result = result + '  	<ul>';
-   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|';
-   result = result + '         	<div class="approved_pop">';
-   result = result + '            	<ul>';
-   result = result + '                	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>';
-   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>';
-   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>';
-   result = result + ' 							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>';
-   result = result + '                         </ul>';
-   result = result + '                    </div>                	';
-   result = result + '                </li>';
-   result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
-   result = result + '              <div class="clearfix"></div>';
-   result = result + '            </ul>';
-   result = result + '          <div class="clearfix"></div>';
-   result = result + '     </div>';
-   result = result + '        <div class="user_summ_wrap_table">';
-   result = result + '	<table>';
-   result = result + '    	<tbody>';
-   result = result + '      	<tr>';
-   result = result + '         	<th>Project Name</th>';
-   result = result + '             <th>Start Date</th>';
-   result = result + '            <th>End Date</th>';
-   result = result + '             <th>Approved hrs</th>';
-   result = result + '              <th>Rejected hrs</th>';
-   result = result + '             <th>Wait for approval</th>';
-   result = result + '             <th>Saved</th>';
-   result = result + '                 <th>Edit</th>';
-   result = result + '         </tr>';
-   
-   result = result + '       <tr>';
-   result = result + '    	<td><div>Business Intelli Intelli</div></td>';
-   result = result + '<td><div>15/08/2016</div></td>';
-   result = result + ' <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>Saved text</div></td>';
-   result = result + ' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-   result = result + '   </tr>';
-   result = result + ' <tr>';
-   result = result + '	<td><div>Business Intelli</div></td>';
-   result = result + ' <td><div>15/08/2016</div></td>';
-   result = result + ' <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + ' <td><div>45:50</div></td>';
-   result = result + '<td><div>45:50</div></td>';
-   result = result + ' <td><div>Saved text</div></td>';
-   result = result + '<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-   result = result + '           </tr>';
-   result = result + '        </tbody>';
-   result = result + '    </table>            ';
-   result = result + '        </div>';
-	 			
-    result = result + ' <nav>';
-    result = result + '<ul id="paging" class="pagination">';
-    result = result + '	<li><a href="#">Previous</a></li>';
-    result = result + '	<li><a href="#">3</a></li>';
-    result = result + '	<li><a href="#">4</a></li>';
-    result = result + '<li><a href="#">5</a></li>';
-    result = result + '<li class="disabled"><a href="#">6</a></li>';
-    result = result + '<li data-page="last"><a href="#">Next</a></li>';
-    result = result + '</ul>';
-    result = result + '<div class="clearfix"></div>';
-    result = result + '</nav>		';	
-
-    result = result + '   </div>';
-    
-    result = result + ' </div>';
-    result = result + '</div> ';
-
-    result = result + '<div class="project_inn_mask"></div>';
-    result = result + '<div class="project_error">';
-    result = result + '	<p>User delete message here ....</p>';
-    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
-    result = result + '</div>';
-
-    result = result + '</div>	';
-    $("#tab-2").empty(); 
-   $("#tab-2").append(result);  	
-	 
- }
+	    var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        success: function(data) {
+			    var json = JSON.parse(data);
+	    		var result = "";
+	    		if(json.length > 0)
+		   		{
+		    		var result = "";
+		    		;
+		 			for(var i=0; i<json.length; i++){
+			       	 
+		 				var json = json[i];
+	    		
+						   result = result + '<div class="timesheet_head">';
+						   result = result + '  	<ul>';
+						   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|';
+						   result = result + '         	<div class="approved_pop">';
+						   result = result + '            	<ul>';
+						   result = result + '                	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>';
+						   result = result + '                         </ul>';
+						   result = result + '                    </div>                	';
+						   result = result + '                </li>';
+						   result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+						   result = result + '              <div class="clearfix"></div>';
+						   result = result + '            </ul>';
+						   result = result + '          <div class="clearfix"></div>';
+						   result = result + '     </div>';
+						   result = result + '        <div class="user_summ_wrap_table">';
+						   result = result + '	<table>';
+						   result = result + '    	<tbody>';
+						   result = result + '      	<tr>';
+						   result = result + '         	<th>Project Name</th>';
+						   result = result + '             <th>Start Date</th>';
+						   result = result + '            <th>End Date</th>';
+						   result = result + '             <th>Approved hrs</th>';
+						   result = result + '              <th>Rejected hrs</th>';
+						   result = result + '             <th>Wait for approval</th>';
+						   result = result + '             <th>Saved</th>';
+						   result = result + '                 <th>Edit</th>';
+						   result = result + '         </tr>';
+						   
+						   result = result + '       <tr>';
+						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
+						   result = result + '<td><div>'+json.startDate+'</div></td>';
+						   result = result + ' <td><div><input type="text" value="'+json.endDate+'" class="project_inline_field"></div></td>';
+						   result = result + ' <td><div>45:50</div></td>';
+						   result = result + ' <td><div>45:50</div></td>';
+						   result = result + ' <td><div>45:50</div></td>';
+						   result = result + ' <td><div>Saved text</div></td>';
+						   result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
+						   result = result + '   </tr>';
+						   result = result + '        </tbody>';
+						   result = result + '    </table>            ';
+						   result = result + '        </div>';
+							 			
+						    result = result + ' <nav>';
+						    result = result + '<ul id="paging" class="pagination">';
+						    result = result + '	<li><a href="#">Previous</a></li>';
+						    result = result + '	<li><a href="#">3</a></li>';
+						    result = result + '	<li><a href="#">4</a></li>';
+						    result = result + '<li><a href="#">5</a></li>';
+						    result = result + '<li class="disabled"><a href="#">6</a></li>';
+						    result = result + '<li data-page="last"><a href="#">Next</a></li>';
+						    result = result + '</ul>';
+						    result = result + '<div class="clearfix"></div>';
+						    result = result + '</nav>		';	
+						
+						    result = result + '   </div>';
+						    
+						    result = result + ' </div>';
+						    result = result + '</div> ';
+						
+						    result = result + '<div class="project_inn_mask"></div>';
+						    result = result + '<div class="project_error">';
+						    result = result + '	<p>User delete message here ....</p>';
+						    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
+						    result = result + '</div>';
+						
+						    result = result + '</div>	';
+						    $("#tab-2").empty(); 
+						   $("#tab-2").append(result);   
+		 			  }
+		   		}
+	        },
+		});
+	 }
 </script>
 
 
@@ -639,65 +642,23 @@ function inlineEditForUsers(userId,localFieldName){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- Scripts for project details -->
 
-
+<script>
+function deleteProjectMemeber(projectMemberId){   
+	var sourceleadUrl = '${sourceleadUrl}';
+	   $.ajax({
+	      type: "POST",
+	  	  url: "${sourceleadUrl}"+"/deleteProjectMemeber?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+	  			  success :function(data) {
+	  				  if(data == 'success'){
+		        		//location.replace(sourceleadUrl+"/userSummaryDetails?userId="+userId);  
+		        		
+		        	} 		
+      			 }							     
+	});    
+}
+</script>
 
 
 <!-- end project scripts -->
