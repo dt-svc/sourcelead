@@ -55,7 +55,7 @@ $(document).ready(function() {
                          output = output+ '<td><div><a onclick="myTimesheet(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"  id="timesheetPopup'+approval.Id+'"> '+approval.combinedTotalHours+'</a></div></td>';
                          output = output+'<td><div>'+approval.combinedStatus+'</div></td>';
                          output = output+'<td>';
-                           if(approval.combinedStatus == 'NEW'){
+                           if(approval.combinedStatus == 'NEW' || approval.combinedStatus == 'SUBMITTED FOR APPROVAL'){
                                output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission(\''+approval.Id+'\',\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i></div>';
                                output = output+'<div id="rejectedPopup"></div>';
                            }

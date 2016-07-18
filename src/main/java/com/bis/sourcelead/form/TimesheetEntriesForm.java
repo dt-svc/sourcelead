@@ -7,7 +7,9 @@ public class TimesheetEntriesForm {
 	
 	private Integer id;
 	
-	private String[] submissionId;
+	private String[] submissionIds;
+	
+	private String submissionId;
 	
 	private MultipartFile file;
 	
@@ -20,11 +22,21 @@ public class TimesheetEntriesForm {
 		this.id = id;
 	}
 
-	public String[] getSubmissionId() {
+	 
+
+	public String[] getSubmissionIds() {
+		return submissionIds;
+	}
+
+	public void setSubmissionIds(String[] submissionIds) {
+		this.submissionIds = submissionIds;
+	}
+
+	public String getSubmissionId() {
 		return submissionId;
 	}
 
-	public void setSubmissionId(String[] submissionId) {
+	public void setSubmissionId(String submissionId) {
 		this.submissionId = submissionId;
 	}
 

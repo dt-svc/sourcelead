@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,9 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class TimesheetSubmissionsController {
 	
 	 
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
@@ -152,6 +156,7 @@ public class TimesheetSubmissionsController {
 			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
 			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
 			
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheetApproval");
 	        return model;
 	}

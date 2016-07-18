@@ -147,24 +147,25 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
 					if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
 					combinedTotalHours = combinedTotalHours + Long.parseLong(ts1.getTotalHours());
-					if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
-						isRejected   = true;  
-						status = "REJECTED";
 					}
-					else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
-						 isNEW   = true;  
-						 status = "NEW";
-					}
-					else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-						 isSUBMITTEDFORAPPROVAL   = true;  
-						 status = "SUBMITTED FOR APPROVAL";
-					}
-					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
-						 isAPPROVED   = true;  
-						 status = "APPROVED";
-					}
+						if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+							isRejected   = true;  
+							status = "REJECTED";
+						}
+						else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+							 isNEW   = true;  
+							 status = "NEW";
+						}
+						else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+							 isSUBMITTEDFORAPPROVAL   = true;  
+							 status = "SUBMITTED FOR APPROVAL";
+						}
+						else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+							 isAPPROVED   = true;  
+							 status = "APPROVED";
+						}
 					
-				}
+				
 				ts.setCombinedTotalHours(combinedTotalHours.toString());
 				ts.setCombinedStatus(status);
 			}

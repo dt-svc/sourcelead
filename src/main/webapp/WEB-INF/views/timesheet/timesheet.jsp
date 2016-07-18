@@ -33,6 +33,7 @@ function dynamicTimesheet(navigation , startDate){
 				               $("#dynamic").empty();
 						       $("#dynamic").append(data);
 						       maskme();  
+						       $("html").trigger('click');
 				    }
 		    });
 }
@@ -762,7 +763,6 @@ function addTimeSheetRow(submissionId,projectId) {
 	 
         
 	   function getProjectTasks(projectTaskId,projectId){
-		   alert("projectTaskId"+projectTaskId);
 		   $.ajax({
    	          type : "POST",
  	      	  url: "http://localhost:8080/sourcelead/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
@@ -772,7 +772,7 @@ function addTimeSheetRow(submissionId,projectId) {
  		    	    for (var i=0; i<json.length; i++)
  					{
  			        		var opt = json[i];
- 			        		result = result + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+ 			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
  					}
  		    	    $("#"+projectTaskId).empty();
  		    	    $("#"+projectTaskId).append(result);
@@ -808,7 +808,7 @@ function addTimeSheetRow(submissionId,projectId) {
                 
                 
 <script type="text/javascript">
-function saveMyTimesheet(status){  alert("hii");
+function saveMyTimesheet(status){   
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
@@ -817,7 +817,6 @@ function saveMyTimesheet(status){  alert("hii");
        		   var formData = new FormData(form); 
        		   
        		   var submissionIds = $("#submissionId").val();
-       		   alert("data"+mydata);
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
