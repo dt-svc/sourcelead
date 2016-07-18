@@ -761,7 +761,7 @@ function saveMyTimesheet(status){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	  dynamicTimesheet();
+        		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
         		      }
         	      	  
         	    }); 
