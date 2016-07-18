@@ -42,7 +42,6 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -269,6 +268,9 @@ public class TimesheetEntriesController {
 						sb.append("<input type='hidden' name='maxRowNumber"+ts.getId()+"'  class='initiateTimesheetMax' id='maxRowNumber"+ts.getId()+"'  value='"+maxCount+"' />");
 						sb.append("<table id='table"+ts.getId()+"' cellpadding='0' cellspacing='0'>");
 						for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
+							           
+							          /*timesheet entries id*/
+									  sb.append("<input type='hidden' name='"+rowCount+"submission"+ts.getId()+"timesheetEntriesId'   id='"+rowCount+"submission"+ts.getId()+"timesheetEntriesId'   value='"+timesheetEntries.getId()+"' />");
 						              sb.append("       <tr id='timesheetRow"+rowCount+"submission"+ts.getId()+"'>");
 						              sb.append("                 <td>");
 						              sb.append("                      <div> ");
@@ -432,29 +434,29 @@ public class TimesheetEntriesController {
 			sb.append("    <table id='1' cellpadding='0' cellspacing='0'>"); 
 			sb.append("     <td class='total_field'>Total</td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
+			sb.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
 			sb.append("    </div> </td>"); 
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>"); 
 			sb.append("    </table>"); 
 			sb.append("           </td> ");
 			sb.append("    <td> <div>"); 
-			sb.append("    <input type='text' id='rowTotal8Id' name='rowTotal8Id' class='inline_field' value='HH:MM' />	"); 
+			sb.append("    <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' />	"); 
 			sb.append("    </div> </td>    "); 
 			sb.append("      </tr> "); 
 			sb.append("            </tbody>");
@@ -478,8 +480,8 @@ public class TimesheetEntriesController {
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='submit' name='submit'  onClick='saveMyTimesheet();' value='Draft' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet();' value='Submit' class='time_btn'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Draft' class='time_btn time_dra'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' value='Cancel' class='time_btn time_cancel'>");
 				   
 				   sb.append("");
@@ -722,7 +724,7 @@ public class TimesheetEntriesController {
 
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
-			MultipartHttpServletRequest request) throws Exception {
+			MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
 											
 		
 		json = "{"+json+"}";
@@ -737,20 +739,47 @@ public class TimesheetEntriesController {
     	for(String submissionId : submissionIds){
     		
 		    
-	    	TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-	    	timesheetSubmissions.setId(Long.parseLong(submissionId)); 
-	    	timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
+    		TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+    		if(status.equalsIgnoreCase("Draft")){
+    			timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
+    		}
+    		if(status.equalsIgnoreCase("Submit")){
+    			timesheetSubmissions.setSubmissionStatus(Submission_Status.SUBMITTED);
+    		}
+    		
+    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+			Iterator<String> itrator = request.getFileNames();
+	        MultipartFile multiFile = request.getFile(itrator.next());
+	        if(null != multiFile.getContentType()){
+	    	  try {
+	    		    timesheetSubmissions.setFileName(multiFile.getOriginalFilename());
+	    	   		timesheetSubmissions.setFileContentType(multiFile.getContentType());
+	    	   		timesheetSubmissions.setDocFile(multiFile.getBytes());
+		       }catch (Exception e) {
+	    	      	 e.printStackTrace();
+				    }
+	        }
 	    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 			    
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber"+submissionId);
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 			int rowNum = 0;
 			
+			
 			for (int c = 1; c < maxCount; c++) {
+				
+				
+				if ((jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id"))){
+					
 				if (isNullOrEmpty(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id")))
 					continue;
 				
 				TimesheetEntries timesheetEntries = new TimesheetEntries();
+				String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
+				if(!isNullOrEmpty(timesheetEntriesId)){
+					timesheetEntries.setId(Long.parseLong(timesheetEntriesId));
+				}
+				
 				timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 				timesheetEntries.setStartDate(new Date());
 				timesheetEntries.setEndDate(new Date());
@@ -761,48 +790,73 @@ public class TimesheetEntriesController {
 				projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
 				timesheetEntries.setProjectTask(projectTasks);
 				
-				
-			    timesheetEntries.setMonHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id"));
+				String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
+				if(!isNullOrEmpty(monHours)){
+					timesheetEntries.setMonHours(monHours);
+				}else{
+					timesheetEntries.setMonHours("00:00");
+				}
 				timesheetEntries.setMoncomments(jsonObj.getString(c+"submission"+submissionId+"comment1Id"));
 				
-				timesheetEntries.setTueHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay2Id"));
+				String tueHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay2Id");
+				if(!isNullOrEmpty(tueHours)){
+					timesheetEntries.setTueHours(tueHours);
+				}else{
+					timesheetEntries.setTueHours("00:00");
+				}
 				timesheetEntries.setTuecomments(jsonObj.getString(c+"submission"+submissionId+"comment2Id"));
 
-				timesheetEntries.setWedHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay3Id"));
+				
+				String wedHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay3Id");
+				if(!isNullOrEmpty(wedHours)){
+					timesheetEntries.setWedHours(wedHours);
+				}else{
+					timesheetEntries.setWedHours("00:00");
+				}
 				timesheetEntries.setWedcomments(jsonObj.getString(c+"submission"+submissionId+"comment3Id"));
 				 
-				timesheetEntries.setThuHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id"));
+				
+				String thuHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id");
+				if(!isNullOrEmpty(thuHours)){
+					timesheetEntries.setThuHours(thuHours);
+				}else{
+					timesheetEntries.setThuHours("00:00");
+				}
 				timesheetEntries.setThucomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
 				 
 				 
-				timesheetEntries.setFriHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id"));
-				timesheetEntries.setFricomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
-				 
-				timesheetEntries.setSatHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id"));
-				timesheetEntries.setSatcomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
-				 
-				timesheetEntries.setSunHours(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id"));
-				timesheetEntries.setSuncomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
+				String friHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay5Id");
+				if(!isNullOrEmpty(friHours)){
+					timesheetEntries.setFriHours(friHours);
+				}else{
+					timesheetEntries.setFriHours("00:00");
+				}
+				timesheetEntries.setFricomments(jsonObj.getString(c+"submission"+submissionId+"comment5Id"));
 				
+				 
+				String satHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay6Id");
+				if(!isNullOrEmpty(satHours)){
+					timesheetEntries.setSatHours(satHours);
+				}else{
+					timesheetEntries.setSatHours("00:00");
+				}
+				timesheetEntries.setSatcomments(jsonObj.getString(c+"submission"+submissionId+"comment6Id"));
+				 
 				
-				timesheetEntries.setWeekcomments(jsonObj.getString("weekComment"));
-				Iterator<String> itrator = request.getFileNames();
-		        MultipartFile multiFile = request.getFile(itrator.next());
-		        if(null != multiFile.getContentType()){
-		    	  try {
-		    		    timesheetEntries.setFileName(multiFile.getOriginalFilename());
-		    	   		timesheetEntries.setFileContentType(multiFile.getContentType());
-		    	   		timesheetEntries.setDocFile(multiFile.getBytes());
-			       }catch (Exception e) {
-		    	      	 e.printStackTrace();
-					    }
-		        }
+				String sunHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay7Id");
+				if(!isNullOrEmpty(sunHours)){
+					timesheetEntries.setSunHours(sunHours);
+				}else{
+					timesheetEntries.setSunHours("00:00");
+				}
+				timesheetEntries.setSuncomments(jsonObj.getString(c+"submission"+submissionId+"comment7Id"));
 				
 				
 				rowNum++;
 				
 				timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 				
+			}
 			}
     	}
     	

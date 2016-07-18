@@ -117,7 +117,7 @@ function maskme(){
 <body  onclick="bodyClick();">
 
 <section class="content-wraper">
- <form id="timesheet_form" name="timesheet_form" enctype="multipart/form-data" >
+ <form id="timesheet_form" name="timesheet_form" enctype="multipart/form-data" method="post">
      <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Timesheets</h2>
@@ -808,8 +808,7 @@ function addTimeSheetRow(submissionId,projectId) {
                 
                 
 <script type="text/javascript">
-        $('#timesheet_form').submit(function(e) {
-               e.preventDefault();
+function saveMyTimesheet(status){  alert("hii");
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
@@ -827,13 +826,14 @@ function addTimeSheetRow(submissionId,projectId) {
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
         		    	  
         		      }
         	      	  
         	    }); 
-       	    });
+       	  /*   }); */
+}    
    </script>
 
    
@@ -913,8 +913,33 @@ $(document).click(function(){
 	 $("#rowTotal"+i+"Id").val(total);
 }	
 	
-	
+	 grandTotal();		
 });
+
+function grandTotal(){
+    var total;
+    var bsum = 0;
+    for(var i=1 ;i<8;i++){
+   	 var hours = $("#rowTotal"+i+"Id").val();
+
+   	 var split = hours.split(':');
+   	 var first = split[0];
+   	 var second = split[1];
+		 
+		 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+   	 
+	     bsum = parseFloat(bsum) + parseInt(finalmin);
+   	 
+    }
+    var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 total = hours +":"+ minutes;
+	 $("#grandTotal").val(total);
+    
+}
 
 </script>
 

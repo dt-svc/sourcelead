@@ -29,7 +29,7 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 	public TimesheetEntries addTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(timesheetEntries);
+			session.saveOrUpdate(timesheetEntries);
 		}
 		catch(HibernateException exception)	{
 		}
