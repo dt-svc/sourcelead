@@ -110,7 +110,7 @@ window.onload = function () {
 	       	    	result = result +"<div class='col-sm-4'>";
 	       	    	result = result +"<div class='text-center image'>";
 	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
+	       	    	result = result +"<span> "+userRole.roles.displayName+" </span>";
 	       	    	
 	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N'){
 	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
