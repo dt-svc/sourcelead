@@ -56,23 +56,10 @@
 		  <div class="tab-content panel-body">
 			<div id="profile" class="tab-pane fade in active">
 		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
-			  <%-- <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
-				  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
-				  <div class="profile-image mt mb">
-				    <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
-				  </div>
-				  <div class="btn-group mt">
-				  <button type="button" class="btn btn-primary">
-				  <i class="fa fa-upload"></i></button>
-				  <label class="btn btn-primary">Upload / Change
-				  <input type="file" name="file" onchange="loadFile(event)" style="display:none;">
-				  </label>
-				  </div>
-			  </div> --%>
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
-				  <div class="profile-img-container" style="position:relative;">
+				  <div class="profile-img-container profile-image" style="position:relative;">
 				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-primary">
