@@ -547,11 +547,11 @@ $(document).ready(function() {
                   <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
                   <span id="teskcomment"><textarea></textarea></span></div>            
 	    	 </div>
-             <div id="divadttTd9" style="display:none;">
+             <!-- <div id="divadttTd9" style="display:none;">
 				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" placeholder="" />	
                   <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
                   <span id="teskcomment"><textarea></textarea></span></div>  
-             </div>
+             </div> -->
                         
         </div>	
 	</div>
@@ -603,7 +603,7 @@ function removeTimesheetPopup(){
 
 <script>
  
-function addTimeSheetRow(submissionId) {
+function addTimeSheetRow(submissionId,projectId) {
 	          
 		    var tbl = document.getElementById("table"+submissionId);
 			var rowNum = $("#maxRowNumber"+submissionId).val();
@@ -666,15 +666,39 @@ function addTimeSheetRow(submissionId) {
 			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
 			cell7.innerHTML = divadttTd7Str;
 
-			var cell8 = row.insertCell(8);
+			/* var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
                         divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
-			cell8.innerHTML = divadttTd8Str;
+			cell8.innerHTML = divadttTd8Str; */
 			
 			maskme();   
+		    
+			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			getProjectTasks(projectTaskId,projectId); 
 			
      }	
+     
+function getProjectTasks(projectTaskId,projectId){   alert("hii");
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+          type : "POST",
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+	      success :function(data) {
+	    	    var json = JSON.parse(data);
+	    	    var result = ""; 
+	    	    for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+				}
+	    	    $("#"+projectTaskId).empty();
+	    	    $("#"+projectTaskId).append(result);
+	      }
+    	  
+     }); 
+	   
+}
 </script>
 
 <script>
@@ -713,10 +737,13 @@ function maskme(){
 
 
 <script type="text/javascript">
-function saveMyTimesheet(){
-			    
-	  		   var sourceleadUrl ='${sourceleadUrl}';
+function saveMyTimesheet(status){   
                var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		
@@ -724,9 +751,7 @@ function saveMyTimesheet(){
        		   var formData = new FormData(form); 
        		   
        		   var submissionIds = $("#submissionId").val();
-       		    
-       		   
-       		   $.ajax({
+        	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
 	          	      contentType : 'application/json; charset=utf-8',
@@ -734,15 +759,15 @@ function saveMyTimesheet(){
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	  
+        		    	  dynamicTimesheet();
         		      }
         	      	  
         	    }); 
-       		   
-}
-</script>
+       	  /*   }); */
+}    
+   </script>
 
 <script type="text/javascript">
 (function ($) {
