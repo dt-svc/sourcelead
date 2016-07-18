@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.util.StringUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,20 +196,21 @@ public class ProjectsController {
 		}
 	    	
 		
-	    
-	    	
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 
 			for (int c = 1; c < maxCount; c++) {
 				ProjectTasks  tasks  = new ProjectTasks();
-				tasks.setTaskName(jsonObj.getString(c+"taskName"));
-				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
-				tasks.setCreatedDate(new Date());
-				tasks.setUpdatedDate(new Date());
-				tasks.setProjectId(projects);
-				
+				if(jsonObj.has(c+"taskName")){
+					if(jsonObj.has(c+"taskDescription")){
+						tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+					}
+						tasks.setTaskName(jsonObj.getString(c+"taskName"));
+						tasks.setCreatedDate(new Date());
+						tasks.setUpdatedDate(new Date());
+						tasks.setProjectId(projects);
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+			  }
 			}
 			
 			if (jsonObj.has("employeeMaxCount")){

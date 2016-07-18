@@ -446,6 +446,7 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
+	
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -477,10 +478,12 @@ function addTasks(){
 		
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		addtasksCountafterAddingTask();
 }
 </script>
 <script type="text/javascript">
  function removeRow(rowId) {
+	 addtasksCountafterRemoving()
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		  var r = document.getElementById('projectTaskTbl').rows[rowId];
              var count = 2*(r.cells.length);
@@ -523,7 +526,6 @@ function addTasks(){
 <script> 
 $(document).ready(function(){
 	 $("#maxTsRowNum").val('6');
-	 addSourceleadTasks();
 	document.getElementById("project_form").reset();
 });
 </script>
@@ -533,11 +535,12 @@ $(document).ready(function(){
 function addSourceleadTasks(){
 	
   var checkMaxTsRowNum =	 $("#maxTsRowNum").val();
+  if(checkMaxTsRowNum == 6){
 	var tbl = document.getElementById("projectTaskTbl");
 	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 	$("#addTaskCount").html(maxRowNum);
-	if(checkMaxTsRowNum == 6){
+	
 	
 	 $.ajax({
 	    	type: "GET",
@@ -548,7 +551,6 @@ function addSourceleadTasks(){
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
 				{
-	        		
 	        			$('david[onclick]').removeAttr('onclick');
 		        		var opt = json[i];
 		        		var row = tbl.insertRow(opt.Id);
@@ -583,6 +585,44 @@ function addSourceleadTasks(){
 }
 </script>
 
+
+<script type="text/javascript">
+function addtasksCountafterRemoving(){
+	
+var tasksCount =  $("#maxTsRowNum").val();
+var count = tasksCount;
+var addtaskcount =null;
+ for(i = 0 ;i<count;i++){
+	 
+		if($('#divTsRow'+i).filter(function() {
+		    return $(this).css('display') !== 'none';
+		}).length){
+			addtaskcount++
+		}
+ }
+ $("#addTaskCount").html(addtaskcount-2); 
+ 
+}
+</script> 
+
+<script type="text/javascript">
+function addtasksCountafterAddingTask(){
+	
+var tasksCount =  $("#maxTsRowNum").val();
+var count = tasksCount;
+var addtaskcount =null;
+ for(i = 0 ;i<count;i++){
+	 
+		if($('#divTsRow'+i).filter(function() {
+		    return $(this).css('display') !== 'none';
+		}).length){
+			addtaskcount++
+		}
+ }
+ $("#addTaskCount").html(addtaskcount-1); 
+ 
+}
+</script> 
 
 <!-- Add Task Script Ends -->
 
