@@ -267,7 +267,7 @@ public class UserController {
 				 if(projectMembers.getProjectEndDate()!=null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectEndDate()));
 				 }
-				 else {
+				 else if(projectMembers.getProjects().getEndDate() != null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
 			 }
