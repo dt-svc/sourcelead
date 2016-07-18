@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -8,10 +9,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +32,6 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
@@ -42,6 +45,8 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
@@ -52,31 +57,35 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
+	
+	 @Value("${sourceleadUrl}")
+	 private String sourceleadUrl;
 	
 	 @Autowired
 	 private ProjectsService projectsService; 
 	 
 	 @Autowired
-		private OrgService orgService;
+	 private OrgService orgService;
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
 	 
 	 @Autowired
-	public UserService userService;
+	 public UserService userService;
 	
-	@Autowired
-	public EmployeesService employeesService;
+	 @Autowired
+	 public EmployeesService employeesService;
 	
-	@Autowired
-	public ProjectMembersService projectMembersService;
+	 @Autowired
+	 public ProjectMembersService projectMembersService;
 	
 	
-	@Autowired
-	public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 @Autowired
+	 public ProjectApproverHierarchyService projectApproverHierarchyService;
 	
 	 @Autowired
 	 private OrgLocationService orgLocationService;
@@ -89,6 +98,9 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 public UserRoleService userRoleService;
+	 
+	 @Autowired
+	 CommonUtil commonUtil;
 	 
 	 /**
 	  * This method for get project by id
@@ -104,8 +116,20 @@ public class ProjectsDashboardController {
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+        if(sessionData == null)
+        {
+            sessionData = new SessionMaintainanceData();
+        }
+        sessionData.setNav(com.bis.sourcelead.util.Constants.Projects);
+        
+        request.getSession().setAttribute("sessionData",sessionData);
+
+
 		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
 		model.addObject(projectsList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 		
     }
@@ -303,19 +327,31 @@ public class ProjectsDashboardController {
 		 	
 			 	ProjectMembers pm = new ProjectMembers();
 			 	
-			 	Employees emp = new Employees();
-				emp.setId(employeeId);
-				
-			 	Projects project = new Projects();
-			 	project.setId(projectId);
-				
-			 	pm.setEmployee(emp);
-				pm.setProjects(project);
-				/*pm.setProjectAssignedDate(jsonObj.getString("employeeendDate"+c));
-				pm.setProjectAssignedDate(jsonObj.getString("employeestartDate"+c));*/
-				pm.setCreatedDate(new Date());
-				pm.setUpdatedDate(new Date());
-				projectMembersService.saveProjectMember(pm);
+			  if(projectId != null){
+				  
+					Projects projects = projectsService.getProjectById(projectId);
+					Employees emp = employeesService.getEmployee(employeeId.toString());
+				 	pm.setEmployee(emp);
+					pm.setProjects(projects);
+					String pattern = "yyyy-MM-dd";
+		            SimpleDateFormat format = new SimpleDateFormat(pattern);
+		            if(StringUtils.isNotEmpty(startDate)){
+		            	Date currentStartDate = format.parse(startDate);
+		            	  pm.setProjectAssignedDate(currentStartDate);
+		            }
+		            else{
+		            	 pm.setProjectAssignedDate(projects.getStartDate());
+		            }
+		            if(StringUtils.isNotEmpty(endDate)){
+		            	Date currentEndDate = format.parse(endDate);
+		            	pm.setProjectEndDate(currentEndDate);
+		            }
+		            
+					pm.setCreatedDate(new Date());
+					pm.setUpdatedDate(new Date());
+					projectMembersService.saveProjectMember(pm);
+					commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+			  }
 				return null;
 		}
 	 

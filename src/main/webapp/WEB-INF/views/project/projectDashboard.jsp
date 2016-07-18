@@ -1,10 +1,25 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="resources/js/formvalidator.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+ <style>
+ 
+ .clsDatePicker {
+   z-index: 100000 !important;
+}
+ </style>
+
 <body>
       <!-- Content Area -->
        <section class="content-wraper">
@@ -315,9 +330,10 @@ $(document).ready(function() {
  </script> 
 <script>
 function projectEmployee(projectId){
+	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
     	type: "POST",
-        url: "http://localhost:8080/sourcelead/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
         success: function(data) {
         	
         	var json = JSON.parse(data);
@@ -377,9 +393,10 @@ function projectEmployee(projectId){
 <script>
   function projectTask(projectId){
 	  var result = ""; 
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 	   
+		    url: sourceleadUrl+"/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 	   
 		    		   success: function(data) {
 		    			    var json = JSON.parse(data);
 		    			    
@@ -420,10 +437,10 @@ function projectEmployee(projectId){
 
 <script>
   function pojectDetails(projectId){  
-	  
+	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
    	type: "POST",
-    url: "http://localhost:8080/sourcelead/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
+    url: sourceleadUrl+"/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
     success: function(data) {
     	var json = JSON.parse(data);
 	var result = ""; 
@@ -517,12 +534,12 @@ function projectEmployee(projectId){
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){
 	
-	alert("sdddd");
+	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
 	 $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+		    url: sourceleadUrl+"/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
    		    success: function(data) {
    			   
    		    }
@@ -618,13 +635,14 @@ $(document).ready(function(){
  
  <script type="text/javascript">
  function saveTasks() {
+	var sourceleadUrl ='${sourceleadUrl}';
     var projectId = $("#projectId").val();
     var frm = $('#project_form').serializeFormJSON();
     var con = JSON.stringify(frm);
     
     $.ajax({
     	type: "POST",
-        url: "http://localhost:8080/sourcelead/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectId="+projectId, 
+        url: sourceleadUrl+"/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectId="+projectId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	 var result = ""; 
@@ -687,11 +705,12 @@ $(document).ready(function(){
 		   }; 
 		 
 		 if ($('#employee_form').validate(false, validationSettings)){
+			var sourceleadUrl ='${sourceleadUrl}';
 			var frm = $('#employee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			$.ajax({
 			type: "POST",
-			url: "http://localhost:8080/sourcelead/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
+			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
 				
 				},
@@ -711,9 +730,10 @@ $(document).ready(function(){
 function  inlineEditForProjectsTasks(taskId,localFieldName){
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName+""+taskId).val();
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+		    url: sourceleadUrl+"/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
    		    success: function(data) {
    			   
    		    }
@@ -723,9 +743,10 @@ function  inlineEditForProjectsTasks(taskId,localFieldName){
 
 <script type="text/javascript">
 function getTeamMembers(projectId) {
+	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
     	type: "POST",
-        url: "http://localhost:8080/sourcelead/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
+        url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
@@ -741,19 +762,21 @@ function getTeamMembers(projectId) {
             output = output+' </tr>';
         	for (var i=0; i<json.length; i++)
 			{
+     	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
 	        		output = output + "<tr>"+
-                    "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
-                    "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
-                    "<td>"+opt.user.email+"</td>"+
-                    "<td>Employee</td>"+
-                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
-                    "</div></td>"+
-                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='dummyendDate"+opt.id+"' type='text' name='Date' value='' class='form-control'>"+
-                    "</div></td>"+
-                    "</tr>";
+                 "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
+                 "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
+                 "<td>"+opt.user.email+"</td>"+
+                 "<td>Senior Recruiter</td>"+
+                 "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+	  
+                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker'>"+
+                 "</div></td>"+
+                 "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>"+
+                 "</div></td>"+
+                 "</tr>";
 			}
         	output = output+' </tbody>';
 	        output = output+' </table>';
@@ -774,14 +797,15 @@ function getTeamMembers(projectId) {
 function assignEmployee(){
 	 	var projectId = $("#projectId").val();
 	    var result = "";
+	    var sourceleadUrl ='${sourceleadUrl}';
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
-		        var startDate = $("#dummystartDate").val();
-		        var endDate = $("#dummyendDate").val();
+		        var startDate = $("#startDate"+employeeId).val();
+		        var endDate = $("#endDate"+employeeId).val();
 				$.ajax({
 		        	type: "POST",
-		            url: "http://localhost:8080/sourcelead/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate, 
+		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate, 
 		            success: function(data) {
 		            	projectEmployee(projectId);
 		            }
@@ -798,7 +822,7 @@ function assignEmployee(){
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: "http://localhost:8080/sourcelead/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
@@ -814,4 +838,26 @@ function assignEmployee(){
 	 }
  }
  </script> 
+ <script>
+ function getStartDatePickerById(id,incrementor) {
+	 $('#'+id).datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
+<script>
+ function getEndDatePickerById(id,incrementor) {
+	 $('#'+id).datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
 </html>
