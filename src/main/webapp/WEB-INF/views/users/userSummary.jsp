@@ -287,10 +287,20 @@ $(document).ready(function(){
 		});
 	 }
 </script>
-<!-- Timesheet -->
+
+
+
+
+
+
+
 		
-</section>
-<!-- Content Area Ends--> 
+
+		
+		<!-- Timesheet -->
+		
+      </section>
+      <!-- Content Area Ends--> 
 
     
     </div>
