@@ -84,12 +84,15 @@ public class ClientController {
 	 
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
-		   
+		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			model.addObject("clientsList", clientsList);
+			
+			Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
+			model.addObject(projectsList);
 			
 			return model;
 	    }
@@ -122,10 +125,11 @@ public class ClientController {
 			/*Saving for OrgLocations*/
 			OrgLocations  orgLocations = new OrgLocations();
 			orgLocations.setOrg(addOrg);
-			
-			orgLocations.setCountry(loginOrgLocations.getCountry());
-			orgLocations.setState(loginOrgLocations.getState());
-			orgLocations.setCity(loginOrgLocations.getCity());
+			orgLocations.setPhone(jsonObj.getString("phone"));
+			orgLocations.setEmail(jsonObj.getString("email"));
+			orgLocations.setCountry(jsonObj.getString("country"));
+			orgLocations.setState(jsonObj.getString("state"));
+			orgLocations.setCity(jsonObj.getString("city"));
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
 			orgLocations.setCreatedDate(new Date());

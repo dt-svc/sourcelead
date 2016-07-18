@@ -43,21 +43,21 @@
             <div class="form-group">
               <label class="col-md-3">Client Country</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="country" value="">
+                <input type="text" class="form-control" id="country" name="country" field-name="Client Country" value="">
                 <span class="hidden">Client Country</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Client State</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="state" value="">
-                <span class="hidden">Client state</span> </div>
+                <input type="text" id="state" name="state" field-name="Client State" class="form-control"  value="">
+                <span class="hidden">Client State</span> </div>
             </div>
             
             
              <div class="form-group">
               <label class="col-md-3">ClientCity</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="city" value="">
+                <input type="text" class="form-control" id="city" name="city" field-name="Client City" value="">
                 <span class="hidden">Client City</span> </div>
             </div>
             
@@ -191,7 +191,7 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Manager">Email</label>
               <div class="col-md-9">
-				<input type="text" value="" class="form-control">
+				<input type="text" id="email" name="email" field-name="Website" value="" class="form-control">
                     <span class="hidden">Enter Email</span>
                 </div>
             </div>
@@ -199,16 +199,11 @@
 			   <div class="form-group">
               <label class="col-md-3">Mobile Number</label>
               <div class="col-md-9">
-			  <input type="text" class="form-control" name="mobileNumber" value="">
+			  <input type="text" class="form-control" id="phone" name="phone" ield-name="Mobile Number" value="">
                 <span class="hidden">Mobile Number</span> </div>
               </div>
 			  
-			  <div class="form-group">
-              <label class="col-md-3">Client Status</label>
-              <div class="col-md-9">
-			  <input type="text" class="form-control" name="ClientStatus" value="">
-                <span class="hidden">Client Status</span> </div>
-              </div>
+			  
 			    </div>
         </div>
         
