@@ -19,9 +19,10 @@ $(document).ready(function() {
 
 <script>
   function approvalList(){
+	  var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
            type : "POST",
-            url: "http://localhost:8080/sourcelead/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
+            url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
           success :function(data) {
               
                  var json = JSON.parse(data);
@@ -45,7 +46,7 @@ $(document).ready(function() {
                          var approval = json[i];
                          output = output+'<tr>';
                          output = output+'<td><div class="time_appr_user">';
-                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/'+approval.projectMembers.employee.user.id+'"/>" alt="Profile Image" class="img-circle img-responsive">';
+                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/'+approval.userId+'"/>" alt="Profile Image" class="img-circle img-responsive">'; 
                          output = output+    '<span><b>'+approval.fullName+'</b></span></div></div>';
                          output = output+'</td>';
                          output = output+'<td><div> '+approval.startDateStr+'  To  ';
@@ -575,9 +576,10 @@ $(document).ready(function() {
 <!-- sarath custom -->	
 <script>
 function myTimesheet(local,startDate,endDate){
+	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
    	type: "POST",
-    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
+    url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
               $("#myId").empty();
               $("#myId").append(data); 
@@ -713,6 +715,7 @@ function maskme(){
 <script type="text/javascript">
 function saveMyTimesheet(){
 			    
+	  		   var sourceleadUrl ='${sourceleadUrl}';
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
@@ -731,7 +734,7 @@ function saveMyTimesheet(){
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
         		      success :function(result) {
         		    	  
         		      }
@@ -767,12 +770,13 @@ function saveMyTimesheet(){
 function saveRejectSubmission(local,employeeId,startDate,endDate){
 
          var msg = $("#reject"+local+"message").val(); 
-            
+         var sourceleadUrl ='${sourceleadUrl}';
+         
          $(".mask_time").fadeOut(200);
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
          type: "POST",
-         url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+         url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
          success: function(data) {    
         	    approvalList();
          }
@@ -799,9 +803,10 @@ function rejecteSubmission(local,employeeId,startDate,endDate){
 }
 function approveSubmission(employeeId,startDate,endDate){
         var rejectedReason;
+        var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    type: "POST",
-	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
 	    	  approvalList();
 	    }

@@ -66,6 +66,7 @@ public class TimesheetSubmissionsController {
         
         ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
         for(TimesheetSubmissions ts : timesheetSubmissionsList){
+        	ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
         	ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
         	if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
         		ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
@@ -78,6 +79,7 @@ public class TimesheetSubmissionsController {
         	}
             timesheetSubmissionsArrList.add(ts);
          }
+        
          resultJson = toJSON(timesheetSubmissionsArrList);
          return resultJson;
          

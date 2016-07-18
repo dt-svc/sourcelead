@@ -1132,11 +1132,11 @@ public class TimesheetEntriesController {
 	}
 
 	
-	@RequestMapping(value = "/dateFormat", method = RequestMethod.GET )
+	/*@RequestMapping(value = "/dateFormat", method = RequestMethod.GET )
 	public @ResponseBody void dateFormat() throws Exception {
 		  
 		
-	}
+	}*/
 	
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception

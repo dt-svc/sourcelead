@@ -25,10 +25,11 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
-function dynamicTimesheet(navigation , startDate){   
+function dynamicTimesheet(navigation , startDate){    
+			var sourceleadUrl ='${sourceleadUrl}';
 	        $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
+		    url: sourceleadUrl+"/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
 				    success: function(data) {
 				               $("#dynamic").empty();
 						       $("#dynamic").append(data);
@@ -763,9 +764,10 @@ function addTimeSheetRow(submissionId,projectId) {
 	 
         
 	   function getProjectTasks(projectTaskId,projectId){
+		   var sourceleadUrl ='${sourceleadUrl}';
 		   $.ajax({
    	          type : "POST",
- 	      	  url: "http://localhost:8080/sourcelead/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+ 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
  		    	    var result = ""; 
@@ -810,6 +812,11 @@ function addTimeSheetRow(submissionId,projectId) {
 <script type="text/javascript">
 function saveMyTimesheet(status){   
                var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		
@@ -825,9 +832,9 @@ function saveMyTimesheet(status){
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	  
+        		    	  dynamicTimesheet();
         		      }
         	      	  
         	    }); 
@@ -979,7 +986,7 @@ function dynamicTimesheet(){
 </script> -->	
 
 
-<script>	
+<!-- <script>	
 function dateFormat(){    
 	   $.ajax({
 	          type : "GET",
@@ -989,5 +996,5 @@ function dateFormat(){
 		      }
 	    }); 
 }
-</script>	
+</script>	 -->
 		
