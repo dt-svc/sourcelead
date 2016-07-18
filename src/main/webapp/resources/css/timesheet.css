@@ -320,20 +320,26 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .timesheet_appr_wrap {
 	background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
 	}
+.timesheet_status_wrap {
+	background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+	}	
 .timesheet_appr_wrap .timesheet_head {
 	padding: 2px 0px; height:auto;	
 	}
 .timesheet_appr_wrap .timesheet_head ul {
 	padding:0px;
+	}
+.timesheet_appr_wrap .approved_pop ul {
+	padding:5px 0px;
 	}	
 .timesheet_appr_wrap .timesheet_head ul li {
 	float:left; margin:5px 0px 5px 5px;
 	}
 .timesheet_appr_wrap .timesheet_head ul li span {
-	padding:0px 30px 0px 0px; 
+	padding:0px 30px 0px 0px; display:inline-block;
 	}
 .timesheet_appr_wrap .timesheet_head .glyphicon-play {
-	right:20px;
+	right:20px; opacity:1;
 	}
 .timesheet_appr_wrap .export_pop {
 	right:6px;
@@ -345,7 +351,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 
 .timesheet_appr_table {}	
 .timesheet_appr_table table {
-	width:100%; font-size:14px; font-weight:400; border:1px solid #CCC; border-top:none;
+	width:100%; font-size:14px; font-weight:400; border:none; border-top:none;
 	}
 .timesheet_appr_table table tr:nth-child(even) {background: #eef1fc;}
 .timesheet_appr_table table tr:nth-child(odd) {background: #fff;}			
@@ -417,7 +423,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); z-index:2000; top:30%;
 	}
 .time_appr_rejct_pop textarea {
-	width:100%; resize:none; border:none; padding:10px; font-size:14px; font-weight:500;
+	width:100%; resize:none; border:none; padding:10px; font-size:14px; font-weight:400; height:90px;
 	}	
 .time_appr_rejct_pop a {
 	display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
@@ -436,42 +442,71 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	}
 .time_appr_side_wrap_inn {
 	position:relative; padding:10px;
+	}
+.time_appr_side_wrap .timesheet_bot {
+	padding:10px 0px 0px 0px;
 	}	
-	
+.time_appr_side_wrap .time_dra {
+	border: 1px solid #13aa37; background-color: #30c453;
+	}
+.time_appr_side_wrap .time_dra:hover {background-color: #13aa37;}	
 	
 	/*    Timesheet approval Css    */
 
+.timesheet_status_wrap .timesheet_head ul	{
+	padding:2px 0px;
+}
+.timesheet_status_wrap .timesheet_appr_table div a {
+	background:none; color:#333;
+}
+.timesheet_status_wrap .timesheet_appr_table div a:hover {
+	color:#368ee0;
+}
+
+.timesheet_appr_wrap nav ul, .timesheet_status_wrap nav ul {
+	padding:10px; margin:0px; float:right;
+}
+	
 	/*    Project Css    */
 
 .project_wrap {
 	background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
 	}
-.project_wrap_head {
-	text-align:right; position:relative; padding:11px 15px;
+.project_wrap .timesheet_head ul li {
+	float:left; margin: 5px 0px 5px 5px;
 	}
-.project_wrap_head i {
-	position:absolute; right:22px; font-size:18px; top:19px; color:#505050;
+.project_wrap .timesheet_head ul li a {
+	font-size: 14px; font-weight: 500; color: #333;
+	}
+.project_wrap .timesheet_head ul li a .fa-plus {
+	font-size:15px; padding:0px 10px 0px 0px;
+	}
+.project_wrap .timesheet_head ul li a:hover {
+	color:#368ee0;
+	}
+.project_wrap .approved_pop ul li {
+	margin:0px;
+	}
+.project-date {
+	font-size:14px; font-weight:500; color:#333; width:90px; margin:0px 20px 0px 0px; border:none;
+	background:transparent; height:20px; border-bottom:1px solid #f5f5f5; position:relative;
+	}
+.project-date:focus {
+	border-bottom:1px solid #368ee0;
 	}	
-.project_field {
-	border:none; border-bottom:1px solid #b9b9b9; width:8%; height:35px; padding:0px 32px 0px 10px;
-	transition:0.2s ease-in-out all; -webkit-transition:0.2s ease-in-out all; -moz-transition:0.2s ease-in-out all;
-	}
-.project_field:focus {
-	border-color:#368ee0; background:#f9f9f9; box-shadow:0px 0px 2px rgba(0,0,0,0.2); width:40%;
-	}					
 .project_wrap_table {}	
 .project_wrap_table table {
-	width:100%; font-size:14px; font-weight:400; border:1px solid #CCC; border-top:none;
+	width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
 	}
 .project_wrap_table table tr:nth-child(even) {background: #fff;}
 .project_wrap_table table tr:nth-child(odd) {background: #eef1fc;}			
 .project_wrap_table table tr th {
 	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
-	border-right:1px solid #4576a4; 
+	border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4; 
 	}
 .project_wrap_table table tr th:last-child { text-align:center;}	
 .project_wrap_table table tr td {
-	color:#333; padding:0px 15px; border-left:1px solid #eae6e6; height:40px; font-weight:400; 
+	color:#333; padding:0px 15px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:40px; font-weight:400; 
 	}
 .project_wrap_table table tr td:last-child {
 	width:100px; padding:0px 10px; text-align:center;
@@ -491,6 +526,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	font-size:12px; color:#375d81; float:right; padding:2px 0px 0px 0px; visibility:hidden; opacity:0;
 	}
 .project_wrap_table table tr:hover .proj_show i {
+	visibility:visible; opacity:1;
+	}
+.clients_wrap_table table tr:hover .proj_show i {
 	visibility:visible; opacity:1;
 	}	
 
@@ -566,7 +604,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project_tabs_inn_head a:hover {
 	color:#375d81; text-decoration:none;
 	}
-.project_tabs_inn_table {}	
+.project_tabs_inn_table {
+	max-height: 400px;
+    overflow-y: auto; border-top:1px solid #ccc;
+}	
 .project_tabs_inn_table.project_tabs_inn_table_a {}
 .project_tabs_inn_table table {
 	width:100%; font-size:14px; font-weight:400; border:none;
@@ -575,7 +616,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project_tabs_inn_table table tr:nth-child(odd) {background: #eef1fc;}			
 .project_tabs_inn_table table tr th {
 	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 10px; text-align:left; height:45px;
-	border-right:1px solid #4576a4; font-size:13px;
+	border-right:1px solid #4576a4; font-size:14px;
 	}
 .project_tabs_inn_table table tr th:last-child { text-align:center;}
 .project_tabs_inn_table.project_tabs_inn_table_a table tr th:last-child { text-align:left;}	
@@ -628,7 +669,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	font-weight:500; padding:1px 0px;
 	}	
 .project_details_cta span {
-	width:auto; display:inline-block; float:left;
+	width:auto; display:inline-block; float:left; width:60%;
 	}
 .project_details_cta span i {
 	font-size:13px; color:#666; display:inline-block; padding:0px 0px 0px 10px; cursor:pointer; position:relative;
@@ -673,17 +714,278 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project_table_res table tr td {
 	color:#333; padding:0px 15px; border-left:1px solid #eae6e6; height:38px; font-weight:400; 
 	}
-.proj_show i {
-	visibility: visible; opacity:1;
+.project_tabs nav {
+	border-top:1px solid #dedede; background-color:#f5f5f5;
+}	
+.project_tabs nav ul {
+	float:right; margin:0px 0px; padding:8px 10px;
+}
+
+.project_wrap nav ul {
+	padding:10px; margin:0px; float:right;
+}
+
+
+::-webkit-scrollbar {
+    width: 3px; height: 3px; border-radius:3px;
+}
+::-webkit-scrollbar-button {
+    background: #ccc
+}
+::-webkit-scrollbar-track-piece {
+    background: #fff
+}
+::-webkit-scrollbar-thumb {
+    background: #368ee0
+}
+	
+
+	/*    Clients Css    */
+
+.clients_wrap {
+	background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+	}
+.clients_wrap .timesheet_head ul li {
+	float:left;
+	}
+.clients_wrap .timesheet_head ul li a {
+    font-size: 14px; font-weight: 500; color: #333;
+	}
+.clients_wrap .timesheet_head ul li a:hover {
+	color:#368ee0;
+	}
+.clients_wrap .timesheet_head ul li a .fa-plus {
+	font-size:15px; padding:0px 10px 0px 0px;
+	}
+.clients_wrap_table {}	
+.clients_wrap_table table {
+	width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
+	}
+.clients_wrap_table table tr:nth-child(even) {background: #fff;}
+.clients_wrap_table table tr:nth-child(odd) {background: #eef1fc;}			
+.clients_wrap_table table tr th {
+	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
+	border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4; 
+	}
+.clients_wrap_table table tr th:last-child {
+	width:100px;
 	}	
+.clients_wrap_table table tr td {
+	color:#333; padding:0px 15px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:40px; font-weight:400; 
+	}
+.clients_wrap_table table tr td:last-child {
+	width:100px; text-align:center;
+	}	
+.clients_wrap_table table tr td div {
+	position:relative;
+	}
+.client_show { cursor: pointer;}					
+.client_show i {
+	font-size:12px; color:#375d81; float:right; padding:2px 0px 0px 0px; visibility:hidden; opacity:0;
+	}	
+.clients_wrap_table table tr:hover .client_show i {
+	visibility:visible; opacity:1;
+	}
+.clients_side_wrap {
+	width:900px; position:absolute; right:-1000px; top:70px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+	transition:all 0.2s ease-in-out; -webkit-transition:all 0.2s ease-in-out; -moz-transition:all 0.2s ease-in-out;
+	}
+.clients_side_wrap.clients_side_wrap_active {
+	right:0px;
+	}	
+.clients_side_wrap_inn {
+	position:relative; padding:10px;
+	}
+.clients_side_wrap_inn h1 {
+	margin:0px 0px; padding:0px 0px; font-size:18px; font-weight:500; padding:15px;
+	}	
+.clients_side_wrap .project_detfield {
+	padding:4px 5px; width:100%;
+	}
+.clients_side_wrap .project_inline_field {
+	width:100px;
+	}
+.clients_side_wrap select {
+	appearance:none; -webkit-appearance:none; border:none; padding:3px 20px 3px 0px; width:auto;
+background:url("../images/arrow-d-g.png") no-repeat right center; background-size:10px;	
+	}
+.clients_side_wrap .project_tabs_inn_table table tr th:last-child {
+	text-align:left;
+}	
+.clients_side_wrap .project_tabs_inn_table table tr td:last-child {
+	width:auto; text-align:left; width:130px;
+	}
+.clients_side_wrap table tr td div b {
+	font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#3186d6;
+	text-align:center; width:85px;
+	}	
+.clients_side_wrap table tr td div b.proj_active { background-color:#34c244;}
+.clients_side_wrap table tr td div b.proj_closed { background-color:#d94747;}
+.clients_side_wrap table tr td div b.proj_process { background-color:#d98f47;}
+.clients_side_wrap .fa-edit {
+	padding:0px 0px 0px 7px; color:#333;
+	}		
+.clients_side_wrap table a {
+	color:#333; 
+}	
+
+.clients_wrap nav ul {
+	padding:10px 10px; margin:0px; float:right;
+}
 
 	
+		/*    Clients Css    */	
+
+		/*    User summary css    */	
+
+.user_summ_wrap {	
+	}
+.user_summ_wrap .project-tabs-menu {
+	margin:0px; padding:0px;
+	}
+.user_summ_wrap .project-tabs-menu li	{
+	margin-right: 1px; border-top:2px solid #eef1fc;
+	}
+.user_summ_wrap .project-tabs-menu li.current {
+	border-top:2px solid #368ee0;
+	}	
+.user_summ_wrap .project-tabs-menu li a	{
+	margin-right: 1px; padding:8px 30px;
+	}
+.user_summ_wrap .timesheet_head ul li {
+	float:left; font-size: 14px; font-weight: 500; color: #454545;
+	}
+.user_summ_wrap .timesheet_head ul li a {
+	color:#454545;
+	}
+.user_summ_wrap .timesheet_head ul li a .fa-plus {
+	padding:0px 10px 0px 0px; display:inline-block;
+	}
+.user_summ_wrap .project_inline_field {
+	width:100px;
+	}
+.user_summ_wrap .project_error {
+	width:400px; z-index:1500;
+	}
+.user_summ_wrap .project_inn_mask {
+	z-index:1200;
+	}
+.user_details_cta {
+	width:65%; float:left; padding:0px 0px 0px 5%;
+}
+.user_details_cta_img {
+	width:200px; float:left; background-color:#eef1fc; padding-bottom:15px;
+}
+.user_details_cta_img span {
+	font-size:15px; font-weight:500; display:block; padding:6px 0px 0px 0px; text-align:center;
+}
+.user_details_cta_img b {
+	font-size:13px; font-weight:500; display:block; padding:3px 0px 0px 0px; text-align:center;
+}
+.user_change_img {
+	position:relative; overflow:hidden;
+}
+.user_change_img img {
+	width:200px; border:4px solid #e1e6fa; max-width:200px;
+}
+.user_change_img input {
+	position:absolute; width:100%; height:100%; top:0px; left:0px; cursor:pointer; z-index:10;
+	opacity:0;
+}
+.user_change_img a {
+	position:absolute; z-index:8; bottom:-50%; left:0px; width:100%; background-color:rgba(54,142,224,0.8); display:block;
+	color:#FFF; margin:0px auto; right:0px; text-align:center; padding:5px 0px; font-weight:500;
+	transition:all 0.2s ease-in-out; -webkit-transition:all 0.2s ease-in-out;
+}
+.user_change_img:hover a {
+	bottom:0px;
+}
+
+.user_details_cta .project_details_cta {
+	width:100%; float:none;
+}	
+.user_summ_wrap .project_details	 {
+	padding:40px 30px;
+}
+.user_summ_wrap .project_details_cta {
+	padding:7px 0px;
+}
+.user_summ_wrap .project_detfield {
+	font-size:14px; padding:3px 5px; width:80%; position:relative; top:-2px;
+}
+.user_summ_wrap .project_detfield:focus {
+	box-shadow: 0px 0px 2px rgba(54,142,224,1);
+}
+.user_summ_wrap .project_detfield.hours {
+	width:50px;
+}
+.fix {
+	padding:0px 0px 0px 5px;
+}
+.user_summ_wrap u {
+	text-decoration:none; display:inline-block; padding:0px 0px 0px 15px; cursor:pointer;
+}
+.user_role {
+	padding:10px 0px 0px 0px; display:none;
+}
+.user_role select{
+	appearance: none; -webkit-appearance: none; border: none; padding: 3px 30px 3px 10px; box-shadow: 0px 0px 1px rgba(0,0,0,0.5);
+    width: 120px; background: url("../images/arrow-d-g.png") no-repeat 90% center; background-size: 10px;
+}
+.user_role select:focus {box-shadow: 0px 0px 2px rgba(54,142,224,1);}
+
+
+.timesheet_status_wrap .approved_pop { right:23px;}
+
+		/*    User summary css    */	
+
+
+.user_summ_wrap_table {
+}	
+.user_summ_wrap_table table {
+	width:100%; font-size:14px; font-weight:400; border:none;
+	}
+.user_summ_wrap_table table tr:nth-child(even) {background: #fff;}
+.user_summ_wrap_table table tr:nth-child(odd) {background: #eef1fc;}			
+.user_summ_wrap_table table tr th {
+	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 10px; text-align:left; height:45px;
+	border-right:1px solid #4576a4; font-size:14px;
+	}
+.user_summ_wrap_table table tr th:last-child { text-align:center;}	
+.user_summ_wrap_table table tr td {
+	color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400; 
+	}
+.user_summ_wrap_table table tr td:last-child {
+	width:50px; padding:0px 10px; text-align:center;
+	}	
+.user_summ_wrap_table table tr td div {
+	position:relative;
+	}
+.user_summ_wrap_table table tr td div i {
+	cursor:pointer; font-size:13px; color:#fe4556;
+	}
+.user_summ_wrap_table {
+	width:100%; font-size:13px; border:none; overflow: hidden; background-color:transparent;
+	font-weight:500; color:#454545;
+	}	
+.user_summ_wrap_table:focus {
+	font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5);
+	}
 	
-						
+.user_summ_wrap nav ul {padding:10px 10px; margin:0px; float:right;}
+.user_summ_wrap .project_tabs_inn_table { max-height:none; border:none;}	
+
+		
 	
 @media screen and (max-width: 1100px){
 .timesheet_table table table tr td {padding: 8px 2px;}	
 .timesheet_out { padding: 0px 0px 30px 0px;}
+.time_appr_side_wrap { width:85%; top:155px;}
+.clients_side_wrap { width:85%; top:155px;}
+.project_side_wrap { width:85%; top:155px;}
+.timesheet_table, .project_tabs_inn_table { width:auto; overflow-x:auto;}
+.timesheet_table table, .project_tabs_inn_table table { min-width:850px;}
+
 	
 }	
 
@@ -692,17 +994,24 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 	padding:0px; margin:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.4);
 	}
 .timesheet_head .glyphicon-print { padding:0px 10px 0px 0px;}	
-.timesheet_head { padding:5px 0px 2px 0px; height:auto;}		
-.timesheet_table { display:none;}
-.timesheet_table_res {display:block;}	
+.timesheet_head { padding:5px 0px 2px 0px; height:auto;}			
 .timesheet_bot { padding:10px;}
 .timesheet_week_comm textarea {width:70%;}
 .timesheet_week_comm span { width:27%;}	
 .res_total_hours { display:block;}
 
-.project_wrap_table table { display:none;}
-.project_table_res { display:block;}
-.project_field { width:60%;}				
+.project_field { width:60%;}	
+.proj_show i {
+	visibility: visible; opacity:1;
+	}	
+.timesheet_appr_table, .project_wrap_table, .user_summ_wrap_table { overflow:auto; width:auto;}	
+.timesheet_appr_table table, .project_wrap_table table, .user_summ_wrap_table table { min-width:850px;}
+.clients_wrap_table { overflow:auto; width:auto;}	
+.clients_wrap_table table { min-width:900px;}
+.project_details_cta { width:100%;}
+
+.project_details textarea { width:100%;}
+
 
 }
 
@@ -713,6 +1022,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .timesheet_week_comm span { width:30%; text-align:center;}	
 .timesheet_week_comm label { padding:7px 5px;}
 .timesheet_week_comm label i { display:block; padding:1px 0px 5px 0px; font-size:20px;}	
+.pull-right { display:none;}
+.content-wraper .content-header { padding:6px 0px 15px 0px;}
+.content-wraper .content-header h2 {font-size:20px;}
+
+.user_summ_wrap .project_details { padding:20px 15px;}
+.user_details_cta { width:100%; padding:20px 0px 0px 0px;}
 
 
 }
@@ -733,15 +1048,34 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .timesheet_head .glyphicon-play	{ font-size:22px; padding:3px; top:1px; right: 16px; opacity:0; -webkit-opacity:0; -moz-opacity:0;}
 .timesheet_head .glyphicon-export, .timesheet_head .fa-filter { padding:0px 16px 0px 0px;}
 .project_field { width:80%;}	
+.time_appr_rejct_pop { width:85%;}
+.project_details { padding:10px;}
+.project_details_cta { width:350px; float:none;}
+.project_details_cta span { width:52%;}
 
+.project-tabs-menu { padding:0px;}
+.project-tabs-menu li { margin:0px 2px 0px 0px;}
+.project-tabs-menu li a { padding:7px 10px;}
+
+.clients_wrap .timesheet_head ul li span { display: inline-block;}
+.clients_wrap .timesheet_head ul, .user_summ_wrap .timesheet_head ul { width:auto;}
+.clients_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
+
+.timesheet_status_wrap .timesheet_head ul li span {display:inline-block;}
+.timesheet_status_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
+
+.user_summ_wrap .timesheet_head ul li span {display:inline-block;}
+.user_summ_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
+
+.pagination > li > a, .pagination > li > span { padding:6px 9px;}
+.user_summ_wrap .project_details_cta strong { width:100px;}
+.timesheet_appr_wrap .timesheet_head .glyphicon-play {
+	right:13px; font-size:10px; top:6px;
+}
+.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
+.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
 
 }
-
-			
-	
-												
-								 
-			
 
 
 

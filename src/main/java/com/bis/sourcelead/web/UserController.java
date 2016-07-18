@@ -34,10 +34,14 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+import net.sf.json.JsonConfig;
+import net.sf.json.util.CycleDetectionStrategy;
 
 @Controller
 @RestController
@@ -78,6 +82,16 @@ public class UserController {
 		model.addObject("user_List", userList);
 	    
 		model.setViewName("users/userCreation");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+	@RequestMapping(value = "/userSummaryDetails")
+	public ModelAndView userSummaryDetails(HttpServletRequest request,@RequestParam(value="userId", required=false) Long userId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		request.setAttribute("userId", userId);
+		model.setViewName("users/userSummary");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 

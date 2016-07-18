@@ -71,6 +71,21 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Employees getEmployeeByUserId(Long userId) throws Exception {
+        logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Employees emp left join fetch emp.user where emp.user.id = :userId";
+		List<Employees> employeesList =  session.createQuery(query.toString()) .setLong("userId", userId).list();
+		Employees employee = null;
+		if(employeesList != null && !employeesList.isEmpty())
+		{
+			employee = (Employees) employeesList.iterator().next();
+		}
+		return employee;
+	}
+	
 	/**
 	 * This method for validate employee by employeeId. It returns boolean value
 	 */
