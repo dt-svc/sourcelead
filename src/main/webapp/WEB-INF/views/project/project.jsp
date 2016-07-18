@@ -192,7 +192,7 @@
                 <select class="form-control select-bg" name="level1Manager" field-name="Select Manager" data-validation="required">
                   <option  value="">-- Select Manager --</option>
 	                  <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
+	                     <option value="${option.id}">${option.firstName} ${option.lastName}</option>
 	                  </c:forEach>
                 </select>
                     <span class="btn btn-default formic1 addLevel">Add Level-II</span>
@@ -206,7 +206,7 @@
                 <select class="form-control select-bg" name="level2Manager">
               		<option value='' >-- Select Manager --</option>
 	                  <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
+	                     <option value="${option.id}">${option.firstName} ${option.lastName}</option>
 	                  </c:forEach>
                 </select>
                 </div>

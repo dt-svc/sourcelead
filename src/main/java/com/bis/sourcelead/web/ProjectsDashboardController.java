@@ -126,8 +126,13 @@ public class ProjectsDashboardController {
         
         request.getSession().setAttribute("sessionData",sessionData);
 
-
-		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
+        
+        Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
+        for(Projects projects: projectsList){
+            if(projects.getOrgRelationId()!=null) {
+                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+            }
+        }
 		model.addObject(projectsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

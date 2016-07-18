@@ -9,6 +9,7 @@
 <link href="resources/css/register-style.css" rel="stylesheet">
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
@@ -64,29 +65,32 @@
 		                    <th>Manager</th>
 		                    <th>Date</th>
 		                    <th>Client</th>
-		                    <th>Team</th>
 		                    <th>Status</th>
 		                </tr>
 					</thead>	
-		              
-					<c:forEach var="report" items="${projectsList}" varStatus="raId">	
-		                <tr>
-		                	<td data-title="Id"><div>${report.id}</div></td>
-		                    <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
-							<td data-title="Manager">
-							    <div>
-								    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
-								       ${approver.approverUserId.firstName} ${approver.approverUserId.lastName} ,
-								    </c:forEach>
-							
-							   </div>
-							</td>
-							<td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp;to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></div></td>
-		                    <td data-title="Client"><div>Client 1</div></td>
-		                    <td data-title="Team"><div>Team a</div></td>
-		                    <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
-		                </tr>
-		            </c:forEach>          
+					<c:forEach var="report" items="${projectsList}" varStatus="raId">    
+                        <tr>
+                            <td data-title="Id"><div>${report.id}</div></td>
+                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+                            <td data-title="Manager">
+                                <div>
+                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
+                                      <c:if test="${raId.index >0}">,</c:if>
+                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
+                                    </c:forEach>
+                            
+                               </div>
+                            </td>
+                            <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp; <c:if test="${!empty report.endDate}">  to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></c:if></div></td>
+                             <c:if test="${report.client != null}">
+                                 <td data-title="Client"><div>${report.client}</div></td>   
+                              </c:if>
+                              <c:if test="${empty report.client}">
+                                 <td data-title="Client"><div>---</div></td>   
+                              </c:if>
+                            <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
+                        </tr>
+                    </c:forEach> 
 		           </tbody>
 		        </table>
 
@@ -358,11 +362,17 @@ function projectEmployee(projectId){
         	for (var i=0; i<json.length; i++)
 			{        
 	        		var opt = json[i];
+	        		var projectEndDateStr = "";
+	        		if(json[i].projectEndDateStr != null && json[i].projectEndDateStr != ''){
+	        			projectEndDateStr = json[i].projectEndDateStr;
+	        		}else{
+	        			projectEndDateStr = "--"
+	        		}
 	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div><input type="text"  value="'+json[i].empName+'" class="project_inline_field"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="'+json[i].projectAssignedDateStr+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+json[i].projectEndDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
