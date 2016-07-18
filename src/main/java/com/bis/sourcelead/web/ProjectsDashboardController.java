@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
@@ -104,6 +105,17 @@ public class ProjectsDashboardController {
 		model.setViewName("project/projectDashboard");
 		Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
 		model.addObject(projectsList);
+		
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(com.bis.sourcelead.util.Constants.Projects);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
 		return model;
 		
     }
