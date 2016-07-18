@@ -204,7 +204,7 @@ var validationSettings = {
                 	  url: "http://localhost:8080/sourcelead/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
                   	success: function(result) {
 			        	if((result == 'home')){
-			        		location.replace(sourceleadUrl+"/home");  
+			        		location.replace(sourceleadUrl+"/dashboard");  
 			        	}
 			        	
 			        },  
