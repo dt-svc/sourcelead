@@ -50,7 +50,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			throws Exception {
 		
 		  Session session = this.sessionFactory.getCurrentSession();
-	      String query = ("from OrgRelations orgrelation where  orgrelation.locationId =:orgLocationId and  orgrelation.clientLocationId =:clientOrgLocationId");
+	      String query = ("from OrgRelations orgrelation   orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org   where  orgrelation.locationId =:orgLocationId and  orgrelation.clientLocationId =:clientOrgLocationId");
 		  
 	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("clientOrgLocationId", clientOrgLocationId).list();
 	     
