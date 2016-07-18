@@ -56,9 +56,16 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Employees getEmployee(String id) throws Exception {
 		logger.debug("In Employee getEmployee method");
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Employees) session.get(Employees.class, Long.parseLong(id));
+		String query = "from Employees emp left join fetch emp.user where emp.id = :id ";
+		@SuppressWarnings("unchecked")
+		List<Employees> empList = (List<Employees>)session.createQuery(query.toString()).setLong("id", Long.parseLong(id)).list();
+		Employees employees = null;
+		if(empList != null && !empList.isEmpty()){
+			employees = empList.iterator().next();
+		}
+		return employees;
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteEmployee(String id) throws Exception {

@@ -13,7 +13,13 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+ <style>
  
+ .clsDatePicker {
+   z-index: 100000 !important;
+}
+ </style>
+
  
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
@@ -212,7 +218,7 @@
                   <select class="form-control select-bg" name="selectClient" id="addClientId">
                   <option value=''>-- Select Client --</option>
                   <c:forEach var="option" items="${add_clientList}">
-  						<option value="${option.id}">${option.orgName}</option>
+  						<option value="${option.orgid}">${option.orgName}</option>
 				  </c:forEach>
                   </select>
                   <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i> </div>
@@ -711,22 +717,25 @@ function getTeamMembers() {
             output = output+' <th>Start Date</th>';
             output = output+' <th>End Date</th>';
             output = output+' </tr>';
-        	for (var i=0; i<json.length; i++)
-			{
+           for (var i=0; i<json.length; i++)
+			{ 
+        	        var projectStartDate = $('#StartDate').val();
+        	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
 	        		output = output + "<tr>"+
                     "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                     "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                     "<td>"+opt.user.email+"</td>"+
-                    "<td>Employee</td>"+
+                    "<td>Senior Recruiter</td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
+	  
+                    "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='"+projectStartDate+"' class='form-control clsDatePicker'>"+
                     "</div></td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='dummyendDate"+opt.id+"' type='text' name='Date' value='' class='form-control'>"+
+                    "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>"+
                     "</div></td>"+
                     "</tr>";
-			}
+		     } 
         	output = output+' </tbody>';
 	        output = output+' </table>';
 	        
@@ -751,8 +760,8 @@ function assignEmployee(){
 	    $(".myCheckbox").each(function(){
 	        var localId =this.id;
 	        if($(this).is(':checked')){
-		        var startDate = $("#dummystartDate"+localId).val();
-		        var endDate = $("#dummyendDate"+localId).val();
+		        var startDate = $("#startDate"+localId).val();
+		        var endDate = $("#endDate"+localId).val();
 				result = result +"<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
 				result = result +"<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
 				result = result +"<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
@@ -867,5 +876,35 @@ function flushEmployee(){
 	        }
 	  });
 	  
+
+	  
+	  
+	  
   } );
 </script>
+
+<script>
+ function getStartDatePickerById(id,incrementor) {
+	 $('#'+id).datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
+<script>
+ function getEndDatePickerById(id,incrementor) {
+	 $('#'+id).datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
+
+
+

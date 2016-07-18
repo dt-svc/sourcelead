@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,19 +220,34 @@ public class ProjectsController {
 						for (int c = 1; c < empMaxCount; c++) {
 							
 							ProjectMembers pm = new ProjectMembers();
-							Employees emp = new Employees();
-							emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
-							pm.setEmployee(emp);
-							pm.setProjects(projects);
-							pm.setCreatedDate(new Date());
-							pm.setUpdatedDate(new Date());
-							projectMembersService.saveProjectMember(pm);
-							
+							if(StringUtils.isNotEmpty(jsonObj.getString("employeeId"+c))){
+								Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
+							    if(emp != null){
+							    	pm.setEmployee(emp);
+						    	    
+							    	String pattern = "yyyy-MM-dd";
+						            SimpleDateFormat format = new SimpleDateFormat(pattern);
+						            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
+						            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
+						            	  pm.setProjectAssignedDate(currentStartDate);
+						            }
+						            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
+						            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
+						            	pm.setProjectEndDate(currentEndDate);
+						            }
+									pm.setProjects(projects);
+									pm.setCreatedDate(new Date());
+									pm.setUpdatedDate(new Date());
+									projectMembersService.saveProjectMember(pm);
+									
+									commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+							    }
+							}
 					    }
 				 }
 		    }
 			
-			//commonUtil.storeTimesheetSubmissionRecords(user);
+			
 			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
