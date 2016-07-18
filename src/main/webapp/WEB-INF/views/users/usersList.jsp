@@ -89,11 +89,11 @@ window.onload = function () {
             success: function(data) {
 	        var json = JSON.parse(data);
 	        $('#usersListBody').empty();
+	        var result = "";
 	        
 	    	if(json.length > 0)
 	   		{
-	    		var result = "";
-	    		;
+	    		
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var userRole = json[i];
@@ -143,7 +143,12 @@ window.onload = function () {
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
-	   		    } 
+	   		    }
+	    	else{
+	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
+	    		$('#usersListBody').append(result);
+       	 	    $("#searchByName").val("");
+	    	}
 
 			 },
 	        error: function(e){
