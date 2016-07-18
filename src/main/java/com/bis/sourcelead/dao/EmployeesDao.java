@@ -14,6 +14,8 @@ public interface EmployeesDao {
 
 	public Boolean deleteEmployee(String id) throws Exception;
 	
+	public Employees getEmployeeByUserId(Long userId) throws Exception;
+	
 	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception;
 
 	public List<Employees> getAllEmployees() throws Exception;
