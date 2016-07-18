@@ -216,13 +216,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		    	ProjectMembers pm = new ProjectMembers();
+		    /*	ProjectMembers pm = new ProjectMembers();
 				pm.setEmployee(employee);
 				pm.setProjects(projects);
 				pm.setProjectAssignedDate(projects.getStartDate());
 				pm.setCreatedDate(new Date());
 				pm.setUpdatedDate(new Date());
-				projectMembersService.saveProjectMember(pm);
+				projectMembersService.saveProjectMember(pm);*/
 			}
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
 			return updatedProjects;

@@ -19,4 +19,6 @@ public interface UserDao {
 	User findByEmail(String email);
 	
 	public Collection<User> getUsersByUserRoles() throws Exception;
+	
+	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
 }

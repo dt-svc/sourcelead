@@ -13,7 +13,13 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+ <style>
  
+ .clsDatePicker {
+   z-index: 100000 !important;
+}
+ </style>
+
  
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
@@ -186,7 +192,7 @@
                 <select class="form-control select-bg" name="level1Manager" field-name="Select Manager" data-validation="required">
                   <option  value="">-- Select Manager --</option>
 	                  <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
+	                     <option value="${option.id}">${option.firstName} ${option.lastName}</option>
 	                  </c:forEach>
                 </select>
                     <span class="btn btn-default formic1 addLevel">Add Level-II</span>
@@ -200,7 +206,7 @@
                 <select class="form-control select-bg" name="level2Manager">
               		<option value='' >-- Select Manager --</option>
 	                  <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
+	                     <option value="${option.id}">${option.firstName} ${option.lastName}</option>
 	                  </c:forEach>
                 </select>
                 </div>
@@ -212,7 +218,7 @@
                   <select class="form-control select-bg" name="selectClient" id="addClientId">
                   <option value=''>-- Select Client --</option>
                   <c:forEach var="option" items="${add_clientList}">
-  						<option value="${option.id}">${option.orgName}</option>
+  						<option value="${option.orgid}">${option.orgName}</option>
 				  </c:forEach>
                   </select>
                   <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i> </div>
@@ -334,11 +340,12 @@
                          <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
                          <div class="col-lg-9">
                            <select class="form-control" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
-                           <option value="">--Select-Invoice--</option>
-                           	<option value="1">Invoice-1</option>
-                             <option value="2">Invoice-2</option>
-                             <option value="3">Invoice-3</option>
-                           </select>
+	                        <option value="">-Select Frequency-</option>
+	                        <option>Weekly</option>
+	                        <option>Bi-Weekly</option>
+	                        <option>Semi-Monthly</option>
+	                        <option>Monthly</option>
+	                      </select>
                            </div>
                          </div>
                          <div class="form-group">
@@ -439,6 +446,7 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
+	
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -470,10 +478,12 @@ function addTasks(){
 		
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		addtasksCountafterAddingTask();
 }
 </script>
 <script type="text/javascript">
  function removeRow(rowId) {
+	 addtasksCountafterRemoving()
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		  var r = document.getElementById('projectTaskTbl').rows[rowId];
              var count = 2*(r.cells.length);
@@ -516,7 +526,6 @@ function addTasks(){
 <script> 
 $(document).ready(function(){
 	 $("#maxTsRowNum").val('6');
-	 addSourceleadTasks();
 	document.getElementById("project_form").reset();
 });
 </script>
@@ -526,11 +535,12 @@ $(document).ready(function(){
 function addSourceleadTasks(){
 	
   var checkMaxTsRowNum =	 $("#maxTsRowNum").val();
+  if(checkMaxTsRowNum == 6){
 	var tbl = document.getElementById("projectTaskTbl");
 	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 	$("#addTaskCount").html(maxRowNum);
-	if(checkMaxTsRowNum == 6){
+	
 	
 	 $.ajax({
 	    	type: "GET",
@@ -541,7 +551,6 @@ function addSourceleadTasks(){
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
 				{
-	        		
 	        			$('david[onclick]').removeAttr('onclick');
 		        		var opt = json[i];
 		        		var row = tbl.insertRow(opt.Id);
@@ -576,6 +585,44 @@ function addSourceleadTasks(){
 }
 </script>
 
+
+<script type="text/javascript">
+function addtasksCountafterRemoving(){
+	
+var tasksCount =  $("#maxTsRowNum").val();
+var count = tasksCount;
+var addtaskcount =null;
+ for(i = 0 ;i<count;i++){
+	 
+		if($('#divTsRow'+i).filter(function() {
+		    return $(this).css('display') !== 'none';
+		}).length){
+			addtaskcount++
+		}
+ }
+ $("#addTaskCount").html(addtaskcount-2); 
+ 
+}
+</script> 
+
+<script type="text/javascript">
+function addtasksCountafterAddingTask(){
+	
+var tasksCount =  $("#maxTsRowNum").val();
+var count = tasksCount;
+var addtaskcount =null;
+ for(i = 0 ;i<count;i++){
+	 
+		if($('#divTsRow'+i).filter(function() {
+		    return $(this).css('display') !== 'none';
+		}).length){
+			addtaskcount++
+		}
+ }
+ $("#addTaskCount").html(addtaskcount-1); 
+ 
+}
+</script> 
 
 <!-- Add Task Script Ends -->
 
@@ -710,22 +757,25 @@ function getTeamMembers() {
             output = output+' <th>Start Date</th>';
             output = output+' <th>End Date</th>';
             output = output+' </tr>';
-        	for (var i=0; i<json.length; i++)
-			{
+           for (var i=0; i<json.length; i++)
+			{ 
+        	        var projectStartDate = $('#StartDate').val();
+        	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
 	        		output = output + "<tr>"+
                     "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                     "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                     "<td>"+opt.user.email+"</td>"+
-                    "<td>Senior Recruiter</td>"+
+                    "<td>Employee</td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
+	  
+                    "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='"+projectStartDate+"' class='form-control clsDatePicker'>"+
                     "</div></td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='dummyendDate"+opt.id+"' type='text' name='Date' value='' class='form-control'>"+
+                    "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>"+
                     "</div></td>"+
                     "</tr>";
-			}
+		     } 
         	output = output+' </tbody>';
 	        output = output+' </table>';
 	        
@@ -750,8 +800,8 @@ function assignEmployee(){
 	    $(".myCheckbox").each(function(){
 	        var localId =this.id;
 	        if($(this).is(':checked')){
-		        var startDate = $("#dummystartDate"+localId).val();
-		        var endDate = $("#dummyendDate"+localId).val();
+		        var startDate = $("#startDate"+localId).val();
+		        var endDate = $("#endDate"+localId).val();
 				result = result +"<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
 				result = result +"<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
 				result = result +"<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
@@ -866,5 +916,35 @@ function flushEmployee(){
 	        }
 	  });
 	  
+
+	  
+	  
+	  
   } );
 </script>
+
+<script>
+ function getStartDatePickerById(id,incrementor) {
+	 $('#'+id).datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
+<script>
+ function getEndDatePickerById(id,incrementor) {
+	 $('#'+id).datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
+
+
+

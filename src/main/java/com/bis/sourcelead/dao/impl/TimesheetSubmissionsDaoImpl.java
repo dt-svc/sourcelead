@@ -126,10 +126,10 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();  
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) group by ts.projectMembers.id";   
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";   
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).list();
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
-				Long combinedTotalHours = 0l ; 
+				Float combinedTotalHours = 0f ; 
 				java.sql.Date startDate = new java.sql.Date(ts.getStartDate().getTime());
 				Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
 				String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
@@ -146,25 +146,26 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			    
 				for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
 					if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
-					combinedTotalHours = combinedTotalHours + Long.parseLong(ts1.getTotalHours());
-					if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
-						isRejected   = true;  
-						status = "REJECTED";
+					combinedTotalHours = combinedTotalHours + Float.parseFloat(ts1.getTotalHours());
 					}
-					else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
-						 isNEW   = true;  
-						 status = "NEW";
-					}
-					else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-						 isSUBMITTEDFORAPPROVAL   = true;  
-						 status = "SUBMITTED FOR APPROVAL";
-					}
-					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
-						 isAPPROVED   = true;  
-						 status = "APPROVED";
-					}
+						if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+							isRejected   = true;  
+							status = "REJECTED";
+						}
+						else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+							 isNEW   = true;  
+							 status = "NEW";
+						}
+						else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+							 isSUBMITTEDFORAPPROVAL   = true;  
+							 status = "SUBMITTED FOR APPROVAL";
+						}
+						else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+							 isAPPROVED   = true;  
+							 status = "APPROVED";
+						}
 					
-				}
+				
 				ts.setCombinedTotalHours(combinedTotalHours.toString());
 				ts.setCombinedStatus(status);
 			}
