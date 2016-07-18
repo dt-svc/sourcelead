@@ -1,18 +1,18 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="css/jquery-ui.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<link href="resources/css/timesheet.css" rel="stylesheet">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/moment.min.js"></script>
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
+<script src="resources/js/moment.min.js"></script>
+<script src="resources/js/bootstrap-datetimepicker.min.js"></script> 
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="js/jquery-fun.js"></script>	
-        
+<script src="resources/js/jquery-fun.js"></script>	
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>        
     
  <div class="wraper"> 
       <!-- Content Area -->
@@ -97,6 +97,13 @@ $(document).ready(function(){
 			    var result = "";
 			    
 				result = result + '<div class="project_tabs_inn_table">';
+				
+				/* result = result + '<div class="useredit">';
+				result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+				result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+				result = result + '</div>'; */
+				
+				
 				result = result + '  <div class="project_details">';
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		    <div class="user_change_img">';
@@ -105,77 +112,65 @@ $(document).ready(function(){
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
 				result = result + ' 		    <b>'+json.user.email+'</b>';
 				result = result + '		 </div>';
-				 				
-				result = result + '	     <div class="user_details_cta">';
-				result = result + ' 		<div class="project_details_cta">';
-				result = result + ' 			<strong>Employed Id:</strong>';
-				result = result + ' 			<span><input type="text" value="'+json.employeeId+'" placeholder="Employed Id" class="project_detfield"></span><div class="clearfix"></div>';
-				result = result + ' 		</div>';
+				
+				
+				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
+					result = result + '	     <div class="user_details_cta">';
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Employed Id:</strong><span class="fix">'+json.employeeId+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + ' 			 <strong>First Name:</strong>';
-				result = result + ' 			 <span><input type="text" onBlur="inlineEditForUsers('+userId+',\'firstName\');" id="firstName" value="'+json.user.firstName+'" placeholder="First name" class="project_detfield"></span><div class="clearfix"></div>';
+				result = result + '				 <strong>First Name:</strong><span class="fix">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
 				
-				result = result + ' 		<div class="project_details_cta">';
-				result = result + ' 			 <strong>Last Name:</strong>';
-				result = result + '				 <span><input type="text" value="'+json.user.lastName+'" placeholder="Last Name" class="project_detfield"></span><div class="clearfix"></div>';
-				result = result + ' 		</div>';
+				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Last Name:</strong><span class="fix">'+json.user.lastName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
 				
-				result = result + '			<div class="project_details_cta">';
-				result = result + '				 <strong>Phone number:</strong>';
-				result = result + ' 			 <span><input type="text" value="'+json.user.mobilePhone+'" placeholder="Phone number" class="project_detfield"></span><div class="clearfix"></div>';
-				result = result + ' 		</div>';
+				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
 				
-				result = result + '			<div class="project_details_cta">';
-				result = result + '				 <strong>Rate:</strong>';
-				result = result + ' 			 <span><input type="text" value="'+json.rate+'" placeholder="Rate" class="project_detfield"></span><div class="clearfix"></div>';
-				result = result + ' 		</div>';
+				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Rate:</strong><span class="fix">'+json.rate+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
 				
-				result = result + ' 		<div class="project_details_cta">';
-				result = result + '				 <strong>Rate Per:</strong>';
-				result = result + '				 <span class="fix">'+json.ratePer+'<u class="fa fa-edit"></u>';
-				result = result + '			          <div class="user_role">';
-				result = result + '							<select>';
-				result = result + '							    <option>Hourly</option>';
-				result = result + '								<option>Daily</option>';
-				result = result + '								<option>Weekly</option>';
-				result = result + '								<option>Bi-Weekly</option>';
-				result = result + '								<option>Semi-Monthly</option>';
-				result = result + '							    <option>Monthly</option>';
-				result = result + '							    <option>Yearly</option>';
-				result = result + '						   </select>';
-				result = result + '                    </div>';
-				result = result + '					</span><div class="clearfix"></div>';
-				result = result + '			</div>';
+				if(json.ratePer != null && json.ratePer != "" && json.ratePer != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Rate Per:</strong><span class="fix">'+json.ratePer+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
 				result = result + '			<div class="project_details_cta">';
 				result = result + '					<strong>Role:</strong><span class="fix">'+json.user.userType+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
-				result = result + ' 		<div class="project_details_cta">';
-				result = result + '				 <strong>Invoice frequency:</strong>';
-				result = result + '				 <span class="fix">'+json.InvoiceFrequency+'<u class="fa fa-edit"></u>';
-				result = result + '			          <div class="user_role">';
-				result = result + '							<select>';
-				result = result + '							    <option>Weekly</option>';
-				result = result + '								<option>Bi-Weekly</option>';
-				result = result + '								<option>Semi-Monthly</option>';
-				result = result + '							    <option>Monthly</option>';
-				result = result + '						   </select>';
-				result = result + '                    </div>';
-				result = result + '					</span><div class="clearfix"></div>';
-				result = result + '			</div>';
+				if(json.InvoiceFrequency != null && json.InvoiceFrequency != "" && json.InvoiceFrequency != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				<strong>Invoice Frequency:</strong><span class="fix">'+json.InvoiceFrequency+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
-				result = result + '			<div class="project_details_cta">';
-				result = result + '					<strong>date of joining:</strong>';
-				result = result + '                 <span><input type="text" value="'+json.hireDateStr+'" placeholder="DD/MM/YY" class="project_detfield"></span><div class="clearfix"></div>';
-				result = result + '			</div>';
+				if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
-				result = result + '			<div class="project_details_cta">';
-				result = result + '				   <strong>Day hours:</strong>';
-				result = result + '				   <span><input type="text" value="'+json.dailyHours+'" placeholder="DD/MM/YY" class="project_detfield hours"></span><div class="clearfix"></div>';
-				result = result + '			</div>';
+				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Day hours:</strong><span class="fix">'+json.dailyHours+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
 				result = result + '	   </div>';
 				result = result + '	  <div class="clearfix"></div>';
@@ -587,6 +582,15 @@ $(document).ready(function(){
 	
     </body>
 	
+<script>
+function date(){
+	$('#hireDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	  });
+}
+</script>
+
+
 	
 <script>
 
@@ -604,12 +608,7 @@ $(document).ready(function() {
 });
 
 
-// Invoice frequency edit
-/* $(document).ready(function() {
-	$(".user_details_cta .fa-edit").click(function(){
-		$(".user_role").slideToggle(200);
-	});
-}); */
+
 
 //Rate Per edit
 $(document).ready(function() {
@@ -621,7 +620,8 @@ $(document).ready(function() {
 
 </script> 
 
-<script> 
+<!-- this script for inline edit -->
+<!-- <script> 
 function inlineEditForUsers(userId,localFieldName){
 	
 	var fieldName = localFieldName;
@@ -634,8 +634,8 @@ function inlineEditForUsers(userId,localFieldName){
    		    }
 	 }); 
 }
-</script>
-
+</script> -->
+<!-- this script for inline edit -->
 
 
 

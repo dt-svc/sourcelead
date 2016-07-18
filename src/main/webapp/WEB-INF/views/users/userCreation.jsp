@@ -12,7 +12,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<link href="css/jquery-ui.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
   <!-- Content Area -->
   <section class="content-wraper">
@@ -20,7 +19,7 @@
           <div class="pull-left">
             <h2>Create User</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User---------${user.firstName}</div>
+          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         <div class="content-area clearfix">
           <section class="action-btns clearfix">
