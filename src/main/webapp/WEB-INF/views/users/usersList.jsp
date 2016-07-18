@@ -62,11 +62,10 @@ window.onload = function () {
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
-         <div class="row">
-          <div id="usersListBody">
-        </div> 
+      <div class="row">
+          <div id="usersListBody"></div> 
       </div>
-      </div>
+      <div id="usersListEmptyBody"></div>
       </div>
   </section>
       <!-- Content Area Ends--> 
@@ -89,6 +88,7 @@ window.onload = function () {
             success: function(data) {
 	        var json = JSON.parse(data);
 	        $('#usersListBody').empty();
+	        $('#usersListEmptyBody').empty();
 	        var result = "";
 	        
 	    	if(json.length > 0)
@@ -146,7 +146,8 @@ window.onload = function () {
 	   		    }
 	    	else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
-	    		$('#usersListBody').append(result);
+	    		$('#usersListBody').empty();
+	    		$('#usersListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
 	    	}
 
