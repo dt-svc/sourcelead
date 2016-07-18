@@ -50,10 +50,6 @@ public class HomeController {
 	@Autowired
 	private UserService userService;
 	
-	@Value("${sourceleadUrl}")
-	private String sourceleadUrl;
-	
-	
 	@Value("${jdbc.username}")
 	private String user;
 	
