@@ -766,7 +766,7 @@ function getTeamMembers() {
                     "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                     "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                     "<td>"+opt.user.email+"</td>"+
-                    "<td>Senior Recruiter</td>"+
+                    "<td>Employee</td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
 	  
                     "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='"+projectStartDate+"' class='form-control clsDatePicker'>"+

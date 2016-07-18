@@ -316,9 +316,11 @@ public class ProjectsDashboardController {
 		}
 	 
 	 @RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
-		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
+		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
 		 	String resultJson = null;
-			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId);
+		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
 			resultJson = toJSON(employeeList);
 			return resultJson;
 		}
