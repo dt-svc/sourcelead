@@ -667,14 +667,12 @@ public class TimesheetEntriesController {
 			sb.append("            </tbody>");
 			sb.append("     </table>");
 			
-			/*sb.append("<div class='timesheet_bot'>");
+			sb.append("<div class='timesheet_bot'>");
 		    sb.append("	<div class='timesheet_button'>");
-		    sb.append("	        <input type='submit' onClick='saveMyTimesheet();'  name='Draft' vaue='Draft' class='time_btn time_dra'>");
-		    sb.append("        <input type='button' onClick='saveMyTimesheet();' value='Submit' class='time_btn'>");
-		    sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");
+		    sb.append("  <input type='button' value='Edit' class='time_btn time_cancel'>");
 		    sb.append("    </div>");
 		    sb.append("	<div class='clearfix'></div>");
-		    sb.append("</div>");*/
+		    sb.append("</div>");
 			
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
@@ -742,6 +740,7 @@ public class TimesheetEntriesController {
 		String[] submissionIds = tForm.getSubmissionIds();
 		if(submissionIds != null && submissionIds.length>0){ 
 			for(String submissionId : submissionIds){
+				                Long total = 0l;
 					    		TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 					    		if(status.equalsIgnoreCase("Draft")){
 					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
@@ -801,6 +800,15 @@ public class TimesheetEntriesController {
 									String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
 									if(!isNullOrEmpty(monHours)){
 										timesheetEntries.setMonHours(monHours);
+										
+										String[] parts = monHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin;
 									}else{
 										timesheetEntries.setMonHours("00:00");
 									}
@@ -809,6 +817,15 @@ public class TimesheetEntriesController {
 									String tueHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay2Id");
 									if(!isNullOrEmpty(tueHours)){
 										timesheetEntries.setTueHours(tueHours);
+										
+										String[] parts = tueHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin; 
 									}else{
 										timesheetEntries.setTueHours("00:00");
 									}
@@ -818,6 +835,16 @@ public class TimesheetEntriesController {
 									String wedHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay3Id");
 									if(!isNullOrEmpty(wedHours)){
 										timesheetEntries.setWedHours(wedHours);
+										
+										String[] parts = wedHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin;
+										
 									}else{
 										timesheetEntries.setWedHours("00:00");
 									}
@@ -827,6 +854,16 @@ public class TimesheetEntriesController {
 									String thuHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id");
 									if(!isNullOrEmpty(thuHours)){
 										timesheetEntries.setThuHours(thuHours);
+										
+										String[] parts = thuHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin;
+										
 									}else{
 										timesheetEntries.setThuHours("00:00");
 									}
@@ -836,6 +873,16 @@ public class TimesheetEntriesController {
 									String friHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay5Id");
 									if(!isNullOrEmpty(friHours)){
 										timesheetEntries.setFriHours(friHours);
+										
+										String[] parts = friHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin;
+										
 									}else{
 										timesheetEntries.setFriHours("00:00");
 									}
@@ -845,6 +892,15 @@ public class TimesheetEntriesController {
 									String satHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay6Id");
 									if(!isNullOrEmpty(satHours)){
 										timesheetEntries.setSatHours(satHours);
+										
+										String[] parts = satHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin;
 									}else{
 										timesheetEntries.setSatHours("00:00");
 									}
@@ -854,6 +910,16 @@ public class TimesheetEntriesController {
 									String sunHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay7Id");
 									if(!isNullOrEmpty(sunHours)){
 										timesheetEntries.setSunHours(sunHours);
+										
+										String[] parts = sunHours.split(":");
+										String hours = parts[0]; 
+										String min = parts[1];
+										
+										Long  localHours = Long.parseLong(hours) * 60;
+										Long  localHoursMinute = Long.parseLong(min);
+										Long  finalmin = localHours + localHoursMinute;
+										total = total + finalmin;
+										
 									}else{
 										timesheetEntries.setSunHours("00:00");
 									}
@@ -866,9 +932,15 @@ public class TimesheetEntriesController {
 									
 								}
 								}
+								if(total != null){
+									timesheetSubmissions.setTotalHours(total.toString());
+									timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+								}
+								
 					    	}
 		}else{
 	    		
+			    Long total = 0l;
 				String submissionId = tForm.getSubmissionId();
 	    		TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 	    		if(status.equalsIgnoreCase("Draft")){
@@ -929,6 +1001,16 @@ public class TimesheetEntriesController {
 					String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
 					if(!isNullOrEmpty(monHours)){
 						timesheetEntries.setMonHours(monHours);
+						
+						String[] parts = monHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
+						
 					}else{
 						timesheetEntries.setMonHours("00:00");
 					}
@@ -937,6 +1019,16 @@ public class TimesheetEntriesController {
 					String tueHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay2Id");
 					if(!isNullOrEmpty(tueHours)){
 						timesheetEntries.setTueHours(tueHours);
+						
+						String[] parts = tueHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
+						
 					}else{
 						timesheetEntries.setTueHours("00:00");
 					}
@@ -946,6 +1038,16 @@ public class TimesheetEntriesController {
 					String wedHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay3Id");
 					if(!isNullOrEmpty(wedHours)){
 						timesheetEntries.setWedHours(wedHours);
+						
+						String[] parts = wedHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
+						
 					}else{
 						timesheetEntries.setWedHours("00:00");
 					}
@@ -955,6 +1057,16 @@ public class TimesheetEntriesController {
 					String thuHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id");
 					if(!isNullOrEmpty(thuHours)){
 						timesheetEntries.setThuHours(thuHours);
+						
+						String[] parts = thuHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
+						
 					}else{
 						timesheetEntries.setThuHours("00:00");
 					}
@@ -964,6 +1076,16 @@ public class TimesheetEntriesController {
 					String friHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay5Id");
 					if(!isNullOrEmpty(friHours)){
 						timesheetEntries.setFriHours(friHours);
+						
+						String[] parts = friHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
+						
 					}else{
 						timesheetEntries.setFriHours("00:00");
 					}
@@ -973,6 +1095,16 @@ public class TimesheetEntriesController {
 					String satHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay6Id");
 					if(!isNullOrEmpty(satHours)){
 						timesheetEntries.setSatHours(satHours);
+						
+						String[] parts = satHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
+						
 					}else{
 						timesheetEntries.setSatHours("00:00");
 					}
@@ -982,6 +1114,15 @@ public class TimesheetEntriesController {
 					String sunHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay7Id");
 					if(!isNullOrEmpty(sunHours)){
 						timesheetEntries.setSunHours(sunHours);
+						 
+						String[] parts = sunHours.split(":");
+						String hours = parts[0]; 
+						String min = parts[1];
+						
+						Long  localHours = Long.parseLong(hours) * 60;
+						Long  localHoursMinute = Long.parseLong(min);
+						Long  finalmin = localHours + localHoursMinute;
+						total = total + finalmin;
 					}else{
 						timesheetEntries.setSunHours("00:00");
 					}
@@ -993,6 +1134,15 @@ public class TimesheetEntriesController {
 					timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 					
 				}
+				}
+				if(total != null){
+					
+				            float actualHours = (int) (total / 60);
+				            float actualMinutes =   (total % 60)/100;
+				            String actualTimeString =  String.format("%.2f", (actualHours+actualMinutes));
+				            
+					timesheetSubmissions.setTotalHours(actualTimeString);
+					timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 				}
 		}
 		
