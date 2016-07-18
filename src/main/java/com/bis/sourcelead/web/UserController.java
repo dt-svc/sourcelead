@@ -40,8 +40,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
-import net.sf.json.JsonConfig;
-import net.sf.json.util.CycleDetectionStrategy;
 
 @Controller
 @RestController
