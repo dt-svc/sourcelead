@@ -154,12 +154,13 @@
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <select class="form-control" name="invoiceFrequency"  field-name="Invoice Frequency" data-validation="required">
-	                              	<option value="">--Select-Invoice--</option>
-	                              	<option>Invoice-1</option>
-	                                <option>Invoice-2</option>
-	                                <option>Invoice-3</option>
-	                              </select>
+	                              <select class="form-control" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
+			                        <option value="">-Select Frequency-</option>
+			                        <option>Weekly</option>
+			                        <option>Bi-Weekly</option>
+			                        <option>Semi-Monthly</option>
+			                        <option>Monthly</option>
+			                      </select>
 	                              </div>
 	                            </div>
 	                            <div class="form-group">
@@ -745,7 +746,7 @@ function getTeamMembers(projectId) {
                     "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                     "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                     "<td>"+opt.user.email+"</td>"+
-                    "<td>Senior Recruiter</td>"+
+                    "<td>Employee</td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
                     "<input id='dummystartDate"+opt.id+"'   type='text' name='Date' value='' class='form-control'>"+
                     "</div></td>"+
