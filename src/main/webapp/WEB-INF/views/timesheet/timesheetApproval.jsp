@@ -679,7 +679,7 @@ function addTimeSheetRow(submissionId,projectId) {
 			
      }	
      
-function getProjectTasks(projectTaskId,projectId){   alert("hii");
+function getProjectTasks(projectTaskId,projectId){    
 	   var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
           type : "POST",

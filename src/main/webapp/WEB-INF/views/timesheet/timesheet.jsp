@@ -822,7 +822,6 @@ function saveMyTimesheet(status){
        		
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
-       		   
        		   var submissionIds = $("#submissionId").val();
         	   $.ajax({
 	      	          type : "POST",
