@@ -8,7 +8,6 @@ public enum Submission_ApprovalStatus {
 	REOPENED("reopened");
 	
 	
-	
     private String value;
 	private Submission_ApprovalStatus(String value){
 		this.value = value;

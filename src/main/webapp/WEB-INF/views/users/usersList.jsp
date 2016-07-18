@@ -46,9 +46,9 @@ window.onload = function () {
 				<select id="userRole" onchange="getUsersList();">
 				<option value="">--Select Role--</option>
 				<option value="All" >All Roles</option>
-				<option value="Administrator" >Administrator</option>
-				<option value="User">User</option>
-				<option value="Approver">Approver</option>
+				<c:forEach var="roles" items="${rolesList}">
+	                 <option value="${roles.id}">${roles.displayName}</option>
+                </c:forEach>
 				</select>
 		   </li>
 		  
@@ -65,6 +65,7 @@ window.onload = function () {
          <div class="row">
           <div id="usersListBody">
         </div> 
+      </div>
       </div>
       </div>
   </section>
@@ -88,11 +89,11 @@ window.onload = function () {
             success: function(data) {
 	        var json = JSON.parse(data);
 	        $('#usersListBody').empty();
+	        var result = "";
 	        
 	    	if(json.length > 0)
 	   		{
-	    		var result = "";
-	    		;
+	    		
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var userRole = json[i];
@@ -142,7 +143,12 @@ window.onload = function () {
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
-	   		    } 
+	   		    }
+	    	else{
+	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
+	    		$('#usersListBody').append(result);
+       	 	    $("#searchByName").val("");
+	    	}
 
 			 },
 	        error: function(e){

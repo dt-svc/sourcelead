@@ -16,7 +16,7 @@ public enum Project_Status {
 	}
 	 public static Project_Status getNameByValue(String scenarioId){
 	   	  for(Project_Status project_Status : Project_Status.values()){
-	   	    if(scenarioId == project_Status.value) 
+	   	    if(scenarioId.equalsIgnoreCase(project_Status.value)) 
 	   	    	return project_Status;
 	   	  }
 	   	  return null;

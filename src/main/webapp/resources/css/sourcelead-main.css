@@ -1049,6 +1049,11 @@ background-repeat:no-repeat;
 	transform: translateY(-150px);
 	opacity:1;
 }
+.profile-image:hover .uploadfile{
+	display:block;
+	transform: translateY(-90px);
+	opacity:1;
+}
 .uploadfile:hover .profile-img-container .comp-image{
 	opacity:0.4;
 }

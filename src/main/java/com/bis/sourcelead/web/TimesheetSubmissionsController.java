@@ -1,10 +1,19 @@
 package com.bis.sourcelead.web;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +26,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController 
 public class TimesheetSubmissionsController {
@@ -38,24 +53,95 @@ public class TimesheetSubmissionsController {
 	private DataSource dataSource;
 
 	
-	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
-    public  String saveSubmissionApprovalStatus(@RequestParam(value="projectMemberId", required=false) String projectMemberId,@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
-             
+	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
+	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request) throws Exception {
+		
+		String resultJson = null;
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
         
-        TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(projectMemberId);
-        if(timesheetSubmissions!=null){
-             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
-                   timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-                   timesheetSubmissions.setRejectedReason(rejectedReason);
-             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
-                 
-                   timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
-             }
-             
-             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+        ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
+        for(TimesheetSubmissions ts : timesheetSubmissionsList){
+        	ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
+        	if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
+        		ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+        	}
+            if(ts.getStartDate()!=null){
+            	ts.setStartDateStr(Constants.DF_DMY.format(ts.getStartDate()));
+            }
+        	if(ts.getEndDate()!=null){
+        		ts.setEndDateStr(Constants.DF_DMY.format(ts.getEndDate()));
+        	}
+            timesheetSubmissionsArrList.add(ts);
+         }
+         resultJson = toJSON(timesheetSubmissionsArrList);
+         return resultJson;
+         
+	}
+	
+	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
+    public  String saveSubmissionApprovalStatus(HttpServletRequest request,
+									    		@RequestParam(value="employeeId", required=false) Long employeeId,
+												@RequestParam(value="startDate", required=false) String startDate,
+												@RequestParam(value="endDate", required=false) String endDate,
+												@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
+									             
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        Date sDate  =  Constants.DMY.parse(startDate);
+        
+        
+        Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(), sDate);
+        if(timesheetSubmissionsList!=null){
+        	for(TimesheetSubmissions timesheetSubmissions :timesheetSubmissionsList){
+	             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
+	            	 	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+	            	 	timesheetSubmissions.setSubmissionStatus(Submission_Status.REJECTED);
+	            	 	timesheetSubmissions.setRejectedReason(rejectedReason);
+	             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
+	            	 timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
+	            	 timesheetSubmissions.setSubmissionStatus(Submission_Status.APPROVED);
+	             }
+	             
+	             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+        	}  
         }
-        return null;
+        return "success";
     }
+	
+	
+	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
+    public void downloadDocument(@RequestParam(value="submissionId", required=false) Long submissionId ,HttpServletResponse response) throws Exception {
+		
+		    TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+		    
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("Content-Disposition",
+	                "attachment;filename="+timesheetSubmissions.getFileName());
+		    
+			InputStream inputStream = new ByteArrayInputStream(timesheetSubmissions.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}  
+		 
 
 	
 	@RequestMapping(value = "/timesheetApproval")
@@ -142,6 +228,14 @@ public class TimesheetSubmissionsController {
 		  return timesheetSubmissionsList;
 	}*/
      
+	 private String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	 }
 	
  
 }

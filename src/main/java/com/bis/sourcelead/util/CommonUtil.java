@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -9,10 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 
 @Component
@@ -23,7 +28,23 @@ public class CommonUtil {
 	
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
-
+	
+	@Autowired
+	private ProjectTasksService projectTasksService;
+	
+	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
+		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
+		if(tasksList != null && !tasksList.isEmpty()){
+			for(ProjectTasks task :tasksList){
+				task.setProjectId(projects);
+				task.setCreatedBy(user.getCreatedBy());
+				task.setCreatedDate(new Date());
+				task.setUpdatedDate(new Date());
+				task.setUpdatedBy(user.getCreatedBy());
+			}
+		}
+		projectTasksService.saveAll(tasksList);
+	}
 	public void storeTimesheetSubmissionRecords(User user){
 		try {
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
@@ -44,7 +65,7 @@ public class CommonUtil {
 					startCal.setTime(startMondayDate);
 					Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 					
-					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startCal,28);
+					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startCal,35);
 					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
 						Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						startCal.setLenient(false);
@@ -72,6 +93,7 @@ public class CommonUtil {
 						timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
 						
 						timesheetSubmissions.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+						timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 						timesheetSubmissions.setCreatedDate(new Date());
 						timesheetSubmissions.setCreatedBy(user.getCreatedBy());
 						timesheetSubmissions.setUpdatedDate(new Date());

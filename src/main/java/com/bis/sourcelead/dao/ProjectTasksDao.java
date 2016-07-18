@@ -9,6 +9,8 @@ public interface ProjectTasksDao {
 
 	
     public ProjectTasks addTasks(ProjectTasks tasks)throws Exception;
+    
+    public void saveAll(Collection<ProjectTasks> taskList) throws Exception;
 	
     public ProjectTasks updateTasks(ProjectTasks tasks)throws Exception;
     
@@ -19,5 +21,6 @@ public interface ProjectTasksDao {
     public List<ProjectTasks> getAllTasks()throws Exception;
     
     public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
-        
+     
+    public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
 }

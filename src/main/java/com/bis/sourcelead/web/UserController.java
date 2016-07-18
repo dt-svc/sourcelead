@@ -36,8 +36,10 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -67,6 +69,8 @@ public class UserController {
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	EmployeesService employeesService;
@@ -141,6 +145,8 @@ public class UserController {
 	    	projects.setUpdatedDate(new Date());
 	    	Projects updatedProjects = projectsService.saveProject(projects);
 	    	
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    	commonUtil.storeSourceleadTasks(user, updatedProjects);
 	    	
 	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 	    	pah1.setProjectId(updatedProjects);

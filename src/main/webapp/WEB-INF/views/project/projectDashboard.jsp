@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<link href="resources/css/register-style.css" rel="stylesheet">
 <body>
       <!-- Content Area -->
        <section class="content-wraper">
@@ -135,7 +136,7 @@
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName">
+	                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName" field-name="Frist Name" data-validation="required">
 	                              </div>
 	                            </div>
 	                            <div class="form-group">
@@ -144,16 +145,17 @@
 	                              <input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
 	                              </div>
 	                            </div>
-	                            <div class="form-group">
+	                            <div class="form-group" id="EmailIdDiv">
 	                            <label class="col-lg-3">Email <span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <input type="text" class="form-control" value="" name="employeeEmail" id="employeeEmail">
+	                              <input type="text" class="form-control" value="" name="EmailId" id="EmailId" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
 	                              </div>
 	                            </div>
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <select class="form-control" name="invoiceFrequency">
+	                              <select class="form-control" name="invoiceFrequency"  field-name="Invoice Frequency" data-validation="required">
+	                              	<option value="">--Select-Invoice--</option>
 	                              	<option>Invoice-1</option>
 	                                <option>Invoice-2</option>
 	                                <option>Invoice-3</option>
@@ -174,7 +176,7 @@
 	                        </div>
 	                      </div>
 	                      <div class="modal-footer">
-	                        <button data-dismiss="modal" class="btn btn-primary" type="button" id="add_employee" onclick="addEmployee();">Save</button>
+	                        <button class="btn btn-primary" type="button" id="add_employee" onclick="addEmployee();">Save</button>
 	                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
 	                      </div>
 	                      </form>
@@ -427,7 +429,7 @@ function projectEmployee(projectId){
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>'+json.status+'</b><i id="ac-drop" class="fa fa-edit">';
+	result = result + '					<strong>Status:</strong><span><b>'+json.projectStatus+'</b><i id="ac-drop" class="fa fa-edit">';
 	result = result + '						<ul>';
 	result = result + '							<li>Option 1</li>';
 	result = result + '							<li>Option 2</li>';
@@ -456,16 +458,28 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-	result = result + '					<span><input type="text" value="Cognizant" placeholder="Client" class="project_detfield"></span><div class="clearfix"></div>';
+		result = result + '<select>';
+					for (var i = 0; i < json.clientName.length; i++) {
+						
+						var managers = json.clientName[i];
+						var projrctmanager = managers.split('&');
+				    	var name = projrctmanager[0];
+				    	var id = projrctmanager[1];
+						result = result+"<option value="+id+">"+name+"</option>";
+					}
+		result = result + '</select>';
+	
+	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Team members:</strong><span>25</span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
 	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	result = result + '				<div class="projmaxTsRowNumect_details_cta">';
+	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
 	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -501,6 +515,8 @@ function projectEmployee(projectId){
 
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){
+	
+	alert("sdddd");
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
 	 $.ajax({
@@ -662,16 +678,32 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function addEmployee() {
-		var frm = $('#employee_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		$.ajax({
-		type: "POST",
-		url: "http://localhost:8080/sourcelead/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
-			success: function(data) {
-			
-			},
-		});
+		 var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		   }; 
+		 
+		 if ($('#employee_form').validate(false, validationSettings)){
+			var frm = $('#employee_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			$.ajax({
+			type: "POST",
+			url: "http://localhost:8080/sourcelead/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
+				success: function(data) {
+				
+				},
+			});
+			  return true;
+			 }else{
+			  return false;
+			 }
 	}
+	$('body').on('blur', '#employee_form', function() {
+		$("#employee_form").showHelpOnFocus();;
+		$("#employee_form").validateOnBlur(false, validationSettings);  
+	});
 </script>
 
 <script> 
@@ -757,4 +789,28 @@ function assignEmployee(){
 	    });
 }
 </script>
+<script type="text/javascript">
+ function emailVerification() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 if(EmailId != null && EmailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: "http://localhost:8080/sourcelead/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script> 
 </html>

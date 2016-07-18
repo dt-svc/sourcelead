@@ -50,10 +50,6 @@ public class HomeController {
 	@Autowired
 	private UserService userService;
 	
-	@Value("${sourceleadUrl}")
-	private String sourceleadUrl;
-	
-	
 	@Value("${jdbc.username}")
 	private String user;
 	
@@ -61,6 +57,8 @@ public class HomeController {
 	private String sourceLeadBlockedSocialDomains;
 	
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -89,6 +87,7 @@ public class HomeController {
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;

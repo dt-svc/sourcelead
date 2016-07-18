@@ -26,6 +26,10 @@ public class Constants {
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
+	public static  String Projects = "Projects";
+	public static  String Clients = "Clients";
+	public static  String TimeSheet = "TimeSheet";
+	public static  String TimeSheetApproval = "TimeSheetApproval";
 	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";

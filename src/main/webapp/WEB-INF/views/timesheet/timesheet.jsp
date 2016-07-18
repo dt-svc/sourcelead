@@ -117,7 +117,7 @@ function maskme(){
 <body  onclick="bodyClick();">
 
 <section class="content-wraper">
- <form id="timesheet_form" name="timesheet_form" enctype="multipart/form-data" >
+ <form id="timesheet_form" name="timesheet_form" enctype="multipart/form-data" method="post">
      <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Timesheets</h2>
@@ -397,12 +397,12 @@ function maskme(){
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
 	    	 </div>
-             <div id="divadttTd9" style="display:none;">
+             <!-- <div id="divadttTd9" style="display:none;">
 				  <input type="text"  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment8Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id"></textarea></span></div>  
-             </div>
+             </div> -->
       
       
 <!--   Responsive  --> 
@@ -745,11 +745,11 @@ function addTimeSheetRow(submissionId,projectId) {
 			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
 			cell7.innerHTML = divadttTd7Str;
 
-			var cell8 = row.insertCell(8);
+			/* var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
             divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
-			cell8.innerHTML = divadttTd8Str;
+			cell8.innerHTML = divadttTd8Str; */
 			
 			
 			maskme();   
@@ -808,8 +808,7 @@ function addTimeSheetRow(submissionId,projectId) {
                 
                 
 <script type="text/javascript">
-        $('#timesheet_form').submit(function(e) {
-               e.preventDefault();
+function saveMyTimesheet(status){  alert("hii");
                var frm = $('#timesheet_form').serializeFormJSON();
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
@@ -827,13 +826,14 @@ function addTimeSheetRow(submissionId,projectId) {
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
         		    	  
         		      }
         	      	  
         	    }); 
-       	    });
+       	  /*   }); */
+}    
    </script>
 
    
@@ -913,8 +913,33 @@ $(document).click(function(){
 	 $("#rowTotal"+i+"Id").val(total);
 }	
 	
-	
+	 grandTotal();		
 });
+
+function grandTotal(){
+    var total;
+    var bsum = 0;
+    for(var i=1 ;i<8;i++){
+   	 var hours = $("#rowTotal"+i+"Id").val();
+
+   	 var split = hours.split(':');
+   	 var first = split[0];
+   	 var second = split[1];
+		 
+		 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+   	 
+	     bsum = parseFloat(bsum) + parseInt(finalmin);
+   	 
+    }
+    var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 total = hours +":"+ minutes;
+	 $("#grandTotal").val(total);
+    
+}
 
 </script>
 

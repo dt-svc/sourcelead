@@ -3,7 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,11 +40,13 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -96,8 +98,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 	private RolesService rolesService;
 	
 	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
 	private PasswordResetsSevice passwordResetsSevice;
 	
+	@Autowired
+	private ProjectTasksService projectTasksService;
 	@Override
 	public void addRegistration(Registration registration) throws Exception {
 		
@@ -149,7 +156,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		Projects projects = saveProject(registration, orgLocations, user, employee);
+		saveProject(registration, orgLocations, user, employee);
 		
 	}
 	
@@ -180,7 +187,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) {
+	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) throws Exception {
 		 			 	
 	    	Projects projects = new Projects();
 	    	projects.setProjectSequeneNumber(registration.getCompanyName()+"_Project01");
@@ -194,12 +201,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setUpdatedDate(new Date());
 	    	projects.setOrgLocationsId(orgLocations);
 	    	Projects updatedProjects = null;
-			try {
-				updatedProjects = projectsService.saveProject(projects);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	    	
+	    	updatedProjects = projectsService.saveProject(projects);
 	    	
 	    	
 			if(updatedProjects != null){
@@ -208,7 +211,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		    	pah1.setApproverUserId(approverUser);
 		    	pah1.setLevel(1);
 		    	try {
-					ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+					 projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -219,13 +222,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 				pm.setProjectAssignedDate(projects.getStartDate());
 				pm.setCreatedDate(new Date());
 				pm.setUpdatedDate(new Date());
-				try {
-					projectMembersService.saveProjectMember(pm);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
+				projectMembersService.saveProjectMember(pm);
 			}
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
 			return updatedProjects;
 	}
 	 
