@@ -25,6 +25,14 @@
         </section>
         
 		<!-- Timesheet -->
+
+
+<script>
+function predefineProfileImage(imageId){
+	$(imageId).attr('src','resources/images/userprofile-img.png');
+}
+</script>
+
 <script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
@@ -75,6 +83,15 @@ $(document).ready(function(){
 	  	
 	  	
 	  	
+	  	
+	  /* result = result + '<div class="project_inn_mask"></div>';
+	  	result = result + '<div class="project_error">';
+	  	result = result + '<textarea></textarea>';
+	  	result = result + '<b>User delete message here ....</b>';
+	  	result = result + '<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
+	  	result = result + '</div>';  */
+	  	
+	  	
 	  	result = result + '</div>'; 
 	  	$("#projectSideDiv").empty(); 
 	    $("#projectSideDiv").append(result);  	
@@ -97,21 +114,30 @@ $(document).ready(function(){
 			    var result = "";
 			    
 				result = result + '<div class="project_tabs_inn_table">';
-				
-				/* result = result + '<div class="useredit">';
-				result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-				result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-				result = result + '</div>'; */
-				
-				
 				result = result + '  <div class="project_details">';
+				
+			/* 	result = result + '<div class="useredit">';
+				result = result + '   <a href="javascript:void(0)"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+				result = result + '   <a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+				result = result + '</div>';	 */			
+				
+				/* result = result + '<div class="project_inn_mask"></div>';
+				result = result + '<form:form id="terminateReason_form"  name="terminateReason_form" method="post" >';
+			  	result = result + '<div class="project_error">';
+			  	result = result + '<textarea id="terminateReason" name="terminateReason" field-name="Reason" class="form-control" data-validation="required" /></textarea>';
+			  	result = result + '<b>User delete message here ....</b>';
+			  	result = result + '<a class="close_color" href="javascript:void(0)" onClick="saveReason('+userId+');">Yes</a><a href="javascript:void(0)">No</a> ';
+			  	result = result + '</div>'; 
+			  	result = result + '</form:form>'; */
+				
+				
 				result = result + '	 <div class="user_details_cta_img">';
-				result = result + '		    <div class="user_change_img">';
-				result = result + '			    <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle">';
+				result = result + '		        <div class="user_change_img">';
+				result = result + "                   <img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
 				result = result + ' 		    </div>';
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
 				result = result + ' 		    <b>'+json.user.email+'</b>';
-				result = result + '		 </div>';
+				result = result + '	  </div>';
 				
 				
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
@@ -264,11 +290,11 @@ $(document).ready(function(){
     result = result + ' </div>';
     result = result + '</div> ';
 
-    result = result + '<div class="project_inn_mask"></div>';
-    result = result + '<div class="project_error">';
+   /*  result = result + '<div class="project_inn_mask"></div>';
+    result = result + '<div class="project_error" >';
     result = result + '	<p>User delete message here ....</p>';
     result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
-    result = result + '</div>';
+    result = result + '</div>'; */
 
     result = result + '</div>	';
     $("#tab-2").empty(); 
@@ -617,8 +643,32 @@ $(document).ready(function() {
 	});
 });
 
+//project error message
+$(document).ready(function() {
+   $(".project_tabs_inn_table .glyphicon-trash").click(function(){
+        $(".project_error").slideDown(200);
+        $(".project_inn_mask").fadeIn(200);
+    });
+    $(".useredit a").click(function() {
+        $(".project_error").slideDown(200);
+        $(".project_inn_mask").fadeIn(200);
+    });
+});
+
 
 </script> 
+
+
+<script>
+function saveReason(userId){
+	var terminateReason = document.getElementById("terminateReason").value;
+	if(terminateReason){
+		
+	}else{
+		
+	}
+}
+</script>
 
 <!-- this script for inline edit -->
 <!-- <script> 
@@ -634,6 +684,9 @@ function inlineEditForUsers(userId,localFieldName){
    		    }
 	 }); 
 }
+
+
+
 </script> -->
 <!-- this script for inline edit -->
 
