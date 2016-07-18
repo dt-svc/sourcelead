@@ -134,7 +134,7 @@ public class ProjectsController {
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);
 				
-                Collection<User> userList = userService.getUsersByUserRoles();
+                Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
 				model.addObject("user_List", userList);
 				
 				model.setViewName("project/project");
