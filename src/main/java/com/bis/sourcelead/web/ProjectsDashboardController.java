@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
@@ -222,12 +224,21 @@ public class ProjectsDashboardController {
 	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
 		 
 		 Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
-		 		 
+		 ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
+			 
+			 if(pm.getProjectAssignedDate()!=null){
+				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pm.getProjectAssignedDate()));
+             }
+        	 if(pm.getProjectEndDate()!=null){
+        		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
+        	 }
+	        	
+			 projectMembersArrList.add(pm);
 		 }
 		 ObjectMapper mapper = new ObjectMapper();
-		 String jsonInString = mapper.writeValueAsString(projectMembersList);
+		 String jsonInString = mapper.writeValueAsString(projectMembersArrList);
 		 
 		 return jsonInString;
 	  }

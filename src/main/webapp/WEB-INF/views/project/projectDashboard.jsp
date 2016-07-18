@@ -345,8 +345,8 @@ function projectEmployee(projectId){
 	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div><input type="text"  value="'+json[i].empName+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+json[i].projectAssignedDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+json[i].projectEndDateStr+'" class="project_inline_field"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
