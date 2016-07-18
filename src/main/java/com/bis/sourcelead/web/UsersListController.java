@@ -103,12 +103,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			@RequestParam(value="userState", required=false) String userState) {
 
 	 	String resultJson = null;
-		Collection<UserRole> rolesList = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
+		Collection<UserRole> rolesList = new ArrayList<UserRole>();
 		try {
+			
 			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(userRole)){
 				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId());
 			}
@@ -126,21 +126,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			}
 			 
 			
-			for(UserRole role : rolesList){
-				if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")){
-					role.setUserRoleName("Administrator");
-				}else if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_USER")){
-					role.setUserRoleName("User");
-				}else if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_APPROVER")){
-					role.setUserRoleName("Approver");
-				}
-				userRolesList.add(role);
-			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		 resultJson = toJSON(userRolesList);
+		 resultJson = toJSON(rolesList);
 		 return resultJson;
 
 	}
@@ -173,7 +162,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		    }
 		    else if (fieldName.equalsIgnoreCase("lastName")) {
 		    	user.setLastName(fieldValue);
-			}     
+			} 
+		    else if (fieldName.equalsIgnoreCase("mobilePhone")) {
+		    	user.setMobilePhone(fieldValue);
+			} 
 		    userService.addUser(user);
 		    return null;
 	  }
