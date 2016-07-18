@@ -125,7 +125,7 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-sm-8'>";
-	       	    	result = result +"<h4><strong> "+userRole.user.firstName+" "+userRole.user.lastName+"  </strong></h4>";
+	       	    	result = result +"<h4><strong><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </strong></h4>";
 	       	    	result = result +"<p><label> "+userRole.user.email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	    	result = result +"<p><label>Projects</label><span class='label label-default'>5</span></p>";
@@ -167,4 +167,23 @@ function resendInvitation(userId){
 	}
   
 </script>
+
+
+<script type="text/javascript">
+function getUserSummary(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != ""){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/userSummary?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        success: function(result) {
+			        	alert("hiii"+result);
+			        	 
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
     

@@ -20,7 +20,7 @@
           <div class="pull-left">
             <h2>Create User</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User---------${user.firstName}</div>
         </section>
         <div class="content-area clearfix">
           <section class="action-btns clearfix">
@@ -68,7 +68,7 @@
 		                  </div>
 		                  <div class="col-lg-6">
 		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly">
+		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly">
 		                    </div>
 		                  </div>
 		                  <span class="hidden">Enter Project Id</span> </div>

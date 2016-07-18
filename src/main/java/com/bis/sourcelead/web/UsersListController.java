@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -42,6 +49,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	UserService userService;
 	
 	
 	
@@ -116,6 +129,38 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 
 	}
 	
+
+	//to get the user summary
+	 @RequestMapping(value = "/userSummary/{userId}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummary(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			response.sendRedirect("/sourcelead/userSummaryDetails?userId="+userId);
+			
+	   }
+	 
+	 
+	 @RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
+	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
+		 String resultJson = null;   
+		 Employees employee = employeesService.getEmployeeByUserId(userId);
+		 if(employee.getHireDate() != null){
+			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_STD.format(employee.getHireDate())); 
+		 }
+		 resultJson = toJSON(employee);
+		 return resultJson;
+	  }
+	 
+	 @RequestMapping(value = "/updateUserById", method = RequestMethod.POST)
+	 public String updateUserById(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
+		    User user = userService.getUserById(userId);
+		    if(fieldName.equalsIgnoreCase("firstName")){
+		    	user.setFirstName(fieldValue);
+		    }
+		    else if (fieldName.equalsIgnoreCase("lastName")) {
+		    	user.setLastName(fieldValue);
+			}     
+		    userService.addUser(user);
+		    return null;
+	  }
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

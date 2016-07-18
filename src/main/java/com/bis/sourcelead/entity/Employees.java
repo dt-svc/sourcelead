@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
@@ -90,7 +91,8 @@ public class Employees {
 	
 	
 	
-	
+	@Transient
+    private String hireDateStr;
 	
 
 	public Long getId() {
@@ -244,6 +246,14 @@ public class Employees {
 
 	public void setDailyHours(String dailyHours) {
 		this.dailyHours = dailyHours;
+	}
+
+	public String getHireDateStr() {
+		return hireDateStr;
+	}
+
+	public void setHireDateStr(String hireDateStr) {
+		this.hireDateStr = hireDateStr;
 	}
 	
 	

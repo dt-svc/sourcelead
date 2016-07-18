@@ -45,6 +45,15 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return flag;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.bis.sourcelead.service.EmployeesService#getEmployeeByUserId(java.lang.String)
+	 */
+	@Override
+	public Employees getEmployeeByUserId(Long userId) throws Exception {
+		return employeesDao.getEmployeeByUserId(userId);
+	}
+	
 	@Override
 	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception {
 		Boolean flag = employeesDao.validateEmployeeId(employeeId,orgLocationsId);
