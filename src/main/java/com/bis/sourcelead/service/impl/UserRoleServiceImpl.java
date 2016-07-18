@@ -38,9 +38,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public Collection<UserRole> getUsersListByRoleAndLocationId(String roleName,Long locationId,String userState,Long userId) throws Exception {
+	public Collection<UserRole> getUsersListByRoleAndLocationId(Long roleId,Long locationId,String userState,Long userId) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndLocationId(roleName, locationId,userState,userId);
+		return userRoleDao.getUsersListByRoleAndLocationId(roleId, locationId,userState,userId);
 	}
 
 	@Override
@@ -50,10 +50,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(String roleName, String userName,
+	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName,
 			Long locationId,String userState,Long userId) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleName, userName, locationId,userState,userId);
+		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId);
 	}
 
 	@Override

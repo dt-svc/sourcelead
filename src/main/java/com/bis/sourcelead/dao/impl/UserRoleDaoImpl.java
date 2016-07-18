@@ -78,16 +78,8 @@ public class UserRoleDaoImpl implements UserRoleDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersListByRoleAndLocationId(String roleName, Long locationId,String userState,Long userId) throws Exception {
+	public Collection<UserRole> getUsersListByRoleAndLocationId(Long roleId, Long locationId,String userState,Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		Long roleId = null;
-		if(roleName.equalsIgnoreCase("Administrator")){
-			roleId = 1L;
-		}else if(roleName.equalsIgnoreCase("User")){
-			roleId = 2L;
-		}else if(roleName.equalsIgnoreCase("Approver")){
-			roleId = 3L;
-		}
 		
 		String subQuery = "";
 		if(!isNullOrEmpty(userState)){
@@ -122,17 +114,9 @@ public class UserRoleDaoImpl implements UserRoleDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(String roleName, String userName,
+	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName,
 			Long locationId,String userState,Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		Long roleId = null;
-		if(roleName.equalsIgnoreCase("Administrator")){
-			roleId = 1L;
-		}else if(roleName.equalsIgnoreCase("User")){
-			roleId = 2L;
-		}else if(roleName.equalsIgnoreCase("Approver")){
-			roleId = 3L;
-		}
 		
 		String subQuery = "";
 		if(!isNullOrEmpty(userState)){

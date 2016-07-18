@@ -23,9 +23,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -51,15 +53,21 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	UserRoleService userRoleService;
 	
 	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
 	EmployeesService employeesService;
 	
 	@Autowired
 	UserService userService;
+
 	
 	
 	
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
+		
+		Collection<Roles> rolesList = null;
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -72,6 +80,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		sessionData.setNav(Constants.Users);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
+		
+		try {
+			rolesList = rolesService.getRoles();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.addObject("rolesList", rolesList);
 		
 		return model;
 
@@ -100,13 +116,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState,user.getId());
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndLocationId(userRole, orgLocations.getId(),userState,user.getId());
+				rolesList = userRoleService.getUsersListByRoleAndLocationId(Long.parseLong(userRole), orgLocations.getId(),userState,user.getId());
 			}
 			else if((!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)) || ("All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName))){
 				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId());
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRole, searchByName, orgLocations.getId(),userState,user.getId());
+				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId());
 			}
 			 
 			

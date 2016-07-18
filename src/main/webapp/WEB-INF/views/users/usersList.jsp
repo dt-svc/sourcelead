@@ -46,9 +46,9 @@ window.onload = function () {
 				<select id="userRole" onchange="getUsersList();">
 				<option value="">--Select Role--</option>
 				<option value="All" >All Roles</option>
-				<option value="Administrator" >Administrator</option>
-				<option value="User">User</option>
-				<option value="Approver">Approver</option>
+				<c:forEach var="roles" items="${rolesList}">
+	                 <option value="${roles.id}">${roles.displayName}</option>
+                </c:forEach>
 				</select>
 		   </li>
 		  
@@ -65,6 +65,7 @@ window.onload = function () {
          <div class="row">
           <div id="usersListBody">
         </div> 
+      </div>
       </div>
       </div>
   </section>
