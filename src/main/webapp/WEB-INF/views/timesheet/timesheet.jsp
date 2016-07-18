@@ -955,7 +955,7 @@ function removeTimeSheetRow(rowId,submissionId) {
 	
 			var rowNum = $("#maxRowNumber"+submissionId).val();
 			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber"+submissionId).val(maxRowNum - 1); 
+			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
 			
 			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).style.display = 'none';
 			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).value= '';

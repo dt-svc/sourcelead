@@ -1000,6 +1000,11 @@ public class TimesheetEntriesController {
 									
 									timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 									
+								}else{
+									if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
+										String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
+										timesheetEntriesDao.deleteTimesheetEntries(timesheetEntriesId);
+									}
 								}
 								}
 								if(total != null){
@@ -1207,12 +1212,18 @@ public class TimesheetEntriesController {
 					timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 					
 				}
+				else{
+					if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
+						String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
+						timesheetEntriesDao.deleteTimesheetEntries(timesheetEntriesId);
+					}
+				}
 				}
 				if(total != null){
 					
-				            float actualHours = (int) (total / 60);
-				            float actualMinutes =   (total % 60)/100;
-				            String actualTimeString =  String.format("%.2f", (actualHours+actualMinutes));
+				            int actualHours = (int) (total / 60);
+				            int actualMinutes =   (int)(total % 60);
+				            String actualTimeString =  actualHours+"."+actualMinutes;
 				            
 					timesheetSubmissions.setTotalHours(actualTimeString);
 					timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
