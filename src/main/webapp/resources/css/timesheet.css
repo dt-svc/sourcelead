@@ -493,7 +493,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project_wrap_table table tr:nth-child(even) {background: #fff;}
 .project_wrap_table table tr:nth-child(odd) {background: #eef1fc;}			
 .project_wrap_table table tr th {
-	background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
+	background-color:#375d81 !important; font-weight:500; color:#FFF; /* text-align:center; */ padding:0px 15px; height:45px;
 	border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4; 
 	}
 .project_wrap_table table tr th:last-child { text-align:center;}	
