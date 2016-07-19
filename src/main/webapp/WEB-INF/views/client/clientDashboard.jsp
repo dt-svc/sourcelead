@@ -51,7 +51,7 @@
 			</thead>
 				<c:forEach var="report" items="${clientsList}" varStatus="raId">	
                 <tr>
-                    <td><div class="proj_show" onclick="clientSideBar('${report.id}');">${report.clientLocationId.org.orgName}<i class="fa fa-binoculars"></i></div></td>
+                    <td><div class="proj_show" onclick="clientSideBar('${report.clientLocationId.id}');">${report.clientLocationId.org.orgName}<i class="fa fa-binoculars"></i></div></td>
                     <td><div>${report.clientLocationId.org.webSite}</div></td>
                     <td><div>${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
                     <td><div>example@domain.com</div></td>
@@ -214,40 +214,65 @@ function clientProjectDetails(clientId){
 <script type="text/javascript">
 function clientDetails(clientId){
 
-	var result = "";
-	 result = result +  '<div class="project_tabs_inn_table">';
-	 result = result +  '<div class="project_details">';
-	 result = result +  '<div class="project_details_cta">';
-	 result = result +  '<strong>Client name:</strong>';
-	 result = result +  '<span><input type="text" value="Broadridge" placeholder="Project name" class="project_detfield"></span>';
-	 result = result +  '<div class="clearfix"></div>';
-	 result = result +	'</div>';	
-	 result = result +	'<div class="project_details_cta">';
-	 result = result +	'<strong>Website:</strong>';
-	 result = result +	'<span><input type="text" value="clientdomain.com" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
-	 result = result +	'</div>';	
-	 result = result +	'<div class="project_details_cta">';
-	 result = result +	'<strong>Location:</strong>';
-	 result = result +	'<span><input type="text" value="Hyderabad" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
-	 result = result +	'</div>';	
-	 result = result +	'<div class="project_details_cta">';
-	 result = result +	'<strong>Email:</strong>';
-	 result = result +	'<span><input type="text" value="example@domain.com" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
-	 result = result +	'</div>';		 
-	 result = result +	'<div class="project_details_cta">';
-	 result = result +	'<strong>Phone number:</strong>';
-	 result = result +	'<span><input type="text" value="040 2323 2323" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
-	 result = result +	'</div>';	
-	 result = result +	'<div class="project_details_cta">';
-	 result = result +	'<strong>Projects:</strong>';
-	 result = result +	'<span><input type="text" value="4" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
-	 result = result +	'</div>	';					
-	 result = result +	'<div class="clearfix"></div>';
-	 result = result +	'</div>';
-	 result = result +	'</div>';
-	 
-	 $("#tab-2").empty(); 
-	 $("#tab-2").append(result); 
+	
+	  $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+clientId, 	   
+		    		   success: function(data) {
+		    			     var json = JSON.parse(data);
+		    				 var result = "";
+		    				 result = result +  '<div class="project_tabs_inn_table">';
+		    				 result = result +  '<div class="project_details">';
+		    				 result = result +  '<div class="project_details_cta">';
+		    				 result = result +  '<strong>Client name:</strong>';
+		    				 result = result +  '<span><input type="text" value="'+json.orgName+'" placeholder="Project name" class="project_detfield"></span>';
+		    				 result = result +  '<div class="clearfix"></div>';
+		    				 result = result +	'</div>';	
+		    				 result = result +	'<div class="project_details_cta">';
+		    				 result = result +	'<strong>Website:</strong>';
+		    				 result = result +	'<span><input type="text" value="'+json.webSite+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+		    				 result = result +	'</div>';	
+		    				 result = result +	'<div class="project_details_cta">';
+		    				 result = result +	'<strong>Location:</strong>';
+		    				 result = result +	'<span><input type="text" value="'+json.country+','+json.state+', '+json.city+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+		    				 result = result +	'</div>';	
+		    				 result = result +	'<div class="project_details_cta">';
+		    				 result = result +	'<strong>Email:</strong>';
+		    				 result = result +	'<span><input type="text" value="'+json.email+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+		    				 result = result +	'</div>';		 
+		    				 result = result +	'<div class="project_details_cta">';
+		    				 result = result +	'<strong>Phone number:</strong>';
+		    				 result = result +	'<span><input type="text" value="'+json.phone+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+		    				 result = result +	'</div>';	
+		    				 result = result +	'<div class="project_details_cta">';
+		    				 result = result +	'<strong>Projects:</strong>';
+		    				 result = result +	'<span><input type="text" value="'+json.projectsCont+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+		    				 result = result +	'</div>	';					
+		    				 result = result +	'<div class="clearfix"></div>';
+		    				 result = result +	'</div>';
+		    				 result = result +	'</div>';
+		    				 
+		    				 $("#tab-2").empty(); 
+		    				 $("#tab-2").append(result); 
+		    		   
+		    		   
+		    		   
+		    		   
+		    		   }
+	  });
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 }
 </script>
 

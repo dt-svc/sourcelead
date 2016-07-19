@@ -101,7 +101,6 @@ public class ClientController {
 				sessionData = new SessionMaintainanceData();
 			}
 			sessionData.setNav(Constants.Clients);
-			
 			request.getSession().setAttribute("sessionData",sessionData);
 			
 			return model;
@@ -114,15 +113,16 @@ public class ClientController {
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
-		 	String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
-			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-
-			
-			
-			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		 	
+			json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();   
-		 	
+
+			String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			
 		 	/*Saving for Org*/
 		    Org org = new Org();
 			org.setOrgName(jsonObj.getString("orgName"));
@@ -168,9 +168,15 @@ public class ClientController {
 				Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
 				project.setProjectSequeneNumber(jsonObj.getString(c+"projectId"));
 				project.setProjectName(jsonObj.getString(c+"projectName"));
-				OrgLocations  orgLocationsID = new OrgLocations();
-				orgLocationsID.setId(orgLocation.getId());
+			
+                OrgLocations  orgLocationsID = new OrgLocations();
+				orgLocationsID.setId(orgLocation.getId());//orgRelationId
 				project.setOrgLocationsId(orgLocationsID);
+				project.setOrgRelationId(orgRelations); // newly Added
+				
+//				OrgRelations orgRelations = new OrgRelations();
+//				orgRelations.setId(id);
+				
 				String startDateString = jsonObj.getString(c+"projectStartDate");
 				DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
 			    Date startDate = null;
@@ -217,6 +223,36 @@ public class ClientController {
 			 	
 				return flag;
 		   }
+		
+		 
+		 
+		 /**
+		  * Handles client Details by OrgRelationId
+		  * @param orgLocationId
+		  * @param request
+		  * @return JSON
+		  * @throws Exception
+		  */
+		 
+		 @RequestMapping(value = "/getClientDeatilsById", method = RequestMethod.POST)
+		 public @ResponseBody String getProjectById(@RequestParam(value="clientId", required=false) String orgLocationId,HttpServletRequest request) throws Exception{ 
+		String resultJson = "";
+		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
+		orgRelation.setOrgName(orgRelation.getClientLocationId().getOrg().getOrgName());
+		orgRelation.setWebSite(orgRelation.getClientLocationId().getOrg().getWebSite());
+		orgRelation.setCountry(orgRelation.getClientLocationId().getCountry());
+		orgRelation.setCity(orgRelation.getClientLocationId().getCity());
+		orgRelation.setState(orgRelation.getClientLocationId().getState());
+		orgRelation.setPhone(orgRelation.getClientLocationId().getPhone());
+		orgRelation.setEmail(orgRelation.getClientLocationId().getEmail());
+		logger.info("Client Name : " + orgRelation.getClientLocationId().getOrg().getId());
+		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
+		logger.info("Total number of projects for client " + orgRelation.getClientLocationId().getOrg().getOrgName()
+				+ "is : " + projectCount);
+		orgRelation.setProjectsCont(projectCount);
+		resultJson = toJSON(orgRelation);
+		return resultJson;
+		  }
 		
 		
 		private String toJSON(Object obj){
