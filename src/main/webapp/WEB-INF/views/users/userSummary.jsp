@@ -488,7 +488,7 @@ function terminateUser(userId){
 	   });
 		}
 	}else{
-		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>");
+		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
 	}
 }
 
