@@ -62,7 +62,7 @@ public class UploadController {
 			e.printStackTrace();
 		}
 		model.addAttribute("msg", "successfully uploaded");
-		return "upload/uploadForm";
+		return "redirect:/usersList";
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
