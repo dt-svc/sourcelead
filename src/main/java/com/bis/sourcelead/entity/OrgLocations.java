@@ -64,6 +64,9 @@ public class OrgLocations {
 	@Column(name = "PHONE")
 	private String phone;
 	
+	@Column(name = "EMAIL")
+	private String email;
+	
 	@Column(name = "FAX")
 	private String fax;
 	
@@ -197,6 +200,14 @@ public class OrgLocations {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getFax() {
