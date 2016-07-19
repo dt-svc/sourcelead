@@ -803,7 +803,7 @@ public class TimesheetEntriesController {
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
     	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-    	TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);
+    	/*TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);*/
     	
 		String result = "";
 		String resultJson = null;
