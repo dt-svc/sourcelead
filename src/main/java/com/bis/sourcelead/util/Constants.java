@@ -56,7 +56,7 @@ public class Constants {
 	
 	
 	/** projectMember  constants**/
-	public static String MEMBER_ACTIVE = "1";
-	public static String  MEMBER_NOT_ACTIVE= "0";
+	public static String MEMBER_ACTIVE = "ACTIVE";
+	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
 	
 }

@@ -735,6 +735,7 @@ public class TimesheetEntriesController {
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' value='Cancel' class='time_btn time_cancel'>");
 				   sb.append("    </div>");
 				   sb.append("	<div class='clearfix'></div>");
