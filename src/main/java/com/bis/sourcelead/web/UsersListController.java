@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
@@ -169,6 +170,19 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		    userService.addUser(user);
 		    return null;
 	  }
+	 
+	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
+		public @ResponseBody String terminateUser(
+				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason) throws Exception{
+				User user = userService.getUserById(userId);
+				if(user != null){
+					user.setTerminateReason(reason);
+					user.setUserState(Status.INACTIVE);
+					userService.addUser(user);
+				}
+			
+				return "success";
+		}
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
