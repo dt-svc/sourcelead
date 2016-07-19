@@ -92,12 +92,12 @@ public class User {
 	private String updatedBy;
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
 	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
