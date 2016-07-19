@@ -331,12 +331,13 @@
 	 var frm = $('#client_form').serializeFormJSON();
      var con = JSON.stringify(frm);
      var sourceleadUrl ='${sourceleadUrl}';
+     alert("sourceleadUrl"+sourceleadUrl);
      $.ajax({
 	    	type: "POST",
-	    	url: "http://localhost:8080/sourcelead/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+	    	url: sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(result) {
 	        	if(result == 'clientDashboard'){
-	        		location.replace("http://localhost:8080/sourcelead/clientDashboard");  
+	        		location.replace(sourceleadUrl+"/clientDashboard");  
 	        	}
 		        
 	        },
@@ -520,7 +521,7 @@ $(document).ready(function(){
 	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: "http://localhost:8080/sourcelead/validateProjectSequeneNumberId?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
+		        url: sourceleadUrl+"/validateProjectSequeneNumberId?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
 		        success: function(data) {
 		        	if(data == true){
 						  $("input#projectId").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");

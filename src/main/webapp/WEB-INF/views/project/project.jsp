@@ -542,10 +542,10 @@ function addSourceleadTasks(){
 	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 	$("#addTaskCount").html(maxRowNum);
 	
-	
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: "http://localhost:8080/sourcelead/sourceLeadTasks", 
+	        url: sourceleadUrl+"/sourceLeadTasks", 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
