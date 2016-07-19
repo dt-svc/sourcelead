@@ -108,8 +108,9 @@ public class SecurityConfig  {
     			.successHandler(sourceleadAuthenticationSuccessHandler)
     			.and().logout().logoutSuccessUrl("/logout")
     			.invalidateHttpSession(true)
-    			.and().csrf()
-    			.and().exceptionHandling().accessDeniedPage("/403");
+    			.and().exceptionHandling().accessDeniedPage("/403")
+    			.and().csrf().disable();
+    			
         }
      }
 	@Bean
