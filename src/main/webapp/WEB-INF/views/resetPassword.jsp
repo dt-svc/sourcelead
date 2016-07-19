@@ -42,7 +42,7 @@
                 <b></b>
             </span>
             </div>
-            <input type="submit" value="Save" class="sign_btn" />
+            <input type="submit" value="Save" id="submit_button" class="sign_btn" />
             </form:form>
         </div>
     </div>
@@ -120,11 +120,13 @@ function applyInputSlide() {
         	    form = "testvalue=testvalue&"+form;
         		var con = JSON.stringify(form);
         		var sourceleadUrl ='${sourceleadUrl}';
+        		 $("#submit_button").attr("disabled", "disabled");
+        		 $( "#submit_button" ).addClass('button').val('Processing..');
                 $.ajax({
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/verifyResetPassword",
+                  	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
                   	  data:con,
                     	success: function(result) {
                     		if((result == 'Invalid')){
