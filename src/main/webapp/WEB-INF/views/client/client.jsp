@@ -323,13 +323,14 @@
  function saveClient() {
  var validationSettings = {
 	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
+	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
    }; 
  if ($('#client_form').validate(false, validationSettings)){
 	 var frm = $('#client_form').serializeFormJSON();
      var con = JSON.stringify(frm);
+     con = con.replace(/[{}]/g, "");
      var sourceleadUrl ='${sourceleadUrl}';
      $.ajax({
 	    	type: "POST",
