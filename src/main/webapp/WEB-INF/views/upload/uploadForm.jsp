@@ -84,19 +84,23 @@
 			  </button>
 			  </div>
 			  </div>
-			<div class="file-upload clearfix mt" onclick = "check();">
-			<input type="file" name="file">
-			<label class="btn btn-block hidden">
+			<div class="file-upload clearfix mt text-center" onclick = "check();">
+		
+			<label class="btn btn-block">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
-                Select files to Import &hellip; <input type="file" name="file" style="display: block;">
+                <input type="file" name="file" style="display: none;" id="uploadBtn">
             </label>
+        	
+        	<div class="panel-body bg-success">
+        	<input id="uploadFile" placeholder="Choose File" disabled="disabled" style="border:none;background:transparent"/>
+        	</div>
 			</div>
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
 			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
 			<p class="text-danger text-center mt" id="success">${msg}</p> 
 		   	 
 		   	 <!--  Downloaded File show here -->
-		   	   <div class="col-xs-3 alert alert-success fade in" style="position:absolute; top:10px;" id="fileAttached">
+		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
 				    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 				    <div>File Holder</div>
 				</div>
@@ -157,6 +161,13 @@ $(document).ready(function(){
 		$("#errorFileDiv").show();
 	}
 });
+</script>
+
+<script type="text/javascript">
+
+document.getElementById("uploadBtn").onchange = function () {
+    document.getElementById("uploadFile").value = this.value;
+};
 </script>
 
 <script>
