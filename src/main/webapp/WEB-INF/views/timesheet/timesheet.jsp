@@ -11,7 +11,6 @@
     <script src="resources/js/jquery-fun.js"></script>
 	<!-- <link rel="stylesheet" href="resources/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-	<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
   
     <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
@@ -25,14 +24,16 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
-function dynamicTimesheet(navigation , startDate){   
+function dynamicTimesheet(navigation , startDate){    
+			var sourceleadUrl ='${sourceleadUrl}';
 	        $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
+		    url: sourceleadUrl+"/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
 				    success: function(data) {
 				               $("#dynamic").empty();
 						       $("#dynamic").append(data);
 						       maskme();  
+						       $("html").trigger('click');
 				    }
 		    });
 }
@@ -762,17 +763,17 @@ function addTimeSheetRow(submissionId,projectId) {
 	 
         
 	   function getProjectTasks(projectTaskId,projectId){
-		   alert("projectTaskId"+projectTaskId);
+		   var sourceleadUrl ='${sourceleadUrl}';
 		   $.ajax({
    	          type : "POST",
- 	      	  url: "http://localhost:8080/sourcelead/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+ 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
  		    	    var result = ""; 
  		    	    for (var i=0; i<json.length; i++)
  					{
  			        		var opt = json[i];
- 			        		result = result + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+ 			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
  					}
  		    	    $("#"+projectTaskId).empty();
  		    	    $("#"+projectTaskId).append(result);
@@ -808,16 +809,19 @@ function addTimeSheetRow(submissionId,projectId) {
                 
                 
 <script type="text/javascript">
-function saveMyTimesheet(status){  alert("hii");
+function saveMyTimesheet(status){   
                var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
-       		   
        		   var submissionIds = $("#submissionId").val();
-       		   alert("data"+mydata);
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -826,9 +830,9 @@ function saveMyTimesheet(status){  alert("hii");
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	  
+        		    	  dynamicTimesheet();
         		      }
         	      	  
         	    }); 
@@ -950,7 +954,7 @@ function removeTimeSheetRow(rowId,submissionId) {
 	
 			var rowNum = $("#maxRowNumber"+submissionId).val();
 			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber"+submissionId).val(maxRowNum - 1); 
+			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
 			
 			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).style.display = 'none';
 			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).value= '';
@@ -980,7 +984,7 @@ function dynamicTimesheet(){
 </script> -->	
 
 
-<script>	
+<!-- <script>	
 function dateFormat(){    
 	   $.ajax({
 	          type : "GET",
@@ -990,5 +994,5 @@ function dateFormat(){
 		      }
 	    }); 
 }
-</script>	
+</script>	 -->
 		

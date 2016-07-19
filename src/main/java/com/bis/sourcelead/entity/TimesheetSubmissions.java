@@ -112,8 +112,8 @@ public class TimesheetSubmissions {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@Transient
-	private Collection<ProjectTasks> projectTasksList;
+/*	@Transient
+	private Collection<ProjectTasks> projectTasksList;*/
 	
 	@Transient
 	private String  endDateStr;
@@ -132,6 +132,9 @@ public class TimesheetSubmissions {
 	
 	@Transient
 	private String employeeId;
+	
+	@Transient
+	private String userId;
 	
 
 	public Long getId() {
@@ -199,6 +202,7 @@ public class TimesheetSubmissions {
 		this.levelOfApprover = levelOfApprover;
 	}
 
+	@JsonIgnore
 	public User getApproverUserId() {
 		return approverUserId;
 	}
@@ -279,13 +283,13 @@ public class TimesheetSubmissions {
 		this.updatedBy = updatedBy;
 	}
 
-	public Collection<ProjectTasks> getProjectTasksList() {
+	/*public Collection<ProjectTasks> getProjectTasksList() {
 		return projectTasksList;
 	}
 
 	public void setProjectTasksList(Collection<ProjectTasks> projectTasksList) {
 		this.projectTasksList = projectTasksList;
-	}
+	}*/
 
 	public String getEstimatedHours() {
 		return estimatedHours;
@@ -349,6 +353,14 @@ public class TimesheetSubmissions {
 
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 }

@@ -88,8 +88,10 @@ public class ProjectMembers {
     private String draftHrs;
     @Transient
     private String submittedHrs;
-    
-    
+	@Transient
+    private String projectAssignedDateStr;
+    @Transient
+    private String projectEndDateStr;  
     
     
     
@@ -269,6 +271,22 @@ public class ProjectMembers {
 
 	public void setOpenHrs(String openHrs) {
 		this.openHrs = openHrs;
+	}
+
+	public String getProjectAssignedDateStr() {
+		return projectAssignedDateStr;
+	}
+
+	public void setProjectAssignedDateStr(String projectAssignedDateStr) {
+		this.projectAssignedDateStr = projectAssignedDateStr;
+	}
+
+	public String getProjectEndDateStr() {
+		return projectEndDateStr;
+	}
+
+	public void setProjectEndDateStr(String projectEndDateStr) {
+		this.projectEndDateStr = projectEndDateStr;
 	}
 
 }

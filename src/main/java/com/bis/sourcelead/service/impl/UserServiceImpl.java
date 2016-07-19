@@ -356,6 +356,12 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUsersByUserRoles();
 	}
 	
+	@Override
+	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
+		// TODO Auto-generated method stub
+		return userDao.getUsersByUserRolesAndOrgLocationId(orgLocationsId);
+	}
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}

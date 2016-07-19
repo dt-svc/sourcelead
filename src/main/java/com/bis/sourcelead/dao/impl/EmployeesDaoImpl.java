@@ -56,9 +56,16 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Employees getEmployee(String id) throws Exception {
 		logger.debug("In Employee getEmployee method");
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Employees) session.get(Employees.class, Long.parseLong(id));
+		String query = "from Employees emp left join fetch emp.user where emp.id = :id ";
+		@SuppressWarnings("unchecked")
+		List<Employees> empList = (List<Employees>)session.createQuery(query.toString()).setLong("id", Long.parseLong(id)).list();
+		Employees employees = null;
+		if(empList != null && !empList.isEmpty()){
+			employees = empList.iterator().next();
+		}
+		return employees;
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteEmployee(String id) throws Exception {
@@ -120,12 +127,12 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception {
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId,Long orgLocationsId) throws Exception {
 		logger.debug("In Employee getEmployeesExcludeTeamMembers method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
-		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId)");
-		addItemsList=employeesListQuery.setLong("projectId", projectId).list();
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId");
+		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
 	}
 

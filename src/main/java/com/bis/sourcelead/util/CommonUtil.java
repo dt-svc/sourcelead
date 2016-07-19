@@ -53,12 +53,26 @@ public class CommonUtil {
 				ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 				for(ProjectMembers projectMember :projectMembers){
 					Date nextMonday = timesheetSubmissionsService.getNextMondayByProjectMemberId(projectMember.getId());
+					
+					Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					currentCal.setLenient(false);
+					currentCal.setTime(new Date());
+					Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
+					
 					Date startMondayDate = null;
 					if(nextMonday != null){
 						startMondayDate =  nextMonday;
 					}
 					else{
 						startMondayDate = projectMember.getProjectAssignedDate();
+						
+						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-28);
+						Date previousMondayDate = previousMonday.getTime();
+				        if(startMondayDate.before(previousMondayDate)){
+				    	   startMondayDate = previousMonday.getTime();
+				        }
+						
+						
 					}
 					Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					startCal.setLenient(false);

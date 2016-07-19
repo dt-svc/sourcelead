@@ -1,6 +1,8 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -35,6 +42,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -50,6 +58,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -108,6 +117,10 @@ public class ProjectsController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	 
+	 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -132,7 +145,7 @@ public class ProjectsController {
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);
 				
-                Collection<User> userList = userService.getUsersByUserRoles();
+                Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
 				model.addObject("user_List", userList);
 				
 				model.setViewName("project/project");
@@ -194,20 +207,21 @@ public class ProjectsController {
 		}
 	    	
 		
-	    
-	    	
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 
 			for (int c = 1; c < maxCount; c++) {
 				ProjectTasks  tasks  = new ProjectTasks();
-				tasks.setTaskName(jsonObj.getString(c+"taskName"));
-				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
-				tasks.setCreatedDate(new Date());
-				tasks.setUpdatedDate(new Date());
-				tasks.setProjectId(projects);
-				
+				if(jsonObj.has(c+"taskName")){
+					if(jsonObj.has(c+"taskDescription")){
+						tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+					}
+						tasks.setTaskName(jsonObj.getString(c+"taskName"));
+						tasks.setCreatedDate(new Date());
+						tasks.setUpdatedDate(new Date());
+						tasks.setProjectId(projects);
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+			  }
 			}
 			
 			if (jsonObj.has("employeeMaxCount")){
@@ -217,19 +231,34 @@ public class ProjectsController {
 						for (int c = 1; c < empMaxCount; c++) {
 							
 							ProjectMembers pm = new ProjectMembers();
-							Employees emp = new Employees();
-							emp.setId(Long.parseLong(jsonObj.getString("employeeId"+c)));
-							pm.setEmployee(emp);
-							pm.setProjects(projects);
-							pm.setCreatedDate(new Date());
-							pm.setUpdatedDate(new Date());
-							projectMembersService.saveProjectMember(pm);
-							
+							if(StringUtils.isNotEmpty(jsonObj.getString("employeeId"+c))){
+								Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
+							    if(emp != null){
+							    	pm.setEmployee(emp);
+						    	    
+							    	String pattern = "yyyy-MM-dd";
+						            SimpleDateFormat format = new SimpleDateFormat(pattern);
+						            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
+						            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
+						            	  pm.setProjectAssignedDate(currentStartDate);
+						            }
+						            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
+						            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
+						            	pm.setProjectEndDate(currentEndDate);
+						            }
+									pm.setProjects(projects);
+									pm.setCreatedDate(new Date());
+									pm.setUpdatedDate(new Date());
+									projectMembersService.saveProjectMember(pm);
+									
+									commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+							    }
+							}
 					    }
 				 }
 		    }
 			
-			//commonUtil.storeTimesheetSubmissionRecords(user);
+			
 			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
@@ -378,6 +407,11 @@ public class ProjectsController {
 			user.setEmail(jsonObj.getString("EmailId"));
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(users.getUserCode());
+			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+				user.setIsMailSent(Status.Y);
+			}else{
+				user.setIsMailSent(Status.N);
+			}
 			User  usr=	userService.addUser(user);
 			
 			//Employee Saving
@@ -403,10 +437,20 @@ public class ProjectsController {
 			userRole.setCreatedDate(new Date());
 			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
 			
+			
+			String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			
+			//send mail to user
+			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+			sendEmail(user,users,password);
+			}
+			
 			return null;
 		}
 	  
-	  @RequestMapping(value = "/getEmployeesList",  method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/getEmployeesList",  method = RequestMethod.POST)
 		public @ResponseBody  String getEmployeesList(HttpServletRequest request) throws Exception {
 		 	String resultJson = null;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -474,6 +518,53 @@ public class ProjectsController {
 			
 	    return status;
 	   }
+	 
+	 
+	  private void sendEmail(User user, User loginUser ,String password) throws Exception {
+		  
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(user.getFirstName());
+			 emailMessage.setLastName(user.getLastName());
+			 emailMessage.setToEmail(user.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+
+				//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("firstName", emailMessage.getFirstName());
+			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+			 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+			 globalVarsMap.put("role",user.getUserType());
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"'>Login</a>");
+			 globalVarsMap.put("userEmailId",user.getEmail());
+			 globalVarsMap.put("password",password);
+			 
+			//setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 emailRecipientList.add(emailRecipient);
+			 
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = null;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+		}
 		 
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -483,4 +574,7 @@ public class ProjectsController {
 	        });
 	        return xstream.toXML(obj);
 	    }
+	   protected static boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
 }
