@@ -527,10 +527,12 @@ function projectEmployee(projectId){
 	result = result + '					<strong>Start date:</strong>';
 	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr !=  'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
 	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
@@ -541,12 +543,14 @@ function projectEmployee(projectId){
 	result = result + '					<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span> '+json.endDateStr+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+json.createdDateStr+'</span><div class="clearfix"></div>';
                                                      
 	result = result + '				</div>';
+	if(json.updatedDateStr != null && json.updatedDateStr != '' && json.updatedDateStr != 'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
-	result = result + '				</div>';					
+	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
 	result = result + '      </div>';
@@ -794,11 +798,17 @@ function getTeamMembers(projectId) {
 			{
      	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
+	        		var role = '';
+	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
+	        			role = opt.user.userType; 
+	        		}else{
+	        			role = 'Employee';
+	        		}
 	        		output = output + "<tr>"+
                  "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                  "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                  "<td>"+opt.user.email+"</td>"+
-                 "<td>Employee</td>"+
+                 "<td>"+role+"</td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
 	  
                  "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker'>"+

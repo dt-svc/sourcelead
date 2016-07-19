@@ -97,6 +97,7 @@ public class LoginSessionController {
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		model.addObject("notificationList", notificationList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 	    return model;
 		
