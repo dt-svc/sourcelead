@@ -473,6 +473,7 @@ public class TimesheetEntriesController {
 				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'><i class='glyphicon glyphicon-save'></i> "+tsFirst.getFileName()+"Download</a>");
 			}else{
 				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+				/*sb.append("<input type='button' name='btnDeleteUploadDoc' value='Delete' class='button' />");*/
 			}
 			/*sb.append("         	<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");*/
 			sb.append("         </span>");
@@ -803,7 +804,7 @@ public class TimesheetEntriesController {
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
     	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-    	TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);
+    	/*TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);*/
     	
 		String result = "";
 		String resultJson = null;
