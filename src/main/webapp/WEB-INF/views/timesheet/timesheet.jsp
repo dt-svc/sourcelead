@@ -839,10 +839,27 @@ function saveMyTimesheet(status){
         	    }); 
        	  /*   }); */
 }    
-   </script>
+</script>
+
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionId){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    var startdate;
+	var navigation;
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
+	      success :function(result) {
+	    		dynamicTimesheet(navigation,startdate);  
+	      }
+      	  
+    }); 
+	   
+}
+</script>
 
    
-   <script type="text/javascript">	
+<script type="text/javascript">	
 /* for total hours */
 $(document).click(function(){
 		var submissionId = 1;
