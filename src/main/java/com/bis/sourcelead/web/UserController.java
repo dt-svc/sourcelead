@@ -92,7 +92,7 @@ public class UserController {
 	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    Collection<User> userList = userService.getUsersByUserRoles();
+	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 		model.addObject("user_List", userList);
 	    
 		model.setViewName("users/userCreation");
@@ -115,7 +115,9 @@ public class UserController {
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
 		 	
@@ -181,7 +183,10 @@ public class UserController {
 	  
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	 public @ResponseBody  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -264,6 +269,12 @@ public class UserController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 public @ResponseBody String getProjectDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 			 String resultJson = null;   
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   
+				ModelAndView model = new ModelAndView();
+			    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+			   
+			    
 			 List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
 			 for (ProjectMembers projectMembers : allProjectsList) {
 				 if(projectMembers.getProjectAssignedDate()!=null){

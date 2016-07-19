@@ -404,10 +404,11 @@ function flushProject(){
 		   }; 
 	
 	
-	 /*  ('#save_project').attr('data-dismiss','modal'); */
 	 if ($('#addProject_form').validate(false, validationSettings)){ 
-		    var frm = $('#addProject_form').serializeFormJSON();
+	        
+	        var frm = $('#addProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $.ajax({
 		    	type: "POST",
@@ -462,8 +463,10 @@ function flushProject(){
 		   }; 
 	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
-		 var frm = $('#createUser_form').serializeFormJSON();
+		    var frm = $('#createUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#create_user").attr("disabled", "disabled");
      		$( "#create_user" ).addClass('button').val('Processing..');
