@@ -526,6 +526,7 @@ function addTasks(){
 <script> 
 $(document).ready(function(){
 	 $("#maxTsRowNum").val('6');
+	 addSourceleadTasks();
 	document.getElementById("project_form").reset();
 });
 </script>
@@ -865,6 +866,7 @@ function validateWebsite(){
 			        		//New WebSite class="form-control"
 			        		$("#save_client").removeAttr("disabled");
 				    		$('input#companyWebsite').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#companyWebsite').attr('class','valid form-control');
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$( "#save_client" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
