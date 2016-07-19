@@ -381,6 +381,7 @@ function roleTypeValidation(id){
 
 <script type="text/javascript">
 function flushProject(){
+	$("#save_project").removeAttr("disabled");
 	$('#ProjectSequeneNumber').val('');
 	 $('#ProjectName').val('');
 	 $('#level1Manager').val('');
@@ -403,13 +404,16 @@ function flushProject(){
 				dateFormat : 'yyyy/mm/dd' 
 		   }; 
 	
-	
 	 if ($('#addProject_form').validate(false, validationSettings)){ 
 	        
 	        var frm = $('#addProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
 	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	        $("#save_project").attr("disabled", "disabled");
+     		$("#save_project" ).addClass('button').val('Processing..');
+	        
 	        $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
@@ -424,6 +428,7 @@ function flushProject(){
 					}
 		        	$("#proId").empty();
 			        $("#proId").append(output);
+			        $("#addProject").modal('hide');
 		        },
 		        error: function(e){
 		            
