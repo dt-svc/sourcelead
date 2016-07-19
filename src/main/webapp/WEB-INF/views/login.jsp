@@ -64,7 +64,7 @@
 	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	            
 	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
-	            <input type="submit" value="Sumbit" class="sign_btn" />
+	            <input type="submit" value="Submit" class="sign_btn" />
 	            <div class="for-pas-text">Not have an account <a href="<c:url value='/registration'/>">Register Now</a></div> 
             </form>          
         </div>
