@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.service.ProjectMembersService;
 
 public interface ProjectMembersDao {
 
@@ -23,5 +24,9 @@ public interface ProjectMembersDao {
 	
 	
 	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
+
+	public Integer updateProjectMemberStatus(Long projectMemberId);
 	
 }

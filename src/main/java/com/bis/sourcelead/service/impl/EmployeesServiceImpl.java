@@ -70,9 +70,9 @@ public class EmployeesServiceImpl implements EmployeesService {
 	}
 	
 	@Override
-	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId) throws Exception {
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId, Long orgLocationsId) throws Exception {
 		logger.debug("In EmployeesServiceImpl class getEmployeesExcludeTeamMembers method...");
-		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembers(projectId);
+		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembers(projectId,orgLocationsId);
 		return emplist;
 	}
 

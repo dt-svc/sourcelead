@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.Collection;
 
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 
 public interface ProjectsService {
@@ -25,4 +26,5 @@ public interface ProjectsService {
 	Collection<Projects> getAllProjects() throws Exception;
 	
 	Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception;
+
 }

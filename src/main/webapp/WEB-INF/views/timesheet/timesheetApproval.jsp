@@ -19,9 +19,10 @@ $(document).ready(function() {
 
 <script>
   function approvalList(){
+	  var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
            type : "POST",
-            url: "http://localhost:8080/sourcelead/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
+            url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
           success :function(data) {
               
                  var json = JSON.parse(data);
@@ -45,7 +46,7 @@ $(document).ready(function() {
                          var approval = json[i];
                          output = output+'<tr>';
                          output = output+'<td><div class="time_appr_user">';
-                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/'+approval.projectMembers.employee.user.id+'"/>" alt="Profile Image" class="img-circle img-responsive">';
+                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/'+approval.userId+'"/>" alt="Profile Image" class="img-circle img-responsive">'; 
                          output = output+    '<span><b>'+approval.fullName+'</b></span></div></div>';
                          output = output+'</td>';
                          output = output+'<td><div> '+approval.startDateStr+'  To  ';
@@ -55,7 +56,7 @@ $(document).ready(function() {
                          output = output+ '<td><div><a onclick="myTimesheet(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"  id="timesheetPopup'+approval.Id+'"> '+approval.combinedTotalHours+'</a></div></td>';
                          output = output+'<td><div>'+approval.combinedStatus+'</div></td>';
                          output = output+'<td>';
-                           if(approval.combinedStatus == 'NEW'){
+                           if(approval.combinedStatus == 'NEW' || approval.combinedStatus == 'SUBMITTED FOR APPROVAL'){
                                output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission(\''+approval.Id+'\',\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i></div>';
                                output = output+'<div id="rejectedPopup"></div>';
                            }
@@ -546,11 +547,11 @@ $(document).ready(function() {
                   <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
                   <span id="teskcomment"><textarea></textarea></span></div>            
 	    	 </div>
-             <div id="divadttTd9" style="display:none;">
+             <!-- <div id="divadttTd9" style="display:none;">
 				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" placeholder="" />	
                   <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
                   <span id="teskcomment"><textarea></textarea></span></div>  
-             </div>
+             </div> -->
                         
         </div>	
 	</div>
@@ -575,9 +576,10 @@ $(document).ready(function() {
 <!-- sarath custom -->	
 <script>
 function myTimesheet(local,startDate,endDate){
+	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
    	type: "POST",
-    url: "http://localhost:8080/sourcelead/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
+    url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
               $("#myId").empty();
               $("#myId").append(data); 
@@ -601,7 +603,7 @@ function removeTimesheetPopup(){
 
 <script>
  
-function addTimeSheetRow(submissionId) {
+function addTimeSheetRow(submissionId,projectId) {
 	          
 		    var tbl = document.getElementById("table"+submissionId);
 			var rowNum = $("#maxRowNumber"+submissionId).val();
@@ -664,15 +666,39 @@ function addTimeSheetRow(submissionId) {
 			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
 			cell7.innerHTML = divadttTd7Str;
 
-			var cell8 = row.insertCell(8);
+			/* var cell8 = row.insertCell(8);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
                         divadttTd8Str = divadttTd8Str.replace(/submissionId/g,  (submissionId));
-			cell8.innerHTML = divadttTd8Str;
+			cell8.innerHTML = divadttTd8Str; */
 			
 			maskme();   
+		    
+			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			getProjectTasks(projectTaskId,projectId); 
 			
      }	
+     
+function getProjectTasks(projectTaskId,projectId){    
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+          type : "POST",
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+	      success :function(data) {
+	    	    var json = JSON.parse(data);
+	    	    var result = ""; 
+	    	    for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+				}
+	    	    $("#"+projectTaskId).empty();
+	    	    $("#"+projectTaskId).append(result);
+	      }
+    	  
+     }); 
+	   
+}
 </script>
 
 <script>
@@ -711,9 +737,13 @@ function maskme(){
 
 
 <script type="text/javascript">
-function saveMyTimesheet(){
-			    
+function saveMyTimesheet(status){   
                var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		
@@ -721,9 +751,7 @@ function saveMyTimesheet(){
        		   var formData = new FormData(form); 
        		   
        		   var submissionIds = $("#submissionId").val();
-       		    
-       		   
-       		   $.ajax({
+        	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
 	          	      contentType : 'application/json; charset=utf-8',
@@ -731,15 +759,15 @@ function saveMyTimesheet(){
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: "http://localhost:8080/sourcelead/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	  
+        		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
         		      }
         	      	  
         	    }); 
-       		   
-}
-</script>
+       	  /*   }); */
+}    
+   </script>
 
 <script type="text/javascript">
 (function ($) {
@@ -767,12 +795,13 @@ function saveMyTimesheet(){
 function saveRejectSubmission(local,employeeId,startDate,endDate){
 
          var msg = $("#reject"+local+"message").val(); 
-            
+         var sourceleadUrl ='${sourceleadUrl}';
+         
          $(".mask_time").fadeOut(200);
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
          type: "POST",
-         url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+         url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
          success: function(data) {    
         	    approvalList();
          }
@@ -799,9 +828,10 @@ function rejecteSubmission(local,employeeId,startDate,endDate){
 }
 function approveSubmission(employeeId,startDate,endDate){
         var rejectedReason;
+        var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    type: "POST",
-	    url: "http://localhost:8080/sourcelead/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
 	    	  approvalList();
 	    }

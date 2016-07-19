@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -43,6 +45,9 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class TimesheetSubmissionsController {
 	
 	 
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
@@ -62,6 +67,7 @@ public class TimesheetSubmissionsController {
         
         ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
         for(TimesheetSubmissions ts : timesheetSubmissionsList){
+        	ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
         	ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
         	if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
         		ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
@@ -74,6 +80,7 @@ public class TimesheetSubmissionsController {
         	}
             timesheetSubmissionsArrList.add(ts);
          }
+        
          resultJson = toJSON(timesheetSubmissionsArrList);
          return resultJson;
          
@@ -149,9 +156,20 @@ public class TimesheetSubmissionsController {
 			ModelAndView model = new ModelAndView();
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(com.bis.sourcelead.util.Constants.TimeSheetApproval);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
 			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
 			
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheetApproval");
 	        return model;
 	}

@@ -62,11 +62,10 @@ window.onload = function () {
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
-         <div class="row">
-          <div id="usersListBody">
-        </div> 
+      <div class="row">
+          <div id="usersListBody"></div> 
       </div>
-      </div>
+      <div id="usersListEmptyBody"></div>
       </div>
   </section>
       <!-- Content Area Ends--> 
@@ -89,11 +88,12 @@ window.onload = function () {
             success: function(data) {
 	        var json = JSON.parse(data);
 	        $('#usersListBody').empty();
+	        $('#usersListEmptyBody').empty();
+	        var result = "";
 	        
 	    	if(json.length > 0)
 	   		{
-	    		var result = "";
-	    		;
+	    		
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var userRole = json[i];
@@ -110,7 +110,7 @@ window.onload = function () {
 	       	    	result = result +"<div class='col-sm-4'>";
 	       	    	result = result +"<div class='text-center image'>";
 	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
+	       	    	result = result +"<span> "+userRole.roles.displayName+" </span>";
 	       	    	
 	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N'){
 	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
@@ -143,7 +143,13 @@ window.onload = function () {
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
-	   		    } 
+	   		    }
+	    	else{
+	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
+	    		$('#usersListBody').empty();
+	    		$('#usersListEmptyBody').append(result);
+       	 	    $("#searchByName").val("");
+	    	}
 
 			 },
 	        error: function(e){

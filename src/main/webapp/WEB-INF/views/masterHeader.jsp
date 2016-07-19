@@ -177,11 +177,11 @@
             <div class="setting-area">
               <ul class="list-unstyled">
                  <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
-                 <li><a href="<c:url value="login" />"><i class="fa fa-power-off" aria-hidden="true"></i>Log Out</a></li>
+                 <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-power-off" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
-          <li  class="hidden-xs"> <a href="javascript:logoutFormSubmit()" title="log out"><i class="fa fa-power-off"></i></a> </li>
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>

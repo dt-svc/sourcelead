@@ -126,6 +126,9 @@ public class Projects {
     @Transient
     private String[] clientName;
     
+    @Transient
+    private String client;
+    
     
     @Transient
     Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList;
@@ -372,4 +375,13 @@ public class Projects {
 	public void setClientList(Collection<OrgRelations> clientList) {
 		this.clientList = clientList;
 	}
+
+	public String getClient() {
+		return client;
+	}
+
+	public void setClient(String client) {
+		this.client = client;
+	}
+	
 }

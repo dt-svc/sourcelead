@@ -117,9 +117,13 @@ public class OrgRelationsController {
 		orgRelations.setCreatedDate(new Date());
 		OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
 		
-		Collection<Org> orgsList = orgService.getOrgs();
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+		for(OrgRelations ocl :orgClientList){
+			ocl.setOrgName(ocl.getClientLocationId().getOrg().getOrgName());
+			ocl.setOrgid(ocl.getClientLocationId().getOrg().getId());
+		 }
 		
-		resultJson = toJSON(orgsList);
+		resultJson = toJSON(orgClientList);
 		 return resultJson;
 	}
 	

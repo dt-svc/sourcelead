@@ -23,17 +23,30 @@
       </div>
       <div class="side-nav">
         <ul class="list-unstyled">
-          <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/home'/>"><span><i class="fa fa-dashboar">
-		  </i></span>Dashboard</a></li>
-          <li><a href="javascript:void(0)"><span><i class="fa fa-envelope"></i></span>Mailbox</a></li>
-          <li><a href="javascript:void(0)"><span><i class="fa fa-calendar"></i></span>Calendar</a></li>
-          <li class="${sessionData.nav == 'Users' ? 'side-nav-active' : ''}"><a href="<c:url value='/usersList'/>"><span><i class="fa fa-users">
-		  </i></span>Users</a></li>
-          <li><a href="<c:url value='/projectDashboard'/>"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
-          <li><a href="<c:url value='/timesheet'/>"><span><i class="fa fa-bar-chart"></i></span>Timesheet</a></li>
-          <li><a href="<c:url value='/timesheetApproval'/>"><span><i class="fa fa-bar-chart"></i></span>Timesheet approval</a></li>
-          <li><a href="<c:url value='/clientDashboard'/>"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
-         <li><a href="javascript:void(0)"><span><i class="fa fa-file-text"></i></span>Documentation</a></li>
+          <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard'/>"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
+          <li class="${sessionData.nav == 'Users' ? 'side-nav-active' : ''}"><a href="<c:url value='/usersList'/>"><span><i class="fa fa-users"></i></span>Users</a></li>
+          <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
+          
+          <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
+			  <a href="#" class="tree-view">
+				<span><i class="fa fa-clock-o"></i></span>
+			  Timesheets <i class="fa fa-fw fa-caret-down"></i>
+			  </a>
+			  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
+			  <ul class="collapses" style="display: block">
+			  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>">Timesheet</a></li>
+					<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>">Timesheet Approval</a></li>
+			  </ul>
+			  </c:if>
+			  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
+			  <ul class="collapses" style="display: none">
+			  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>">Timesheet</a></li>
+					<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>">Timesheet Approval</a></li>
+			  </ul>
+			  </c:if>
+		  </li>
+          
+          <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
         </ul>
       </div>
     </div>

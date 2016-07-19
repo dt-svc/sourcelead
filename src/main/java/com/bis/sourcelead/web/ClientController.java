@@ -33,6 +33,8 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -90,9 +92,17 @@ public class ClientController {
 			model.setViewName("client/clientDashboard");
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			model.addObject("clientsList", clientsList);
-			
+
 			Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
 			model.addObject(projectsList);
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Clients);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
 			
 			return model;
 	    }

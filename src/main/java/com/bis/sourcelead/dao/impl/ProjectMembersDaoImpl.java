@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
 
@@ -140,15 +141,41 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		currentCal.setTime(new Date());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
 		
-		Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startMonday,28);
-		Date endMondayDate = endMonday.getTime();
-		java.sql.Date  currentMonday = new java.sql.Date(endMondayDate.getTime());
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-28);
+		Date previousMondayDate = previousMonday.getTime();
+		java.sql.Date  previousMondaySqlDate = new java.sql.Date(previousMondayDate.getTime());
+		
+		Calendar nextMonday = CalendarUtil.getDateIncrementByincrement(startMonday,28);
+		Date nextMondayDate = nextMonday.getTime();
+		java.sql.Date  nextMondaySqlDate = new java.sql.Date(nextMondayDate.getTime());
 		
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :currentDate and (pm.projectEndDate IS NULL OR pm.projectEndDate > :currentDate) and pm.projects.projectStatus ='STARTED') and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :currentMonday))" ;
-		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("currentDate", currentDate).setParameter("currentMonday", currentMonday) 
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :nextMondayDate and (pm.projectEndDate IS NULL OR pm.projectEndDate >= :previousMonday) ) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :nextMondayDate))" ;
+		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("previousMondayDate", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
 			    .list(); 
 		return idsList;  
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
+			    .list();
+		return allProjectsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateProjectMemberStatus(Long projectMemberId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String status = Constants.MEMBER_NOT_ACTIVE;
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status where pm.id = :projectMemberId ");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setString("status", status);
+		int result = query.executeUpdate();
+		return result;
 	}
 
 }
