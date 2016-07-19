@@ -198,40 +198,65 @@ $(document).ready(function(){
 				}
 				
 				result = result + ' <div class="user_summary_edit">';
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>First name</label>';
-				result = result + ' <input type="text">';
-				result = result + ' </div>';
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>Last name</label>';
-				result = result + ' <input type="text">';
-				result = result + ' </div>';
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>Employed Id</label>';
-				result = result + ' <input type="text">';
-				result = result + ' </div>';
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>Phone number</label>';
-				result = result + ' <input type="text">';
-				result = result + ' </div>';
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>Role</label>';
-				result = result + ' <select>';
-				result = result + ' <option>Role 1</option>';
-				result = result + ' <option>Role 2</option>';
-				result = result + ' <option>Role 3</option>';
-				result = result + ' <option>Role 4</option>';
-				result = result + ' </select>';
-				result = result + ' </div>';	
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>Invoice frequency</label>';
-				result = result + ' <input type="text">';
-				result = result + ' </div>';	
-				result = result + ' <div class="user_summary_edit_cta">';
-				result = result + ' <label>Day hours</label>';
-				result = result + ' <input type="text">';
-				result = result + ' </div>';							
-				result = result + ' <div class="clearfix"></div>';
+				result = result + ' <form:form id="createUser_form"  name="createUser_form" method="post">';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>First name</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Last name</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Employed Id</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Phone number</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Rate</label>';
+					result = result + ' <input type="text" class="rate_filed">';
+					result = result + ' <select class="rate_sele">';
+					result = result + ' <option value="">-Rate Per-</option>';
+					result = result + ' <option>Hourly</option>';
+					result = result + ' <option>Daily</option>';
+					result = result + ' <option>Weekly</option>';
+					result = result + ' <option>Bi-Weekly</option>';
+					result = result + ' <option>Semi-Monthly</option>';
+					result = result + ' <option>Monthly</option>';
+					result = result + ' <option>Yearly</option>';
+					result = result + ' </select>';
+					result = result + ' </div>';	
+					
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Date of join</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Invoice frequency</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Day hours</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <input class="us-btn" value="Save" type="button"> <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails();" type="button">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' </form:form>';
 				result = result + ' </div>';				
 				
 				result = result + '	  <div class="clearfix"></div>';
@@ -464,7 +489,7 @@ function terminateUser(userId){
 	   });
 		}
 	}else{
-		$("#reasonDiv").empty().append("<font color='red'>Reason is required</font>");
+		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>");
 	}
 }
 
