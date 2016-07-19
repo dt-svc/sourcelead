@@ -2,10 +2,8 @@
 <jsp:include page="../masterSideNav.jsp" />
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link href="resources/css/timesheet.css" rel="stylesheet">
-
+<script src="resources/js/formvalidator.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
 <script src="resources/js/moment.min.js"></script>
 <script src="resources/js/bootstrap-datetimepicker.min.js"></script> 
@@ -106,13 +104,23 @@ $(document).ready(function(){
 			    
 				result = result + '<div class="project_tabs_inn_table">';
 				
-				/* result = result + '<div class="useredit">';
-				result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-				result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-				result = result + '</div>'; */
 				
 				
 				result = result + '  <div class="project_details">';
+				if(json.user.userState != null && json.user.userState != "" && json.user.userState != 'INACTIVE'){
+				    result = result + ' <div class="useredit">';
+						result = result + ' <a id="edit-user" href="javascript:editUserDetails();"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+							result = result + ' <div class="remove_user_pop" >';
+									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
+									result = result + ' <div id="reasonDiv"/>';
+									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
+						     result = result + ' </div>';
+				     result = result + ' </div>';
+				}
+				
+				
+				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
 				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
@@ -133,6 +141,9 @@ $(document).ready(function(){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				 <strong>First Name:</strong><span class="fix">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
+				
+					
+				
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
@@ -180,6 +191,75 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
+				if(json.user.userState != null && json.user.userState != "" && json.user.userState == 'INACTIVE'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Reason:</strong><span class="fix">'+json.user.terminateReason+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
+				
+				result = result + ' <div class="user_summary_edit">';
+				result = result + ' <form:form id="createUser_form"  name="createUser_form" method="post">';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>First name</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Last name</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Employed Id</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Phone number</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Rate</label>';
+					result = result + ' <input type="text" class="rate_filed">';
+					result = result + ' <select class="rate_sele">';
+					result = result + ' <option value="">-Rate Per-</option>';
+					result = result + ' <option>Hourly</option>';
+					result = result + ' <option>Daily</option>';
+					result = result + ' <option>Weekly</option>';
+					result = result + ' <option>Bi-Weekly</option>';
+					result = result + ' <option>Semi-Monthly</option>';
+					result = result + ' <option>Monthly</option>';
+					result = result + ' <option>Yearly</option>';
+					result = result + ' </select>';
+					result = result + ' </div>';	
+					
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Date of join</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Invoice frequency</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Day hours</label>';
+					result = result + ' <input type="text">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <input class="us-btn" value="Save" type="button"> <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails();" type="button">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' </form:form>';
+				result = result + ' </div>';				
+				
+				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	   </div>';
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
@@ -216,9 +296,8 @@ $(document).ready(function(){
 						   result = result + '         	<div class="approved_pop">';
 						   result = result + '            	<ul>';
 						   result = result + '                	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>';
-						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>';
-						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>';
-						   result = result + ' 							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Active</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">In-Active</label></li>';
 						   result = result + '                         </ul>';
 						   result = result + '                    </div>                	';
 						   result = result + '                </li>';
@@ -226,7 +305,7 @@ $(document).ready(function(){
 						   result = result + '              <div class="clearfix"></div>';
 						   result = result + '            </ul>';
 						   result = result + '          <div class="clearfix"></div>';
-						   result = result + '     </div>';
+						   result = result + ' </div>';
 						   result = result + '        <div class="user_summ_wrap_table">';
 						   result = result + '	<table>';
 						   result = result + '    	<tbody>';
@@ -245,10 +324,10 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
 						   result = result + '<td><div>'+json.startDate+'</div></td>';
 						   result = result + ' <td><div><input type="text" value="'+json.endDate+'" class="project_inline_field"></div></td>';
-						   result = result + ' <td><div>45:50</div></td>';
-						   result = result + ' <td><div>45:50</div></td>';
-						   result = result + ' <td><div>45:50</div></td>';
-						   result = result + ' <td><div>Saved text</div></td>';
+						   result = result + ' <td><div>'+json.approvedHrs+'</div></td>';
+						   result = result + ' <td><div>'+json.rejectedHrs+'</div></td>';
+						   result = result + ' <td><div>'+json.draftHrs+'</div></td>';
+						   result = result + ' <td><div>'+json.submittedHrs+'</div></td>';
 						   result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
 						   result = result + '   </tr>';
 						   result = result + '        </tbody>';
@@ -287,16 +366,6 @@ $(document).ready(function(){
 		});
 	 }
 </script>
-
-
-
-
-
-
-
-		
-
-		
 		<!-- Timesheet -->
 		
       </section>
@@ -306,7 +375,6 @@ $(document).ready(function(){
     </div>
 
    
-    </div>
 	
 	
                 <!-- Modal content Add Team-->
@@ -359,6 +427,13 @@ $(document).ready(function(){
                   </div>
                 </div>
                 <!-- Add Team modal popup ends -->	
+
+
+	<div class="project_inn_mask"></div>
+	<div class="project_error">
+		<p>Confirmation Message here</p>
+		<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
+	</div>
 	
 	
     </body>
@@ -374,8 +449,106 @@ function date(){
 
 	
 <script>
+function editUserDetails(){
+	$(".user_summary_edit").slideToggle(100);
+	$(".remove_user_pop").slideUp(100);
+}
+</script>
+<script>
+function removeUser(){
+	$("#reason").val('');
+	$("#reasonDiv").empty();
+	$(".remove_user_pop").slideToggle(100);
+	$(".user_summary_edit").slideUp(100);
+}
+</script>
+<script>
+function cancelUser(){
+	$(".remove_user_pop").slideUp(100);
+}
+</script>
 
-// project side bar tabs
+
+<script>
+function terminateUser(userId){   
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reason").value;
+	if(reason){
+		$("#reasonDiv").empty();
+		
+		//getConformation(userId,reason);
+		var r = confirm("Do you want terminate the user");
+		if (r == true) {
+		 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&reason="+reason, 	   
+   		    success: function(data) {
+   		    	userDetails(userId);
+   		    }
+	   });
+		}
+	}else{
+		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
+	}
+}
+
+</script> 
+
+<script>
+function getConformation(userId,reason){ 
+	alert(reason);
+	 $(".project_error").slideDown(200);
+	 $(".project_inn_mask").fadeIn(200);
+}
+</script> 
+
+<!-- <script>
+$(document).ready(function() { 
+
+    $("html, #remove-user").click(function() {
+        $(".user_summary_edit").slideUp(100);
+    });
+    $("#edit-user, .project_tabs_inn_table").click(function(e) {
+        e.stopPropagation();
+    });		
+});
+</script> -->
+<!-- <script>
+$(document).ready(function() {	
+	$("#remove-user").click(function(){
+		$(".remove_user_pop").slideToggle(100);
+	});
+    $("html, .remove_user_pop b").click(function() {
+        $(".remove_user_pop").slideUp(100);
+    });
+    $("#remove-user, .remove_user_pop").click(function(e) {
+        e.stopPropagation();
+    });		
+});
+</script> -->
+
+
+
+<script>
+// project error message
+$(document).ready(function() {
+    $("#save_reason").click(function(){
+		$(".project_error").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	});
+    $(".project_error a").click(function() {
+        $(".project_error").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+    });
+});
+</script>
+
+
+
+
+
+<script>
+//project side bar tabs
 $(document).ready(function() {
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
@@ -387,17 +560,6 @@ $(document).ready(function() {
         $(tab).fadeIn();
     });
 });
-
-
-
-
-//Rate Per edit
-$(document).ready(function() {
-	$(".user_details_cta .fa-edit").click(function(){
-		$(".user_role").slideToggle(200);
-	});
-});
-
 
 </script> 
 

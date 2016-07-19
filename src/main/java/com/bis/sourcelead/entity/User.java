@@ -104,6 +104,8 @@ public class User {
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
 	
 
 	public Long getId() {
@@ -225,6 +227,14 @@ public class User {
 
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
 	}
 
 	public Date getCreatedDate() {
