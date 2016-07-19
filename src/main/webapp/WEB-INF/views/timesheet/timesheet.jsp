@@ -860,7 +860,7 @@ function deleteSubmissionDocument(submissionId){
    
 <script type="text/javascript">	
 /* for total hours */
-$(document).click(function(){
+/* $(document).click(function(){
 		var submissionId = 1;
 		var total;
 		 for (var p = 1; p < 8; p++){
@@ -870,9 +870,7 @@ $(document).click(function(){
 			 var total = 0;
 			 for (var j = 1; j < 8; j++){
 				    var btemp = $("#"+i+"submission"+p+"timeSheetDay"+j+"Id").val();
-				    /* var btemp = $("#"+j+"day"+i+"Hours").val(); */
 				    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-				    	/* bsum = parseFloat(bsum) + parseFloat(btemp); */
 				    	 var hours = btemp;
 				    	 var split = hours.split(':');
 				    	 var first = split[0];
@@ -898,7 +896,7 @@ $(document).click(function(){
 }	
 		
 		
-});
+}); */
 
 
 
@@ -908,8 +906,8 @@ $(document).click(function(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 8; p++){  
-		 for (var j = 1; j < 8; j++){
+	 for (var p = 1; p < 200; p++){  
+		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
