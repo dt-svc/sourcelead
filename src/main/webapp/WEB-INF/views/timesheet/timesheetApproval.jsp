@@ -601,6 +601,22 @@ function removeTimesheetPopup(){
 }
 </script>	
 
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionId,employeeId,startDate,endDate){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
+	      success :function(result) {
+	    		myTimesheet(employeeId,startDate,endDate)
+	      }
+      	  
+    }); 
+	   
+}
+</script>
+
+
 <script>
  
 function addTimeSheetRow(submissionId,projectId) {

@@ -73,16 +73,16 @@ public class OrgRelationsController {
 			@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception
 			 
 	{
-		String resultJson = null;
+		json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
        
 		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		
-		JSONObject jsonObj = new JSONObject(json);
-		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		
+		String resultJson = null;
 		
 		/*Saving for Org*/
 		Org org = new Org();

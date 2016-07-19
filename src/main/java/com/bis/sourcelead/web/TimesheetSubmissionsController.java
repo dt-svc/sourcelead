@@ -237,6 +237,16 @@ public class TimesheetSubmissionsController {
 		return status; 
 	}
 	
+	@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
+    public String deleteSubmissionDocument(@RequestParam(value="submissionId", required=false) Long submissionId ,HttpServletResponse response) throws Exception {
+        
+            TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+            timesheetSubmissions.setDocFile(null);
+            timesheetSubmissions.setFileContentType(null);
+            timesheetSubmissions.setFileName(null);
+            timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+            return "success";
+    }
 	
 	/*@RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception
