@@ -43,21 +43,21 @@
             <div class="form-group">
               <label class="col-md-3">Client Country</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="country" value="">
+                <input type="text" class="form-control" id="country" name="country" field-name="Client Country" value="">
                 <span class="hidden">Client Country</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Client State</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="state" value="">
-                <span class="hidden">Client state</span> </div>
+                <input type="text" id="state" name="state" field-name="Client State" class="form-control"  value="">
+                <span class="hidden">Client State</span> </div>
             </div>
             
             
              <div class="form-group">
               <label class="col-md-3">ClientCity</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="city" value="">
+                <input type="text" class="form-control" id="city" name="city" field-name="Client City" value="">
                 <span class="hidden">Client City</span> </div>
             </div>
             
@@ -71,14 +71,14 @@
                   </div>
                 </div>
                 <!-- Modal -->
+                
                 <div class="modal fade" id="addTask" role="dialog">
                   <div class="modal-dialog modal-lg"> 
-                    
                     <!-- Modal content-->
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Add Tasks</h4>
+                        <h4 class="modal-title">Add Project</h4>
                       </div>
                       <div class="modal-body clearfix">
                         <div class="modal-body-custom custom-table">
@@ -94,10 +94,10 @@
                         </div>
                         <div class="form-horizontal row custom-form">
                           <div class="col-xs-12 col-lg-7">
-                          <div class="form-group">
+                          <div class="form-group" id="ProjectIdDiv">
                             <label class="col-md-3">Project Id</label>
                             <div class="col-md-9"> 
-                              <input type="text" value="" id="projectId" name="projectId" placeholder="Enter Project Id" class="form-control">
+                              <input type="text" value="" id="projectId" name="projectId" placeholder="Enter Project Id" class="form-control" onblur="validateProjectId();">
                             </div>
                           </div>
                           
@@ -111,12 +111,12 @@
               					<label class="col-md-3" for="Project Manager">Manager</label>
               						<div class="col-md-9">
              						 <div class="form-icon-min">
-             						 <input id="projectManager" name="projectManager" type="hidden" value="SourceLead"/> 
+             						 <!-- <input id="projectManager" name="projectManager"/>  -->
                					 <select class="form-control select-bg" name="projectManager" id="projectManager">
-                					  <option>-- Select Manager --</option>
-	                  
-	                  				   <option value="1">SourceLead</option>
-	                  
+                					  <option value="">-Select Manager-</option>
+                                          <c:forEach var="option" items="${user_List}">
+	                                      <option value="${option.id}">${option.firstName}</option>
+	                              </c:forEach>
               					  </select>
                  		   <span class="btn btn-default formic1 addLevel">Add Level-II</span>
                   		  </div>
@@ -163,7 +163,7 @@
                            -->
                           </div>
                           <div class="col-xs-12 col-lg-5">
-                          <a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask" > <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
+                          <a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask" > <i class="fa fa-plus"></i><span id="addTaskText"> Add Project</span></a>
                           </div>
                         </div>
                       </div>
@@ -191,7 +191,7 @@
             <div class="form-group">
               <label class="col-md-3" for="Project Manager">Email</label>
               <div class="col-md-9">
-				<input type="text" value="" class="form-control">
+				<input type="text" id="email" name="email" field-name="Website" value="" class="form-control">
                     <span class="hidden">Enter Email</span>
                 </div>
             </div>
@@ -199,16 +199,11 @@
 			   <div class="form-group">
               <label class="col-md-3">Mobile Number</label>
               <div class="col-md-9">
-			  <input type="text" class="form-control" name="mobileNumber" value="">
+			  <input type="text" class="form-control" id="phone" name="phone" ield-name="Mobile Number" value="">
                 <span class="hidden">Mobile Number</span> </div>
               </div>
 			  
-			  <div class="form-group">
-              <label class="col-md-3">Client Status</label>
-              <div class="col-md-9">
-			  <input type="text" class="form-control" name="ClientStatus" value="">
-                <span class="hidden">Client Status</span> </div>
-              </div>
+			  
 			    </div>
         </div>
         
@@ -514,5 +509,33 @@ $(document).ready(function(){
 	document.getElementById("project_form").reset();
 });
 </script>
+
+
+
+<script type="text/javascript">
+ function validateProjectId() {
+	  var ProjectSequeneNumber = document.getElementById("projectId").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: "http://localhost:8080/sourcelead/validateProjectSequeneNumberId?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
+		        success: function(data) {
+		        	if(data == true){
+						  $("input#projectId").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");
+						  document.getElementById("projectId").setAttribute('record-exist','yes');
+						  document.getElementById("projectId").setAttribute('record-exist-errorMsg',projectId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#projectId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	} 
+		        },
+		    });
+	 } 
+ }
+ </script> 
+
 <!-- Add Task Script Ends -->
 
