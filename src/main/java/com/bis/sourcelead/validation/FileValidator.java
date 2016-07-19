@@ -40,9 +40,9 @@ public class FileValidator implements Validator {
 		if (!file.getFile().getOriginalFilename().endsWith("xlsx") && !file.getFile().getOriginalFilename().endsWith("xls")) {
 			errors.rejectValue("file", "uploadForm.salectFile", "accept only xlsx and xls !...;");
 		}
-		if (kilobytes > 20.0) {
+		if (kilobytes > 500.0) {
 			
-			errors.rejectValue("file", "uploadForm.salectFile", "File size should not be exceed 20KB !..;");
+			errors.rejectValue("file", "uploadForm.salectFile", "File size should not be exceed 500KB !..;");
 		}
 
 	}
