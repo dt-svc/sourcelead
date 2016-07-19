@@ -269,6 +269,12 @@ public class UserController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 public @ResponseBody String getProjectDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 			 String resultJson = null;   
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   
+				ModelAndView model = new ModelAndView();
+			    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+			   
+			    
 			 List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
 			 for (ProjectMembers projectMembers : allProjectsList) {
 				 if(projectMembers.getProjectAssignedDate()!=null){

@@ -137,7 +137,7 @@
 					<div class="clearfix">
 					<div class="pull-right">
 					<input type="submit" value="Save" class="btn btn-primary mr">
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/home'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 					</div>
 					</div>

@@ -151,7 +151,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :nextMondayDate and (pm.projectEndDate IS NULL OR pm.projectEndDate >= :previousMonday) ) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :nextMondayDate))" ;
-		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("previousMondayDate", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
+		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
 			    .list(); 
 		return idsList;  
 	}
@@ -170,7 +170,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateProjectMemberStatus(Long projectMemberId) {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String status = Constants.MEMBER_NOT_ACTIVE;
+		String status = Constants.MEMBER_IN_ACTIVE;
 		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status where pm.id = :projectMemberId ");
 		query.setLong("projectMemberId", projectMemberId);
 		query.setString("status", status);

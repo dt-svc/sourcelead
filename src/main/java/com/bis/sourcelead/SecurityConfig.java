@@ -11,15 +11,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -106,10 +103,11 @@ public class SecurityConfig  {
     			.passwordParameter("password")
     			.failureHandler(sourceleadAuthenticationFailureHandler)
     			.successHandler(sourceleadAuthenticationSuccessHandler)
-    			.and().logout().logoutSuccessUrl("/logout")
+    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
     			.invalidateHttpSession(true)
     			.and().csrf()
     			.and().exceptionHandling().accessDeniedPage("/403");
+    			
         }
      }
 	@Bean
