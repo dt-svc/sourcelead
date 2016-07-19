@@ -65,4 +65,8 @@
        $(".addLevel").click(function(){
 		   $(".level-second").toggleClass("level-second-active");
 		});
+       
+       $(".tree-view").click(function(){
+    	   $(this).next('ul').slideToggle();
+    	   });
     });   

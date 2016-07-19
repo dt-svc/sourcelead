@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -155,6 +156,16 @@ public class TimesheetSubmissionsController {
 			ModelAndView model = new ModelAndView();
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(com.bis.sourcelead.util.Constants.TimeSheetApproval);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
 			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
 			
@@ -226,6 +237,16 @@ public class TimesheetSubmissionsController {
 		return status; 
 	}
 	
+	@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
+    public String deleteSubmissionDocument(@RequestParam(value="submissionId", required=false) Long submissionId ,HttpServletResponse response) throws Exception {
+        
+            TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+            timesheetSubmissions.setDocFile(null);
+            timesheetSubmissions.setFileContentType(null);
+            timesheetSubmissions.setFileName(null);
+            timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+            return "success";
+    }
 	
 	/*@RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception

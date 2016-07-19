@@ -11,7 +11,6 @@
     <script src="resources/js/jquery-fun.js"></script>
 	<!-- <link rel="stylesheet" href="resources/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-	<link rel="stylesheet" href="resources/css/login-styles.css" type="text/css" >
   
     <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
@@ -839,12 +838,29 @@ function saveMyTimesheet(status){
         	    }); 
        	  /*   }); */
 }    
-   </script>
+</script>
+
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionId){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    var startdate;
+	var navigation;
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
+	      success :function(result) {
+	    		dynamicTimesheet(navigation,startdate);  
+	      }
+      	  
+    }); 
+	   
+}
+</script>
 
    
-   <script type="text/javascript">	
+<script type="text/javascript">	
 /* for total hours */
-$(document).click(function(){
+/* $(document).click(function(){
 		var submissionId = 1;
 		var total;
 		 for (var p = 1; p < 8; p++){
@@ -854,9 +870,7 @@ $(document).click(function(){
 			 var total = 0;
 			 for (var j = 1; j < 8; j++){
 				    var btemp = $("#"+i+"submission"+p+"timeSheetDay"+j+"Id").val();
-				    /* var btemp = $("#"+j+"day"+i+"Hours").val(); */
 				    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-				    	/* bsum = parseFloat(bsum) + parseFloat(btemp); */
 				    	 var hours = btemp;
 				    	 var split = hours.split(':');
 				    	 var first = split[0];
@@ -882,7 +896,7 @@ $(document).click(function(){
 }	
 		
 		
-});
+}); */
 
 
 
@@ -892,8 +906,8 @@ $(document).click(function(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 8; p++){  
-		 for (var j = 1; j < 8; j++){
+	 for (var p = 1; p < 200; p++){  
+		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;

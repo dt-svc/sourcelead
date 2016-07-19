@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,9 +54,13 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	@Autowired
 	private OrgService orgService;
@@ -80,19 +86,22 @@ public class ClientController {
 			 Collection<User> userList = userService.getUsersByUserRoles();
 			 model.addObject("user_List", userList);
 			model.setViewName("client/client");
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
 	 
 	 
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
-		   
+		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			model.addObject("clientsList", clientsList);
-			
+
+			Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
+			model.addObject(projectsList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -112,8 +121,7 @@ public class ClientController {
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
-		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+		 	String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
 			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 
 			
@@ -134,10 +142,11 @@ public class ClientController {
 			/*Saving for OrgLocations*/
 			OrgLocations  orgLocations = new OrgLocations();
 			orgLocations.setOrg(addOrg);
-			
-			orgLocations.setCountry(loginOrgLocations.getCountry());
-			orgLocations.setState(loginOrgLocations.getState());
-			orgLocations.setCity(loginOrgLocations.getCity());
+			orgLocations.setPhone(jsonObj.getString("phone"));
+			orgLocations.setEmail(jsonObj.getString("email"));
+			orgLocations.setCountry(jsonObj.getString("country"));
+			orgLocations.setState(jsonObj.getString("state"));
+			orgLocations.setCity(jsonObj.getString("city"));
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
 			orgLocations.setCreatedDate(new Date());
@@ -154,7 +163,7 @@ public class ClientController {
 			orgRelations.setCreatedBy(loginUserCode);
 			orgRelations.setCreatedDate(new Date());
 			OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
-			
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Collection<Org> orgsList = orgService.getOrgs();
 			
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
@@ -166,14 +175,15 @@ public class ClientController {
 				Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
 				project.setProjectSequeneNumber(jsonObj.getString(c+"projectId"));
 				project.setProjectName(jsonObj.getString(c+"projectName"));
+				OrgLocations  orgLocationsID = new OrgLocations();
+				orgLocationsID.setId(orgLocation.getId());
+				project.setOrgLocationsId(orgLocationsID);
 				String startDateString = jsonObj.getString(c+"projectStartDate");
-				String i = jsonObj.getString(c+"projectManager");
-			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+				DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
 			    Date startDate = null;
 			    try {
 			        startDate = df.parse(startDateString);
 			        String newDateString = df.format(startDate);
-			        System.out.println(newDateString);
 			    } catch (ParseException e) {
 			        e.printStackTrace();
 			    }
@@ -205,7 +215,16 @@ public class ClientController {
 			 return "clientDashboard";
 	   }
 	
-	
+
+	//to validate Project SequeneNumber
+		 @RequestMapping(value = "/validateProjectSequeneNumberId" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateProjectSequeneNumberById(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
+			 	
+				return flag;
+		   }
+		
 		
 		private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

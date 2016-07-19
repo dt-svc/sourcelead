@@ -31,10 +31,12 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -67,6 +69,9 @@ public class UserController {
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
+	public TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
 	@Autowired
@@ -87,7 +92,7 @@ public class UserController {
 	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    Collection<User> userList = userService.getUsersByUserRoles();
+	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 		model.addObject("user_List", userList);
 	    
 		model.setViewName("users/userCreation");
@@ -110,7 +115,9 @@ public class UserController {
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
 		 	
@@ -176,7 +183,10 @@ public class UserController {
 	  
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	 public @ResponseBody  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -259,6 +269,12 @@ public class UserController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 public @ResponseBody String getProjectDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 			 String resultJson = null;   
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   
+				ModelAndView model = new ModelAndView();
+			    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+			   
+			    
 			 List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
 			 for (ProjectMembers projectMembers : allProjectsList) {
 				 if(projectMembers.getProjectAssignedDate()!=null){
@@ -267,10 +283,25 @@ public class UserController {
 				 if(projectMembers.getProjectEndDate()!=null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectEndDate()));
 				 }
-				 else {
+				 else if(projectMembers.getProjects().getEndDate() != null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
+				 Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
+				 
+			   	 projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
+			   	 
+			   	Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
+				 
+			   	 projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
+			   	 
+			  	 Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
+			  	 projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
+			  	 
+			  	 Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
+			  	 projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 			 }
+			 
+			 
 			 resultJson = toJSON(allProjectsList);
 			 return resultJson;
 		  }
