@@ -288,6 +288,7 @@ public class ProjectsDashboardController {
 			user.setFirstName(jsonObj.getString("employeeFirstName"));
 			user.setLastName(jsonObj.getString("employeeLastName"));
 			user.setEmail(jsonObj.getString("EmailId"));
+			user.setUserType("Employee");
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(users.getUserCode());
 			User  usr=	userService.addUser(user);
