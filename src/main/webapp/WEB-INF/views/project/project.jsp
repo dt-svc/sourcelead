@@ -353,7 +353,7 @@
                          <div class="col-lg-9">
                            <div class="checkbox">
                            <label>
-                             <input type="checkbox" value="" checked>
+                           <input type="checkbox" value="Y" name="isMailSent" checked="checked">
                              Send Invitation</label>
             					 </div>
                            </div>
