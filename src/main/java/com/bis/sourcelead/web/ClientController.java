@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -37,6 +39,7 @@ import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
@@ -90,9 +93,10 @@ public class ClientController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
+			
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			model.addObject("clientsList", clientsList);
-
+			
 			Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
 			model.addObject(projectsList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -113,8 +117,7 @@ public class ClientController {
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
-		 	
-			json = "{"+json+"}";
+		    json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();   
 
@@ -252,6 +255,26 @@ public class ClientController {
 		orgRelation.setProjectsCont(projectCount);
 		resultJson = toJSON(orgRelation);
 		return resultJson;
+		  }
+		 
+		 
+		 @RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
+		 public @ResponseBody String getAllClientProjectsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception{ 
+			 
+			 
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+			    
+			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
+			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
+			 for(Projects p : clientProjectsList){
+				 p.setProjectName(p.getProjectName());
+				 clientProjectsArrList.add(p);
+			 }
+			 ObjectMapper mapper = new ObjectMapper();
+			 String jsonInString = mapper.writeValueAsString(clientProjectsArrList);
+			 
+			 return jsonInString;
 		  }
 		
 		

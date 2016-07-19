@@ -191,5 +191,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	private static final long serialVersionUID = -2650993424650202629L;
 
      }
+    /**
+     * This method for get projects based on OrgRelationId (particular client)
+     */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getAllProjectsByOrgRelationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects projects  left join fetch projects.orgRelationId orgre  where  orgre.clientLocationId  IN(select orgrel.clientLocationId from OrgRelations  orgrel where orgrel.clientLocationId = :orgRelationId and orgrel.locationId = :locationId) and projects.orgLocationsId = :locationId";
+		List<Projects> clientProjectsList =  session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("locationId", locationId).list();
+		
+		return clientProjectsList;
+	}
 
 }

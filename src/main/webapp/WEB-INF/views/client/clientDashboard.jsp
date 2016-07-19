@@ -104,7 +104,15 @@ function clientSideBar(clientId){
 
 <script>
 function clientProjectDetails(clientId){
-	var result = "";
+	alert("clientId"+clientId);
+	
+	 $.ajax({
+	    	type: "POST",
+	        url: "http://localhost:8080/sourcelead/getAllClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+clientId, 
+	        success: function(data) {
+	        	
+	        	var json = JSON.parse(data);
+	            var result = "";
 	
 	result = result + '					<div class="project_tabs_inn_head">';
 	result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>';
@@ -121,7 +129,10 @@ function clientProjectDetails(clientId){
 	result = result + '				            <th>Status</th>';
 	result = result + '				        </tr>';
 	result = result + '			        <tr>';
-	result = result + '				        	<td><div><a href="javascript:void(0)">Broadridge</a></div></td>';
+								for (var i=0; i<json.length; i++)
+								{        
+							    		var opt = json[i];
+	result = result + '	 	<td><div><input type="text"  value="'+json[i].projectName+'" class="project_inline_field"></div></td>';						    		
 	result = result + '				            <td><div>15/08/2016</div></td>';
 	result = result + '				            <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
 	result = result + '				            <td><div><select>';
@@ -138,66 +149,15 @@ function clientProjectDetails(clientId){
 	result = result + '								<option>Option</option>';
 	result = result + '							</select></div></td>';
 	result = result + '				        </tr>';
-	result = result + '				        <tr>';
-	result = result + '				        	<td><div><a href="javascript:void(0)">Business Intelli</a></div></td>';
-	result = result + '				            <td><div>15/08/2016</div></td>';
-	result = result + '				            <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-	result = result + '				            <td><div><select>';
-	result = result + '							<option>Manager one</option>';
-	result = result + '							<option>Manager two</option>';
-	result = result + '							<option>Manager three</option>';
-	result = result + '							<option>Manager four</option>';
-	result = result + '						</select></div></td>';
-	result = result + '			            <td><div>30</div></td>';
-	result = result + '						<td><div><b class="proj_active">Active</b><i class=" fa fa-edit"></i></div></td>';
-	result = result + '			        </tr>';
-	result = result + '			        <tr>';
-	result = result + '			        	<td><div><a href="javascript:void(0)">Business Intelli</a></div></td>';
-	result = result + '			            <td><div>15/08/2016</div></td>';
-	result = result + '			            <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-	result = result + '			            <td><div><select>';
-	result = result + '							<option>Manager one</option>';
-	result = result + '							<option>Manager two</option>';
-	result = result + '							<option>Manager three</option>';
-	result = result + '							<option>Manager four</option>';
-	result = result + '						</select></div></td>';
-	result = result + '			            <td><div>30</div></td>';
-	result = result + '						<td><div><b class="proj_closed">Closed</b><i class=" fa fa-edit"></i></</div></td>';
-	result = result + '			        </tr>';
-	result = result + '			        <tr>';
-	result = result + '			        	<td><div><a href="javascript:void(0)">Business Intelli</a></div></td>';
-	result = result + '			            <td><div>15/08/2016</div></td>';
-	result = result + '			            <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-	result = result + '			            <td><div><select>';
-	result = result + '						<option>Manager one</option>';
-	result = result + '							<option>Manager two</option>';
-	result = result + '							<option>Manager three</option>';
-	result = result + '						<option>Manager four</option>';
-	result = result + '					</select></div></td>';
-	result = result + '		            <td><div>30</div></td>';
-	result = result + '					<td><div><b class="proj_process">Process</b><i class=" fa fa-edit"></i></</div></td>';
-	result = result + '			        </tr>';
-	result = result + '					<tr>';
-	result = result + '			        	<td><div><a href="javascript:void(0)">Business Intelli</a></div></td>';
-	result = result + '			            <td><div>15/08/2016</div></td>';
-	result = result + '			            <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-	result = result + '			            <td><div><select>';
-	result = result + '						<option>Manager one</option>';
-	result = result + '						<option>Manager two</option>';
-	result = result + '						<option>Manager three</option>';
-	result = result + '						<option>Manager four</option>';
-	result = result + '					</select></div></td>';
-	result = result + '		            <td><div>30</div></td>';
-	result = result + '						<td><div><b>Option</b><i class=" fa fa-edit"></i></</div></td>';
-	result = result + '		        </tr>';
-	result = result + '			    </tbody>';
-	result = result + '			</table>';            
-	result = result + '			</div>';
-	   
-	$("#tab-1").empty();
-	$("#tab-1").append(result);  
 	
-	$("#tab-1").show();
+	                                }
+	rresult = result + '	     </tbody>';
+    result = result + '	 </table>   ';         
+    result = result + '	     </div>';
+    $("#tab-1").empty();
+    $("#tab-1").append(result);  
+    
+    $("#tab-1").show();
 	$(".project-tabs-menu a").click(function(event) {
 	     event.preventDefault();
 	     $(this).parent().addClass("current");
@@ -206,8 +166,11 @@ function clientProjectDetails(clientId){
 	     $(".project_tabs_inn").not(tab).css("display", "none");
 	     $(tab).fadeIn();
 	 });
-}
+},
+});
+}	
 </script>
+
 
 
 
