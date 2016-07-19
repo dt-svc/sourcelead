@@ -92,6 +92,16 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
 		return approvalStatusCount;
 	}
+
+	@Override
+	public Integer getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
+		return timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId,approvalStatus);
+	}
+
+	@Override
+	public Integer getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
+		return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId,submissionStatus);
+	}
 	
 	
 	

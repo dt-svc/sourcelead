@@ -31,10 +31,12 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -65,6 +67,9 @@ public class UserController {
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -270,7 +275,22 @@ public class UserController {
 				 else if(projectMembers.getProjects().getEndDate() != null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
+				 Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
+				 
+			   	 projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
+			   	 
+			   	Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
+				 
+			   	 projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
+			   	 
+			  	 Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
+			  	 projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
+			  	 
+			  	 Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
+			  	 projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 			 }
+			 
+			 
 			 resultJson = toJSON(allProjectsList);
 			 return resultJson;
 		  }

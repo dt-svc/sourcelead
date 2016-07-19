@@ -296,9 +296,8 @@ $(document).ready(function(){
 						   result = result + '         	<div class="approved_pop">';
 						   result = result + '            	<ul>';
 						   result = result + '                	<li><input type="checkbox" value="None" id="c5"><label for="c5">All</label></li>';
-						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Approved</label></li>';
-						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">Draft</label></li>';
-						   result = result + ' 							<li><input type="checkbox" id="c8"><label for="c8">Rejected</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Active</label></li>';
+						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">In-Active</label></li>';
 						   result = result + '                         </ul>';
 						   result = result + '                    </div>                	';
 						   result = result + '                </li>';
@@ -306,7 +305,7 @@ $(document).ready(function(){
 						   result = result + '              <div class="clearfix"></div>';
 						   result = result + '            </ul>';
 						   result = result + '          <div class="clearfix"></div>';
-						   result = result + '     </div>';
+						   result = result + ' </div>';
 						   result = result + '        <div class="user_summ_wrap_table">';
 						   result = result + '	<table>';
 						   result = result + '    	<tbody>';
@@ -325,10 +324,10 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
 						   result = result + '<td><div>'+json.startDate+'</div></td>';
 						   result = result + ' <td><div><input type="text" value="'+json.endDate+'" class="project_inline_field"></div></td>';
-						   result = result + ' <td><div>45:50</div></td>';
-						   result = result + ' <td><div>45:50</div></td>';
-						   result = result + ' <td><div>45:50</div></td>';
-						   result = result + ' <td><div>Saved text</div></td>';
+						   result = result + ' <td><div>'+json.approvedHrs+'</div></td>';
+						   result = result + ' <td><div>'+json.rejectedHrs+'</div></td>';
+						   result = result + ' <td><div>'+json.draftHrs+'</div></td>';
+						   result = result + ' <td><div>'+json.submittedHrs+'</div></td>';
 						   result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
 						   result = result + '   </tr>';
 						   result = result + '        </tbody>';
