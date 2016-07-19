@@ -418,6 +418,7 @@ public class ProjectsController {
 			user.setFirstName(jsonObj.getString("employeeFirstName"));
 			user.setLastName(jsonObj.getString("employeeLastName"));
 			user.setEmail(jsonObj.getString("EmailId"));
+			user.setUserType("Employee");
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(users.getUserCode());
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
