@@ -638,6 +638,7 @@ var addtaskcount =null;
 			 if ($('#addClient_form').validate(false, validationSettings)){
 			     var frm = $('#addClient_form').serializeFormJSON();
 			        var con = JSON.stringify(frm);
+			        con = con.replace(/[{}]/g, "");
 			        var sourceleadUrl ='${sourceleadUrl}';
 			        $.ajax({
 				    	type: "GET",
@@ -686,7 +687,10 @@ var addtaskcount =null;
  if ($('#project_form').validate(false, validationSettings)){
 	 var frm = $('#project_form').serializeFormJSON();
      var con = JSON.stringify(frm);
+     con = con.replace(/[{}]/g, "");
      var sourceleadUrl ='${sourceleadUrl}';
+     
+     
      $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
@@ -720,11 +724,13 @@ function addEmployee() {
 		 if ($('#addEmployee_form').validate(false, validationSettings)){
 			var frm = $('#addEmployee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
 			var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 				type: "POST",
 				url: sourceleadUrl+"/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
+					      
 			    	},
 				});
 				 return true;

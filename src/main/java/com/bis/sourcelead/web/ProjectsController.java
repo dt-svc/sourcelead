@@ -155,7 +155,9 @@ public class ProjectsController {
 	 
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		   
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -403,7 +405,9 @@ public class ProjectsController {
 	  
 	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
 		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		    
+		    json = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json);
 			
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
