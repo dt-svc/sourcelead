@@ -111,7 +111,7 @@ $(document).ready(function(){
 				    result = result + ' <div class="useredit">';
 						result = result + ' <a id="edit-user" href="javascript:editUserDetails();"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-							result = result + ' <div class="remove_user_pop" >';
+							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 									result = result + ' <div id="reasonDiv"/>';
 									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
@@ -274,7 +274,7 @@ $(document).ready(function(){
 						   result = result + ' 							<li><input type="checkbox" id="c6"><label for="c6">Active</label></li>';
 						   result = result + ' 							<li><input type="checkbox" id="c7"><label for="c7">In-Active</label></li>';
 						   result = result + '                         </ul>';
-						   result = result + '                    </div>                	';
+						   result = result + '                    </div>';
 						   result = result + '                </li>';
 						   result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
 						   result = result + '              <div class="clearfix"></div>';
@@ -303,7 +303,11 @@ $(document).ready(function(){
 						   result = result + ' <td><div>'+json.rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+json.draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+json.submittedHrs+'</div></td>';
-						   result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
+						   //result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
+						     result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash" onClick="teminateFromProject();"></i>';
+						  
+							result = result + '</div></td> ';
+						   
 						   result = result + '   </tr>';
 						   result = result + '        </tbody>';
 						   result = result + '    </table>            ';
@@ -405,10 +409,12 @@ $(document).ready(function(){
 
 
 	<div class="project_inn_mask"></div>
-	<div class="project_error">
-		<p>Confirmation Message here</p>
-		<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
+	   <div id="remove_user_pop" class="remove_user_pop remove_user_pop_a">
+		<p>User delete message here</p>
+		<textarea placeholder="Comments here"></textarea>
+		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick=""><input class="u_can_color" type="button" value="Cancel"></b>
 	</div>
+
 	
 	
     </body>
@@ -426,20 +432,20 @@ function date(){
 <script>
 function editUserDetails(){
 	$(".user_summary_edit").slideToggle(100);
-	$(".remove_user_pop").slideUp(100);
+	$("#remove_user_id").slideUp(100);
 }
 </script>
 <script>
 function removeUser(){
 	$("#reason").val('');
 	$("#reasonDiv").empty();
-	$(".remove_user_pop").slideToggle(100);
+	$("#remove_user_id").slideToggle(100);
 	$(".user_summary_edit").slideUp(100);
 }
 </script>
 <script>
 function cancelUser(){
-	$(".remove_user_pop").slideUp(100);
+	$("#remove_user_id").slideUp(100);
 }
 </script>
 
@@ -536,6 +542,23 @@ $(document).ready(function() {
     });
 });
 
+
+//project error message
+/* $(document).ready(function() {
+    $("#dele-user").click(function(){
+		$(".remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	});
+    $("html, .remove_user_pop b").click(function() {
+        $(".remove_user_pop").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+    });
+	$("html, .remove_user_pop b").click(function(e) {
+        e.stopPropagation();
+    });
+}); */
+
+
 </script> 
 
 <!-- this script for inline edit -->
@@ -560,18 +583,21 @@ function inlineEditForUsers(userId,localFieldName){
 <!-- Scripts for project details -->
 
 <script>
-function deleteProjectMemeber(projectMemberId){   
+function teminateFromProject(projectMemberId){   
 	var sourceleadUrl = '${sourceleadUrl}';
-	   $.ajax({
-	      type: "POST",
-	  	  url: "${sourceleadUrl}"+"/deleteProjectMemeber?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
-	  			  success :function(data) {
-	  				  if(data == 'success'){
-		        		//location.replace(sourceleadUrl+"/userSummaryDetails?userId="+userId);  
-		        		
-		        	} 		
-      			 }							     
-	});    
+	
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+	//need to verify
+	$("#remove_user_pop b").click(function() {
+	        $("#remove_user_pop").slideUp(200);
+			$(".project_inn_mask").fadeOut(200);
+    });
+	$("#remove_user_pop b").click(function(e) {
+        e.stopPropagation();
+    });
+	//need top verfiy
 }
 </script>
 

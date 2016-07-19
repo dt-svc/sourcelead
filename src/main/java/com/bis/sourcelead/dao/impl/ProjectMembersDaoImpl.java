@@ -166,7 +166,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateProjectMemberStatus(Long projectMemberId) {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String status = Constants.MEMBER_NOT_ACTIVE;
+		String status = Constants.MEMBER_IN_ACTIVE;
 		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status where pm.id = :projectMemberId ");
 		query.setLong("projectMemberId", projectMemberId);
 		query.setString("status", status);

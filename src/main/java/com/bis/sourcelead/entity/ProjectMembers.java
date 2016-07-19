@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -89,10 +90,19 @@ public class ProjectMembers {
     @Transient
     private String submittedHrs;
     
+    @Transient
+    private Collection<Projects> projectsList;
     
     
     
-    
+	public Collection<Projects> getProjectsList() {
+		return projectsList;
+	}
+
+	public void setProjectsList(Collection<Projects> projectsList) {
+		this.projectsList = projectsList;
+	}
+
 	public String getSubmittedHrs() {
 		return submittedHrs;
 	}
