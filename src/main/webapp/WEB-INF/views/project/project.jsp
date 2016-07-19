@@ -640,6 +640,10 @@ var addtaskcount =null;
 			        var con = JSON.stringify(frm);
 			        con = con.replace(/[{}]/g, "");
 			        var sourceleadUrl ='${sourceleadUrl}';
+			        
+			        $("#save_client").attr("disabled", "disabled");
+	         		$( "#save_client" ).addClass('button').val('Processing..');
+			        
 			        $.ajax({
 				    	type: "GET",
 				        url: sourceleadUrl+"/saveOrgRelations?json="+con, 
@@ -696,7 +700,7 @@ var addtaskcount =null;
 	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(result) {
 	        	if(result == 'projectDashboard'){
-	        		location.replace(sourceleadUrl+"/sourcelead/projectDashboard");  
+	        		location.replace(sourceleadUrl+"/projectDashboard");  
 	        	}
 		        
 	        },
@@ -893,6 +897,7 @@ function validateWebsite(){
 </script>
 <script type="text/javascript">
 function flushProject(){
+	$("#save_client").attr("disabled", "disabled");
 	$('#orgName').val('');
 	 $('#companyWebsite').val('');
 	 $(".error").removeClass("error");
