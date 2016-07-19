@@ -135,9 +135,10 @@ $(document).ready(function(){
 
 
 function timeSheetSubmissionStatusCount(){
+    var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
-		        url: "http://localhost:8080/sourcelead/getTimeSheetSubmissionStatus", 
+		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
