@@ -16,6 +16,8 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
@@ -24,6 +26,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class User {
 
 	@Id
