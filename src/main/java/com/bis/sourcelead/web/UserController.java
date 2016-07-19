@@ -92,7 +92,7 @@ public class UserController {
 	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    Collection<User> userList = userService.getUsersByUserRoles();
+	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 		model.addObject("user_List", userList);
 	    
 		model.setViewName("users/userCreation");
@@ -115,7 +115,9 @@ public class UserController {
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
 		 	
@@ -181,7 +183,10 @@ public class UserController {
 	  
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	 public @ResponseBody  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
