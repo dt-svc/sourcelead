@@ -104,10 +104,10 @@ function clientSideBar(clientId){
 
 <script>
 function clientProjectDetails(clientId){
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
-	        url: "http://localhost:8080/sourcelead/getAllClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+clientId, 
+	        url: sourceleadUrl+"/getAllClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+clientId, 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
@@ -175,11 +175,12 @@ function clientProjectDetails(clientId){
 
 <script type="text/javascript">
 function clientDetails(clientId){
-
+    
+	var sourceleadUrl ='${sourceleadUrl}';
 	
 	  $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+clientId, 	   
+		    url: sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+clientId, 	   
 		    		   success: function(data) {
 		    			     var json = JSON.parse(data);
 		    				 var result = "";
