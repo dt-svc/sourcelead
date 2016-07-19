@@ -105,7 +105,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
+		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
 		try {
 			
@@ -124,12 +124,17 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId());
 			}
+			
+			for(UserRole role : rolesList){
+				role.setUserRoleName(role.getRoles().getDisplayName());
+				userRolesList.add(role);
+			}
 			 
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		 resultJson = toJSON(rolesList);
+		 resultJson = toJSON(userRolesList);
 		 return resultJson;
 
 	}
