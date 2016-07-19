@@ -527,10 +527,12 @@ function projectEmployee(projectId){
 	result = result + '					<strong>Start date:</strong>';
 	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr !=  'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
 	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
@@ -541,12 +543,14 @@ function projectEmployee(projectId){
 	result = result + '					<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span> '+json.endDateStr+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+json.createdDateStr+'</span><div class="clearfix"></div>';
                                                      
 	result = result + '				</div>';
+	if(json.updatedDateStr != null && json.updatedDateStr != '' && json.updatedDateStr != 'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
-	result = result + '				</div>';					
+	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
 	result = result + '      </div>';

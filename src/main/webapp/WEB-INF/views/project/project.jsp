@@ -696,7 +696,7 @@ var addtaskcount =null;
 	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(result) {
 	        	if(result == 'projectDashboard'){
-	        		location.replace("http://localhost:8080/sourcelead/projectDashboard");  
+	        		location.replace(sourceleadUrl+"/sourcelead/projectDashboard");  
 	        	}
 		        
 	        },
@@ -730,7 +730,7 @@ function addEmployee() {
 				type: "POST",
 				url: sourceleadUrl+"/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
-					      
+				    $('#addTeam').modal('hide');
 			    	},
 				});
 				 return true;
