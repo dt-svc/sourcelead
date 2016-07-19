@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
@@ -105,7 +106,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
+		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
 		try {
 			
@@ -124,12 +125,17 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId());
 			}
+			
+			for(UserRole role : rolesList){
+				role.setUserRoleName(role.getRoles().getDisplayName());
+				userRolesList.add(role);
+			}
 			 
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		 resultJson = toJSON(rolesList);
+		 resultJson = toJSON(userRolesList);
 		 return resultJson;
 
 	}
@@ -169,6 +175,19 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		    userService.addUser(user);
 		    return null;
 	  }
+	 
+	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
+		public @ResponseBody String terminateUser(
+				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason) throws Exception{
+				User user = userService.getUserById(userId);
+				if(user != null){
+					user.setTerminateReason(reason);
+					user.setUserState(Status.INACTIVE);
+					userService.addUser(user);
+				}
+			
+				return "success";
+		}
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

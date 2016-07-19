@@ -31,5 +31,9 @@ public interface TimesheetSubmissionsService {
 
     public Date getNextMondayByProjectMemberId(Long pojectMemberId);
     
-    public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus)throws Exception; 
+    public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus)throws Exception;
+
+	public Integer getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus);
+
+	public Integer getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus); 
 }

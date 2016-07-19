@@ -34,7 +34,7 @@
       <div class="pull-left">
         <h2>Account Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/home'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">
@@ -120,7 +120,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -162,7 +162,7 @@
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 				  </div>
 				  </form:form>
@@ -301,7 +301,7 @@ var validationSettings = {
                       	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
                         	success: function(result) {
     			        	 if(result == 'home'){
-    			        		location.replace(sourceleadUrl+"/home");  
+    			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
                  		         document.getElementById("currentPassword").setAttribute('class','error form-control');

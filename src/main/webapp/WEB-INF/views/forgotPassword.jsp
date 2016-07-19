@@ -79,11 +79,13 @@ function applyInputSlide() {
         		var con = JSON.stringify(form);
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
+        		 $("#submit_button").attr("disabled", "disabled");
+        		 $( "#submit_button" ).addClass('button').val('Processing..');
                 $.ajax({
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName",
+                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                   	  data:con,
                     	success: function(result) {
                     		if((result == 'Invalid')){

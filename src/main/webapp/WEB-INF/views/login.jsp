@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>::. Sing In .::</title>
+    <title>::. Sign In .::</title>
     <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -64,7 +64,7 @@
 	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	            
 	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
-	            <input type="submit" value="Sumbit" class="sign_btn" />
+	            <input type="submit" value="Submit" class="sign_btn" />
 	            <div class="for-pas-text">Not have an account <a href="<c:url value='/registration'/>">Register Now</a></div> 
             </form>          
         </div>

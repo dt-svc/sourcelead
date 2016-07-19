@@ -392,7 +392,7 @@
 				            <div class="form-group" id="companyWebsiteDiv">
 				              <label class="col-lg-3">Client Website</label>
 				              <div class="col-lg-9">
-				                <input type="text"   class="form-control"  id="companyWebsite" name="companyWebsite" value="" class="form-control" onblur="validateWebsite();"  field-name="Client Website" data-validation="required">
+				                <input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();"  field-name="Client Website" data-validation="required">
 				              </div>
 				            </div>
 				          </div>
@@ -526,6 +526,7 @@ function addTasks(){
 <script> 
 $(document).ready(function(){
 	 $("#maxTsRowNum").val('6');
+	 addSourceleadTasks();
 	document.getElementById("project_form").reset();
 });
 </script>
@@ -637,6 +638,7 @@ var addtaskcount =null;
 			 if ($('#addClient_form').validate(false, validationSettings)){
 			     var frm = $('#addClient_form').serializeFormJSON();
 			        var con = JSON.stringify(frm);
+			        con = con.replace(/[{}]/g, "");
 			        var sourceleadUrl ='${sourceleadUrl}';
 			        $.ajax({
 				    	type: "GET",
@@ -685,7 +687,10 @@ var addtaskcount =null;
  if ($('#project_form').validate(false, validationSettings)){
 	 var frm = $('#project_form').serializeFormJSON();
      var con = JSON.stringify(frm);
+     con = con.replace(/[{}]/g, "");
      var sourceleadUrl ='${sourceleadUrl}';
+     
+     
      $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
@@ -719,11 +724,13 @@ function addEmployee() {
 		 if ($('#addEmployee_form').validate(false, validationSettings)){
 			var frm = $('#addEmployee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
 			var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 				type: "POST",
 				url: sourceleadUrl+"/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
+					      
 			    	},
 				});
 				 return true;
@@ -862,9 +869,10 @@ function validateWebsite(){
 						     document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website+' is Already Existed');
 			        	}
 			        	else{
-			        		//New WebSite
+			        		//New WebSite class="form-control"
 			        		$("#save_client").removeAttr("disabled");
 				    		$('input#companyWebsite').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#companyWebsite').attr('class','valid form-control');
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$( "#save_client" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){

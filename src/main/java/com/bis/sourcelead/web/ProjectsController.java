@@ -155,22 +155,34 @@ public class ProjectsController {
 	 
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		   
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	String pattern = "yyyy-MM-dd";
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
 		 	
 	    	Projects projects = new Projects();
 	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 	    	projects.setProjectName(jsonObj.getString("ProjectName"));
 	    	projects.setDescription(jsonObj.getString("ProjectDescription"));
-	    	projects.setStartDate(new Date());
-	    	projects.setEndDate(new Date());
+	    	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
+	    		Date startDate = format.parse(jsonObj.getString("StartDate"));
+		    	projects.setStartDate(startDate);
+	    	}
+	    	if(!jsonObj.getString("EndDate").isEmpty()){
+	    		Date endDate = format.parse(jsonObj.getString("EndDate"));
+		    	projects.setEndDate(endDate);
+	    	}
 	    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
-	    	projects.setCreatedBy(user.getUserCode());
+	    	if(user.getUserCode() != null){
+	    		projects.setCreatedBy(user.getUserCode());	
+	    	}
 	    	projects.setOrgLocationsId(loginOrgLocation);
 	    	
 	    	// Saving of Client by bringing OrgRelation id based on Client OrgId
@@ -236,8 +248,7 @@ public class ProjectsController {
 							    if(emp != null){
 							    	pm.setEmployee(emp);
 						    	    
-							    	String pattern = "yyyy-MM-dd";
-						            SimpleDateFormat format = new SimpleDateFormat(pattern);
+							    	
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
 						            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
 						            	  pm.setProjectAssignedDate(currentStartDate);
@@ -394,7 +405,9 @@ public class ProjectsController {
 	  
 	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
 		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		    
+		    json = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json);
 			
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
