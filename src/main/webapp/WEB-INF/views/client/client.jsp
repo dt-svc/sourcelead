@@ -331,7 +331,6 @@
 	 var frm = $('#client_form').serializeFormJSON();
      var con = JSON.stringify(frm);
      var sourceleadUrl ='${sourceleadUrl}';
-     alert("sourceleadUrl"+sourceleadUrl);
      $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
