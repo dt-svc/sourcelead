@@ -102,6 +102,7 @@ public class HomeController {
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
  			model.setViewName("forgotPassword");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
    
@@ -110,6 +111,7 @@ public class HomeController {
   	public ModelAndView resetPassword() {
   			ModelAndView model = new ModelAndView();
   			model.setViewName("resetPassword");
+  			model.addObject("sourceleadUrl", sourceleadUrl);
   			return model;
   	}
     
