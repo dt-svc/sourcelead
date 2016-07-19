@@ -104,7 +104,6 @@ function clientSideBar(clientId){
 
 <script>
 function clientProjectDetails(clientId){
-	alert("clientId"+clientId);
 	
 	 $.ajax({
 	    	type: "POST",
