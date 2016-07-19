@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.UserService;
 
 @Controller
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -100,6 +102,7 @@ public class HomeController {
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
  			model.setViewName("forgotPassword");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
    
@@ -108,6 +111,7 @@ public class HomeController {
   	public ModelAndView resetPassword() {
   			ModelAndView model = new ModelAndView();
   			model.setViewName("resetPassword");
+  			model.addObject("sourceleadUrl", sourceleadUrl);
   			return model;
   	}
     

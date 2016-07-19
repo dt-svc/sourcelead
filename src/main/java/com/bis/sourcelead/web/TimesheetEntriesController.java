@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -810,6 +811,16 @@ public class TimesheetEntriesController {
 			*/
 			Collection<Projects> projectsList =   projectsService.getAllProjects();
 			model.addObject("sourcelead_projectsList", projectsList);
+			
+			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.TimeSheet);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
 			
 			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
