@@ -157,6 +157,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 Employees employee = employeesService.getEmployeeByUserId(userId);
 		 if(employee.getHireDate() != null){
 			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
+		 }else{
+			 employee.setHireDateStr("");
 		 }
 		 resultJson = toJSON(employee);
 		 return resultJson;

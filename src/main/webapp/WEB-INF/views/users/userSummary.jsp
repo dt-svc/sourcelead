@@ -127,6 +127,7 @@ $(document).ready(function(){
 				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
+				result = result + ' 		    <b>'+json.user.userType+'</b>';
 				result = result + ' 		    <b>'+json.user.email+'</b>';
 				result = result + '		 </div>';
 				
@@ -198,11 +199,70 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
-				result = result + ' <div class="user_summary_edit">';
+				result = result + ' <div class="user_summary_edit" id="editUserDiv">';
+				
+				
+				var selected1 = '';
+        		var selected2 = '';
+        		var selected3 = '';
+        		var selected4 = '';
+        		var selected5 = '';
+        		var selected6 = '';
+        		var selected7 = '';
+        		
+        		if(json.ratePer == 'Hourly'){
+           			selected1 = 'selected';
+           		} 
+        		
+        		if(json.ratePer == 'Daily'){
+           			selected2 = 'selected';
+           		} 
+        		
+        		if(json.ratePer == 'Weekly'){
+           			selected3 = 'selected';
+           		}
+        		
+        		if(json.ratePer == 'Bi-Weekly'){
+           			selected4 = 'selected';
+           		} 
+        		
+        		if(json.ratePer == 'Semi-Monthly'){
+           			selected5 = 'selected';
+           		} 
+        		
+        		if(json.ratePer == 'Monthly'){
+           			selected6 = 'selected';
+           		} 
+        		
+        		if(json.ratePer == 'Yearly'){
+           			selected7 = 'selected';
+           		}
+				
+        		var selected8 = '';
+        		var selected9 = '';
+        		var selected10 = '';
+        		var selected11 = '';
+        		
+        		if(json.InvoiceFrequency == 'Weekly'){
+        			selected8 = 'selected';
+           		} 
+        		
+        		if(json.InvoiceFrequency == 'Bi-Weekly'){
+        			selected9 = 'selected';
+           		} 
+        		
+        		if(json.InvoiceFrequency == 'Semi-Monthly'){
+        			selected10 = 'selected';
+           		}
+        		
+        		if(json.InvoiceFrequency == 'Monthly'){
+        			selected11 = 'selected';
+           		} 
+        		
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name</label>';
-					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" data-validation="required validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
@@ -212,7 +272,7 @@ $(document).ready(function(){
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employed Id</label>';
-					result = result + ' <input type="text" value="'+json.employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId();">';
+					result = result + ' <input type="text" value="'+json.employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
@@ -223,32 +283,32 @@ $(document).ready(function(){
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 					result = result + ' <input type="text" class="rate_filed" value="'+json.rate+'" id="Rate"  name="Rate" data-validation="validate_float validate_length length2-8" data-validation-optional="true">';
-					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer">';
+					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
-					result = result + ' <option ${"Hourly" == "'+json.ratePer+'" ? "selected" : ''}>Hourly</option>';
-					result = result + ' <option ${"Daily" == "'+json.ratePer+'" ? "selected" : ''}>Daily</option>';
-					result = result + ' <option ${"Weekly" == "'+json.ratePer+'" ? "selected" : ''}>Weekly</option>';
-					result = result + ' <option ${"Bi-Weekly" == "'+json.ratePer+'" ? "selected" : ''}>Bi-Weekly</option>';
-					result = result + ' <option ${"Semi-Monthly" == "'+json.ratePer+'" ? "selected" : ''}>Semi-Monthly</option>';
-					result = result + ' <option ${"Monthly" == "'+json.ratePer+'" ? "selected" : ''}>Monthly</option>';
-					result = result + ' <option ${"Yearly" == "'+json.ratePer+'" ? "selected" : ''}>Yearly</option>';
+					result = result + ' <option '+selected1+'>Hourly</option>';
+					result = result + ' <option '+selected2+'>Daily</option>';
+					result = result + ' <option '+selected3+'>Weekly</option>';
+					result = result + ' <option '+selected4+'>Bi-Weekly</option>';
+					result = result + ' <option '+selected5+'>Semi-Monthly</option>';
+					result = result + ' <option '+selected6+'>Monthly</option>';
+					result = result + ' <option '+selected7+'>Yearly</option>';
 					result = result + ' </select>';
 					result = result + ' </div>';	
 					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
-					result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" onClick="getCalendar();" readonly="readonly">';
+					result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
 					result = result + ' </div>';	
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Invoice frequency</label>';
 					result = result + ' <select id="InvoiceFrequency" name="InvoiceFrequency">';
 					result = result + ' <option value="">-Select Frequency-</option>';
-					result = result + ' <option ${"Weekly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Weekly</option>';
-					result = result + ' <option ${"Bi-Weekly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Bi-Weekly</option>';
-					result = result + ' <option ${"Semi-Monthly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Semi-Monthly</option>';
-					result = result + ' <option ${"Monthly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Monthly</option>';
+					result = result + ' <option '+selected8+'>Weekly</option>';
+					result = result + ' <option '+selected9+'>Bi-Weekly</option>';
+					result = result + ' <option '+selected10+'>Semi-Monthly</option>';
+					result = result + ' <option '+selected11+'>Monthly</option>';
 					result = result + ' </select>';
 					result = result + ' </div>';
 					
@@ -453,14 +513,6 @@ $(document).ready(function(){
 	
 
 
-<script>
-  function getCalendar() {
-	  $('#DateofJoin').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	  });
-  }
-</script>
-
       
 <script type="text/javascript">
 (function ($) {
@@ -501,14 +553,14 @@ $(document).ready(function(){
 
 
 <script type="text/javascript">
- function validateEmployeeId() {
+ function validateEmployeeId(id,userId) {
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmployeeId != null && EmployeeId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
+		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
 						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
@@ -562,11 +614,11 @@ $(document).ready(function(){
 	   }else{
 		return false;
 	  } 
-	   alert("2");
     }
- 
-   
- 
+    $('body').on('blur', '#editUser_form', function() {
+		$("#editUser_form").showHelpOnFocus();;
+		$("#editUser_form").validateOnBlur(false, validationSettings);  
+	});
 </script>   
 
 	
@@ -574,6 +626,8 @@ $(document).ready(function(){
 function editUserDetails(){
 	$(".user_summary_edit").slideToggle(100);
 	$("#remove_user_id").slideUp(100);
+	$(".error").removeClass("error");
+	$('#editUserDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
 <script>
@@ -618,7 +672,6 @@ function terminateUser(userId){
 
 <script>
 function getConformation(userId,reason){ 
-	alert(reason);
 	 $(".project_error").slideDown(200);
 	 $(".project_inn_mask").fadeIn(200);
 }
