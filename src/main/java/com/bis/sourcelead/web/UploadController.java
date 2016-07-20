@@ -105,8 +105,6 @@ public class UploadController {
 	
 	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
 	public ModelAndView cancelImport() throws IOException {
-		logger.info("+++++++++++++++++++++++++++++++++++++++");
-		logger.info("=======================================================");
 		ModelAndView view = new ModelAndView("redirect:/timesheetexcel/excelDownload");
 		return view;
 		
