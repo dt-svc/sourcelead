@@ -61,6 +61,12 @@ public class EmployeesServiceImpl implements EmployeesService {
 		Boolean flag = employeesDao.validateEmployeeId(employeeId,orgLocationsId);
 		return flag;
 	}
+	
+	@Override
+	public Employees getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(String employeeId, Long userId, Long orgLocationsId)
+			throws Exception {
+		return employeesDao.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(employeeId,userId,orgLocationsId);
+	}
 
 	@Override
 	public List<Employees> getAllEmployees() throws Exception {

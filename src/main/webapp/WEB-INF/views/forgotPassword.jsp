@@ -25,7 +25,7 @@
     <div class="regis_wrap">
     	<div class="signin_wrap">
         	<h1>Forgot Password</h1>
-            <form:form class="login-form clearfix"  id="resetPassword_form"  name="resetPassword_form" method="post" >
+            <form:form class="login-form clearfix"  id="forgetPassword_form"  name="forgetPassword_form" method="post" >
 	            <div id="forgotPasswordDiv">
 	            <span>
 	            	<label>Email/User Name</label>
@@ -71,12 +71,12 @@ function applyInputSlide() {
 
 
 <script type="text/javascript">
-        $('#resetPassword_form')
+        $('#forgetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
-        	    var form = $('#resetPassword_form').serialize();
-        	    form = "testvalue=testvalue&"+form;
-        		var con = JSON.stringify(form);
+        		var form = $('#forgetPassword_form').serializeFormJSON();
+            	var con = JSON.stringify(form);
+			    con = con.replace(/[{}]/g, ""); 
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
         		 $("#submit_button").attr("disabled", "disabled");
@@ -85,8 +85,7 @@ function applyInputSlide() {
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
-                  	  data:con,
+                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}&json="+con,
                     	success: function(result) {
                     		if((result == 'Invalid')){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -105,6 +104,28 @@ function applyInputSlide() {
 			        },  
                 });
             });
+</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
 
    

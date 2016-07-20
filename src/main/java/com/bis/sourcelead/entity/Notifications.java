@@ -13,10 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="NOTIFICATIONS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Notifications {
 	
 	@Id

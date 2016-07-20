@@ -108,7 +108,9 @@
 	            </span>
 	            <span id="companyWebsiteDiv">
 	            	<label>Company website</label>
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();"  field-name="Company Website" data-validation="required validate_domain"    class="signin_fild" />
+
+	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required"    class="signin_fild" />
+
 	                <b></b>
 	            </span>
 	            <div class="clearfix"></div>
@@ -117,7 +119,7 @@
 	            <div>
 	            <span id="emailDiv">
 	            	<label>Company email</label>
-	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();" field-name="Company Email" data-validation="required" class="signin_fild"  />
+	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required" class="signin_fild"  />
 	                <b></b>
 	            </span>
 	            <span>
@@ -142,7 +144,7 @@
 	            </div>
 	            
 		           <div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
-		           <input type="submit" value="Register" id="register_button" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div>   
+		           <input type="submit" value="Register" id="register_button"  class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div>   
 		    </div>
 		   
 		   </form:form>        
@@ -189,10 +191,10 @@ var validationSettings = {
    };  
          $('body').on('submit', '#companyRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
-        		e.preventDefault(); 
-            	var frm = $('#companyRegistration_form').serialize();
-         	    frm = "testvalue=testvalue&"+frm;
-         		var con = JSON.stringify(frm);
+        		e.preventDefault();
+            	var frm = $('#companyRegistration_form').serializeFormJSON();
+            	var con = JSON.stringify(frm);
+			    con = con.replace(/[{}]/g, ""); 
          		var sourceleadUrl ='${sourceleadUrl}';
          		$("#register_button").attr("disabled", "disabled");
          		$( "#register_button" ).addClass('button').val('Processing..');
@@ -200,7 +202,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&json="+con,
                 			  
                 			  
                   	success: function(result) {
@@ -362,6 +364,26 @@ function validateCompanyEmail(){
 		}); 
 	   }
 }
+</script>
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
 <!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>

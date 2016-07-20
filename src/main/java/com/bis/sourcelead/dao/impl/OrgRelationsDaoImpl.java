@@ -76,10 +76,46 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		clientsList=clientsListQuery.setLong("orgLocationId", orgLocationId).list();
 		return clientsList;
 	}
-	
-	
-	
-	
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId cl join fetch cl.org where orgrelation.clientLocationId = :orgLocationId");
+		  
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+	     
+	       OrgRelations orgLocation = null;
+			if(orgRelations != null && !orgRelations.isEmpty())
+			{
+				orgLocation = (OrgRelations) orgRelations.iterator().next();
+			}
+			
+			return orgLocation;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getNumberOfProjectsPerClient(Long orgRelationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*)  from Projects projects where projects.orgRelationId = :orgRelationId";
+		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).uniqueResult();
+		return count;
+	}
+
+	/**
+	 * This method for get projects count for particular client
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="select count(*) from Projects pro where pro.orgRelationId = :orgRelationId and pro.orgLocationsId = :orgLocationId";
+		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		return count;
+	}
 	
 }

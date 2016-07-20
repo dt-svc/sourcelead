@@ -136,7 +136,7 @@
 						</div>
 					<div class="clearfix">
 					<div class="pull-right">
-					<input type="submit" value="Save" class="btn btn-primary mr">
+					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 					</div>
@@ -170,12 +170,17 @@ var validationSettings = {
          $('body').on('submit', '#orgSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-	          	    var frm = $('#orgSettings_form').serialize();
-	          	    frm = "testvalue=testvalue&"+frm;
-	          		var con = JSON.stringify(frm);
+	          		
+	          		var frm = $('#orgSettings_form').serializeFormJSON();
+	            	var con = JSON.stringify(frm);
+				    con = con.replace(/[{}]/g, "");
+	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		var form = $('#orgSettings_form')[0];
 	           		var formData = new FormData(form);
+	           		
+	           		$("#save_button").attr("disabled", "disabled");
+             		$( "#save_button").addClass('button').val('Processing..');
 	          		
 	                  $.ajax({
 	              	      type: "POST",
@@ -204,8 +209,29 @@ var validationSettings = {
          $('#orgSettings_form').validateOnBlur(false, validationSettings); 
             
      
-	</script> 
+</script> 
 
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 
 
 <jsp:include page="masterFooter.jsp" />

@@ -1,5 +1,8 @@
 package com.bis.sourcelead.web;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +24,8 @@ import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
@@ -46,9 +51,15 @@ public class RegistrationController {
 	 
 	
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
-	   public String addCompanyRegistration(Registration registration) {
-			
-			try {
+	   public String addCompanyRegistration(
+				@RequestParam(value="json", required=false) String json ,HttpServletRequest request) {
+
+		try {
+				json = "{"+json+"}";
+				JSONObject jsonObj = new JSONObject(json);
+				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+				Registration registration =  gson.fromJson(json,Registration.class);
+				
 				registrationService.addRegistration(registration);
 				
 				//For User Authentication
@@ -70,7 +81,13 @@ public class RegistrationController {
 	
 	
 	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.GET)
-	   public String resetPasswordWithUserName(Registration registration) {
+	   public String resetPasswordWithUserName(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
+		
+		
+		json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		Registration registration =  gson.fromJson(json,Registration.class);
 		
 		User user = userService.findByUserName(registration.getEmail());
 		if(null != user){
@@ -100,7 +117,12 @@ public class RegistrationController {
 	
 
 	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
-	   public String verifyResetPassword(Registration registration) {
+	   public String verifyResetPassword(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
+		
+		json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		Registration registration =  gson.fromJson(json,Registration.class);
 		
 		//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
 		PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());
