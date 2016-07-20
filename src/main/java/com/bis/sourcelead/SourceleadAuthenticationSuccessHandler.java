@@ -3,6 +3,7 @@ package com.bis.sourcelead;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,6 +28,13 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		
+		Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+         for (Cookie cookie : cookies) {
+             System.out.println(cookie.getName()+"-----"+cookie.getValue());
+          }
+        }
 		response.sendRedirect("/sourcelead/dashboard");
 	}
 }
