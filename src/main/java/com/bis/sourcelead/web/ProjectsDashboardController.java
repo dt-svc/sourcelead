@@ -179,6 +179,10 @@ public class ProjectsDashboardController {
 			 }
 			projects.setClientName(clientList);
 			
+			
+			Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
+			projects.setProjectMembersCount(projectMembersCount.toString());
+			
 		    ObjectMapper mapper = new ObjectMapper();
             String jsonInString = mapper.writeValueAsString(projects);
 			return jsonInString;
@@ -220,7 +224,9 @@ public class ProjectsDashboardController {
 	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		 	
+		    json = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
 		 	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
@@ -237,7 +243,7 @@ public class ProjectsDashboardController {
 				
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
 			}
-			List<ProjectTasks> taskList=tasksService.getAllTasks();
+			Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
 		 	
 			 resultJson = toJSON(taskList);
 			 return resultJson;
@@ -281,7 +287,8 @@ public class ProjectsDashboardController {
 	 
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
 		public @ResponseBody  String addEmployeeForProjectDashboard(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		 	JSONObject jsonObj = new JSONObject(json);
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
 			
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

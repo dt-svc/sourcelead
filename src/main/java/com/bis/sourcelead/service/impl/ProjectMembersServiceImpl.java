@@ -89,6 +89,28 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		// TODO Auto-generated method stub
 		return projectMembersDao.updateProjectMemberStatus(projectMemberId);
 	}
+
+	@Override
+	public Integer getAllProjectMembersCountByProjectId(Long id) throws Exception {
+		
+		Integer projectMembersCount = projectMembersDao.getAllProjectMembersCountByProjectId(id);
+		
+		return projectMembersCount;
+	}
 	
+	/*@Override
+	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
+		
+		Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
+		return approvalStatusCount;
+	}
+	
+	
+	@Override
+	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+		logger.debug("In ProjectMembersServiceImpl class getAllProjectMembersByProjectId method...");
+		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectId(id);
+		return projectMembersList;
+	}*/
 
 }
