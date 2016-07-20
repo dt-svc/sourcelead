@@ -45,8 +45,11 @@ public class UploadController {
 	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile, BindingResult result,
 			Model model, HttpServletRequest request) {
 
-		fileValidator.validate(uploadedFile, result);
-
+		if(uploadedFile.getFile() != null){
+			fileValidator.validate(uploadedFile, result);
+		}else{
+			return "upload/uploadForm";
+		}
 		if (result.hasErrors()) {
 			return "upload/uploadForm";
 		}
