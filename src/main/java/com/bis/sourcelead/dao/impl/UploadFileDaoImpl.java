@@ -217,7 +217,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 									userImport.setEmployeeId(row.getCell(0).toString());
 								}
 								userImport.setFirstName(row.getCell(1).toString());
-								userImport.setLastName(row.getCell(2).toString());
+								//userImport.setLastName(row.getCell(2).toString());// LastName
+								
+								if (row.getCell(2) == null || "".endsWith(row.getCell(2).toString())) {
+									userImport.setLastName("");
+								} else {
+									userImport.setLastName(row.getCell(2).toString());
+								}
 								userImport.setEmailId(row.getCell(3).toString());
 
 								if (row.getCell(4) != null) {
@@ -329,7 +335,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								userImport.setEmployeeId(row.getCell(0).toString());
 							}
 							userImport.setFirstName(row.getCell(1).toString());
-							userImport.setLastName(row.getCell(2).toString());
+						//	userImport.setLastName(row.getCell(2).toString()); // LastName
+							if (row.getCell(2) == null || "".endsWith(row.getCell(2).toString())) {
+								userImport.setLastName("");
+							} else {
+								userImport.setLastName(row.getCell(2).toString());
+							}
 							userImport.setEmailId(row.getCell(3).toString());
 
 							if (row.getCell(4) != null) {
@@ -735,9 +746,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			if (row.getCell(1) == null || "".equals(row.getCell(1).toString())) {
 				return false;
 			}
-			if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
+			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
 				return false;
-			}
+			}*/
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString())
 					|| !validateEmail(row.getCell(3).toString())) {
 				return false;
