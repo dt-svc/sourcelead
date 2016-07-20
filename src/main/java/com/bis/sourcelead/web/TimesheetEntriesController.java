@@ -501,7 +501,7 @@ public class TimesheetEntriesController {
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Draft' class='time_btn time_dra'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' value='Cancel' class='time_btn time_cancel'>");
 				   
@@ -771,7 +771,7 @@ public class TimesheetEntriesController {
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Draft' class='time_btn time_dra'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' value='Cancel' class='time_btn time_cancel'>");
 				   
