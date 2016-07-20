@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +20,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
@@ -57,9 +62,13 @@ public class UserProfileController {
 	   
 	   
 	   @RequestMapping(value = "/saveUserProfile" , method = RequestMethod.POST)
-	   public String saveUserProfile(UserProfile userProfile,MultipartHttpServletRequest request) {
+	   public String saveUserProfile(@RequestParam(value="json", required=false) String json ,MultipartHttpServletRequest request) throws Exception {
 			
-	  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
 		   try {
 			user = userService.saveUserProfile(userProfile, request, user);
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
@@ -72,8 +81,12 @@ public class UserProfileController {
 	   
 	   
 	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
-	   public String passwordSettings(UserProfile userProfile,HttpServletRequest request) {
+	   public String passwordSettings(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   json = "{"+json+"}";
+		   JSONObject jsonObj = new JSONObject(json);
+		   Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		   UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
 		   
 		   if(sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())){
 			   user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));

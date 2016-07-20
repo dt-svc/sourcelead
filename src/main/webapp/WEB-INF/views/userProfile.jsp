@@ -119,7 +119,7 @@
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">
-							  <input type="submit" class="btn btn-primary mr" value="Save">
+							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
 							</div>
 					  </div>
@@ -243,12 +243,17 @@ var validationSettings = {
          $('body').on('submit', '#profileSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var frm = $('#profileSettings_form').serialize();
-            	    frm = "testvalue=testvalue&"+frm;
-            		var con = JSON.stringify(frm);
+            		
+            		var frm = $('#profileSettings_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+            		
             		var sourceleadUrl ='${sourceleadUrl}';
             		var form = $('#profileSettings_form')[0];
              		var formData = new FormData(form);
+             		
+             		$("#profile_submit").attr("disabled", "disabled");
+             		$( "#profile_submit").addClass('button').val('Processing..');
             		
                     $.ajax({
                 	      type: "POST",
@@ -289,10 +294,15 @@ var validationSettings = {
          $('body').on('submit', '#passwordSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var frm = $('#passwordSettings_form').serialize();
-            	    frm = "testvalue=testvalue&"+frm;
-            		var con = JSON.stringify(frm);
+            		
+            		var frm = $('#passwordSettings_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+            		
             		var sourceleadUrl ='${sourceleadUrl}';
+            		
+            		$("#save_button").attr("disabled", "disabled");
+             		$( "#save_button").addClass('button').val('Processing..');
             		
                     $.ajax({
                 	      type: "POST",
@@ -324,5 +334,27 @@ var validationSettings = {
             
      
 	</script> 
+	
+	
+	<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 
 </html>
