@@ -16,6 +16,8 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
@@ -24,6 +26,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class User {
 
 	@Id
@@ -89,12 +92,12 @@ public class User {
 	private String updatedBy;
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
 	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")

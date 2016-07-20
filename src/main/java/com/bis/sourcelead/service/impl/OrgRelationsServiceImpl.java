@@ -35,6 +35,17 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		Collection<OrgRelations> clientssList = orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
 		return clientssList;
 	}
+
+	@Override
+	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		return orgRelationsDao.getClientByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception {
+		return orgRelationsDao.getNumberOfProjectsPerClient(orgLocationId);
+	}
 	
 	
 }

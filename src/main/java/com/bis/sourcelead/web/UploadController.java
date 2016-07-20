@@ -62,7 +62,7 @@ public class UploadController {
 			e.printStackTrace();
 		}
 		model.addAttribute("msg", "successfully uploaded");
-		return "upload/uploadForm";
+		return "redirect:/usersList";
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
@@ -105,8 +105,6 @@ public class UploadController {
 	
 	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
 	public ModelAndView cancelImport() throws IOException {
-		logger.info("+++++++++++++++++++++++++++++++++++++++");
-		logger.info("=======================================================");
 		ModelAndView view = new ModelAndView("redirect:/timesheetexcel/excelDownload");
 		return view;
 		

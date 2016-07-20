@@ -82,6 +82,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Integer validation = projectsDao.projectIdValidation(projectId);
 		return validation;
 	}
+
+	@Override
+	public Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getAllClientProjectsByOrgRelationId method...");
+		Collection<Projects> clientProjectsList = projectsDao.getAllClientProjectsByOrgRelationId(orgRelationId,locationId);
+		return clientProjectsList;
+	}
 	
 	
 }

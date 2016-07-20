@@ -27,7 +27,9 @@
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Projects</h2>
-             <a href="<c:url value='/project'/>"><span><i class="fa fa-bar-chart"></i></span>New Projects</a>
+          </div>
+           <div class="pull-right">
+             <a href="<c:url value='/project'/>">New Project &raquo;</a>
           </div>
         </section>
 
@@ -53,8 +55,26 @@
 			<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>
 	   <!-- Project -->
 	   <div class="timesheet_out">
+	   <c:if test="${empty projectsList}">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="content-area clearfix">
+						<div class="blank-pages">
+						        <p><i class="fa fa-5x fa-bar-chart"></i></p>
+						        <p>No Projects in our organisation... Add Projects</p>
+						 </div>
+					</div>
+				</div>
+			</div> 
+		</c:if>
+		<c:if test="${!empty projectsList}">
 		<div class="project_wrap">
-			<div class="project_wrap_head"><input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i></div>
+			<!-- <div class="project_wrap_head clearfix">
+			<div class="pull-right mt mb mr">
+			<input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i>
+			</div>
+			</div> -->
+			
 		    <div class="project_wrap_table">
 		    	<table>
 		        	<tbody>
@@ -68,34 +88,34 @@
 		                    <th>Status</th>
 		                </tr>
 					</thead>	
-					<c:forEach var="report" items="${projectsList}" varStatus="raId">    
-                        <tr>
-                            <td data-title="Id"><div>${report.id}</div></td>
-                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
-                            <td data-title="Manager">
-                                <div>
-                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
-                                      <c:if test="${raId.index >0}">,</c:if>
-                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
-                                    </c:forEach>
-                            
-                               </div>
-                            </td>
-                            <td data-title="Date"><div>form  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" />   &nbsp; <c:if test="${!empty report.endDate}">  to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" /></c:if></div></td>
-                             <c:if test="${report.client != null}">
-                                 <td data-title="Client"><div>${report.client}</div></td>   
-                              </c:if>
-                              <c:if test="${empty report.client}">
-                                 <td data-title="Client"><div>---</div></td>   
-                              </c:if>
-                            <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
-                        </tr>
-                    </c:forEach> 
+						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
+	                        <tr>
+	                            <td data-title="Id"><div>${report.id}</div></td>
+	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+	                            <td data-title="Manager">
+	                                <div>
+	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
+	                                      <c:if test="${raId.index >0}">,</c:if>
+	                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
+	                                    </c:forEach>
+	                            
+	                               </div>
+	                            </td>
+	                            <td data-title="Date"><div>  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  -  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
+	                             <c:if test="${report.client != null}">
+	                                 <td data-title="Client"><div>${report.client}</div></td>   
+	                              </c:if>
+	                              <c:if test="${empty report.client}">
+	                                 <td data-title="Client"><div>---</div></td>   
+	                              </c:if>
+	                            <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
+	                        </tr>
+	                    </c:forEach> 
 		           </tbody>
 		        </table>
-
 			</div>
 		</div>
+		</c:if>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
 		    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
@@ -507,10 +527,12 @@ function projectEmployee(projectId){
 	result = result + '					<strong>Start date:</strong>';
 	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr !=  'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
 	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
@@ -521,12 +543,14 @@ function projectEmployee(projectId){
 	result = result + '					<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Created date:</strong><span> '+json.endDateStr+'</span><div class="clearfix"></div>';
+	result = result + '					<strong>Created date:</strong><span> '+json.createdDateStr+'</span><div class="clearfix"></div>';
                                                      
 	result = result + '				</div>';
+	if(json.updatedDateStr != null && json.updatedDateStr != '' && json.updatedDateStr != 'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
-	result = result + '				</div>';					
+	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '			</div>';
 	result = result + '      </div>';
@@ -774,11 +798,17 @@ function getTeamMembers(projectId) {
 			{
      	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
+	        		var role = '';
+	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
+	        			role = opt.user.userType; 
+	        		}else{
+	        			role = 'Employee';
+	        		}
 	        		output = output + "<tr>"+
                  "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                  "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                  "<td>"+opt.user.email+"</td>"+
-                 "<td>Employee</td>"+
+                 "<td>"+role+"</td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
 	  
                  "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker'>"+
