@@ -18,6 +18,8 @@ public interface EmployeesDao {
 	public Employees getEmployeeByUserId(Long userId) throws Exception;
 	
 	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception;
+	
+	public Employees getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(String employeeId,Long userId, Long orgLocationsId) throws Exception;
 
 	public List<Employees> getAllEmployees() throws Exception;
 	

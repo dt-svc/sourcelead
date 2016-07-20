@@ -60,16 +60,16 @@
                   <label class="col-md-3"> Date<span class="text-danger">&nbsp; *</span> </label>
 		              <div class="col-md-9">
 		                <div class="row">
-		                  <div class="col-lg-6">
-		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                  <div class="col-lg-6 positionRelative">
+		                    
 		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly">
+		                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 		                    </div>
-		                  </div>
-		                  <div class="col-lg-6">
-		                    <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                  <div class="col-lg-6 positionRelative">
+		                     
 		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly">
-		                    </div>
-		                  </div>
+		                   <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+		                   </div>
 		                  <span class="hidden">Enter Project Id</span> </div>
 		              </div>
                  </div>
@@ -178,7 +178,6 @@
 				                        <option>Monthly</option>
 				                        <option>Yearly</option>
 			                         </select>
-				                    <span class="hidden">Rate Per</span>
 		                       </div>
                           </div>
                      </div>
@@ -318,12 +317,12 @@
             </div>
                   <div class="form-group" id="DayHoursDiv">
                   <label class="col-md-3">Day Hours</label>
-                  <div class="col-md-9">
-                      <div class="input-group">
+                  <div class="col-md-9 positionRelative">
+                      
                           <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
-                          <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                      </div>
-                       <span class="hidden">Day Hours</span>
+                          <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span>
+                      
+                       
                   </div>
                </div>
             </div>
@@ -381,6 +380,7 @@ function roleTypeValidation(id){
 
 <script type="text/javascript">
 function flushProject(){
+	$(".level-second").removeClass("level-second-active");
 	$("#save_project").removeAttr("disabled");
 	$('#ProjectSequeneNumber').val('');
 	 $('#ProjectName').val('');
@@ -584,7 +584,7 @@ function flushProject(){
 	 }
  }
  </script>     
- 
+ dsdds
  
  
  <script type="text/javascript">

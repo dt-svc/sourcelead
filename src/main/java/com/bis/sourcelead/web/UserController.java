@@ -235,6 +235,20 @@ public class UserController {
 			return flag;
 	   }
 	 
+	//to validate existing employee Id
+		 @RequestMapping(value = "/validateExistingEmployeeId" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateExistingEmployeeId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   Employees employees = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(EmployeeId, userId, orgLocations.getId());
+			    System.out.println(employees);
+			    Boolean flag = false;
+			    if(employees == null){
+			    	flag = employeesService.validateEmployeeId(EmployeeId,orgLocations.getId());
+			    }
+			 	
+				return flag;
+		   }
+	 
 	 
 	//to validate Project SequeneNumber
 	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)

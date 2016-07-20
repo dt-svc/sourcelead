@@ -92,7 +92,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		if (!fileName.toLowerCase().endsWith("csv")) {
 			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations);
 		} else {
-			//isFileCreated = parseCSVData(multipartFile,orgLocations);
+			isFileCreated = parseCSVData(multipartFile,orgLocations);
 		}
 		return isFileCreated;
 	}
