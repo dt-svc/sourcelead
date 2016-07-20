@@ -13,6 +13,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface UploadFileDao {
 
-	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception;
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception;
 
 }
