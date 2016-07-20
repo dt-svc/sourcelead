@@ -116,9 +116,9 @@ function applyInputSlide() {
         $('#resetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
-        	    var form = $('#resetPassword_form').serialize();
-        	    form = "testvalue=testvalue&"+form;
-        		var con = JSON.stringify(form);
+        	    var form = $('#resetPassword_form').serializeFormJSON();
+            	var con = JSON.stringify(form);
+			    con = con.replace(/[{}]/g, ""); 
         		var sourceleadUrl ='${sourceleadUrl}';
         		 $("#submit_button").attr("disabled", "disabled");
         		 $( "#submit_button" ).addClass('button').val('Processing..');
@@ -126,8 +126,7 @@ function applyInputSlide() {
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
-                  	  data:con,
+                  	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}&json="+con,
                     	success: function(result) {
                     		if((result == 'Invalid')){
 	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -144,5 +143,26 @@ function applyInputSlide() {
                 });
             });
 </script>
-   
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 </html>

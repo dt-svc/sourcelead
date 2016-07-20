@@ -542,10 +542,10 @@ function addSourceleadTasks(){
 	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 	$("#addTaskCount").html(maxRowNum);
 	
-	
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: "http://localhost:8080/sourcelead/sourceLeadTasks", 
+	        url: sourceleadUrl+"/sourceLeadTasks", 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
@@ -638,7 +638,12 @@ var addtaskcount =null;
 			 if ($('#addClient_form').validate(false, validationSettings)){
 			     var frm = $('#addClient_form').serializeFormJSON();
 			        var con = JSON.stringify(frm);
+			        con = con.replace(/[{}]/g, "");
 			        var sourceleadUrl ='${sourceleadUrl}';
+			        
+			        $("#save_client").attr("disabled", "disabled");
+	         		$( "#save_client" ).addClass('button').val('Processing..');
+			        
 			        $.ajax({
 				    	type: "GET",
 				        url: sourceleadUrl+"/saveOrgRelations?json="+con, 
@@ -686,13 +691,16 @@ var addtaskcount =null;
  if ($('#project_form').validate(false, validationSettings)){
 	 var frm = $('#project_form').serializeFormJSON();
      var con = JSON.stringify(frm);
+     con = con.replace(/[{}]/g, "");
      var sourceleadUrl ='${sourceleadUrl}';
+     
+     
      $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(result) {
 	        	if(result == 'projectDashboard'){
-	        		location.replace("http://localhost:8080/sourcelead/projectDashboard");  
+	        		location.replace(sourceleadUrl+"/projectDashboard");  
 	        	}
 		        
 	        },
@@ -720,11 +728,13 @@ function addEmployee() {
 		 if ($('#addEmployee_form').validate(false, validationSettings)){
 			var frm = $('#addEmployee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
 			var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 				type: "POST",
 				url: sourceleadUrl+"/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
+				    $('#addTeam').modal('hide');
 			    	},
 				});
 				 return true;
@@ -763,11 +773,17 @@ function getTeamMembers() {
         	        var projectStartDate = $('#StartDate').val();
         	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
+	        		var role = '';
+	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
+	        			role = opt.user.userType; 
+	        		}else{
+	        			role = 'Employee';
+	        		}
 	        		output = output + "<tr>"+
                     "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
                     "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
                     "<td>"+opt.user.email+"</td>"+
-                    "<td>Employee</td>"+
+                    "<td>"+role+"</td>"+
                     "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
 	  
                     "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='"+projectStartDate+"' class='form-control clsDatePicker'>"+
@@ -881,6 +897,7 @@ function validateWebsite(){
 </script>
 <script type="text/javascript">
 function flushProject(){
+	$("#save_client").attr("disabled", "disabled");
 	$('#orgName').val('');
 	 $('#companyWebsite').val('');
 	 $(".error").removeClass("error");

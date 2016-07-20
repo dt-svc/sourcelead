@@ -15,6 +15,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
@@ -27,6 +29,7 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Org {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

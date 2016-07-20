@@ -153,10 +153,12 @@ public class ProjectsDashboardController {
 		   OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-		    projects.setCreatedDateStr(Constants.DF_STD.format(projects.getCreatedDate()));
-		    projects.setStartDateStr(Constants.DF_STD.format(projects.getStartDate()));
-		    projects.setEndDateStr(Constants.DF_STD.format(projects.getEndDate()));
-		    projects.setUpdatedDateStr(Constants.DF_STD.format(projects.getUpdatedDate()));
+		    projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));
+		    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		    if(projects.getEndDate() != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    }
+		    projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
 		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
 		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 		    String[] approvers = new String[projectApproverHierarchies.size()];
@@ -183,14 +185,18 @@ public class ProjectsDashboardController {
 	  }
 	 
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
-	 public String updateProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
-		    Projects projects = projectsService.getProjectById(projectId);
+	 public String updateProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
+		
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
+		 Projects projects = projectsService.getProjectById(projectId);
 		    if(fieldName.equalsIgnoreCase("projectName")){
 		    	projects.setProjectName(fieldValue);
 		    }
 		    else if (fieldName.equalsIgnoreCase("description")) {
 		    	projects.setDescription(fieldValue);
-			}     
+			}  
+		    projects.setUpdatedBy(user.getUserCode());
+		    projects.setUpdatedDate(new Date());
 		    projectsService.updateProject(projects);
 		    return null;
 	  }
@@ -286,6 +292,7 @@ public class ProjectsDashboardController {
 			user.setFirstName(jsonObj.getString("employeeFirstName"));
 			user.setLastName(jsonObj.getString("employeeLastName"));
 			user.setEmail(jsonObj.getString("EmailId"));
+			user.setUserType("Employee");
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(users.getUserCode());
 			User  usr=	userService.addUser(user);

@@ -468,15 +468,26 @@ public class TimesheetEntriesController {
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			sb.append("     	<textarea name='weekComment' placeholder='comments here...'></textarea>");
-			sb.append("         <span>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
+			
 			if(!isNullOrEmpty(tsFirst.getFileName())){
-				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'><i class='glyphicon glyphicon-save'></i> "+tsFirst.getFileName()+"Download</a>");
+				sb.append("<strong>");
+				sb.append("<i class='glyphicon glyphicon-save'></i>");
+				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
+				sb.append(" <input type='button' value='"+tsFirst.getFileName()+"'>");
+				sb.append("</a>");
+				
+				if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+				}else{
+					 sb.append("<input class='dele' type='button' value='X' onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\");' >");
+				}
+				sb.append("</strong>");
 			}else{
+				sb.append("<span>");
 				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+				sb.append("</span>");
 			}
-			/*sb.append("         	<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");*/
-			sb.append("         </span>");
+			
 			sb.append("         <div class='clearfix'></div>");
 			sb.append("     </div>");
 			
@@ -722,16 +733,32 @@ public class TimesheetEntriesController {
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
-			sb.append("     	<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
-			sb.append("         <span>");
+			sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+			
+			
 			if(!isNullOrEmpty(tsFirst.getFileName())){
-				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'><i class='glyphicon glyphicon-save'></i> "+tsFirst.getFileName()+"Download</a>");
+				sb.append("<strong>");
+				
+				sb.append("<i class='glyphicon glyphicon-save'></i>");
+				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
+				sb.append(" <input type='button' value='"+tsFirst.getFileName()+"'>");
+				sb.append("</a>");
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			    String startDate1  =  sdf.format(tsFirst.getStartDate());
+			    String endDate1  =  sdf.format(tsFirst.getEndDate());
+				
+			    sb.append("<input class='dele' type='button' value='X' onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
+				
+				sb.append("</strong>");
 			}else{
+				sb.append("<span>");
 				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+				sb.append("</span>");
 			}
-			sb.append("         </span>");
-			sb.append("         <div class='clearfix'></div>");
-			sb.append("     </div>");
+			
+			sb.append("<div class='clearfix'></div>");
+			sb.append("</div>");
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
@@ -814,7 +841,7 @@ public class TimesheetEntriesController {
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
     	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-    	TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);
+    	/*TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);*/
     	
 		String result = "";
 		String resultJson = null;

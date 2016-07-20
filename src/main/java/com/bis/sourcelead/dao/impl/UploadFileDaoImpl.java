@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -194,9 +195,125 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			if (fileName.toLowerCase().endsWith("xlsx")) {
 				workbook = new XSSFWorkbook(fis);
+				
+				int numberOfSheets = workbook.getNumberOfSheets();
+				for (int i = 0; i < numberOfSheets; i++) {
+					Sheet sheet = workbook.getSheetAt(i);
+					int count = 0;
+					Iterator<Row> rowIterator = sheet.iterator();
+					while (rowIterator.hasNext()) {
+						UsersImport userImport = new UsersImport();
+						Row row = rowIterator.next();
+						boolean isValidated = false;
+						if (row.getRowNum() > 0) {
+							isValidated = validateExeclData(row);
+						}
+						if (isValidated) {
+							if (row.getRowNum() > 0) { // Excluding column names
+								logger.info("Reading Row :" + row.getRowNum() + " records");
+								if (row.getCell(0) == null || "".endsWith(row.getCell(0).toString())) {
+									userImport.setEmployeeId("");
+								} else {
+									userImport.setEmployeeId(row.getCell(0).toString());
+								}
+								userImport.setFirstName(row.getCell(1).toString());
+								//userImport.setLastName(row.getCell(2).toString());// LastName
+								
+								if (row.getCell(2) == null || "".endsWith(row.getCell(2).toString())) {
+									userImport.setLastName("");
+								} else {
+									userImport.setLastName(row.getCell(2).toString());
+								}
+								userImport.setEmailId(row.getCell(3).toString());
+
+								if (row.getCell(4) != null) {
+									XSSFCell myCell = (XSSFCell) row.getCell(4);
+									if (myCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+										myCell.setCellType(Cell.CELL_TYPE_STRING);
+										String mobileNumber = myCell.getStringCellValue();
+										if (mobileNumber == null || "".endsWith(mobileNumber)) {
+											userImport.setMobileNumber("");
+										} else {
+											userImport.setMobileNumber(mobileNumber);
+										}
+									}
+								} else {
+									userImport.setMobileNumber("");
+								}
+
+								if (row.getCell(5) != null) {
+									XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+									if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+										myCell5.setCellType(Cell.CELL_TYPE_STRING);
+										String rate = myCell5.getStringCellValue();
+										if (rate == null || "".endsWith(rate)) {
+											userImport.setRate("");
+										} else {
+											userImport.setRate(rate);
+										}
+									}
+								} else {
+									userImport.setRate("");
+								}
+								if (row.getCell(6) == null || "".endsWith(row.getCell(6).toString())) {
+									userImport.setRatePer("");
+								} else {
+									userImport.setRatePer(row.getCell(6).toString());
+								}
+								if (row.getCell(7) == null || "".endsWith(row.getCell(7).toString())) {
+									userImport.setDateString("");
+								} else {
+									userImport.setDateString(row.getCell(7).toString());
+
+								}
+								userImport.setRole(row.getCell(8).toString());
+								if (row.getCell(9) == null || "".endsWith(row.getCell(9).toString())) {
+									userImport.setInvoiceFrequency("");
+								} else {
+									userImport.setInvoiceFrequency(row.getCell(9).toString());
+								}
+								if (row.getCell(10) != null) {
+									XSSFCell myCell10 = (XSSFCell) row.getCell(10);
+									if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+										myCell10.setCellType(Cell.CELL_TYPE_STRING);
+										String dayHours = myCell10.getStringCellValue();
+										if (dayHours == null || "".endsWith(dayHours)) {
+											userImport.setDayHours("");
+										} else {
+											userImport.setDayHours(dayHours);
+										}
+									}
+								} else {
+									userImport.setDayHours("");
+								}
+								 boolean isUserFound = validateDuplicateUser(userImport.getEmailId());
+								 if(isUserFound){
+									 if (row.getRowNum() > 0) {
+											count++;
+										}
+										createXlsxSheet(row, createExcelsheet, count);
+								 }else{
+									 saveBulkUser(userImport,orgLocations);
+								 }
+//								saveBulkUser(userImport, orgLocations);
+							}
+						} else {
+							if (row.getRowNum() > 0) {
+								count++;
+							}
+							createXlsxSheet(row, createExcelsheet, count);
+						}
+					}
+					if (count > 0) {
+						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+						createExcelworkbook.write(fos);
+						fos.close();
+						isFileCreated = "FailureUsersForCheck.xls";
+					}
+				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
 				workbook = (Workbook) new HSSFWorkbook(fis);
-			}
+//			}
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
@@ -218,7 +335,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								userImport.setEmployeeId(row.getCell(0).toString());
 							}
 							userImport.setFirstName(row.getCell(1).toString());
-							userImport.setLastName(row.getCell(2).toString());
+						//	userImport.setLastName(row.getCell(2).toString()); // LastName
+							if (row.getCell(2) == null || "".endsWith(row.getCell(2).toString())) {
+								userImport.setLastName("");
+							} else {
+								userImport.setLastName(row.getCell(2).toString());
+							}
 							userImport.setEmailId(row.getCell(3).toString());
 
 							if (row.getCell(4) != null) {
@@ -286,7 +408,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								 if (row.getRowNum() > 0) {
 										count++;
 									}
-									createXlsxSheet(row, createExcelsheet, count);
+								 createXlsSheet(row, createExcelsheet, count);
 							 }else{
 								 saveBulkUser(userImport,orgLocations);
 							 }
@@ -296,7 +418,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						if (row.getRowNum() > 0) {
 							count++;
 						}
-						createXlsxSheet(row, createExcelsheet, count);
+						createXlsSheet(row, createExcelsheet, count);
 					}
 				}
 				if (count > 0) {
@@ -306,6 +428,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					isFileCreated = "FailureUsersForCheck.xls";
 				}
 			}
+		}
 			fis.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -368,7 +491,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
  * @param rowIndex
  * @throws IOException
  */
-	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex) throws IOException {
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 
@@ -488,6 +611,128 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 		}
 	}
+	
+	
+	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex) throws IOException {
+
+		Row writeRow = createExcelsheet.createRow(rowIndex);
+
+		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue(row.getCell(0).toString());
+		} else {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue("");
+		}
+		if (row.getCell(1) != null && !"".endsWith(row.getCell(1).toString())) {
+			Cell cell1 = writeRow.createCell(1);
+			cell1.setCellValue(row.getCell(1).toString());
+		} else {
+			Cell cell1 = writeRow.createCell(1);
+			cell1.setCellValue("");
+		}
+		if (row.getCell(2) != null && !"".endsWith(row.getCell(2).toString())) {
+			Cell cell2 = writeRow.createCell(2);
+			cell2.setCellValue(row.getCell(2).toString());
+		} else {
+			Cell cell2 = writeRow.createCell(2);
+			cell2.setCellValue("");
+		}
+		if (row.getCell(3) != null && !"".endsWith(row.getCell(3).toString())) {
+			Cell cell3 = writeRow.createCell(3);
+			cell3.setCellValue(row.getCell(3).toString());
+		} else {
+			Cell cell3 = writeRow.createCell(3);
+			cell3.setCellValue("");
+		}
+		if (row.getRowNum() == 0) {
+			Cell cell4 = writeRow.createCell(4);
+			cell4.setCellValue(row.getCell(4).toString());
+		} else {
+			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+				XSSFCell myCell4 = (XSSFCell) row.getCell(4);
+				if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					myCell4.setCellType(Cell.CELL_TYPE_STRING);
+					String mobileNumber = myCell4.getStringCellValue();
+					if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+						Cell cell4 = writeRow.createCell(4);
+						cell4.setCellValue(mobileNumber);
+					}
+				}
+			} else {
+				Cell cell4 = writeRow.createCell(4);
+				cell4.setCellValue("");
+			}
+		}
+		if (row.getRowNum() == 0) {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue(row.getCell(5).toString());
+		} else {
+			if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
+
+				XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+				if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					myCell5.setCellType(Cell.CELL_TYPE_STRING);
+					String rate = myCell5.getStringCellValue();
+					if (rate != null || !"".endsWith(rate)) {
+						Cell cell5 = writeRow.createCell(5);
+						cell5.setCellValue(rate);
+					}
+				}
+			} else {
+				Cell cell5 = writeRow.createCell(5);
+				cell5.setCellValue("");
+			}
+		}
+		if (row.getCell(6) != null && !"".endsWith(row.getCell(6).toString())) {
+			Cell cell6 = writeRow.createCell(6);
+			cell6.setCellValue(row.getCell(6).toString());
+		} else {
+			Cell cell6 = writeRow.createCell(6);
+			cell6.setCellValue("");
+		}
+		if (row.getCell(7) != null && !"".endsWith(row.getCell(7).toString())) {
+			Cell cell7 = writeRow.createCell(7);
+			cell7.setCellValue(row.getCell(7).toString());
+		} else {
+			Cell cell7 = writeRow.createCell(7);
+			cell7.setCellValue("");
+		}
+		if (row.getCell(8) != null && !"".endsWith(row.getCell(8).toString())) {
+			Cell cell8 = writeRow.createCell(8);
+			cell8.setCellValue(row.getCell(8).toString());
+		} else {
+			Cell cell8 = writeRow.createCell(8);
+			cell8.setCellValue("");
+		}
+		if (row.getCell(9) != null && !"".endsWith(row.getCell(9).toString())) {
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue(row.getCell(9).toString());
+		} else {
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue("");
+		}
+		if (row.getRowNum() == 0) {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue(row.getCell(10).toString());
+		} else {
+			if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+
+				XSSFCell myCell10 = (XSSFCell) row.getCell(10);
+				if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					myCell10.setCellType(Cell.CELL_TYPE_STRING);
+					String dayHours = myCell10.getStringCellValue();
+					if (dayHours != null || !"".endsWith(dayHours)) {
+						Cell cell10 = writeRow.createCell(10);
+						cell10.setCellValue(dayHours);
+					}
+				}
+			} else {
+				Cell cell10 = writeRow.createCell(10);
+				cell10.setCellValue("");
+			}
+		}
+	}
 /**
  * Validate Excel data whle storing it into Database
  * @param row
@@ -501,9 +746,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			if (row.getCell(1) == null || "".equals(row.getCell(1).toString())) {
 				return false;
 			}
-			if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
+			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
 				return false;
-			}
+			}*/
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString())
 					|| !validateEmail(row.getCell(3).toString())) {
 				return false;
