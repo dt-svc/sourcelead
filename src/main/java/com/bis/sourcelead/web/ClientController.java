@@ -29,7 +29,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -101,11 +100,15 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			
-			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			model.addObject("clientsList", clientsList);
+	
 			
-			Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
-			model.addObject(projectsList);
+			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			for(OrgRelations orgRelation : clientsList){
+				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
+				orgRelation.setProjectsCont(count);
+			}
+			model.addObject("clientsList", clientsList);
+		
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -268,21 +271,19 @@ public class ClientController {
 		 @RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
 		 public @ResponseBody String getAllClientProjectsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception{ 
 			 
-			 
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-			    
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
 			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
 			 for(Projects p : clientProjectsList){
 				 p.setProjectName(p.getProjectName());
+				 p.setStartDateStr(p.getStartDateStr());
 				 clientProjectsArrList.add(p);
 			 }
 			 ObjectMapper mapper = new ObjectMapper();
 			 String jsonInString = mapper.writeValueAsString(clientProjectsArrList);
 			 
 			 return jsonInString;
-		  }
+		    }
 		
 		
 		private String toJSON(Object obj){
@@ -294,6 +295,8 @@ public class ClientController {
 	        return xstream.toXML(obj);
 	    }
 		
-
+		protected static boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
 	
 }
