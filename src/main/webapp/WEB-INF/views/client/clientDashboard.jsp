@@ -70,7 +70,7 @@
                 <tr>
                     <td><div class="proj_show" onclick="clientSideBar('${report.clientLocationId.id}');">${report.clientLocationId.org.orgName}<i class="fa fa-binoculars"></i></div></td>
                     <td><div>${report.clientLocationId.org.webSite}</div></td>
-                    <td><div>${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
+                    <td><div>${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
                     <td><div>${report.clientLocationId.email}</div></td>
                     <td><div>${report.clientLocationId.phone}</div></td>
                     <td><div>${report.projectsCont}</td>
@@ -131,7 +131,7 @@ function clientProjectDetails(clientId){
 	            var result = "";
 	
 				result = result + '					<div class="project_tabs_inn_head">';
-				result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>';
+				/* result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>'; */
 				result = result + '					</div>';
 				result = result + '				    <div class="project_tabs_inn_table">';
 				result = result + '				<table>';
