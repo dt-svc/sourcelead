@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -105,6 +107,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private ActionRolesService actionRolesService;
+	
+	
 	@Override
 	public void addRegistration(Registration registration) throws Exception {
 		
@@ -157,6 +164,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		saveProject(registration, orgLocations, user, employee);
+		
+		saveActionRoles(org,orgLocations,user);
 		
 	}
 	
@@ -270,6 +279,28 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employees.setCreatedDate(new Date());
 		return employees;
 	}
+	
+	
+	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user) throws Exception {
+		 
+		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L);
+		 if(actionRolesList != null){
+			 for(ActionRoles actionRoles : actionRolesList){
+				 ActionRoles userActionroles = new ActionRoles();
+				 userActionroles.setTabActions(actionRoles.getTabActions());
+				 userActionroles.setRoles(actionRoles.getRoles());
+				 userActionroles.setIsNotify(actionRoles.getIsNotify());
+				 userActionroles.setOrg(org);
+				 userActionroles.setOrgLocations(orgLocations);
+				 userActionroles.setCreatedDate(new Date());
+				 userActionroles.setCreatedBy(user.getUserCode());
+				 actionRolesService.addActionRoles(userActionroles);
+			 }
+		 }
+		 
+		 
+		 
+	 }
 	
 	
 	private String convertWebsite(String website){
