@@ -1,17 +1,18 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="resources/js/moment.min.js"></script>
-<script src="resources/js/bootstrap-datetimepicker.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>	
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>        
-    
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
  <div class="wraper"> 
       <!-- Content Area -->
       <section class="content-wraper">
@@ -198,65 +199,71 @@ $(document).ready(function(){
 				}
 				
 				result = result + ' <div class="user_summary_edit">';
-				result = result + ' <form:form id="createUser_form"  name="createUser_form" method="post">';
+				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" data-validation="required validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Last name</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <input type="text" value="'+json.user.lastName+'" name="LastName" data-validation="validate_length length2-100" data-validation-optional="true">';
 					result = result + ' </div>';
 					
-					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employed Id</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <input type="text" value="'+json.employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId();">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Phone number</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <input type="text" value="'+json.user.mobilePhone+'" name="PhoneNumber" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed">';
-					result = result + ' <select class="rate_sele">';
+					result = result + ' <input type="text" class="rate_filed" value="'+json.rate+'" id="Rate"  name="Rate" data-validation="validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer">';
 					result = result + ' <option value="">-Rate Per-</option>';
-					result = result + ' <option>Hourly</option>';
-					result = result + ' <option>Daily</option>';
-					result = result + ' <option>Weekly</option>';
-					result = result + ' <option>Bi-Weekly</option>';
-					result = result + ' <option>Semi-Monthly</option>';
-					result = result + ' <option>Monthly</option>';
-					result = result + ' <option>Yearly</option>';
+					result = result + ' <option ${"Hourly" == "'+json.ratePer+'" ? "selected" : ''}>Hourly</option>';
+					result = result + ' <option ${"Daily" == "'+json.ratePer+'" ? "selected" : ''}>Daily</option>';
+					result = result + ' <option ${"Weekly" == "'+json.ratePer+'" ? "selected" : ''}>Weekly</option>';
+					result = result + ' <option ${"Bi-Weekly" == "'+json.ratePer+'" ? "selected" : ''}>Bi-Weekly</option>';
+					result = result + ' <option ${"Semi-Monthly" == "'+json.ratePer+'" ? "selected" : ''}>Semi-Monthly</option>';
+					result = result + ' <option ${"Monthly" == "'+json.ratePer+'" ? "selected" : ''}>Monthly</option>';
+					result = result + ' <option ${"Yearly" == "'+json.ratePer+'" ? "selected" : ''}>Yearly</option>';
 					result = result + ' </select>';
 					result = result + ' </div>';	
 					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" onClick="getCalendar();" readonly="readonly">';
 					result = result + ' </div>';	
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Invoice frequency</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <select id="InvoiceFrequency" name="InvoiceFrequency">';
+					result = result + ' <option value="">-Select Frequency-</option>';
+					result = result + ' <option ${"Weekly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Weekly</option>';
+					result = result + ' <option ${"Bi-Weekly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Bi-Weekly</option>';
+					result = result + ' <option ${"Semi-Monthly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Semi-Monthly</option>';
+					result = result + ' <option ${"Monthly" == "'+json.InvoiceFrequency+'" ? "selected" : ''}>Monthly</option>';
+					result = result + ' </select>';
 					result = result + ' </div>';
 					
-					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
-					result = result + ' <input type="text">';
+					result = result + ' <input type="text" value="'+json.dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" type="button"> <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails();" type="button">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails();" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
-					result = result + ' </form:form>';
+					result = result + ' </form>';
 				result = result + ' </div>';				
 				
 				result = result + '	  <div class="clearfix"></div>';
@@ -444,14 +451,123 @@ $(document).ready(function(){
 	
     </body>
 	
+
+
 <script>
-function date(){
-	$('#hireDate').datepicker({
+  function getCalendar() {
+	  $('#DateofJoin').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	  });
-}
+  }
 </script>
 
+      
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+ function validateDayHours() {
+	 var DayHours = document.getElementById("DayHours").value; 
+	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+	if(DayHours > 24){
+		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
+	}else{
+		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
+	}
+	
+ }
+</script>  
+
+
+<script type="text/javascript">
+ function validateEmployeeId() {
+	 var EmployeeId = document.getElementById("EmployeeId").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
+	 if(EmployeeId != null && EmployeeId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
+		        success: function(data) {
+		        	if(data == true){
+						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
+						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	} 
+		        },
+		    });
+	 }
+ }
+ </script>
+
+
+<script type="text/javascript">
+ function updateUser(userId) {
+	 var Rate = document.getElementById("Rate").value; 
+	 if(Rate != null && Rate != ""){
+		 $('#RatePer').removeAttr('data-validation-optional');
+		 $('#RatePer').attr("data-validation","required"); 
+	 }else{
+		 $('#RatePer').removeAttr('data-validation');
+		 $('#RatePer').attr("data-validation-optional","true"); 
+	 }
+	var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	  if ($('#editUser_form').validate(false, validationSettings)){ 
+		    var frm = $('#editUser_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#update_user").attr("disabled", "disabled");
+     		$( "#update_user" ).addClass('button').val('Processing..');
+	        $.ajax({
+		    	type: "POST",
+		    	url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+con+"&userId="+userId, 
+		        success: function(result) {
+		        	userDetails(userId);
+			        
+		        },
+		    });
+	        return true;
+		
+	   }else{
+		return false;
+	  } 
+	   alert("2");
+    }
+ 
+   
+ 
+</script>   
 
 	
 <script>

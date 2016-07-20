@@ -1,12 +1,14 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,7 +156,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 String resultJson = null;   
 		 Employees employee = employeesService.getEmployeeByUserId(userId);
 		 if(employee.getHireDate() != null){
-			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_STD.format(employee.getHireDate())); 
+			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
 		 }
 		 resultJson = toJSON(employee);
 		 return resultJson;
@@ -186,6 +188,38 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 					userService.addUser(user);
 				}
 			
+				return "success";
+		}
+	 
+	 
+	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+		public @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId) throws Exception{
+				User user = userService.getUserById(userId);
+				json = "{"+json+"}";
+			    JSONObject jsonObj = new JSONObject(json);
+				if(user != null){
+					user.setFirstName(jsonObj.getString("FirstName"));
+					user.setLastName(jsonObj.getString("LastName"));
+					user.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					userService.addUser(user);
+				}
+			    Employees employees = employeesService.getEmployeeByUserId(userId);
+			    if(employees !=  null){
+			    	employees.setEmployeeId(jsonObj.getString("EmployeeId"));
+					employees.setRate(jsonObj.getString("Rate"));
+					employees.setRatePer(jsonObj.getString("RatePer"));
+					employees.setDailyHours(jsonObj.getString("DayHours"));
+					employees.setInvoiceFrequency(jsonObj.getString("InvoiceFrequency"));
+					if(jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))){
+						try {
+							   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+							   employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
+							} catch (Exception e) {
+							  e.printStackTrace();
+							}
+					}
+					employeesService.updateEmployee(employees);
+			    }
 				return "success";
 		}
 	
