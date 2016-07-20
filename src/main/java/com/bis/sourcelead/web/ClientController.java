@@ -113,7 +113,7 @@ public class ClientController {
 			}
 			sessionData.setNav(Constants.Clients);
 			request.getSession().setAttribute("sessionData",sessionData);
-			
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
 	 

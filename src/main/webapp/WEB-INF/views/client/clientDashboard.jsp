@@ -175,12 +175,10 @@ function clientProjectDetails(clientId){
 
 <script type="text/javascript">
 function clientDetails(clientId){
-    
 	var sourceleadUrl ='${sourceleadUrl}';
-	
-	  $.ajax({
+ $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+clientId, 	   
+		   	url: "http://localhost:8080/sourcelead/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+clientId, 	   
 		    		   success: function(data) {
 		    			     var json = JSON.parse(data);
 		    				 var result = "";
@@ -223,19 +221,6 @@ function clientDetails(clientId){
 		    		   
 		    		   }
 	  });
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }
 </script>
 
