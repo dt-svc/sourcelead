@@ -178,4 +178,21 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return result;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllProjectMembersCountByProjectId(Long id) {
+		
+		    Session session = this.sessionFactory.getCurrentSession();
+		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id";
+		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query.toString()).setLong("id", id).list();
+		    
+		    Integer count = null;
+			if(ProjectMembersCount != null && !ProjectMembersCount.isEmpty()){
+				count = ProjectMembersCount.get(0).intValue();
+			}
+			
+		    return count;
+		    
+	}
+
 }

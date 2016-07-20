@@ -108,7 +108,7 @@
 	            </span>
 	            <span id="companyWebsiteDiv">
 	            	<label>Company website</label>
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();"  field-name="Company Website" data-validation="required"    class="signin_fild" />
+	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();"  field-name="Company Website" data-validation="required validate_domain"    class="signin_fild" />
 	                <b></b>
 	            </span>
 	            <div class="clearfix"></div>

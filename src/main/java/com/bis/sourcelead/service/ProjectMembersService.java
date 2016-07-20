@@ -26,4 +26,8 @@ public interface ProjectMembersService {
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 
 	public Integer updateProjectMemberStatus(Long projectMemberId);
+	
+	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
+	
+	
 }

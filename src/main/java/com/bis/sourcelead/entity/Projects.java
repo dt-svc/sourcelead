@@ -129,6 +129,9 @@ public class Projects {
     @Transient
     private String client;
     
+    @Transient
+    private String projectMembersCount;
+    
     
     @Transient
     Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList;
@@ -383,5 +386,12 @@ public class Projects {
 	public void setClient(String client) {
 		this.client = client;
 	}
-	
+
+	public String getProjectMembersCount() {
+		return projectMembersCount;
+	}
+
+	public void setProjectMembersCount(String projectMembersCount) {
+		this.projectMembersCount = projectMembersCount;
+	}
 }

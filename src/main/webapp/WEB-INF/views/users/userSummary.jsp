@@ -547,7 +547,7 @@ $(document).ready(function() {
 		$(".project_inn_mask").fadeOut(200);
     });
 });
-</script>
+</script>http://localhost:8080/sourcelead/project
 
 
 
