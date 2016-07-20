@@ -357,6 +357,12 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public Collection<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception {
+		// TODO Auto-generated method stub
+		return userDao.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(userId,orgLocationsId);
+	}
+	
+	@Override
 	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
 		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationId(orgLocationsId);

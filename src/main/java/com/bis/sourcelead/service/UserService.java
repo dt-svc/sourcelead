@@ -31,6 +31,8 @@ public interface UserService  {
 	
 	public Collection<User> getUsersByUserRoles() throws Exception;
 	
+	public Collection<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
+	
 	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
 	
 }	

@@ -13,6 +13,7 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
@@ -78,13 +79,13 @@
               <label class="col-md-3" for="Project Manager">Manager<span class="text-danger">&nbsp; *</span></label>
               <div class="col-md-9">
               <div class="form-icon-min">
-                <select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required">
+                <select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
                   <option value="">-Select Manager-</option>
                       <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
+	                     <option value="${option.id}">${option.firstName} ${option.lastName}</option>
 	                  </c:forEach>
                 </select>
-                    <span class="btn btn-default formic1 addLevel">Add Level-II</span>
+                    <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>
                     </div>
                     <span class="hidden">Select Project Manager</span>
                 </div>
@@ -287,7 +288,7 @@
   						   <option value="${option.id}">${option.projectName}</option>
 				        </c:forEach>
                       </select>
-                      <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addProject"></i> </div>
+                      <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();getApproversLevel1();" data-target="#addProject"></i> </div>
                     <span class="hidden">Select Project</span>
                     
                     
@@ -355,7 +356,94 @@ function roleTypeValidation(id){
 	document.getElementById("roleValue").value = id.value;
 } 
 </script>      
-      
+
+<script type="text/javascript">
+function getApproversLevel1(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getAllApprovers?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output + "<option value=''>-Select Manager-</option>"; 
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			}
+        	$("#level1Manager").empty();
+	        $("#level1Manager").append(output);
+        },
+        error: function(e){
+            
+        }
+    });
+	
+} 
+</script> 
+
+<script type="text/javascript">
+function getApproversLevel2(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getAllApprovers?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output + "<option value=''>-Select Manager-</option>"; 
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			}
+	        $("#level2Manager").empty();
+	        $("#level2Manager").append(output);
+        },
+        error: function(e){
+            
+        }
+    });
+	
+} 
+</script>
+
+<script type="text/javascript">
+function getLevel2Approvers(){
+	var currentApproverId = document.getElementById("level1Manager").value;
+	getChildLevel1Approvers(currentApproverId);
+} 
+</script> 
+
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+	 }
+} 
+</script> 
       
 <script type="text/javascript">
 (function ($) {
@@ -584,8 +672,7 @@ function flushProject(){
 	 }
  }
  </script>     
- dsdds
- 
+
  
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
