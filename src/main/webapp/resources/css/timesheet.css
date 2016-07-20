@@ -512,7 +512,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->
 .project-date:focus {
     border-bottom:1px solid #368ee0;
     }   
-.project_wrap_table {}  
+.project_wrap_table {
+    max-height:450px; overflow:hidden; overflow-y:auto; width:100%;
+}   
 .project_wrap_table table {
     width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
     }
@@ -895,7 +897,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     z-index:1200;
     }
 .user_details_cta {
-    width:65%; float:left; padding:0px 0px 0px 5%; position:relative; min-height:330px;
+    width:65%; float:left; padding:0px 0px 0px 5%; position:relative; min-height:370px;
 }
 .user_details_cta_img {
     width:200px; float:left; background-color:#eef1fc; padding-bottom:15px;
@@ -965,6 +967,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
  
  
 .user_summ_wrap_table {
+    width:100%; max-height:440px; overflow-y:auto;
 }   
 .user_summ_wrap_table table {
     width:100%; font-size:14px; font-weight:400; border:none;
@@ -990,7 +993,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .user_summ_wrap_table {
     width:100%; font-size:13px; border:none; overflow: hidden; background-color:transparent;
-    font-weight:500; color:#454545;
+    font-weight:500; color:#454545; overflow-y: auto;
     }   
 .user_summ_wrap_table:focus {
     font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5);
@@ -1010,7 +1013,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
 }
 .user_summary_edit_cta {
-    float:left; width:46%; margin:0.5% 2%;
+    float:left; width:46%; margin:0.5% 2%; position:relative; padding-bottom:8px;
 }
 .user_summary_edit_cta label {
     width:100%; margin:0px; padding:0px 0px 5px 0px; font-size:13px; font-weight:500; color:#454545;
@@ -1032,6 +1035,10 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 }
 .user_summary_edit_cta input:focus, .user_summary_edit_cta select:focus {
     box-shadow:0px 0px 2px rgba(48,129,203,0.9); outline:none; 
+}
+.user_summary_edit_cta p {
+    width:100%; margin:0px 0px; padding:0px 0px !important; text-align:left; font-size:11px; color:red; position:absolute; left:0px;
+    bottom:-7px; font-weight:400;
 }
  
 .remove_user_pop  {
@@ -1171,4 +1178,22 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
  
 .project_wrap  .timesheet_head ul li span {display:inline-block;}
  
+}
+ 
+.time_pop {
+    position:absolute !important; bottom:35px;max-height:100px; left:0px; display:black !important; margin:0px auto; width:310px; right:0px;
+    z-index:10001; top:80px; text-align:right;
+}
+.time_pop p {
+    position:relative; background-color:#FFF; width:100% !important; padding:15px 15px 15px 15px!important; font-weight:400;
+    color:#333 !important; font-size:14px !important; box-shadow:0px 0px 5px rgba(0,0,0,0.5); text-align:left;
+}
+.time_pop p:after {
+    top: 100%; left: 50%; border: solid transparent; content: " ";height: 0; width: 0; position: absolute;
+    border-color: rgba(136, 183, 213, 0); border-top-color:#FFF; border-width: 10px;
+    margin-left: -10px;
+}
+.time_pop p b {
+    cursor:pointer; display:inline-block; padding:2px; margin:0px 0px 0px 5px; color:red; position:absolute; right:10px;
+    top:2px;
 }
