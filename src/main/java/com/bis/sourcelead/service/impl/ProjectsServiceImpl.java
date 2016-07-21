@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 		logger.debug("In ProjectsServiceImpl class getAllClientProjectsByOrgRelationId method...");
 		Collection<Projects> clientProjectsList = projectsDao.getAllClientProjectsByOrgRelationId(orgRelationId,locationId);
 		return clientProjectsList;
+	}
+
+	@Override
+	public Integer updateStartDateOfProjectId(Date startDate , Long projectId) {
+		return projectsDao.updateStartDateOfProjectId(startDate,projectId);
+	}
+
+	@Override
+	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
+		return projectsDao.updateEndDateOfProjectId(endDate,projectId);
 	}
 	
 	

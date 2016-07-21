@@ -2,10 +2,12 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -203,6 +206,27 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		List<Projects> clientProjectsList =  session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("locationId", locationId).list();
 		
 		return clientProjectsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateStartDateOfProjectId(Date startDate ,Long projectId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update Projects pj set pj.startDate =:startDate where pj.id = :projectId");
+		query.setLong("projectId", projectId);
+		query.setDate("startDate", startDate);
+		int result = query.executeUpdate();
+		return result;	
+	}
+
+	@Override
+	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update Projects pj set pj.endDate =:endDate where pj.id = :projectId");
+		query.setLong("projectId", projectId);
+		query.setDate("endDate", endDate);
+		int result = query.executeUpdate();
+		return result;
 	}
 
 }

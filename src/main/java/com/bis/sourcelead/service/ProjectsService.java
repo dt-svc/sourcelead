@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.Date;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -28,6 +29,10 @@ public interface ProjectsService {
 	Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception;
 	
 	Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId,Long locationId) throws Exception;
+
+	public Integer updateStartDateOfProjectId(Date startDate, Long projectId);
+
+	public Integer updateEndDateOfProjectId(Date endDate, Long projectId);
 	
 
 }
