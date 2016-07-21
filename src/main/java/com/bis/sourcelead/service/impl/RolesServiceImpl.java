@@ -28,4 +28,11 @@ public class RolesServiceImpl implements RolesService{
 		return rolesDao.getRoles();
 	}
 
+
+	@Override
+	public Roles getRolesByDisplayName(String displayName) throws Exception {
+		
+		return rolesDao.getRolesByDisplayName(displayName);
+	}
+
 }

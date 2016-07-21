@@ -3,18 +3,18 @@ package com.bis.sourcelead.web;
 
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -33,14 +33,17 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
+@PropertySource(value = { "classpath:config/application.properties" })
 public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 
 	
-	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	
 	
@@ -48,6 +51,7 @@ public class DashboardController {
 	public ModelAndView projects() throws Exception {
 
 			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("/dashboard");
 			return model;
 	}

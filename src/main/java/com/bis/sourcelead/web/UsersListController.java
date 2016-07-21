@@ -32,6 +32,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
@@ -64,7 +65,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	UserService userService;
 
-	
+	@Autowired
+	ProjectsService projectsService;	
 	
 	
 	@RequestMapping(value = "/usersList")
@@ -95,9 +97,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		return model;
 
 	}
-	
-	
-	
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
@@ -112,7 +111,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
 		try {
 			
-			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(userRole)){
+			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId());
 			}
 			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
@@ -225,6 +224,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 				return "success";
 		}
 	
+		//to get a start date and end date of the project
+	 @RequestMapping(value = "/getStartAndEndOfProject" , method = RequestMethod.POST)
+	 public @ResponseBody String getStartAndEndOfProject(@RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+		 	String resultJson = null;
+		 	
+		 	Projects projects = projectsService.getProjectById(projectId);
+			if(projects.getStartDate()!=null){
+				projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
+			}
+			if(projects.getEndDate()!=null){
+				projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
+			}
+
+			resultJson = toJSON(projects);
+			return resultJson;
+	   }
+	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

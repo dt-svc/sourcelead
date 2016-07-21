@@ -24,10 +24,10 @@ public interface ProjectMembersService {
     List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
-
-	public Integer updateProjectMemberStatus(Long projectMemberId);
 	
 	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
+	
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 	
 	
 }

@@ -207,7 +207,7 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'home')){
-			        		location.replace(sourceleadUrl+"/dashboard");  
+			        		location.replace(sourceleadUrl+"/loginSession");  
 			        	}
 			        	
 			        },  

@@ -64,7 +64,7 @@ public class LoginSessionController {
 	@Autowired 
 	private NotificationsService notificationsService;
 	
-	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
+	@RequestMapping(value = "/loginSession" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
