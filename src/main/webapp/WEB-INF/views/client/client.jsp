@@ -120,6 +120,7 @@
 															<th>Project Name</th>
 															<th>Manager</th>
 															<th>Start Date</th>
+															<th>End Date</th>
 															<th>Action</th>
 														</tr>
 													</table>
@@ -443,16 +444,19 @@
 		id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
 </div>
 
-<!-- <div id="divTaskTd5" style="display:none; float:left;">
+<div id="divTaskTd5" style="display:none; float:left;">
         <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/><span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
-      </div> -->
+      </div> 
 
-<div id="divTaskTd5" style="display: none; float: left;">
+<div id="divTaskTd6" style="display: none; float: left;">
 	<span><a title="Edit" href="javascript:void(0)"
 		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
 	<span><a title="Remove" href="javascript:void(0)"
 		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
+
+
+
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
 <script type="text/javascript">
@@ -514,26 +518,28 @@
 		var mgr = projectManager.split("&");
 		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,(mgr[0]));
 		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONName/g,(mgr[1]));
+				
 		cell1.innerHTML = divTsTd2Str;
 
 		var cell1 = row.insertCell(3);
 		var divTsTd2Str = document.getElementById("divTaskTd4").innerHTML;
 		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/PROJECTSTARTDATEVALUE/g,
-				(projectStartDate).concat(" " + "to" + " " + projectEndDate));
+		divTsTd2Str = divTsTd2Str.replace(/PROJECTSTARTDATEVALUE/g,(projectStartDate));
 		cell1.innerHTML = divTsTd2Str;
 
-		/* 	var cell1 = row.insertCell(4);
-			var divTsTd2Str = document.getElementById("divTaskTd5").innerHTML;
-			divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTsTd2Str = divTsTd2Str.replace(/PROJECTENDDATEVALUE/g, (projectEndDate));
-			cell1.innerHTML = divTsTd2Str; */
+		var cell1 = row.insertCell(4);
+		var divTsTd2Str = document.getElementById("divTaskTd5").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/PROJECTENDDATEVALUE/g, (projectEndDate));
+		cell1.innerHTML = divTsTd2Str; 
 
-		var cell2 = row.insertCell(4);
-		var divTsTd3Str = document.getElementById("divTaskTd5").innerHTML;
+		var cell2 = row.insertCell(5);
+		var divTsTd3Str = document.getElementById("divTaskTd6").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell2.innerHTML = divTsTd3Str;
 
+	
+		
 		$("#projectId").val('');
 		$("#projectName").val('');
 		$("#projectManager").val('');
@@ -555,9 +561,10 @@
 	function editTask(rowId) {
 		var updateProjectId = $("#" + rowId + "projectId").val();
 		var updateTaskName = $("#" + rowId + "projectName").val();
-		var updateTaskDescription = $("#" + rowId + "projectManager").val();
+		var updateprojectManager = $("#" + rowId + "projectManager").val();
+		alert("======="+updateprojectManager);
 		var updateProjectStartDate = $("#" + rowId + "projectStartDate").val();
-		/*  var updateProjectEndDate = $("#"+rowId+"projectEndDate").val();  */
+		var updateProjectEndDate = $("#"+rowId+"projectEndDate").val(); 
 
 		$("#projectId").val('');
 		$("#projectName").val('');
@@ -567,9 +574,9 @@
 		$("#addTaskText").html('Update Task');
 		$("#projectId").val(updateProjectId);
 		$("#projectName").val(updateTaskName);
-		$("#projectManager").val(updateTaskDescription);
+		$("#projectManager").val(updateprojectManager);
 		$("#projectStartDate").val(updateProjectStartDate);
-		/*  $("#projectEndDate").val(updateProjectEndDate); */
+		$("#projectEndDate").val(updateProjectEndDate);
 		$("#taskId").val(rowId);
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
@@ -578,7 +585,7 @@
 
 <script type="text/javascript">
 	function updateTask(rowId) {
-		/* $("#"+rowId+"projectManager").val($("#projectManager").val()); */
+		$("#"+rowId+"projectManager").val($("#projectManager").val()); 
 		$("#" + rowId + "projectIdValue").html($("#projectId").val());
 
 		$("#" + rowId + "projectNameValue").html($("#projectName").val());

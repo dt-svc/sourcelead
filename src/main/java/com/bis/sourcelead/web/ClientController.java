@@ -191,15 +191,11 @@ public class ClientController {
 //				orgRelations.setId(id);
 				
 				String startDateString = jsonObj.getString(c+"projectStartDate");
-				DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
-			    Date startDate = null;
-			    try {
-			        startDate = df.parse(startDateString);
-			        String newDateString = df.format(startDate);
-			    } catch (ParseException e) {
-			        e.printStackTrace();
-			    }
+				String endDateString = jsonObj.getString(c+"projectEndDate");//projectEndDate
+			    Date startDate = getDateFormat(startDateString); 
+			    Date endDate = getDateFormat(endDateString);
 				project.setStartDate(startDate);
+				project.setEndDate(endDate);
 				projectApproverHierarchy.setProjectId(project);
 				User approverUserId1 = new User();
 		    	approverUserId1.setId(Long.parseLong(jsonObj.getString(c+"projectManager")));
@@ -228,7 +224,22 @@ public class ClientController {
 	   }
 	
 
-	//to validate Project SequeneNumber
+	private Date getDateFormat(String startDateString) {
+		
+		Date formatedDate = null;
+	    try {
+	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	formatedDate = df.parse(startDateString);
+//	        String newDateString = df.format(startDate);
+	    } catch (ParseException e) {
+	        e.printStackTrace();
+	    }
+		
+		return formatedDate;
+	}
+
+
+		//to validate Project SequeneNumber
 		 @RequestMapping(value = "/validateProjectSequeneNumberId" , method = RequestMethod.POST)
 		 public @ResponseBody  Boolean validateProjectSequeneNumberById(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
