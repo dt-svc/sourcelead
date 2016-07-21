@@ -95,9 +95,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		return model;
 
 	}
-	
-	
-	
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
