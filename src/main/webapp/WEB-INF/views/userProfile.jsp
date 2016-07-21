@@ -34,7 +34,7 @@
       <div class="pull-left">
         <h2>Account Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/home'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">
@@ -119,7 +119,7 @@
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">
-							  <input type="submit" class="btn btn-primary mr" value="Save">
+							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
 							</div>
 					  </div>
@@ -162,7 +162,7 @@
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/home'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 				  </div>
 				  </form:form>
@@ -243,12 +243,17 @@ var validationSettings = {
          $('body').on('submit', '#profileSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var frm = $('#profileSettings_form').serialize();
-            	    frm = "testvalue=testvalue&"+frm;
-            		var con = JSON.stringify(frm);
+            		
+            		var frm = $('#profileSettings_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+            		
             		var sourceleadUrl ='${sourceleadUrl}';
             		var form = $('#profileSettings_form')[0];
              		var formData = new FormData(form);
+             		
+             		$("#profile_submit").attr("disabled", "disabled");
+             		$( "#profile_submit").addClass('button').val('Processing..');
             		
                     $.ajax({
                 	      type: "POST",
@@ -289,10 +294,15 @@ var validationSettings = {
          $('body').on('submit', '#passwordSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var frm = $('#passwordSettings_form').serialize();
-            	    frm = "testvalue=testvalue&"+frm;
-            		var con = JSON.stringify(frm);
+            		
+            		var frm = $('#passwordSettings_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+            		
             		var sourceleadUrl ='${sourceleadUrl}';
+            		
+            		$("#save_button").attr("disabled", "disabled");
+             		$( "#save_button").addClass('button').val('Processing..');
             		
                     $.ajax({
                 	      type: "POST",
@@ -301,7 +311,7 @@ var validationSettings = {
                       	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
                         	success: function(result) {
     			        	 if(result == 'home'){
-    			        		location.replace(sourceleadUrl+"/home");  
+    			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
                  		         document.getElementById("currentPassword").setAttribute('class','error form-control');
@@ -324,5 +334,27 @@ var validationSettings = {
             
      
 	</script> 
+	
+	
+	<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 
 </html>

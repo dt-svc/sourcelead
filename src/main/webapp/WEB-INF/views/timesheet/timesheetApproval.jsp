@@ -778,6 +778,7 @@ function saveMyTimesheet(status){
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
         		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+        		    	  approvalList();
         		      }
         	      	  
         	    }); 
@@ -998,8 +999,8 @@ $(document).click(function(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 8; p++){  
-		 for (var j = 1; j < 8; j++){
+	 for (var p = 1; p < 200; p++){  
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -1054,8 +1055,86 @@ function grandTotal(){
 
 </script>
 
+<!-- <script>
+function checkHours(){
+	 var result = "";		
+	 var total;
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+	 for (var p = 1; p < 200; p++){  
+		 for (var j = 1; j < 10; j++){
+			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		total = hours +":"+ minutes;
+  }  
+	 var time = total.split(':'); 
+	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
+	    	 
+	 }else{
+	    	if(i == '1'){
+	    		result = result+"MonDay ,";
+	    	}
+	    	if(i == '2'){  
+	    		result = result+"TuesDay ,";
+	    	}
+	    	if(i == '3'){  
+	    		result = result+"Webnesday ,";
+	    	}
+	    	if(i == '4'){  
+	    		result = result+"Thursday ,";
+	    	}
+	    	if(i == '5'){
+	    		result = result+"Friday ,";
+	    	}
+	    	if(i == '6'){
+	    		result = result+"Saturday ,";
+	    	}
+	    	if(i == '7'){
+	    		result = result+"Sunday ,";
+	    	}
+	    	
+	 }
+}   
+	
+	if(result != "" && result != null && result != 'undefined'){   
+		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	} 
+	
+	$(".time_pop b").click(function(){
+	    $("#timeSheetErrorMsg").empty();
+	}); 
+	
+}
+</script> -->
 
-
+<!-- <div class="time_pop" id="timeSheetErrorMsg">
+</div> -->
 
 </body>
 <jsp:include page="../masterFooter.jsp" />	

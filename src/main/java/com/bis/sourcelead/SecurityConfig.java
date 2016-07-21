@@ -103,10 +103,11 @@ public class SecurityConfig  {
     			.passwordParameter("password")
     			.failureHandler(sourceleadAuthenticationFailureHandler)
     			.successHandler(sourceleadAuthenticationSuccessHandler)
-    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().csrf()
     			.and().exceptionHandling().accessDeniedPage("/403");
+    			
     			
         }
      }

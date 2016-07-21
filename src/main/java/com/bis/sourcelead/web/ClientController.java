@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
@@ -97,20 +99,24 @@ public class ClientController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
+			
+	
+			
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			for(OrgRelations orgRelation : clientsList){
+				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
+				orgRelation.setProjectsCont(count);
+			}
 			model.addObject("clientsList", clientsList);
-
-			Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
-			model.addObject(projectsList);
+		
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
 				sessionData = new SessionMaintainanceData();
 			}
 			sessionData.setNav(Constants.Clients);
-			
 			request.getSession().setAttribute("sessionData",sessionData);
-			
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
 	 
@@ -121,15 +127,15 @@ public class ClientController {
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
-		 	String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
-			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-
-			
-			
-			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		    json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();   
-		 	
+
+			String loginUserCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+			String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			
 		 	/*Saving for Org*/
 		    Org org = new Org();
 			org.setOrgName(jsonObj.getString("orgName"));
@@ -175,9 +181,15 @@ public class ClientController {
 				Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
 				project.setProjectSequeneNumber(jsonObj.getString(c+"projectId"));
 				project.setProjectName(jsonObj.getString(c+"projectName"));
-				OrgLocations  orgLocationsID = new OrgLocations();
-				orgLocationsID.setId(orgLocation.getId());
+			
+                OrgLocations  orgLocationsID = new OrgLocations();
+				orgLocationsID.setId(orgLocation.getId());//orgRelationId
 				project.setOrgLocationsId(orgLocationsID);
+				project.setOrgRelationId(orgRelations); // newly Added
+				
+//				OrgRelations orgRelations = new OrgRelations();
+//				orgRelations.setId(id);
+				
 				String startDateString = jsonObj.getString(c+"projectStartDate");
 				DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
 			    Date startDate = null;
@@ -225,6 +237,54 @@ public class ClientController {
 				return flag;
 		   }
 		
+		 
+		 
+		 /**
+		  * Handles client Details by OrgRelationId
+		  * @param orgLocationId
+		  * @param request
+		  * @return JSON
+		  * @throws Exception
+		  */
+		 
+		 @RequestMapping(value = "/getClientDeatilsById", method = RequestMethod.POST)
+		 public @ResponseBody String getProjectById(@RequestParam(value="clientId", required=false) String orgLocationId,HttpServletRequest request) throws Exception{ 
+		String resultJson = "";
+		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
+		orgRelation.setOrgName(orgRelation.getClientLocationId().getOrg().getOrgName());
+		orgRelation.setWebSite(orgRelation.getClientLocationId().getOrg().getWebSite());
+		orgRelation.setCountry(orgRelation.getClientLocationId().getCountry());
+		orgRelation.setCity(orgRelation.getClientLocationId().getCity());
+		orgRelation.setState(orgRelation.getClientLocationId().getState());
+		orgRelation.setPhone(orgRelation.getClientLocationId().getPhone());
+		orgRelation.setEmail(orgRelation.getClientLocationId().getEmail());
+		logger.info("Client Name : " + orgRelation.getClientLocationId().getOrg().getId());
+		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
+		logger.info("Total number of projects for client " + orgRelation.getClientLocationId().getOrg().getOrgName()
+				+ "is : " + projectCount);
+		orgRelation.setProjectsCont(projectCount);
+		resultJson = toJSON(orgRelation);
+		return resultJson;
+		  }
+		 
+		 
+		 @RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
+		 public @ResponseBody String getAllClientProjectsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception{ 
+			 
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
+			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
+			 for(Projects p : clientProjectsList){
+				 p.setProjectName(p.getProjectName());
+				 p.setStartDateStr(p.getStartDateStr());
+				 clientProjectsArrList.add(p);
+			 }
+			 ObjectMapper mapper = new ObjectMapper();
+			 String jsonInString = mapper.writeValueAsString(clientProjectsArrList);
+			 
+			 return jsonInString;
+		    }
+		
 		
 		private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -235,6 +295,8 @@ public class ClientController {
 	        return xstream.toXML(obj);
 	    }
 		
-
+		protected static boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
 	
 }

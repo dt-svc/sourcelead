@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +20,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
@@ -54,9 +57,15 @@ public class OrgSettingsController {
 	
 
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
-   public String saveOrgSettings(OrgSettings orgSettings,MultipartHttpServletRequest request) {
+   public String saveOrgSettings(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 		
-   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+   
+    json = "{"+json+"}";
+	JSONObject jsonObj = new JSONObject(json);
+	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+	OrgSettings orgSettings =  gson.fromJson(json,OrgSettings.class);
+	
 	   try {
 		org = orgService.saveOrgSettings(orgSettings, request, org);
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);

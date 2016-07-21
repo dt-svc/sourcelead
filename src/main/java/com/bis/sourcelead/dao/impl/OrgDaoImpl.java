@@ -117,7 +117,7 @@ public class OrgDaoImpl implements OrgDao {
 				    		flag="Website Duplicated";
 				    	}
 				    }else{
-				    	host =null;
+				    	host ="Website Duplicated";
 				    }
 				    
 				    //for Blocked Websites Domains

@@ -289,17 +289,17 @@ transform: translateY(-3px);
 	min-width:275px;
 }
 .alert-area {
-	transform: translateX(1000px);
-	-ms-transform: translateY(1000px);
-	 -webkit-transform: translateY(1000px);
+	transform: translateX(5000px);
+	-ms-transform: translateX(5000px);
+	 -webkit-transform: translateX(5000px);
 	transition:all ease-in-out 0.5s;
 	 -webkit-transition:all ease-in-out 0.5s;
 	-ms-transition:all ease-in-out 0.5s;
 }
 .alert-area.alert-area-active{
 	transform: translateX(0px);
-	-ms-transform: translateY(0px);
-	 -webkit-transform: translateY(0px);
+	-ms-transform: translateX(0px);
+	 -webkit-transform: translateX(0px);
 }
 /* Alerts Styels ends */
 
@@ -316,9 +316,9 @@ transform: translateY(-3px);
 	border-top:4px solid #3081cb;
 }
 .qlinks-area {
-	transform: translateX(1000px);
-	-ms-transform: translateX(1000px);
-	 -webkit-transform: translateX(1000px);
+	transform: translateX(3000px);
+	-ms-transform: translateX(3000px);
+	 -webkit-transform: translateX(3000px);
 	transition:all ease-in-out 0.5s;
 	 -webkit-transition:all ease-in-out 0.5s;
 	-ms-transition:all ease-in-out 0.5s;
@@ -360,9 +360,9 @@ transform: translateY(-3px);
 /* Quick Links Styels Ends */
 
 .setting-area{
-	-webkit-transform: translateX(300px);
-	-ms-transform: translateX(300px);
-	transform: translateX(300px);
+	-webkit-transform: translateX(3000px);
+	-ms-transform: translateX(3000px);
+	transform: translateX(3000px);
 	transition: all 0.5s ease-in-out 0s;
 	-webkit-transition: all 0.5s ease-in-out 0s;
 	-ms-transition: all 0.5s ease-in-out 0s;
@@ -745,6 +745,33 @@ transform: translateY(-3px);
 	font-size:22px;
 	color:#909090;
 }
+.dropzone .file-upload .inputfile {
+	width: 100%;
+    height:100%;
+	top:0;
+	left:0;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index:1;
+}
+.dropzone .file-upload .inputfile + label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+}
+ .dropzone .file-upload .btnBlock{
+	 display: block;
+    margin: 0 auto;
+    text-align: center;
+    width: 400px;
+ }
 .dropzone .file-upload .fa-paperclip, .file-upload  .fa-download{
 	font-size:50px;
 	transform: translateX(0px);
@@ -801,6 +828,9 @@ transform: translateY(-3px);
 	position:absolute;
 	top:40%;
 	width:100%;
+}
+.errInfo .file-upload span{
+	position:relative;
 }
 .errInfo .fa-download{
 	transform: translateY(0px);
@@ -1447,14 +1477,14 @@ border-bottom:1px solid #ccc;
 .side-bar .side-nav ul li ul  li:hover{
 	background:#21476b;
 }
-/* .side-bar .side-nav ul li ul  li:hover a{
+.side-bar .side-nav ul li ul  li:hover a{
 	color:#ff8f00;
-} */
-.side-bar .side-nav ul li ul  li a{
-	margin-left:55px;
 }
 .side-bar .side-nav ul li ul  li:hover a, .side-bar .side-nav ul li ul  li.treview-active a{
-color:#ff8f00;
+	color:#ff8f00;
+}
+.side-bar .side-nav ul li ul  li a{
+	margin-left:55px;
 }
 .side-bar .side-nav ul li .fa-fw{
 	float:right;
@@ -1482,6 +1512,26 @@ color:#ff8f00;
     padding: 50px;
     text-align: center;
 }
+
+/* For Addon styles */
+.positionRelative{
+	position:relative;
+}
+.input-groupAddon {
+    border-left: 1px solid #ccc !important;
+    height: 34px;
+    position: absolute;
+    right: 15px;
+    text-align: center;
+    top: 0;"
+}
+.input-groupAddon .fa{
+	position: relative;
+    right: 5px;
+    top: 2px;
+}
+/* For Addon styles */
+
 @media (max-width: 320px) {
   .hidden-xs {
     display: none !important;

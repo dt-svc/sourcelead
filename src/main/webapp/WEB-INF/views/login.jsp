@@ -16,9 +16,7 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <%@page session="true"%>
 </head>
-<%session.invalidate();%>
 <body>
-  
 <div class="regis_bg">
 	<div class="regis_logo"><img src="resources/images/logo-regis.png" alt=""/></div>
     <div class="regis_wrap">
@@ -64,7 +62,7 @@
 	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	            
 	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
-	            <input type="submit" value="Sumbit" class="sign_btn" />
+	            <input type="submit" value="Submit" class="sign_btn" />
 	            <div class="for-pas-text">Not have an account <a href="<c:url value='/registration'/>">Register Now</a></div> 
             </form>          
         </div>
