@@ -16,9 +16,7 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <%@page session="true"%>
 </head>
-<%session.invalidate();%>
 <body>
-  
 <div class="regis_bg">
 	<div class="regis_logo"><img src="resources/images/logo-regis.png" alt=""/></div>
     <div class="regis_wrap">

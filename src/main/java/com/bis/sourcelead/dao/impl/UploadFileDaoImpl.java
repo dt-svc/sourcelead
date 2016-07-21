@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.Employees;
@@ -55,6 +57,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
@@ -82,17 +85,20 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 
 	@Override
-	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception {
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations,User user,String isMailChecked) throws Exception {
 
 		String isFileCreated = null;
 		String fileName = multipartFile.getOriginalFilename();
 
 		if (!fileName.toLowerCase().endsWith("csv")) {
-			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations);
+			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked);
 		} else {
-			//isFileCreated = parseCSVData(multipartFile,orgLocations);
+			isFileCreated = parseCSVData(multipartFile,orgLocations,user,isMailChecked);
 		}
 		return isFileCreated;
 	}
@@ -102,10 +108,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	 * 
 	 * @param multipartFile
 	 * @param orgLocations 
+	 * @param user 
+	 * @param isMailChecked 
 	 * @return List<UserImports>
 	 * @throws FileNotFoundException
 	 */
-	private String parseCSVData(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception {
+	private String parseCSVData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
 
 	//	List<UsersImport> userImportList = new ArrayList<UsersImport>();
 		CSVParser csvFileParser = null;
@@ -144,10 +152,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 				userImport.setDayHours(record.get(Constants.DAY_HOURS));
 				
-				 boolean isUserFound = validateDuplicateUser(userImport.getEmailId());
+				 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
 				 if(isUserFound){
 				 }else{
-					 saveBulkUser(userImport,orgLocations);
+					 saveBulkUser(userImport,orgLocations,user,"");
 				 }
 			}
 		} catch (Exception e) {
@@ -157,11 +165,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 	}
 
-	private boolean validateDuplicateUser(String email) throws Exception {
+	private boolean validateDuplicateUser(String email, UsersImport userImport) throws Exception {
 		boolean isUserFound = false;
 		User user = userService.findByEmail(email);
 		if(user != null){
 			isUserFound = true;
+			userImport.setReason("duplicate data with "+user.getEmail());;
 		}
 		return isUserFound;
 	}
@@ -170,10 +179,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	 * 
 	 * @param multipartFile
 	 * @param orgLocations
+	 * @param user 
+	 * @param isMailChecked 
 	 * @return List<UsersImport>
 	 * @throws FileNotFoundException
 	 */
-	private String parseXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception {
+	private String parseXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
 
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
@@ -186,7 +197,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		}
 
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
-
+		createExcelsheet = setExcelHeader(createExcelsheet);
+	
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
@@ -206,7 +218,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Row row = rowIterator.next();
 						boolean isValidated = false;
 						if (row.getRowNum() > 0) {
-							isValidated = validateExeclData(row);
+							isValidated = validateExeclData(row,userImport);
 						}
 						if (isValidated) {
 							if (row.getRowNum() > 0) { // Excluding column names
@@ -286,22 +298,29 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								} else {
 									userImport.setDayHours("");
 								}
-								 boolean isUserFound = validateDuplicateUser(userImport.getEmailId());
+								 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
 								 if(isUserFound){
 									 if (row.getRowNum() > 0) {
 											count++;
+											createXlsxSheet(row, createExcelsheet, count,userImport);
 										}
-										createXlsxSheet(row, createExcelsheet, count);
+										
 								 }else{
-									 saveBulkUser(userImport,orgLocations);
+									 if(isMailChecked != null){
+										 userImport.setIsMailChecked(Status.Y);
+									 }else{
+										 userImport.setIsMailChecked(Status.N);
+									 }
+									 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 								 }
 //								saveBulkUser(userImport, orgLocations);
 							}
 						} else {
 							if (row.getRowNum() > 0) {
 								count++;
+								createXlsxSheet(row, createExcelsheet, count,userImport);
 							}
-							createXlsxSheet(row, createExcelsheet, count);
+							
 						}
 					}
 					if (count > 0) {
@@ -324,7 +343,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					Row row = rowIterator.next();
 					boolean isValidated = false;
 					if (row.getRowNum() > 0) {
-						isValidated = validateExeclData(row);
+						isValidated = validateExeclData(row,userImport);
 					}
 					if (isValidated) {
 						if (row.getRowNum() > 0) { // Excluding column names
@@ -403,22 +422,29 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							} else {
 								userImport.setDayHours("");
 							}
-							 boolean isUserFound = validateDuplicateUser(userImport.getEmailId());
+							 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
 										count++;
+										 createXlsSheet(row, createExcelsheet, count,userImport);
 									}
-								 createXlsSheet(row, createExcelsheet, count);
+								
 							 }else{
-								 saveBulkUser(userImport,orgLocations);
+								 if(isMailChecked != null){
+									 userImport.setIsMailChecked(Status.Y);
+								 }else{
+									 userImport.setIsMailChecked(Status.N);
+								 }
+								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 							 }
 //							saveBulkUser(userImport, orgLocations);
 						}
 					} else {
 						if (row.getRowNum() > 0) {
 							count++;
+							createXlsSheet(row, createExcelsheet, count,userImport);
 						}
-						createXlsSheet(row, createExcelsheet, count);
+						
 					}
 				}
 				if (count > 0) {
@@ -436,13 +462,16 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return isFileCreated;
 
 	}
+
 /**
  * Handles bulk user savings
  * @param userImport
  * @param orgLocations
+ * @param loginUser 
+ * @param isMailChecked 
  * @throws Exception
  */
-	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations) throws Exception {
+	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
 		User user = new User();
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
@@ -455,6 +484,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		user.setMobilePhone(userImport.getMobileNumber());
 		user.setCreatedDate(new Date());
 		user.setUserState(Status.NOT_LOGGEDIN);
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		user.setPassword(sourceleadPasswordEncoder.encode(password));
+		user.setIsMailSent(userImport.getIsMailChecked());
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
@@ -477,11 +509,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 		Set<UserRole> userRoles = new HashSet<UserRole>();
 		userRoles.add(userRole);
-
 		user.setUserRole(userRoles);
 		userService.addUser(user);
 		employee.setUser(user);
 		employeesService.addEmployee(employee);
+		if(isMailChecked !=null){
+			userService.sendEmail(user, loginUser, password);
+		}
+		
 
 	}
 /**
@@ -489,9 +524,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
  * @param row
  * @param createExcelsheet
  * @param rowIndex
+ * @param userImport 
  * @throws IOException
  */
-	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex) throws IOException {
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 
@@ -613,7 +649,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	}
 	
 	
-	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex) throws IOException {
+	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 
@@ -732,18 +768,23 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				cell10.setCellValue("");
 			}
 		}
+		if (userImport.getReason() !=null) {
+			writeRow.createCell(11).setCellValue(userImport.getReason());
+		} 
 	}
 /**
  * Validate Excel data whle storing it into Database
  * @param row
+ * @param userImport 
  * @return
  */
-	private boolean validateExeclData(Row row) {
+	private boolean validateExeclData(Row row, UsersImport userImport) {
 
 		logger.info("Reading Row :" + row.getRowNum() + " records");
 		if (row.getRowNum() > 0) { // Excluding column names
 
 			if (row.getCell(1) == null || "".equals(row.getCell(1).toString())) {
+				userImport.setReason("Required field is not filled");
 				return false;
 			}
 			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
@@ -751,10 +792,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}*/
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString())
 					|| !validateEmail(row.getCell(3).toString())) {
+				userImport.setReason("Required field is not filled");
 				return false;
 			}
 
 			if (row.getCell(8) == null || "".endsWith(row.getCell(8).toString())) {
+				userImport.setReason("Required field is not filled");
 				return false;
 			}
 		}
@@ -804,5 +847,22 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		}
 	} // end ValidateJavaDate
 
+	private Sheet setExcelHeader(Sheet createExcelsheet) {
+		
+		Row excelHeader = createExcelsheet.createRow(0);
+		excelHeader.createCell(0).setCellValue(Constants.EMPLOYEE_ID);
+		excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
+		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
+		excelHeader.createCell(3).setCellValue(Constants.EMAIL_ID);
+		excelHeader.createCell(4).setCellValue(Constants.PHONE_NUMBER);
+		excelHeader.createCell(5).setCellValue(Constants.RATE);
+		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
+		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
+		excelHeader.createCell(8).setCellValue(Constants.ROLE);
+		excelHeader.createCell(9).setCellValue(Constants.INVOICE_FREQUENCY);
+		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(11).setCellValue(Constants.FAILED_REASON);
+		return createExcelsheet;
+	}
 
 }

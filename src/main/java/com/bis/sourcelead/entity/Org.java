@@ -52,7 +52,7 @@ public class Org {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
     private User user;
 	
