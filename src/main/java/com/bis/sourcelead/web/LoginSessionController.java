@@ -64,7 +64,7 @@ public class LoginSessionController {
 	@Autowired 
 	private NotificationsService notificationsService;
 	
-	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
+	@RequestMapping(value = "/loginSession" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
@@ -87,6 +87,14 @@ public class LoginSessionController {
 			setSessionOrgLocationAttributes(orgLocations,request);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,request);
+			
+			User orgPrimaryUser = org.getUser();
+			User orgLocationPrimaryUser = orgLocations.getUser();
+			
+			if(user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId())){
+				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
+			}
+			
 			
 			Collection<Tabs> tabsList = null;
 			

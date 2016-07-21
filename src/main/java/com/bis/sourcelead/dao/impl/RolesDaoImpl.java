@@ -47,5 +47,20 @@ public class RolesDaoImpl implements RolesDao{
 					  .list();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Roles getRolesByDisplayName(String displayName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles where displayName = :displayName" ).setString( "displayName", displayName ).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
+	}
+
 
 }

@@ -97,9 +97,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		return model;
 
 	}
-	
-	
-	
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
@@ -114,7 +111,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
 		try {
 			
-			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(userRole)){
+			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId());
 			}
 			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
