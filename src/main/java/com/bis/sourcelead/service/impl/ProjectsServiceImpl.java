@@ -1,7 +1,11 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+
 import java.util.Date;
+
+import java.util.List;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +103,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
 		return projectsDao.updateEndDateOfProjectId(endDate,projectId);
+
+	public List<Long> getApprovarAssignedProjects(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getApprovarAssignedProjects method...");
+		List<Long> projectIdsList = projectsDao.getApprovarAssignedProjects(userId, orgLocationId);
+		return projectIdsList;
 	}
 	
 	

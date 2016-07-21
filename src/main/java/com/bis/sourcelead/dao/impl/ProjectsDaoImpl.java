@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
-import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.util.Constants;
 
@@ -209,6 +205,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	}
 
 	@Override
+
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateStartDateOfProjectId(Date startDate ,Long projectId) {
 		Session session =  this.sessionFactory.getCurrentSession();
@@ -227,6 +224,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		query.setDate("endDate", endDate);
 		int result = query.executeUpdate();
 		return result;
+
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> getApprovarAssignedProjects(Long userId, Long orgLocationId) throws Exception{
+		logger.debug("In ProjectsDaoImpl class getApprovarAssignedProjects method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select projects.id from Projects projects where projects.orgLocationsId = :orgLocationId and "
+				+ "projects.id IN (select pah.projectId from ProjectApproverHierarchy pah  where pah.approverUserId = :userId)";
+		List<Long> projectsIdList =  session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+		
+		return projectsIdList;
+
 	}
 
 }
