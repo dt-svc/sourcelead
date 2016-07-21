@@ -11,17 +11,18 @@
           <div class="pull-left">
             <h2>Clients</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+         <!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
         </section>
         
 		<!-- Project -->
 <div class="timesheet_out">
+      
 
 <div class="clients_wrap">
-	<div class="timesheet_head">
+	  <div class="timesheet_head">
         	<ul>
 				
-                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+               <!--  <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
                 	<div class="approved_pop">
                     	<ul>
                         	<li><input type="checkbox" value="None" id="c1"><label for="c1">All</label></li>
@@ -30,12 +31,28 @@
 							<li><input type="checkbox" id="c4"><label for="c4">Rejected</label></li>
                         </ul>
                     </div>                	
-                </li>
+                </li> -->
 				<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>		
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
         </div>
+        </div>
+         <c:if test="${empty clientsList}">
+			<div class="row mt">
+				<div class="col-lg-12">
+					<div class="content-area clearfix">
+						<div class="blank-pages">
+						        <p><i class="fa fa-5x fa-users"></i></p>
+						        <p>No Client for organisation... Add Clients</p>
+						 </div>
+					</div>
+				</div>
+			</div> 
+		</c:if>
+     </div>   
+     
+    <c:if test="${!empty clientsList}">
     <div class="clients_wrap_table">
     	<table>
         	<tbody>
@@ -53,18 +70,18 @@
                 <tr>
                     <td><div class="proj_show" onclick="clientSideBar('${report.clientLocationId.id}');">${report.clientLocationId.org.orgName}<i class="fa fa-binoculars"></i></div></td>
                     <td><div>${report.clientLocationId.org.webSite}</div></td>
-                    <td><div>${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
-                    <td><div>example@domain.com</div></td>
-                    <td><div>040 2323 2323</div></td>
-                    <td><div>4</td>
+                    <td><div>${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
+                    <td><div>${report.clientLocationId.email}</div></td>
+                    <td><div>${report.clientLocationId.phone}</div></td>
+                    <td><div>${report.projectsCont}</td>
                 </tr>
                 </c:forEach>                                                                     
             </tbody>
         </table>
 	</div>
 	
-	
-</div>
+	</c:if>
+
 
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
@@ -113,62 +130,62 @@ function clientProjectDetails(clientId){
 	        	var json = JSON.parse(data);
 	            var result = "";
 	
-	result = result + '					<div class="project_tabs_inn_head">';
-	result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>';
-	result = result + '					</div>';
-	result = result + '				    <div class="project_tabs_inn_table">';
-	result = result + '				<table>';
-	result = result + '					<tbody>';
-	result = result + '			    	<tr>';
-	result = result + '				        	<th>Projects name</th>';
-	result = result + '				            <th>Start Date</th>';
-	result = result + '				            <th>End Date</th>';
-	result = result + '				            <th>Manager</th>';
-	result = result + '				            <th>Team</th>';
-	result = result + '				            <th>Status</th>';
-	result = result + '				        </tr>';
-	result = result + '			        <tr>';
+				result = result + '					<div class="project_tabs_inn_head">';
+				/* result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>'; */
+				result = result + '					</div>';
+				result = result + '				    <div class="project_tabs_inn_table">';
+				result = result + '				<table>';
+				result = result + '					<tbody>';
+				result = result + '			    	<tr>';
+				result = result + '				        	<th>Projects name</th>';
+				result = result + '				            <th>Start Date</th>';
+				result = result + '				            <th>End Date</th>';
+				result = result + '				            <th>Manager</th>';
+				result = result + '				            <th>Team</th>';
+				result = result + '				            <th>Status</th>';
+				result = result + '				        </tr>';
+				result = result + '			        <tr>';
 								for (var i=0; i<json.length; i++)
 								{        
 							    		var opt = json[i];
-	result = result + '	 	<td><div><input type="text"  value="'+json[i].projectName+'" class="project_inline_field"></div></td>';						    		
-	result = result + '				            <td><div>15/08/2016</div></td>';
-	result = result + '				            <td><div><input type="text" value="15/08/2016" class="project_inline_field"></div></td>';
-	result = result + '				            <td><div><select>';
-	result = result + '								<option>Manager one</option>';
-	result = result + '								<option>Manager two</option>';
-	result = result + '								<option>Manager three</option>';
-	result = result + '								<option>Manager four</option>';
-	result = result + '							</select></div></td>';
-	result = result + '				            <td><div>30</div></td>';
-	result = result + '							<td><div><select>';
-	result = result + '								<option>Active</option>';
-	result = result + '								<option>Closed</option>';
-	result = result + '								<option>Process</option>';
-	result = result + '								<option>Option</option>';
-	result = result + '							</select></div></td>';
-	result = result + '				        </tr>';
-	
-	                                }
-	rresult = result + '	     </tbody>';
-    result = result + '	 </table>   ';         
-    result = result + '	     </div>';
-    $("#tab-1").empty();
-    $("#tab-1").append(result);  
-    
-    $("#tab-1").show();
-	$(".project-tabs-menu a").click(function(event) {
-	     event.preventDefault();
-	     $(this).parent().addClass("current");
-	     $(this).parent().siblings().removeClass("current");
-	     var tab = $(this).attr("href");
-	     $(".project_tabs_inn").not(tab).css("display", "none");
-	     $(tab).fadeIn();
-	 });
-},
-});
-}	
-</script>
+					result = result + '	 	<td><div><input type="text"  value="'+json[i].projectName+'" class="project_inline_field"></div></td>';						    		
+					result = result + '				            <td><input type="text" value="" class="project_inline_field"></div></td>';
+					result = result + '				            <td><div><input type="text" value="" class="project_inline_field"></div></td>';
+					result = result + '				            <td><div><select>';
+					result = result + '								<option>Manager one</option>';
+					result = result + '								<option>Manager two</option>';
+					result = result + '								<option>Manager three</option>';
+					result = result + '								<option>Manager four</option>';
+					result = result + '							</select></div></td>';
+					result = result + '				            <td><div>30</div></td>';
+					result = result + '							<td><div><select>';
+					result = result + '								<option>Active</option>';
+					result = result + '								<option>Closed</option>';
+					result = result + '								<option>Process</option>';
+					result = result + '								<option>Option</option>';
+					result = result + '							</select></div></td>';
+					result = result + '				        </tr>';
+					
+					                                }
+					rresult = result + '	     </tbody>';
+				    result = result + '	 </table>   ';         
+				    result = result + '	     </div>';
+				    $("#tab-1").empty();
+				    $("#tab-1").append(result);  
+				    
+				    $("#tab-1").show();
+					$(".project-tabs-menu a").click(function(event) {
+					     event.preventDefault();
+					     $(this).parent().addClass("current");
+					     $(this).parent().siblings().removeClass("current");
+					     var tab = $(this).attr("href");
+					     $(".project_tabs_inn").not(tab).css("display", "none");
+					     $(tab).fadeIn();
+					 });
+				},
+				});
+				}	
+				</script>
 
 
 

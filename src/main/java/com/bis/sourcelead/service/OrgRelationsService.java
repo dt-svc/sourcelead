@@ -15,4 +15,6 @@ public interface OrgRelationsService {
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception;
+	
+	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId)throws Exception;
 }

@@ -46,6 +46,13 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception {
 		return orgRelationsDao.getNumberOfProjectsPerClient(orgLocationId);
 	}
+
+	@Override
+	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId)
+			throws Exception {
+		
+		return orgRelationsDao.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId);
+	}
 	
 	
 }

@@ -13,8 +13,7 @@ a:hover, a:active, a:focus {
 	text-decoration:none;
 }
 body{
-	background-color:#368ee0;
-	background-color:#fff;
+	background-color:#e1e6fa;
 	font-size:14px;
 	color:#333;
 	font-family: 'Roboto', sans-serif;
@@ -358,7 +357,6 @@ transform: translateY(-3px);
 	color:#8a8a8a;
 	}
 /* Quick Links Styels Ends */
-
 .setting-area{
 	-webkit-transform: translateX(3000px);
 	-ms-transform: translateX(3000px);
@@ -376,6 +374,9 @@ transform: translateY(-3px);
     right:0;
     min-width: 175px;
     z-index: 1;
+	border-radius:0 0 3px 3px;
+	-moz-border-radius:0 0 3px 3px;
+	-webkit-border-radius:0 0 3px 3px;
  }
  .setting-area.setting-area-active{
 	transform: translateX(0px);
@@ -385,14 +386,14 @@ transform: translateY(-3px);
 .setting-area ul{
 	}
 .setting-area ul li{
-    line-height:30px;
-	height:30px;
+    line-height:35px;
+	height:35px;
 	padding:0 !important;
 	margin:0;
 	border-bottom:1px solid #3a8bd5;
 }
 .setting-area ul li:last-child{
-	border-bottom:1px solid #3081cb;
+	border-bottom:0;
 }
 .setting-area ul li i{
 	padding-right:10px;
@@ -503,7 +504,7 @@ transform: translateY(-3px);
 	box-shadow:1px 1px 2px #505050;
 	width:250px;
 	text-align:center;
-	right:11.5%;
+	right:17%;
 	z-index:1;
 	transform: translateY(-1000px);
 	-ms-transform: translateY(-1000px);
@@ -613,7 +614,7 @@ transform: translateY(-3px);
 .content-wraper
 {
 	background:#e1e6fa;
-	min-height:575px;
+	min-height:620px;
 	margin-left:230px;
 	padding:0 30px 30px;
 	-moz-transition:all ease-in-out 0.3s;
@@ -846,10 +847,15 @@ transform: translateY(-3px);
 .footer-area {
 	background: #fff;
     clear: both;
-    line-height: 35px;
-    padding: 0 15px;
+    line-height:35px;
+    padding:10px 15px;
 	margin-left:230px;
 	transition:all ease-in-out 0.2s;
+	position:absolute;
+	bottom:0;
+	height:35px;
+	right:0;
+	width:83%;
 }
 .copyright{
 float:left;
@@ -1512,7 +1518,6 @@ border-bottom:1px solid #ccc;
     padding: 50px;
     text-align: center;
 }
-
 /* For Addon styles */
 .positionRelative{
 	position:relative;
@@ -1566,7 +1571,7 @@ border-bottom:1px solid #ccc;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li a{
 	display:block;
-	padding:15px 10px !important;
+	padding:16.5px 10px !important;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner .headerwidget-footer a{
 		padding:0 !important;
@@ -1704,7 +1709,6 @@ border-bottom:1px solid #ccc;
 	-ms-transform: translateY(43px);
 	-moz-transform: translateY(43px);
 	transform: translateY(43px);
-
 }
 }
 @media (min-width: 768px) and (max-width: 1024px){
