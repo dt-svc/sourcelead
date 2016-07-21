@@ -124,14 +124,14 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" value="" onblur="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_length length2-100 validate_Space" data-validation-optional="true" value="" onblur="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_length length2-100">
+                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_length length2-100 validate_Space">
                     <span class="hidden">First Name</span>
                   </div>
                 </div>
@@ -139,7 +139,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="LastName" data-validation="validate_length length2-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" name="LastName" data-validation="validate_length length2-100 validate_Space" data-validation-optional="true" value="">
                     <span class="hidden">Last Name</span>
                   </div>
                 </div>
@@ -147,7 +147,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_length length2-100 validate_email" onblur="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -155,7 +155,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
-                    <input type="text" class="form-control" name="PhoneNumber" value="" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" class="form-control" name="PhoneNumber" value="" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                   </div>
                 </div>
@@ -165,7 +165,7 @@
                      <div class="col-md-9">
                          <div class="row">
 		                        <div class="col-md-6">
-				                    <input type="text" class="form-control" id="Rate"  name="Rate" value="" data-validation="validate_float validate_length length2-8" data-validation-optional="true">
+				                    <input type="text" class="form-control" id="Rate"  name="Rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        </div>
 		                        <div class="col-md-6">
@@ -320,7 +320,7 @@
                   <label class="col-md-3">Day Hours</label>
                   <div class="col-md-9 positionRelative">
                       
-                          <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
+                          <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
                           <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span>
                       
                        

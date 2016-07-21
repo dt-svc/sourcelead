@@ -110,7 +110,7 @@ $(document).ready(function(){
 				result = result + '  <div class="project_details">';
 				if(json.user.userState != null && json.user.userState != "" && json.user.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-						result = result + ' <a id="edit-user" href="javascript:editUserDetails();"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
@@ -131,9 +131,9 @@ $(document).ready(function(){
 				result = result + ' 		    <b>'+json.user.email+'</b>';
 				result = result + '		 </div>';
 				
-				
+				result = result + '	     <div class="user_details_cta">';
+				result = result + '	     <div id="viewUserDiv">';
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
-					result = result + '	     <div class="user_details_cta">';
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				 <strong>Employed Id:</strong><span class="fix">'+json.employeeId+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
@@ -199,133 +199,8 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
-				result = result + ' <div class="user_summary_edit" id="editUserDiv">';
-				
-				
-				var selected1 = '';
-        		var selected2 = '';
-        		var selected3 = '';
-        		var selected4 = '';
-        		var selected5 = '';
-        		var selected6 = '';
-        		var selected7 = '';
-        		
-        		if(json.ratePer == 'Hourly'){
-           			selected1 = 'selected';
-           		} 
-        		
-        		if(json.ratePer == 'Daily'){
-           			selected2 = 'selected';
-           		} 
-        		
-        		if(json.ratePer == 'Weekly'){
-           			selected3 = 'selected';
-           		}
-        		
-        		if(json.ratePer == 'Bi-Weekly'){
-           			selected4 = 'selected';
-           		} 
-        		
-        		if(json.ratePer == 'Semi-Monthly'){
-           			selected5 = 'selected';
-           		} 
-        		
-        		if(json.ratePer == 'Monthly'){
-           			selected6 = 'selected';
-           		} 
-        		
-        		if(json.ratePer == 'Yearly'){
-           			selected7 = 'selected';
-           		}
-				
-        		var selected8 = '';
-        		var selected9 = '';
-        		var selected10 = '';
-        		var selected11 = '';
-        		
-        		if(json.InvoiceFrequency == 'Weekly'){
-        			selected8 = 'selected';
-           		} 
-        		
-        		if(json.InvoiceFrequency == 'Bi-Weekly'){
-        			selected9 = 'selected';
-           		} 
-        		
-        		if(json.InvoiceFrequency == 'Semi-Monthly'){
-        			selected10 = 'selected';
-           		}
-        		
-        		if(json.InvoiceFrequency == 'Monthly'){
-        			selected11 = 'selected';
-           		} 
-        		
-				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>First name</label>';
-					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_length length2-100"/>';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Last name</label>';
-					result = result + ' <input type="text" value="'+json.user.lastName+'" name="LastName" data-validation="validate_length length2-100" data-validation-optional="true">';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
-					result = result + ' <label>Employed Id</label>';
-					result = result + ' <input type="text" value="'+json.employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Phone number</label>';
-					result = result + ' <input type="text" value="'+json.user.mobilePhone+'" name="PhoneNumber" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed" value="'+json.rate+'" id="Rate"  name="Rate" data-validation="validate_float validate_length length2-8" data-validation-optional="true">';
-					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
-					result = result + ' <option value="">-Rate Per-</option>';
-					result = result + ' <option '+selected1+'>Hourly</option>';
-					result = result + ' <option '+selected2+'>Daily</option>';
-					result = result + ' <option '+selected3+'>Weekly</option>';
-					result = result + ' <option '+selected4+'>Bi-Weekly</option>';
-					result = result + ' <option '+selected5+'>Semi-Monthly</option>';
-					result = result + ' <option '+selected6+'>Monthly</option>';
-					result = result + ' <option '+selected7+'>Yearly</option>';
-					result = result + ' </select>';
-					result = result + ' </div>';	
-					
-					
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Date of join</label>';
-					result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
-					result = result + ' </div>';	
-					
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Invoice frequency</label>';
-					result = result + ' <select id="InvoiceFrequency" name="InvoiceFrequency">';
-					result = result + ' <option value="">-Select Frequency-</option>';
-					result = result + ' <option '+selected8+'>Weekly</option>';
-					result = result + ' <option '+selected9+'>Bi-Weekly</option>';
-					result = result + ' <option '+selected10+'>Semi-Monthly</option>';
-					result = result + ' <option '+selected11+'>Monthly</option>';
-					result = result + ' </select>';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
-					result = result + ' <label>Day hours</label>';
-					result = result + ' <input type="text" value="'+json.dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="clearfix"></div>';
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails();" type="button">';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="clearfix"></div>';
-					result = result + ' </form>';
-				result = result + ' </div>';				
-				
+				result = result + '	   </div>';				
+				result = result + ' <div class="user_summary_edit" id="editUserDiv"></div>';
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	   </div>';
 				result = result + '	  <div class="clearfix"></div>';
@@ -662,14 +537,182 @@ $(document).ready(function(){
 </script>   
 
 	
-<script>
-function editUserDetails(){
+<!-- <script>
+function cancelEditUserDetails(){
 	$(".user_summary_edit").slideToggle(100);
 	$("#remove_user_id").slideUp(100);
 	$(".error").removeClass("error");
 	$('#editUserDiv').find('p.jquery_form_error_message').remove();
 }
+</script> -->
+
+<script>
+function editUserDetails(userId){
+ var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        success: function(data) {
+	        	
+			    var json = JSON.parse(data);
+			    var result = "";
+			    
+			    var selected1 = '';
+				var selected2 = '';
+				var selected3 = '';
+				var selected4 = '';
+				var selected5 = '';
+				var selected6 = '';
+				var selected7 = '';
+				
+				if(json.ratePer == 'Hourly'){
+						selected1 = 'selected';
+					} 
+				
+				if(json.ratePer == 'Daily'){
+						selected2 = 'selected';
+					} 
+				
+				if(json.ratePer == 'Weekly'){
+						selected3 = 'selected';
+					}
+				
+				if(json.ratePer == 'Bi-Weekly'){
+						selected4 = 'selected';
+					} 
+				
+				if(json.ratePer == 'Semi-Monthly'){
+						selected5 = 'selected';
+					} 
+				
+				if(json.ratePer == 'Monthly'){
+						selected6 = 'selected';
+					} 
+				
+				if(json.ratePer == 'Yearly'){
+						selected7 = 'selected';
+					}
+				
+				var selected8 = '';
+				var selected9 = '';
+				var selected10 = '';
+				var selected11 = '';
+				
+				if(json.InvoiceFrequency == 'Weekly'){
+					selected8 = 'selected';
+					} 
+				
+				if(json.InvoiceFrequency == 'Bi-Weekly'){
+					selected9 = 'selected';
+					} 
+				
+				if(json.InvoiceFrequency == 'Semi-Monthly'){
+					selected10 = 'selected';
+					}
+				
+				if(json.InvoiceFrequency == 'Monthly'){
+					selected11 = 'selected';
+					} 
+				
+				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>First name</label>';
+					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_length length2-100"/>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Last name</label>';
+					result = result + ' <input type="text" value="'+json.user.lastName+'" name="LastName" data-validation="validate_length length2-100" data-validation-optional="true">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
+					result = result + ' <label>Employed Id</label>';
+					result = result + ' <input type="text" value="'+json.employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Phone number</label>';
+					result = result + ' <input type="text" value="'+json.user.mobilePhone+'" name="PhoneNumber" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Rate</label>';
+					result = result + ' <input type="text" class="rate_filed" value="'+json.rate+'" id="Rate"  name="Rate" data-validation="validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
+					result = result + ' <option value="">-Rate Per-</option>';
+					result = result + ' <option '+selected1+'>Hourly</option>';
+					result = result + ' <option '+selected2+'>Daily</option>';
+					result = result + ' <option '+selected3+'>Weekly</option>';
+					result = result + ' <option '+selected4+'>Bi-Weekly</option>';
+					result = result + ' <option '+selected5+'>Semi-Monthly</option>';
+					result = result + ' <option '+selected6+'>Monthly</option>';
+					result = result + ' <option '+selected7+'>Yearly</option>';
+					result = result + ' </select>';
+					result = result + ' </div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Date of join</label>';
+					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
+					}else{
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" onClick="getCalendar();" readonly="readonly">';
+					}
+					result = result + ' </div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Invoice frequency</label>';
+					result = result + ' <select id="InvoiceFrequency" name="InvoiceFrequency">';
+					result = result + ' <option value="">-Select Frequency-</option>';
+					result = result + ' <option '+selected8+'>Weekly</option>';
+					result = result + ' <option '+selected9+'>Bi-Weekly</option>';
+					result = result + ' <option '+selected10+'>Semi-Monthly</option>';
+					result = result + ' <option '+selected11+'>Monthly</option>';
+					result = result + ' </select>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
+					result = result + ' <label>Day hours</label>';
+					result = result + ' <input type="text" value="'+json.dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' </form>';
+				result = result + ' </div>';
+			  
+				$(".user_summary_edit").slideToggle(100);
+				$("#remove_user_id").slideUp(100);
+				$(".error").removeClass("error");
+				$('#editUserDiv').find('p.jquery_form_error_message').remove();
+			    $("#editUserDiv").empty(); 
+			    $("#editUserDiv").append(result);  
+	        },
+		});
+}
 </script>
+
+<!-- <script>
+  $( function() {
+	  $('#DateofJoin').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	  });
+  } );
+</script>  -->
+
+<script>
+function getCalendar(){
+	 $('#DateofJoin').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	  });
+}
+</script>
+
+
 <script>
 function removeUser(){
 	$("#reason").val('');
