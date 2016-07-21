@@ -291,7 +291,7 @@
         <div class="form-footer clearfix row">
           <div class="col-lg-12">
             <div class="pull-right">
-              <input type="button" value="Save" id="save_project" onclick="saveProject();"  class="btn btn-primary">
+              <input type="button" value="Save" id="save_project" onclick="saveProject();flushSaveProject()"  class="btn btn-primary">
               <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"  class="btn btn-default ml">
               
             </div>
@@ -647,6 +647,8 @@ var addtaskcount =null;
 			        var con = JSON.stringify(frm);
 			        con = con.replace(/[{}]/g, "");
 			        var sourceleadUrl ='${sourceleadUrl}';
+			        $("#save_client").attr("disabled", "disabled");
+			        
 			        $.ajax({
 				    	type: "GET",
 				        url: sourceleadUrl+"/saveOrgRelations?json="+con, 
@@ -696,7 +698,7 @@ var addtaskcount =null;
      var con = JSON.stringify(frm);
      con = con.replace(/[{}]/g, "");
      var sourceleadUrl ='${sourceleadUrl}';
-     
+     $("#save_project").attr("disabled", "disabled");
      
      $.ajax({
 	    	type: "POST",
@@ -718,7 +720,11 @@ var addtaskcount =null;
 		$("#project_form").validateOnBlur(false, validationSettings);  
 	});
 </script>
-
+<script type="text/javascript">
+function flushSaveProject(){
+	$("#save_project").removeAttr("disabled");
+}
+</script>
 
 <script type="text/javascript">
 function addEmployee() {
@@ -733,6 +739,8 @@ function addEmployee() {
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var sourceleadUrl ='${sourceleadUrl}';
+			$("#add_employee").attr("disabled", "disabled");
+			
 				$.ajax({
 				type: "POST",
 				url: sourceleadUrl+"/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="+con,
@@ -782,20 +790,22 @@ function getTeamMembers() {
 	        		}else{
 	        			role = 'Employee';
 	        		}
-	        		output = output + "<tr>"+
-                    "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
-                    "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
-                    "<td>"+opt.user.email+"</td>"+
-                    "<td>"+role+"</td>"+
-                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
+	        		if(opt.user.userType !='Admin'){
+	        		output = output + "<tr>";
+	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+	        		output = output + "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>";
+	        		output = output + "<td>"+opt.user.email+"</td>";
+	        		output = output + "<td>"+role+"</td>";
+	        		output = output + "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 	  
-                    "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='"+projectStartDate+"' class='form-control clsDatePicker'>"+
-                    "</div></td>"+
-                    "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                    "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>"+
-                    "</div></td>"+
-                    "</tr>";
-		     } 
+	        		output = output + "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='"+projectStartDate+"' class='form-control clsDatePicker'>";
+	        		output = output + "</div></td>";
+	        		output = output + "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output + "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>";
+	        		output = output + "</div></td>";
+	         		output = output + "</tr>";
+		       } 
+			}
         	output = output+' </tbody>';
 	        output = output+' </table>';
 	        
@@ -831,6 +841,7 @@ function assignEmployee(){
 	    result = result +"<input type='hidden' name='employeeMaxCount' id='employeeMaxCount' value='"+count+"'/>";
 	    $("#assignTeamSavingDiv").empty();
 	    $("#assignTeamSavingDiv").append(result);
+	    alert("result"+result);
 }
 </script>
 
@@ -900,6 +911,7 @@ function validateWebsite(){
 </script>
 <script type="text/javascript">
 function flushProject(){
+	$("#save_client").removeAttr("disabled");
 	$('#orgName').val('');
 	 $('#companyWebsite').val('');
 	 $(".error").removeClass("error");
@@ -909,6 +921,7 @@ function flushProject(){
 
 <script type="text/javascript">
 function flushEmployee(){
+	$("#add_employee").removeAttr("disabled");
      $('#employeeFirstName').val('');
 	 $('#EmailId').val('');
 	 $(".error").removeClass("error");

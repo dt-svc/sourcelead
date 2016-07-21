@@ -271,7 +271,7 @@
                           <div class="form-group">
                             <label class="col-md-3">Task Name</label>
                             <div class="col-md-9">
-                               <input type="text" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control" field-name="Task Name" data-validation="required">
+                               <input type="text" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control" field-name="Task Name" data-validation="required validate_length length2-250">
                             </div>
                           </div>
                           <div class="form-group">
