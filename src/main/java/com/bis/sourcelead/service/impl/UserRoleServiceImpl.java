@@ -1,7 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
-import java.util.List;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,14 +64,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 	
 	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
-		logger.debug("In UserRoleService class...");
+		// TODO Auto-generated method stub
 		return userRoleDao.getUsersBasedOnUserRoles();
-	}
-
-	@Override
-	public Collection<UserRole> getApproverAssignedUsers(List<Long> projectIds,String userState,String searchByName) throws Exception {
-		logger.debug("In UserRoleService class...");
-		return userRoleDao.getApproverAssignedUsers(projectIds,userState,searchByName);
 	}
 
 }

@@ -974,8 +974,7 @@ jQueryFormUtils.validateAlphaNumber = function(val) {
     return val.match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
 jQueryFormUtils.validatespace = function(val) {
-	//[a-zA-Z0-9](.*[a-zA-Z0-9])
-    return val.match(/^[^\s-](.*)*$/) !== null;
+    return val.match(/[^\s-]/) !== null;
 };
 
 jQueryFormUtils.validatefile_image = function(val) {
@@ -1149,13 +1148,6 @@ jQueryFormUtils.validateMaskZipCode = function(val) {
         else if (validationRules.indexOf('validate_Alphanumeric') > -1 && !jQueryFormUtils.validateAlphanumeric(value)) {
             return validationErrorMsg || language.badAlphanumeric;
         }
-        
-     // Validate space
-        else if (validationRules.indexOf('validate_Space') > -1 && !jQueryFormUtils.validatespace(value)) {
-            return validationErrorMsg || language.badspace;
-        }
-        
-        
 // Validate if HomePhone Format
         else if (validationRules.indexOf('validate_Homephone') > -1 && !jQueryFormUtils.validateHomephone(value)) {
             return validationErrorMsg || language.badHomephone;

@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.bis.sourcelead.entity.UserRole;
 
@@ -22,7 +21,5 @@ public interface UserRoleDao {
 	public Collection<UserRole> getUsersListByUserStateAndLocationId(String userState,Long locationId,Long userId) throws Exception;
 
 	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception;
-	
-	public Collection<UserRole> getApproverAssignedUsers(List<Long> projectIds,String userState,String searchByName) throws Exception;
 
 }

@@ -156,35 +156,4 @@ public class UserRoleDaoImpl implements UserRoleDao{
 
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getApproverAssignedUsers(List<Long> projectIds,String userState,String searchByName) throws Exception {
-		
-		Long roleId = 2L;
-		
-		String userStateSubQuery = "";
-		if(!isNullOrEmpty(userState)){
-			userStateSubQuery = "and userRole.user.userState = '"+userState+"'";
-		}
-		
-		String userNameSubQuery = "";
-		if(!isNullOrEmpty(searchByName)){
-			userNameSubQuery = "and (userRole.user.firstName LIKE '"+searchByName+ "%') OR (userRole.user.lastName LIKE '" +searchByName + "%')";
-		}
-		
-		
-		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from UserRole userRole where userRole.roles.id = :roleId and "
-	    		+ "userRole.user.id IN (select distinct pm.employee.user.id from ProjectMembers pm where pm.projects.id IN (:projectIds) ) "
-	    		+ ""+userStateSubQuery+" "+userNameSubQuery+"";
-	    
-	    List<UserRole> userRoleList = session.createQuery(query.toString())
-	    		.setLong("roleId", roleId)
-	    		.setParameterList("projectIds", projectIds)
-	    		.list();
-        return userRoleList;
-        
-        
-	}
-
 }
