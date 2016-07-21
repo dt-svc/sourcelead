@@ -34,7 +34,7 @@
                     </div>                	
                 </li> -->
 						<li><a href="<c:url value='/client'/>"><i
-								class="fa fa-plus"></i>Add client</a></li>
+								class="fa fa-plus"></i>Create client</a></li>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
