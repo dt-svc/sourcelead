@@ -105,6 +105,7 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			
 			
 		} catch (Exception e) {

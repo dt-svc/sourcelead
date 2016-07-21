@@ -42,15 +42,17 @@ window.onload = function () {
           
           </li>
           
-		   <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Role&nbsp;</a>
-				<select id="userRole" onchange="getUsersList();">
-				<option value="">--Select Role--</option>
-				<option value="All" >All Roles</option>
-				<c:forEach var="roles" items="${rolesList}">
-	                 <option value="${roles.id}">${roles.displayName}</option>
-                </c:forEach>
-				</select>
-		   </li>
+		   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
+			   <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Role&nbsp;</a>
+					<select id="userRole" onchange="getUsersList();">
+					<option value="">--Select Role--</option>
+					<option value="All" >All Roles</option>
+					<c:forEach var="roles" items="${rolesList}">
+		                 <option value="${roles.id}">${roles.displayName}</option>
+	                </c:forEach>
+					</select>
+			   </li>
+		   </c:if>
 		  
 		  <li>
 			  <a href="javascript:void(0)">
@@ -78,12 +80,16 @@ window.onload = function () {
 	function getUsersList(){
 		
 		var sourceleadUrl = '${sourceleadUrl}';
-		var userRole = document.getElementById("userRole").value;
+		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+		if(loginUserRole == 'ROLE_ADMIN'){
+			var userRole = document.getElementById("userRole").value;
+		}
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
+		
 		$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState,
+	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);

@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,9 +30,9 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
@@ -64,6 +65,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	ProjectsService projectsService;
 	
 	
 	
@@ -100,13 +103,16 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	public String getUsersList(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
 			@RequestParam(value="searchByName", required=false) String searchByName,
-			@RequestParam(value="userState", required=false) String userState) {
+			@RequestParam(value="userState", required=false) String userState,
+			@RequestParam(value="loginUserRole", required=false) String loginUserRole) {
 
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
+		
+	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){
 		try {
 			
 			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
@@ -134,6 +140,24 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	 }
+	
+	else if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+		List<Long> projectIdsList  = null;
+		try {
+			 projectIdsList = projectsService.getApprovarAssignedProjects(user.getId(), orgLocations.getId());
+			 rolesList = userRoleService.getApproverAssignedUsers(projectIdsList, userState, searchByName);
+			 for(UserRole role : rolesList){
+					role.setUserRoleName(role.getRoles().getDisplayName());
+					userRolesList.add(role);
+				}
+			 
+			 System.out.println(projectIdsList.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 		 resultJson = toJSON(userRolesList);
 		 return resultJson;
 
