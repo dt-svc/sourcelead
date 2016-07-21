@@ -510,6 +510,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		user.setMobilePhone(userImport.getMobileNumber());
 		user.setCreatedDate(new Date());
 		user.setUserState(Status.NOT_LOGGEDIN);
+		user.setUserType(role.getDisplayName());
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		user.setIsMailSent(userImport.getIsMailChecked());
