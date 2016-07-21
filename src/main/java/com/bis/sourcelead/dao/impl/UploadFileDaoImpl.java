@@ -8,10 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,21 +18,17 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +40,6 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -58,7 +51,6 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
  * 
@@ -115,7 +107,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	 */
 	private String parseCSVData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
 
-	//	List<UsersImport> userImportList = new ArrayList<UsersImport>();
+		String isFileCreated = null;
+		boolean isValidated = false;
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
+		createExcelsheet = setExcelHeader(createExcelsheet);
+		
+		String fileName = multipartFile.getOriginalFilename();
 		CSVParser csvFileParser = null;
 		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(Constants.FILE_HEADER_MAPPING);
 		try {
@@ -126,42 +124,69 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			for (int i = 1; i < csvRecords.size(); i++) {
 				CSVRecord record = (CSVRecord) csvRecords.get(i);
 				UsersImport userImport = new UsersImport();
-				userImport.setEmployeeId(record.get(Constants.EMPLOYEE_ID));
-				userImport.setFirstName(record.get(Constants.FIRST_NAME));
-				userImport.setLastName(record.get(Constants.LAST_NAME));
-				userImport.setEmailId(record.get(Constants.EMAIL_ID));
-				userImport.setMobileNumber(record.get(Constants.PHONE_NUMBER));
-				userImport.setRate(record.get(Constants.RATE));
-				userImport.setRatePer(record.get(Constants.RATEPER));
-//				String joinDate = record.get(Constants.DATEOFJOIN);
-//				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-//				Date date = sdf.parse(joinDate);
-//				sdf = new SimpleDateFormat("MM/dd/yyyy");
-				String startDateString = record.get(Constants.DATEOFJOIN);
-			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
-			    Date date = null;
-			    try {
-			    	date = df.parse(startDateString);
-			        String newDateString = df.format(date);
-			        System.out.println(newDateString);
-			    } catch (ParseException e) {
-			        e.printStackTrace();
-			    }
-				userImport.setDateOfJoin(date);
-				userImport.setRole(record.get(Constants.ROLE));
-				userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
-				userImport.setDayHours(record.get(Constants.DAY_HOURS));
-				
-				 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
-				 if(isUserFound){
-				 }else{
-					 saveBulkUser(userImport,orgLocations,user,"");
-				 }
+				isValidated = validateCsvData(record,userImport);
+				if(isValidated){
+					if(record.get(Constants.EMPLOYEE_ID)!= null ||!"".equalsIgnoreCase(record.get(Constants.EMPLOYEE_ID))){
+						userImport.setEmployeeId(record.get(Constants.EMPLOYEE_ID));
+					}else{
+						userImport.setEmployeeId("");
+					}
+					userImport.setFirstName(record.get(Constants.FIRST_NAME));
+					if(record.get(Constants.LAST_NAME)!=null || !"".equalsIgnoreCase(record.get(Constants.LAST_NAME))){
+						userImport.setLastName(record.get(Constants.LAST_NAME));
+					}else{
+						userImport.setLastName("");
+					}
+					userImport.setEmailId(record.get(Constants.EMAIL_ID));
+					if(record.get(Constants.PHONE_NUMBER) !=null || !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER))){
+						userImport.setMobileNumber(record.get(Constants.PHONE_NUMBER));
+					}else{
+						userImport.setMobileNumber("");
+					}
+					if(record.get(Constants.RATE) != null || !"".equalsIgnoreCase(record.get(Constants.RATE))){
+						userImport.setRate(record.get(Constants.RATE));
+					}else{
+						userImport.setRate("");
+					}if(record.get(Constants.RATEPER) != null || !"".equalsIgnoreCase(record.get(Constants.RATEPER))){
+						userImport.setRatePer(record.get(Constants.RATEPER));
+					}else{
+						userImport.setRatePer("");
+					}
+					if(record.get(Constants.DATEOFJOIN) !=null || !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))){
+						userImport.setDateString(record.get(Constants.DATEOFJOIN));
+					}else{
+						userImport.setDateString("");
+					}
+					userImport.setRole(record.get(Constants.ROLE));
+					if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
+						userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
+					}else{
+						userImport.setInvoiceFrequency("");
+					}if(record.get(Constants.DAY_HOURS) !=null || !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))){
+						userImport.setDayHours(record.get(Constants.DAY_HOURS));
+					}else{
+						userImport.setDayHours("");
+					}
+					
+					 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
+					 if(isUserFound){
+							
+								createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
+					 }else{
+						 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
+					 }
+				}else{
+					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
+				}
 			}
+			FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+			createExcelworkbook.write(fos);
+			fos.close();
+			isFileCreated = "FailureUsersForCheck.xls";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "success";
+		return isFileCreated;
 
 	}
 
@@ -170,7 +195,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		User user = userService.findByEmail(email);
 		if(user != null){
 			isUserFound = true;
-			userImport.setReason("duplicate data with "+user.getEmail());;
+			userImport.setReason("duplicate with");;
 		}
 		return isUserFound;
 	}
@@ -311,7 +336,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 									 }else{
 										 userImport.setIsMailChecked(Status.N);
 									 }
-									 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+									 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
 								 }
 //								saveBulkUser(userImport, orgLocations);
 							}
@@ -435,7 +460,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								 }else{
 									 userImport.setIsMailChecked(Status.N);
 								 }
-								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+								 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
 							 }
 //							saveBulkUser(userImport, orgLocations);
 						}
@@ -469,14 +494,15 @@ public class UploadFileDaoImpl implements UploadFileDao {
  * @param orgLocations
  * @param loginUser 
  * @param isMailChecked 
+ * @param fileName 
  * @throws Exception
  */
-	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
+	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked, String fileName) throws Exception {
 		User user = new User();
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
 
-		Roles role = rolesService.getRolesByRoleName(userImport.getRole());
+		Roles role = rolesService.getRolesByDisplayName(userImport.getRole());
 
 		user.setFirstName(userImport.getFirstName());
 		user.setLastName(userImport.getLastName());
@@ -491,14 +517,21 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
 		employee.setDailyHours(userImport.getDayHours());
+//		if(!fileName.toLowerCase().endsWith("csv"))
 		if (!"".equalsIgnoreCase(userImport.getDateString())) {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+			SimpleDateFormat sdf = null;
+			if(!fileName.toLowerCase().endsWith("csv")){
+				sdf = new SimpleDateFormat("dd-MMM-yyyy");
+			}else{
+				sdf =  new SimpleDateFormat("dd/MM/yyyy");
+			}
 			Date date = sdf.parse(userImport.getDateString());
-			sdf = new SimpleDateFormat("MM/dd/yyyy");
+//			sdf = new SimpleDateFormat("MM/dd/yyyy");
 			userImport.setDateOfJoin(date);
 		} else {
 			userImport.setDateOfJoin(null);
 		}
+		
 		employee.setHireDate(userImport.getDateOfJoin());
 
 		userRole.setUser(user);
@@ -646,6 +679,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				cell10.setCellValue("");
 			}
 		}
+		if (userImport.getReason() !=null) {
+			writeRow.createCell(11).setCellValue(userImport.getReason());
+		} 
 	}
 	
 	
@@ -781,26 +817,65 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	private boolean validateExeclData(Row row, UsersImport userImport) {
 
 		logger.info("Reading Row :" + row.getRowNum() + " records");
+		boolean isDateValidated=false; 
 		if (row.getRowNum() > 0) { // Excluding column names
 
 			if (row.getCell(1) == null || "".equals(row.getCell(1).toString())) {
-				userImport.setReason("Required field is not filled");
+				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
 				return false;
 			}*/
-			if (row.getCell(3) == null || "".equals(row.getCell(3).toString())
-					|| !validateEmail(row.getCell(3).toString())) {
-				userImport.setReason("Required field is not filled");
+			if (row.getCell(3) == null || "".equals(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
+				userImport.setReason("Invalid email");
 				return false;
+			}
+			
+			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+				isDateValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
+				userImport.setReason("Invalid Date");
+				return isDateValidated;
 			}
 
 			if (row.getCell(8) == null || "".endsWith(row.getCell(8).toString())) {
-				userImport.setReason("Required field is not filled");
+				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 		}
+		return true;
+	}
+	
+	
+	/**
+	 * Validate CSV data whle storing it into Database
+	 * @param userImport 
+	 * @param userImport
+	 * @return
+	 */
+	private boolean validateCsvData(CSVRecord record, UsersImport userImport) {
+
+		boolean isDateValidated = false;
+			if (record.get(Constants.FIRST_NAME) == null || "".equalsIgnoreCase(record.get(Constants.FIRST_NAME))) {
+				userImport.setReason("Required field mandatory");
+				return false;
+			}
+			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
+				return false;
+			}*/
+			if (record.get(Constants.EMAIL_ID) == null || !validateEmail(record.get(Constants.EMAIL_ID))) {
+				userImport.setReason("Required field is mandatory");
+				return false;
+			}
+			if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
+				isDateValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
+				userImport.setReason("Invalid Date");
+				return isDateValidated;
+			}
+			if (record.get(Constants.ROLE) == null) {
+				userImport.setReason("Required field is  mandatory");
+				return false;
+			}
 		return true;
 	}
 /**
@@ -814,39 +889,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
 	}
-/**
- * validate Date
- * @param strDate
- * @return
- */
-	public static boolean validateJavaDate(String strDate) {
-		/* Check if date is 'null' */
-		if (strDate.trim().equals("")) {
-			return true;
-		}
-		/* Date is not 'null' */
-		else {
-			/*
-			 * Set preferred date format, For example MM-dd-yyyy,
-			 * MM.dd.yyyy,dd.MM.yyyy etc.
-			 */
-			SimpleDateFormat sdfrmt = new SimpleDateFormat("MM/dd/yyyy");
-			sdfrmt.setLenient(false);
-			/* Create Date object */
-			Date javaDate = null;
-			/* parse the string into date form */
-			try {
-				javaDate = sdfrmt.parse(strDate);
-			}
-			/* Date format is invalid */
-			catch (ParseException e) {
-				return false;
-			}
-			/* Return 'true' - since date is in valid format */
-			return true;
-		}
-	} // end ValidateJavaDate
-
 	private Sheet setExcelHeader(Sheet createExcelsheet) {
 		
 		Row excelHeader = createExcelsheet.createRow(0);
@@ -864,5 +906,121 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		excelHeader.createCell(11).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
+	
+	
+	private void createXlsxSheetFromCsv(UsersImport userImport, Sheet createExcelsheet, int rowIndex, CSVRecord record) {
+		
+		Row writeRow = createExcelsheet.createRow(rowIndex);
+		
+		if (record.get(Constants.EMPLOYEE_ID) != null && !"".equalsIgnoreCase(record.get(Constants.EMPLOYEE_ID))) {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue(record.get(Constants.EMPLOYEE_ID));
+		} else {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue("");
+		}
+		if (record.get(Constants.FIRST_NAME) != null && !"".equalsIgnoreCase(record.get(Constants.FIRST_NAME))) {
+			Cell cell1 = writeRow.createCell(1);
+			cell1.setCellValue(record.get(Constants.FIRST_NAME));
+		} else {
+			Cell cell1 = writeRow.createCell(1);
+			cell1.setCellValue("");
+		}
+		if (record.get(Constants.LAST_NAME) != null && !"".equalsIgnoreCase(record.get(Constants.LAST_NAME))) {
+			Cell cell2 = writeRow.createCell(2);
+			cell2.setCellValue(record.get(Constants.LAST_NAME));
+		} else {
+			Cell cell2 = writeRow.createCell(2);
+			cell2.setCellValue("");
+		}
+		if (record.get(Constants.EMAIL_ID) != null && !"".equalsIgnoreCase(record.get(Constants.EMAIL_ID))) {
+			Cell cell3 = writeRow.createCell(3);
+			cell3.setCellValue(record.get(Constants.EMAIL_ID));
+		} else {
+			Cell cell3 = writeRow.createCell(3);
+			cell3.setCellValue("");
+		}
+		if (record.get(Constants.PHONE_NUMBER) != null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER)) ) {
+			Cell cell4 = writeRow.createCell(4);
+			cell4.setCellValue(record.get(Constants.PHONE_NUMBER));
+		} else {
+			Cell cell4 = writeRow.createCell(4);
+			cell4.setCellValue("");
+		}
+		if (record.get(Constants.RATE) != null && !"".equalsIgnoreCase(record.get(Constants.RATE))) {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue(record.get(Constants.RATE));
+		} else {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue("");
+		}
+		if (record.get(Constants.RATEPER) != null && !"".equalsIgnoreCase(record.get(Constants.RATEPER))) {
+			Cell cell6 = writeRow.createCell(6);
+			cell6.setCellValue(record.get(Constants.RATEPER));
+		} else {
+			Cell cell6 = writeRow.createCell(6);
+			cell6.setCellValue("");
+		}
+		if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
+			Cell cell7 = writeRow.createCell(7);
+			cell7.setCellValue(record.get(Constants.DATEOFJOIN));
+		} else {
+			Cell cell7 = writeRow.createCell(7);
+			cell7.setCellValue("");
+		}
+		if (record.get(Constants.ROLE) != null && !"".equalsIgnoreCase(record.get(Constants.ROLE))) {
+			Cell cell8 = writeRow.createCell(8);
+			cell8.setCellValue(record.get(Constants.ROLE));
+		} else {
+			Cell cell8 = writeRow.createCell(8);
+			cell8.setCellValue("");
+		}
+		if (record.get(Constants.INVOICE_FREQUENCY) != null && !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))) {
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue(record.get(Constants.INVOICE_FREQUENCY));
+		} else {
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue("");
+		}
+		if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue(record.get(Constants.DAY_HOURS));
+		} else {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue("");
+		}
+		if (userImport.getReason() !=null) {
+			writeRow.createCell(11).setCellValue(userImport.getReason());
+		} 
+	
+	}
+	
+	private  boolean isThisDateValid(String dateToValidate, String dateFromat){
+
+		if(dateToValidate == null){
+		return false;
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
+		sdf.setLenient(false);
+
+		try {
+
+		//if not valid, it will throw ParseException
+		Date date = sdf.parse(dateToValidate);
+		System.out.println(date);
+
+		} catch (ParseException e) {
+
+		logger.error(""+e.getMessage());
+		return false;
+		}
+
+		return true;
+		}
+//		public static void main(String[] args) throws ParseException {
+//		System.out.println(isThisDateValid("31/05/2012", "dd/MM/yyyy"));
+
+		
 
 }

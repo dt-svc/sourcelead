@@ -26,8 +26,7 @@ public interface ProjectMembersDao {
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 
-	public Integer updateProjectMemberStatus(Long projectMemberId);
-	
 	public Integer getAllProjectMembersCountByProjectId(Long id);
 	
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 }
