@@ -92,8 +92,8 @@ public class UserController {
 	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-		model.addObject("user_List", userList);
+	   /* Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+		model.addObject("user_List", userList);*/
 	    
 		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -235,6 +235,40 @@ public class UserController {
 			return flag;
 	   }
 	 
+	//to validate existing employee Id
+		 @RequestMapping(value = "/validateExistingEmployeeId" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateExistingEmployeeId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   Employees employees = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(EmployeeId, userId, orgLocations.getId());
+			    System.out.println(employees);
+			    Boolean flag = false;
+			    if(employees == null){
+			    	flag = employeesService.validateEmployeeId(EmployeeId,orgLocations.getId());
+			    }
+			 	
+				return flag;
+		   }
+		 
+		 //to get the Project Manager Name by using projectId
+		 @RequestMapping(value = "/getApproversByUserId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getApproversByUserId(@RequestParam(value="currentApproverId", required=false) Long currentApproverId, HttpServletRequest request) throws Exception {
+			 	String resultJson = null;
+			 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,orgLocations.getId());
+			 	resultJson = toJSON(userList);
+				return resultJson;
+		   }	 
+	 
+		 
+		 @RequestMapping(value = "/getAllApprovers")
+			public @ResponseBody  String  getAllApprovers(HttpServletRequest request) throws Exception {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String resultJson = null;			    
+			    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+			    resultJson = toJSON(userList);
+				return resultJson;
+
+			}
 	 
 	//to validate Project SequeneNumber
 	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)

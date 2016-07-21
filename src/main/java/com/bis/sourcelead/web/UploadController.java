@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
@@ -44,16 +45,18 @@ public class UploadController {
 	@RequestMapping("/fileUpload")
 	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile, BindingResult result,
 			Model model, HttpServletRequest request) {
-
-		fileValidator.validate(uploadedFile, result);
-
+		if(uploadedFile.getFile() != null){
+			fileValidator.validate(uploadedFile, result);
+		}else{
+			return "upload/uploadForm";
+		}
 		if (result.hasErrors()) {
 			return "upload/uploadForm";
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
-			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations);
+			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
 			if (isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xls")) {
 				model.addAttribute("errorMessage", "Please download Error file here  …");
 				return "upload/uploadForm";
@@ -84,7 +87,7 @@ public class UploadController {
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
 	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException {
 
-		String fn = "/templates/Create Users.xls";
+		String fn = "/templates/Import Users.xls";
 		URL url = getClass().getResource(fn);
 		File file = new File(url.toURI());
 

@@ -55,7 +55,7 @@
             
             
              <div class="form-group">
-              <label class="col-md-3">ClientCity</label>
+              <label class="col-md-3">Client City</label>
               <div class="col-md-9">
                 <input type="text" class="form-control" id="city" name="city" field-name="Client City" value="">
                 <span class="hidden">Client City</span> </div>
@@ -199,7 +199,7 @@
 			   <div class="form-group">
               <label class="col-md-3">Mobile Number</label>
               <div class="col-md-9">
-			  <input type="text" class="form-control" id="phone" name="phone" data-validation="validate_phone validate_length length9-20" data-validation-optional="true" field-name="Mobile Number" value="">
+			  <input type="text" class="form-control" id="phone" name="phone" data-validation="validate_phone  validate_length length9-20" data-validation-optional="true" field-name="Mobile Number" value="">
                 <span class="hidden">Mobile Number</span> </div>
               </div>
 			  

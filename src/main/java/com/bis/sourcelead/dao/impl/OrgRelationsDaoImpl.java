@@ -104,5 +104,18 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).uniqueResult();
 		return count;
 	}
+
+	/**
+	 * This method for get projects count for particular client
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="select count(*) from Projects pro where pro.orgRelationId = :orgRelationId and pro.orgLocationsId = :orgLocationId";
+		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		return count;
+	}
 	
 }

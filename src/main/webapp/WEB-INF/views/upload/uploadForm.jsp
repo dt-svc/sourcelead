@@ -4,6 +4,17 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<style type="text/css">
+.center-div{
+width:300px;
+height:30px;
+margin:10px 220px 0;
+}
+.center-div input {
+	border:none;
+	background:transparent
+}
+</style>
   <!-- Content Area -->
   <%-- <section class="content-wraper">
     <section class="content-header clearfix">
@@ -86,14 +97,17 @@
 			  </div>
 			<div class="file-upload clearfix mt text-center" onclick = "check();">
 		
-			<label class="btn btn-block">
+			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
                 <input type="file" name="file" style="display: none;" id="uploadBtn">
             </label>
         	
-        	<div class="panel-body bg-success">
-        	<input id="uploadFile" placeholder="Choose File" disabled="disabled" style="border:none;background:transparent"/>
+        	
+        	<div class="center-div">
+        	<input id="uploadFile" placeholder="" disabled="disabled"/>
         	</div>
+        	
+        	
 			</div>
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
 			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
@@ -116,6 +130,7 @@
 			  <span class="info-msg pull-left">
 			  <p>
 			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
 			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
@@ -123,6 +138,10 @@
 			  </p>
 			  </span>
             </div>
+            <div class="panel-body checkbox">
+				  <label><input type="checkbox" value="checked" name="email"></label>Send Emails
+				  
+		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 		  <div class="errInfo clearfix">

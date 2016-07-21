@@ -113,6 +113,22 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 }
 		return flag;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Employees getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(String employeeId, Long userId, Long orgLocationsId)
+			throws Exception {
+		 logger.debug("In EmployeesDaoImpl class getEmployeeByIdAndUserIdAndOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Employees emp left join fetch emp.user where emp.employeeId = :employeeId and  emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
+			List<Employees> employeesList =  session.createQuery(query.toString()) .setString("employeeId", employeeId).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
+			Employees employee = null;
+			if(employeesList != null && !employeesList.isEmpty())
+			{
+				employee = (Employees) employeesList.iterator().next();
+			}
+			return employee;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

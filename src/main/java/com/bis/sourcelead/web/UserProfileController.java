@@ -72,6 +72,7 @@ public class UserProfileController {
 		   try {
 			user = userService.saveUserProfile(userProfile, request, user);
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

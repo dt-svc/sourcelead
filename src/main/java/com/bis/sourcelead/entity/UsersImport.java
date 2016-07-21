@@ -2,6 +2,8 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 
+import com.bis.sourcelead.enums.Status;
+
 /**
  * 
  * @author Rajashekar
@@ -34,10 +36,29 @@ private String invoiceFrequency; //Invoice Frequency
 private String dayHours; 
 // Day Hours
 
-
 private String dateString;
 
+private Status isMailChecked;
 
+private String reason;
+
+
+
+public String getReason() {
+	return reason;
+}
+
+public void setReason(String reason) {
+	this.reason = reason;
+}
+
+public Status getIsMailChecked() {
+	return isMailChecked;
+}
+
+public void setIsMailChecked(Status isMailChecked) {
+	this.isMailChecked = isMailChecked;
+}
 
 public String getDateString() {
 	return dateString;
