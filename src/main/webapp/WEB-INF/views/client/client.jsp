@@ -12,6 +12,14 @@
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+ 
+ <style>
+ .clsDatePicker {
+   z-index: 100000 !important;
+     }
+ </style>
  
   <!-- Content Area -->
   <section class="content-wraper">
@@ -143,15 +151,23 @@
                             </div>
                           </div> -->
                           
-                          <div class="form-group" id="ProjectStartDiv">
-                            <label class="col-md-3">Start Date</label>
-                             <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-		                      <input type="text" class="form-control" value="" id="projectStartDate" name="projectStartDate" field-name="Start Date" class="form-control" >
-		                    </div>
-                           <!--  <div class="col-md-9">
-                              <input type="text" value="" id="projectStartDate" name="projectStartDate"  placeholder="Enter Project Start Date" class="form-control">
-                            </div> -->
-                          </div>
+                         <div class="form-group" id="ProjectStartDateDiv">
+                            <label class="col-md-3">Date</label>
+                            <div class="col-md-9">
+                            <div class = "row">
+                            <div class="col-lg-6">
+                    			<div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                     				 <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" onclick="selectStartDate();">
+                   			   </div>
+                  			</div>
+                  			<div class="col-lg-6">
+                    			<div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                     				 <input type="text" class="form-control" value="" id="projectEndDate" name="EndDate" onclick="selectStartDate();">
+                    			</div>
+                  			</div>
+                  			</div>
+                  			</div>
+                          </div> 
                           
                          <!--  <div class="form-group">
                             <label class="col-md-3">End Date</label>
@@ -313,9 +329,9 @@
 		$(".bell").click(function(){
 				$(this).toggleClass('bell-active');			
 			});
-       $(".addLevel").click(function(){
+       /* $(".addLevel").click(function(){
 		   $(".level-second").toggleClass("level-second-active");
-		});
+		}); */
     });   
    </script>
    
@@ -419,7 +435,7 @@ function addTasks(){
 		var projectName = $('#projectName').val();
 	    var projectManager = $('#projectManager').val();  
 	    var projectStartDate = $('#projectStartDate').val();
-	  /*   var projectEndDate = $('#projectEndDate').val(); */
+	    var projectEndDate = $('#projectEndDate').val(); 
 			
 		var cell0 = row.insertCell(0);
 		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
@@ -445,7 +461,7 @@ function addTasks(){
 		var cell1 = row.insertCell(3);
 		var divTsTd2Str = document.getElementById("divTaskTd4").innerHTML;
 		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/PROJECTSTARTDATEVALUE/g, (projectStartDate));
+		divTsTd2Str = divTsTd2Str.replace(/PROJECTSTARTDATEVALUE/g,(projectStartDate).concat(" "+"to"+" "+projectEndDate));
 		cell1.innerHTML = divTsTd2Str;
 		
 	/* 	var cell1 = row.insertCell(4);
@@ -464,7 +480,7 @@ function addTasks(){
 		$("#projectName").val('');
 		$("#projectManager").val('');
 		$("#projectStartDate").val('');
-		/* $("#projectEndDate").val(''); */
+		 $("#projectEndDate").val(''); 
 }
 </script>
 <script type="text/javascript">
@@ -563,3 +579,26 @@ $(document).ready(function(){
 
 <!-- Add Task Script Ends -->
 
+<!-- Date Picker Script start here -->
+<script>
+   function selectStartDate() {
+	  $('#projectStartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+  
+  	  $('#projectEndDate').datepicker({
+          dateFormat: 'yy-mm-dd',
+          onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+      });
+    };
+</script>
+<!-- Date Picker Script end here -->
