@@ -28,9 +28,7 @@
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-           <div class="pull-right">
-             <a href="<c:url value='/project'/>">Create New Project &raquo;</a>
-          </div>
+           <div class="pull-right brud-crum">Home » General Form » Create User</div>
         </section>
 
         
@@ -69,11 +67,34 @@
 		</c:if>
 		<c:if test="${!empty projectsList}">
 		<div class="project_wrap">
-			<!-- <div class="project_wrap_head clearfix">
-			<div class="pull-right mt mb mr">
-			<input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i>
-			</div>
-			</div> -->
+<div class="timesheet_head">
+        	<ul>
+				<!-- <li><i class="fa fa-calendar"></i><input placeholder="DD/MM/YYYY" value="31/12/2020" class="project-date" type="text">|</li>
+                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+                	<div class="approved_pop">
+                    	<ul>
+                        	<li><input value="None" id="c1" type="checkbox"><label for="c1">All</label></li>
+							<li><input id="c2" type="checkbox"><label for="c2">Approved</label></li>
+							<li><input id="c3" type="checkbox"><label for="c3">Draft</label></li>
+							<li><input id="c4" type="checkbox"><label for="c4">Rejected</label></li>
+                        </ul>
+                    </div>                	
+                </li>
+                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+                	<div class="approved_pop">
+                    	<ul>
+                        	<li><input value="None" id="c5" type="checkbox"><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox"><label for="c6">Approved</label></li>
+							<li><input id="c7" type="checkbox"><label for="c7">Draft</label></li>
+							<li><input id="c8" type="checkbox"><label for="c8">Rejected</label></li>
+                        </ul>
+                    </div>                	
+                </li> -->
+				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+                <div class="clearfix"></div>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
 			
 		    <div class="project_wrap_table">
 		    	<table>
@@ -127,7 +148,7 @@
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
 			</div>	
 		    </div>
-		   </div> 
+		  </div> 
 		   </div>		
 	   </section>
 	  </body>
@@ -228,7 +249,7 @@
                 <div class="modal fade" id="addTask" role="dialog">
                   <div class="modal-dialog modal-lg"> 
                     
-                    <!-- Modal content-->
+                    <!-- Modal content-->Project name here
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
