@@ -29,7 +29,7 @@ public interface ProjectsService {
 	Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception;
 	
 	Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId,Long locationId) throws Exception;
-	
-	List<Long> getApprovarAssignedProjects(Long userId,Long orgLocationId) throws Exception;
 
+	List<Long> getApprovarAssignedProjects(Long userId,Long orgLocationId) throws Exception;
+	
 }
