@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -105,6 +106,9 @@ public class UserController {
 	public ModelAndView userSummaryDetails(HttpServletRequest request,@RequestParam(value="userId", required=false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		request.setAttribute("userId", userId);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+	    model.addObject("org_projectsList", projectsList);
 		model.setViewName("users/userSummary");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -303,12 +307,6 @@ public class UserController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 public @ResponseBody String getProjectDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 			 String resultJson = null;   
-			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   
-				ModelAndView model = new ModelAndView();
-			    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-			   
-			    
 			 List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
 			 for (ProjectMembers projectMembers : allProjectsList) {
 				 if(projectMembers.getProjectAssignedDate()!=null){
@@ -321,11 +319,9 @@ public class UserController {
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
 				 Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
-				 
 			   	 projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 			   	 
-			   	Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
-				 
+			   	 Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
 			   	 projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
 			   	 
 			  	 Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
@@ -340,15 +336,61 @@ public class UserController {
 			 return resultJson;
 		  }
 		 
+		
 		 
-		 @RequestMapping(value = "/deleteProjectMemeber", method = RequestMethod.POST)
-			public @ResponseBody String deleteProjectMemeber(
-					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId){
-					Integer updatedCount = projectMembersService.updateProjectMemberStatus(projectMemberId);
+		 @RequestMapping(value = "/saveAssignProject" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveAssignProject(@RequestParam(value="json", required=false) String json,
+				 @RequestParam(value="userId", required=false) Long userId,
+				 HttpServletRequest request) throws Exception {
+			    json = "{"+json+"}";
+			    JSONObject jsonObj = new JSONObject(json);
+			    Employees employee = employeesService.getEmployeeByUserId(userId);
+			    Projects projects =  projectsService.getProjectById(jsonObj.getLong("projectId"));
+			    ProjectMembers projectMembers = new ProjectMembers();
+			    projectMembers.setEmployee(employee);
+			    projectMembers.setProjects(projects);
+			    projectMembers.setTimesheetFrequency("weekly");
+			    if(jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))){
+					try {
+						   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						   projectMembers.setProjectAssignedDate(sdf.parse(jsonObj.getString("StartDate")));
+						} catch (Exception e) {
+						  e.printStackTrace();
+						}
+				}
+		    	
+		    	if(jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))){
+					try {
+						   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						   projectMembers.setProjectEndDate(sdf.parse(jsonObj.getString("EndDate")));
+						} catch (Exception e) {
+						  e.printStackTrace();
+						}
+				}
+		       User user  = userService.getUserById(userId);
+		    	if(employee.getRate()!=null){
+		    		projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
+		    	}
+		    	//need change role
+		    	projectMembers.setRole(user.getUserType());
+		    	if(employee.getRatePer()!=null){
+			    	projectMembers.setRateType(employee.getRatePer());
+			    }
+		       projectMembers.setStatus(Constants.MEMBER_ACTIVE);
+		       projectMembersService.saveProjectMember(projectMembers);
+		       commonUtil.storeTimesheetSubmissionRecords(user);
+			 return "success";
+		   }
+		 
+
+		 @RequestMapping(value = "/saveReason", method = RequestMethod.POST)
+			public @ResponseBody String saveReason(
+					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
+					@RequestParam(value="reason", required=false) String reason){
+					Integer updatedCount = projectMembersService.updateProjectMemberDeletedReason(projectMemberId,reason);
 				return "success";
 			}
 		 
-
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

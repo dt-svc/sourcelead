@@ -84,11 +84,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsByUserId(userId);
 	}
 
-	@Override
-	public Integer updateProjectMemberStatus(Long projectMemberId) {
-		// TODO Auto-generated method stub
-		return projectMembersDao.updateProjectMemberStatus(projectMemberId);
-	}
 
 	@Override
 	public Integer getAllProjectMembersCountByProjectId(Long id) throws Exception {
@@ -98,19 +93,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersCount;
 	}
 	
-	/*@Override
-	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
-		
-		Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
-		return approvalStatusCount;
-	}
-	
-	
+
 	@Override
-	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
-		logger.debug("In ProjectMembersServiceImpl class getAllProjectMembersByProjectId method...");
-		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectId(id);
-		return projectMembersList;
-	}*/
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId ,String reason) {
+		return projectMembersDao.updateProjectMemberDeletedReason(projectMemberId,reason);
+	}
 
 }

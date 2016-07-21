@@ -347,16 +347,13 @@ $(document).ready(function(){
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 	        success: function(data) {
-			    var json = JSON.parse(data);
+	        	alert("data"+data);
+			    var jsonData = JSON.parse(data);
 	    		var result = "";
-	    		if(json.length > 0)
-		   		{
-		    		var result = "";
-		    		;
-		 			for(var i=0; i<json.length; i++){
-			       	 
-		 				var json = json[i];
+	    		alert("jsonData"+jsonData);
 	    		
+	    		if(jsonData.length > 0)
+		   		{
 						   result = result + '<div class="timesheet_head">';
 						   result = result + '  	<ul>';
 						   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|';
@@ -368,7 +365,7 @@ $(document).ready(function(){
 						   result = result + '                         </ul>';
 						   result = result + '                    </div>';
 						   result = result + '                </li>';
-						   result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+						   result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
 						   result = result + '              <div class="clearfix"></div>';
 						   result = result + '            </ul>';
 						   result = result + '          <div class="clearfix"></div>';
@@ -386,21 +383,60 @@ $(document).ready(function(){
 						   result = result + '             <th>Saved</th>';
 						   result = result + '                 <th>Edit</th>';
 						   result = result + '         </tr>';
+						   for(var i=0; i<jsonData.length; i++){
+							   var json = jsonData[i];
+							   alert("json projectName"+json.projects.projectName+" "+jsonData.length);
+							   var startDate = "";
+							   var endDate = "";
+							   var approvedHrs = "";
+							   var rejectedHrs = "";
+							   var draftHrs = "";
+							   var submittedHrs = "";
+						    if(json.startDate != null && json.startDate != '' && json.startDate != 'undefined'){
+							 startDate = json.startDate ;
+						   }else{
+							   startDate = "--";
+						   }
+						   if(json.endDate  != null && json.endDate  != '' && json.endDate  != 'undefined'){
+						    	endDate = json.endDate;
+						   }else{
+							   endDate = "--";
+						   }
+						   if(json.approvedHrs  != null && json.approvedHrs  != '' && json.approvedHrs  != 'undefined'){
+							   approvedHrs = json.approvedHrs;
+						   }else{
+							   approvedHrs = "--";
+						   }
+						   if(json.rejectedHrs  != null && json.rejectedHrs  != '' && json.rejectedHrs  != 'undefined'){
+							   rejectedHrs = json.rejectedHrs;
+						   }else{
+							   rejectedHrs = "--";
+						   }
+						   if(json.draftHrs  != null && json.draftHrs  != '' && json.draftHrs  != 'undefined'){
+							   draftHrs = json.draftHrs;
+						   }else{
+							   draftHrs = "--";
+						   }
+						   if(json.submittedHrs  != null && json.submittedHrs  != '' && json.submittedHrs  != 'undefined'){
+							   submittedHrs = json.submittedHrs;
+						   }else{
+							   submittedHrs = "--";
+						   }
 						   
 						   result = result + '       <tr>';
 						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
-						   result = result + '<td><div>'+json.startDate+'</div></td>';
-						   result = result + ' <td><div><input type="text" value="'+json.endDate+'" class="project_inline_field"></div></td>';
-						   result = result + ' <td><div>'+json.approvedHrs+'</div></td>';
-						   result = result + ' <td><div>'+json.rejectedHrs+'</div></td>';
-						   result = result + ' <td><div>'+json.draftHrs+'</div></td>';
-						   result = result + ' <td><div>'+json.submittedHrs+'</div></td>';
-						   //result = result + ' <td><div><a href="javascript:void(0);" onclick="deleteProjectMemeber('+json.id+');"><i class="glyphicon glyphicon-trash"></i></div></td>';
-						     result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash" onClick="teminateFromProject();"></i>';
 						  
-							result = result + '</div></td> ';
+						   result = result + '<td><div>'+startDate+'</div></td>';
+						   result = result + ' <td><div><input type="text" value="'+endDate+'" class="project_inline_field"></div></td>';
+						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
+						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
+						   result = result + ' <td><div>'+draftHrs+'</div></td>';
+						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
+						  result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+							result = result + '</div></td> '; 
 						   
 						   result = result + '   </tr>';
+						   }
 						   result = result + '        </tbody>';
 						   result = result + '    </table>            ';
 						   result = result + '        </div>';
@@ -428,10 +464,10 @@ $(document).ready(function(){
 						    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 						    result = result + '</div>';
 						
-						    result = result + '</div>	';
+						    result = result + '</div>';
 						    $("#tab-2").empty(); 
-						   $("#tab-2").append(result);   
-		 			  }
+							$("#tab-2").append(result);
+		 			 
 		   		}
 	        },
 		});
@@ -445,12 +481,11 @@ $(document).ready(function(){
     
     </div>
 
-   
-	
 	
                 <!-- Modal content Add Team-->
-                <div role="dialog" id="addTeam" class="modal fade">
+                <div role="dialog" id="assignProject" class="modal fade">
                   <div class="modal-dialog">
+                  <form:form id="assignProject_form"  name="assignProject_form" method="post">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button data-dismiss="modal" class="close" type="button">X</button>
@@ -460,21 +495,30 @@ $(document).ready(function(){
                         <div class="form-horizontal custom-form clearfix">
                           <div class="col-xs-12 col-md-12 col-lg-12">
                             <div class="form-group">
-                            <label class="col-lg-3">Select Project</label>
+                            <label class="col-lg-3">Select Project <span class="text-danger">*</span></label>
                             <div class="col-lg-9">
+                           <!--  <div class="col-lg-9">
                               <select class="form-control">
                               	<option>Invoice-1</option>
                                 <option>Invoice-2</option>
                                 <option>Invoice-3</option>
                               </select>
-                              </div>
-                            </div>						  
+                              </div> -->
+
+                               <select class="form-control" id="proId" name="projectId" hidden="project" onchange="flushProject(); getStartandEndDate();" data-validation="required">
+                       		   <option value="">-Select Project-</option>
+                        		<c:forEach var="option" items="${org_projectsList}">
+  						   			<option value="${option.id}">${option.projectName}</option>
+				      			  </c:forEach>
+                      			</select>
+                      			</div>
+                            </div> 						  
                             <div class="form-group">
                             <label class="col-lg-3">Start date</label>
                             <div class="col-lg-9">
 							<div class="input-group">
 								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" placeholder="DD/MM/YYYY">
+								  <input type="text" class="form-control" placeholder="DD/MM/YYYY" id = "StartDate" name="StartDate">
 								</div>
                               </div>
                             </div>
@@ -483,7 +527,7 @@ $(document).ready(function(){
                             <div class="col-lg-9">
 							<div class="input-group">
 								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" placeholder="DD/MM/YYYY">
+								  <input type="text" class="form-control" placeholder="DD/MM/YYYY" id ="EndDate" name ="EndDate">
 								</div>
                               </div>
                             </div>
@@ -491,10 +535,11 @@ $(document).ready(function(){
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Select</button>
+                        <button class="btn btn-primary" type="button" id = "saveAssignProject" onclick="assignProject();">Select</button>
                         <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                       </div>
                     </div>
+                    </form:form>
                   </div>
                 </div>
                 <!-- Add Team modal popup ends -->	
@@ -677,32 +722,6 @@ function getConformation(userId,reason){
 }
 </script> 
 
-<!-- <script>
-$(document).ready(function() { 
-
-    $("html, #remove-user").click(function() {
-        $(".user_summary_edit").slideUp(100);
-    });
-    $("#edit-user, .project_tabs_inn_table").click(function(e) {
-        e.stopPropagation();
-    });		
-});
-</script> -->
-<!-- <script>
-$(document).ready(function() {	
-	$("#remove-user").click(function(){
-		$(".remove_user_pop").slideToggle(100);
-	});
-    $("html, .remove_user_pop b").click(function() {
-        $(".remove_user_pop").slideUp(100);
-    });
-    $("#remove-user, .remove_user_pop").click(function(e) {
-        e.stopPropagation();
-    });		
-});
-</script> -->
-
-
 
 <script>
 // project error message
@@ -716,7 +735,7 @@ $(document).ready(function() {
 		$(".project_inn_mask").fadeOut(200);
     });
 });
-</script>http://localhost:8080/sourcelead/project
+</script>
 
 
 
@@ -737,24 +756,18 @@ $(document).ready(function() {
 });
 
 
-//project error message
-/* $(document).ready(function() {
-    $("#dele-user").click(function(){
-		$(".remove_user_pop").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
-	});
-    $("html, .remove_user_pop b").click(function() {
-        $(".remove_user_pop").slideUp(200);
-		$(".project_inn_mask").fadeOut(200);
-    });
-	$("html, .remove_user_pop b").click(function(e) {
-        e.stopPropagation();
-    });
-}); */
-
 
 </script> 
 
+<script type="text/javascript">
+function flushProject(){
+	$("#proId").removeAttr("disabled");
+	$('#StartDate').val('');
+	 $('#EndDate').val('');
+	 $(".error").removeClass("error");
+	 $('#proId').find('p.jquery_form_error_message').remove();
+}
+</script>
 <!-- this script for inline edit -->
 <!-- <script> 
 function inlineEditForUsers(userId,localFieldName){
@@ -776,24 +789,154 @@ function inlineEditForUsers(userId,localFieldName){
 
 <!-- Scripts for project details -->
 
+
 <script>
-function teminateFromProject(projectMemberId){   
+function getStartandEndDate(){
+	
 	var sourceleadUrl = '${sourceleadUrl}';
-	
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-	
-	//need to verify
-	$("#remove_user_pop b").click(function() {
-	        $("#remove_user_pop").slideUp(200);
-			$(".project_inn_mask").fadeOut(200);
+	var projectId = document.getElementById("proId").value;
+	if(projectId != null && projectId != ""){
+    $.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getStartAndEndOfProject?${_csrf.parameterName}=${_csrf.token}&&projectId="+projectId, 
+        success: function(data) {
+        
+        	var json = JSON.parse(data);
+        	$("#StartDate").val(json.startDateStr);
+        	$("#EndDate").val(json.endDateStr);
+	        
+        },
     });
-	$("#remove_user_pop b").click(function(e) {
-        e.stopPropagation();
-    });
-	//need top verfiy
+	}
+
 }
 </script>
+<script type="text/javascript">
+ function assignProject() {
+	 var userId = '${userId}';
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#assignProject_form').validate(false, validationSettings)){ 
+	        var frm = $('#assignProject_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#saveAssignProject").attr("disabled", "disabled");
+     		$("#saveAssignProject" ).addClass('button').val('Processing..');
+	        
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&userId="+userId, 
+		        success: function(data) {
+		        	if(data="success"){
+		        	 	$("#assignProject").modal('hide');
+		        		userProjectDetails(userId);
+		        	}
+		        /* 	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Project --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
+		        	$("#proId").empty();
+			        $("#proId").append(output);
+			        $("#addProject").modal('hide'); */
+		        },
+		        error: function(e){
+		            
+		        }
+		    }); 
+	       return true;
+	  }else{
+		 $("#saveAssignProject").removeAttr('data-dismiss','modal');
+		return false;
+	  }
+    }
+
+    $('body').on('blur', '#addProject_form', function() {
+		$("#assignProject_form").showHelpOnFocus();;
+		$("#assignProject_form").validateOnBlur(false, validationSettings);  
+	});
+ 
+</script>
+
+<script>
+  $( function() {
+	  
+	  $('#StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	  
+  } );
+  
+  function deleteProject(local,userId){ 
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>User delete message here</p>";
+		result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
+		result = result + ' <div id="reasonForProjectDiv"/>';
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+local+","+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();''></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+		
+	}
+  function cancelTermination(){
+		$("#popUp").empty();
+		 $(".project_inn_mask").fadeOut(200);
+	}
+</script>
+<script> 
+function saveReason(projectMemberId,userId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reasonForProject = document.getElementById("reasonForProject").value;
+	
+	if(reasonForProject){
+		$("#reasonForProjectDiv").empty();
+		
+		var r = confirm("Do you want terminate the user from Project");
+		if (r == true) {
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: "http://localhost:8080/sourcelead/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+   		    success: function(data) {
+   		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   		    	userProjectDetails(userId);
+   		    }
+	 }); 
+		}
+	}
+	else{
+		$("#reasonForProjectDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
+	}
+}
+</script>
+
 
 
 <!-- end project scripts -->

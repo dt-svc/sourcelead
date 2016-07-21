@@ -118,7 +118,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
 		// TODO Auto-generated method stub
-		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
 		List<Long> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
@@ -133,9 +132,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		
 		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
@@ -166,17 +163,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return allProjectsList;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer updateProjectMemberStatus(Long projectMemberId) {
-		Session session =  this.sessionFactory.getCurrentSession();
-		String status = Constants.MEMBER_IN_ACTIVE;
-		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status where pm.id = :projectMemberId ");
-		query.setLong("projectMemberId", projectMemberId);
-		query.setString("status", status);
-		int result = query.executeUpdate();
-		return result;
-	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -193,6 +179,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			
 		    return count;
 		    
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId,String reason) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String status = Constants.MEMBER_IN_ACTIVE;
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason where pm.id = :projectMemberId ");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setString("status", status);
+		query.setString("terminateReason",reason);
+		int result = query.executeUpdate();
+		return result;
 	}
 
 }
