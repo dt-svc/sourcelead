@@ -9,5 +9,7 @@ public interface RolesDao {
 	public Roles getRolesByRoleName(String roleName) throws Exception;
 	
 	Collection<Roles> getRoles() throws Exception;
+	
+	public Roles getRolesByDisplayName(String displayName) throws Exception;
 
 }
