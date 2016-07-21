@@ -93,8 +93,18 @@ public class ProjectMembers {
     @Transient
     private String projectEndDateStr;  
     
+    @Column(name = "TERMINATE_REASON")
+    private String terminateReason;
     
     
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
+	}
+
 	public String getSubmittedHrs() {
 		return submittedHrs;
 	}

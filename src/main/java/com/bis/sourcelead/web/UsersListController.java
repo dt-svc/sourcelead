@@ -67,8 +67,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 
 	@Autowired
 	ProjectsService projectsService;
-	
-	
+		
 	
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
@@ -246,6 +245,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 				return "success";
 		}
 	
+		//to get a start date and end date of the project
+	 @RequestMapping(value = "/getStartAndEndOfProject" , method = RequestMethod.POST)
+	 public @ResponseBody String getStartAndEndOfProject(@RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+		 	String resultJson = null;
+		 	
+		 	Projects projects = projectsService.getProjectById(projectId);
+			if(projects.getStartDate()!=null){
+				projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
+			}
+			if(projects.getEndDate()!=null){
+				projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
+			}
+
+			resultJson = toJSON(projects);
+			return resultJson;
+	   }
+	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
