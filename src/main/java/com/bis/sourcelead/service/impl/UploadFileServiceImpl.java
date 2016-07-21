@@ -21,9 +21,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	private UploadFileDao uploadFileDao;
 
 	@Override
-	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception {
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
 
-		return uploadFileDao.uploadFile(multipartFile, orgLocations);
+		return uploadFileDao.uploadFile(multipartFile, orgLocations,user, isMailChecked);
 	}
 
 }
