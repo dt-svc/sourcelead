@@ -820,7 +820,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	private boolean validateExeclData(Row row, UsersImport userImport) {
 
 		logger.info("Reading Row :" + row.getRowNum() + " records");
-		boolean isDateValidated=false; 
+		boolean isValidated=false; 
 		if (row.getRowNum() > 0) { // Excluding column names
 
 			if (row.getCell(1) == null || "".equals(row.getCell(1).toString())) {
@@ -835,11 +835,18 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				return false;
 			}
 			
-			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-				isDateValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
-				userImport.setReason("Invalid Date");
-				return isDateValidated;
+			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+				isValidated = isMobileNumberValid(row.getCell(4).toString());
+				userImport.setReason("Invalid MobileNumber");
+				return isValidated;
 			}
+			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+				isValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
+				userImport.setReason("Invalid Date");
+				return isValidated;
+			}//
+			
+			
 
 			if (row.getCell(8) == null || "".endsWith(row.getCell(8).toString())) {
 				userImport.setReason("Required fields is not filled");
@@ -858,7 +865,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	 */
 	private boolean validateCsvData(CSVRecord record, UsersImport userImport) {
 
-		boolean isDateValidated = false;
+		boolean isValidated = false;
 			if (record.get(Constants.FIRST_NAME) == null || "".equalsIgnoreCase(record.get(Constants.FIRST_NAME))) {
 				userImport.setReason("Required field mandatory");
 				return false;
@@ -870,10 +877,15 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setReason("Required field is mandatory");
 				return false;
 			}
+			if (record.get(Constants.PHONE_NUMBER) !=null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER))) {
+				isValidated = isMobileNumberValid(record.get(Constants.PHONE_NUMBER));
+				userImport.setReason("Invalid MobileNumber");
+				return isValidated;
+			}
 			if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
-				isDateValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
+				isValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
 				userImport.setReason("Invalid Date");
-				return isDateValidated;
+				return isValidated;
 			}
 			if (record.get(Constants.ROLE) == null) {
 				userImport.setReason("Required field is  mandatory");
@@ -1021,9 +1033,23 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 		return true;
 		}
-//		public static void main(String[] args) throws ParseException {
-//		System.out.println(isThisDateValid("31/05/2012", "dd/MM/yyyy"));
 
+	private boolean isMobileNumberValid(String mobileNmber){
+		String regex = "\\d+";
+		boolean flag = false;
+		if(mobileNmber.length() < 20){
+			flag = mobileNmber.matches(regex);
+		}else{
+			flag=false;
+		}
+		return flag;
+			
+//		System.out.println("1".matches(regex));
+//		System.out.println("123rr45".matches(regex));
+//		System.out.println("123ff456789".matches(regex));
+		
+		
+	}
 		
 
 }
