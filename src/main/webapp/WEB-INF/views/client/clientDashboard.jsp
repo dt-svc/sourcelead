@@ -69,11 +69,40 @@
 				<c:forEach var="report" items="${clientsList}" varStatus="raId">	
                 <tr>
                     <td><div class="proj_show" onclick="clientSideBar('${report.clientLocationId.id}');">${report.clientLocationId.org.orgName}<i class="fa fa-binoculars"></i></div></td>
+                    
+                    <c:if test="${!empty report.clientLocationId.org.webSite}">
                     <td><div>${report.clientLocationId.org.webSite}</div></td>
-                    <td><div>${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
-                    <td><div>${report.clientLocationId.email}</div></td>
-                    <td><div>${report.clientLocationId.phone}</div></td>
-                    <td><div>${report.projectsCont}</td>
+                    </c:if>
+                     <c:if test="${empty report.clientLocationId.org.webSite}">
+                    <td><div>--</div></td>
+                    </c:if>
+                    
+	                    <c:if test="${!empty report.clientLocationId.country}">
+	                      <td><div>${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
+	                    </c:if>
+                        <c:if test="${empty report.clientLocationId.country }">
+                        <td><div>--</div></td>
+                        </c:if>
+	                     <c:if test="${!empty report.clientLocationId.email}">
+	                      <td><div>${report.clientLocationId.email}</div></td>
+	                     </c:if>
+                        <c:if test="${empty report.clientLocationId.email}">
+	                      <td><div>--</div></td>
+	                     </c:if>
+                      <c:if test="${!empty report.clientLocationId.phone}">
+                      <td><div>${report.clientLocationId.phone}</div></td>
+                      </c:if>
+                      
+                     <c:if test="${empty report.clientLocationId.phone}">
+                      <td><div>--</div></td>
+                      </c:if>
+                      
+                      <c:if test="${!empty report.projectsCont}">
+                      <td><div>${report.projectsCont}</td>
+                      </c:if>
+                       <c:if test="${empty report.projectsCont}">
+                      <td><div>--</td>
+                      </c:if>
                 </tr>
                 </c:forEach>                                                                     
             </tbody>
