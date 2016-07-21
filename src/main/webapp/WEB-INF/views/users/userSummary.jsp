@@ -347,11 +347,8 @@ $(document).ready(function(){
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 	        success: function(data) {
-	        	alert("data"+data);
 			    var jsonData = JSON.parse(data);
 	    		var result = "";
-	    		alert("jsonData"+jsonData);
-	    		
 	    		if(jsonData.length > 0)
 		   		{
 						   result = result + '<div class="timesheet_head">';
@@ -385,7 +382,6 @@ $(document).ready(function(){
 						   result = result + '         </tr>';
 						   for(var i=0; i<jsonData.length; i++){
 							   var json = jsonData[i];
-							   alert("json projectName"+json.projects.projectName+" "+jsonData.length);
 							   var startDate = "";
 							   var endDate = "";
 							   var approvedHrs = "";
@@ -545,15 +541,14 @@ $(document).ready(function(){
                 <!-- Add Team modal popup ends -->	
 
 
-	<div class="project_inn_mask"></div>
+	<!-- <div class="project_inn_mask"></div>
 	   <div id="remove_user_pop" class="remove_user_pop remove_user_pop_a">
 		<p>User delete message here</p>
 		<textarea placeholder="Comments here"></textarea>
 		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick=""><input class="u_can_color" type="button" value="Cancel"></b>
-	</div>
+	</div> -->
 
-	
-	
+	<div id="popUp" ></div>	
     </body>
 	
 
@@ -891,15 +886,16 @@ function getStartandEndDate(){
   
   function deleteProject(local,userId){ 
 		var result = "";
+		alert("hiiiiiiiiiiiiiiiiiiiiiaaa");
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>User delete message here</p>";
 		result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
 		result = result + ' <div id="reasonForProjectDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+local+","+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();''></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+local+","+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
-		
+		alert("fdfsdfsdf");
 		$("#remove_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 		
@@ -911,6 +907,7 @@ function getStartandEndDate(){
 </script>
 <script> 
 function saveReason(projectMemberId,userId){
+	alert("hhhhhhhhhhhhhhh")
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reasonForProject = document.getElementById("reasonForProject").value;
 	
