@@ -88,6 +88,14 @@ public class LoginSessionController {
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,request);
 			
+			User orgPrimaryUser = org.getUser();
+			User orgLocationPrimaryUser = orgLocations.getUser();
+			
+			if(user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId())){
+				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
+			}
+			
+			
 			Collection<Tabs> tabsList = null;
 			
 			if("slead".equalsIgnoreCase(org.getOrgCode())){

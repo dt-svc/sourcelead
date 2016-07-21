@@ -176,7 +176,9 @@
           <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
             <div class="setting-area">
               <ul class="list-unstyled">
-                 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+                 <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y'}">
+                     <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+                 </c:if>
                  <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-power-off" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
