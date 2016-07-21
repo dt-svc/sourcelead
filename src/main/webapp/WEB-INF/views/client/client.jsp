@@ -101,7 +101,7 @@
                             </div>
                           </div>
                           
-                          <div class="form-group">
+                          <div class="form-group" id="ProjectNameDiv">
                             <label class="col-md-3">Project Name</label>
                             <div class="col-md-9"> 
                               <input type="text" value="" id="projectName" name="projectName" placeholder="Enter Project Name" class="form-control">
@@ -141,7 +141,7 @@
                             </div>
                           </div> -->
                           
-                          <div class="form-group">
+                          <div class="form-group" id="ProjectStartDiv">
                             <label class="col-md-3">Start Date</label>
                              <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 		                      <input type="text" class="form-control" value="" id="projectStartDate" name="projectStartDate" field-name="Start Date" class="form-control" >
@@ -332,6 +332,8 @@
      var con = JSON.stringify(frm);
      con = con.replace(/[{}]/g, "");
      var sourceleadUrl ='${sourceleadUrl}';
+     $("#save_client").attr("disabled", "disabled");
+	$( "#save_client" ).addClass('button').val('Processing..');
      $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+con, 
@@ -385,6 +387,25 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
+		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+		$('#ProjectStartDiv').find('p.jquery_form_error_message').remove();
+	if($('#projectId').val()=='' || $('#projectId').val()== 0 || $('#projectId').val()== null)
+		{
+		$("input#projectId").after("<p class='jquery_form_error_message'>Enter Project ID</span>");
+		   return true;
+		}
+	
+		if($('#projectName').val()=='' || $('#projectId').val()== 0 || $('#projectId').val()== null)
+		{
+		$("input#projectName").after("<p class='jquery_form_error_message'>Enter Project Name</span>");
+		 return true;
+		}
+		if($('#projectStartDate').val()=='' || $('#projectId').val()== 0 || $('#projectId').val()== null)
+		{
+		$("input#projectStartDate").after("<p class='jquery_form_error_message'>Enter Project Start Date</span>");
+		 return true;
+		}
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
