@@ -148,7 +148,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					 }
 				}else{
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
-					logger.info("===============================");
 				}
 			}
 			FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
@@ -495,7 +494,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			if(!fileName.toLowerCase().endsWith("csv")){
 				sdf = new SimpleDateFormat("dd-MMM-yyyy");
 			}else{
-				sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf =  new SimpleDateFormat("dd/MM/yyyy");
 			}
 			Date date = sdf.parse(userImport.getDateString());
 //			sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -651,6 +650,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				cell10.setCellValue("");
 			}
 		}
+		if (userImport.getReason() !=null) {
+			writeRow.createCell(11).setCellValue(userImport.getReason());
+		} 
 	}
 	
 	
