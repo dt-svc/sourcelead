@@ -650,6 +650,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				cell10.setCellValue("");
 			}
 		}
+		if (userImport.getReason() !=null) {
+			writeRow.createCell(11).setCellValue(userImport.getReason());
+		} 
 	}
 	
 	
