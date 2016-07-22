@@ -287,13 +287,36 @@ public class ClientController {
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
 			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
+			 
 			 for(Projects p : clientProjectsList){
 				 p.setProjectName(p.getProjectName());
-				 p.setStartDateStr(p.getStartDateStr());
-				 clientProjectsArrList.add(p);
+				 
+				 if(p.getStartDate() !=null && !isNullOrEmpty(p.getStartDate().toString())){
+				 p.setStartDateStr(Constants.DF.format(p.getStartDate()));
+				 }
+				 if(p.getEndDate() !=null && !isNullOrEmpty(p.getEndDate().toString())){
+				 p.setEndDateStr(Constants.DF.format(p.getEndDate()));
+				 }
+				 
+				 if(p.getProjectStatus() !=null){
+				 p.setProjectStatus(p.getProjectStatus());
+				 }
+				 /*
+				  * Add managers to project list(shows in select box) in client tab
+				  */
+				 Collection<User> userList = userService.getUsersByUserRoles();
+				  String[] mngrs = new String[userList.size()];
+				    int i = 0;
+				    for(User user : userList){
+				    	mngrs[i] = user.getFirstName()+"&"+user.getId();
+				    	i++;
+				    }
+				    if(mngrs != null){
+				    p.setProjectManagerName(mngrs);
+				    }
 			 }
 			 ObjectMapper mapper = new ObjectMapper();
-			 String jsonInString = mapper.writeValueAsString(clientProjectsArrList);
+			 String jsonInString = mapper.writeValueAsString(clientProjectsList);
 			 
 			 return jsonInString;
 		    }

@@ -174,9 +174,11 @@
 
 						var json = JSON.parse(data);
 						var result = "";
-						result = result + '<div class="project_tabs_inn_head">';
+
+						result = result+ '<div class="project_tabs_inn_head">';
+						/* result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>'; */
 						result = result + '</div>';
-						result = result + '<div class="project_tabs_inn_table">';
+						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<table>';
 						result = result + '<tbody>';
 						result = result + '<tr>';
@@ -190,28 +192,32 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result + '<td><div><input type="text"  value="'+json[i].projectName+'" class="project_inline_field"></div></td>';
-							result = result + '<td><input type="text" value="" class="project_inline_field"></div></td>';
-							result = result + '<td><div><input type="text" value="" class="project_inline_field"></div></td>';
-							result = result + '<td><div><select>';
-							result = result + '<option>Manager one</option>';
-							result = result + '<option>Manager two</option>';
-							result = result + '<option>Manager three</option>';
-							result = result + '<option>Manager four</option>';
-							result = result + '</select></div></td>';
-							result = result + '<td><div>30</div></td>';
+							result = result
+									+ '	 	<td><div><input type="text"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result
+									+ '				            <td><input type="text" value="'+opt.startDateStr+'" class="project_inline_field"></div></td>';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'" class="project_inline_field"></div></td>';
+							result = result + ' <td><div><select>';
+									for (var i = 0; i < opt.projectManagerName.length; i++) {
+										var managers = opt.projectManagerName[i];
+										var projrctmanager = managers.split('&');
+								    	var name = projrctmanager[0];
+								    	var id = projrctmanager[1];
+										result = result+"<option value="+id+">"+name+"</option>";
+									} 
+							result = result + '	</select></div></td>';
+							result = result+ '<td><div>30</div></td>';
 							result = result + '<td><div><select>';
 							result = result + '<option>Active</option>';
 							result = result + '<option>Closed</option>';
-							result = result + '<option>Process</option>';
+							result = result+ '<option>Process</option>';
 							result = result + '<option>Option</option>';
 							result = result + '</select></div></td>';
 							result = result + '</tr>';
-
 						}
-						rresult = result + '</tbody>';
-						result = result + '</table>   ';
-						result = result + '</div>';
+						rresult = result + '	     </tbody>';
+						result = result + '	 </table>   ';
+						result = result + '	     </div>';
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
 
