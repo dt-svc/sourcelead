@@ -560,12 +560,15 @@ function flushProject(){
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
 	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#create_user").attr("disabled", "disabled");
      		$( "#create_user" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(result) {
 		        	if((result == 'usersList')){
 		        		location.replace(sourceleadUrl+"/usersList");  

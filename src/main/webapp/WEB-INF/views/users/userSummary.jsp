@@ -513,12 +513,16 @@ $(document).ready(function(){
 		    var frm = $('#editUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#update_user").attr("disabled", "disabled");
      		$( "#update_user" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
-		    	url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+con+"&userId="+userId, 
+		    	url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId, 
 		        success: function(result) {
 		        	userDetails(userId);
 			        
