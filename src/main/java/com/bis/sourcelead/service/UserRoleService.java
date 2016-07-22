@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.UserRole;
 
@@ -21,5 +22,7 @@ public interface UserRoleService {
 	public Collection<UserRole> getUsersListByUserStateAndLocationId(String userState,Long locationId,Long userId) throws Exception;
 
 	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception;
+	
+	public Collection<UserRole> getApproverAssignedUsers(List<Long> projectIds,String userState,String searchByName) throws Exception;
 	
 }
