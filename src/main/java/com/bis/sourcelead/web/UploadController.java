@@ -87,7 +87,7 @@ public class UploadController {
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
 	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException {
 
-		String fn = "/templates/userimport.xlsx";
+		String fn = "/templates/Import Users.xlsx";
 		URL url = getClass().getResource(fn);
 		File file = new File(url.toURI());
 

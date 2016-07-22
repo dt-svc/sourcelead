@@ -514,11 +514,9 @@
 		var cell1 = row.insertCell(2);
 		var divTsTd2Str = document.getElementById("divTaskTd3").innerHTML;
 		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		
 		var mgr = projectManager.split("&");
 		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,(mgr[0]));
 		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONName/g,(mgr[1]));
-				
 		cell1.innerHTML = divTsTd2Str;
 
 		var cell1 = row.insertCell(3);
@@ -562,19 +560,34 @@
 		var updateProjectId = $("#" + rowId + "projectId").val();
 		var updateTaskName = $("#" + rowId + "projectName").val();
 		var updateprojectManager = $("#" + rowId + "projectManager").val();
-		alert("======="+updateprojectManager);
 		var updateProjectStartDate = $("#" + rowId + "projectStartDate").val();
 		var updateProjectEndDate = $("#"+rowId+"projectEndDate").val(); 
-
+		
+		
+		$("#projectManager").empty();
+		var outPut= "";
+		<c:forEach var="option" items="${user_List}">
+		        var localId = "${option.id}";
+		               if(localId == updateprojectManager){
+		            	   outPut = outPut +'<option value="${option.id}&${option.firstName}" selected >${option.firstName}</option>';  
+		               }else{
+		            	   outPut = outPut +'<option value="${option.id}&${option.firstName}">${option.firstName}</option>';
+		               }
+		     
+		</c:forEach>
+		$("#projectManager").append(outPut);
+		
+	
+		
 		$("#projectId").val('');
 		$("#projectName").val('');
-		$("#projectManager").val('');
+		/* $("#projectManager").val(''); */
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
 		$("#addTaskText").html('Update Task');
 		$("#projectId").val(updateProjectId);
 		$("#projectName").val(updateTaskName);
-		$("#projectManager").val(updateprojectManager);
+		/* $("#projectManager").val(updateprojectManager); */
 		$("#projectStartDate").val(updateProjectStartDate);
 		$("#projectEndDate").val(updateProjectEndDate);
 		$("#taskId").val(rowId);
@@ -585,12 +598,17 @@
 
 <script type="text/javascript">
 	function updateTask(rowId) {
-		$("#"+rowId+"projectManager").val($("#projectManager").val()); 
+		
+		var mgr = projectManager.val();
+		var mgr = projectManager.split("&");
+
+		
+		//$("#"+rowId+"projectManager").val(); 
 		$("#" + rowId + "projectIdValue").html($("#projectId").val());
 
 		$("#" + rowId + "projectNameValue").html($("#projectName").val());
 
-		$("#" + rowId + "projectManagerValue").html($("#projectManager").val());
+		$("#" + rowId + "projectManagerValue").html(mgr[1]);
 
 		$("#" + rowId + "projectStartDateValue").html(
 				$("#projectStartDate").val());

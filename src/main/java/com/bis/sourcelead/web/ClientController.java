@@ -81,7 +81,6 @@ public class ClientController {
 	private UserService userService;
 	
 	
-	
 	 @RequestMapping(value = "/client")
 		public ModelAndView client() throws Exception {
 
@@ -312,5 +311,58 @@ public class ClientController {
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
-	
+		
+		
+		
+		@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
+		 public String updateClientProjectById(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
+		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+		Org org = orgRelation.getClientLocationId().getOrg();
+		if ("clientName".equalsIgnoreCase(fieldName)) {
+			logger.info("Client name before update is :" + orgRelation.getClientLocationId().getOrg().getOrgName());
+			org.setOrgName(fieldValue);
+			Org updatedOrg = orgService.updateOrg(org);
+			logger.info("Client name After update is :" + updatedOrg.getOrgName());
+		} else if ("clientWebsite".equalsIgnoreCase(fieldName)) {
+			logger.info("Client website before update is :" + orgRelation.getClientLocationId().getOrg().getWebSite());
+			org.setWebSite(fieldValue);
+			Org updatedWebsite = orgService.updateOrg(org);
+			logger.info("Client name After update is :" + updatedWebsite.getWebSite());
+		}else if("clientCity".equalsIgnoreCase(fieldName)){
+			logger.info("Client city before update is :" +orgRelation.getClientLocationId().getCity());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setCity(fieldValue);
+		     OrgLocations updatedCity =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client city After update is :" +updatedCity.getCity());
+		}else if("clientSate".equalsIgnoreCase(fieldName)){
+			logger.info("Client Stae before update is :" +orgRelation.getClientLocationId().getState());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setState(fieldValue);
+		     OrgLocations updatedState=  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client location After update is :" +updatedState.getState());
+		}else if("clientCountry".equalsIgnoreCase(fieldName)){
+			 logger.info("Client country before update is :" +orgRelation.getClientLocationId().getCountry());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setCountry(fieldValue);
+		     OrgLocations updatedCity =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client country After update is :" +updatedCity.getCountry());
+		}else if("clientEmail".equalsIgnoreCase(fieldName)){ 
+			 logger.info("Client Email before update is :" +orgRelation.getClientLocationId().getEmail());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setEmail(fieldValue);
+		     OrgLocations updatedEmail =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client Email After update is :" +updatedEmail.getEmail());
+		}else{
+			 logger.info("Client Ponenumber before update is :" +orgRelation.getClientLocationId().getPhone());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setPhone(fieldValue);
+		     OrgLocations updatedPhone =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client Ponenumber After update is :" +updatedPhone.getEmail());
+		}
+
+		return "success";
+		  }
+		 
+		 
+		
 }
