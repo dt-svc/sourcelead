@@ -572,7 +572,9 @@ function  inlineEditForProjects(projectId,localFieldName){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
+	alert("fieldName"+fieldName);
 	var fieldValue = $("#"+localFieldName).val();
+	alert("fieldValue"+fieldValue);
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
