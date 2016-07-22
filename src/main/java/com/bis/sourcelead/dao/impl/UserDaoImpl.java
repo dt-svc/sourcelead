@@ -150,7 +150,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("getUserById start");
-		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		users = session.createQuery("from User where id=:id" ).setCacheable(true).setLong( "id", Id ).list();
 		logger.debug("getUserById end");
 		if (users.size() > 0) {
 			return users.get(0);

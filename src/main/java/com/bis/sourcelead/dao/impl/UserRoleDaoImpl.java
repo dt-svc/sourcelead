@@ -52,7 +52,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getPrimaryRole By UserId start");
 		userRole = session
 				.createQuery("from UserRole userRole where userRole.user.id=:userId and userRole.isPrimary = '1' ")
-				.setLong("userId", userId).list();
+				.setLong("userId", userId).setCacheable(true).list();
 		logger.debug("getPrimaryRole By UserId start");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -76,7 +76,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session.createQuery(
 				"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId "
 						+ subQuery + " ")
-				.setLong("locationId", locationId).setLong("userId", userId).list();
+				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId "
 						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "")
-				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).list();
+				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session.createQuery("Select userRole from UserRole userRole where " + "((userRole.user.firstName LIKE '"
 				+ userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%')) "
 				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " ")
-				.setLong("locationId", locationId).setLong("userId", userId).list();
+				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 						+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"
 						+ userName + "%')) "
 						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "")
-				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).list();
+				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				.createQuery(
 						"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and "
 								+ "userRole.user.userState = :userState")
-				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).list();
+				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN'";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setCacheable(true).list();
 		return userRoleList;
 
 	}
@@ -179,7 +179,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString())
 				.setLong("roleId", roleId)
 				.setParameterList("projectIds", projectIds)
-				.list();
+				.setCacheable(true).list();
 		return userRoleList;
 
 	}

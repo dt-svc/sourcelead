@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL )
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgLocation" )
 public class OrgLocations {
 	
 	@Id

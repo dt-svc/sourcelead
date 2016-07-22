@@ -45,7 +45,42 @@
     
     
     <cache name="org.hibernate.cache.internal.StandardQueryCache"
-        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="120">
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="org"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="orgLocation"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="user"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="userRole"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="120" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="projects"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="pojectApproverHierarchy"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="projectMembers"
+        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
     </cache>
  
