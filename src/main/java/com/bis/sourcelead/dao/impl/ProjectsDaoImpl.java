@@ -217,6 +217,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })	
 	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		Query query = session.createQuery("update Projects pj set pj.endDate =:endDate where pj.id = :projectId");
@@ -224,7 +225,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		query.setDate("endDate", endDate);
 		int result = query.executeUpdate();
 		return result;
-
+	}
+	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<Long> getApprovarAssignedProjects(Long userId, Long orgLocationId) throws Exception{
 		logger.debug("In ProjectsDaoImpl class getApprovarAssignedProjects method");
