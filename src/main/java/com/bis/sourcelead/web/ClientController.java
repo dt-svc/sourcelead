@@ -80,10 +80,13 @@ public class ClientController {
 	@Autowired
 	private UserService userService;
 	
-	
+	/**
+	 * Handles to display client jsp
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/client")
 		public ModelAndView client() throws Exception {
-
 			ModelAndView model = new ModelAndView();
 			 Collection<User> userList = userService.getUsersByUserRoles();
 			 model.addObject("user_List", userList);
@@ -92,7 +95,12 @@ public class ClientController {
 			return model;
 	    }
 	 
-	 
+	 /**
+	  * Handles to display clientdash board
+	  * @param request
+	  * @return ModelAndView
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -123,7 +131,13 @@ public class ClientController {
 	 
 	 
 	 
-	 
+	 /**
+	  * Handles client as well as project save
+	  * @param json
+	  * @param request
+	  * @return ResponseBody
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
@@ -157,21 +171,14 @@ public class ClientController {
 			orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
 			orgLocations.setCreatedDate(new Date());
 			orgLocations.setCreatedBy(loginUserCode);
-			OrgLocations addOrgLocations=orgLocationService.addOrgLocations(orgLocations);
-			
 			/*Saving for OrgRelations*/
-			
 			OrgRelations orgRelations = new OrgRelations();
-	//		orgRelations.setRelationType("Customer");
 			orgRelations.setClientLocationId(orgLocations);
 			orgRelations.setLocationId(loginOrgLocations);
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(loginUserCode);
 			orgRelations.setCreatedDate(new Date());
-			OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
-			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Collection<Org> orgsList = orgService.getOrgs();
-			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 			logger.info("The projects added by the admin are :"+maxCount);
@@ -186,9 +193,6 @@ public class ClientController {
 				orgLocationsID.setId(orgLocation.getId());//orgRelationId
 				project.setOrgLocationsId(orgLocationsID);
 				project.setOrgRelationId(orgRelations); // newly Added
-				
-//				OrgRelations orgRelations = new OrgRelations();
-//				orgRelations.setId(id);
 				
 				String startDateString = jsonObj.getString(c+"projectStartDate");
 				String endDateString = jsonObj.getString(c+"projectEndDate");//projectEndDate
@@ -211,17 +215,13 @@ public class ClientController {
 					projectApproverHierarchy1.setApproverUserId(approverUserId2);
 					projectApproverHierarchy1.setLevel(2);
 					projectApproverSet.add(projectApproverHierarchy1);
-//					ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 				}
 				projectApproverSet.add(projectApproverHierarchy);
 				
 				project.setProjectApprovers(projectApproverSet);
-				
+				/*Saving for Projects*/
 				projectsService.saveProject(project);
-				
 			}
-
-			
 			 return "clientDashboard";
 	   }
 	
@@ -232,16 +232,20 @@ public class ClientController {
 	    try {
 	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	    	formatedDate = df.parse(startDateString);
-//	        String newDateString = df.format(startDate);
 	    } catch (ParseException e) {
 	        e.printStackTrace();
 	    }
-		
 		return formatedDate;
 	}
 
 
-		//to validate Project SequeneNumber
+		/**
+		 * validate duplicate projects by project sequence number
+		 * @param ProjectSequeneNumber
+		 * @param request
+		 * @return boolean
+		 * @throws Exception
+		 */
 		 @RequestMapping(value = "/validateProjectSequeneNumberId" , method = RequestMethod.POST)
 		 public @ResponseBody  Boolean validateProjectSequeneNumberById(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -280,7 +284,14 @@ public class ClientController {
 		return resultJson;
 		  }
 		 
-		 
+		 /**
+		  * Read total number of projects 
+		  * @param orgRelationId
+		  * @param locationId
+		  * @param request
+		  * @return json
+		  * @throws Exception
+		  */
 		 @RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
 		 public @ResponseBody String getAllClientProjectsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception{ 
 			 
@@ -336,7 +347,15 @@ public class ClientController {
 		}
 		
 		
-		
+		/**
+		 * Handles project inline editing
+		 * @param orgRelationId
+		 * @param fieldName
+		 * @param fieldValue
+		 * @param request
+		 * @return json
+		 * @throws Exception
+		 */
 		@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
 		 public String updateClientProjectById(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
 		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);

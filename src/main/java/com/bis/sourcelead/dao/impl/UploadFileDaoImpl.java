@@ -189,7 +189,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return isFileCreated;
 
 	}
-
+/**
+ * validate duplicate entry from excel data
+ * @param email
+ * @param userImport
+ * @return
+ * @throws Exception
+ */
 	private boolean validateDuplicateUser(String email, UsersImport userImport) throws Exception {
 		boolean isUserFound = false;
 		User user = userService.findByEmail(email);
@@ -687,7 +693,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		} 
 	}
 	
-	
+	/**
+	 * write data to excel format
+	 * @param row
+	 * @param createExcelsheet
+	 * @param rowIndex
+	 * @param userImport
+	 * @throws IOException
+	 */
 	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
@@ -812,7 +825,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		} 
 	}
 /**
- * Validate Excel data whle storing it into Database
+ * Validate Excel data while storing it into Database
  * @param row
  * @param userImport 
  * @param fileName 
@@ -924,7 +937,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 /**
  * validate email
  * @param email
- * @return
+ * @return boolean
  */
 	private boolean validateEmail(String email) {
 		Pattern pattern = Pattern.compile(
@@ -950,7 +963,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return createExcelsheet;
 	}
 	
-	
+	/**
+	 * write csv data to excel fromat
+	 * @param userImport
+	 * @param createExcelsheet
+	 * @param rowIndex
+	 * @param record
+	 */
 	private void createXlsxSheetFromCsv(UsersImport userImport, Sheet createExcelsheet, int rowIndex, CSVRecord record) {
 		
 		Row writeRow = createExcelsheet.createRow(rowIndex);
@@ -1037,7 +1056,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		} 
 	
 	}
-	
+	/**
+	 * Handles Date valid or not
+	 * @param dateToValidate
+	 * @param dateFromat
+	 * @return
+	 */
 	private  boolean isThisDateValid(String dateToValidate, String dateFromat){
 
 		if(dateToValidate == null){
@@ -1048,8 +1072,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		sdf.setLenient(false);
 
 		try {
-
-		//if not valid, it will throw ParseException
 		Date date = sdf.parse(dateToValidate);
 		System.out.println(date);
 
@@ -1061,7 +1083,11 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 		return true;
 		}
-
+/**
+ * Handles Mobile number valid or not
+ * @param mobileNmber
+ * @return
+ */
 	private boolean isMobileNumberValid(String mobileNmber){
 		String regex = "\\d+";
 		boolean flag = false;
