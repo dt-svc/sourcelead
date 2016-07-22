@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="ORG_RELATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrgRelations {
 
