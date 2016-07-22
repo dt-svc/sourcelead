@@ -46,7 +46,14 @@ public class NotificationController {
 	@Autowired
 	private NotificationsService notificationsService;
 
-	//to change the status of the notification as read 
+	
+	/**
+	 * when user click on the notifications, we are updating those notifications mode as read 
+	 * @param userId
+	 * @param orgCode
+	 * @param locationCode
+	 * @return
+	 */
 	@RequestMapping(value = "/notificationStatusAsRead", method = RequestMethod.POST)
 	public @ResponseBody String notificationStatusAsRead(@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "orgCode", required = false) String orgCode,
@@ -56,7 +63,12 @@ public class NotificationController {
 
 	}
 
-	//to get the notification list by specific user
+	/**
+	 * to get a list of notification of particular user by user id
+	 * @param request
+	 * @return
+	 * @throws ParseException
+	 */
 	@RequestMapping(value = "/notificationsList")
 	public ModelAndView notificationsList(HttpServletRequest request) throws ParseException {
 		ModelAndView model = new ModelAndView();
@@ -75,7 +87,11 @@ public class NotificationController {
 		return model;
 
 	}
-	// to calculate the days b/w the specific dates 
+	/**
+	 * calculating the days between the project created date and current date 
+	 * @param notificationList
+	 * @throws ParseException
+	 */
 	public void calculateDays(List<Notifications> notificationList) throws ParseException {
 		for (Notifications notifications : notificationList) {
 			// differentiating date and time
@@ -99,7 +115,14 @@ public class NotificationController {
 
 	}
 	
-	//to update the notification status as deleted  
+	/**
+	 * when user delete the notification, we are updating that notification status as deleted of that particular user
+	 * 
+	 * @param notificationId
+	 * @param orgCode
+	 * @param locationCode
+	 * @return
+	 */
 	@RequestMapping(value = "/deleteNotification", method = RequestMethod.POST)
 	public @ResponseBody String deleteNotification(
 			@RequestParam(value = "notificationId", required = false) Long notificationId,
@@ -109,8 +132,13 @@ public class NotificationController {
 		return "success";
 	}
 
-	
-	//to update all notifications status as deleted 
+	/**
+	 * when user delete all the notification, we are updating all notification status as deleted of that particular user
+	 * @param notificationIds
+	 * @param orgCode
+	 * @param locationCode
+	 * @return
+	 */
 	@RequestMapping(value = "/deleteAllNotification", method = RequestMethod.POST)
 	public @ResponseBody String deleteAllNotification(
 			@RequestParam(value = "notificationIds", required = false) String notificationIds,
