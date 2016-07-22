@@ -184,7 +184,7 @@
                 <!-- Modal content Add Team-->
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content" id="newEmployee">
 	                    <form name="employee_form" id="employee_form" method="post">
 	                      <div class="modal-header">
 	                        <button data-dismiss="modal" class="close" type="button">X</button>
@@ -385,7 +385,7 @@ function projectEmployee(projectId){
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
-    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result + '		</div>';
     	    result = result + '        <div class="project_tabs_inn_table">';
     		result = result + '	<table>';
@@ -498,13 +498,33 @@ function projectEmployee(projectId){
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>'+json.projectStatus+'</b><i id="ac-drop" class="fa fa-edit">';
-	result = result + '						<ul>';
-	result = result + '							<li>Option 1</li>';
-	result = result + '							<li>Option 2</li>';
-	result = result + '							<li>Option 3</li>';
-	result = result + '							<li>Option 4</li>';
-	result = result + '						</ul>';
+	result = result + '					<strong>Status:</strong><span>';
+	result = result +'<select id="projectStatusId" onBlur="inlineEditForProjects('+projectId+',\'projectStatusId\');">';
+				if(json.projectStatus == 'STARTED'){
+					result = result+'<option selected>Started</option>';
+				}else{
+					result = result+'<option>Started</option>';
+				}
+				
+				if(json.projectStatus == 'INPROGRESS'){
+					result = result+'<option selected>In-Progress</option>';
+				}else{
+					result = result+'<option>In-Progress</option>';
+				}
+				
+				if(json.projectStatus == 'COMPLETED'){
+					result = result+'<option selected>Completed</option>';
+				}else{
+					result = result+'<option>Completed</option>';
+				}
+			
+				if(json.projectStatus == 'ONHOLD'){
+					result = result+'<option selected>On-Hold</option>';
+				}else{
+					result = result+'<option>On-Hold</option>';
+				}
+	
+	result = result + '</select>';
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
@@ -528,6 +548,7 @@ function projectEmployee(projectId){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
 		result = result + '<select>';
+		result = result+"<option value=''>Select</option>";
 					for (var i = 0; i < json.clientName.length; i++) {
 						
 						var managers = json.clientName[i];
@@ -537,29 +558,29 @@ function projectEmployee(projectId){
 				    	 var selected = '';
 	   		 	    	 if(json.relationId==id){
 	   		 	    		 selected = 'selected';
+	   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+	   		 	    	 }else{
+	   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
 	   		 	    	 }
-	   		 	    	 result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+	   		 	    	 
+	   		 	    	 
 					}
 		result = result + '</select>';
 	
 	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
-	if(json.projectMembersCount != null && json.projectMembersCount != '' && json.projectMembersCount != 'undefined' && json.projectMembersCount != 0){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Team members:</strong><span>'+json.projectMembersCount+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
-	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span>'+json.startDateStr+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr !=  'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
@@ -875,7 +896,8 @@ function getTeamMembers(projectId) {
     });
     $('#add_employee').attr('data-dismiss','modal');
 	$('#employeeFirstName').val('');
-	$('#employeeLastName').val('');
+	$('#employeeLastName').val('');}
+</script>
 	$('#employeeEmail').val('');
 }
 </script>
@@ -946,5 +968,28 @@ function assignEmployee(){
 	        }
 	  });
   } 
+</script>
+
+ <script>
+ function projectEndtateStr() {
+	 $('#endDateStr').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+	 
+	 
+  } 
+</script>
+<script type="text/javascript">
+function flushEmployee(){
+     $('#employeeFirstName').val('');
+     $('#employeeLastName').val('');
+	 $('#EmailId').val('');
+	 $(".error").removeClass("error");
+	 $('#newEmployee').find('p.jquery_form_error_message').remove();
+}
 </script>
 </html>

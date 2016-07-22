@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -154,10 +155,12 @@ public class ProjectsDashboardController {
 		   OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-		    projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));
+			if(projects.getCreatedDate() != null){
+				projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
+			}
 		    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    	 projects.setEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 		    }
 		    projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
 		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
@@ -174,7 +177,7 @@ public class ProjectsDashboardController {
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				if(projects.getOrgRelationId().getId()!=null){
+				if(projects.getOrgRelationId() !=null){
 					if(projects.getOrgRelationId().getId()==ocl.getId()){
 						projects.setRelationId(ocl.getId());
 					}
@@ -203,7 +206,16 @@ public class ProjectsDashboardController {
 		    }
 		    else if (fieldName.equalsIgnoreCase("description")) {
 		    	projects.setDescription(fieldValue);
-			}  
+			}else if(fieldName.equalsIgnoreCase("endDateStr"))  {
+		    	String pattern = "yyyy-MM-dd";
+		        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		          
+	            Date endtDate = format.parse(fieldValue);
+				projects.setEndDate(endtDate);
+			}else if (fieldName.equalsIgnoreCase("projectStatusId")) {
+		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
+			}
+		    
 		    projects.setUpdatedBy(user.getUserCode());
 		    projects.setUpdatedDate(new Date());
 		    projectsService.updateProject(projects);
