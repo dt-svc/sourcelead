@@ -21,7 +21,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "ACTION_ROLES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="actionRole")
 public class ActionRoles {
 	
 	
