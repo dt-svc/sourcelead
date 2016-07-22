@@ -198,6 +198,7 @@ public class ClientController {
 				project.setStartDate(startDate);
 				project.setEndDate(endDate);
 				project.setProjectStatus(Project_Status.STARTED);
+				project.setCreatedDate(new Date());
 				projectApproverHierarchy.setProjectId(project);
 				User approverUserId1 = new User();
 		    	approverUserId1.setId(Long.parseLong(jsonObj.getString(c+"projectManager")));
