@@ -790,7 +790,25 @@ function getTeamMembers() {
 	        		}else{
 	        			role = 'Employee';
 	        		}
+	        		
+
+	        		 var count = 1;
+	        			       	    $(".myCheckbox").each(function(){
+	        			       	        var localId =this.id;
+	        			       	        if($(this).is(':checked')){
+	        			       		        var startDate = $("#startDate"+localId).val();
+	        			       		        var endDate = $("#endDate"+localId).val();
+	        			       				result = result +"<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+	        			       				result = result +"<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+	        			       				result = result +"<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+	        			       				count++;
+	        			       	        }
+	        			       	    });
+	        		
+	        		
+	        		
 	        		if(opt.user.userType !='Admin'){
+	        			
 	        		output = output + "<tr>";
 	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
 	        		output = output + "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>";
@@ -841,7 +859,6 @@ function assignEmployee(){
 	    result = result +"<input type='hidden' name='employeeMaxCount' id='employeeMaxCount' value='"+count+"'/>";
 	    $("#assignTeamSavingDiv").empty();
 	    $("#assignTeamSavingDiv").append(result);
-	    alert("result"+result);
 }
 </script>
 

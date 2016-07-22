@@ -421,6 +421,11 @@ public class ProjectsController {
 			user.setUserType("Employee");
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(users.getUserCode());
+			user.setUserState(Status.NOT_LOGGEDIN);
+			user.setUserName(jsonObj.getString("EmailId"));
+			String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 				user.setIsMailSent(Status.Y);
 			}else{
@@ -451,9 +456,6 @@ public class ProjectsController {
 			userRole.setCreatedDate(new Date());
 			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
 			
-			
-			String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			
 			//send mail to user
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){

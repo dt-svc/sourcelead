@@ -131,6 +131,7 @@ public class ProjectsDashboardController {
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+                
             }
         }
 		model.addObject(projectsList);
@@ -169,12 +170,16 @@ public class ProjectsDashboardController {
 		    }
 		    projects.setProjectManagerName(approvers);
 		    
-		    
 		    Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getClientLocationId().getOrg().getId();
+				if(projects.getOrgRelationId().getId()!=null){
+					if(projects.getOrgRelationId().getId()==ocl.getId()){
+						projects.setRelationId(ocl.getId());
+					}
+				}
+				clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getId();
 				j++;
 			 }
 			projects.setClientName(clientList);

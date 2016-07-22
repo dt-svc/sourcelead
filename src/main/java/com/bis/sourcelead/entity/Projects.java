@@ -132,6 +132,9 @@ public class Projects {
     @Transient
     private String projectMembersCount;
     
+    @Transient
+    private Long relationId;
+    
     
     @Transient
     Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList;
@@ -394,4 +397,16 @@ public class Projects {
 	public void setProjectMembersCount(String projectMembersCount) {
 		this.projectMembersCount = projectMembersCount;
 	}
+
+	public Long getRelationId() {
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId) {
+		this.relationId = relationId;
+	}
+
+	
+	
+	
 }

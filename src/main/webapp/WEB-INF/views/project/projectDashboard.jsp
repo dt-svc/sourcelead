@@ -534,7 +534,11 @@ function projectEmployee(projectId){
 						var projrctmanager = managers.split('&');
 				    	var name = projrctmanager[0];
 				    	var id = projrctmanager[1];
-						result = result+"<option value="+id+">"+name+"</option>";
+				    	 var selected = '';
+	   		 	    	 if(json.relationId==id){
+	   		 	    		 selected = 'selected';
+	   		 	    	 }
+	   		 	    	 result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
 					}
 		result = result + '</select>';
 	
