@@ -619,8 +619,7 @@ public class ProjectsController {
 			 //setting the Recipient information
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail("venkatkesav24@gmail.com");
-			 //emailMessage.getToEmail()
+			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
 			 emailRecipientList.add(emailRecipient);
 			 
