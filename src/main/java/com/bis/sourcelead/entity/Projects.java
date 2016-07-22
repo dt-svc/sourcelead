@@ -25,6 +25,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -63,6 +64,14 @@ public class Projects {
 	@Column(name = "PROJECT_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Project_Status projectStatus;
+	
+	@Column(name = "IS_MAIL_TO_TEAM_MEMBER")
+	@Enumerated(EnumType.STRING)
+	private Status isMailToTeamMembers;
+	
+	@Column(name = "IS_MAIL_TO_PROJECT_MANAGER")
+	@Enumerated(EnumType.STRING)
+	private Status isMailToProjectManager;
 	
 	@Column(name = "IS_PRIMARY")
     private Integer isPrimary;
@@ -218,6 +227,22 @@ public class Projects {
 
 	public void setProjectStatus(Project_Status projectStatus) {
 		this.projectStatus = projectStatus;
+	}
+
+	public Status getIsMailToTeamMembers() {
+		return isMailToTeamMembers;
+	}
+
+	public void setIsMailToTeamMembers(Status isMailToTeamMembers) {
+		this.isMailToTeamMembers = isMailToTeamMembers;
+	}
+
+	public Status getIsMailToProjectManager() {
+		return isMailToProjectManager;
+	}
+
+	public void setIsMailToProjectManager(Status isMailToProjectManager) {
+		this.isMailToProjectManager = isMailToProjectManager;
 	}
 
 	public Integer getIsPrimary() {

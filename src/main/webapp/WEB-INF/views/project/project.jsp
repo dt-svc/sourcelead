@@ -281,7 +281,7 @@
               <div class="col-md-9">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" value="">
+                    <input type="checkbox" value="Y" name="isMailToTeamMembers">
                     Mail to Team Members</label>
                 </div>
                 <span class="hidden">Select Check Box</span> </div>
