@@ -20,7 +20,7 @@ $(document).ready(function() {
 <script>
   function approvalList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  /*$("#timesheetApprList").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
 	  $.ajax({
            type : "POST",
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
@@ -113,11 +113,56 @@ $(document).ready(function() {
 <div class="timesheet_out">
 	<div class="timesheet_appr_wrap">
 		<div class="timesheet_appr_wrap">
-		<div class="timesheet_appr_table">
-		<div id="timesheetApprList"> 
-	    </div>
-	  </div>
+		<div class="timesheet_head">
+        	<ul>
+                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+                	<div id="filter1ApprovedPop" class="approved_pop">  
+                    	<ul>
+                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">client1</label></li>
+							<li><input type="checkbox" id="c2"><label for="c2">client2</label></li>
+							<li><input type="checkbox" id="c3"><label for="c3">client3</label></li>
+							<li><input type="checkbox" id="c4"><label for="c4">client4</label></li>
+                        </ul>
+                    </div>                	
+                </li>
+                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
+                    	<ul>
+                        	<li><input type="checkbox" value="None" id="c5"><label for="c5">project1</label></li>
+							<li><input type="checkbox" id="c6"><label for="c6">project2</label></li>
+							<li><input type="checkbox" id="c7"><label for="c7">project3</label></li>
+							<li><input type="checkbox" id="c8"><label for="c8">project4</label></li>
+                        </ul>
+                    </div>                	
+                </li>				
+                <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+                	<div id="filter3ApprovedPop" class="approved_pop">
+                    	<ul>
+                        	<li><input type="checkbox" value="None" id="c9"><label for="c9">employee1</label></li>
+							<li><input type="checkbox" id="c10"><label for="c10">employee2</label></li>
+							<li><input type="checkbox" id="c11"><label for="c11">employee3</label></li>
+							<li><input type="checkbox" id="c12"><label for="c12">employee4</label></li>
+                        </ul>
+                    </div>                	
+                </li>				
+                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+                	<div id="filter4ApprovedPop" class="approved_pop" >
+                    	<ul>
+                        	<li><input type="checkbox" value="None" id="c13"><label for="c13">All</label></li>
+							<li><input type="checkbox" id="c14"><label for="c14">Approved</label></li>
+							<li><input type="checkbox" id="c15"><label for="c15">Draft</label></li>
+							<li><input type="checkbox" id="c16"><label for="c16">Rejected</label></li>
+                        </ul>
+                    </div>                	
+                </li>				
+                <div class="clearfix"></div>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
 		
+		<div class="timesheet_appr_table">
+				<div id="timesheetApprList">   </div>
+	    </div>
 	</div>
 	
 </div>
@@ -718,6 +763,55 @@ function checkHours(){
 	
 }
 </script> 
+
+<script>
+$(document).ready(function() {
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter3ApprovePop").click(function(){
+		$("#filter3ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter3ApprovedPop").slideUp(200);
+    });
+    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+     $("#filter4ApprovePop").click(function(){
+		$("#filter4ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter4ApprovedPop").slideUp(200);
+    });
+    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+});
+
+</script>
 
 <div class="time_pop time_pop_a" id="timeSheetErrorMsg">
 </div> 
