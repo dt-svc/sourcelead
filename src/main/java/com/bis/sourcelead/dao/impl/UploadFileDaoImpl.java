@@ -195,7 +195,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		User user = userService.findByEmail(email);
 		if(user != null){
 			isUserFound = true;
-			userImport.setReason("duplicate with");;
+			userImport.setReason("duplicate with data");;
 		}
 		return isUserFound;
 	}
@@ -243,7 +243,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Row row = rowIterator.next();
 						boolean isValidated = false;
 						if (row.getRowNum() > 0) {
-							isValidated = validateExeclData(row,userImport);
+							isValidated = validateExeclData(row,userImport,fileName);
 						}
 						if (isValidated) {
 							if (row.getRowNum() > 0) { // Excluding column names
@@ -368,7 +368,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					Row row = rowIterator.next();
 					boolean isValidated = false;
 					if (row.getRowNum() > 0) {
-						isValidated = validateExeclData(row,userImport);
+						isValidated = validateExeclData(row,userImport,fileName);
 					}
 					if (isValidated) {
 						if (row.getRowNum() > 0) { // Excluding column names
@@ -815,9 +815,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
  * Validate Excel data whle storing it into Database
  * @param row
  * @param userImport 
+ * @param fileName 
  * @return
  */
-	private boolean validateExeclData(Row row, UsersImport userImport) {
+	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
 
 		logger.info("Reading Row :" + row.getRowNum() + " records");
 		boolean isValidated=false; 
@@ -827,12 +828,39 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
-			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
-				return false;
-			}*/
+
+			
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
 				userImport.setReason("Invalid email");
 				return false;
+			}
+			
+			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+			    if (fileName.toLowerCase().endsWith("xlsx")) {
+					  XSSFCell myCell4 = (XSSFCell) row.getCell(4);
+					     if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+						  myCell4.setCellType(Cell.CELL_TYPE_STRING);
+						String mobileNumber = myCell4.getStringCellValue();
+						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+							isValidated = isMobileNumberValid(mobileNumber);
+							userImport.setReason("Invalid MobileNumber");
+							return isValidated;
+							
+						}
+					}
+				}else{
+					HSSFCell myCell4 = (HSSFCell) row.getCell(4);
+					if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						myCell4.setCellType(Cell.CELL_TYPE_STRING);
+						String mobileNumber = myCell4.getStringCellValue();
+						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+							isValidated = isMobileNumberValid(mobileNumber);
+							userImport.setReason("Invalid MobileNumber");
+							return isValidated;
+					}
+				}
+			
+			}
 			}
 			
 			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
@@ -840,14 +868,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setReason("Invalid MobileNumber");
 				return isValidated;
 			}
+			
+			
+			
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 				isValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
 				userImport.setReason("Invalid Date");
 				return isValidated;
-			}//
-			
-			
-
+			}
 			if (row.getCell(8) == null || "".endsWith(row.getCell(8).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
@@ -1043,12 +1071,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			flag=false;
 		}
 		return flag;
-			
-//		System.out.println("1".matches(regex));
-//		System.out.println("123rr45".matches(regex));
-//		System.out.println("123ff456789".matches(regex));
-		
-		
 	}
 		
 

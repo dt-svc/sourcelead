@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -196,6 +197,7 @@ public class ClientController {
 			    Date endDate = getDateFormat(endDateString);
 				project.setStartDate(startDate);
 				project.setEndDate(endDate);
+				project.setProjectStatus(Project_Status.STARTED);
 				projectApproverHierarchy.setProjectId(project);
 				User approverUserId1 = new User();
 		    	approverUserId1.setId(Long.parseLong(jsonObj.getString(c+"projectManager")));
