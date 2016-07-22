@@ -246,7 +246,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			    }
 				return "success";
 		}
-	
+	/**
+	 * to get the start date and end date of the particular project by projectId
+	 * @param projectId
+	 * @return
+	 * @throws Exception
+	 */
 		//to get a start date and end date of the project
 	 @RequestMapping(value = "/getStartAndEndOfProject" , method = RequestMethod.POST)
 	 public @ResponseBody String getStartAndEndOfProject(@RequestParam(value="projectId", required=false) Long projectId) throws Exception {
