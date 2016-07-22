@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "PROJECTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projects")
 public class Projects {
 	
 	@Id
@@ -128,6 +128,9 @@ public class Projects {
     
     @Transient
     private String client;
+    
+    @Transient
+    private String projectMembersCount;
     
     
     @Transient
@@ -383,5 +386,12 @@ public class Projects {
 	public void setClient(String client) {
 		this.client = client;
 	}
-	
+
+	public String getProjectMembersCount() {
+		return projectMembersCount;
+	}
+
+	public void setProjectMembersCount(String projectMembersCount) {
+		this.projectMembersCount = projectMembersCount;
+	}
 }

@@ -23,12 +23,50 @@
 	}
 </script>
 
-<script>
+<script type="text/javascript">
   var loadFile = function(event) {
     var output = document.getElementById('orgImage');
-    output.src = URL.createObjectURL(event.target.files[0]);
+    
+    var uploadedImage = document.getElementById('uploadedImage').value;
+    
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
+    	$("#save_button").attr("disabled", "disabled");
+ 		$( "#save_button").addClass('button').val('Processing..');
+ 		alertMessage();
+    	
+    }else{
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	$( "#save_button" ).addClass('save_button').val('Save');
+		$("#save_button").removeAttr("disabled");
+    }
+    
   };
 </script>
+
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>png extension not allowed</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 
 <body>
 
@@ -66,12 +104,12 @@
 				  <button type="button" class="btn btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-primary">
-                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;">
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
                 </label>
 				  </div>
 				  </div>
 			  </div>
-			  
+			  <div id="popUp" ></div>
 			  			
 				<div class="col-xs-12 col-sm-9 col-md-9">
 					<div class="row">
@@ -79,7 +117,7 @@
 							<div class="form-group">
 							<label class="col-md-3">Company</label>
 							<div class="col-md-9">
-							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Alphanumeric validate_length length1-50"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							<div class="form-group">
@@ -105,38 +143,38 @@
 						<div class="form-group mt">
 							<label class="col-md-3">State</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="state" field-name="State"  value="${SourceLeadWeb_orgLocations.state}" />
+							<input type="text"  class="form-control" name="state" field-name="State"  data-validation="validate_Alphabet validate_length length1-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.state}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="city" field-name="City"  value="${SourceLeadWeb_orgLocations.city}" />
+							<input type="text"  class="form-control" name="city" field-name="City" data-validation="validate_Alphabet validate_length length1-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.city}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Zip</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="zipcode" field-name="Zip"   value="${SourceLeadWeb_orgLocations.zipCode}" />
+							<input type="text"  class="form-control" name="zipcode" field-name="Zip" data-validation="validate_int validate_length length1-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="phone" field-name="phone"  value="${SourceLeadWeb_orgLocations.phone}" />
+							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_int validate_length length1-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax"  value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_int validate_length length1-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						</div>
 						</div>
 					<div class="clearfix">
 					<div class="pull-right">
-					<input type="submit" value="Save" class="btn btn-primary mr">
+					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 					</div>
@@ -170,12 +208,17 @@ var validationSettings = {
          $('body').on('submit', '#orgSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-	          	    var frm = $('#orgSettings_form').serialize();
-	          	    frm = "testvalue=testvalue&"+frm;
-	          		var con = JSON.stringify(frm);
+	          		
+	          		var frm = $('#orgSettings_form').serializeFormJSON();
+	            	var con = JSON.stringify(frm);
+				    con = con.replace(/[{}]/g, "");
+	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		var form = $('#orgSettings_form')[0];
 	           		var formData = new FormData(form);
+	           		
+	           		$("#save_button").attr("disabled", "disabled");
+             		$( "#save_button").addClass('button').val('Processing..');
 	          		
 	                  $.ajax({
 	              	      type: "POST",
@@ -204,8 +247,29 @@ var validationSettings = {
          $('#orgSettings_form').validateOnBlur(false, validationSettings); 
             
      
-	</script> 
+</script> 
 
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 
 
 <jsp:include page="masterFooter.jsp" />

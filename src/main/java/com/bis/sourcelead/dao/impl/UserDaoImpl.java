@@ -150,7 +150,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("getUserById start");
-		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		users = session.createQuery("from User where id=:id" ).setCacheable(true).setLong( "id", Id ).list();
 		logger.debug("getUserById end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -169,6 +169,17 @@ public class UserDaoImpl implements UserDao {
 	    List<User> userRoleList = session.createQuery(query.toString()).list();
         return userRoleList;
         
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '1' OR userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId ";
+	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).list();
+        return userRoleList;
 	}
 	
 	

@@ -29,7 +29,7 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
 public class Org {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +52,7 @@ public class Org {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
     private User user;
 	

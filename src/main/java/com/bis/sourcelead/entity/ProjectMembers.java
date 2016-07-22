@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembers")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProjectMembers {
 	
@@ -93,8 +93,18 @@ public class ProjectMembers {
     @Transient
     private String projectEndDateStr;  
     
+    @Column(name = "TERMINATE_REASON")
+    private String terminateReason;
     
     
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
+	}
+
 	public String getSubmittedHrs() {
 		return submittedHrs;
 	}

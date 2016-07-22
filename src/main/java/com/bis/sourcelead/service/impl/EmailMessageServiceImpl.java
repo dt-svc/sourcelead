@@ -61,15 +61,14 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		
 		
-        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.host", "secure.emailsrvr.com");
         props.put("mail.smtp.localhost", "localhost");
-        props.put("mail.stmp.user", "sourcelead.bis@gmail.com");          
+        props.put("mail.stmp.user", "qatimesheets@microinfoinc.com");          
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.password", "password");
         props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class",
-                   "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
 	        
@@ -77,8 +76,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
         Session session = Session.getDefaultInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                String username = "sourcelead.bis@gmail.com";
-                String password = "Pwd1234567";
+                String username = "qatimesheets@microinfoinc.com";
+                String password = "Welcome1";
                 return new PasswordAuthentication(username,password); 
             }
         });
@@ -87,7 +86,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("sourcelead.bis@gmail.com", emailMessage.getFromName()));
+			message.setFrom(new InternetAddress("qatimesheets@microinfoinc.com", emailMessage.getFromName()));
 			
             ArrayList<String> recipientList = new ArrayList<String>();
 			

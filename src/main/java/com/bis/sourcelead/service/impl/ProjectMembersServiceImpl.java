@@ -84,11 +84,19 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsByUserId(userId);
 	}
 
+
 	@Override
-	public Integer updateProjectMemberStatus(Long projectMemberId) {
-		// TODO Auto-generated method stub
-		return projectMembersDao.updateProjectMemberStatus(projectMemberId);
+	public Integer getAllProjectMembersCountByProjectId(Long id) throws Exception {
+		
+		Integer projectMembersCount = projectMembersDao.getAllProjectMembersCountByProjectId(id);
+		
+		return projectMembersCount;
 	}
 	
+
+	@Override
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId ,String reason) {
+		return projectMembersDao.updateProjectMemberDeletedReason(projectMemberId,reason);
+	}
 
 }

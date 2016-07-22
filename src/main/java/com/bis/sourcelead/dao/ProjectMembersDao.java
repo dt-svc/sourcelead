@@ -22,11 +22,11 @@ public interface ProjectMembersDao {
 	
 	List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
 	
-	
 	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 
-	public Integer updateProjectMemberStatus(Long projectMemberId);
+	public Integer getAllProjectMembersCountByProjectId(Long id);
 	
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 }

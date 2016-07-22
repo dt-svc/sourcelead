@@ -1,6 +1,14 @@
 package com.bis.sourcelead.web;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +17,9 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,6 +39,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
@@ -57,12 +70,17 @@ public class UserProfileController {
 	   
 	   
 	   @RequestMapping(value = "/saveUserProfile" , method = RequestMethod.POST)
-	   public String saveUserProfile(UserProfile userProfile,MultipartHttpServletRequest request) {
+	   public String saveUserProfile(@RequestParam(value="json", required=false) String json ,MultipartHttpServletRequest request) throws Exception {
 			
-	  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
 		   try {
 			user = userService.saveUserProfile(userProfile, request, user);
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,8 +90,12 @@ public class UserProfileController {
 	   
 	   
 	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
-	   public String passwordSettings(UserProfile userProfile,HttpServletRequest request) {
+	   public String passwordSettings(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   json = "{"+json+"}";
+		   JSONObject jsonObj = new JSONObject(json);
+		   Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		   UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
 		   
 		   if(sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())){
 			   user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
@@ -93,7 +115,7 @@ public class UserProfileController {
 	   
 	   
      @RequestMapping(value = "/displayUserImage/{userId}" , method = RequestMethod.GET)
-     public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) {
+     public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
     	 
     	 User user = null;
 			try {
@@ -108,6 +130,15 @@ public class UserProfileController {
 					ImageIO.write(bi, "jpg", out);
 					out.close();
 					
+					    /*InputStream in = new ByteArrayInputStream(user.getDocFile());
+				        final BufferedImage source = ImageIO.read(in);
+				        final int color = source.getRGB(0, 0);
+				        final Image imageWithTransparency = makeColorTransparent(source, new Color(color));
+				        final BufferedImage transparentImage = imageToBufferedImage(imageWithTransparency);
+
+				        OutputStream out = response.getOutputStream();
+				        ImageIO.write(transparentImage, "PNG", out);*/
+					
 				}
 				
 			} catch (IOException e) {
@@ -118,6 +149,41 @@ public class UserProfileController {
 				e1.printStackTrace();
 			}
 			
+     }
+     
+     
+     private static BufferedImage imageToBufferedImage(final Image image)
+     {
+        final BufferedImage bufferedImage =
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g2 = bufferedImage.createGraphics();
+        g2.drawImage(image, 0, 0, null);
+        g2.dispose();
+        return bufferedImage;
+      }
+     
+     
+     public static Image makeColorTransparent(final BufferedImage im, final Color color)
+     {
+        final ImageFilter filter = new RGBImageFilter()
+        {
+           public int markerRGB = color.getRGB() | 0xFFFFFFFF;
+
+           public final int filterRGB(final int x, final int y, final int rgb)
+           {
+              if ((rgb | 0xFF000000) == markerRGB)
+              {
+                 return 0x00FFFFFF & rgb;
+              }
+              else
+              {
+                 return rgb;
+              }
+           }
+        };
+
+        final ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
      }
 
 }

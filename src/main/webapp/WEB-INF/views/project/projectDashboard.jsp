@@ -29,7 +29,7 @@
             <h2>Projects</h2>
           </div>
            <div class="pull-right">
-             <a href="<c:url value='/project'/>">New Project &raquo;</a>
+             <a href="<c:url value='/project'/>">Create New Project &raquo;</a>
           </div>
         </section>
 
@@ -250,7 +250,7 @@
                           <div class="form-group">
                             <label class="col-md-3">Task Name</label>
                             <div class="col-md-9">
-                               <input type="text" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
+                               <input type="text" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control" field-name="Task Name" data-validation="required">
                             </div>
                           </div>
                           <div class="form-group">
@@ -519,9 +519,11 @@ function projectEmployee(projectId){
 	
 	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
+	if(json.projectMembersCount != null && json.projectMembersCount != '' && json.projectMembersCount != 'undefined' && json.projectMembersCount != 0){
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Team members:</strong><span>25</span><div class="clearfix"></div>';
+	result = result + '					<strong>Team members:</strong><span>'+json.projectMembersCount+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
@@ -535,7 +537,7 @@ function projectEmployee(projectId){
 	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
-	result = result + '				<textarea placeholder="Description" onfocusout="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
+	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
 	result = result + json.description;
 	result = result + '				</textarea>';
 	result = result + '				<div class="clearfix"></div>';
@@ -598,6 +600,14 @@ function  inlineEditForProjects(projectId,localFieldName){
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+   }; 
+	
+	if ($('#project_form').validate(false, validationSettings)){
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -629,7 +639,16 @@ function addTasks(){
 		
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		 return true;
+	 	}else{
+			return false;
+	 }
 }
+
+$('body').on('blur', '#project_form', function() {
+	$("#project_form").showHelpOnFocus();
+	$("#project_form").validateOnBlur(false, validationSettings);  
+});
 </script>
 <script type="text/javascript">
  function editTask(rowId) {
@@ -675,7 +694,7 @@ $(document).ready(function(){
     var projectId = $("#projectId").val();
     var frm = $('#project_form').serializeFormJSON();
     var con = JSON.stringify(frm);
-    
+    con = con.replace(/[{}]/g, "");
     $.ajax({
     	type: "POST",
         url: sourceleadUrl+"/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectId="+projectId, 
@@ -708,6 +727,8 @@ $(document).ready(function(){
 	       	 $("#tab-2").append(result);
         },
     });
+    
+    
  }
  </script>
  <script type="text/javascript">
@@ -744,11 +765,12 @@ $(document).ready(function(){
 			var sourceleadUrl ='${sourceleadUrl}';
 			var frm = $('#employee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
 				success: function(data) {
-				
+					 $('#addTeam').modal('hide');
 				},
 			});
 			  return true;

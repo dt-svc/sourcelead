@@ -70,20 +70,20 @@
             <div class="form-group" id="ProjectIdDiv">
                   <label class="col-lg-3">Project Id</label>
                   <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" class="form-control" onblur="validateProjectSequeneNumber();">
+                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_length length2-50" data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
                   </div>
              </div>
                 
             <div class="form-group">
               <label class="col-md-3"> Project Name <span class="text-danger">*</span> </label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="ProjectName" field-name="Project Name" data-validation="required" value="">
+                <input type="text" class="form-control" name="ProjectName"  data-validation="required validate_length length2-250" field-name="Project Name" value="">
                 <span class="hidden">Project Name</span> </div>
             </div>
             <div class="form-group">
               <label class="col-md-3"> Project Description </label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="3" name="ProjectDescription"></textarea>
+                <textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500" data-validation-optional="true"></textarea>
                 <span class="hidden">Project Description</span> </div>
             </div>
             <div class="form-group">
@@ -144,7 +144,7 @@
                         </div>
                         <div class="form-horizontal row custom-form">
                           <div class="col-xs-12 col-lg-7">
-                          <div class="form-group">
+                          <div class="form-group" id="taskNameDIV">
                             <label class="col-md-3">Task Name</label>
                             <div class="col-md-9"> 
                               <input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
@@ -163,7 +163,7 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+                       <!--  <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button> -->
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                       </div>
                     </div>
@@ -392,7 +392,7 @@
 				            <div class="form-group" id="companyWebsiteDiv">
 				              <label class="col-lg-3">Client Website</label>
 				              <div class="col-lg-9">
-				                <input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();"  field-name="Client Website" data-validation="required">
+				                <input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();"  field-name="Client Website" data-validation="required ">
 				              </div>
 				            </div>
 				          </div>
@@ -446,6 +446,13 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
+	
+	$('#taskNameDIV').find('p.jquery_form_error_message').remove();
+	
+	   if($('#taskName').val()==''){
+	   $("input#taskName").after("<p class='jquery_form_error_message'>Task Name is required</span>");
+	       return true;
+	   }
 	
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -696,7 +703,7 @@ var addtaskcount =null;
 	        url: sourceleadUrl+"/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
 	        success: function(result) {
 	        	if(result == 'projectDashboard'){
-	        		location.replace(sourceleadUrl+"/sourcelead/projectDashboard");  
+	        		location.replace(sourceleadUrl+"/projectDashboard");  
 	        	}
 		        
 	        },
@@ -798,7 +805,7 @@ function getTeamMembers() {
         error: function(e){
         }
     });
-    $('#add_employee').attr('data-dismiss','modal');
+   // $('#add_employee').attr('data-dismiss','modal');
 	$('#employeeFirstName').val('');
 	$('#employeeLastName').val('');
 	$('#employeeEmail').val('');
@@ -861,8 +868,8 @@ function validateWebsite(){
 	 $('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 	 if(website != null && website != ''){
 		
-		 $("#save_client").attr("disabled", "disabled");
-		 $( "#save_client" ).addClass('button').val('Processing..');
+		 //$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
        	            url: sourceleadUrl+"/ws/validateClientWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
@@ -876,7 +883,7 @@ function validateWebsite(){
 			        	}
 			        	else{
 			        		//New WebSite class="form-control"
-			        		$("#save_client").removeAttr("disabled");
+			        		//$("#save_client").removeAttr("disabled");
 				    		$('input#companyWebsite').removeAttr( "class record-exist record-exist-errormsg");
 				    		$('input#companyWebsite').attr('class','valid form-control');
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();

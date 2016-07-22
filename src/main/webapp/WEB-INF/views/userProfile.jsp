@@ -65,12 +65,12 @@
 				  <button type="button" class="btn btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-primary">
-                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;">
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
                 </label>
 				  </div>
 				  </div>
 			  </div>
-			  
+			 <div id="popUp" ></div>  
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
 			   <div class="row mt">
@@ -78,13 +78,13 @@
 					<div class="form-group">
 					<label class="col-md-4">First Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphabet validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphabet validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -100,13 +100,13 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required" />
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required validate_Alphabet validate_length length1-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" />
+							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length1-20" />
 							</div>
 						  </div>
 						  <div class="form-group">
@@ -119,7 +119,7 @@
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">
-							  <input type="submit" class="btn btn-primary mr" value="Save">
+							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
 							</div>
 					  </div>
@@ -220,15 +220,48 @@
 </script>
 
 
-
-<script>
+<script type="text/javascript">
   var loadFile = function(event) {
     var output = document.getElementById('userImage');
-    output.src = URL.createObjectURL(event.target.files[0]);
+    
+    var uploadedImage = document.getElementById('uploadedImage').value;
+    
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
+    	$("#profile_submit").attr("disabled", "disabled");
+ 		$( "#profile_submit").addClass('button').val('Processing..');
+ 		alertMessage();
+    	
+    }else{
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	$( "#profile_submit" ).addClass('profile_submit').val('Save');
+		$("#profile_submit").removeAttr("disabled");
+    }
+    
   };
 </script>
 
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>png extension not allowed</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 
@@ -243,12 +276,17 @@ var validationSettings = {
          $('body').on('submit', '#profileSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var frm = $('#profileSettings_form').serialize();
-            	    frm = "testvalue=testvalue&"+frm;
-            		var con = JSON.stringify(frm);
+            		
+            		var frm = $('#profileSettings_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+            		
             		var sourceleadUrl ='${sourceleadUrl}';
             		var form = $('#profileSettings_form')[0];
              		var formData = new FormData(form);
+             		
+             		$("#profile_submit").attr("disabled", "disabled");
+             		$( "#profile_submit").addClass('button').val('Processing..');
             		
                     $.ajax({
                 	      type: "POST",
@@ -289,10 +327,15 @@ var validationSettings = {
          $('body').on('submit', '#passwordSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var frm = $('#passwordSettings_form').serialize();
-            	    frm = "testvalue=testvalue&"+frm;
-            		var con = JSON.stringify(frm);
+            		
+            		var frm = $('#passwordSettings_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+            		
             		var sourceleadUrl ='${sourceleadUrl}';
+            		
+            		$("#save_button").attr("disabled", "disabled");
+             		$( "#save_button").addClass('button').val('Processing..');
             		
                     $.ajax({
                 	      type: "POST",
@@ -324,5 +367,27 @@ var validationSettings = {
             
      
 	</script> 
+	
+	
+	<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 
 </html>

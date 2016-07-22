@@ -1,9 +1,9 @@
 package com.bis.sourcelead.web;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +14,18 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
-
 
 
 /**
@@ -36,8 +36,8 @@ import com.bis.sourcelead.service.UserService;
  */
 
 @Controller
-@RestController
 @PropertySource(value = { "classpath:config/application.properties" })
+@ControllerAdvice
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -74,15 +74,27 @@ public class HomeController {
 		System.out.println(" *** HomeController init with: " + applicationContext);
 	}
 
-   @RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage() {
-
-			ModelAndView model = new ModelAndView();
-			model.setViewName("login");
-			return model;
-
+	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
+	public String defaultPage() {
+		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		 if(auth != null && auth.getPrincipal() != null){
+				return "redirect:/dashboard";
+		 }
+		 else{
+				return "redirect:/login";
+		 }
 	}
-   
+	
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public String customExceptionPage(HttpRequestMethodNotSupportedException e){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		 if(auth != null && auth.getPrincipal() != null){
+				return "redirect:/dashboard";
+		 }
+		 else{
+				return "redirect:/login";
+		 }
+	}
    
    
    @RequestMapping(value = "/registration")
@@ -129,19 +141,26 @@ public class HomeController {
 
 	}
 
-	@RequestMapping(value = "/login")
-	public ModelAndView login(@RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
+	@RequestMapping(value = "/login",  method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout) {
 		ModelAndView model = new ModelAndView();
-
-		if (logout != null) {
-			model.addObject("msg", "You've been logged out successfully.");
-		}
-		model.setViewName("login");
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
+			return new ModelAndView("redirect:/dashboard");
+	    }
+		 else{
+			 if (logout != null) {
+					model.addObject("msg", "You've been logged out successfully.");
+			 }
+			 model.setViewName("login");
+		    	 
+		 }
 		return model;
-
 	}
 	
 	
+			
 	 @RequestMapping(value = { "/ehCacheTest"}, method = RequestMethod.GET)
 	  	public ModelAndView ehCachePage() {
 	  			ModelAndView model = new ModelAndView();
