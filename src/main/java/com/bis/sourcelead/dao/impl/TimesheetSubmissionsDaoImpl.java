@@ -245,9 +245,16 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				  Object[] list = (Object[])result;
 				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)list[0];
 				  java.sql.Timestamp endDateTimeStamp = (java.sql.Timestamp)list[1];
-				
-				  Date utilStartDate = new Date(startDateTimeStamp.getTime());
-				  Date utilEndDate = new Date(endDateTimeStamp.getTime());
+				  
+				  Date utilStartDate = null ;
+				  Date utilEndDate = null ;
+				  if(startDateTimeStamp != null){
+					   utilStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+				  if(endDateTimeStamp != null){
+					   utilEndDate = new Date(endDateTimeStamp.getTime());
+				  }
+				 
 				  dateList.put("STARTDATE",utilStartDate);
 				  dateList.put("ENDDATE",utilEndDate);
 			  }
