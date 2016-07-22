@@ -79,7 +79,7 @@
 							<div class="form-group">
 							<label class="col-md-3">Company</label>
 							<div class="col-md-9">
-							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Alphanumeric validate_length length1-50"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							<div class="form-group">
@@ -105,31 +105,31 @@
 						<div class="form-group mt">
 							<label class="col-md-3">State</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="state" field-name="State"  value="${SourceLeadWeb_orgLocations.state}" />
+							<input type="text"  class="form-control" name="state" field-name="State"  data-validation="validate_Alphabet validate_length length1-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.state}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="city" field-name="City"  value="${SourceLeadWeb_orgLocations.city}" />
+							<input type="text"  class="form-control" name="city" field-name="City" data-validation="validate_Alphabet validate_length length1-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.city}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Zip</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="zipcode" field-name="Zip"   value="${SourceLeadWeb_orgLocations.zipCode}" />
+							<input type="text"  class="form-control" name="zipcode" field-name="Zip" data-validation="validate_int validate_length length1-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="phone" field-name="phone"  value="${SourceLeadWeb_orgLocations.phone}" />
+							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_int validate_length length1-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax"  value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_int validate_length length1-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						</div>
