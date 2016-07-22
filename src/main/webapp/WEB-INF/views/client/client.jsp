@@ -472,15 +472,15 @@
 			return true;
 		}
 
-		if ($('#projectName').val() == '' || $('#projectId').val() == 0
-				|| $('#projectId').val() == null) {
+		if ($('#projectName').val() == '' || $('#projectName').val() == 0
+				|| $('#projectName').val() == null) {
 			$("input#projectName")
 					.after(
 							"<p class='jquery_form_error_message'>Enter Project Name</span>");
 			return true;
 		}
-		if ($('#projectStartDate').val() == '' || $('#projectId').val() == 0
-				|| $('#projectId').val() == null) {
+		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0
+				|| $('#projectStartDate').val() == null) {
 			$("input#projectStartDate")
 					.after(
 							"<p class='jquery_form_error_message'>Enter Project Start Date</span>");
@@ -682,7 +682,7 @@
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
-				$("#EndDate").datepicker("option", "minDate", dt);
+				$("#projectEndDate").datepicker("option", "minDate", dt);
 			}
 		});
 
@@ -691,7 +691,7 @@
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
-				$("#StartDate").datepicker("option", "maxDate", dt);
+				$("#projectStartDate").datepicker("option", "maxDate", dt);
 			}
 		});
 	};
