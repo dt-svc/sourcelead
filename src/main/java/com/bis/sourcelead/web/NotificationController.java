@@ -46,6 +46,7 @@ public class NotificationController {
 	@Autowired
 	private NotificationsService notificationsService;
 
+	//to change the status of the notification as read 
 	@RequestMapping(value = "/notificationStatusAsRead", method = RequestMethod.POST)
 	public @ResponseBody String notificationStatusAsRead(@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "orgCode", required = false) String orgCode,
@@ -55,7 +56,7 @@ public class NotificationController {
 
 	}
 
-	
+	//to get the notification list by specific user
 	@RequestMapping(value = "/notificationsList")
 	public ModelAndView notificationsList(HttpServletRequest request) throws ParseException {
 		ModelAndView model = new ModelAndView();
@@ -74,7 +75,7 @@ public class NotificationController {
 		return model;
 
 	}
-
+	// to calculate the days b/w the specific dates 
 	public void calculateDays(List<Notifications> notificationList) throws ParseException {
 		for (Notifications notifications : notificationList) {
 			// differentiating date and time
@@ -84,7 +85,6 @@ public class NotificationController {
 			final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
 			final Date dateObj = sdf.parse(parts[1].toString());
 			notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
-
 			// calculating days b/w dates
 			Date currentDate = new Date();
 			Date d1 = notifications.getCreatedDate();
@@ -98,7 +98,8 @@ public class NotificationController {
 		}
 
 	}
-
+	
+	//to update the notification status as deleted  
 	@RequestMapping(value = "/deleteNotification", method = RequestMethod.POST)
 	public @ResponseBody String deleteNotification(
 			@RequestParam(value = "notificationId", required = false) Long notificationId,
@@ -109,7 +110,7 @@ public class NotificationController {
 	}
 
 	
-
+	//to update all notifications status as deleted 
 	@RequestMapping(value = "/deleteAllNotification", method = RequestMethod.POST)
 	public @ResponseBody String deleteAllNotification(
 			@RequestParam(value = "notificationIds", required = false) String notificationIds,

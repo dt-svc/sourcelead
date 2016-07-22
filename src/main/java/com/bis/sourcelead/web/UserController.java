@@ -110,8 +110,10 @@ public class UserController {
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		request.setAttribute("userId", userId);
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		// this method is also using /userCreation 
 		Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		model.addObject("org_projectsList", projectsList);
 		model.setViewName("users/userSummary");
@@ -328,7 +330,7 @@ public class UserController {
 
 		return "success";
 	}
-
+	//to get all project details by user id
 	@RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
@@ -366,7 +368,8 @@ public class UserController {
 		resultJson = toJSON(allProjectsList);
 		return resultJson;
 	}
-
+	
+	//to assign the project to the specific user
 	@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
 	public @ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
@@ -426,6 +429,7 @@ public class UserController {
 		return "success";
 	}
 
+	//to save the reason when we terminate the user from project 
 	@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 	public @ResponseBody String saveReason(
 			@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
@@ -434,7 +438,15 @@ public class UserController {
 		logger.info("updated records" + updatedCount);
 		return "success";
 	}
-
+	
+	/**
+	 * 
+	 * @param endDate
+	 * @param projectId
+	 * @return
+	 * @throws Exception
+	 */
+	// to update the end date when we change the end date of project in assign project
 	@RequestMapping(value = "/updateEndDateByProjectId", method = RequestMethod.POST)
 	public String updateProjectTaskById(@RequestParam(value = "endDate", required = false) Date endDate,
 			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
