@@ -78,13 +78,13 @@
 					<div class="form-group">
 					<label class="col-md-4">First Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphabet validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphabet validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -100,13 +100,13 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required" />
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required validate_Alphabet validate_length length1-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" />
+							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length1-20" />
 							</div>
 						  </div>
 						  <div class="form-group">
