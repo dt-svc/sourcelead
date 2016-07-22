@@ -29,7 +29,7 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
 public class Org {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

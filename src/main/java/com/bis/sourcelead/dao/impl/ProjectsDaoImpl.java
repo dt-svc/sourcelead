@@ -234,7 +234,10 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		String query = "select projects.id from Projects projects where projects.orgLocationsId = :orgLocationId and "
 				+ "projects.id IN (select pah.projectId from ProjectApproverHierarchy pah  where pah.approverUserId = :userId)";
-		List<Long> projectsIdList =  session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+		List<Long> projectsIdList =  session.createQuery(query.toString())
+									.setLong("userId", userId)
+									.setLong("orgLocationId", orgLocationId)
+									.setCacheable(true).list();
 		
 		return projectsIdList;
 

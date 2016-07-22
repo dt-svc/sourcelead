@@ -1,8 +1,6 @@
 package com.bis.sourcelead.web;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +14,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.UserService;
 
 @Controller
 @PropertySource(value = { "classpath:config/application.properties" })
+@ControllerAdvice
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -74,7 +76,6 @@ public class HomeController {
 
 	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
 	public String defaultPage() {
-	     ModelAndView model = new ModelAndView();
 		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		 if(auth != null && auth.getPrincipal() != null){
 				return "redirect:/dashboard";
@@ -83,7 +84,17 @@ public class HomeController {
 				return "redirect:/login";
 		 }
 	}
-   
+	
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public String customExceptionPage(HttpRequestMethodNotSupportedException e){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		 if(auth != null && auth.getPrincipal() != null){
+				return "redirect:/dashboard";
+		 }
+		 else{
+				return "redirect:/login";
+		 }
+	}
    
    
    @RequestMapping(value = "/registration")
