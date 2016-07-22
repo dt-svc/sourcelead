@@ -112,6 +112,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
 		
+		
 	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){
 		try {
 			
