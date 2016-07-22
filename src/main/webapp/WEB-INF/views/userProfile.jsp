@@ -65,12 +65,12 @@
 				  <button type="button" class="btn btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-primary">
-                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;">
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
                 </label>
 				  </div>
 				  </div>
 			  </div>
-			  
+			 <div id="popUp" ></div>  
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
 			   <div class="row mt">
@@ -220,15 +220,48 @@
 </script>
 
 
-
-<script>
+<script type="text/javascript">
   var loadFile = function(event) {
     var output = document.getElementById('userImage');
-    output.src = URL.createObjectURL(event.target.files[0]);
+    
+    var uploadedImage = document.getElementById('uploadedImage').value;
+    
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
+    	$("#profile_submit").attr("disabled", "disabled");
+ 		$( "#profile_submit").addClass('button').val('Processing..');
+ 		alertMessage();
+    	
+    }else{
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	$( "#profile_submit" ).addClass('profile_submit').val('Save');
+		$("#profile_submit").removeAttr("disabled");
+    }
+    
   };
 </script>
 
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>png extension not allowed</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 
