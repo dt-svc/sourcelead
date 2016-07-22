@@ -13,6 +13,9 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
  <div class="wraper"> 
       <!-- Content Area -->
       <section class="content-wraper">
@@ -298,8 +301,9 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						   result = result + ' <td><div><input type="text" value="'+endDate+'" id = "endDateId"  name ="endDateId" class="project_inline_field" onBlur="inlineEditForEndDate(\''+json.id+'\',\'endDateId\');"></div></td>';
-						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
+						  // result = result + ' <td><div><input type="text" value="'+endDate+'" id = "endDate"  name ="endDate" class="project_inline_field" onBlur="inlineEditForEndDate(\''+json.id+'\',\'endDate\');"></div></td>';
+						   result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById();" onBlur="inlineEditForEndDate(\''+json.id+'\');"/></div></td>';
+						  result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
@@ -895,6 +899,11 @@ function getStartandEndDate(){
 <script>
   $( function() {
 	  
+	  /* $('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	   */
 	  $('#StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
@@ -933,6 +942,7 @@ function getStartandEndDate(){
 		$("#popUp").empty();
 		 $(".project_inn_mask").fadeOut(200);
 	}
+  
 </script>
 <script> 
 function saveReason(projectMemberId,userId){
@@ -962,24 +972,27 @@ function saveReason(projectMemberId,userId){
 }
 </script>
 <script> 
-function inlineEditForEndDate(projectId,localFieldName){
-
-	var val = document.getElementById("endDateId").value;
-	alert("projectId"+val);
-	var fieldName = localFieldName;
-	alert("fieldName"+fieldName);
-	var fieldValue = $("#"+localFieldName).val();
-	alert("fieldValue"+fieldValue);
-	
-	/*  $.ajax({
+function inlineEditForEndDate(projectId){
+	 var endDate = document.getElementById("endDate");
+	  $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   
    		    success: function(data) {
    			   
    		    }
-	 });  */
+	 });  
 }
 </script> 
-
+<script>
+ function getEndDatePickerById() {
+	 $('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
 
 <!-- end project scripts -->

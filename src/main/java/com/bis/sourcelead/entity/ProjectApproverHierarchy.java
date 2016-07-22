@@ -22,7 +22,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="pojectApproverHierarchy")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectApproverHierarchy")
 public class ProjectApproverHierarchy {
 	
 	@Id
