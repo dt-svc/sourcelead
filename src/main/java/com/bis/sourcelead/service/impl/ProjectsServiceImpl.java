@@ -103,7 +103,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
 		return projectsDao.updateEndDateOfProjectId(endDate,projectId);
-
+	}
+	
+	@Override
 	public List<Long> getApprovarAssignedProjects(Long userId, Long orgLocationId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getApprovarAssignedProjects method...");
 		List<Long> projectIdsList = projectsDao.getApprovarAssignedProjects(userId, orgLocationId);

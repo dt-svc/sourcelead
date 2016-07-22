@@ -146,7 +146,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		List<Long> projectIdsList  = null;
 		try {
 			 projectIdsList = projectsService.getApprovarAssignedProjects(user.getId(), orgLocations.getId());
-			 rolesList = userRoleService.getApproverAssignedUsers(projectIdsList, userState, searchByName);
+			 //rolesList = userRoleService.getApproverAssignedUsers(projectIdsList, userState, searchByName);
 			 for(UserRole role : rolesList){
 					role.setUserRoleName(role.getRoles().getDisplayName());
 					userRolesList.add(role);
