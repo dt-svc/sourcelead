@@ -98,22 +98,22 @@ public class OrgSettingsController {
 				
 				if(org != null && org.getDocFile() != null)
 				{
-					/*org.setFileContentType("image/jpeg");
+					org.setFileContentType("image/jpeg");
 					InputStream in = new ByteArrayInputStream(org.getDocFile());
 					BufferedImage bi = ImageIO.read(in);
 					OutputStream out = response.getOutputStream();
 					ImageIO.write(bi, "jpg", out);
-					out.close();*/
+					out.close();
 					
 					
-				    InputStream in = new ByteArrayInputStream(org.getDocFile());
+				    /*InputStream in = new ByteArrayInputStream(org.getDocFile());
 			        final BufferedImage source = ImageIO.read(in);
 			        final int color = source.getRGB(0, 0);
 			        final Image imageWithTransparency = makeColorTransparent(source, new Color(color));
 			        final BufferedImage transparentImage = imageToBufferedImage(imageWithTransparency);
 
 			        OutputStream out = response.getOutputStream();
-			        ImageIO.write(transparentImage, "PNG", out);
+			        ImageIO.write(transparentImage, "PNG", out);*/
 					
 				}
 				

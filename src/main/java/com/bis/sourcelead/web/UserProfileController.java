@@ -123,21 +123,21 @@ public class UserProfileController {
 				
 				if(user != null && user.getDocFile() != null)
 				{
-					/*user.setFileContentType("image/jpeg");
+					user.setFileContentType("image/jpeg");
 					InputStream in = new ByteArrayInputStream(user.getDocFile());
 					BufferedImage bi = ImageIO.read(in);
 					OutputStream out = response.getOutputStream();
 					ImageIO.write(bi, "jpg", out);
-					out.close();*/
+					out.close();
 					
-					    InputStream in = new ByteArrayInputStream(user.getDocFile());
+					    /*InputStream in = new ByteArrayInputStream(user.getDocFile());
 				        final BufferedImage source = ImageIO.read(in);
 				        final int color = source.getRGB(0, 0);
 				        final Image imageWithTransparency = makeColorTransparent(source, new Color(color));
 				        final BufferedImage transparentImage = imageToBufferedImage(imageWithTransparency);
 
 				        OutputStream out = response.getOutputStream();
-				        ImageIO.write(transparentImage, "PNG", out);
+				        ImageIO.write(transparentImage, "PNG", out);*/
 					
 				}
 				
