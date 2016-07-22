@@ -2,7 +2,7 @@
  * Copyright (c) 2016, Business Intelli Solutions India Pvt. Ltd., and/or its affiliates. All rights reserved.
  * Business Intelli Solutions India Pvt. Ltd. PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package com.bis.sourcelead.util;
+package com.bis.sourcelead.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 
 @Configuration
-@PropertySource(value = { "classpath:config/db.properties" })
+@PropertySource("${propertyLocation:db.properties}")
 public class DatabaseConnectionConfig {
 
 	private ComboPooledDataSource comboPooledDataSource;
