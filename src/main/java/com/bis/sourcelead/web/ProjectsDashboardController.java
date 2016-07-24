@@ -58,7 +58,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
-@PropertySource("${propertyLocation}/application.properties")
+@PropertySource("${propertyLocation:app.properties}")
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);

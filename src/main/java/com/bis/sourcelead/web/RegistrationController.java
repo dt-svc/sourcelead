@@ -29,7 +29,7 @@ import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
-@PropertySource("${propertyLocation}/application.properties")
+@PropertySource("${propertyLocation:app.properties}")
 public class RegistrationController {
 	
 	 @Autowired
