@@ -42,7 +42,7 @@ import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation}/application.properties")
 public class OrgSettingsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsController.class);

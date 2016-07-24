@@ -36,7 +36,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bis.sourcelead")
-@PropertySource(value = { "classpath:config/db.properties" })
+@PropertySource("${propertyLocation}/db.properties")
 public class DatabaseConfig {
 
 	private ComboPooledDataSource comboPooledDataSource;

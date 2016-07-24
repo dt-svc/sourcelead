@@ -46,7 +46,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation}/application.properties")
 public class UsersListController {
 	
 private static final Logger logger = LoggerFactory.getLogger(UsersListController.class);
