@@ -6,9 +6,9 @@ Setting Property Location
     
     2.1) Right click on respective File and click "Run Configuration" link 
     
-    2.2) Arguments--->VM Arguments---> -DpropertyLocation="file:/home/properties/" (adjust according to your "properties folder location")
+    2.2) Arguments--->VM Arguments---> -DpropertyLocation="file:/home/properties/app.properties" (adjust according to your "properties folder location")
 
  3) For to start tomcat server 
      open launch configuration(double click on server in your respective IDE) ---->Arguments --- > VM Arguments --- > Append this line
-      -DpropertyLocation="file:/home/properties/"
+      -DpropertyLocation="file:/home/properties/app.properties"
       
