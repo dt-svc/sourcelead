@@ -294,5 +294,74 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		return totalHours;
 	}
 		
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSavedList(Long userId, String approvalStatus)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "
+				+ subQueryForUserIdChecking + " and  (ts.submissionApprovalStatus = 'DRAFT' OR  ts.submissionApprovalStatus = 'NEW' ))";
+		List<TimesheetSubmissions> tslist = session.createQuery(query.toString()).setLong("userId", userId).list();
+
+		return tslist;
+
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSubmittedList(Long userId, String approvalStatus)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm  left join fetch pm.projects pr   left join fetch pm.employee emp where "
+				+ subQueryForUserIdChecking + " and  ts.submissionApprovalStatus = :approvalStatus)";
+		List<TimesheetSubmissions> tslist = session.createQuery(query.toString()).setLong("userId", userId)
+				.setString("approvalStatus", approvalStatus).list();
+
+		return tslist;
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsApprovedList(Long userId, String approvalStatus)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "
+				+ subQueryForUserIdChecking + " and  ts.submissionApprovalStatus = :approvalStatus)";
+		List<TimesheetSubmissions> tslist = session.createQuery(query.toString()).setLong("userId", userId)
+				.setString("approvalStatus", approvalStatus).list();
+
+		return tslist;
+
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsRejectedList(Long userId, String approvalStatus)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "
+				+ subQueryForUserIdChecking + " and  ts.submissionApprovalStatus = :approvalStatus)";
+		List<TimesheetSubmissions> tslist = session.createQuery(query.toString()).setLong("userId", userId)
+				.setString("approvalStatus", approvalStatus).list();
+
+		return tslist;
+
+	}
+
 
 }

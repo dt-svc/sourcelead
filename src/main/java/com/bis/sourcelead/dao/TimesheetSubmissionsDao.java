@@ -35,4 +35,12 @@ public interface TimesheetSubmissionsDao {
 	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus);
 	
 	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus); 
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSavedList(Long userId ,String approvalStatus)throws Exception;
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSubmittedList(Long userId ,String approvalStatus)throws Exception;
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsApprovedList(Long userId ,String approvalStatus)throws Exception;
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsRejectedList(Long userId ,String approvalStatus)throws Exception;
 }

@@ -39,4 +39,13 @@ public interface TimesheetSubmissionsService {
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId);
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSavedList(Long userId,String approvalStatus)throws Exception;
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSubmittedList(Long userId,String approvalStatus)throws Exception;
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsApprovedList(Long userId,String approvalStatus)throws Exception;
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsRejectedList(Long userId,String approvalStatus)throws Exception;
+
 }

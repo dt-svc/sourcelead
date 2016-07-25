@@ -125,7 +125,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		         savedTimesheetsSubmissionsCount =  newTimesheetsSubmissionsCount +draftTimesheetsSubmissionsCount;
 		         timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(savedTimesheetsSubmissionsCount);
 	  	       //submitted
-		         waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTED");
+		         waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTEDFORAPPROVAL");
 		         timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(waitingForApprovalTimesheetSubmissionCount);
 	  	       //approved
 		         approvedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "APPROVED");
@@ -165,7 +165,31 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		  return timeSheetSubmissionCount;
 	}
 	
-	
-	
+	@Override
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSavedList(Long userId, String approvalStatus)
+			throws Exception {
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsSavedList(userId,approvalStatus);
+		return list;
+	}
 
+	@Override
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSubmittedList(Long userId, String approvalStatus)
+			throws Exception {
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsSubmittedList(userId,approvalStatus);
+		return list;
+	}
+	
+	@Override
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsApprovedList(Long userId, String approvalStatus)
+			throws Exception {
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsSubmittedList(userId,approvalStatus);
+		return list;
+	}
+	
+	@Override
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsRejectedList(Long userId, String approvalStatus)
+			throws Exception {
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsSubmittedList(userId,approvalStatus);
+		return list;
+	}
 }

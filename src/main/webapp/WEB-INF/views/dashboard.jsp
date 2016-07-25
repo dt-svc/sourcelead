@@ -31,7 +31,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Saved</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/saved" >Saved</a></p>
               <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -45,7 +45,7 @@
 				<i class="fa fa-clock-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Waiting</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/waiting" >Waiting</a></p>
               <p class="info-box-number"><span  id="waitingTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -59,7 +59,7 @@
 				<i class="fa fa-check-circle-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Approved</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/approved" >Approved</a></p>
               <p class="info-box-number"><span id="approvalTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -73,7 +73,7 @@
 				<i class="fa fa-ban" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Rejected</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/rejected" >Rejected</a></p>
               <p class="info-box-number"><span id="rejectedTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>

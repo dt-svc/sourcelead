@@ -136,6 +136,12 @@ public class TimesheetSubmissions {
 	@Transient
 	private String userId;
 	
+	@Transient
+    private String managerLevel1;
+    
+    @Transient
+    private String managerLevel2;
+	
 
 	public Long getId() {
 		return Id;
@@ -361,6 +367,22 @@ public class TimesheetSubmissions {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getManagerLevel1() {
+		return managerLevel1;
+	}
+
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
+	}
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
 	}
 	
 }
