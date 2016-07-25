@@ -246,7 +246,7 @@
                 </div>
                 <!-- Add Team modal popup ends --> 
                <!-- Modal -->
-                <div class="modal fade" id="addTask" onclick="flushTasks();" role="dialog">
+                <div class="modal fade" id="addTask" role="dialog">
                   <div class="modal-dialog modal-lg"> 
                     
                     <!-- Modal content-->Project name here
@@ -640,13 +640,12 @@ function  inlineEditForProjects(projectId,localFieldName){
 <script type="text/javascript">
 function flushTasks() {
 	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined'){
+	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined' && maxRowNum != 'NaN'){
+		$("#maxTsRowNum").val("1");
          for(var i = 1; i <= maxRowNum ; i++){
-	    	   var tbl = document.getElementById("projectTaskTbl");
-	    	   tbl.deleteRow('divTsRow' + rowId);
-		} 
+        	    document.getElementById("projectTaskTbl").deleteRow(1);
+		 } 
 	}
-	 $("#maxTsRowNum").val('1');
 }
 </script>
   

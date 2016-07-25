@@ -169,7 +169,7 @@
 															<th><input type="hidden" id="maxTsRowNum"
 																name="maxTsRowNum" value="1" />Task Name</th>
 															<th>Description</th>
-															<th>Action</th>
+															<th class="tblminwidth-75">Action</th>
 														</tr>
 
 														<!--  <tr>
@@ -443,8 +443,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" id="add_employee" class="btn btn-primary"
-						onclick="addEmployee();">Save</button>
+					<button type="button" id="add_employee" class="btn btn-primary" onclick="addEmployee();">Save</button>
 					<button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
 				</div>
 			</div>
@@ -469,25 +468,20 @@
 								<label class="col-lg-3">Client Name <span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" id="orgName" name="orgName" value=""
-										class="form-control" field-name="Client Name"
-										data-validation="required">
+									<input type="text" id="orgName" name="orgName" value="" class="form-control" field-name="Client Name" data-validation="required">
 								</div>
 							</div>
 							<div class="form-group" id="companyWebsiteDiv">
 								<label class="col-lg-3">Client Website</label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" id="companyWebsite"
-										name="companyWebsite" value="" onblur="validateWebsite();"
-										field-name="Client Website" data-validation="required ">
+									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="required ">
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" id="save_client" class="btn btn-primary"
-						onclick="addclient();">Save</button>
+					<button type="button" id="save_client" class="btn btn-primary" onclick="addclient();">Save</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>
@@ -531,10 +525,8 @@
 		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
 <div id="divTaskTd3" style="display: none; float: left;">
-	<span><a title="Edit" href="javascript:void(0)"
-		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	<span><a title="Remove" href="javascript:void(0)"
-		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+	<span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+	<span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
@@ -659,29 +651,20 @@
 								var taskName = opt.taskName;
 								var taskDescription = opt.taskDescription;
 								var cell0 = row.insertCell(0);
-								var divTsTd1Str = document
-										.getElementById("divTaskTd1").innerHTML;
-								divTsTd1Str = divTsTd1Str.replace(
-										/REPLACEROWID/g, (opt.Id));
-								divTsTd1Str = divTsTd1Str.replace(
-										/TASKNAMEVALUE/g, (opt.taskName));
+								var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
+								divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (opt.Id));
+								divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (opt.taskName));
 								cell0.innerHTML = divTsTd1Str;
 
 								var cell1 = row.insertCell(1);
-								var divTsTd2Str = document
-										.getElementById("divTaskTd2").innerHTML;
-								divTsTd2Str = divTsTd2Str.replace(
-										/REPLACEROWID/g, (opt.Id));
-								divTsTd2Str = divTsTd2Str.replace(
-										/TASKDESCRIPTIONVALUE/g,
-										(opt.description));
+								var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+								divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (opt.Id));
+								divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
 								cell1.innerHTML = divTsTd2Str;
 
 								var cell2 = row.insertCell(2);
-								var divTsTd3Str = document
-										.getElementById("divTaskTd3").innerHTML;
-								divTsTd3Str = divTsTd3Str.replace(
-										/REPLACEROWID/g, (opt.Id));
+								var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+								divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (opt.Id));
 								cell2.innerHTML = divTsTd3Str;
 
 							}
@@ -759,7 +742,7 @@
 					var json = JSON.parse(data);
 					var output = "";
 					output = output
-							+ "<option value=''>-- Select Clinet --</option>";
+							+ "<option value=''>-- Select Client --</option>";
 					for (var i = 0; i < json.length; i++) {
 						var opt = json[i];
 						output = output + "<option value='" +opt.id+ "'>"
@@ -767,6 +750,7 @@
 					}
 					$("#addClientId").empty();
 					$("#addClientId").append(output);
+					$('#addClient').modal('hide');
 				},
 				error : function(e) {
 
@@ -881,8 +865,7 @@
 <script type="text/javascript">
 	function getTeamMembers() {
 		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
 							+ "/getEmployeesList?${_csrf.parameterName}=${_csrf.token}",
