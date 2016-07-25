@@ -147,7 +147,7 @@ public class TimesheetSubmissionsController {
         		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
         	   }
         	   
-               				sb.append("<div id='row"+ts.getProjectMembers().getId()+"'>");
+               				sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getId()+"'>");
 		                    sb.append("  <li><div class='time_appr_user'>");
 		                    sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 		                    sb.append("    <span><b>"+ts.getFullName()+"</b></span></div>");
@@ -155,12 +155,12 @@ public class TimesheetSubmissionsController {
 		                    
 		                    sb.append("<li><div>");
 		     		       if(employeeStartDate.before(currentStartDate)){
-		     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getId()+"\");'></i>");
+		     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 		     	       	   }
 		     	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
 		     	       		
 		     	       	   if(currentEndDate.before(employeeEndDate)){
-		     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getId()+"\");'></i><abbr></abbr> ");	
+		     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 		     	       	   }
 		     	       	   sb.append("    </div>");
 		     	       	   sb.append("    </li>");
@@ -350,12 +350,12 @@ public class TimesheetSubmissionsController {
          
          sb.append("<li><div>");
 	       if(employeeStartDate.before(currentStartDate)){
-	       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\");'></i>");
+	       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
      	   }
      	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
      		
      	   if(currentEndDate.before(employeeEndDate)){
-     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\");'></i><abbr></abbr> ");	
+     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
      	   }
      	   sb.append("    </div>");
      	   sb.append("    </li>");
