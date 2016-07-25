@@ -21,7 +21,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 
 @Configuration
-@PropertySource("${propertyLocation:db.properties}")
+@PropertySource("${propertyLocation:app.properties}")
 public class DatabaseConnectionConfig {
 
 	private ComboPooledDataSource comboPooledDataSource;
