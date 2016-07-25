@@ -125,17 +125,11 @@
 								<div class="row">
 									<div class="col-lg-6 positionRelative">
 										<input type="text" class="form-control" value=""
-											id="StartDate" name="StartDate" field-name="Start Date"
-											data-validation="required"> <span
-											class="input-group-addon input-groupAddon"><i
-											class="fa fa-calendar"></i></span>
+											id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<div class="col-lg-6 positionRelative">
 
-										<input type="text" class="form-control" value="" id="EndDate"
-											name="EndDate"> <span
-											class="input-group-addon input-groupAddon"><i
-											class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -426,8 +420,7 @@
 								<label class="col-lg-3">Invoice Frequency<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<select class="form-control" name="invoiceFrequency"
-										field-name="Invoice Frequency" data-validation="required">
+									<select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
 										<option value="">-Select Frequency-</option>
 										<option>Weekly</option>
 										<option>Bi-Weekly</option>
@@ -960,26 +953,11 @@
 										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
 								output = output
-										+ "<input  id='startDate"
-										+ opt.id
-										+ "' onclick='getStartDatePickerById(\"startDate"
-										+ opt.id
-										+ "\","
-										+ opt.id
-										+ ")'  type='text' name='Date' value='"
-										+ projectStartDate
-										+ "' class='form-control clsDatePicker'>";
+										+ "<input  id='startDate"+ opt.id+ "' onclick='getStartDatePickerById(\"startDate"+ opt.id+ "\","+ opt.id+ ")'  type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output
 										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-								output = output
-										+ "<input id='endDate"
-										+ opt.id
-										+ "' onclick='getEndDatePickerById(\"endDate"
-										+ opt.id
-										+ "\","
-										+ opt.id
-										+ ")' type='text' name='Date' value='' class='form-control clsDatePicker'>";
+								output = output + "<input id='endDate" + opt.id + "' onclick='getEndDatePickerById(\"endDate" + opt.id + "\"," + opt.id + ")' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output + "</tr>";
 							}
@@ -1128,6 +1106,8 @@
 		$("#add_employee").removeAttr("disabled");
 		$('#employeeFirstName').val('');
 		$('#EmailId').val('');
+		$('#employeeLastName').val('');
+		$('#invoiceFrequency').val('');
 		$(".error").removeClass("error");
 		$('#newEmployee').find('p.jquery_form_error_message').remove();
 	}

@@ -214,7 +214,7 @@
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <select class="form-control" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
+	                              <select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
 			                        <option value="">-Select Frequency-</option>
 			                        <option>Weekly</option>
 			                        <option>Bi-Weekly</option>
@@ -888,10 +888,10 @@ function getTeamMembers(projectId) {
                  "<td>"+role+"</td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
 	  
-                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker'>"+
+                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>"+
+                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "</tr>";
 			}
@@ -997,6 +997,7 @@ function flushEmployee(){
      $('#employeeFirstName').val('');
      $('#employeeLastName').val('');
 	 $('#EmailId').val('');
+	 $('#invoiceFrequency').val('');
 	 $(".error").removeClass("error");
 	 $('#newEmployee').find('p.jquery_form_error_message').remove();
 }
