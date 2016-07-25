@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,9 +11,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,10 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.exception.NoRecordsFoundException;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.exception.SourceLeadObjectStatusException;
 
 /**
  * 
@@ -30,8 +37,20 @@ import com.bis.sourcelead.enums.Status;
 @Repository
 public class OrgDaoImpl implements OrgDao {
 	private static final Logger logger = LoggerFactory.getLogger(OrgDaoImpl.class);
+	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -44,10 +63,13 @@ public class OrgDaoImpl implements OrgDao {
 				session.save(org);
 			}
 			logger.debug("Organization Added Successfully");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		}catch(ConstraintViolationException exception)
+			{
+				StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORG"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			}
 		return org;
+		
 	}
 	
 	@Override
@@ -66,11 +88,16 @@ public class OrgDaoImpl implements OrgDao {
 	public Org findOrgByID(Long id) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		logger.info("Record fetched successfully..!");
+		Org org = null;
 		if (id != null) {
-			Org org1 = session.get(Org.class, id);
+			org = session.get(Org.class, id);
 		}
-		return session.get(Org.class, id);
+		if(org == null)
+		{
+			StringBuffer message= new StringBuffer(MessageFormat.format(notFound,"ORG", id));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
+		return org;
 	}
 	
 	@Override
@@ -145,6 +172,11 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Org.class);
 		List<Org> orgList = crit.list();
+		if(orgList.isEmpty())
+		{
+			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords," Orgs ","ORG"));
+			throw new NoRecordsFoundException(message.toString());
+		}
 		return orgList;
 	}
 
@@ -153,12 +185,12 @@ public class OrgDaoImpl implements OrgDao {
 	public Org getOrgByOrgCode(String orgCode) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Org> org = new ArrayList<Org>();
+		List<Org> orgList = new ArrayList<Org>();
 		logger.debug("getOrgByOrgCode start");
-		org = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).list();
+		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).list();
 		logger.debug("getOrgByOrgCode end");
-		if (org.size() > 0) {
-			return org.get(0);
+		if (orgList.size() > 0) {
+			return orgList.get(0);
 		} else {
 			return null;
 		}
