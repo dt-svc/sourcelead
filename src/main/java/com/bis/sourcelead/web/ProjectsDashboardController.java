@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -57,7 +58,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
@@ -131,6 +132,7 @@ public class ProjectsDashboardController {
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+                
             }
         }
 		model.addObject(projectsList);
@@ -153,10 +155,12 @@ public class ProjectsDashboardController {
 		   OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-		    projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));
+			if(projects.getCreatedDate() != null){
+				projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
+			}
 		    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    	 projects.setEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 		    }
 		    projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
 		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
@@ -169,12 +173,16 @@ public class ProjectsDashboardController {
 		    }
 		    projects.setProjectManagerName(approvers);
 		    
-		    
 		    Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getClientLocationId().getOrg().getId();
+				if(projects.getOrgRelationId() !=null){
+					if(projects.getOrgRelationId().getId()==ocl.getId()){
+						projects.setRelationId(ocl.getId());
+					}
+				}
+				clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getId();
 				j++;
 			 }
 			projects.setClientName(clientList);
@@ -198,7 +206,16 @@ public class ProjectsDashboardController {
 		    }
 		    else if (fieldName.equalsIgnoreCase("description")) {
 		    	projects.setDescription(fieldValue);
-			}  
+			}else if(fieldName.equalsIgnoreCase("endDateStr"))  {
+		    	String pattern = "yyyy-MM-dd";
+		        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		          
+	            Date endtDate = format.parse(fieldValue);
+				projects.setEndDate(endtDate);
+			}else if (fieldName.equalsIgnoreCase("projectStatusId")) {
+		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
+			}
+		    
 		    projects.setUpdatedBy(user.getUserCode());
 		    projects.setUpdatedDate(new Date());
 		    projectsService.updateProject(projects);

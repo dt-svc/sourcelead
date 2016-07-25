@@ -21,7 +21,7 @@ public class Constants {
 	public static final String PHONE_NUMBER = "Phone Number";
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
-	public static final String DATEOFJOIN = "Date of Join";
+	public static final String DATEOFJOIN = "Date of Join (dd/mm/yyyy)";
 	public static final String ROLE = "Role";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";

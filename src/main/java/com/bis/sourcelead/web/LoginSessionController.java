@@ -38,7 +38,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class LoginSessionController {
 	@Autowired
 	UserRoleService userRoleService;
@@ -64,7 +64,7 @@ public class LoginSessionController {
 	@Autowired 
 	private NotificationsService notificationsService;
 	
-	@RequestMapping(value = "/loginSession" , method = RequestMethod.GET)
+	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
@@ -105,6 +105,7 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			
 			
 		} catch (Exception e) {

@@ -28,9 +28,7 @@
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-           <div class="pull-right">
-             <a href="<c:url value='/project'/>">Create New Project &raquo;</a>
-          </div>
+           <div class="pull-right brud-crum">Home » General Form » Create User</div>
         </section>
 
         
@@ -69,11 +67,34 @@
 		</c:if>
 		<c:if test="${!empty projectsList}">
 		<div class="project_wrap">
-			<!-- <div class="project_wrap_head clearfix">
-			<div class="pull-right mt mb mr">
-			<input type="text" class="project_field" /><i class="glyphicon glyphicon-search"></i>
-			</div>
-			</div> -->
+<div class="timesheet_head">
+        	<ul>
+				<!-- <li><i class="fa fa-calendar"></i><input placeholder="DD/MM/YYYY" value="31/12/2020" class="project-date" type="text">|</li>
+                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+                	<div class="approved_pop">
+                    	<ul>
+                        	<li><input value="None" id="c1" type="checkbox"><label for="c1">All</label></li>
+							<li><input id="c2" type="checkbox"><label for="c2">Approved</label></li>
+							<li><input id="c3" type="checkbox"><label for="c3">Draft</label></li>
+							<li><input id="c4" type="checkbox"><label for="c4">Rejected</label></li>
+                        </ul>
+                    </div>                	
+                </li>
+                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+                	<div class="approved_pop">
+                    	<ul>
+                        	<li><input value="None" id="c5" type="checkbox"><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox"><label for="c6">Approved</label></li>
+							<li><input id="c7" type="checkbox"><label for="c7">Draft</label></li>
+							<li><input id="c8" type="checkbox"><label for="c8">Rejected</label></li>
+                        </ul>
+                    </div>                	
+                </li> -->
+				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+                <div class="clearfix"></div>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
 			
 		    <div class="project_wrap_table">
 		    	<table>
@@ -127,7 +148,7 @@
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
 			</div>	
 		    </div>
-		   </div> 
+		  </div> 
 		   </div>		
 	   </section>
 	  </body>
@@ -163,7 +184,7 @@
                 <!-- Modal content Add Team-->
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content" id="newEmployee">
 	                    <form name="employee_form" id="employee_form" method="post">
 	                      <div class="modal-header">
 	                        <button data-dismiss="modal" class="close" type="button">X</button>
@@ -228,7 +249,7 @@
                 <div class="modal fade" id="addTask" role="dialog">
                   <div class="modal-dialog modal-lg"> 
                     
-                    <!-- Modal content-->
+                    <!-- Modal content-->Project name here
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -250,7 +271,7 @@
                           <div class="form-group">
                             <label class="col-md-3">Task Name</label>
                             <div class="col-md-9">
-                               <input type="text" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control" field-name="Task Name" data-validation="required">
+                               <input type="text" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control" field-name="Task Name" data-validation="required validate_length length2-250">
                             </div>
                           </div>
                           <div class="form-group">
@@ -364,7 +385,7 @@ function projectEmployee(projectId){
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
-    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result + '		</div>';
     	    result = result + '        <div class="project_tabs_inn_table">';
     		result = result + '	<table>';
@@ -477,13 +498,33 @@ function projectEmployee(projectId){
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
 	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Status:</strong><span><b>'+json.projectStatus+'</b><i id="ac-drop" class="fa fa-edit">';
-	result = result + '						<ul>';
-	result = result + '							<li>Option 1</li>';
-	result = result + '							<li>Option 2</li>';
-	result = result + '							<li>Option 3</li>';
-	result = result + '							<li>Option 4</li>';
-	result = result + '						</ul>';
+	result = result + '					<strong>Status:</strong><span>';
+	result = result +'<select id="projectStatusId" onBlur="inlineEditForProjects('+projectId+',\'projectStatusId\');">';
+				if(json.projectStatus == 'STARTED'){
+					result = result+'<option selected>Started</option>';
+				}else{
+					result = result+'<option>Started</option>';
+				}
+				
+				if(json.projectStatus == 'INPROGRESS'){
+					result = result+'<option selected>In-Progress</option>';
+				}else{
+					result = result+'<option>In-Progress</option>';
+				}
+				
+				if(json.projectStatus == 'COMPLETED'){
+					result = result+'<option selected>Completed</option>';
+				}else{
+					result = result+'<option>Completed</option>';
+				}
+			
+				if(json.projectStatus == 'ONHOLD'){
+					result = result+'<option selected>On-Hold</option>';
+				}else{
+					result = result+'<option>On-Hold</option>';
+				}
+	
+	result = result + '</select>';
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
@@ -507,34 +548,39 @@ function projectEmployee(projectId){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
 		result = result + '<select>';
+		result = result+"<option value=''>Select</option>";
 					for (var i = 0; i < json.clientName.length; i++) {
 						
 						var managers = json.clientName[i];
 						var projrctmanager = managers.split('&');
 				    	var name = projrctmanager[0];
 				    	var id = projrctmanager[1];
-						result = result+"<option value="+id+">"+name+"</option>";
+				    	 var selected = '';
+	   		 	    	 if(json.relationId==id){
+	   		 	    		 selected = 'selected';
+	   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+	   		 	    	 }else{
+	   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
+	   		 	    	 }
+	   		 	    	 
+	   		 	    	 
 					}
 		result = result + '</select>';
 	
 	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
-	if(json.projectMembersCount != null && json.projectMembersCount != '' && json.projectMembersCount != 'undefined' && json.projectMembersCount != 0){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Team members:</strong><span>'+json.projectMembersCount+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Start date:</strong>';
-	result = result + '					<span><input type="text" value="'+json.startDateStr+'" placeholder="YYYY/MM/DD" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span>'+json.startDateStr+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr !=  'undefiend'){
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	}
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
 	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
@@ -572,7 +618,9 @@ function  inlineEditForProjects(projectId,localFieldName){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
+	alert("fieldName"+fieldName);
 	var fieldValue = $("#"+localFieldName).val();
+	alert("fieldValue"+fieldValue);
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
@@ -850,7 +898,8 @@ function getTeamMembers(projectId) {
     });
     $('#add_employee').attr('data-dismiss','modal');
 	$('#employeeFirstName').val('');
-	$('#employeeLastName').val('');
+	$('#employeeLastName').val('');}
+</script>
 	$('#employeeEmail').val('');
 }
 </script>
@@ -921,5 +970,28 @@ function assignEmployee(){
 	        }
 	  });
   } 
+</script>
+
+ <script>
+ function projectEndtateStr() {
+	 $('#endDateStr').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+	 
+	 
+  } 
+</script>
+<script type="text/javascript">
+function flushEmployee(){
+     $('#employeeFirstName').val('');
+     $('#employeeLastName').val('');
+	 $('#EmailId').val('');
+	 $(".error").removeClass("error");
+	 $('#newEmployee').find('p.jquery_form_error_message').remove();
+}
 </script>
 </html>

@@ -1,4 +1,4 @@
-package com.bis.sourcelead.util;
+package com.bis.sourcelead.db;
 
 import java.beans.PropertyVetoException;
 

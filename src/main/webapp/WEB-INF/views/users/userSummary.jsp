@@ -13,6 +13,9 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
  <div class="wraper"> 
       <!-- Content Area -->
       <section class="content-wraper">
@@ -298,8 +301,9 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						   result = result + ' <td><div><input type="text" value="'+endDate+'" class="project_inline_field"></div></td>';
-						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
+						  // result = result + ' <td><div><input type="text" value="'+endDate+'" id = "endDate"  name ="endDate" class="project_inline_field" onBlur="inlineEditForEndDate(\''+json.id+'\',\'endDate\');"></div></td>';
+						   result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById();" onBlur="inlineEditForEndDate(\''+json.id+'\');"/></div></td>';
+						  result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
@@ -376,7 +380,7 @@ $(document).ready(function(){
                               </select>
                               </div> -->
 
-                               <select class="form-control" id="proId" name="projectId" hidden="project" onchange="flushProject(); getStartandEndDate();" data-validation="required">
+                               <select class="form-control" id="proId" name="projectId" field-name="Project Name" onchange="flushProject(); getStartandEndDate();" data-validation="required">
                        		   <option value="">-Select Project-</option>
                         		<c:forEach var="option" items="${org_projectsList}">
   						   			<option value="${option.id}">${option.projectName}</option>
@@ -389,7 +393,7 @@ $(document).ready(function(){
                             <div class="col-lg-9">
 							<div class="input-group">
 								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" placeholder="DD/MM/YYYY" id = "StartDate" name="StartDate">
+								  <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id = "StartDate" name="StartDate" data-validation="required" field-name="Start Date">
 								</div>
                               </div>
                             </div>
@@ -398,7 +402,7 @@ $(document).ready(function(){
                             <div class="col-lg-9">
 							<div class="input-group">
 								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" placeholder="DD/MM/YYYY" id ="EndDate" name ="EndDate">
+								  <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id ="EndDate" name ="EndDate" />
 								</div>
                               </div>
                             </div>
@@ -842,7 +846,6 @@ function getStartandEndDate(){
     	type: "POST",
         url: sourceleadUrl+"/getStartAndEndOfProject?${_csrf.parameterName}=${_csrf.token}&&projectId="+projectId, 
         success: function(data) {
-        
         	var json = JSON.parse(data);
         	$("#StartDate").val(json.startDateStr);
         	$("#EndDate").val(json.endDateStr);
@@ -878,17 +881,6 @@ function getStartandEndDate(){
 		        	 	$("#assignProject").modal('hide');
 		        		userProjectDetails(userId);
 		        	}
-		        /* 	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select Project --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-					}
-		        	$("#proId").empty();
-			        $("#proId").append(output);
-			        $("#addProject").modal('hide'); */
 		        },
 		        error: function(e){
 		            
@@ -911,6 +903,11 @@ function getStartandEndDate(){
 <script>
   $( function() {
 	  
+	  /* $('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	   */
 	  $('#StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
@@ -933,7 +930,6 @@ function getStartandEndDate(){
   
   function deleteProject(local,userId){ 
 		var result = "";
-		alert("hiiiiiiiiiiiiiiiiiiiiiaaa");
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>User delete message here</p>";
@@ -942,7 +938,6 @@ function getStartandEndDate(){
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+local+","+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
-		alert("fdfsdfsdf");
 		$("#remove_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 		
@@ -951,10 +946,10 @@ function getStartandEndDate(){
 		$("#popUp").empty();
 		 $(".project_inn_mask").fadeOut(200);
 	}
+  
 </script>
 <script> 
 function saveReason(projectMemberId,userId){
-	alert("hhhhhhhhhhhhhhh")
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reasonForProject = document.getElementById("reasonForProject").value;
 	
@@ -980,7 +975,28 @@ function saveReason(projectMemberId,userId){
 	}
 }
 </script>
-
-
+<script> 
+function inlineEditForEndDate(projectId){
+	 var endDate = document.getElementById("endDate");
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 });  
+}
+</script> 
+<script>
+ function getEndDatePickerById() {
+	 $('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        }
+	  });
+  } 
+</script>
 
 <!-- end project scripts -->
