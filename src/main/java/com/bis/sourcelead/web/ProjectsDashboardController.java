@@ -209,9 +209,11 @@ public class ProjectsDashboardController {
 			}else if(fieldName.equalsIgnoreCase("endDateStr"))  {
 		    	String pattern = "dd-mm-yy";
 		        SimpleDateFormat format = new SimpleDateFormat(pattern);
-		          
-	            Date endtDate = format.parse(fieldValue);
-				projects.setEndDate(endtDate);
+		          if(fieldValue != null && fieldValue != ""){
+		        	  Date endtDate = format.parse(fieldValue);
+						projects.setEndDate(endtDate);
+		          }
+	            
 			}else if (fieldName.equalsIgnoreCase("projectStatusId")) {
 		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
 			}

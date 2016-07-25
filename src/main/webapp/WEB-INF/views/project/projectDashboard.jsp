@@ -496,7 +496,13 @@ function projectEmployee(projectId){
    	type: "POST",
     url: sourceleadUrl+"/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
     success: function(data) {
-    	var json = JSON.parse(data);
+   	var json = JSON.parse(data);
+   	var endDateStr = "";
+   	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
+   		endDateStr =  json.endDateStr;
+   	}else{
+   		endDateStr = " ";
+   	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
@@ -582,7 +588,7 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
