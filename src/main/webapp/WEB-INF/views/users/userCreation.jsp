@@ -484,13 +484,6 @@ function flushProject(){
 
 <script type="text/javascript">
  function addProject() {
-	 
-	 var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-		   }; 
 	
 	 if ($('#addProject_form').validate(false, validationSettings)){ 
 	        
@@ -548,13 +541,6 @@ function flushProject(){
 		 $('#RatePer').attr("data-validation-optional","true"); 
 	 }
 	 
-	var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-		   }; 
-	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		    var frm = $('#createUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
@@ -583,12 +569,24 @@ function flushProject(){
 	  }
     }
  
-    $('body').on('blur', '#createUser_form', function() {
-		$("#createUser_form").showHelpOnFocus();;
+   $('body').on('blur', '#createUser_form', function() {
+		$("#createUser_form").showHelpOnFocus();
 		$("#createUser_form").validateOnBlur(false, validationSettings);  
-	});
+   });
+  
  
-</script>   
+</script>  
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 
 <script type="text/javascript">
  function getManagerName() {
@@ -632,11 +630,14 @@ function flushProject(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmployeeId != null && EmployeeId != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         $("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
+		        		  $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
 						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
 						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
@@ -644,6 +645,8 @@ function flushProject(){
 		        	else{
 		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
 		        	} 
 		        },
 		    });
@@ -657,11 +660,14 @@ function flushProject(){
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         $("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
 						  document.getElementById("EmailId").setAttribute('record-exist','yes');
 						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
@@ -669,6 +675,8 @@ function flushProject(){
 		        	else{
 		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
 		        	}
 		        },
 		    });
