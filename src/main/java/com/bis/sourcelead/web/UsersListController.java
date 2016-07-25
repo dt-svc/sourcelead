@@ -153,7 +153,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 					userRolesList.add(role);
 				}
 			 
-			 System.out.println(projectIdsList.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
