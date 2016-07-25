@@ -336,9 +336,19 @@ public class UserController {
 	//to get all project details by user id
 	@RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
 		String resultJson = null;
-		List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
+		List<ProjectMembers> allProjectsList = null;
+		if(filterValue.equals("All")){
+			 allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
+		}
+		if(filterValue.equals("Active")){
+			 allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
+		}
+		if(filterValue.equals("In-Active")){
+			allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
+		}
 		for (ProjectMembers projectMembers : allProjectsList) {
 			if (projectMembers.getProjectAssignedDate() != null) {
 				projectMembers.setStartDate(
@@ -424,7 +434,7 @@ public class UserController {
 			}
 		}
 		User user = userService.getUserById(userId);
-		if (employee.getRate() != null) {
+		if (employee.getRate() != null && employee.getRate()!="") {
 			projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
 		}
 		// need change role
