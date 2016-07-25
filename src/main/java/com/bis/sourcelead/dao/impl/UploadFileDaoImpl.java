@@ -27,6 +27,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SessionFactory;
@@ -237,8 +238,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Workbook workbook = null;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			if (fileName.toLowerCase().endsWith("xlsx")) {
-				workbook = new XSSFWorkbook(fis);
-				
+				//workbook = new XSSFWorkbook(fis);
+				workbook = WorkbookFactory.create(fis);
 				int numberOfSheets = workbook.getNumberOfSheets();
 				for (int i = 0; i < numberOfSheets; i++) {
 					Sheet sheet = workbook.getSheetAt(i);
@@ -371,7 +372,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					}
 				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
-				workbook = (Workbook) new HSSFWorkbook(fis);
+				///workbook = (Workbook) new HSSFWorkbook(fis);
+				workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
