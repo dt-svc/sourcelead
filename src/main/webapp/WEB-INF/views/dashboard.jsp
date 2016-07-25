@@ -142,11 +142,10 @@ function timeSheetSubmissionStatusCount(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
-		        	var  savedTimesheetsSubmissionsCount = json[0];
-		        	var  waitingTimesheetsSubmissionsCount = json[1];
-		        	var  approvalTimesheetsSubmissionsCount = json[2];
-		        	var  rejectedTimesheetsSubmissionsCount = json[3];
-		        	
+		        	var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
+		        	var  waitingTimesheetsSubmissionsCount =json.waitingForApprovalTimesheetSubmissionCount;
+		        	var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
+		        	var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
 		        	
 		        	if(savedTimesheetsSubmissionsCount>0){
 	                      $("#savedTimesheetsSubmissionsCount").text(savedTimesheetsSubmissionsCount);

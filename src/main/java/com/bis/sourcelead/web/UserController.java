@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
@@ -300,19 +301,13 @@ public class UserController {
 				 else if(projectMembers.getProjects().getEndDate() != null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
-				 Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
 				 
-			   	 projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
-			   	 
-			   	Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
-				 
-			   	 projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
-			   	 
-			  	 Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
-			  	 projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-			  	 
-			  	 Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
-			  	 projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+				 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(userId);
+			  	 projectMembers.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
+			     projectMembers.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
+			  	 projectMembers.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
+			  	 projectMembers.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
+			  	
 			 }
 			 
 			 

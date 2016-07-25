@@ -264,15 +264,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
+	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
 		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
-	   int totalHours = 0;
+		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   totalHours = totalHours + Integer.parseInt(tslist.get(i).getTotalHours());
+			   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
 		   }
 	   }
 		return totalHours;
@@ -280,15 +280,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
+	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionStatus = :submissionStatus)" ;
 		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("submissionStatus", submissionStatus).list(); 
-	   int totalHours = 0;
+	   Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   totalHours = totalHours + Integer.parseInt(tslist.get(i).getTotalHours());
+			   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
 		   }
 	   }
 		return totalHours;

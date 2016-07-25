@@ -4,6 +4,8 @@ package com.bis.sourcelead.web;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -53,32 +56,18 @@ public class DashboardController {
 	}
 	
 	
-	
+	// Sammeta David: this  controller method is for getting TimesheetSubmission Counts based on Status.
 	 @RequestMapping(value = "/getTimeSheetSubmissionStatus")
 		public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 		 
 		 String resultJson = null;
 	     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	     ModelAndView model = new ModelAndView();
+	     TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+	     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());
 	     
-	     ArrayList<Integer> counts = new ArrayList<>();
+	     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());
 	     
-	     Integer draftStatusCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(user.getId(), "DRAFT");
-	     Integer newStatusCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(user.getId(), "NEW");
-	  	 Integer savedTimesheetsSubmissionsCount =  newStatusCount +draftStatusCount;
-	  	 counts.add(savedTimesheetsSubmissionsCount);
-	  	 
-	  	 Integer waitingTimesheetsSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(user.getId(), "SUBMITTED");
-	   	 counts.add(waitingTimesheetsSubmissionsCount);
-	   	 
-	  	 Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(user.getId(), "APPROVED");
-	  	 counts.add(approvalTimesheetsSubmissionsCount);
-	  	 
-	  	 Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(user.getId(), "REJECTED");
-	  	 counts.add(rejectedTimesheetsSubmissionsCount);
-          
-	  	 
-	  	 resultJson = toJSON(counts);
+	  	 resultJson = toJSON(timeSheetSubmissionCount);
 		return resultJson;
 	}
 	
