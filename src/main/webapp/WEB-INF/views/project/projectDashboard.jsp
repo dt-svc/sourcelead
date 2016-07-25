@@ -246,7 +246,7 @@
                 </div>
                 <!-- Add Team modal popup ends --> 
                <!-- Modal -->
-                <div class="modal fade" id="addTask" role="dialog">
+                <div class="modal fade" id="addTask" onclick="flushTasks();" role="dialog">
                   <div class="modal-dialog modal-lg"> 
                     
                     <!-- Modal content-->Project name here
@@ -457,7 +457,7 @@ function projectEmployee(projectId){
 		    				
 		    				  var result = ""; 
 		    				  result = result + '<div class="project_tabs_inn_head">';
-		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
+		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
 		    				  result = result + '<div class="project_tabs_inn_table">';
 		    				  result = result + '<table>';
 		    				  result = result + '<tbody>';
@@ -637,7 +637,18 @@ function  inlineEditForProjects(projectId,localFieldName){
 	 }); 
 }
 </script> 
-  
+<script type="text/javascript">
+function flushTasks() {
+	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined'){
+         for(var i = 1; i <= maxRowNum ; i++){
+	    	   var tbl = document.getElementById("projectTaskTbl");
+	    	   tbl.deleteRow('divTsRow' + rowId);
+		} 
+	}
+	 $("#maxTsRowNum").val('1');
+}
+</script>
   
 <!-- =============================== AddTask Divs  ============================ -->
        <div id="divTaskTd1" style="display:none; float:left;">
@@ -755,7 +766,7 @@ $(document).ready(function(){
         	var json = JSON.parse(data);
         	 var result = ""; 
        	  result = result + '<div class="project_tabs_inn_head">';
-       	  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
+       	  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
        	  result = result + '<div class="project_tabs_inn_table">';
        	  result = result + '<table>';
        	  result = result + '<tbody>';
