@@ -77,12 +77,12 @@ public class Projects {
     private Integer isPrimary;
 	
     
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
     
     
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
