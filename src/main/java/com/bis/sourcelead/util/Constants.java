@@ -15,7 +15,8 @@ public class Constants {
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static DateFormat DF_TM = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getTimeZone("America/Chicago");
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
+	
 	public static int MAX_RESULTS_FIVE = 5;
 	public static int MAX_RESULTS_TEN = 10;
 	public static int MAX_RESULTS_TWENTY = 20;

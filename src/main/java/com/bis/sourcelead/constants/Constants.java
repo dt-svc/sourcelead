@@ -41,5 +41,5 @@ public class Constants {
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	
-	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getTimeZone("America/Chicago");
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 }
