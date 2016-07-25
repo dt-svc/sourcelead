@@ -34,4 +34,9 @@ public class Constants {
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	
+	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static String INVITE_USER = "Invite User";
+	
+	public static String ENTITY_TYPE_EMAIL = "Email";
 }
