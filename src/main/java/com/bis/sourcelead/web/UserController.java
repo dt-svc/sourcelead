@@ -470,21 +470,24 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateEndDateByProjectId", method = RequestMethod.POST)
-	public String updateProjectTaskById(@RequestParam(value = "endDate", required = false) Date endDate,
+	public String updateProjectTaskById(@RequestParam(value = "endDate", required = false) String endDate,
 			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
 
 		Projects projects = projectsService.getProjectById(projectId);
-		if (endDate != null) {
-			if (projects.getEndDate() == null) {
-				projectsService.updateEndDateOfProjectId(endDate, projectId);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Date endDate1=sdf.parse(endDate);
+				if (endDate != null) {
+					if (projects.getEndDate() == null) {
+						projectsService.updateEndDateOfProjectId(endDate1, projectId);
+					}
+					if (projects.getEndDate().compareTo(sdf.parse(endDate)) != 0) {
+						projectsService.updateEndDateOfProjectId(endDate1, projectId);
+					}
+				}
+				return "updated";
+		
 			}
-			if (projects.getEndDate().compareTo(endDate) != 0) {
-				projectsService.updateEndDateOfProjectId(endDate, projectId);
-			}
-		}
-		return "updated";
-
-	}
 
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

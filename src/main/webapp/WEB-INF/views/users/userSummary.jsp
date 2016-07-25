@@ -305,9 +305,9 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						  // result = result + ' <td><div><input type="text" value="'+endDate+'" id = "endDate"  name ="endDate" class="project_inline_field" onBlur="inlineEditForEndDate(\''+json.id+'\',\'endDate\');"></div></td>';
-						   result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById();" onBlur="inlineEditForEndDate(\''+json.id+'\');"/></div></td>';
-						  result = result + ' <td><div>'+approvedHrs+'</div></td>';
+						   //result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById();" onBlur="inlineEditForEndDate(\''+json.id+'\');"/></div></td>';
+						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById(\''+json.id+'\');"/></div></td>';
+						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
@@ -1025,7 +1025,10 @@ function inlineEditForEndDate(projectId){
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
-	        }
+	        },
+	        onClose: function() {alert("cll");
+		      inlineEditForEndDate(projectId);
+	      }
 	  });
   } 
 </script>
