@@ -99,4 +99,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.updateProjectMemberDeletedReason(projectMemberId,reason);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+		return projectMembersDao.getAllProjectsByUserIdAndStatus(userId,status);
+	}
+
 }

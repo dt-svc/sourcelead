@@ -46,14 +46,14 @@
                 <div class="form-group" id="ProjectIdDiv">
                   <label class="col-lg-3">Project Id</label>
                   <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_length length2-50" data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
+                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-lg-3">Project Name<span class="text-danger">&nbsp; *</span></label>
                   <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectName" name="ProjectName" class="form-control" field-name="Project Name" data-validation="required validate_length length2-250">
+                    <input type="text" value="" id="ProjectName" name="ProjectName" class="form-control" field-name="Project Name" data-validation="required validate_Space validate_length length2-250">
                   </div>
                 </div>
                 
@@ -124,14 +124,14 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_length length2-100" data-validation-optional="true" value="" onblur="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="" onblur="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_length length2-100">
+                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-100">
                     <span class="hidden">First Name</span>
                   </div>
                 </div>
@@ -139,7 +139,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="LastName" data-validation="validate_length length2-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" name="LastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
                     <span class="hidden">Last Name</span>
                   </div>
                 </div>
@@ -147,7 +147,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_length length2-100 validate_email" onblur="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -155,7 +155,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
-                    <input type="text" class="form-control" name="PhoneNumber" value="" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" class="form-control" name="PhoneNumber" value="" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                   </div>
                 </div>
@@ -165,7 +165,7 @@
                      <div class="col-md-9">
                          <div class="row">
 		                        <div class="col-md-6">
-				                    <input type="text" class="form-control" id="Rate"  name="Rate" value="" data-validation="validate_float validate_length length2-8" data-validation-optional="true">
+				                    <input type="text" class="form-control" id="Rate"  name="Rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        </div>
 		                        <div class="col-md-6">
@@ -320,7 +320,7 @@
                   <label class="col-md-3">Day Hours</label>
                   <div class="col-md-9 positionRelative">
                       
-                          <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
+                          <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
                           <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span>
                       
                        
@@ -484,13 +484,6 @@ function flushProject(){
 
 <script type="text/javascript">
  function addProject() {
-	 
-	 var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-		   }; 
 	
 	 if ($('#addProject_form').validate(false, validationSettings)){ 
 	        
@@ -548,13 +541,6 @@ function flushProject(){
 		 $('#RatePer').attr("data-validation-optional","true"); 
 	 }
 	 
-	var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-		   }; 
-	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		    var frm = $('#createUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
@@ -583,12 +569,24 @@ function flushProject(){
 	  }
     }
  
-    $('body').on('blur', '#createUser_form', function() {
-		$("#createUser_form").showHelpOnFocus();;
+   $('body').on('blur', '#createUser_form', function() {
+		$("#createUser_form").showHelpOnFocus();
 		$("#createUser_form").validateOnBlur(false, validationSettings);  
-	});
+   });
+  
  
-</script>   
+</script>  
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 
 <script type="text/javascript">
  function getManagerName() {
@@ -632,11 +630,14 @@ function flushProject(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmployeeId != null && EmployeeId != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         $("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
+		        		  $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
 						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
 						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
@@ -644,6 +645,8 @@ function flushProject(){
 		        	else{
 		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
 		        	} 
 		        },
 		    });
@@ -657,11 +660,14 @@ function flushProject(){
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         $("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
 						  document.getElementById("EmailId").setAttribute('record-exist','yes');
 						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
@@ -669,6 +675,8 @@ function flushProject(){
 		        	else{
 		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
 		        	}
 		        },
 		    });
