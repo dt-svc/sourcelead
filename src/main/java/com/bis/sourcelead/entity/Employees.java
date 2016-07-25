@@ -31,7 +31,7 @@ public class Employees {
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	
