@@ -1008,7 +1008,8 @@ function saveReason(projectMemberId,userId){
 </script>
 <script> 
 function inlineEditForEndDate(projectId){
-	 var endDate = document.getElementById("endDate");
+	var sourceleadUrl = '${sourceleadUrl}';
+	 var endDate = document.getElementById("endDate").value;
 	  $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   
@@ -1019,14 +1020,14 @@ function inlineEditForEndDate(projectId){
 }
 </script> 
 <script>
- function getEndDatePickerById() {
+ function getEndDatePickerById(projectId) {
 	 $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	        },
-	        onClose: function() {alert("cll");
+	        onClose: function() {
 		      inlineEditForEndDate(projectId);
 	      }
 	  });
@@ -1039,7 +1040,6 @@ function inlineEditForEndDate(projectId){
   } 
  
  function projectFilterForAll(){
-	 alert("gfhfg");
 	  var value = $("#All-Filter").val();
 	  var userId = '${userId}';
 	  userProjectDetails(userId,"All");
