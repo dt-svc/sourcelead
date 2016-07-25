@@ -1620,6 +1620,9 @@ border-bottom:1px solid #ccc;
     position: relative;
     top: 2px;
 }
+.tblminwidth-75{
+min-width:75px;
+}
 
 @media (max-width: 320px) {
   .hidden-xs {
