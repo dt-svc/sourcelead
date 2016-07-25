@@ -32,7 +32,7 @@ public class TabsDaoImpl implements TabsDao{
 		 		+ "actionRoles.roles.id = :roleId and actionRoles.orgLocations.id = :orgLocationId and actionRoles.isNotify = 'Y' ))")
 					  .setLong("roleId", roleId)
 					  .setLong("orgLocationId", orgLocationId)
-					  .list();
+					  .setCacheable(true).list();
 		 
 		 
 		 
@@ -49,7 +49,7 @@ public class TabsDaoImpl implements TabsDao{
 		 		+ "actionRoles.roles.id = :roleId and actionRoles.org.id = :orgId and actionRoles.isNotify = 'Y' ))")
 					  .setLong("roleId", roleId)
 					  .setLong("orgId", orgId)
-					  .list();
+					  .setCacheable(true).list();
 		 
 		 
 		 
