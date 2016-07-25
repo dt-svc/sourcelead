@@ -212,7 +212,6 @@
 									for (var j = 0; j < opt.projectManagerName.length; j++) {
 										
 										var managers = opt.projectManagerName[j];
-										alert("managers"+managers);
 										var projrctmanager = managers.split('&');
 								    	var name = projrctmanager[0];
 								    	var id = projrctmanager[1];
@@ -352,8 +351,7 @@ function  inlineEditClientProjects(projectSequenceNumber,localFieldName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
-	alert("fieldName "+fieldName);
-	alert("fieldValue "+fieldValue);
+	
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/inlineEditClientProjects?${_csrf.parameterName}=${_csrf.token}&projectSequenceNumber="+projectSequenceNumber+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
