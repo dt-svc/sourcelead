@@ -388,6 +388,8 @@
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
@@ -396,7 +398,7 @@
 						type : "POST",
 						url : sourceleadUrl
 								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="
-								+ con,
+								+ jsonData,
 						success : function(result) {
 							if (result == 'clientDashboard') {
 								location.replace(sourceleadUrl

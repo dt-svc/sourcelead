@@ -544,6 +544,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setHireDate(userImport.getDateOfJoin());
 
 		userRole.setUser(user);
+		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
 
 		userRole.setCreatedDate(new Date());

@@ -40,4 +40,6 @@ public interface ProjectsService {
 
 	List<Long> getApprovarAssignedProjects(Long userId,Long orgLocationId) throws Exception;
 	
+	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
+	
 }

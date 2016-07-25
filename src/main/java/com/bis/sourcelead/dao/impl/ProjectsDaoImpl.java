@@ -243,4 +243,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects p where p.projectSequeneNumber = :projectSequeneNumber";
+		List<Projects> projectsList =  session.createQuery(query.toString())
+				.setString("projectSequeneNumber", projectSequeneNumber)
+				.setCacheable(true).list();
+		if(projectsList != null){
+			return projectsList.get(0);
+		}
+		return null;
+	}
+
 }

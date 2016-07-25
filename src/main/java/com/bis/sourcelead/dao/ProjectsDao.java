@@ -38,5 +38,7 @@ public interface ProjectsDao {
 	public Integer updateEndDateOfProjectId(Date endDate,Long projectId);
 
 	List<Long> getApprovarAssignedProjects(Long userId,Long orgLocationId) throws Exception;
+	
+	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 
 }
