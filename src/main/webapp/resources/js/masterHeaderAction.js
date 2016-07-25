@@ -24,6 +24,7 @@
 			$('.user-details').removeClass('user-details-active');
 			$('.setting-area').removeClass('setting-area-active');
 			$('.alert-area').removeClass('alert-area-active');
+			$('.qlinks-area').removeClass('qlinks-area-active');
 		});
 		$("#alert").click(function(){
 			$('.alert-area').toggleClass('alert-area-active');
@@ -45,6 +46,7 @@
 		  $('.note-area').removeClass('note-area-active');
 		  $('.alert-area').removeClass('alert-area-active');
 		  $('.qlinks-area').removeClass('qlinks-area-active');
+		  $('.timesheet-menu').removeClass('timesheet-menu-active');
 	    });
 		$('.header-nav .navbar, .custom-navbar, .user-details, .tree-view-new').click(function(e){
 		  e.stopPropagation();

@@ -429,8 +429,8 @@ transform: translateY(-3px);
 }
 /* hide time sheet */
 .timesheet-menu  {
-    background-color:#23496d;
-    border-left:2px solid #3081cb;
+	background-color:#23496d;
+	border-left:2px solid #3081cb;
 	float:left;
 	margin-left:55px;
     position: absolute;
@@ -1633,6 +1633,15 @@ border-bottom:1px solid #ccc;
   }
 }
 @media (max-width: 767px){
+.tree-view.tree-view-active{
+	display:block !important;
+}
+.tree-view-new{
+	display:none !important;
+}
+.tree-view-new.tree-view-new-active{
+	display:none !important;
+}
 	
 .mail-content .mailbox-read-info h5{
     line-height: 20px;
@@ -1672,6 +1681,15 @@ border-bottom:1px solid #ccc;
 }
 }
 @media (max-width: 1160px){
+	.tree-view.tree-view-active{
+	display:block !important;
+}
+.tree-view-new{
+	display:none !important;
+}
+.tree-view-new.tree-view-new-active{
+	display:none !important;
+}
 	.side-bar .user-panel.user-panel-active .media .media-body .text-logo {
     font-size: 15px;
 }
