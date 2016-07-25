@@ -76,10 +76,6 @@ $(document).ready(function(){
 		   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
 		   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>'; */
 		   result = result + '                 </ul>';
-	   /*   result = result + '                	<li><input type="radio" value="None1" name="filterVal1" checked ="checked" id="c5" ><label for="c5">All</label></li>';
-		 result = result + ' 					<li><input type="radio" value="None2" name="filterVal1" id="c5"><label for="c5">Active</label></li>';
-		 result = result + ' 					<li><input type="radio" value="None3" name="filterVal1" id="c5"><label for="c5">In-Active</label></li>';
-	     result = result + '                         </ul>'; */
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
 	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
@@ -1011,12 +1007,12 @@ function saveReason(projectMemberId,userId){
 }
 </script>
 <script> 
-function inlineEditForEndDate(id,projectId){
+function inlineEditForEndDate(id,projectMemberId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			   
    		    }
@@ -1024,16 +1020,17 @@ function inlineEditForEndDate(id,projectId){
 }
 </script>
 <script>
- function getEndDatePickerById(id,projectId) {
+ function getEndDatePickerById(id,projectMemberId) {
 	 $('#'+id).datepicker({
 	/*  $('#endDate').datepicker({ */
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        },
 	        onClose: function() {
-		      inlineEditForEndDate(id,projectId);
+		      inlineEditForEndDate(id,projectMemberId);
 	      }
 	  });
   } 

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -30,6 +31,8 @@ public interface ProjectMembersService {
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE);
+
+	public Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 	
 	
 }
