@@ -74,7 +74,7 @@
             </div>
             <ul class="list-unstyled">
               <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
-              <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log out</a></li>
+              <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
             </ul>
           </div>
         </div>
@@ -179,7 +179,7 @@
                  <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y'}">
                      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
                  </c:if>
-                 <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-power-off" aria-hidden="true"></i>Log Out</a></li>
+                 <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
           </li>
