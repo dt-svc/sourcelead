@@ -537,12 +537,7 @@ $(document).ready(function(){
 		 $('#RatePer').removeAttr('data-validation');
 		 $('#RatePer').attr("data-validation-optional","true"); 
 	 }
-	var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-		   }; 
+
 	  if ($('#editUser_form').validate(false, validationSettings)){ 
 		    var frm = $('#editUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
@@ -573,6 +568,17 @@ $(document).ready(function(){
 		$("#editUser_form").validateOnBlur(false, validationSettings);  
 	});
 </script>   
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 
 	
 <!-- <script>
@@ -655,7 +661,7 @@ function editUserDetails(userId){
 				
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>First name</label>';
+					result = result + ' <label>First name <span class="text-danger">&nbsp; *</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_length length2-100"/>';
 					result = result + ' </div>';
 					
