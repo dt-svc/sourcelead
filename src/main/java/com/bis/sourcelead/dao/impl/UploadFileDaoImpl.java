@@ -403,7 +403,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							}
 							userImport.setEmailId(row.getCell(3).toString());
 
-							if (row.getCell(4) != null) {
+							if (row.getCell(4) == null || "".endsWith(row.getCell(4).toString())) {
+								userImport.setMobileNumber("");
+							} else {
+								userImport.setMobileNumber(row.getCell(4).toString());
+							}
+							/*if (row.getCell(4) != null) {
 								HSSFCell myCell = (HSSFCell) row.getCell(4);
 								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 									myCell.setCellType(Cell.CELL_TYPE_STRING);
@@ -416,9 +421,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								}
 							} else {
 								userImport.setMobileNumber("");
+							}*/
+							if (row.getCell(5) == null || "".endsWith(row.getCell(5).toString())) {
+								userImport.setRate("");
+							} else {
+								userImport.setRate(row.getCell(5).toString());
 							}
 
-							if (row.getCell(5) != null) {
+							/*if (row.getCell(5) != null) {
 								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
 								if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 									myCell5.setCellType(Cell.CELL_TYPE_STRING);
@@ -431,7 +441,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								}
 							} else {
 								userImport.setRate("");
-							}
+							}*/
 							if (row.getCell(6) == null || "".endsWith(row.getCell(6).toString())) {
 								userImport.setRatePer("");
 							} else {
@@ -449,7 +459,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							} else {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
 							}
-							if (row.getCell(10) != null) {
+							
+							if (row.getCell(10) == null || "".endsWith(row.getCell(10).toString())) {
+								userImport.setDayHours("");
+							} else {
+								userImport.setDayHours(row.getCell(9).toString());
+							}
+							/*if (row.getCell(10) != null) {
 								HSSFCell myCell10 = (HSSFCell) row.getCell(10);
 								if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 									myCell10.setCellType(Cell.CELL_TYPE_STRING);
@@ -462,7 +478,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								}
 							} else {
 								userImport.setDayHours("");
-							}
+							}*/
 							 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
@@ -584,27 +600,27 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 
-//		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
-//			Cell cell0 = writeRow.createCell(0);
-//			cell0.setCellValue(row.getCell(0).toString());
-//		} else {
-//			Cell cell0 = writeRow.createCell(0);
-//			cell0.setCellValue("");
-//		}
 		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
-			HSSFCell myCell0 = (HSSFCell) row.getCell(0);
-			if (myCell0.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-				myCell0.setCellType(Cell.CELL_TYPE_STRING);
-				String empId = myCell0.getStringCellValue();
-				if (empId != null && !"".endsWith(empId)) {
-					Cell cell0 = writeRow.createCell(0);
-					cell0.setCellValue(empId);
-				}
-			}
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue(row.getCell(0).toString());
 		} else {
 			Cell cell0 = writeRow.createCell(0);
 			cell0.setCellValue("");
 		}
+//		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
+//			HSSFCell myCell0 = (HSSFCell) row.getCell(0);
+//			if (myCell0.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+//				myCell0.setCellType(Cell.CELL_TYPE_STRING);
+//				String empId = myCell0.getStringCellValue();
+//				if (empId != null && !"".endsWith(empId)) {
+//					Cell cell0 = writeRow.createCell(0);
+//					cell0.setCellValue(empId);
+//				}
+//			}
+//		} else {
+//			Cell cell0 = writeRow.createCell(0);
+//			cell0.setCellValue("");
+//		}
 		
 		if (row.getCell(1) != null && !"".endsWith(row.getCell(1).toString())) {
 			Cell cell1 = writeRow.createCell(1);
@@ -627,26 +643,42 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue("");
 		}
-		if (row.getRowNum() == 0) {
+		
+		if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(row.getCell(4).toString());
 		} else {
-			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
-				HSSFCell myCell4 = (HSSFCell) row.getCell(4);
-				if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					myCell4.setCellType(Cell.CELL_TYPE_STRING);
-					String mobileNumber = myCell4.getStringCellValue();
-					if (mobileNumber != null && !"".endsWith(mobileNumber)) {
-						Cell cell4 = writeRow.createCell(4);
-						cell4.setCellValue(mobileNumber);
-					}
-				}
-			} else {
-				Cell cell4 = writeRow.createCell(4);
-				cell4.setCellValue("");
-			}
+			Cell cell4 = writeRow.createCell(4);
+			cell4.setCellValue("");
 		}
-		if (row.getRowNum() == 0) {
+//		if (row.getRowNum() == 0) {
+//			Cell cell4 = writeRow.createCell(4);
+//			cell4.setCellValue(row.getCell(4).toString());
+//		} else {
+//			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+//				HSSFCell myCell4 = (HSSFCell) row.getCell(4);
+//				if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+//					myCell4.setCellType(Cell.CELL_TYPE_STRING);
+//					String mobileNumber = myCell4.getStringCellValue();
+//					if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+//						Cell cell4 = writeRow.createCell(4);
+//						cell4.setCellValue(mobileNumber);
+//					}
+//				}
+//			} else {
+//				Cell cell4 = writeRow.createCell(4);
+//				cell4.setCellValue("");
+//			}
+//		}
+		if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue(row.getCell(5).toString());
+		} else {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue("");
+		}
+		
+		/*if (row.getRowNum() == 0) {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue(row.getCell(5).toString());
 		} else {
@@ -665,7 +697,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				Cell cell5 = writeRow.createCell(5);
 				cell5.setCellValue("");
 			}
-		}
+		}*/
 		if (row.getCell(6) != null && !"".endsWith(row.getCell(6).toString())) {
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue(row.getCell(6).toString());
@@ -694,7 +726,15 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
-		if (row.getRowNum() == 0) {
+		
+		if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue(row.getCell(10).toString());
+		} else {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue("");
+		}
+		/*if (row.getRowNum() == 0) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue(row.getCell(10).toString());
 		} else {
@@ -713,7 +753,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				Cell cell10 = writeRow.createCell(10);
 				cell10.setCellValue("");
 			}
-		}
+		}*/
 		if (userImport.getReason() !=null) {
 			writeRow.createCell(11).setCellValue(userImport.getReason());
 		} 
@@ -773,7 +813,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue("");
 		}
-		if (row.getRowNum() == 0) {
+		if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+			Cell cell4 = writeRow.createCell(4);
+			cell4.setCellValue(row.getCell(4).toString());
+		} else {
+			Cell cell4 = writeRow.createCell(4);
+			cell4.setCellValue("");
+		}
+	/*	if (row.getRowNum() == 0) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(row.getCell(4).toString());
 		} else {
@@ -791,8 +838,15 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				Cell cell4 = writeRow.createCell(4);
 				cell4.setCellValue("");
 			}
+		}*/
+		if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue(row.getCell(5).toString());
+		} else {
+			Cell cell5 = writeRow.createCell(5);
+			cell5.setCellValue("");
 		}
-		if (row.getRowNum() == 0) {
+	/*	if (row.getRowNum() == 0) {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue(row.getCell(5).toString());
 		} else {
@@ -811,7 +865,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				Cell cell5 = writeRow.createCell(5);
 				cell5.setCellValue("");
 			}
-		}
+		}*/
 		if (row.getCell(6) != null && !"".endsWith(row.getCell(6).toString())) {
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue(row.getCell(6).toString());
@@ -840,7 +894,15 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
-		if (row.getRowNum() == 0) {
+		
+		if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue(row.getCell(10).toString());
+		} else {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue("");
+		}
+		/*if (row.getRowNum() == 0) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue(row.getCell(10).toString());
 		} else {
@@ -859,7 +921,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				Cell cell10 = writeRow.createCell(10);
 				cell10.setCellValue("");
 			}
-		}
+		}*/
 		if (userImport.getReason() !=null) {
 			writeRow.createCell(11).setCellValue(userImport.getReason());
 		} 
@@ -902,8 +964,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						}
 					}
 				}else{
-					HSSFCell myCell4 = (HSSFCell) row.getCell(4);
-					if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+					XSSFCell myCell4 = (XSSFCell) row.getCell(4);
+					if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 						myCell4.setCellType(Cell.CELL_TYPE_STRING);
 						String mobileNumber = myCell4.getStringCellValue();
 						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
