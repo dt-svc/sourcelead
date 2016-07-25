@@ -112,7 +112,7 @@
 						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
 	                        <tr>
 	                            <td data-title="Id"><div>${report.id}</div></td>
-	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
 	                            <td data-title="Manager">
 	                                <div>
 	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
@@ -139,7 +139,7 @@
 		</c:if>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
-		    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+		    <h1 id="projectNameById"></h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
 		     <div id="projectSideDiv">
 		     </div>   
 			<div class="project_inn_mask"></div>
@@ -344,7 +344,7 @@ $(document).ready(function() {
 });
 </script> 
  <script>
- function projectSideBar(projectId){
+ function projectSideBar(projectId,projectName){
 	  	    var result = "";
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -367,7 +367,10 @@ $(document).ready(function() {
 		  	
 		  	result = result + '</div>'; 
 		  	$("#projectSideDiv").empty(); 
-		    $("#projectSideDiv").append(result);  	
+		    $("#projectSideDiv").append(result);  
+		    $("#projectNameById").empty(); 
+		    $("#projectNameById").append(projectName); 
+		    
 		    $(".project_side_wrap").addClass("project_side_wrap_active");
 			
 		    projectEmployee(projectId);
