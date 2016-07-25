@@ -28,6 +28,8 @@ public interface ProjectMembersService {
 	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
+
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE);
 	
 	
 }
