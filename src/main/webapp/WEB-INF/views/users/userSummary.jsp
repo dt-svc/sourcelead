@@ -551,12 +551,7 @@ $(document).ready(function(){
 		 $('#RatePer').removeAttr('data-validation');
 		 $('#RatePer').attr("data-validation-optional","true"); 
 	 }
-	var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-		   }; 
+	 
 	  if ($('#editUser_form').validate(false, validationSettings)){ 
 		    var frm = $('#editUser_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
@@ -588,15 +583,16 @@ $(document).ready(function(){
 	});
 </script>
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 
-<!-- <script>
-function cancelEditUserDetails(){
-	$(".user_summary_edit").slideToggle(100);
-	$("#remove_user_id").slideUp(100);
-	$(".error").removeClass("error");
-	$('#editUserDiv').find('p.jquery_form_error_message').remove();
-}
-</script> -->
+
 
 <script>
 function editUserDetails(userId){
@@ -669,7 +665,7 @@ function editUserDetails(userId){
 				
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>First name</label>';
+					result = result + ' <label>First name<span class="text-danger">&nbsp; *</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_length length2-100"/>';
 					result = result + ' </div>';
 					
@@ -748,13 +744,6 @@ function editUserDetails(userId){
 }
 </script>
 
-<!-- <script>
-  $( function() {
-	  $('#DateofJoin').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	  });
-  } );
-</script>  -->
 
 <script>
 function getCalendar(){
@@ -1025,7 +1014,6 @@ function saveReason(projectMemberId,userId){
 function inlineEditForEndDate(id,projectId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 var endDate = document.getElementById(id).value;
-	 alert("enddate"+endDate);
 	  $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   

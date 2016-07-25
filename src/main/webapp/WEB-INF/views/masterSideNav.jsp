@@ -1,6 +1,7 @@
 <!-- Side Nav Bar -->
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-  <aside class="side-bar">
+  <aside>
+  <div class="side-bar">
     <div class="side-bar-inner">
       <div class="user-panel">
                 
@@ -41,10 +42,16 @@
 	                 
 	                 <c:if test="${userTabs.tabName == 'Timesheets' }">
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
+							  <a href="#" class="tree-view-new">
+								<span><i class="fa fa-clock-o"></i></span>
+							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
 							  <a href="#" class="tree-view">
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
+							  
 							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
 							  <ul class="collapses" style="display: block">
 							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>">Timesheet</a></li>
@@ -77,5 +84,11 @@
         </ul>
       </div>
     </div>
+    </div>
+    
+<ul class="timesheet-menu list-unstyled">
+   <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>">My Timesheet</a></li>
+   <li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>">Timesheet Approval</a></li>
+ </ul>
   </aside>
   <!-- Side Nav Bar --> 

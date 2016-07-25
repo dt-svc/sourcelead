@@ -33,7 +33,9 @@ a {
 a:hover{
 	color:#458ac9;
 }
-
+textarea {
+    resize: none;
+}
 /* Maring Styles */
 .mr{
 	margin-right:15px;
@@ -425,6 +427,66 @@ transform: translateY(-3px);
 	overflow-y:auto; */
 	overflow:hidden;
 }
+/* hide time sheet */
+.timesheet-menu  {
+	background-color:#23496d;
+	border-left:2px solid #3081cb;
+	float:left;
+	margin-left:55px;
+    position: absolute;
+    z-index: 999;
+	top:218px;
+	border-radius:0 5px 5px 0;
+	-webkit-transition: all 0.5s ease-in-out 0s;
+	-ms-transition: all 0.5s ease-in-out 0s;
+	-moz-transition: all 0.5s ease-in-out 0s;
+	transition: all 0.5s ease-in-out 0s;
+	transform:translateX(-2000px);
+	-ms-transform:translateX(-2000px);
+	-webkit-transform:translateX(-2000px);
+	-moz-transform:translateX(-2000px);
+}
+.timesheet-menu.timesheet-menu-active {
+	transform:translateX(0);
+	-ms-transform:translateX(0);
+	-webkit-transform:translateX(0);
+	-moz-transform:translateX(0);
+}
+.timesheet-menu li {
+	border-bottom: 1px solid #325475;
+    line-height: 39px;
+    position: relative;
+    transition: all 0.5s ease-in-out 0s;
+	padding:0 18px;
+}
+ul.timesheet-menu li:last-child{
+	border-bottom:0;
+}
+ul.timesheet-menu li a{
+	color:#fff;
+}
+ul.timesheet-menu li a::before {
+    color: #f0ad4e;
+    content: "";
+    font-family: fontawesome;
+    padding-right: 5px;
+}
+ul.timesheet-menu li a:hover{
+	color:#f0ad4e;
+}
+.tree-view.tree-view-active{
+	display:none !important;
+}
+.tree-view{
+	display:block;
+}
+.tree-view-new{
+	display:none !important;
+}
+.tree-view-new.tree-view-new-active{
+	display:block !important;
+}
+/* hide time sheet */
 .side-bar.side-bar-active{
 	width:55px;
 }
@@ -851,11 +913,11 @@ transform: translateY(-3px);
     padding:10px 15px;
 	margin-left:230px;
 	transition:all ease-in-out 0.2s;
-	position:absolute;
 	bottom:0;
-	height:35px;
+	height:45px;
 	right:0;
-	width:83%;
+	/* position:absolute;
+	width:83%; */
 }
 .copyright{
 float:left;
@@ -1032,6 +1094,11 @@ background-repeat:no-repeat;
 	.user-profile .col-sm-8{
 		padding-left:5px;
 	}
+	
+.user-profile h4 {
+	text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}	
+	
 	/*custom tab styles*/
 	.accountsettings-tab {
 		margin-bottom:15px;
@@ -1083,8 +1150,9 @@ background-repeat:no-repeat;
 	box-shadow:0px 0px 10px 5px #e1e6fa;
 }
 .profile-img-container .comp-image{
-	height:242px;
-	width:242px;
+	max-height:250px;
+	width:auto;
+	height:auto;
 	border:1px solid #bdbdbd;
 }
 .profile-img-container .comp-image:hover{
@@ -1537,6 +1605,22 @@ border-bottom:1px solid #ccc;
 }
 /* For Addon styles */
 
+.div-checkbox {
+    border:1px solid #ddd;
+    margin-bottom:20px !important;
+    border-radius:5px;
+    background:#ededed;
+}
+.div-checkbox span{
+    position: relative;
+    top:0px;
+    padding-left:5px;
+}
+.div-checkbox input[type="checkbox"] {
+    position: relative;
+    top: 2px;
+}
+
 @media (max-width: 320px) {
   .hidden-xs {
     display: none !important;
@@ -1549,6 +1633,15 @@ border-bottom:1px solid #ccc;
   }
 }
 @media (max-width: 767px){
+.tree-view.tree-view-active{
+	display:block !important;
+}
+.tree-view-new{
+	display:none !important;
+}
+.tree-view-new.tree-view-new-active{
+	display:none !important;
+}
 	
 .mail-content .mailbox-read-info h5{
     line-height: 20px;
@@ -1588,6 +1681,15 @@ border-bottom:1px solid #ccc;
 }
 }
 @media (max-width: 1160px){
+	.tree-view.tree-view-active{
+	display:block !important;
+}
+.tree-view-new{
+	display:none !important;
+}
+.tree-view-new.tree-view-new-active{
+	display:none !important;
+}
 	.side-bar .user-panel.user-panel-active .media .media-body .text-logo {
     font-size: 15px;
 }
