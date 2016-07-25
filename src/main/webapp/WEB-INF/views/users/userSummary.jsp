@@ -1,14 +1,18 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="icon" type="resources/image/png"
+	href="resources/images/fav.png" />
+<link
+	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
+	rel="stylesheet" type="text/css">
+<link rel="stylesheet"
+	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
@@ -16,34 +20,34 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
- <div class="wraper"> 
-      <!-- Content Area -->
-      <section class="content-wraper">
-        <section class="content-header clearfix">
-          <div class="pull-left">
-            <h2>User Summary</h2>
-          </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
-        </section>
-        
+<div class="wraper">
+	<!-- Content Area -->
+	<section class="content-wraper">
+		<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>User Summary</h2>
+			</div>
+			<div class="pull-right brud-crum">Home &raquo; General Form
+				&raquo; Create User</div>
+		</section>
+
 		<!-- Timesheet -->
-		
-		
-<script>
+
+
+		<script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','resources/images/userprofile-img.png');
 	}
 </script>
-		
-<script> 
+
+		<script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 getUserSummaryDetails(userId);
 });
-</script>		
- <div id="projectSideDiv">
-		     </div>  
-<script>
+</script>
+		<div id="projectSideDiv"></div>
+		<script>
  function getUserSummaryDetails(userId){
 	 
 	 var result = "";
@@ -68,9 +72,9 @@ $(document).ready(function(){
 	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();""></i>|';
 	     result = result + '         	<div class="approved_pop">';
 	     result = result + '            	<ul>';
-	     result = result + '                	<li><label id="All-Filter" value="All" onClick="projectFilterForAll();" >All</label></li>';
+	     /* result = result + '                	<li><label id="All-Filter" value="All" onClick="projectFilterForAll();" >All</label></li>';
 		   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
-		   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>';
+		   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>'; */
 		   result = result + '                 </ul>';
 	   /*   result = result + '                	<li><input type="radio" value="None1" name="filterVal1" checked ="checked" id="c5" ><label for="c5">All</label></li>';
 		 result = result + ' 					<li><input type="radio" value="None2" name="filterVal1" id="c5"><label for="c5">Active</label></li>';
@@ -78,7 +82,7 @@ $(document).ready(function(){
 	     result = result + '                         </ul>'; */
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
-	     result = result + '				<li><a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
 	     result = result + '              <div class="clearfix"></div>';
 	     result = result + '            </ul>';
 	     result = result + '          <div class="clearfix"></div>';
@@ -95,9 +99,9 @@ $(document).ready(function(){
 	  	userDetails(userId);
 	  	userProjectDetails(userId,"All");
  }
-</script> 
-	     
-<script>
+</script>
+
+		<script>
  function userDetails(userId){    
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
@@ -220,8 +224,7 @@ $(document).ready(function(){
 	      },
 	});
  }
-</script> 
- 
+</script>
 <script>
  function userProjectDetails(userId,filterValue){    
 	    var sourceleadUrl ='${sourceleadUrl}';
@@ -238,7 +241,7 @@ $(document).ready(function(){
 						   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
 						   result = result + '         	<div class="approved_pop">';
 						   result = result + '            	<ul>';
-						   result = result + '                	<li><label id="All-Filter" value="All" onClick="this.select();projectFilterForAll();" >All</label></li>';
+						   result = result + '                	<li><label id="All-Filter" value="All" onClick="projectFilterForAll();" >All</label></li>';
 						   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
 						   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>';
 						   result = result + '                 </ul>';
@@ -306,7 +309,7 @@ $(document).ready(function(){
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
 						   //result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById();" onBlur="inlineEditForEndDate(\''+json.id+'\');"/></div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById(\''+json.id+'\');"/></div></td>';
+						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field" onclick="getEndDatePickerById(\'endDate'+json.id+'\','+json.id+');" /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
@@ -346,10 +349,10 @@ $(document).ready(function(){
 						    result = result + '</div>';
 						    $("#tab-2").empty(); 
 							$("#tab-2").append(result);
-		 			 
 		   		}
 	    		else{
-	    			 result = result + '<div class="timesheet_head">';
+	    			$("#tab-2").empty(); 
+	    			/*  result = result + '<div class="timesheet_head">';
 					   result = result + '  	<ul>';
 					   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
 					   result = result + '         	<div class="approved_pop">';
@@ -368,37 +371,39 @@ $(document).ready(function(){
 	    			result = result + "List Empty";
 	    			 $("#tab-2").empty(); 
 	    			 
-					$("#tab-2").append(result);
+					$("#tab-2").append(result); */
 	    		}
 	        },
 		});
 	 }
 </script>
 		<!-- Timesheet -->
-		
-      </section>
-      <!-- Content Area Ends--> 
 
-    
-    </div>
+	</section>
+	<!-- Content Area Ends-->
 
-	
-                <!-- Modal content Add Team-->
-                <div role="dialog" id="assignProject" class="modal fade">
-                  <div class="modal-dialog">
-                  <form:form id="assignProject_form"  name="assignProject_form" method="post">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">X</button>
-                        <h4 class="modal-title">Assign Project</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12"  id="assignProjectDiv">
-                            <div class="form-group">
-                            <label class="col-lg-3">Select Project <span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                           <!--  <div class="col-lg-9">
+
+</div>
+
+
+<!-- Modal content Add Team-->
+<div role="dialog" id="assignProject" class="modal fade">
+	<div class="modal-dialog">
+		<form:form id="assignProject_form" name="assignProject_form"
+			method="post">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button data-dismiss="modal" class="close" type="button">X</button>
+					<h4 class="modal-title">Assign Project</h4>
+				</div>
+				<div class="modal-body clearfix">
+					<div class="form-horizontal custom-form clearfix">
+						<div class="col-xs-12 col-md-12 col-lg-12" id="assignProjectDiv">
+							<div class="form-group">
+								<label class="col-lg-3">Select Project <span
+									class="text-danger">*</span></label>
+								<div class="col-lg-9">
+									<!--  <div class="col-lg-9">
                               <select class="form-control">
                               	<option>Invoice-1</option>
                                 <option>Invoice-2</option>
@@ -406,59 +411,68 @@ $(document).ready(function(){
                               </select>
                               </div> -->
 
-                               <select class="form-control" id="proId" name="projectId" field-name="Project Name" onchange="getStartandEndDate();" data-validation="required">
-                       		   <option value="">-Select Project-</option>
-                        		<c:forEach var="option" items="${org_projectsList}">
-  						   			<option value="${option.id}">${option.projectName}</option>
-				      			  </c:forEach>
-                      			</select>
-                      			</div>
-                            </div> 						  
-                            <div class="form-group">
-                            <label class="col-lg-3">Start date</label>
-                            <div class="col-lg-9">
-							<div class="input-group">
-								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id = "StartDate" name="StartDate" data-validation="required" field-name="Start Date">
+									<select class="form-control" id="proId" name="projectId"
+										field-name="Project Name" onchange="getStartandEndDate();"
+										data-validation="required">
+										<option value="">-Select Project-</option>
+										<c:forEach var="option" items="${org_projectsList}">
+											<option value="${option.id}">${option.projectName}</option>
+										</c:forEach>
+									</select>
 								</div>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">End date</label>
-                            <div class="col-lg-9">
-							<div class="input-group">
-								  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								  <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id ="EndDate" name ="EndDate" />
+							</div>
+							<div class="form-group">
+								<label class="col-lg-3">Start date</label>
+								<div class="col-lg-9">
+									<div class="input-group">
+										<span class="input-group-addon"><i
+											class="fa fa-calendar"></i></span> <input type="text"
+											class="form-control" readonly="readonly"
+											placeholder="DD/MM/YYYY" id="StartDate" name="StartDate"
+											data-validation="required" field-name="Start Date">
+									</div>
 								</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" id = "saveAssignProject" onclick="assignProject();">Select</button>
-                        <button data-dismiss="modal" class="btn btn-default"  onclick="flushProject();" type="button">Cancel</button>
-                      </div>
-                    </div>
-                    </form:form>
-                  </div>
-                </div>
-                <!-- Add Team modal popup ends -->	
+							</div>
+							<div class="form-group">
+								<label class="col-lg-3">End date</label>
+								<div class="col-lg-9">
+									<div class="input-group">
+										<span class="input-group-addon"><i
+											class="fa fa-calendar"></i></span> <input type="text"
+											class="form-control" readonly="readonly"
+											placeholder="DD/MM/YYYY" id="EndDate" name="EndDate" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button"
+						id="saveAssignProject" onclick="assignProject();">Select</button>
+					<button data-dismiss="modal" class="btn btn-default"
+						onclick="flushProject();" type="button">Cancel</button>
+				</div>
+			</div>
+		</form:form>
+	</div>
+</div>
+<!-- Add Team modal popup ends -->
 
 
-	<!-- <div class="project_inn_mask"></div>
+<!-- <div class="project_inn_mask"></div>
 	   <div id="remove_user_pop" class="remove_user_pop remove_user_pop_a">
 		<p>User delete message here</p>
 		<textarea placeholder="Comments here"></textarea>
 		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick=""><input class="u_can_color" type="button" value="Cancel"></b>
 	</div> -->
 
-	<div id="popUp" ></div>	
-    </body>
-	
+<div id="popUp"></div>
+</body>
 
 
-      
+
+
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -494,7 +508,7 @@ $(document).ready(function(){
 	}
 	
  }
-</script>  
+</script>
 
 
 <script type="text/javascript">
@@ -572,9 +586,9 @@ $(document).ready(function(){
 		$("#editUser_form").showHelpOnFocus();;
 		$("#editUser_form").validateOnBlur(false, validationSettings);  
 	});
-</script>   
+</script>
 
-	
+
 <!-- <script>
 function cancelEditUserDetails(){
 	$(".user_summary_edit").slideToggle(100);
@@ -789,14 +803,14 @@ function terminateUser(userId){
 	}
 }
 
-</script> 
+</script>
 
 <script>
 function getConformation(userId,reason){ 
 	 $(".project_error").slideDown(200);
 	 $(".project_inn_mask").fadeIn(200);
 }
-</script> 
+</script>
 
 
 <script>
@@ -833,16 +847,17 @@ $(document).ready(function() {
 
 
 
-</script> 
+</script>
 
 <script type="text/javascript">
 function flushProject(){
 	$("#proId").removeAttr("disabled");
+	$("#saveAssignProject").removeAttr("disabled");
 	$('#StartDate').val('');
-	 $('#EndDate').val('');
-	 $('#proId').val('');
-	 $(".error").removeClass("error");
-	 $('#assignProjectDiv').find('p.jquery_form_error_message').remove();
+	$('#EndDate').val('');
+	$('#proId').val('');
+	$(".error").removeClass("error");
+	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
 <!-- this script for inline edit -->
@@ -1007,9 +1022,10 @@ function saveReason(projectMemberId,userId){
 }
 </script>
 <script> 
-function inlineEditForEndDate(projectId){
+function inlineEditForEndDate(id,projectId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	 var endDate = document.getElementById("endDate").value;
+	 var endDate = document.getElementById(id).value;
+	 alert("enddate"+endDate);
 	  $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   
@@ -1018,17 +1034,18 @@ function inlineEditForEndDate(projectId){
    		    }
 	 });  
 }
-</script> 
+</script>
 <script>
- function getEndDatePickerById(projectId) {
-	 $('#endDate').datepicker({
+ function getEndDatePickerById(id,projectId) {
+	 $('#'+id).datepicker({
+	/*  $('#endDate').datepicker({ */
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	        },
 	        onClose: function() {
-		      inlineEditForEndDate(projectId);
+		      inlineEditForEndDate(id,projectId);
 	      }
 	  });
   } 
@@ -1057,21 +1074,5 @@ function inlineEditForEndDate(projectId){
  }
 </script>
 
-
-<script type="text/javascript">
-$(document).ready(function() {
-	/* var selectedVal =  document.getElementById('c5').value;
-	var userId = '${userId}';
-	if(selectedVal == "All"){
-		getAllProjectList();
-	}
-	if(selectedVal == "Active"){
-		
-	}
-	if(selectedVal == "In-Active"){
-		
-	} */
-})
-</script>
 
 <!-- end project scripts -->
