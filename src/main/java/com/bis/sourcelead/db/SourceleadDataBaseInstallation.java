@@ -1,4 +1,4 @@
-package com.bis.sourcelead.util;
+package com.bis.sourcelead.db;
 
 import java.beans.PropertyVetoException;
 
@@ -39,8 +39,7 @@ public class SourceleadDataBaseInstallation {
 			    Using 'filesystem' keyword we can able set file path..
 			  *  
 			  */
-			//flyway.setLocations("filesystem:src\\main\\resources\\migrations");
-			flyway.setLocations("migrations");
+			flyway.setLocations("com\\bis\\sourcelead\\db\\migrations");
 			try{
 				flyway.migrate();	
 			}
