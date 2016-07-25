@@ -1022,13 +1022,13 @@ function saveReason(projectMemberId,userId){
 }
 </script>
 <script> 
-function inlineEditForEndDate(id,projectId){
+function inlineEditForEndDate(id,projectMemberId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 var endDate = document.getElementById(id).value;
 	 alert("enddate"+endDate);
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectId="+projectId, 	   
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			   
    		    }
@@ -1036,16 +1036,17 @@ function inlineEditForEndDate(id,projectId){
 }
 </script>
 <script>
- function getEndDatePickerById(id,projectId) {
+ function getEndDatePickerById(id,projectMemberId) {
 	 $('#'+id).datepicker({
 	/*  $('#endDate').datepicker({ */
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        },
 	        onClose: function() {
-		      inlineEditForEndDate(id,projectId);
+		      inlineEditForEndDate(id,projectMemberId);
 	      }
 	  });
   } 

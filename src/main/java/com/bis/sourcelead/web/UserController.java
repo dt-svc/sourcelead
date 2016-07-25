@@ -453,26 +453,25 @@ public class UserController {
 	}
 	
 	/**
-	 * to update the end date of project in assign project
+	 * to update the end date of ProjectMembers in assign project
 	 * @param endDate
-	 * @param projectId
+	 * @param projectMemberId
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateEndDateByProjectId", method = RequestMethod.POST)
-	public String updateProjectTaskById(@RequestParam(value = "endDate", required = false) String endDate,
-			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
+	@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
+	public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
+			@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
 
-		Projects projects = projectsService.getProjectById(projectId);
-				
+		ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Date endDate1=sdf.parse(endDate);
 				if (endDate != null) {
-					if (projects.getEndDate() == null) {
-						projectsService.updateEndDateOfProjectId(endDate1, projectId);
+					if(projectMembers.getProjectEndDate()== null){
+						projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 					}
-					if (projects.getEndDate().compareTo(sdf.parse(endDate)) != 0) {
-						projectsService.updateEndDateOfProjectId(endDate1, projectId);
+					if (projectMembers.getProjectEndDate().compareTo(sdf.parse(endDate)) != 0) {
+						projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 					}
 				}
 				return "updated";
