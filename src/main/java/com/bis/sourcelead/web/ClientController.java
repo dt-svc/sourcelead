@@ -171,6 +171,7 @@ public class ClientController {
 			orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
 			orgLocations.setCreatedDate(new Date());
 			orgLocations.setCreatedBy(loginUserCode);
+			orgLocationService.addOrgLocations(orgLocations);
 			/*Saving for OrgRelations*/
 			OrgRelations orgRelations = new OrgRelations();
 			orgRelations.setClientLocationId(orgLocations);
@@ -178,6 +179,7 @@ public class ClientController {
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(loginUserCode);
 			orgRelations.setCreatedDate(new Date());
+		   orgRelationsService.addOrgRelations(orgRelations);
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
