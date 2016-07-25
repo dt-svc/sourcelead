@@ -40,6 +40,7 @@ public class Constants {
 	public static String FORGOT_PASSWORD = "Forgot Password";
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String INVITE_USER = "Invite User";
+	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";

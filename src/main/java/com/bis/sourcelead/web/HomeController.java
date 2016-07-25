@@ -36,7 +36,7 @@ import com.bis.sourcelead.service.UserService;
  */
 
 @Controller
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 @ControllerAdvice
 public class HomeController {
 

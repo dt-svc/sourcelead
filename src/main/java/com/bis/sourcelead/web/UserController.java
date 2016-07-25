@@ -27,12 +27,10 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -43,8 +41,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -52,7 +48,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -330,6 +326,13 @@ public class UserController {
 
 		return "success";
 	}
+	/**
+	 * get the list of all projects of the particular user
+	 * @param request
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
 	//to get all project details by user id
 	@RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
@@ -368,8 +371,14 @@ public class UserController {
 		resultJson = toJSON(allProjectsList);
 		return resultJson;
 	}
-	
-	//to assign the project to the specific user
+	/**
+	 * to assign the project to the particular user
+	 * @param json
+	 * @param userId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
 	public @ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
@@ -428,8 +437,12 @@ public class UserController {
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		return "success";
 	}
-
-	//to save the reason when we terminate the user from project 
+	/**
+	 * to save the reason when we terminate the user from project 
+	 * @param projectMemberId
+	 * @param reason
+	 * @return
+	 */
 	@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 	public @ResponseBody String saveReason(
 			@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
@@ -440,13 +453,12 @@ public class UserController {
 	}
 	
 	/**
-	 * 
+	 * to update the end date of project in assign project
 	 * @param endDate
 	 * @param projectId
 	 * @return
 	 * @throws Exception
 	 */
-	// to update the end date when we change the end date of project in assign project
 	@RequestMapping(value = "/updateEndDateByProjectId", method = RequestMethod.POST)
 	public String updateProjectTaskById(@RequestParam(value = "endDate", required = false) Date endDate,
 			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
