@@ -31,7 +31,7 @@
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; General Form
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="dashboard"> General Form
 			&raquo; Client</div>
 	</section>
 	<div class="content-area clearfix">
@@ -209,8 +209,8 @@
 												</div>
 											</div>
 											<div class="modal-footer">
-												<button type="button" class="btn btn-primary"
-													data-dismiss="modal">Save</button>
+												<!-- <button type="button" class="btn btn-primary"
+													data-dismiss="modal">Save</button> -->
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Close</button>
 											</div>
@@ -388,6 +388,8 @@
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
@@ -396,7 +398,7 @@
 						type : "POST",
 						url : sourceleadUrl
 								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="
-								+ con,
+								+ jsonData,
 						success : function(result) {
 							if (result == 'clientDashboard') {
 								location.replace(sourceleadUrl
@@ -543,6 +545,7 @@
 		$("#projectManager").val('');
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
+		addtasksCountafterAddingTask();
 	}
 </script>
 <script type="text/javascript">
@@ -697,3 +700,54 @@
 	};
 </script>
 <!-- Date Picker Script end here -->
+
+<script type="text/javascript">
+function addtasksCountafterRemoving(){
+	
+var tasksCount =  $("#maxTsRowNum").val();
+var count = tasksCount;
+var addtaskcount =null;
+ for(i = 0 ;i<count;i++){
+	 
+		if($('#divTsRow'+i).filter(function() {
+		    return $(this).css('display') !== 'none';
+		}).length){
+			addtaskcount++
+		}
+ }
+ $("#addTaskCount").html(addtaskcount-2); 
+ 
+}
+</script> 
+
+<script type="text/javascript">
+function addtasksCountafterAddingTask(){
+	
+var tasksCount =  $("#maxTsRowNum").val();
+var count = tasksCount;
+var addtaskcount =null;
+ for(i = 0 ;i<count;i++){
+	 
+		if($('#divTsRow'+i).filter(function() {
+		    return $(this).css('display') !== 'none';
+		}).length){
+			addtaskcount++
+		}
+ }
+ $("#addTaskCount").html(addtaskcount-1); 
+ 
+}
+</script> 
+
+<script type="text/javascript">
+ function removeRow(rowId) {
+	 addtasksCountafterRemoving()
+		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		  var r = document.getElementById('projectTaskTbl').rows[rowId];
+             var count = 2*(r.cells.length);
+			    for(i=0;i<=count;i++){
+			        r.deleteCell(0);
+			    }
+	}
+ 
+</script>
