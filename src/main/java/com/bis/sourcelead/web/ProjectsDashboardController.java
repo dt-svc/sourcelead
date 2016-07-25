@@ -213,16 +213,19 @@ public class ProjectsDashboardController {
 		        	  Date endtDate = format.parse(fieldValue);
 						projects.setEndDate(endtDate);
 		          }
-	            
 			}else if (fieldName.equalsIgnoreCase("projectStatusId")) {
 		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
+			}else if (fieldName.equalsIgnoreCase("clientId")) {
+				OrgRelations orgRelations = new OrgRelations();
+				orgRelations.setId(Long.valueOf(fieldValue));
+		    	projects.setOrgRelationId(orgRelations);
 			}
-		    
-		    projects.setUpdatedBy(user.getUserCode());
-		    projects.setUpdatedDate(new Date());
-		    projectsService.updateProject(projects);
-		    return null;
-	  }
+			    projects.setUpdatedBy(user.getUserCode());
+			    projects.setUpdatedDate(new Date());
+			    projectsService.updateProject(projects);
+			    return null;
+		  }
+	 
 	 
 	 
 	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)

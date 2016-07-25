@@ -556,7 +556,7 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-		result = result + '<select>';
+	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
 		result = result+"<option value=''>Select</option>";
 					for (var i = 0; i < json.clientName.length; i++) {
 						
