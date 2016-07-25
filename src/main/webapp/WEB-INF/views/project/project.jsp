@@ -226,8 +226,8 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value=""> Mail
-										to Project Manager
+									<label> <input type="checkbox" value="Y" name="isMailToProjectManager"> 
+									Mail to Project Manager
 									</label>
 								</div>
 								<span class="hidden">Select Check Box</span>
