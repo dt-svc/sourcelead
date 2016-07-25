@@ -342,13 +342,13 @@ public class UserController {
 		for (ProjectMembers projectMembers : allProjectsList) {
 			if (projectMembers.getProjectAssignedDate() != null) {
 				projectMembers.setStartDate(
-						com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectAssignedDate()));
+						com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
 			}
 			if (projectMembers.getProjectEndDate() != null) {
 				projectMembers.setEndDate(
-						com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectEndDate()));
+						com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
 			} else if (projectMembers.getProjects().getEndDate() != null) {
-				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD
+				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
 						.format(projectMembers.getProjects().getEndDate()));
 			}
 			Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService
