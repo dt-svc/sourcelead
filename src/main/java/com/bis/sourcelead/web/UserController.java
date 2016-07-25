@@ -48,7 +48,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource("${propertyLocation:app.properties}")
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -88,13 +87,6 @@ public class UserController {
 		ModelAndView model = new ModelAndView();
 		Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		model.addObject("org_projectsList", projectsList);
-
-		/*
-		 * Collection<User> userList =
-		 * userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId())
-		 * ; model.addObject("user_List", userList);
-		 */
-
 		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -106,7 +98,6 @@ public class UserController {
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		request.setAttribute("userId", userId);
-		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		// this method is also using /userCreation 
@@ -260,7 +251,6 @@ public class UserController {
 				"orgLocations");
 		Employees employees = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(EmployeeId, userId,
 				orgLocations.getId());
-		System.out.println(employees);
 		Boolean flag = false;
 		if (employees == null) {
 			flag = employeesService.validateEmployeeId(EmployeeId, orgLocations.getId());
