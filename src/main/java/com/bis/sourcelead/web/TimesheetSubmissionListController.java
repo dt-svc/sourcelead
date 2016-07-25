@@ -66,14 +66,8 @@ public class TimesheetSubmissionListController {
 		
 		Collection<TimesheetSubmissions> list = null  ;
 		
-		/*if(status.equalsIgnoreCase("saved")){
-			list = timesheetSubmissionsService.getTimeSheetSubmissionsSavedList(user.getId(),"SAVED");
-		}else if(status.equalsIgnoreCase("waiting")){
-			list  = timesheetSubmissionsService.getTimeSheetSubmissionsSubmittedList(user.getId(), "SUBMITTEDFORAPPROVAL");
-		}else if(status.equalsIgnoreCase("approved")){
-			list = timesheetSubmissionsService.getTimeSheetSubmissionsApprovedList(user.getId(), "APPROVED");
-		}else if(status.equalsIgnoreCase("rejected")){
-			list = timesheetSubmissionsService.getTimeSheetSubmissionsRejectedList(user.getId(), "REJECTED");
+		if(status != null){
+			list  = timesheetSubmissionsService.getTimeSheetSubmissionsListByStatus(user.getId(), status);
 		}
 		for(TimesheetSubmissions timesheetSubmissions:list){
 	
@@ -85,7 +79,7 @@ public class TimesheetSubmissionListController {
 					timesheetSubmissions.setManagerLevel2(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
 				}
 			}
-		}*/
+		}
         model.addObject("Timesheet_Submissions", list);
 		model.setViewName("timesheet/timesheetStatusList");
 		model.addObject("sourceleadUrl", sourceleadUrl);

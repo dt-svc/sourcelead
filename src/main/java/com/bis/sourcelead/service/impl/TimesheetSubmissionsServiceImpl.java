@@ -91,10 +91,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return list;
 	}
 	
-
-
-	
-
 	@Override
 	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
 		
@@ -112,8 +108,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId,submissionStatus);
 	}
 	
-	
-	
-	
+	@Override
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId, String approvalStatus)
+			throws Exception {
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsListByStatus(userId,approvalStatus);
+		return list;
+	}
 
 }
