@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import org.springframework.aop.ThrowsAdvice;
+
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimesheetSubmissionsService {
@@ -20,6 +21,8 @@ public interface TimesheetSubmissionsService {
     
     public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate, Long  userId)throws Exception; 
     
+    public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate, Long  userId)throws Exception;
+    
     public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
      
     public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
@@ -32,20 +35,7 @@ public interface TimesheetSubmissionsService {
     
     public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus)throws Exception;
 
-	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus);
+	public Integer getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus);
 
-	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus); 
-	
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
-	
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId);
-	
-	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSavedList(Long userId,String approvalStatus)throws Exception;
-	
-	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsSubmittedList(Long userId,String approvalStatus)throws Exception;
-	
-	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsApprovedList(Long userId,String approvalStatus)throws Exception;
-	
-	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsRejectedList(Long userId,String approvalStatus)throws Exception;
-
+	public Integer getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus); 
 }

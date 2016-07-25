@@ -66,7 +66,7 @@ public class TimesheetSubmissionListController {
 		
 		Collection<TimesheetSubmissions> list = null  ;
 		
-		if(status.equalsIgnoreCase("saved")){
+		/*if(status.equalsIgnoreCase("saved")){
 			list = timesheetSubmissionsService.getTimeSheetSubmissionsSavedList(user.getId(),"SAVED");
 		}else if(status.equalsIgnoreCase("waiting")){
 			list  = timesheetSubmissionsService.getTimeSheetSubmissionsSubmittedList(user.getId(), "SUBMITTEDFORAPPROVAL");
@@ -85,7 +85,7 @@ public class TimesheetSubmissionListController {
 					timesheetSubmissions.setManagerLevel2(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
 				}
 			}
-		}
+		}*/
         model.addObject("Timesheet_Submissions", list);
 		model.setViewName("timesheet/timesheetStatusList");
 		model.addObject("sourceleadUrl", sourceleadUrl);

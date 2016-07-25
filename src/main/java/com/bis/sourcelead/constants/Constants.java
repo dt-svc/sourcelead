@@ -2,6 +2,7 @@ package com.bis.sourcelead.constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * 
@@ -39,4 +40,6 @@ public class Constants {
 	public static String INVITE_USER = "Invite User";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
+	
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getTimeZone("America/Chicago");
 }

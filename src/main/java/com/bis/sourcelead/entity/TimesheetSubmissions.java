@@ -1,8 +1,8 @@
 package com.bis.sourcelead.entity;
 
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -137,12 +137,8 @@ public class TimesheetSubmissions {
 	private String userId;
 	
 	@Transient
-    private String managerLevel1;
-    
-    @Transient
-    private String managerLevel2;
+	private  HashMap<String,Date> dateList;
 	
-
 	public Long getId() {
 		return Id;
 	}
@@ -369,20 +365,12 @@ public class TimesheetSubmissions {
 		this.userId = userId;
 	}
 
-	public String getManagerLevel1() {
-		return managerLevel1;
+	public HashMap<String, Date> getDateList() {
+		return dateList;
 	}
 
-	public void setManagerLevel1(String managerLevel1) {
-		this.managerLevel1 = managerLevel1;
-	}
-
-	public String getManagerLevel2() {
-		return managerLevel2;
-	}
-
-	public void setManagerLevel2(String managerLevel2) {
-		this.managerLevel2 = managerLevel2;
+	public void setDateList(HashMap<String, Date> dateList) {
+		this.dateList = dateList;
 	}
 	
 }

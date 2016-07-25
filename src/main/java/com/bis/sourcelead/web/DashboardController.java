@@ -59,8 +59,8 @@ public class DashboardController {
 		String resultJson = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());
-		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());
+		/*timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());
+		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());*/
 
 		resultJson = toJSON(timeSheetSubmissionCount);
 		return resultJson;
