@@ -76,10 +76,6 @@ $(document).ready(function(){
 		   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
 		   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>'; */
 		   result = result + '                 </ul>';
-	   /*   result = result + '                	<li><input type="radio" value="None1" name="filterVal1" checked ="checked" id="c5" ><label for="c5">All</label></li>';
-		 result = result + ' 					<li><input type="radio" value="None2" name="filterVal1" id="c5"><label for="c5">Active</label></li>';
-		 result = result + ' 					<li><input type="radio" value="None3" name="filterVal1" id="c5"><label for="c5">In-Active</label></li>';
-	     result = result + '                         </ul>'; */
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
 	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
