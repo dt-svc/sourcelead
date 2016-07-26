@@ -284,9 +284,9 @@ public class UserController {
 		 	 * get the list of all projects of the particular user
 		 	 * @param request
 		 	 * @param userId
-		 	 * @param filterValue
 		 	 * @return
 		 	 * @throws Exception
+
 		 	 */
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 			public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
@@ -336,6 +336,36 @@ public class UserController {
 				resultJson = toJSON(allProjectsList);
 				return resultJson;
 			}
+		 
+		 /**
+		  * to update the end date of ProjectMembers in assign project
+		  * @param endDate
+		  * @param projectMemberId
+		  * @return
+
+		 -	 * @throws Exception
+
+		 -	 */
+
+		@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
+		public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
+
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
+
+					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					Date endDate1=sdf.parse(endDate);
+					if (endDate != null) {
+						if(projectMembers.getProjectEndDate()== null){
+							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						}
+
+						if (projectMembers.getProjectEndDate() != null && projectMembers.getProjectEndDate().compareTo(sdf.parse(endDate)) != 0) {
+							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						}
+					}
+					return "updated";
+		       }
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
