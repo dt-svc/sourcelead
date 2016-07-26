@@ -340,6 +340,7 @@ public class UserController {
 			allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
 		}
 		for (ProjectMembers projectMembers : allProjectsList) {
+			projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
 			if (projectMembers.getProjectAssignedDate() != null) {
 				projectMembers.setStartDate(
 						com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -429,7 +430,7 @@ public class UserController {
 		}
 		// need change role
 		projectMembers.setRole(user.getUserType());
-		if (employee.getRatePer() != null) {
+		if (employee.getRatePer() != null && employee.getRatePer()!="") {
 			projectMembers.setRateType(employee.getRatePer());
 		}
 		projectMembers.setStatus(Constants.MEMBER_ACTIVE);
