@@ -13,14 +13,15 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/masklist.js" type="text/javascript"></script>
-<script src="resources/js/jquery.inputmask.js" type="text/javascript"></script>
+
+<!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
+<script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
 
 <script type="text/javascript">
 	$(document).ready(function(){
 		masklist();
 	});
-</script>  
+</script>  -->
 
   <!-- Content Area -->
   <section class="content-wraper">
@@ -163,7 +164,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
-                    <input type="text" class="form-control" id="phone" name="PhoneNumber" value="" data-validation-optional="true">
+                    <input type="text" class="form-control" id="phone" name="PhoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                   </div>

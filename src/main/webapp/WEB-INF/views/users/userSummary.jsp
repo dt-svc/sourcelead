@@ -44,6 +44,11 @@
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 getUserSummaryDetails(userId);
+	 $('body').on('focus', '#DateofJoin', function() {
+		 $('#DateofJoin').datepicker({
+			 dateFormat: 'yy-mm-dd',
+			});
+	 });
 });
 </script>
 		<div id="projectSideDiv"></div>
@@ -641,6 +646,33 @@ function editUserDetails(userId){
 					selected11 = 'selected';
 					} 
 				
+				var employeeId = "";
+			    var lastName = "";
+			    var rate = "";
+			    var mobilePhone = "";
+			    var dailyHours = "";
+				
+				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
+					employeeId = json.employeeId;
+				}
+				
+				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
+					lastName = json.user.lastName;
+				}
+				
+				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
+					rate = json.rate;
+				}
+				
+				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
+					mobilePhone = json.user.mobilePhone;
+				}
+				
+				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
+					dailyHours = json.dailyHours;
+				}
+				
+				
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp; *</span></label>';
@@ -649,22 +681,22 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Last name</label>';
-					result = result + ' <input type="text" value="'+json.user.lastName+'" name="LastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
-					result = result + ' <input type="text" value="'+json.employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
+					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Phone number</label>';
-					result = result + ' <input type="text" value="'+json.user.mobilePhone+'" name="PhoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+mobilePhone+'" name="PhoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed" value="'+json.rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';
@@ -680,9 +712,9 @@ function editUserDetails(userId){
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" readonly="readonly">';
 					}else{
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" onClick="getCalendar();" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
 					}
 					result = result + ' </div>';	
 					
@@ -699,7 +731,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
-					result = result + ' <input type="text" value="'+json.dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
+					result = result + ' <input type="text" value="'+dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
