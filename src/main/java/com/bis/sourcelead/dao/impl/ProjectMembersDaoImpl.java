@@ -127,6 +127,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         
 	}
 	
+	/**
+	 * This Method gives List Of all Projectmembers based on login user who is approver/employee to that particular project
+	 *  who did have 4 weeks prior/post submission records in DB
+	 * 
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
