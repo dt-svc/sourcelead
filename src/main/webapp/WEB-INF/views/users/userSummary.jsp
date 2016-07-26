@@ -52,12 +52,11 @@ $(document).ready(function(){
 	 
 	 var result = "";
 	 
-	 
 	 result = result + ' <div class="user_summ_wrap">';
 	 result = result + '<div class="project_side_wrap_inn_tabs">';
 	 result = result + '    <ul class="project-tabs-menu">';
 	 result = result + '       <li class="current"><a href="#tab-1" onClick="userDetails('+userId+');" >Details</a></li>';
-	 result = result + '        <li><a href="#tab-2" onClick="userProjectDetails('+userId+',"All");">Projects</a></li>';
+	 result = result + '        <li><a href="#tab-2" onClick="userProjectDetails('+userId+',\'All\');">Projects</a></li>';
 	 result = result + '        <div class="clearfix"></div>';
 	 result = result + '   </ul>';
 	 
@@ -69,19 +68,20 @@ $(document).ready(function(){
 	  	result = result + '<div id="tab-2" class="project_tabs_inn">';
 	  	 result = result + '<div class="timesheet_head">';
 	     result = result + '  	<ul>';
-	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();""></i>|';
-	     result = result + '         	<div class="approved_pop">';
+	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
+		   result = result + '         	<div class="approved_pop" id="radioFilter">';
 	     result = result + '            	<ul>';
-	     /* result = result + '                	<li><label id="All-Filter" value="All" onClick="projectFilterForAll();" >All</label></li>';
-		   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
-		   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>'; */
-		   result = result + '                 </ul>';
+	     result = result + '                	<li><input type="radio" value="All" id="c5" name="status" checked onClick="candidateFilter(); filter(); checkk" ><label for="c5">All</label></li>';
+	     result = result + ' 					<li><input type="radio" value="Active" id="c5" name="status" onClick="candidateFilter(); filter();" ><label for="c5">Active</label></li>';
+	     result = result + ' 					<li><input type="radio" value="In-Active" id="c5" name="status" onClick="candidateFilter(); filter();" ><label for="c5">In-Active</label></li>';
+	     result = result + '                 </ul>';
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
 	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
 	     result = result + '              <div class="clearfix"></div>';
 	     result = result + '            </ul>';
 	     result = result + '          <div class="clearfix"></div>';
+	     result = result +'<div id="projectList_User"></div>'; 
 	     result = result + '     </div>';
 	  	
 	  	result = result + '</div>';
@@ -93,7 +93,6 @@ $(document).ready(function(){
 	    $("#projectSideDiv").append(result);  	
 	  	
 	  	userDetails(userId);
-	  	userProjectDetails(userId,"All");
  }
 </script>
 
@@ -223,7 +222,7 @@ $(document).ready(function(){
 </script>
 <script>
  function userProjectDetails(userId,filterValue){    
-	    var sourceleadUrl ='${sourceleadUrl}';
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&filterValue="+filterValue, 
@@ -232,22 +231,6 @@ $(document).ready(function(){
 	    		var result = "";
 	    		if(jsonData.length > 0)
 		   		{
-						   result = result + '<div class="timesheet_head">';
-						   result = result + '  	<ul>';
-						   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
-						   result = result + '         	<div class="approved_pop">';
-						   result = result + '            	<ul>';
-						   result = result + '                	<li><label id="All-Filter" value="All" onClick="projectFilterForAll();" >All</label></li>';
-						   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
-						   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>';
-						   result = result + '                 </ul>';
-						   result = result + '             </div>';
-						   result = result + '                </li>';
-						   result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" onclick="flushProject();" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
-						   result = result + '              <div class="clearfix"></div>';
-						   result = result + '            </ul>';
-						   result = result + '          <div class="clearfix"></div>';
-						   result = result + ' </div>';
 						   result = result + '        <div class="user_summ_wrap_table">';
 						   result = result + '	<table>';
 						   result = result + '    	<tbody>';
@@ -259,7 +242,7 @@ $(document).ready(function(){
 						   result = result + '              <th>Rejected hrs</th>';
 						   result = result + '             <th>Wait for approval</th>';
 						   result = result + '             <th>Saved</th>';
-						   result = result + '                 <th>Edit</th>';
+						   result = result + '                 <th>Action</th>';
 						   result = result + '         </tr>';
 						   for(var i=0; i<jsonData.length; i++){
 							   var json = jsonData[i];
@@ -299,12 +282,10 @@ $(document).ready(function(){
 						   }else{
 							   submittedHrs = "--";
 						   }
-						   
 						   result = result + '       <tr>';
-						   result = result + '    	<td><div>'+json.projects.projectName+'</div></td>';
+						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						   //result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate" name = "endDate" class="project_inline_field" onclick="getEndDatePickerById();" onBlur="inlineEditForEndDate(\''+json.id+'\');"/></div></td>';
 						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field" onclick="getEndDatePickerById(\'endDate'+json.id+'\','+json.id+');" /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
@@ -343,31 +324,13 @@ $(document).ready(function(){
 						    result = result + '</div>';
 						
 						    result = result + '</div>';
-						    $("#tab-2").empty(); 
-							$("#tab-2").append(result);
+						    $("#projectList_User").empty(); 
+							$("#projectList_User").append(result);
 		   		}
 	    		else{
-	    			$("#tab-2").empty(); 
-	    			/*  result = result + '<div class="timesheet_head">';
-					   result = result + '  	<ul>';
-					   result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
-					   result = result + '         	<div class="approved_pop">';
-					   result = result + '            	<ul>';
-					   result = result + '                	<li><label id="All-Filter" value="All" onClick="projectFilterForAll();" >All</label></li>';
-					   result = result + ' 					<li><label id="Active-Filter" value="Active" onClick="projectFilterForActive();">Active</label></li>';
-					   result = result + ' 					<li><label id="In-Active-Filter" value="In-Active" onClick="projectFilterForInAcv();">In-Active</label></li>';
-					   result = result + '                 </ul>';
-					   result = result + '             </div>';
-					   result = result + '                </li>';
-					   result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
-					   result = result + '              <div class="clearfix"></div>';
-					   result = result + '            </ul>';
-					   result = result + '          <div class="clearfix"></div>';
-					   result = result + ' </div>';
 	    			result = result + "List Empty";
-	    			 $("#tab-2").empty(); 
-	    			 
-					$("#tab-2").append(result); */
+	    			$("#projectList_User").empty(); 
+					$("#projectList_User").append(result); 
 	    		}
 	        },
 		});
@@ -977,6 +940,7 @@ function getStartandEndDate(){
 		$("#popUp").empty();
 		 $(".project_inn_mask").fadeOut(200);
 	}
+ 
   
 </script>
 <script> 
@@ -1018,7 +982,9 @@ function inlineEditForEndDate(id,projectMemberId){
    		    }
 	 });  
 }
+
 </script>
+
 <script>
  function getEndDatePickerById(id,projectMemberId) {
 	 $('#'+id).datepicker({
@@ -1027,7 +993,6 @@ function inlineEditForEndDate(id,projectMemberId){
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
-	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        },
 	        onClose: function() {
 		      inlineEditForEndDate(id,projectMemberId);
@@ -1041,23 +1006,27 @@ function inlineEditForEndDate(id,projectMemberId){
 		$(".approved_pop").toggle();
   } 
  
- function projectFilterForAll(){
-	  var value = $("#All-Filter").val();
-	  var userId = '${userId}';
-	  userProjectDetails(userId,"All");
- }
- function projectFilterForInAcv(){
-	 var userId = '${userId}';
-	 var value = $("#In-Active-Filter").val();
-	 userProjectDetails(userId,"In-Active");
-	 
- }
- function projectFilterForActive(){
-	 var userId = '${userId}';
-	 value = $("#Active-Filter").val();
-	 userProjectDetails(userId,"Active");
- }
 </script>
 
-
+<script>
+function candidateFilter() { 
+	var selectedVal = "";
+	var selected = $("#radioFilter input[type='radio']:checked");
+	if (selected.length > 0) {
+	    selectedVal = selected.val();
+	}
+	if(selectedVal == "All"){
+		var userId = '${userId}';
+		  userProjectDetails(userId,"All");
+	}
+	if(selectedVal == "Active"){
+		var userId = '${userId}';
+		 userProjectDetails(userId,"Active");
+	}
+	if(selectedVal == "In-Active"){
+		var userId = '${userId}';
+		 userProjectDetails(userId,"In-Active");
+	}
+}
+</script>
 <!-- end project scripts -->

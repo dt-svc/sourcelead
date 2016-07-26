@@ -17,7 +17,9 @@ public interface TimesheetSubmissionsDao {
     
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
-    public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long userId)throws Exception; 
+    public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long userId)throws Exception;
+    
+    public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long userId)throws Exception;
     
     public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
     
@@ -35,4 +37,6 @@ public interface TimesheetSubmissionsDao {
 	public Integer getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus);
 	
 	public Integer getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus); 
+	
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId ,String approvalStatus)throws Exception;
 }
