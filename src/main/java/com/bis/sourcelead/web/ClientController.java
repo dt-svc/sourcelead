@@ -419,9 +419,6 @@ public class ClientController {
 			logger.info("Project name before Edit "+projects.getProjectName());
 			if("projectName".equalsIgnoreCase(fieldName)){
 				projects.setProjectName(fieldValue);
-			}else if("startDate".equalsIgnoreCase(fieldName)){
-				Date startDate = getDateFormat(fieldValue);
-				projects.setStartDate(startDate);
 			}else if("endDate".equalsIgnoreCase(fieldName)){
 				Date endDate = getDateFormat(fieldValue);
 				projects.setEndDate(endDate);
