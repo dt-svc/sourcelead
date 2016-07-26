@@ -55,6 +55,7 @@ public class UploadController {
 			return "upload/uploadForm";
 		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
@@ -62,7 +63,7 @@ public class UploadController {
 				model.addAttribute("errorMessage", "Please download Error file here  …");
                  model.addAttribute("fileName", "xlsx");
 				return "upload/uploadForm";
-			}else{
+			}else if(isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xls")){
 				model.addAttribute("errorMessage", "Please download Error file here  …");
                 model.addAttribute("fileName", "xls");
 				return "upload/uploadForm";
@@ -71,6 +72,7 @@ public class UploadController {
 			e.printStackTrace();
 		}
 		model.addAttribute("msg", "successfully uploaded");
+		 model.addAttribute("fileName", "");
 		return "redirect:/usersList";
 	}
 

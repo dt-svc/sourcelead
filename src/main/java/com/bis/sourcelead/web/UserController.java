@@ -243,8 +243,7 @@ public class UserController {
 	public @ResponseBody Boolean validateEmployeeId(
 			@RequestParam(value = "EmployeeId", required = false) String EmployeeId, HttpServletRequest request)
 					throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		Boolean flag = employeesService.validateEmployeeId(EmployeeId, orgLocations.getId());
 
 		return flag;
