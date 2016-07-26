@@ -69,13 +69,12 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
-@PropertySource("${propertyLocation:app.properties}")
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
 	
-	 @Value("${sourceleadUrl}")
-	 private String sourceleadUrl;
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	 @Autowired
 	 private ProjectsService projectsService; 
