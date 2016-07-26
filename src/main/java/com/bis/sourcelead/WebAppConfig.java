@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /**
- * 
  * This class is used to configure the spring framework context.
  * 
  * @author: Srinivas Vemula
@@ -38,7 +37,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @Configuration
 @ComponentScan(basePackages = "com.bis.sourcelead")
-@PropertySource("${propertyLocation:app.properties}")
+@PropertySource({"${propertyLocation:app.properties}", "classpath:exception.properties"})
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurationSupport {
 

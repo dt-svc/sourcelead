@@ -171,6 +171,7 @@ public class ClientController {
 			orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
 			orgLocations.setCreatedDate(new Date());
 			orgLocations.setCreatedBy(loginUserCode);
+			orgLocationService.addOrgLocations(orgLocations);
 			/*Saving for OrgRelations*/
 			OrgRelations orgRelations = new OrgRelations();
 			orgRelations.setClientLocationId(orgLocations);
@@ -178,6 +179,7 @@ public class ClientController {
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(loginUserCode);
 			orgRelations.setCreatedDate(new Date());
+		   orgRelationsService.addOrgRelations(orgRelations);
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
@@ -299,22 +301,23 @@ public class ClientController {
 			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
 			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
 			 
-			 for(Projects p : clientProjectsList){
-				 p.setProjectName(p.getProjectName());
+			 for(Projects project : clientProjectsList){
+				 project.setProjectName(project.getProjectName());
 				 
-				 if(p.getStartDate() !=null && !isNullOrEmpty(p.getStartDate().toString())){
-				 p.setStartDateStr(Constants.DF.format(p.getStartDate()));
+				 if(project.getStartDate() !=null && !isNullOrEmpty(project.getStartDate().toString())){
+					 project.setStartDateStr(Constants.DF.format(project.getStartDate()));
 				 }
-				 if(p.getEndDate() !=null && !isNullOrEmpty(p.getEndDate().toString())){
-				 p.setEndDateStr(Constants.DF.format(p.getEndDate()));
+				 if(project.getEndDate() !=null && !isNullOrEmpty(project.getEndDate().toString())){
+					 project.setEndDateStr(Constants.DF.format(project.getEndDate()));
 				 }
 				 
-				 if(p.getProjectStatus() !=null){
-				 p.setProjectStatus(p.getProjectStatus());
+				 if(project.getProjectStatus() !=null){
+					 project.setProjectStatus(project.getProjectStatus());
 				 }
 				 /*
 				  * Add managers to project list(shows in select box) in client tab
 				  */
+				 
 				 Collection<User> userList = userService.getUsersByUserRoles();
 				  String[] mngrs = new String[userList.size()];
 				    int i = 0;
@@ -323,8 +326,9 @@ public class ClientController {
 				    	i++;
 				    }
 				    if(mngrs != null){
-				    p.setProjectManagerName(mngrs);
+				    	project.setProjectManagerName(mngrs);
 				    }
+				    project.setRelationId(project.getOrgRelationId().getId());
 			 }
 			 ObjectMapper mapper = new ObjectMapper();
 			 String jsonInString = mapper.writeValueAsString(clientProjectsList);
@@ -405,6 +409,31 @@ public class ClientController {
 		return "success";
 		  }
 		 
-		 
+//		inlineEditClientProjects
+		@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
+		 public String inlineEditClientProjects(@RequestParam(value="projectSequenceNumber", required=false) String projectSequenceNumber,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{
+			
+			
+			Projects projects = projectsService.getProjectByProjectSequenceNumber(projectSequenceNumber);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			logger.info("Project name before Edit "+projects.getProjectName());
+			if("projectName".equalsIgnoreCase(fieldName)){
+				projects.setProjectName(fieldValue);
+			}else if("startDate".equalsIgnoreCase(fieldName)){
+				Date startDate = getDateFormat(fieldValue);
+				projects.setStartDate(startDate);
+			}else if("endDate".equalsIgnoreCase(fieldName)){
+				Date endDate = getDateFormat(fieldValue);
+				projects.setEndDate(endDate);
+			}else if("projectManager".equalsIgnoreCase(fieldName)){
+//				user.setId(Long.parseLong(fieldValue));
+//				userService.up
+			}else{
+				projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
+			}
+			projectsService.updateProject(projects);
+			return fieldValue; 
+		
+		}
 		
 }

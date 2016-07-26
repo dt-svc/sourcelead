@@ -28,11 +28,20 @@
     var output = document.getElementById('orgImage');
     
     var uploadedImage = document.getElementById('uploadedImage').value;
+    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+    
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
     	$("#save_button").attr("disabled", "disabled");
  		$( "#save_button").addClass('button').val('Processing..');
- 		alertMessage();
+ 		var msg = ".png extension not allowed";
+ 		alertMessage(msg);
+    	
+    }else if(sizeinbytes > 1000000){
+    	$("#save_button").attr("disabled", "disabled");
+ 		$( "#save_button").addClass('button').val('Processing..');
+ 		var msg = "Image size should be less than 1 MB";
+ 		alertMessage(msg);
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
@@ -44,11 +53,11 @@
 </script>
 
 <script type="text/javascript">
-function alertMessage(){
+function alertMessage(message){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>png extension not allowed</p>";
+	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
