@@ -179,10 +179,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
 				}
 			}
-			FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+			FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xlsx");
 			createExcelworkbook.write(fos);
 			fos.close();
-			isFileCreated = "FailureUsersForCheck.xls";
+			isFileCreated = "FailureUsersForCheck.xlsx";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -555,11 +555,11 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		if (!"".equalsIgnoreCase(userImport.getDateString())) {
 			SimpleDateFormat sdf = null;
 			if(fileName.toLowerCase().endsWith("xls")){
-				sdf = new SimpleDateFormat("dd-MMM-yyyy");
+				sdf = new SimpleDateFormat("dd/MM/yyyy");
 			}else if(fileName.toLowerCase().endsWith("xlsx")){
-				sdf =  new SimpleDateFormat("dd-MMM-yyyy");
+				sdf =  new SimpleDateFormat("dd/MM/yyyy");
 			}else{
-				sdf =  new SimpleDateFormat("dd-MM-yyyy");
+				sdf =  new SimpleDateFormat("dd/MM/yyyy");
 			}
 			Date date = sdf.parse(userImport.getDateString());
 //			sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -1001,14 +1001,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 				if(fileName.endsWith("xls")){
-					isValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
+					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
 						return isValidated;
 					}
 				}else{
-					isValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
+					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
@@ -1048,13 +1048,21 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 			if (record.get(Constants.PHONE_NUMBER) !=null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER))) {
 				isValidated = isMobileNumberValid(record.get(Constants.PHONE_NUMBER));
-				userImport.setReason("Invalid MobileNumber");
-				return isValidated;
+				if(isValidated){
+				}
+				else{
+					userImport.setReason("Invalid MobileNumber");
+					return isValidated;
+				}
 			}
 			if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
 				isValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
-				userImport.setReason("Invalid Date");
-				return isValidated;
+				if(isValidated){
+					
+				}else{
+					userImport.setReason("Invalid Date");
+					return isValidated;
+				}
 			}
 			if (record.get(Constants.ROLE) == null) {
 				userImport.setReason("Required field is  mandatory");
