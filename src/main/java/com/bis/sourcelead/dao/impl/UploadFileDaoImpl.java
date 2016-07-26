@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -365,10 +364,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						}
 					}
 					if (count > 0) {
-						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xlsx");
 						createExcelworkbook.write(fos);
 						fos.close();
-						isFileCreated = "FailureUsersForCheck.xls";
+						isFileCreated = "FailureUsersForCheck.xlsx";
 					}
 				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
@@ -558,7 +557,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			if(fileName.toLowerCase().endsWith("xls")){
 				sdf = new SimpleDateFormat("dd-MMM-yyyy");
 			}else if(fileName.toLowerCase().endsWith("xlsx")){
-				sdf =  new SimpleDateFormat("dd/MM/yyyy");
+				sdf =  new SimpleDateFormat("dd-MMM-yyyy");
 			}else{
 				sdf =  new SimpleDateFormat("dd-MM-yyyy");
 			}
@@ -786,6 +785,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					Cell cell0 = writeRow.createCell(0);
 					cell0.setCellValue(empId);
 				}
+			}else{
+				Cell cell0 = writeRow.createCell(0);
+				cell0.setCellValue(row.getCell(0).toString());
 			}
 		} else {
 			Cell cell0 = writeRow.createCell(0);
@@ -832,6 +834,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell4 = writeRow.createCell(4);
 						cell4.setCellValue(mobileNumber);
 					}
+				}else{
+					Cell cell4 = writeRow.createCell(4);
+					cell4.setCellValue(row.getCell(4).toString());
 				}
 			} else {
 				Cell cell4 = writeRow.createCell(4);
@@ -859,6 +864,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell5 = writeRow.createCell(5);
 						cell5.setCellValue(rate);
 					}
+				}else{
+					Cell cell5 = writeRow.createCell(5);
+					cell5.setCellValue(row.getCell(5).toString());
 				}
 			} else {
 				Cell cell5 = writeRow.createCell(5);
@@ -915,6 +923,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell10 = writeRow.createCell(10);
 						cell10.setCellValue(dayHours);
 					}
+				}else{
+					Cell cell10 = writeRow.createCell(10);
+					cell10.setCellValue(row.getCell(10).toString());
 				}
 			} else {
 				Cell cell10 = writeRow.createCell(10);
@@ -997,7 +1008,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						return isValidated;
 					}
 				}else{
-					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/mm/yyyy");
+					isValidated = isThisDateValid(row.getCell(7).toString(), "dd-MMM-yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
