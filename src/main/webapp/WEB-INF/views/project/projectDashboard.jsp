@@ -151,6 +151,7 @@
 		  </div> 
 		   </div>		
 	   </section>
+	   <div id="popUp"></div>
 	  </body>
 <!--   Popup's   -->
 
@@ -401,7 +402,7 @@ function projectEmployee(projectId){
             result = result + '	     <th>Rejected hrs</th>';
             result = result + '	     <th>Open hrs</th>';
             result = result + '	     <th>Wait for approval</th>';
-            result = result + '	     <th>Edit</th>';
+            result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';
         	for (var i=0; i<json.length; i++)
 			{        
@@ -421,7 +422,7 @@ function projectEmployee(projectId){
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
 	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -442,6 +443,53 @@ function projectEmployee(projectId){
         },
     });
     }	
+</script>
+
+<script>
+function deleteProject(projectMemberId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveReason(projectMemberId,userId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reasonForProject = document.getElementById("reasonForProject").value;
+	
+	if(reasonForProject){
+		$("#reasonForProjectDiv").empty();
+		
+		var r = confirm("Do you want terminate the user from Project");
+		if (r == true) {
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+   		    success: function(data) {
+   		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   		    	userProjectDetails(userId,"All");
+   		    }
+	 }); 
+		}
+	}
+	else{
+		$("#reasonForProjectDiv").empty().append("<font class='jquery_form_error_message'>Reason is required</font>") ;
+	}
+}
 </script>
 
 <script>
