@@ -275,14 +275,18 @@ public class ProjectsDashboardController {
 			
 			for (int c = 1; c < maxCount; c++) {
 				ProjectTasks  tasks  = new ProjectTasks();
-				tasks.setTaskName(jsonObj.getString(c+"taskName"));
-				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+				if(jsonObj.has(c+"taskName")){
+					tasks.setTaskName(jsonObj.getString(c+"taskName"));
+					if(jsonObj.has(c+"taskDescription")){
+					tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+					}
 				tasks.setCreatedDate(new Date());
 				tasks.setUpdatedDate(new Date());
 				Projects projects = projectsService.getProjectById(projectId);
 				tasks.setProjectId(projects);	
 				
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+				}
 			}
 			Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
 		 	

@@ -415,13 +415,13 @@ function projectEmployee(projectId){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div><input type="text"  value="'+json[i].empName+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+json[i].projectAssignedDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
+	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
 	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
@@ -506,13 +506,12 @@ function saveReason(projectMemberId,userId){
 		    				  var result = ""; 
 		    				  result = result + '<div class="project_tabs_inn_head">';
 		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
-		    				  result = result + '<div class="project_tabs_inn_table">';
+		    				  result = result + '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
 		    				  result = result + '<table>';
 		    				  result = result + '<tbody>';
 		    				  result = result + '<tr id="projectTaskTableId">';
 		    				  result = result + '<th>Task name</th>';
 		    				  result = result + '<th>Task description</th>';
-		    				  result = result + '<th>Edit</th>';
 		    				  result = result + '</tr>';
 		    				  
 			   	        	for (var i=0; i<json.length; i++)
@@ -521,7 +520,6 @@ function saveReason(projectMemberId,userId){
 			   		        		result = result + '<tr>';        
 			   		        		result = result + '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.Id+',\'taskName\');"  id="taskName'+opt.Id+'" value="'+opt.taskName+'"  class="project_inline_field"></div></td>';
 			   		        		result = result + '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.Id+',\'description\');" id="description'+opt.Id+'" value="'+opt.description+'" class="project_inline_field"></div></td>';
-			   		        		result = result + '<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
 			   		        		result = result + '</tr>'; 
 			   		        		
 			   				}
@@ -675,9 +673,7 @@ function  inlineEditForProjects(projectId,localFieldName){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
-	alert("fieldName"+fieldName);
 	var fieldValue = $("#"+localFieldName).val();
-	alert("fieldValue"+fieldValue);
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
@@ -708,6 +704,7 @@ function flushTasks() {
       </div>
        <div id="divTaskTd3" style="display:none; float:left;">
             <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+            <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
       </div>
   <!-- =============================== AddTask Divs  ============================ -->     
 <!-- Add Task Script start -->
@@ -778,7 +775,16 @@ $('body').on('blur', '#project_form', function() {
   }
  
 </script>
-
+<script type="text/javascript">
+	function removeRow(rowId) {
+		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		var r = document.getElementById('projectTaskTbl').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+	}
+</script>
 <script type="text/javascript">
  function updateTask(rowId) {
 	 $("#"+rowId+"taskName").val($("#taskName").val()); 
@@ -808,9 +814,12 @@ $(document).ready(function(){
     var frm = $('#project_form').serializeFormJSON();
     var con = JSON.stringify(frm);
     con = con.replace(/[{}]/g, "");
+  //It will escape all the special characters
+    var jsonData = encodeURIComponent(con);
+  
     $.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectId="+projectId, 
+        url: sourceleadUrl+"/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&projectId="+projectId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	 var result = ""; 
@@ -879,9 +888,11 @@ $(document).ready(function(){
 			var frm = $('#employee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+		    var jsonData = encodeURIComponent(con);
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
+			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 				success: function(data) {
 					 $('#addTeam').modal('hide');
 				},

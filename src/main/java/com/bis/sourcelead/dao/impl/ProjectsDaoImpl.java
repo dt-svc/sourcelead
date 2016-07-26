@@ -88,10 +88,10 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
-		logger.debug("In ProjectsDaoImpl getPrimaryProjectByOrgLocationsId method");
+		logger.debug("=========================================In ProjectsDaoImpl getPrimaryProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.isPrimary = '1' ";
-		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 
 		Projects projects = null;
 		if (projectsList != null && projectsList.size() > 0) {
@@ -157,11 +157,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception {
-		logger.debug("In Projects getAllProjects method");
+		logger.info("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
         String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org  where (projects.id IN(select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId.id =:userId)  OR projects.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
-        List<Projects> projectsList  =   session.createQuery(query.toString()).setLong("userId", userId).list();
+        List<Projects> projectsList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
        
         return projectsList;
 	}

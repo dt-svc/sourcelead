@@ -30,7 +30,7 @@ public class OrgRelations {
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
     private OrgLocations clientLocationId;
 	
