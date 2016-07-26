@@ -73,6 +73,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		
+		/*OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
 		Collection<Roles> rolesList = null;
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
@@ -92,6 +94,15 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+	/*	for(Roles roles : rolesList){
+			try {
+				List<User> usersList = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roles.getId(), orgLocations.getId(),user.getId());
+				System.out.println(usersList.size());
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+		}*/
 		
 		model.addObject("rolesList", rolesList);
 		
