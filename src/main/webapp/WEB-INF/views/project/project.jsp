@@ -120,7 +120,8 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3"> Date </label>
+							<label class="col-md-3"> Date <span
+								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative">
@@ -472,7 +473,8 @@
 								</div>
 							</div>
 							<div class="form-group" id="companyWebsiteDiv">
-								<label class="col-lg-3">Client Website</label>
+								<label class="col-lg-3">Client Website <span
+								class="text-danger">*</span></label>
 								<div class="col-lg-9">
 									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="required ">
 								</div>
