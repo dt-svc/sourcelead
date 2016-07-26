@@ -52,7 +52,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		  Session session = this.sessionFactory.getCurrentSession();
 	      String query = ("from OrgRelations orgrelation   left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org   where  orgrelation.locationId =:orgLocationId and  orgrelation.clientLocationId =:clientOrgLocationId");
 		  
-	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("clientOrgLocationId", clientOrgLocationId).list();
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("clientOrgLocationId", clientOrgLocationId).setCacheable(true).list();
 	     
 	       OrgRelations orgLocation = null;
 			if(orgRelations != null && !orgRelations.isEmpty())
@@ -73,7 +73,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
         Session session = this.sessionFactory.getCurrentSession();
         List<OrgRelations> clientsList = null;
 		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
-		clientsList=clientsListQuery.setLong("orgLocationId", orgLocationId).list();
+		clientsList=clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return clientsList;
 	}
 
@@ -84,7 +84,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId cl join fetch cl.org where orgrelation.clientLocationId = :orgLocationId");
 		  
-	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	     
 	       OrgRelations orgLocation = null;
 			if(orgRelations != null && !orgRelations.isEmpty())
@@ -101,7 +101,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select count(*)  from Projects projects where projects.orgRelationId = :orgRelationId";
-		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).uniqueResult();
+		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setCacheable(true).uniqueResult();
 		return count;
 	}
 
@@ -114,7 +114,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query="select count(*) from Projects pro where pro.orgRelationId = :orgRelationId and pro.orgLocationsId = :orgLocationId";
-		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).uniqueResult();
 		return count;
 	}
 	

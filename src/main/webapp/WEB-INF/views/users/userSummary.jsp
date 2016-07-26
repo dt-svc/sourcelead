@@ -71,9 +71,9 @@ $(document).ready(function(){
 	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
 		   result = result + '         	<div class="approved_pop" id="radioFilter">';
 	     result = result + '            	<ul>';
-	     result = result + '                	<li><input type="radio" value="All" id="c5" name="status" checked onClick="candidateFilter(); filter(); checkk" ><label for="c5">All</label></li>';
-	     result = result + ' 					<li><input type="radio" value="Active" id="c5" name="status" onClick="candidateFilter(); filter();" ><label for="c5">Active</label></li>';
-	     result = result + ' 					<li><input type="radio" value="In-Active" id="c5" name="status" onClick="candidateFilter(); filter();" ><label for="c5">In-Active</label></li>';
+	     result = result + '                	<li><input type="radio" value="All" id="c5" name="status" checked onClick="userStatusFilter(); filter(); checkk" ><label for="c5">All</label></li>';
+	     result = result + ' 					<li><input type="radio" value="Active" id="c5" name="status" onClick="userStatusFilter(); filter();" ><label for="c5">Active</label></li>';
+	     result = result + ' 					<li><input type="radio" value="In-Active" id="c5" name="status" onClick="userStatusFilter(); filter();" ><label for="c5">In-Active</label></li>';
 	     result = result + '                 </ul>';
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
@@ -286,7 +286,7 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field" onclick="getEndDatePickerById(\'endDate'+json.id+'\','+json.id+');" /></div></td>';
+						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
@@ -328,10 +328,29 @@ $(document).ready(function(){
 							$("#projectList_User").append(result);
 		   		}
 	    		else{
-	    			result = result + "List Empty";
+	    			result = "<div class='content-area mt text-center text-muted'><h3>Project List is Empty</h3></div>";
 	    			$("#projectList_User").empty(); 
 					$("#projectList_User").append(result); 
 	    		}
+	    		if(jsonData.length > 0)
+		   		{
+	    			 for(var i=0; i<jsonData.length; i++){
+						   var json = jsonData[i];
+						   $('#endDate'+json.id).datepicker({
+				    		      dateFormat: 'yy-mm-dd',
+				    		      onSelect: function (selected) {
+				    		            var dt = new Date(selected);
+				    		            dt.setDate(dt.getDate() + 1);
+				    		        },
+				    		        onClose: function() {
+				    		        	 var id = $(this).attr('id');
+										 var projectMemberId = $(this).attr('id').split('endDate')[1];
+				    		        	 inlineEditForEndDate(id,projectMemberId);
+				    		      }
+				    		  }); 
+			         
+	    			 }
+		   		}
 	        },
 		});
 	 }
@@ -982,24 +1001,9 @@ function inlineEditForEndDate(id,projectMemberId){
    		    }
 	 });  
 }
-
 </script>
 
-<script>
- function getEndDatePickerById(id,projectMemberId) {
-	 $('#'+id).datepicker({
-	/*  $('#endDate').datepicker({ */
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        },
-	        onClose: function() {
-		      inlineEditForEndDate(id,projectMemberId);
-	      }
-	  });
-  } 
-</script>
+
 
 <script>
  function filter() {
@@ -1009,7 +1013,7 @@ function inlineEditForEndDate(id,projectMemberId){
 </script>
 
 <script>
-function candidateFilter() { 
+function userStatusFilter() { 
 	var selectedVal = "";
 	var selected = $("#radioFilter input[type='radio']:checked");
 	if (selected.length > 0) {
