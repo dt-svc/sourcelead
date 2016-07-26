@@ -2,6 +2,7 @@ package com.bis.sourcelead.constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * 
@@ -34,4 +35,11 @@ public class Constants {
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	
+	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static String INVITE_USER = "Invite User";
+	
+	public static String ENTITY_TYPE_EMAIL = "Email";
+	
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 }

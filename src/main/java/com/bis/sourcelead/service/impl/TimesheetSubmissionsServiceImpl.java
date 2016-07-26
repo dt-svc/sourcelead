@@ -56,6 +56,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return list;
 	}
 	
+	@Override
+	public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate ,Date endDate,Long userId) throws Exception {
+		TimesheetSubmissions list = timesheetSubmissionsDao.getAllApprovalEmployeeTimesheetSubmissions(startDate,endDate,userId);
+		// TODO Auto-generated method stub
+		return list;
+	}
+	
+	
+	
 		@Override
 	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
 		 timesheetSubmissionsDao.saveAllTimesheetSubmissions(timesheetSubmissionsList);
@@ -82,10 +91,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return list;
 	}
 	
-
-
-	
-
 	@Override
 	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
 		
@@ -103,8 +108,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId,submissionStatus);
 	}
 	
-	
-	
-	
+	@Override
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId, String approvalStatus)
+			throws Exception {
+		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsListByStatus(userId,approvalStatus);
+		return list;
+	}
 
 }

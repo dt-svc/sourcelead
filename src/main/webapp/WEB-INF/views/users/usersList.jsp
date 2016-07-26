@@ -130,6 +130,8 @@ window.onload = function () {
 	 			    	result = result +"<br/><span class='label label-danger'>Inactive</span>";
 	 			    }
 	       	    	
+	       	    	
+	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-sm-8'>";
@@ -138,7 +140,7 @@ window.onload = function () {
 	       	    	result = result +"<p><label><i class='fa fa-phone'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	    	result = result +"<p><label>Projects</label><span class='label label-default'>5</span></p>";
 	       	    	result = result +"<p><label>Approved Timesheets</label> <span class='label label-success'>20</span></p>";
-	       	    	result = result +"<p><label>Rejected Timesheets</label> <span class='label label-danger'>10</span></p>";
+	       	    	result = result +"<p><label>Rejected Timesheets</label> <span class='label label-danger'>"+userRole.rejectedHrs+"</span></p>";
 	       	    	result = result +"<p><label>Waiting for Timesheets</label> <span class='label label-primary'>10</span> </p>";
 	       	    	result = result +"<p><label>Open Timesheets</label> <span class='label label-info'>10</span> </p>";
 	       	    	result = result +"</div>";
