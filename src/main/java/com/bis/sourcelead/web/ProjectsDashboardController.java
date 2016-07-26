@@ -353,6 +353,9 @@ public class ProjectsDashboardController {
 			}else{
 				user.setIsMailSent(Status.N);
 			}
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
+			
 			User  usr=	userService.addUser(user);
 			
 			//Employee Saving
@@ -373,7 +376,7 @@ public class ProjectsDashboardController {
 			userRole.setRoles(roles);
 			userRole.setUser(usr);
 			userRole.setOrgLocations(loginOrgLocation);
-			userRole.setIsPrimary(0);
+			userRole.setIsPrimary(1);
 			userRole.setCreatedBy(users.getUserCode());
 			userRole.setCreatedDate(new Date());
 			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
