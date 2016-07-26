@@ -651,7 +651,6 @@ function editUserDetails(userId){
 			    var rate = "";
 			    var mobilePhone = "";
 			    var dailyHours = "";
-			    var submittedHrs = "";
 				
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
@@ -661,16 +660,9 @@ function editUserDetails(userId){
 					lastName = json.user.lastName;
 				}
 				
-				
-				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
-					employeeId = json.employeeId;
-				}
-				
-				
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 					rate = json.rate;
 				}
-				
 				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					mobilePhone = json.user.mobilePhone;
