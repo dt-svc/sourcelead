@@ -147,7 +147,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.debug("In Employee getEmployeesExcludeTeamMembers method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
-		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId");
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' ");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
 	}

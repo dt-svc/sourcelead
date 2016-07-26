@@ -112,7 +112,7 @@
 						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
 	                        <tr>
 	                            <td data-title="Id"><div>${report.id}</div></td>
-	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
 	                            <td data-title="Manager">
 	                                <div>
 	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
@@ -139,7 +139,7 @@
 		</c:if>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
-		    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+		    <h1 id="projectNameById"></h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
 		     <div id="projectSideDiv">
 		     </div>   
 			<div class="project_inn_mask"></div>
@@ -214,7 +214,7 @@
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <select class="form-control" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
+	                              <select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
 			                        <option value="">-Select Frequency-</option>
 			                        <option>Weekly</option>
 			                        <option>Bi-Weekly</option>
@@ -228,7 +228,7 @@
 	                            <div class="col-lg-9">
 	                              <div class="checkbox">
 	                              <label>
-	                                <input type="checkbox" value="" checked>
+	                                <input type="checkbox" value="Y" name="isMailSent" checked="checked">
 	                                Send Invitation</label>
 	               					 </div>
 	                              </div>
@@ -344,7 +344,7 @@ $(document).ready(function() {
 });
 </script> 
  <script>
- function projectSideBar(projectId){
+ function projectSideBar(projectId,projectName){
 	  	    var result = "";
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -367,7 +367,10 @@ $(document).ready(function() {
 		  	
 		  	result = result + '</div>'; 
 		  	$("#projectSideDiv").empty(); 
-		    $("#projectSideDiv").append(result);  	
+		    $("#projectSideDiv").append(result);  
+		    $("#projectNameById").empty(); 
+		    $("#projectNameById").append(projectName); 
+		    
 		    $(".project_side_wrap").addClass("project_side_wrap_active");
 			
 		    projectEmployee(projectId);
@@ -454,7 +457,7 @@ function projectEmployee(projectId){
 		    				
 		    				  var result = ""; 
 		    				  result = result + '<div class="project_tabs_inn_head">';
-		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
+		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
 		    				  result = result + '<div class="project_tabs_inn_table">';
 		    				  result = result + '<table>';
 		    				  result = result + '<tbody>';
@@ -493,7 +496,13 @@ function projectEmployee(projectId){
    	type: "POST",
     url: sourceleadUrl+"/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
     success: function(data) {
-    	var json = JSON.parse(data);
+   	var json = JSON.parse(data);
+   	var endDateStr = "";
+   	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
+   		endDateStr =  json.endDateStr;
+   	}else{
+   		endDateStr = " ";
+   	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
 	result = result + '			<div class="project_details">';
@@ -547,7 +556,7 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-		result = result + '<select>';
+	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
 		result = result+"<option value=''>Select</option>";
 					for (var i = 0; i < json.clientName.length; i++) {
 						
@@ -579,7 +588,7 @@ function projectEmployee(projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+json.endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
@@ -630,7 +639,17 @@ function  inlineEditForProjects(projectId,localFieldName){
 	 }); 
 }
 </script> 
-  
+<script type="text/javascript">
+function flushTasks() {
+	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined' && maxRowNum != 'NaN'){
+		$("#maxTsRowNum").val("1");
+         for(var i = 1; i <= maxRowNum ; i++){
+        	    document.getElementById("projectTaskTbl").deleteRow(1);
+		 } 
+	}
+}
+</script>
   
 <!-- =============================== AddTask Divs  ============================ -->
        <div id="divTaskTd1" style="display:none; float:left;">
@@ -748,7 +767,7 @@ $(document).ready(function(){
         	var json = JSON.parse(data);
         	 var result = ""; 
        	  result = result + '<div class="project_tabs_inn_head">';
-       	  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
+       	  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
        	  result = result + '<div class="project_tabs_inn_table">';
        	  result = result + '<table>';
        	  result = result + '<tbody>';
@@ -881,10 +900,10 @@ function getTeamMembers(projectId) {
                  "<td>"+role+"</td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
 	  
-                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker'>"+
+                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker'>"+
+                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "</tr>";
 			}
@@ -990,6 +1009,7 @@ function flushEmployee(){
      $('#employeeFirstName').val('');
      $('#employeeLastName').val('');
 	 $('#EmailId').val('');
+	 $('#invoiceFrequency').val('');
 	 $(".error").removeClass("error");
 	 $('#newEmployee').find('p.jquery_form_error_message').remove();
 }

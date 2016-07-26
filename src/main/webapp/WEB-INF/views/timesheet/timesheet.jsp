@@ -466,6 +466,14 @@ $(document).click(function(){
 	    var t = bsum; 
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
+		
+		if (minutes < 10) {
+			minutes = '0' + minutes;
+		}
+		if (hours < 10) {
+			hours = '0' + hours;
+		}
+		
 		total = hours +":"+ minutes;
  }  
 	 $("#rowTotal"+i+"Id").val(total);
@@ -494,6 +502,12 @@ function grandTotal(){
     var t = bsum; 
 	 var hours = Math.floor(t / 60); 
 	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
 	 total = hours +":"+ minutes;
 	 $("#grandTotal").val(total);
     
@@ -521,6 +535,19 @@ function removeTimeSheetRow(rowId,submissionId) {
 		}
 		
 </script>		
+
+<!-- this script is for clear timesheet -->
+<script>
+function clearTimesheet(){ 
+	for (var i = 1; i < 8; i++){
+	 for (var p = 1; p < 200; p++){  
+		 for (var j = 1; j < 10; j++){
+			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
+		 }
+     }
+	}
+}
+</script>
 
 <!-- this script is for validation of 24 hours -->
 <script>
