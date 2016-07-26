@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="EMPLOYEE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="employees")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Employees {
 
@@ -31,7 +31,7 @@ public class Employees {
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	

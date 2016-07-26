@@ -1,11 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,10 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
-import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -78,7 +77,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId ";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return projectsList;
 	}
@@ -203,6 +202,60 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		List<Projects> clientProjectsList =  session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("locationId", locationId).list();
 		
 		return clientProjectsList;
+	}
+
+	@Override
+
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateStartDateOfProjectId(Date startDate ,Long projectId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update Projects pj set pj.startDate =:startDate where pj.id = :projectId");
+		query.setLong("projectId", projectId);
+		query.setDate("startDate", startDate);
+		int result = query.executeUpdate();
+		return result;	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update Projects pj set pj.endDate =:endDate where pj.id = :projectId");
+		query.setLong("projectId", projectId);
+		query.setDate("endDate", endDate);
+		int result = query.executeUpdate();
+		return result;
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> getApprovarAssignedProjects(Long userId, Long orgLocationId) throws Exception{
+		logger.debug("In ProjectsDaoImpl class getApprovarAssignedProjects method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select projects.id from Projects projects where projects.orgLocationsId = :orgLocationId and "
+				+ "projects.id IN (select pah.projectId from ProjectApproverHierarchy pah  where pah.approverUserId = :userId)";
+		List<Long> projectsIdList =  session.createQuery(query.toString())
+									.setLong("userId", userId)
+									.setLong("orgLocationId", orgLocationId)
+									.setCacheable(true).list();
+		
+		return projectsIdList;
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects p where p.projectSequeneNumber = :projectSequeneNumber";
+		List<Projects> projectsList =  session.createQuery(query.toString())
+				.setString("projectSequeneNumber", projectSequeneNumber)
+				.setCacheable(true).list();
+		if(projectsList != null){
+			return projectsList.get(0);
+		}
+		return null;
 	}
 
 }

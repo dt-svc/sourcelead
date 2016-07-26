@@ -1,4 +1,4 @@
-package com.bis.sourcelead.util;
+package com.bis.sourcelead.db;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,7 +14,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  */
 @Configuration
 @ComponentScan(
-basePackages = {"com.bis.sourcelead.util"},
+basePackages = {"com.bis.sourcelead.db"},
 useDefaultFilters = false,
 includeFilters = {
 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DatabaseConnectionConfig.class)

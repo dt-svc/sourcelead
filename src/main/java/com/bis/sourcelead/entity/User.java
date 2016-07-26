@@ -26,7 +26,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
 public class User {
 
 	@Id

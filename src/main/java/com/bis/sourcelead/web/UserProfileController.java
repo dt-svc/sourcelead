@@ -1,6 +1,15 @@
 package com.bis.sourcelead.web;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
+import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +18,7 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,7 +37,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -36,7 +45,7 @@ import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class UserProfileController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);
@@ -72,6 +81,7 @@ public class UserProfileController {
 		   try {
 			user = userService.saveUserProfile(userProfile, request, user);
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -106,7 +116,7 @@ public class UserProfileController {
 	   
 	   
      @RequestMapping(value = "/displayUserImage/{userId}" , method = RequestMethod.GET)
-     public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) {
+     public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
     	 
     	 User user = null;
 			try {
@@ -121,6 +131,17 @@ public class UserProfileController {
 					ImageIO.write(bi, "jpg", out);
 					out.close();
 					
+				/*	try {
+					    InputStream in = new ByteArrayInputStream(user.getDocFile());
+			            BufferedImage img = colorImage(ImageIO.read(in));
+			            OutputStream out = response.getOutputStream();
+			            ImageIO.write(img, "png", out);
+			        } catch (IOException ex) {
+			            ex.printStackTrace();
+			        }
+					*/
+					    
+					
 				}
 				
 			} catch (IOException e) {
@@ -132,5 +153,23 @@ public class UserProfileController {
 			}
 			
      }
+     
+     private static BufferedImage colorImage(BufferedImage image) {
+         int width = image.getWidth();
+         int height = image.getHeight();
+         WritableRaster raster = image.getRaster();
+
+         for (int xx = 0; xx < width; xx++) {
+             for (int yy = 0; yy < height; yy++) {
+                 int[] pixels = raster.getPixel(xx, yy, (int[]) null);
+                 pixels[0] = 0;
+                 pixels[1] = 0;
+                 pixels[2] = 255;
+                 raster.setPixel(xx, yy, pixels);
+             }
+         }
+         return image;
+     }
+    
 
 }

@@ -109,7 +109,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id");
-		projectsMembersList=projectsMembersListQuery.setLong("id", id).list();
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         
 	}
@@ -118,7 +118,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
 		// TODO Auto-generated method stub
-		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
 		List<Long> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
@@ -133,9 +132,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		
 		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
@@ -161,22 +158,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setCacheable(true) 
 			    .list();
 		return allProjectsList;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer updateProjectMemberStatus(Long projectMemberId) {
-		Session session =  this.sessionFactory.getCurrentSession();
-		String status = Constants.MEMBER_IN_ACTIVE;
-		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status where pm.id = :projectMemberId ");
-		query.setLong("projectMemberId", projectMemberId);
-		query.setString("status", status);
-		int result = query.executeUpdate();
-		return result;
-	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -193,6 +179,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			
 		    return count;
 		    
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId,String reason) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String status = Constants.MEMBER_IN_ACTIVE;
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason where pm.id = :projectMemberId ");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setString("status", status);
+		query.setString("terminateReason",reason);
+		int result = query.executeUpdate();
+		return result;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setString("status",status).setCacheable(true) 
+			    .list();
+		return allProjectsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update ProjectMembers pm set pm.projectEndDate =:endDate where pm.id = :projectMemberId");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setDate("endDate", endDate);
+		int result = query.executeUpdate();
+		return result;
 	}
 
 }

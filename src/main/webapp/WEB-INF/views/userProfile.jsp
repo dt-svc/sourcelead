@@ -65,12 +65,12 @@
 				  <button type="button" class="btn btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-primary">
-                    Upload / Change<input type="file" name="file" onchange="loadFile(event)" style="display: none;">
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
                 </label>
 				  </div>
 				  </div>
 			  </div>
-			  
+			 <div id="popUp" ></div>  
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
 			   <div class="row mt">
@@ -78,13 +78,13 @@
 					<div class="form-group">
 					<label class="col-md-4">First Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphabet validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphabet validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -100,13 +100,13 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required" />
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required validate_Alphabet validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" />
+							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length9-20" />
 							</div>
 						  </div>
 						  <div class="form-group">
@@ -220,15 +220,56 @@
 </script>
 
 
-
-<script>
+<script type="text/javascript">
   var loadFile = function(event) {
     var output = document.getElementById('userImage');
-    output.src = URL.createObjectURL(event.target.files[0]);
+    
+    var uploadedImage = document.getElementById('uploadedImage').value;
+    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+    
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
+    	$("#profile_submit").attr("disabled", "disabled");
+ 		$( "#profile_submit").addClass('button').val('Processing..');
+ 		var msg = ".png extension not allowed";
+ 		alertMessage(msg);
+    	
+    }else if(sizeinbytes > 1000000){
+    	$("#profile_submit").attr("disabled", "disabled");
+ 		$( "#profile_submit").addClass('button').val('Processing..');
+ 		var msg = "Image size should be less than 1 MB";
+ 		alertMessage(msg);
+    	
+    }else{
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	$("#profile_submit" ).addClass('profile_submit').val('Save');
+		$("#profile_submit").removeAttr("disabled");
+    }
+    
   };
 </script>
 
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 

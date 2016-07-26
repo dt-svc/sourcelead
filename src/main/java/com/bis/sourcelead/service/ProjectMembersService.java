@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -24,10 +25,14 @@ public interface ProjectMembersService {
     List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
-
-	public Integer updateProjectMemberStatus(Long projectMemberId);
 	
 	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
+	
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
+
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE);
+
+	public Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 	
 	
 }
