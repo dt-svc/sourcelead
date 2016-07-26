@@ -238,7 +238,7 @@ var validationSettings = {
 				$('#passwordDiv').find('p.jquery_form_error_message').remove();
 				$('input#confirmPassword').attr('class','valid signin_fild');
 				$( "#register_button" ).removeAttr("style");
-				$( "#register_button" ).addClass('sign_btn').val('Submit');
+				$( "#register_button" ).addClass('sign_btn').val('Register');
 				$( "#register_button" ).click(function() {
 				 if ($(this).validate(false, validationSettings)){
 				 }
@@ -286,7 +286,7 @@ function validateWebsite(){
 		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" Already Existed</p>");
 		    				$('input#companyWebsite').attr('record-exist','yes');
 		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' Already Existed'); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Submit');
+		    				$( "#register_button" ).addClass('sign_btn').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
