@@ -136,16 +136,22 @@ public class ProjectsDashboardController {
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
-		
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
         if(sessionData == null)
         {
             sessionData = new SessionMaintainanceData();
         }
         sessionData.setNav(com.bis.sourcelead.util.Constants.Projects);
-        
         request.getSession().setAttribute("sessionData",sessionData);
-
+        
+        Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+        for(OrgRelations orgRelations:orgClientList){
+        	orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
+        }
+        model.addObject("add_client", orgClientList);
+        model.addObject(orgClientList);
         
         Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
         for(Projects projects: projectsList){
@@ -160,6 +166,22 @@ public class ProjectsDashboardController {
 		return model;
 		
     }
+	
+	
+	// Sammeta David: this controller method is for getting ProjectsCount
+			// Counts based on Status.
+			@RequestMapping(value = "/getProjectsByStatusAndClient")
+			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+
+				String resultJson = "";
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values);
+				 resultJson = toJSON(projectsList);
+				 return resultJson;
+			}
+		/**
+
+
 	
 	/**
 	 * get project details by Id

@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -18,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -257,5 +259,87 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		return null;
 	}
+	
+	
+	
+	  /**
+	   * This method for get projects based on clients and Status (Any number of Client)
+	   */
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+				String status) throws Exception {
+
+			
+			    Collection<Projects> plist = null;
+		        Session session = this.sessionFactory.getCurrentSession();
+				String[] tokens = status.split(",");
+				ArrayList<Projects> projectssList = new ArrayList<Projects>();
+				String[] client = clients.split(",");
+				if(client[0] != null && client[0].length() > 0){
+						for(String clnt :client){
+							String subQuery2 = "";
+								if(Arrays.asList(tokens).contains("All")){
+									subQuery2 = subQuery2+ "ps.projectStatus = 'STARTED' or ps.projectStatus = 'INPROGRESS' or ps.projectStatus = 'COMPLETED' or ps.projectStatus = 'ONHOLD' or ";
+								}
+								  
+								if(Arrays.asList(tokens).contains("STARTED")){
+									subQuery2 = subQuery2+ "ps.projectStatus = 'STARTED' or ";
+								}
+								
+								if(Arrays.asList(tokens).contains("INPROGRESS")){
+									subQuery2 = subQuery2 + "ps.projectStatus = 'INPROGRESS' or ";
+								}
+								if(Arrays.asList(tokens).contains("COMPLETED")){
+									subQuery2 = subQuery2 + "ps.projectStatus = 'COMPLETED' or ";
+								}
+								if(Arrays.asList(tokens).contains("ONHOLD")){
+									subQuery2 = subQuery2 + "ps.projectStatus = 'ONHOLD' or ";
+								}
+								
+								if (tokens[0] != null && tokens[0].length() > 0){
+									subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
+								}
+							 String subquery1 ="and ps.orgRelationId ="+clnt;
+							 String subquery3 ="(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)";
+							 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subquery3+"  "+subQuery2+" "+subquery1+")" ;
+							 plist = session.createQuery(query.toString()).setLong("userId", userId).list(); 
+							 
+							 projectssList.addAll(plist);
+					
+						}
+				}else{
+					String subQuery2 = "";
+					if(Arrays.asList(tokens).contains("All")){
+						subQuery2 = subQuery2+ "ps.projectStatus = 'STARTED' or ps.projectStatus = 'INPROGRESS' or ps.projectStatus = 'COMPLETED' or ps.projectStatus = 'ONHOLD' or ";
+					}
+					  
+					if(Arrays.asList(tokens).contains("STARTED")){
+						subQuery2 = subQuery2+ "ps.projectStatus = 'STARTED' or ";
+					}
+					
+					if(Arrays.asList(tokens).contains("INPROGRESS")){
+						subQuery2 = subQuery2 + "ps.projectStatus = 'INPROGRESS' or ";
+					}
+					if(Arrays.asList(tokens).contains("COMPLETED")){
+						subQuery2 = subQuery2 + "ps.projectStatus = 'COMPLETED' or ";
+					}
+					if(Arrays.asList(tokens).contains("ONHOLD")){
+						subQuery2 = subQuery2 + "ps.projectStatus = 'ONHOLD' or ";
+					}
+					
+					if (tokens[0] != null && tokens[0].length() > 0){
+						subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
+					}
+					 
+					 String subquery3 ="(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)";
+					 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subquery3+"  "+subQuery2+")" ;
+					 plist = session.createQuery(query.toString()).setLong("userId", userId).list(); 
+					 projectssList.addAll(plist);
+				}
+				Collection<Projects> userCollection = new HashSet<Projects>(projectssList);
+				return userCollection;
+
+		}
 
 }

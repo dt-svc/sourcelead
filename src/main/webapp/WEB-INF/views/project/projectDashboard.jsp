@@ -69,34 +69,34 @@
 		<div class="project_wrap">
 <div class="timesheet_head">
         	<ul>
-				<!-- <li><i class="fa fa-calendar"></i><input placeholder="DD/MM/YYYY" value="31/12/2020" class="project-date" type="text">|</li>
-                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input value="None" id="c1" type="checkbox"><label for="c1">All</label></li>
-							<li><input id="c2" type="checkbox"><label for="c2">Approved</label></li>
-							<li><input id="c3" type="checkbox"><label for="c3">Draft</label></li>
-							<li><input id="c4" type="checkbox"><label for="c4">Rejected</label></li>
+				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+                	<div id="filter1ApprovedPop" class="approved_pop">
+                    	<ul style="height:150px; overflow-y:auto;padding-bottom:5px;">
+                    	  <c:forEach var="report" items="${add_client}">  
+                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
+						  </c:forEach>
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input value="None" id="c5" type="checkbox"><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox"><label for="c6">Approved</label></li>
-							<li><input id="c7" type="checkbox"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"><label for="c8">Rejected</label></li>
+                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
                     </div>                	
-                </li> -->
+                </li>
 				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
         </div>
 			
-		    <div class="project_wrap_table">
+		    <div id="projectFilterList"></div>
+		    <div id="projectList" class="project_wrap_table">
 		    	<table>
 		        	<tbody>
 					<thead>
@@ -667,6 +667,115 @@ function saveReason(projectMemberId,userId){
    });
   }
 </script>     
+
+
+<script>
+$(document).ready(function() {
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+  
+    
+});
+
+</script>
+
+<script>
+function filter(){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var values = [];
+	$('input:checkbox[name=projectStatus]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
+	var clients = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+		    {
+		clients.push($(this).val());
+		    });
+	
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getProjectsByStatusAndClient?${_csrf.parameterName}=${_csrf.token}&values="+values+"&clients="+clients, 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<div class="project_wrap_table">';
+   		    	result = result +'<table>';
+   		    	result = result +'<tbody>';
+   		    	result = result +'<thead>';
+   		    	result = result +'	<tr>';
+   		    	result = result +'	<th>Id</th>';
+   		    	result = result +'    <th>Name</th>';
+   		    	result = result +'     <th>Manager</th>';
+   		    	result = result +'     <th>Date</th>';
+   		    	result = result +'      <th>Client</th>';
+   		    	result = result +'       <th>Status</th>';
+   		    	result = result +'    </tr>';
+   		    	result = result +'</thead>	';
+   		    	for (var i=0; i<json.length; i++)
+   				{   
+   		    		var report = json[i];
+   		    		result = result +'<tr>';
+   		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');">'+report.projectName+'<i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Manager">';
+   		    		result = result +'<div>';
+   		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
+   		    			result = result +'<td><div>'+report.managerLevel1+'</div></td>';
+   		    		}
+   		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
+   		    			result = result +'<td><div>'+report.managerLevel2+'</div></td>';
+   		    		}
+   		    		result = result +'</div>';
+   		    		result = result +'</td>';
+   		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
+   		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+   	   		    		result = result +'- '+report.endDateStr+' </div></td>';
+   		    		}
+   		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
+   		    			result = result +'<td data-title="Client"><div>'+report.client+'</div></td>';  
+   		    		}else{
+   		    			result = result +'<td data-title="Client"><div>---</div></td>';  
+   		    		}
+   		    		result = result +'<td data-title="Status"><div><b class="proj_active">'+report.projectStatus+'</b></div></td>';
+                    result = result +'</tr>';
+   				}
+                result = result +'  </tbody>';
+                result = result +' </table>';
+                result = result +'</div>';
+                $("#projectList").empty();  
+                $("#projectFilterList").empty();  
+   	    	    $("#projectFilterList").append(result);
+   	    	    
+   	    	 
+   		    }
+	 }); 
+	
+	
+}	
+</script> 
 
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){

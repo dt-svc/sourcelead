@@ -42,4 +42,6 @@ public interface ProjectsService {
 	
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 	
+	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
+
 }

@@ -1,9 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -357,15 +360,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
+	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
 		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
-	   int totalHours = 0;
+		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   totalHours = totalHours + Integer.parseInt(tslist.get(i).getTotalHours());
+			   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
 		   }
 	   }
 		return totalHours;
@@ -373,15 +376,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
+	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionStatus = :submissionStatus)" ;
 		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("submissionStatus", submissionStatus).list(); 
-	   int totalHours = 0;
+		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   totalHours = totalHours + Integer.parseInt(tslist.get(i).getTotalHours());
+			   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
 		   }
 	   }
 		return totalHours;
@@ -403,5 +406,81 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		return tslist;
 
 	}
+
+
+
+@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getProjectsBasedOnUserIdAndStatusAndClientForFilters(Long userId,
+			String clientId,String values) throws Exception {
+		
+
+	    Collection<TimesheetSubmissions> tslist = null;
+        Session session = this.sessionFactory.getCurrentSession();
+        String subQuery2 = "";
+		String[] tokens = values.split(",");
+		ArrayList<TimesheetSubmissions> timesheetSubmissions = new ArrayList<TimesheetSubmissions>();
+		String[] clients = clientId.split(",");
+		if(clients[0].length()>0){
+			
+				for(String client :clients){
+						if(Arrays.asList(tokens).contains("All")){
+							subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'All' or ";
+						}
+						  
+						if(Arrays.asList(tokens).contains("Approved")){
+							subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'Approved' or ";
+						}
+						
+						if(Arrays.asList(tokens).contains("Draft")){
+							subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Draft' or ";
+						}
+						if(Arrays.asList(tokens).contains("Rejected")){
+							subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Rejected' or ";
+						}
+						
+						if (tokens[0] != null && tokens[0].length() > 0){
+							subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
+						}
+					 String subquery1 ="pm.projects.orgRelationId ="+client;
+					 String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+					 String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+"  "+subQuery2+" and "+subquery1+" )" ;
+					 tslist = session.createQuery(query.toString()).setLong("userId", userId).list(); 
+					 
+					 timesheetSubmissions.addAll(tslist);
+		}	
+		}else{
+			
+			if(Arrays.asList(tokens).contains("All")){
+				subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'All' or ";
+			}
+			  
+			if(Arrays.asList(tokens).contains("Approved")){
+				subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'Approved' or ";
+			}
+			
+			if(Arrays.asList(tokens).contains("Draft")){
+				subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Draft' or ";
+			}
+			if(Arrays.asList(tokens).contains("Rejected")){
+				subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Rejected' or ";
+			}
+			
+			if (tokens[0] != null && tokens[0].length() > 0){
+				subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
+			}
+		
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+"  "+subQuery2+" )" ;
+		tslist = session.createQuery(query.toString()).setLong("userId", userId).list();
+			
+			
+			
+		}
+		
+		Collection<TimesheetSubmissions> userCollection = new HashSet<TimesheetSubmissions>(timesheetSubmissions);
+		return userCollection;
+	}
+
 
 }
