@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,23 +55,37 @@ public class UploadController {
 			return "upload/uploadForm";
 		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
-			if (isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xls")) {
+			if (isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xlsx")) {
 				model.addAttribute("errorMessage", "Please download Error file here  …");
+                 model.addAttribute("fileName", "xlsx");
+				return "upload/uploadForm";
+			}else if(isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xls")){
+				model.addAttribute("errorMessage", "Please download Error file here  …");
+                model.addAttribute("fileName", "xls");
 				return "upload/uploadForm";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		model.addAttribute("msg", "successfully uploaded");
+		 model.addAttribute("fileName", "");
 		return "redirect:/usersList";
 	}
 
-	@RequestMapping(value = "/download", method = RequestMethod.GET)
-	public void downloadFile(HttpServletResponse response) throws IOException {
-		File file = new File("FailureUsersForCheck.xls");
+	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
+	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
+		
+		File file = null;
+		if("xlsx".equalsIgnoreCase((fileName))){
+			file = new File("FailureUsersForCheck.xlsx");
+		}else{
+			 file = new File("FailureUsersForCheck.xls");
+		}
+		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";

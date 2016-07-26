@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -52,6 +51,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -110,6 +110,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 		String isFileCreated = null;
 		boolean isValidated = false;
+		 boolean isUserFound = false;
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
@@ -169,7 +170,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						userImport.setDayHours("");
 					}
 					
-					 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
+					  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 					 if(isUserFound){
 							
 								createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
@@ -180,10 +181,15 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
 				}
 			}
-			FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
-			createExcelworkbook.write(fos);
-			fos.close();
-			isFileCreated = "FailureUsersForCheck.xls";
+			if(!isValidated || isUserFound){
+				FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xlsx");
+				createExcelworkbook.write(fos);
+				fos.close();
+				isFileCreated = "FailureUsersForCheck.xlsx";
+			}else{
+				isFileCreated = "failed";
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -193,16 +199,22 @@ public class UploadFileDaoImpl implements UploadFileDao {
 /**
  * validate duplicate entry from excel data
  * @param email
+ * @param EmployeeId 
  * @param userImport
+ * @param orgLocations 
  * @return
  * @throws Exception
  */
-	private boolean validateDuplicateUser(String email, UsersImport userImport) throws Exception {
+	private boolean validateDuplicateUser(String email, String EmployeeId, UsersImport userImport, OrgLocations orgLocations) throws Exception {
 		boolean isUserFound = false;
 		User user = userService.findByEmail(email);
 		if(user != null){
 			isUserFound = true;
-			userImport.setReason("duplicate data");;
+			userImport.setReason("duplicate data");
+		}else{
+			Boolean flag = employeesService.validateEmployeeId(EmployeeId, orgLocations.getId());
+			userImport.setReason("duplicate data");
+			isUserFound = flag;
 		}
 		return isUserFound;
 	}
@@ -238,8 +250,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Workbook workbook = null;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			if (fileName.toLowerCase().endsWith("xlsx")) {
-				//workbook = new XSSFWorkbook(fis);
-				workbook = WorkbookFactory.create(fis);
+				workbook = new XSSFWorkbook(fis);
+				 boolean isUserFound = false;
+				 boolean isValidated = false;
+//				workbook = WorkbookFactory.create(fis);
 				int numberOfSheets = workbook.getNumberOfSheets();
 				for (int i = 0; i < numberOfSheets; i++) {
 					Sheet sheet = workbook.getSheetAt(i);
@@ -248,7 +262,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					while (rowIterator.hasNext()) {
 						UsersImport userImport = new UsersImport();
 						Row row = rowIterator.next();
-						boolean isValidated = false;
+						
 						if (row.getRowNum() > 0) {
 							isValidated = validateExeclData(row,userImport,fileName);
 						}
@@ -265,6 +279,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 										} else {
 											userImport.setEmployeeId(empId);
 										}
+									}else{
+										userImport.setFirstName(row.getCell(0).toString());
 									}
 								} else {
 									userImport.setMobileNumber("");
@@ -289,6 +305,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 										} else {
 											userImport.setMobileNumber(mobileNumber);
 										}
+									}else{
+										userImport.setEmailId(row.getCell(4).toString());
 									}
 								} else {
 									userImport.setMobileNumber("");
@@ -304,6 +322,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 										} else {
 											userImport.setRate(rate);
 										}
+									}else{
+										userImport.setEmailId(row.getCell(5).toString());
 									}
 								} else {
 									userImport.setRate("");
@@ -335,11 +355,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 										} else {
 											userImport.setDayHours(dayHours);
 										}
+									}else{
+										userImport.setEmailId(row.getCell(10).toString());
 									}
 								} else {
 									userImport.setDayHours("");
 								}
-								 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
+								  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 								 if(isUserFound){
 									 if (row.getRowNum() > 0) {
 											count++;
@@ -364,16 +386,20 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							
 						}
 					}
-					if (count > 0) {
-						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+					if (!isValidated || isUserFound) {
+						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xlsx");
 						createExcelworkbook.write(fos);
 						fos.close();
-						isFileCreated = "FailureUsersForCheck.xls";
+						isFileCreated = "FailureUsersForCheck.xlsx";
+					}else{
+						isFileCreated = "failed";
 					}
 				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
-				///workbook = (Workbook) new HSSFWorkbook(fis);
-				workbook = WorkbookFactory.create(fis);
+				workbook = (Workbook) new HSSFWorkbook(fis);
+				boolean isValidated = false;
+				boolean isUserFound = false;
+//				workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
@@ -382,17 +408,32 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				while (rowIterator.hasNext()) {
 					UsersImport userImport = new UsersImport();
 					Row row = rowIterator.next();
-					boolean isValidated = false;
 					if (row.getRowNum() > 0) {
 						isValidated = validateExeclData(row,userImport,fileName);
 					}
 					if (isValidated) {
 						if (row.getRowNum() > 0) { // Excluding column names
 							logger.info("Reading Row :" + row.getRowNum() + " records");
-							if (row.getCell(0) == null || "".endsWith(row.getCell(0).toString())) {
-								userImport.setEmployeeId("");
+//							if (row.getCell(0) == null || "".endsWith(row.getCell(0).toString())) {
+//								userImport.setEmployeeId("");
+//							} else {
+//								userImport.setEmployeeId(row.getCell(0).toString());
+//							}
+							if (row.getCell(0) != null) {
+								HSSFCell myCell = (HSSFCell) row.getCell(0);
+								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+									myCell.setCellType(Cell.CELL_TYPE_STRING);
+									String EmployeeId = myCell.getStringCellValue();
+									if (EmployeeId == null || "".endsWith(EmployeeId)) {
+										userImport.setEmployeeId("");
+									} else {
+										userImport.setEmployeeId(EmployeeId);
+									}
+								}else{
+									userImport.setEmployeeId(row.getCell(0).toString());
+								}
 							} else {
-								userImport.setEmployeeId(row.getCell(0).toString());
+								userImport.setEmployeeId("");
 							}
 							userImport.setFirstName(row.getCell(1).toString());
 						//	userImport.setLastName(row.getCell(2).toString()); // LastName
@@ -403,6 +444,11 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							}
 							userImport.setEmailId(row.getCell(3).toString());
 
+//							if (row.getCell(4) == null || "".endsWith(row.getCell(4).toString())) {
+//								userImport.setMobileNumber("");
+//							} else {
+//								userImport.setMobileNumber(row.getCell(4).toString());
+//							}
 							if (row.getCell(4) != null) {
 								HSSFCell myCell = (HSSFCell) row.getCell(4);
 								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
@@ -413,10 +459,17 @@ public class UploadFileDaoImpl implements UploadFileDao {
 									} else {
 										userImport.setMobileNumber(mobileNumber);
 									}
+								}else{
+									userImport.setMobileNumber(row.getCell(4).toString());
 								}
 							} else {
 								userImport.setMobileNumber("");
 							}
+							/*if (row.getCell(5) == null || "".endsWith(row.getCell(5).toString())) {
+								userImport.setRate("");
+							} else {
+								userImport.setRate(row.getCell(5).toString());
+							}*/
 
 							if (row.getCell(5) != null) {
 								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
@@ -428,6 +481,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 									} else {
 										userImport.setRate(rate);
 									}
+								}else{
+									userImport.setRate(row.getCell(5).toString());
 								}
 							} else {
 								userImport.setRate("");
@@ -449,6 +504,12 @@ public class UploadFileDaoImpl implements UploadFileDao {
 							} else {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
 							}
+							
+							/*if (row.getCell(10) == null || "".endsWith(row.getCell(10).toString())) {
+								userImport.setDayHours("");
+							} else {
+								userImport.setDayHours(row.getCell(9).toString());
+							}*/
 							if (row.getCell(10) != null) {
 								HSSFCell myCell10 = (HSSFCell) row.getCell(10);
 								if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
@@ -459,11 +520,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 									} else {
 										userImport.setDayHours(dayHours);
 									}
+								}else{
+									userImport.setDayHours(row.getCell(9).toString());
 								}
 							} else {
 								userImport.setDayHours("");
 							}
-							 boolean isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport);
+							  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
 										count++;
@@ -488,11 +551,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						
 					}
 				}
-				if (count > 0) {
+				if (!isValidated || isUserFound) {
 					FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
 					createExcelworkbook.write(fos);
 					fos.close();
 					isFileCreated = "FailureUsersForCheck.xls";
+				}else{
+					isFileCreated = "failed";
 				}
 			}
 		}
@@ -536,11 +601,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
 		employee.setDailyHours(userImport.getDayHours());
+		employee.setOrgLocations(orgLocations);
 //		if(!fileName.toLowerCase().endsWith("csv"))
 		if (!"".equalsIgnoreCase(userImport.getDateString())) {
 			SimpleDateFormat sdf = null;
-			if(!fileName.toLowerCase().endsWith("csv")){
+			if(fileName.toLowerCase().endsWith("xls")){
 				sdf = new SimpleDateFormat("dd/MM/yyyy");
+			}else if(fileName.toLowerCase().endsWith("xlsx")){
+				sdf =  new SimpleDateFormat("dd/MM/yyyy");
 			}else{
 				sdf =  new SimpleDateFormat("dd/MM/yyyy");
 			}
@@ -583,14 +651,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
-
-//		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
-//			Cell cell0 = writeRow.createCell(0);
-//			cell0.setCellValue(row.getCell(0).toString());
-//		} else {
-//			Cell cell0 = writeRow.createCell(0);
-//			cell0.setCellValue("");
-//		}
 		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
 			HSSFCell myCell0 = (HSSFCell) row.getCell(0);
 			if (myCell0.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
@@ -600,6 +660,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					Cell cell0 = writeRow.createCell(0);
 					cell0.setCellValue(empId);
 				}
+			}else{
+				Cell cell0 = writeRow.createCell(0);
+				cell0.setCellValue(row.getCell(0).toString());
 			}
 		} else {
 			Cell cell0 = writeRow.createCell(0);
@@ -627,6 +690,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue("");
 		}
+		
+//		if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+//			Cell cell4 = writeRow.createCell(4);
+//			cell4.setCellValue(row.getCell(4).toString());
+//		} else {
+//			Cell cell4 = writeRow.createCell(4);
+//			cell4.setCellValue("");
+//		}
 		if (row.getRowNum() == 0) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(row.getCell(4).toString());
@@ -640,12 +711,16 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell4 = writeRow.createCell(4);
 						cell4.setCellValue(mobileNumber);
 					}
+				}else{
+					Cell cell4 = writeRow.createCell(4);
+					cell4.setCellValue(row.getCell(4).toString());
 				}
 			} else {
 				Cell cell4 = writeRow.createCell(4);
 				cell4.setCellValue("");
 			}
 		}
+		
 		if (row.getRowNum() == 0) {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue(row.getCell(5).toString());
@@ -660,6 +735,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell5 = writeRow.createCell(5);
 						cell5.setCellValue(rate);
 					}
+				}else{
+					Cell cell5 = writeRow.createCell(5);
+					cell5.setCellValue(row.getCell(5).toString());
 				}
 			} else {
 				Cell cell5 = writeRow.createCell(5);
@@ -694,6 +772,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
+		
+		/*if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue(row.getCell(10).toString());
+		} else {
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue("");
+		}*/
 		if (row.getRowNum() == 0) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue(row.getCell(10).toString());
@@ -708,6 +794,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell10 = writeRow.createCell(10);
 						cell10.setCellValue(dayHours);
 					}
+				}else{
+					Cell cell10 = writeRow.createCell(10);
+					cell10.setCellValue(row.getCell(10).toString());
 				}
 			} else {
 				Cell cell10 = writeRow.createCell(10);
@@ -731,27 +820,30 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 
-		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
-			Cell cell0 = writeRow.createCell(0);
-			cell0.setCellValue(row.getCell(0).toString());
-		} else {
-			Cell cell0 = writeRow.createCell(0);
-			cell0.setCellValue("");
-		}
 //		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
-//			XSSFCell myCell0 = (XSSFCell) row.getCell(0);
-//			if (myCell0.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-//				myCell0.setCellType(Cell.CELL_TYPE_STRING);
-//				String empId = myCell0.getStringCellValue();
-//				if (empId != null && !"".endsWith(empId)) {
-//					Cell cell0 = writeRow.createCell(0);
-//					cell0.setCellValue(empId);
-//				}
-//			}
+//			Cell cell0 = writeRow.createCell(0);
+//			cell0.setCellValue(row.getCell(0).toString());
 //		} else {
 //			Cell cell0 = writeRow.createCell(0);
 //			cell0.setCellValue("");
 //		}
+		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
+			XSSFCell myCell0 = (XSSFCell) row.getCell(0);
+			if (myCell0.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				myCell0.setCellType(Cell.CELL_TYPE_STRING);
+				String empId = myCell0.getStringCellValue();
+				if (empId != null && !"".endsWith(empId)) {
+					Cell cell0 = writeRow.createCell(0);
+					cell0.setCellValue(empId);
+				}
+			}else{
+				Cell cell0 = writeRow.createCell(0);
+				cell0.setCellValue(row.getCell(0).toString());
+			}
+		} else {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue("");
+		}
 		if (row.getCell(1) != null && !"".endsWith(row.getCell(1).toString())) {
 			Cell cell1 = writeRow.createCell(1);
 			cell1.setCellValue(row.getCell(1).toString());
@@ -773,6 +865,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue("");
 		}
+//		if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+//			Cell cell4 = writeRow.createCell(4);
+//			cell4.setCellValue(row.getCell(4).toString());
+//		} else {
+//			Cell cell4 = writeRow.createCell(4);
+//			cell4.setCellValue("");
+//		}
 		if (row.getRowNum() == 0) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(row.getCell(4).toString());
@@ -786,12 +885,22 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell4 = writeRow.createCell(4);
 						cell4.setCellValue(mobileNumber);
 					}
+				}else{
+					Cell cell4 = writeRow.createCell(4);
+					cell4.setCellValue(row.getCell(4).toString());
 				}
 			} else {
 				Cell cell4 = writeRow.createCell(4);
 				cell4.setCellValue("");
 			}
 		}
+//		if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
+//			Cell cell5 = writeRow.createCell(5);
+//			cell5.setCellValue(row.getCell(5).toString());
+//		} else {
+//			Cell cell5 = writeRow.createCell(5);
+//			cell5.setCellValue("");
+//		}
 		if (row.getRowNum() == 0) {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue(row.getCell(5).toString());
@@ -806,6 +915,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell5 = writeRow.createCell(5);
 						cell5.setCellValue(rate);
 					}
+				}else{
+					Cell cell5 = writeRow.createCell(5);
+					cell5.setCellValue(row.getCell(5).toString());
 				}
 			} else {
 				Cell cell5 = writeRow.createCell(5);
@@ -840,6 +952,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
+		
+//		if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+//			Cell cell10 = writeRow.createCell(10);
+//			cell10.setCellValue(row.getCell(10).toString());
+//		} else {
+//			Cell cell10 = writeRow.createCell(10);
+//			cell10.setCellValue("");
+//		}
 		if (row.getRowNum() == 0) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue(row.getCell(10).toString());
@@ -854,6 +974,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						Cell cell10 = writeRow.createCell(10);
 						cell10.setCellValue(dayHours);
 					}
+				}else{
+					Cell cell10 = writeRow.createCell(10);
+					cell10.setCellValue(row.getCell(10).toString());
 				}
 			} else {
 				Cell cell10 = writeRow.createCell(10);
@@ -896,9 +1019,11 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						String mobileNumber = myCell4.getStringCellValue();
 						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
 							isValidated = isMobileNumberValid(mobileNumber);
-							userImport.setReason("Invalid MobileNumber");
-							return isValidated;
-							
+							if(isValidated){
+							}else{
+								userImport.setReason("Invalid MobileNumber");
+								return isValidated;
+							}
 						}
 					}
 				}else{
@@ -908,23 +1033,40 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						String mobileNumber = myCell4.getStringCellValue();
 						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
 							isValidated = isMobileNumberValid(mobileNumber);
-							userImport.setReason("Invalid MobileNumber");
-							return isValidated;
+							if(isValidated){
+							}else{
+								userImport.setReason("Invalid MobileNumber");
+								return isValidated;
+							}
+					}
+				}else{
+					isValidated = isMobileNumberValid(row.getCell(4).toString());
+					if(isValidated){
+					}else{
+						userImport.setReason("Invalid MobileNumber");
+						return isValidated;
 					}
 				}
 			
 			}
 			}
-			/*if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-				isValidated = isMobileNumberValid(row.getCell(4).toString());
-				userImport.setReason("Invalid MobileNumber");
-				return isValidated;
-			}*/
-			
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-				isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
-				userImport.setReason("Invalid Date");
-				return isValidated;
+				if(fileName.endsWith("xls")){
+					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
+					if(isValidated){
+					}else{
+						userImport.setReason("Invalid Date");
+						return isValidated;
+					}
+				}else{
+					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
+					if(isValidated){
+					}else{
+						userImport.setReason("Invalid Date");
+						return isValidated;
+					}
+				}
+				
 			}
 			if (row.getCell(8) == null || "".endsWith(row.getCell(8).toString())) {
 				userImport.setReason("Required fields is not filled");
@@ -957,13 +1099,21 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 			if (record.get(Constants.PHONE_NUMBER) !=null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER))) {
 				isValidated = isMobileNumberValid(record.get(Constants.PHONE_NUMBER));
-				userImport.setReason("Invalid MobileNumber");
-				return isValidated;
+				if(isValidated){
+				}
+				else{
+					userImport.setReason("Invalid MobileNumber");
+					return isValidated;
+				}
 			}
 			if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
 				isValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
-				userImport.setReason("Invalid Date");
-				return isValidated;
+				if(isValidated){
+					
+				}else{
+					userImport.setReason("Invalid Date");
+					return isValidated;
+				}
 			}
 			if (record.get(Constants.ROLE) == null) {
 				userImport.setReason("Required field is  mandatory");
