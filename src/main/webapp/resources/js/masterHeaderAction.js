@@ -3,6 +3,7 @@
 			$('.side-bar').toggleClass("side-bar-active");
 			$('.user-panel').toggleClass("user-panel-active");
 			$('.content-wraper').toggleClass("content-wraper-active");
+			$('.footer-area').toggleClass("footer-area-active");
 			$("div.side-nav ul li").find('ul.collapses, .tree-view').toggleClass("tree-view-active");
 			$("div.side-nav ul li").find('.tree-view-new').toggleClass('tree-view-new-active');
 			});
@@ -17,6 +18,10 @@
 	    });
 		$('.login-user').click(function(){
 		 $('.user-details').toggleClass('user-details-active');
+		 $('.setting-area').removeClass('setting-area-active');
+		 $('.alert-area').removeClass('alert-area-active');
+		 $('.qlinks-area').removeClass('qlinks-area-active');
+		 $('.note-area').removeClass('note-area-active');
 	    });
 		
 		$("#notification").click(function(){

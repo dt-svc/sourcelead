@@ -62,11 +62,16 @@
 				  <div class="profile-img-container profile-image" style="position:relative;">
 				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
 				  <div class="btn-group uploadfile">
-				  <button type="button" class="btn btn-primary">
+				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
-				  <label class="btn btn-primary">
+				  <label class="btn btn-sm btn-primary">
                     Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
-                </label>
+                  </label>
+                  <c:if test="${!empty SourceLeadWeb_user.fileContentType}">
+                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+				  <i class="fa fa-trash"></i></button>
+				  </c:if>
+				  
 				  </div>
 				  </div>
 			  </div>
@@ -261,6 +266,40 @@ function alertMessage(message){
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
+
+<script type="text/javascript">
+function deleteImage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function deleteProfileImage(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteProfileImage",
+	        success: function(data) {
+	        	 var result = data;
+     		if(result == "success"){
+     			location.replace(sourceleadUrl+"/userProfile"); 
+        	 }
+	        
+	       },
+	        
+     }); 
 }
 </script>
 

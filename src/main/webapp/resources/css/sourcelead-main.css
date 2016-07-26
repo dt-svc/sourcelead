@@ -1655,6 +1655,11 @@ min-width:75px;
 	padding: 10px 15px;
 	margin-left:0;
 }
+
+.footer-area.footer-area-active{
+margin-left:50px;
+}
+
 .copyright {
 	float:none;
 	text-align:center;
