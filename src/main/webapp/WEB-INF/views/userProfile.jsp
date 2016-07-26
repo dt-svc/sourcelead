@@ -100,13 +100,13 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required validate_Alphabet validate_length length1-100" />
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required validate_Alphabet validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length1-20" />
+							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length9-20" />
 							</div>
 						  </div>
 						  <div class="form-group">
@@ -225,15 +225,23 @@
     var output = document.getElementById('userImage');
     
     var uploadedImage = document.getElementById('uploadedImage').value;
+    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
     	$("#profile_submit").attr("disabled", "disabled");
  		$( "#profile_submit").addClass('button').val('Processing..');
- 		alertMessage();
+ 		var msg = ".png extension not allowed";
+ 		alertMessage(msg);
+    	
+    }else if(sizeinbytes > 1000000){
+    	$("#profile_submit").attr("disabled", "disabled");
+ 		$( "#profile_submit").addClass('button').val('Processing..');
+ 		var msg = "Image size should be less than 1 MB";
+ 		alertMessage(msg);
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
-    	$( "#profile_submit" ).addClass('profile_submit').val('Save');
+    	$("#profile_submit" ).addClass('profile_submit').val('Save');
 		$("#profile_submit").removeAttr("disabled");
     }
     
@@ -241,11 +249,11 @@
 </script>
 
 <script type="text/javascript">
-function alertMessage(){
+function alertMessage(message){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>png extension not allowed</p>";
+	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";

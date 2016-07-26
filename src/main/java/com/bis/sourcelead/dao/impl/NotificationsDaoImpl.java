@@ -49,7 +49,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 																	.setString("mode", mode)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
-				   													.setString("locationCode", locationCode).list();
+				   													.setString("locationCode", locationCode).setCacheable(true).list();
 		Integer notificationCount = null;
 		
 			if(notificationList != null && !notificationList.isEmpty()){
@@ -74,7 +74,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 																	.setString("mode", mode)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
-				   													.setString("locationCode", locationCode).list();
+				   													.setString("locationCode", locationCode).setCacheable(true).list();
 		return notificationList;
 	}
 
@@ -122,7 +122,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("userId", userId)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
-				   													.setString("locationCode", locationCode).list();
+				   													.setString("locationCode", locationCode).setCacheable(true).list();
 		return notificationList;
 	}
 

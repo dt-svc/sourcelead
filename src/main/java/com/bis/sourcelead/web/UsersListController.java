@@ -46,7 +46,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource("${propertyLocation:app.properties}")
 public class UsersListController {
 	
 private static final Logger logger = LoggerFactory.getLogger(UsersListController.class);
@@ -153,7 +152,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 					userRolesList.add(role);
 				}
 			 
-			 System.out.println(projectIdsList.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -45,7 +45,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId")
 					  .setLong("orgId", orgId)
-					  .list();
+					  .setCacheable(true).list();
 	}
 
 
@@ -59,7 +59,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 				+ "where actionRoles.roles.id = :roleId and actionRoles.orgLocations.id = :orgLocationId ")
 					  .setLong("roleId", roleId)
 					  .setLong("orgLocationId", orgLocationId)
-					  .list();
+					  .setCacheable(true).list();
 	}
 
 }

@@ -15,7 +15,8 @@ public class Constants {
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static DateFormat DF_TM = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getTimeZone("America/Chicago");
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
+	
 	public static int MAX_RESULTS_FIVE = 5;
 	public static int MAX_RESULTS_TEN = 10;
 	public static int MAX_RESULTS_TWENTY = 20;
@@ -41,6 +42,7 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String INVITE_USER = "Invite User";
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
