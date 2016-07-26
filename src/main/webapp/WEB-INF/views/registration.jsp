@@ -252,7 +252,7 @@ var validationSettings = {
 	    		$("input#confirmPassword").closest('b').after("<p class='jquery_form_error_message'> Passwords Do Not Match</p>");
 				$('input#confirmPassword').attr('record-exist','yes');
 				$('input#confirmPassword').attr('record-exist-errorMsg',' Passwords Do Not Match'); 
-				$( "#register_button" ).addClass('sign_btn').val('Submit');
+				$( "#register_button" ).addClass('sign_btn').val('Register');
 				$("#register_button").removeAttr("disabled");
 	    	
 	    	}
@@ -296,7 +296,7 @@ function validateWebsite(){
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyWebsite').attr('class','valid signin_fild');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Submit');
+							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -330,7 +330,7 @@ function validateCompanyEmail(){
 			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
 			    				$('input#email').attr('record-exist','yes');
 			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Submit');
+			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
@@ -340,7 +340,7 @@ function validateCompanyEmail(){
 			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
 			    				$('input#email').attr('record-exist','yes');
 			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Submit');
+			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
 					     }
@@ -351,7 +351,7 @@ function validateCompanyEmail(){
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
 							$('input#email').attr('class','valid signin_fild');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Submit');
+							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
