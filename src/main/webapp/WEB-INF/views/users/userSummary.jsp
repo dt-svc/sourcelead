@@ -286,7 +286,7 @@ $(document).ready(function(){
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field" onclick="getEndDatePickerById(\'endDate'+json.id+'\','+json.id+');" /></div></td>';
+						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
@@ -332,6 +332,25 @@ $(document).ready(function(){
 	    			$("#projectList_User").empty(); 
 					$("#projectList_User").append(result); 
 	    		}
+	    		if(jsonData.length > 0)
+		   		{
+	    			 for(var i=0; i<jsonData.length; i++){
+						   var json = jsonData[i];
+						   $('#endDate'+json.id).datepicker({
+				    		      dateFormat: 'yy-mm-dd',
+				    		      onSelect: function (selected) {
+				    		            var dt = new Date(selected);
+				    		            dt.setDate(dt.getDate() + 1);
+				    		        },
+				    		        onClose: function() {
+				    		        	 var id = $(this).attr('id');
+										 var projectMemberId = $(this).attr('id').split('endDate')[1];
+				    		        	 inlineEditForEndDate(id,projectMemberId);
+				    		      }
+				    		  }); 
+			         
+	    			 }
+		   		}
 	        },
 		});
 	 }
@@ -982,24 +1001,9 @@ function inlineEditForEndDate(id,projectMemberId){
    		    }
 	 });  
 }
-
 </script>
 
-<script>
- function getEndDatePickerById(id,projectMemberId) {
-	 $('#'+id).datepicker({
-	/*  $('#endDate').datepicker({ */
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        },
-	        onClose: function() {
-		      inlineEditForEndDate(id,projectMemberId);
-	      }
-	  });
-  } 
-</script>
+
 
 <script>
  function filter() {
