@@ -299,7 +299,6 @@ public class ClientController {
 			 
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
-			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
 			 
 			 for(Projects project : clientProjectsList){
 				 project.setProjectName(project.getProjectName());
