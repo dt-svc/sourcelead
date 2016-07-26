@@ -52,14 +52,13 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
 public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+	 
 	@Autowired
 	UserService userService;
 	
@@ -302,6 +301,8 @@ public class UserController {
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
 			 }
+			 
+			 
 			 resultJson = toJSON(allProjectsList);
 			 return resultJson;
       }
