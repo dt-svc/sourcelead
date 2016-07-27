@@ -737,8 +737,10 @@ ul.timesheet-menu li a:hover{
 }
 .section-action-btns {
 	min-height:30px;
-	background:#e1e6fa;
-	background:linear-gradient(#edf2ff, #e1e6fa);
+	background:-o-linear-gradient(#fff, #eff4ff);
+	background:-webkit-linear-gradient(#fff, #eff4ff);
+	background:-moz-linear-gradient(#fff, #eff4ff);
+	background:linear-gradient(#fff, #eff4ff);
 	border:1px solid #c9cee2;
 }
 .section-action-btns ul {
@@ -747,6 +749,41 @@ ul.timesheet-menu li a:hover{
 .section-action-btns ul li{
 	padding:5px 10px;
 	transition:all 0.5s ease-in-out 0s;
+	position:relative;
+}
+.section-action-btns ul li span {
+    color: #333;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    padding:0;
+}
+.section-action-btns ul li span b {
+    background-color: #3081cb;
+    border-radius: 3px;
+    color: #fff;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 15px;
+    margin: 0 0 0 7px;
+    padding: 1px 5px;
+    position: relative;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    top: -2px;
+}
+.section-action-btns .glyphicon-play {
+    color:#333;
+    cursor: pointer;
+    font-size: 10px;
+    position:relative;
+    right: -5px;
+    top: -8px;
+    transform: rotate(90deg);
+	padding-left:15px;
+}
+.section-action-btns ul.drop-user{
+	margin-top:-5px;
 }
 .section-action-btns ul li:hover{
 	background:#eff4ff;
@@ -768,7 +805,7 @@ ul.timesheet-menu li a:hover{
 .section-action-btns ul li .action-search > input{
 	border:0;
 	border-bottom:1px solid #c9cee2;
-	padding-left:20px;
+	padding-left:10px;
 	height:25px;
 	line-height:25px;
 	padding-right:10px;
@@ -776,11 +813,13 @@ ul.timesheet-menu li a:hover{
 }
 .section-action-btns ul li .action-search .fa-search{
    position: relative;
-   top: 0;
+   top:1px;
    left: 0;
-   background: #f5f5f5;
+   background: #d9534f;
    padding: 4px 5px;
-   border: 1px solid #ccc;
+   border: 1px solid #c53f3b;
+   color:#fff;
+   cursor:pointer;
 }
 .section-action-btns ul li  .fa{
 		color:#909090;
@@ -918,6 +957,9 @@ ul.timesheet-menu li a:hover{
 	right:0;
 	/* position:absolute;
 	width:83%; */
+}
+.footer-area.footer-area-active{
+	margin-left:50px;
 }
 .copyright{
 float:left;
@@ -1083,6 +1125,7 @@ background-repeat:no-repeat;
 	margin-bottom: 2px;
     word-wrap: break-word;
 	color:#676a6c;
+	display:block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
 		
 	}
 	.user-profile  p .label{
@@ -1160,6 +1203,9 @@ background-repeat:no-repeat;
 }
 .profile-img-container:hover  .uploadfile{
 	display:block;
+	-moz-transform: translateY(-90px);
+	-webkit-transform: translateY(-90px);
+	-ms-transform: translateY(-90px);
 	transform: translateY(-90px);
 	opacity:1;
 }
@@ -1621,9 +1667,8 @@ border-bottom:1px solid #ccc;
     top: 2px;
 }
 .tblminwidth-75{
-min-width:75px;
+	min-width:75px;
 }
-
 @media (max-width: 320px) {
   .hidden-xs {
     display: none !important;
@@ -1655,11 +1700,6 @@ min-width:75px;
 	padding: 10px 15px;
 	margin-left:0;
 }
-
-.footer-area.footer-area-active{
-margin-left:50px;
-}
-
 .copyright {
 	float:none;
 	text-align:center;
