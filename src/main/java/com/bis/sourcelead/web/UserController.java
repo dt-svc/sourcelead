@@ -103,15 +103,13 @@ public class UserController {
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
-		request.setAttribute("userId", userId);
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		// this method is also using /userCreation 
-		Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-		model.addObject("org_projectsList", projectsList);
-		model.setViewName("users/userSummary");
-		model.addObject("sourceleadUrl", sourceleadUrl);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					// to get a project list by userId
+						Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
+						model.addObject("org_projectsList", projectsList);
+						request.setAttribute("userId", userId);
+						model.setViewName("users/userSummary");
+						model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}
@@ -343,19 +341,19 @@ public class UserController {
 						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
 								.format(projectMembers.getProjects().getEndDate()));
 					}
-					Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
 					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
-					Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
 					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
 
-					Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 
-					Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
 					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 				}
@@ -474,6 +472,7 @@ public class UserController {
 					}
 					return "updated";
 		       }
+
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
