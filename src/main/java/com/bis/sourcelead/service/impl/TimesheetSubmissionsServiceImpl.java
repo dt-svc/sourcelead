@@ -138,7 +138,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				         savedTimesheetsSubmissionsCount =  newTimesheetsSubmissionsCount +draftTimesheetsSubmissionsCount;
 				         timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(savedTimesheetsSubmissionsCount);
 			  	       //submitted
-				         waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTED");
+				         waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTEDFORAPPROVAL");
 				         timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(waitingForApprovalTimesheetSubmissionCount);
 			  	       //approved
 				         approvedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "APPROVED");
@@ -163,10 +163,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				    Float rejectedTimesheetsSubmissionsHoursCount = null;
 					
 						       //draft
-						         draftTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
+						         draftTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId, "NEW");
 					             timeSheetSubmissionCount.setDraftTimesheetsSubmissionsHoursCount(draftTimesheetsSubmissionsHoursCount.toString());
 					           //Submitted
-					             submittedTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
+					             submittedTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTEDFORAPPROVAL");
 					             timeSheetSubmissionCount.setSubmittedTimesheetsSubmissionsHoursCount(submittedTimesheetsSubmissionsHoursCount.toString());
 					           //Approved
 					             approvalTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
