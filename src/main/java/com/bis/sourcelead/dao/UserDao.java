@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.User;
 
@@ -23,4 +24,6 @@ public interface UserDao {
 	public Collection<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	
 	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
+	
+	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 }
