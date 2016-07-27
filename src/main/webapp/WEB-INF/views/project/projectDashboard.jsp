@@ -1075,11 +1075,10 @@ function getTeamMembers(projectId) {
                  "<td>"+opt.user.email+"</td>"+
                  "<td>"+role+"</td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-	  
-                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
+                 "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
+                 "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "</tr>";
 			}
@@ -1087,6 +1086,31 @@ function getTeamMembers(projectId) {
 	        output = output+' </table>';
         	$("#employeesList").empty();
 	        $("#employeesList").append(output);
+	        
+	        
+	        //StartDate And EndDate Pickers
+		       if(json.length > 0){
+			    	for (var i = 0; i < json.length; i++) {
+						var opt = json[i];
+						$('#startDate'+opt.id).datepicker({
+							dateFormat : 'yy-mm-dd',
+							onSelect : function(selected) {
+								var dt = new Date(selected);
+								dt.setDate(dt.getDate() + 1);
+								$("#endDate"+opt.id).datepicker("option", "minDate", dt);
+							}
+						});
+
+						$('#endDate'+opt.id).datepicker({
+							dateFormat : 'yy-mm-dd',
+							onSelect : function(selected) {
+								var dt = new Date(selected);
+								dt.setDate(dt.getDate() - 1);
+								$("#startDate"+opt.id).datepicker("option", "maxDate", dt);
+							}
+						});
+					}
+		      }
         },
         error: function(e){
         }
@@ -1144,28 +1168,6 @@ function assignEmployee(){
 	 }
  }
  </script> 
- <script>
- function getStartDatePickerById(id,incrementor) {
-	 $('#'+id).datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        }
-	  });
-  } 
-</script>
-<script>
- function getEndDatePickerById(id,incrementor) {
-	 $('#'+id).datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        }
-	  });
-  } 
-</script>
 
  <script>
  function projectEndtateStr() {
