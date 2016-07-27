@@ -93,10 +93,7 @@
 										<button class="btn btn-default" type="button">
 											<span class="badge" id="addTaskCount">0
 										</button>
-										<button class="btn btn-primary" type="button"
-											data-toggle="modal" data-target="#addTask">
-											<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View
-											/ Add Projects
+										<button class="btn btn-primary" type="button" data-toggle="modal"  onclick="flushProject();" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;Add Projects
 										</button>
 									</div>
 								</div>
@@ -149,14 +146,12 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg"
-																		name="projectManager" id="projectManager">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();">
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
-																			<option value="${option.id}&${option.firstName}">${option.firstName}</option>
+																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
 																		</c:forEach>
-																	</select> <span class="btn btn-default formic1 addLevel">Add
-																		Level-II</span>
+																	</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();"">Add Level-II</span>
 																</div>
 																<span class="hidden">Select Project Manager</span>
 															</div>
@@ -164,11 +159,10 @@
 														<div class="form-group level-second">
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
-																<select class="form-control select-bg"
-																	name="level2Manager">
+																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
 																	<option value=''>-- Select Manager --</option>
 																	<c:forEach var="option" items="${user_List}">
-																		<option value="${option.id}">${option.firstName}</option>
+																		<option value="${option.id}">${option.firstName} ${option.lastName}</option>
 																	</c:forEach>
 																</select>
 															</div>
@@ -750,4 +744,50 @@ var addtaskcount =null;
 			    }
 	}
  
+</script>
+
+
+<script type="text/javascript">
+function getLevel2Approvers(fieldName){
+	   var managerID = document.getElementById("projectManager").value;
+		var mgr = managerID.split("&");
+		var currentApproverId = mgr[0];
+    	 getChildLevel1Approvers(currentApproverId); 
+} 
+</script>
+
+
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+	 }
+} 
+</script> 
+
+<script type="text/javascript">
+function flushProject(){
+	 $('#level2Manager').val('');
+}
 </script>

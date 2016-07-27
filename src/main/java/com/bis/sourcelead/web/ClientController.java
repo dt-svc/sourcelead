@@ -90,10 +90,11 @@ public class ClientController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/client")
-		public ModelAndView client() throws Exception {
+		public ModelAndView client(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
-			 Collection<User> userList = userService.getUsersByUserRoles();
-			 model.addObject("user_List", userList);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+				model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
