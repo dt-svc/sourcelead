@@ -1205,3 +1205,11 @@ function getChildLevel1Approvers(currentApproverId){
 } 
 </script>
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 

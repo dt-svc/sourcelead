@@ -71,7 +71,7 @@
         	<ul>
 				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
-                    	<ul style="height:150px; overflow-y:auto;padding-bottom:5px;">
+                    	<ul>
                     	  <c:forEach var="report" items="${add_client}">  
                         	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
 						  </c:forEach>
@@ -743,11 +743,11 @@ function filter(){
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
-   		    			result = result +'<td><div>'+report.managerLevel1+'</div></td>';
+   		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
-   		    			result = result +'<td><div>'+report.managerLevel2+'</div></td>';
-   		    		}
+   		    			result = result +report.managerLevel2;
+   		    		} 
    		    		result = result +'</div>';
    		    		result = result +'</td>';
    		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
@@ -819,12 +819,6 @@ function flushTasks() {
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-   }; 
 	
 	if ($('#project_form').validate(false, validationSettings)){
     	var tbl = document.getElementById("projectTaskTbl");
@@ -915,6 +909,15 @@ $(document).ready(function(){
 });
 </script>
 <!-- Add Task Script Ends -->
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
  
  <script type="text/javascript">
  function saveTasks() {
@@ -985,13 +988,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function addEmployee() {
-		 var validationSettings = {
-			        errorMessagePosition : 'element',
-			       borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		   }; 
-		 
 		 if ($('#employee_form').validate(false, validationSettings)){
 			var sourceleadUrl ='${sourceleadUrl}';
 			var frm = $('#employee_form').serializeFormJSON();
@@ -1182,4 +1178,6 @@ function flushEmployee(){
 	 $('#newEmployee').find('p.jquery_form_error_message').remove();
 }
 </script>
+
+
 </html>
