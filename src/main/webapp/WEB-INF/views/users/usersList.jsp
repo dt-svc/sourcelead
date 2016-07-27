@@ -1,8 +1,5 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/jquery-fun.js"></script> 
@@ -23,13 +20,14 @@ window.onload = function () {
 </script>
 
   <!-- Content Area -->
+  
   <section class="content-wraper">
+  <div class="content-dashboard clearfix">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
     </section>
-    <div class="content-dashboard clearfix">
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
           <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Users&nbsp;</a>
@@ -71,7 +69,9 @@ window.onload = function () {
       </div>
       <div id="usersListEmptyBody"></div>
       </div>
+      </div>
   </section>
+  
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />

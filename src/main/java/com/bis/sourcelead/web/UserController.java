@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -279,41 +280,93 @@ public class UserController {
 			
 		 	  return "success";
 		   }
+		 	/**
+		 	 * get the list of all projects of the particular user
+		 	 * @param request
+		 	 * @param userId
+		 	 * @return
+		 	 * @throws Exception
 
+		 	 */
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
-		 public @ResponseBody String getProjectDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
-			 String resultJson = null;   
-			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   
-				ModelAndView model = new ModelAndView();
-			    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-			   
-			    
-			 List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
-			 for (ProjectMembers projectMembers : allProjectsList) {
-				 if(projectMembers.getProjectAssignedDate()!=null){
-					 projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectAssignedDate())); 
-				 }
-				 if(projectMembers.getProjectEndDate()!=null){
-					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjectEndDate()));
-				 }
-				 else if(projectMembers.getProjects().getEndDate() != null){
-					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
-				 }
-				 
-				 
-				 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(userId);
-			  	 projectMembers.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
-			     projectMembers.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
-			  	 projectMembers.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
-			  	 projectMembers.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
-			  
-			 }
-			 
-			 
-			 resultJson = toJSON(allProjectsList);
-			 return resultJson;
-      }
+			public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
+					@RequestParam(value = "userId", required = false) Long userId,
+					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
+				String resultJson = null;
+				List<ProjectMembers> allProjectsList = null;
+				if(filterValue.equals("All")){
+					 allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
+				}
+				if(filterValue.equals("Active")){
+					 allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
+				}
+				if(filterValue.equals("In-Active")){
+					allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
+				}
+				for (ProjectMembers projectMembers : allProjectsList) {
+					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
+					if (projectMembers.getProjectAssignedDate() != null) {
+						projectMembers.setStartDate(
+								com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
+					}
+					if (projectMembers.getProjectEndDate() != null) {
+						projectMembers.setEndDate(
+								com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
+					} else if (projectMembers.getProjects().getEndDate() != null) {
+						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
+								.format(projectMembers.getProjects().getEndDate()));
+					}
+					Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService
+							.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
+					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
+
+					Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
+							.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
+					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
+
+					Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
+							.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
+					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
+
+					Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
+							.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
+					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+				}
+
+				resultJson = toJSON(allProjectsList);
+				return resultJson;
+			}
+		 
+		 /**
+		  * to update the end date of ProjectMembers in assign project
+		  * @param endDate
+		  * @param projectMemberId
+		  * @return
+
+		 -	 * @throws Exception
+
+		 -	 */
+
+		@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
+		public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
+
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
+
+					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					Date endDate1=sdf.parse(endDate);
+					if (endDate != null) {
+						if(projectMembers.getProjectEndDate()== null){
+							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						}
+
+						if (projectMembers.getProjectEndDate() != null && projectMembers.getProjectEndDate().compareTo(sdf.parse(endDate)) != 0) {
+							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						}
+					}
+					return "updated";
+		       }
+
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

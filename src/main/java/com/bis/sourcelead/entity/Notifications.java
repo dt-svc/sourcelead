@@ -27,15 +27,15 @@ public class Notifications {
 	@Column(name="ID")
 	private Long id;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="NOTIFICATION_SCENARIO_ID", nullable=false )	
 	private EmailScenario notificationScenarioId;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="NOTIFICATION_TO", nullable=false )	
 	private User notificationTo;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="NOTIFICATION_FORM", nullable=false )	
 	private User notificationFrom;
 	
