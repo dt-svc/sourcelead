@@ -377,6 +377,7 @@ $(document).ready(function() {
 		    projectEmployee(projectId);
  }
  </script> 
+ 
 <script>
 function projectEmployee(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -391,8 +392,9 @@ function projectEmployee(projectId){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result + '		</div>';
-    	    result = result + '        <div class="project_tabs_inn_table">';
-    		result = result + '	<table>';
+    		  result = result + '        <div class="project_tabs_inn_table">';
+    		if(json.length!=null && json.length!=''){
+    	    result = result + '	<table>';
     		result = result + '	<tbody>';
     		result = result + '		<tr>';
             result = result + '	 	<th>Emp name</th>';
@@ -413,7 +415,6 @@ function projectEmployee(projectId){
 	        		}else{
 	        			projectEndDateStr = "--"
 	        		}
-	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
@@ -426,8 +427,19 @@ function projectEmployee(projectId){
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
-    	    result = result + '	 </table>   ';         
-    	    result = result + '	     </div>';
+    	    result = result + '	 </table>   ';
+    		 }else{
+    		
+    			 result = result + '<div class="table_nodata">';
+    			 result = result + '<div class="table_nodata_inn">';
+    			 result = result + '<img src="resources/images/no-data.png" />';
+    			 result = result + '<span>Nothing is here to show <b>Click on Add Emp btn to add employess... </b>';
+    			 result = result + '</span>';
+    			 result = result + '<div class="clearfix"></div>';
+    			 result = result + '</div>';
+    			 result = result + '</div>';
+    		 }
+    		result = result + '	     </div>';
     	    $("#tab-1").empty();
     	    $("#tab-1").append(result);  
     	    
