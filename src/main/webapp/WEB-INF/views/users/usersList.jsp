@@ -53,7 +53,8 @@ window.onload = function () {
 		 <li>
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
-				<input type="text" id="searchByName" class=""><span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
+				<span class="action-search"><input type="text" id="searchByName"></span>
+				<span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		 
