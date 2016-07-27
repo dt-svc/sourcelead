@@ -82,7 +82,7 @@ $(document).ready(function(){
 	     result = result + '                 </ul>';
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
-	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
 	     result = result + '              <div class="clearfix"></div>';
 	     result = result + '            </ul>';
 	     result = result + '          <div class="clearfix"></div>';
@@ -455,6 +455,7 @@ $(document).ready(function(){
 
 
 
+<jsp:include page="../masterFooter.jsp" />
 
 <script type="text/javascript">
 (function ($) {
