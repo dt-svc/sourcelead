@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 
 import java.util.Collection;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -34,6 +35,8 @@ public interface UserService  {
 	public Collection<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	
 	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
+	
+	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 	
 }	
 		

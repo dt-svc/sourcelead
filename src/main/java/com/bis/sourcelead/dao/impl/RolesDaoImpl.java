@@ -30,7 +30,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles where roleName = :roleName" ).setString( "roleName", roleName ).list();
+		roles = session.createQuery("from Roles where roleName = :roleName" ).setString( "roleName", roleName ).setCacheable(true).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -44,7 +44,7 @@ public class RolesDaoImpl implements RolesDao{
 	public Collection<Roles> getRoles() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles")
-					  .list();
+				.setCacheable(true).list();
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles where displayName = :displayName" ).setString( "displayName", displayName ).list();
+		roles = session.createQuery("from Roles where displayName = :displayName" ).setString( "displayName", displayName ).setCacheable(true).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);

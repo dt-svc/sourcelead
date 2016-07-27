@@ -987,6 +987,11 @@ jQueryFormUtils.validatefile_doc = function(val) {
 jQueryFormUtils.validatefile_pdf = function(val) {
     return val.match(/(.*)(pdf)$/) !== null;
 };
+
+jQueryFormUtils.validate_importFile = function(val) {
+    return val.match(/(.*)(csv|xls|xlsx)$/) !== null;
+};
+
 jQueryFormUtils.validatefile_csv = function(val) {
     return val.match(/(.*)(csv|xsl|txt)$/) !== null;
 };
@@ -1128,6 +1133,13 @@ jQueryFormUtils.validateMaskZipCode = function(val) {
         else if (validationRules.indexOf('validatepdf') > -1 && !jQueryFormUtils.validatefile_pdf(value, validationRules)) {
             return validationErrorMsg || language.badPdf;
         }
+        
+        // simple File .xls, xlsx and csv
+        else if (validationRules.indexOf('validate_importFile') > -1 && !jQueryFormUtils.validate_importFile(value, validationRules)) {
+            return validationErrorMsg || language.badImportFile;
+        }
+        
+        
 		 // simple File csv check
         else if (validationRules.indexOf('validatecsv') > -1 && !jQueryFormUtils.validatefile_csv(value, validationRules)) {
             return validationErrorMsg || language.badCsv;
@@ -1298,6 +1310,7 @@ jQueryFormUtils.LANG =  {
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'Invalid Document Type Use .doc,pdf,txt,docx formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',
+	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',
 	badCsv:'Invalid Document Type Use .csv,txt formats only',
 	badMaskPhone:'Invalid characters in phone number',
 	badMaskZipCode:'Invalid characters in Zip Code',

@@ -30,12 +30,12 @@ public class ProjectMembers {
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
 	
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
 	private Employees employee;
 	
@@ -92,11 +92,22 @@ public class ProjectMembers {
     private String projectAssignedDateStr;
     @Transient
     private String projectEndDateStr;  
+    @Transient
+    private String projectName;
     
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
     
     
+    
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
 	public String getTerminateReason() {
 		return terminateReason;
 	}

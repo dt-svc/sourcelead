@@ -207,7 +207,7 @@
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
 							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectName\');" id="projectName" value="'+opt.projectName+'" class="project_inline_field"></div></td>';
-							result = result + '<td><input type="text" value="'+opt.startDateStr+'" id="startDate" class="project_inline_field" onclick="getStartDatePickerById('+opt.projectSequeneNumber+',\'startDate\');"></div></td>';
+							result = result + '<td>'+opt.startDateStr+'</td>';
 							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate" class="project_inline_field" onclick="getEndDatePickerById('+opt.projectSequeneNumber+',\'endDate\');"></div></td>';
 							result = result + ' <td><div><select id="projectManager" onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectManager\');">';
 									for (var j = 0; j < opt.projectManagerName.length; j++) {
