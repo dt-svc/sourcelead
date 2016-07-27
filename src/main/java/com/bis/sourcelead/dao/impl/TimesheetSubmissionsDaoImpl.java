@@ -102,6 +102,10 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	}
 	
 	
+	/**
+	 * This method gives startDate of coming week from the existing submission records if exists
+	 *
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
