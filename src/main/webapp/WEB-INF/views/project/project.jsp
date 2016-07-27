@@ -776,9 +776,9 @@
 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
+			$("#save_project").addClass('button').val('Processing..');
 
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/saveProject?${_csrf.parameterName}=${_csrf.token}&json="
@@ -902,7 +902,7 @@
 								output = output + "<tr>";
 								output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
 								output = output + "<td>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</td>";
-								output = output + "<td>" + opt.user.email+ "</td>";
+								output = output + "<td><span class='tbldata-dotdot' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
 								output = output + "<td>" + role + "</td>";
 								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
