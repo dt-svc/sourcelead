@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -115,6 +117,11 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 EmailScenarioService emailScenarioService;
+	 
+	 @Autowired
+	 TimesheetSubmissionsService timesheetSubmissionsService;
+	 
+	 
 	
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
@@ -343,7 +350,15 @@ public class ProjectsDashboardController {
         	 if(pm.getProjectEndDate()!=null){
         		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
         	 }
-	        	
+        	 if(pm.getEmployee()!=null){
+        		 
+        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+        	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
+        	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
+        	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
+        	 pm.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
+        	 
+        	 }	
 			 projectMembersArrList.add(pm);
 		 }
 		 ObjectMapper mapper = new ObjectMapper();

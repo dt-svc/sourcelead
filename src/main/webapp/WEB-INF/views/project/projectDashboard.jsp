@@ -418,10 +418,10 @@ function projectEmployee(projectId){
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
 	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
