@@ -316,19 +316,19 @@ public class UserController {
 						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
 								.format(projectMembers.getProjects().getEndDate()));
 					}
-					Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
 					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
-					Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
 					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
 
-					Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 
-					Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
+					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
 					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 				}
