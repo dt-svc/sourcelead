@@ -183,7 +183,7 @@
 																			<span class="input-group-addon"><i
 																				class="fa fa-calendar"></i></span> <input type="text"
 																				class="form-control" value="" id="projectStartDate"
-																				name="StartDate" field-name="Start Date"
+																				name="StartDate" field-name="Start Date" readonly="readonly"
 																				onclick="selectStartDate();">
 																		</div>
 																	</div>
@@ -192,7 +192,7 @@
 																			<span class="input-group-addon"><i
 																				class="fa fa-calendar"></i></span> <input type="text"
 																				class="form-control" value="" id="projectEndDate"
-																				name="EndDate" onclick="selectStartDate();">
+																				name="EndDate"  readonly="readonly" onclick="selectStartDate();">
 																		</div>
 																	</div>
 																</div>
