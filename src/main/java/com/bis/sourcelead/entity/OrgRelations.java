@@ -30,11 +30,11 @@ public class OrgRelations {
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
     private OrgLocations clientLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     
