@@ -34,15 +34,12 @@ window.onload = function () {
                <select id="userState" onchange="getUsersList();">
 				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
-				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
 				<option value="INACTIVE" >In Active</option>
-				</c:if>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
           
-          </li>&nbsp;|
+          </li>&nbsp;&nbsp;|&nbsp;
           
-		  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
 		   <li><i class="fa fa-filter"></i>&nbsp;
 				<select id="userRole" onchange="getUsersList();">
 				<option value="">--Select Role--</option>
@@ -52,7 +49,6 @@ window.onload = function () {
                 </c:forEach>
 				</select>
 		   </li>
-		   </c:if>
 		   
 		 <li>
 			  <a href="javascript:void(0)">
