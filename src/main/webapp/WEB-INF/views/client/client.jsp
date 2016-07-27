@@ -178,22 +178,22 @@
 															<label class="col-md-3">Date</label>
 															<div class="col-md-9">
 																<div class="row">
-																	<div class="col-lg-6">
-																		<div class="input-group">
-																			<span class="input-group-addon"><i
-																				class="fa fa-calendar"></i></span> <input type="text"
+																	<div class="col-lg-6 positionRelative">
+																		
+																			<input type="text"
 																				class="form-control" value="" id="projectStartDate"
 																				name="StartDate" field-name="Start Date" readonly="readonly"
 																				onclick="selectStartDate();">
-																		</div>
+																		<span class="input-group-addon input-groupAddon"><i
+																				class="fa fa-calendar"></i></span> 
 																	</div>
-																	<div class="col-lg-6">
-																		<div class="input-group">
-																			<span class="input-group-addon"><i
-																				class="fa fa-calendar"></i></span> <input type="text"
+																	<div class="col-lg-6 positionRelative">
+																		
+																			<input type="text"
 																				class="form-control" value="" id="projectEndDate"
 																				name="EndDate"  readonly="readonly" onclick="selectStartDate();">
-																		</div>
+																		<span class="input-group-addon input-groupAddon"><i
+																				class="fa fa-calendar"></i></span> 
 																	</div>
 																</div>
 															</div>
