@@ -1217,6 +1217,16 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setReason("Required field is  mandatory");
 				return false;
 			}
+			
+			if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
+				isValidated = isDayHourValid(record.get(Constants.DAY_HOURS));
+				if(isValidated){
+					
+				}else{
+					userImport.setReason("Invalid Date");
+					return isValidated;
+				}
+			}
 		return true;
 	}
 /**
