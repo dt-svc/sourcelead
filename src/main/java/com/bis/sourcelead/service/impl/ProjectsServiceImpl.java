@@ -152,4 +152,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectList;
 		
 	}
+
+	@Override
+	public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId) {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
+	}
 }

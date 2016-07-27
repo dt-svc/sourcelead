@@ -341,5 +341,13 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				return userCollection;
 
 		}
-
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long orgLocationsId, Long userId) {
+			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Projects pj where pj.orgLocationsId = :orgLocationsId and pj.id NOT IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ) ";
+			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+			return projectsList;
+		}
 }

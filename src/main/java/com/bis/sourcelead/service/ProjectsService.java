@@ -44,4 +44,6 @@ public interface ProjectsService {
 	
 	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
 
+	public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
+
 }

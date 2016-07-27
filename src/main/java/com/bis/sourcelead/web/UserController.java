@@ -103,15 +103,13 @@ public class UserController {
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
-		request.setAttribute("userId", userId);
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		// this method is also using /userCreation 
-		Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-		model.addObject("org_projectsList", projectsList);
-		model.setViewName("users/userSummary");
-		model.addObject("sourceleadUrl", sourceleadUrl);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					// to get a project list by userId
+						Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
+						model.addObject("org_projectsList", projectsList);
+						request.setAttribute("userId", userId);
+						model.setViewName("users/userSummary");
+						model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}
