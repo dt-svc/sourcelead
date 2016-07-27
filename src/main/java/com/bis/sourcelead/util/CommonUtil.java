@@ -20,6 +20,11 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 
+/**
+ * This is the commonutil for the certain common methods used throughout the application
+ * @author: Naresh Bolisetty
+ * 
+ */
 @Component
 public class CommonUtil {
 	
@@ -32,6 +37,11 @@ public class CommonUtil {
 	@Autowired
 	private ProjectTasksService projectTasksService;
 	
+	/**
+	 * This method is used to store pre-defined sourcelead tasks for the particular project
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
 		if(tasksList != null && !tasksList.isEmpty()){
@@ -45,49 +55,100 @@ public class CommonUtil {
 		}
 		projectTasksService.saveAll(tasksList);
 	}
+	
+	/**
+	 * This method is used to storeTimesheetSubmissionRecords based on projectMemberAssignDate and projectMemberEndDate(optional)
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
 	public void storeTimesheetSubmissionRecords(User user){
 		try {
+			
+			/**
+			 * Getting List Of all Projectmembers based on login user who is approver/employee to that particular project
+			 *  who did have 4 weeks prior/post submission records in DB
+			 * 
+			 */
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
 			
 			if(projectMembers != null && !projectMembers.isEmpty()){
 				ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 				for(ProjectMembers projectMember :projectMembers){
+					
+					/**
+					 * Getting startDate of coming week from the existing submission records
+					 *
+					 */
 					Date nextMonday = timesheetSubmissionsService.getNextMondayByProjectMemberId(projectMember.getId());
 					
-					Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					currentCal.setLenient(false);
-					currentCal.setTime(new Date());
-					Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
-					
+					/**
+					 * Calculating startDate for the submission records of this particular projectmember
+					*/
 					Date startMondayDate = null;
 					if(nextMonday != null){
 						startMondayDate =  nextMonday;
 					}
 					else{
+						
+						/**
+						 * If he didn't have submission records previous for this project,then ProjectAssignedDate is taken as startDate
+						*/
 						startMondayDate = projectMember.getProjectAssignedDate();
 						
+						/**
+						 * Calculating last 4th week monday date 
+						*/
+						Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+						currentCal.setLenient(false);
+						currentCal.setTime(new Date());
+						Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
 						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-28);
 						Date previousMondayDate = previousMonday.getTime();
+						/**
+						 * Checking whether projectAssignDate lesserthan last 4th week Monday date,
+						 * then last 4th week Monday date is taken as startdate
+						*/
 				        if(startMondayDate.before(previousMondayDate)){
-				    	   startMondayDate = previousMonday.getTime();
+				    	   startMondayDate = previousMondayDate;
 				        }
-						
-						
 					}
+								
 					Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					startCal.setLenient(false);
 					startCal.setTime(startMondayDate);
 					Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 					
-					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(startCal,35);
+					
+					
+					/**
+					 * Calculating endDate for the submission records of this particular projectmember
+					*/
+					Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					startCal.setLenient(false);
+					startCal.setTime(new Date());
+					
+					/**
+					 * Calculating next 4th week mondayDate from the current week monday
+					*/
+					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(endCal,35);
+					
+
+					/**
+					 * checking whether projectMemberEnddate is lesserthan next 4th week monday date then 
+					 * projectMemberEnddate is taken as enddate for the submission records
+					*/
 					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
-						Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					    endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						startCal.setLenient(false);
 						startCal.setTime(projectMember.getProjectEndDate());
 					    endMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
 					}
 					
 					int totalWeeks = 0; 
+					/**
+					 * Calculating totalweeks b/w startdate and enddate
+					 * 
+					*/
 					totalWeeks = (int)((endMonday.getTimeInMillis()-startMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
 					long startMondayInMilliSeconds = startMonday.getTimeInMillis();
 					for (int week = 0; week < totalWeeks; week++) {
@@ -100,7 +161,6 @@ public class CommonUtil {
 						timesheetSubmissions.setProjectMembers(projectMember);
 						timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
 						timesheetSubmissions.setEndDate(new Date());
-						
 						
 						Calendar currentWeekEndDate = Calendar.getInstance();
 						currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
@@ -115,6 +175,10 @@ public class CommonUtil {
 						timesheetSubmissionsList.add(timesheetSubmissions);
 					}
 				}
+			
+				/**
+				 * Storing all submissions b/w startdate and enddate
+				*/
 				timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 			}
 		} catch (Exception e) {

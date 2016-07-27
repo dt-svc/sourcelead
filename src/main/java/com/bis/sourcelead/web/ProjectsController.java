@@ -465,6 +465,7 @@ public class ProjectsController {
 			}else{
 				user.setIsMailSent(Status.N);
 			}
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			User  usr=	userService.addUser(user);
 			
 			//Employee Saving
