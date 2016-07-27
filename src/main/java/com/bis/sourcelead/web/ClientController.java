@@ -92,6 +92,14 @@ public class ClientController {
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Clients);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 				model.addObject("user_List", userList);
