@@ -109,7 +109,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id");
-		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).setCacheable(true).list();
 		return projectsMembersList;
         
 	}
@@ -127,6 +127,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         
 	}
 	
+	/**
+	 * This Method gives List Of all Projectmembers based on login user who is approver/employee to that particular project
+	 *  who did have 4 weeks prior/post submission records in DB
+	 * 
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
@@ -170,7 +175,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		    Session session = this.sessionFactory.getCurrentSession();
 		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id";
-		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query.toString()).setLong("id", id).list();
+		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
 		    
 		    Integer count = null;
 			if(ProjectMembersCount != null && !ProjectMembersCount.isEmpty()){

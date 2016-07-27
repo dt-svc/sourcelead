@@ -83,7 +83,8 @@ public class OrgRelations {
 	@Transient
 	private Long projectsCont;
 	
-	
+	@Transient
+	private String clientName;
 
 	public Long getProjectsCont() {
 		return projectsCont;
@@ -228,5 +229,13 @@ public class OrgRelations {
 
 	public void setOrgid(Long orgid) {
 		this.orgid = orgid;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 }

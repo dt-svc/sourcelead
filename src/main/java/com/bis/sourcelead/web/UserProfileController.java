@@ -115,6 +115,22 @@ public class UserProfileController {
 	   
 	   
 	   
+	   
+	   @RequestMapping(value = "/deleteProfileImage" , method = RequestMethod.GET)
+	   public String deleteProfileImage(HttpServletRequest request) throws Exception {
+		   
+		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   user.setDocFile(null);
+		   user.setFileContentType(null);
+		   userService.addUser(user);
+		   SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+		   
+		   return "success";
+		   
+	   }
+	   
+	   
+	   
      @RequestMapping(value = "/displayUserImage/{userId}" , method = RequestMethod.GET)
      public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
     	 

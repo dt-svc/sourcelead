@@ -12,7 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectsService;
 
@@ -23,6 +26,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 	@Autowired
 	private ProjectsDao projectsDao;
+	
+	@Autowired
+	private ProjectApproverHierarchyDao 	projectApproverHierarchyDao;
+;
+	
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -119,4 +127,35 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	
+	@Override
+	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+			String status) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
+		Collection<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status);
+		 for (Projects projects :projectList ){
+	    	 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+			    if(projects.getEndDate() != null){
+			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    }
+			    if(projects.getOrgRelationId()!=null) {
+	                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+	            }
+			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
+			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+			    	if(approverHierarchy.getLevel()==1){
+			    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    	}else if(approverHierarchy.getLevel()==2){
+			    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    	}
+			    }
+	    }
+		return projectList;
+		
+	}
+
+	@Override
+	public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId) {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
+	}
 }
