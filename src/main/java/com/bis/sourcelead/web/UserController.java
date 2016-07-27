@@ -93,9 +93,6 @@ public class UserController {
 	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-		model.addObject("user_List", userList);
-	    
 		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -103,9 +100,16 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/userSummaryDetails")
-	public ModelAndView userSummaryDetails(HttpServletRequest request,@RequestParam(value="userId", required=false) Long userId) throws Exception {
+	public ModelAndView userSummaryDetails(HttpServletRequest request,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		request.setAttribute("userId", userId);
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		// this method is also using /userCreation 
+		Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		model.addObject("org_projectsList", projectsList);
 		model.setViewName("users/userSummary");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -241,7 +245,6 @@ public class UserController {
 		 public @ResponseBody  Boolean validateExistingEmployeeId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			   Employees employees = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(EmployeeId, userId, orgLocations.getId());
-			    System.out.println(employees);
 			    Boolean flag = false;
 			    if(employees == null){
 			    	flag = employeesService.validateEmployeeId(EmployeeId,orgLocations.getId());
@@ -250,6 +253,30 @@ public class UserController {
 				return flag;
 		   }
 	 
+	// to get the Project Manager Name by using projectId
+		@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
+		public @ResponseBody String getApproversByUserId(
+				@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
+				HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
+					orgLocations.getId());
+			resultJson = toJSON(userList);
+			return resultJson;
+		}
+
+		@RequestMapping(value = "/getAllApprovers")
+		public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			String resultJson = null;
+			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+			resultJson = toJSON(userList);
+			return resultJson;
+
+		}	 
 	 
 	//to validate Project SequeneNumber
 	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)
@@ -335,6 +362,87 @@ public class UserController {
 
 				resultJson = toJSON(allProjectsList);
 				return resultJson;
+			}
+		 
+		 /**
+			 * to assign the project to the particular user
+			 * @param json
+			 * @param userId
+			 * @param request
+			 * @return
+			 * @throws Exception
+			 */
+			@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
+			public @ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
+					@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
+							throws Exception {
+				json = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json);
+				Employees employee = employeesService.getEmployeeByUserId(userId);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Projects projects = projectsService.getProjectById(jsonObj.getLong("projectId"));
+				Date projectStartdate = projects.getStartDate();
+				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
+					if (projectStartdate.compareTo(sdf.parse(jsonObj.getString("StartDate"))) != 0) {
+						projectsService.updateStartDateOfProjectId(sdf.parse(jsonObj.getString("StartDate")),
+								jsonObj.getLong("projectId"));
+					}
+				}
+				if (projects.getEndDate() != null) {
+					Date projectEndDate = projects.getEndDate();
+					if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
+						if (projectEndDate.compareTo(sdf.parse(jsonObj.getString("EndDate"))) != 0) {
+							projectsService.updateEndDateOfProjectId(sdf.parse(jsonObj.getString("EndDate")),
+									jsonObj.getLong("projectId"));
+						}
+					}
+				}
+				ProjectMembers projectMembers = new ProjectMembers();
+				projectMembers.setEmployee(employee);
+				projectMembers.setProjects(projects);
+				projectMembers.setTimesheetFrequency("weekly");
+				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
+					try {
+						projectMembers.setProjectAssignedDate(sdf.parse(jsonObj.getString("StartDate")));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+				if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
+					try {
+						projectMembers.setProjectEndDate(sdf.parse(jsonObj.getString("EndDate")));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				User user = userService.getUserById(userId);
+				if (employee.getRate() != null && employee.getRate()!="") {
+					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
+				}
+				// need change role
+				projectMembers.setRole(user.getUserType());
+				if (employee.getRatePer() != null) {
+					projectMembers.setRateType(employee.getRatePer());
+				}
+				projectMembers.setStatus(Constants.MEMBER_ACTIVE);
+				projectMembersService.saveProjectMember(projectMembers);
+				commonUtil.storeTimesheetSubmissionRecords(user);
+				return "success";
+			}
+			/**
+			 * to save the reason when we terminate the user from project 
+			 * @param projectMemberId
+			 * @param reason
+			 * @return
+			 */
+			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
+			public @ResponseBody String saveReason(
+					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
+					@RequestParam(value = "reason", required = false) String reason) {
+				Integer updatedCount = projectMembersService.updateProjectMemberDeletedReason(projectMemberId, reason);
+				logger.info("updated records" + updatedCount);
+				return "success";
 			}
 		 
 		 /**
