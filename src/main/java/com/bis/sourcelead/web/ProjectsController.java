@@ -67,7 +67,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class ProjectsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
@@ -197,6 +197,18 @@ public class ProjectsController {
 		    	  }
 		    	  
 		    }
+		    
+		    if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+				projects.setIsMailToTeamMembers(Status.Y);
+			}else{
+				projects.setIsMailToTeamMembers(Status.N);
+			}
+		    
+		  if((jsonObj.has("isMailToProjectManager") && !isNullOrEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+			  projects.setIsMailToProjectManager(Status.Y);
+			}else{
+				projects.setIsMailToProjectManager(Status.N);
+			}
 	    	
 	    	Projects updatedProjects = projectsService.saveProject(projects);
 	    	
@@ -208,10 +220,13 @@ public class ProjectsController {
 	    	pah1.setLevel(1);
 	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 	    	
+	    	//send mail to assigned Project Manager
+	    	String teamMembersList = "";
+			
+	    	User approverUserId2 = new User();
 		if(!jsonObj.getString("level2Manager").isEmpty()){
 			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
 			pah2.setProjectId(updatedProjects);
-			User approverUserId2 = new User();
 			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 			pah2.setApproverUserId(approverUserId2);
 			pah2.setLevel(2);
@@ -262,22 +277,41 @@ public class ProjectsController {
 									pm.setUpdatedDate(new Date());
 									projectMembersService.saveProjectMember(pm);
 									
+									//send mail to assigned team members
+									if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+										sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation);
+										
+									}
+									
 									commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+									
+									/**
+								    * This teamMembersList string to store all team members for mail to project manager.
+								    */
+									String teamMember = "";
+									teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
+									teamMembersList = teamMembersList+teamMember+"<br/>";
 							    }
 							}
 					    }
 				 }
 		    }
 			
-			
+			//send mail to assigned Project Manager
+			if((jsonObj.has("isMailToProjectManager") && !isNullOrEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+				if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
+					sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList);
+				}
+				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
+					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, teamMembersList);
+				}
+			}
 			
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
 			 resultJson = toJSON(tasksList);
 			 
-			 
 			 return "projectDashboard";
-			 
 			 
 	   }
 	 
@@ -421,11 +455,17 @@ public class ProjectsController {
 			user.setUserType("Employee");
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(users.getUserCode());
+			user.setUserState(Status.NOT_LOGGEDIN);
+			user.setUserName(jsonObj.getString("EmailId"));
+			String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 				user.setIsMailSent(Status.Y);
 			}else{
 				user.setIsMailSent(Status.N);
 			}
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			User  usr=	userService.addUser(user);
 			
 			//Employee Saving
@@ -451,9 +491,6 @@ public class ProjectsController {
 			userRole.setCreatedDate(new Date());
 			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
 			
-			
-			String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			
 			//send mail to user
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
@@ -578,6 +615,117 @@ public class ProjectsController {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 			 
+		}
+	  
+	  /**
+	  * This method for send Email to team member
+	  * @return
+	  * @throws Exception
+	  * @author  venkatKesav
+	  * @since   2016-07-22
+	  */
+	  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation) throws Exception {
+		  	 User projectManager = userService.getUserById(approverUserId1.getId());
+		  	
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(emp.getUser().getFirstName());
+			 emailMessage.setLastName(emp.getUser().getLastName());
+			 emailMessage.setToEmail(emp.getUser().getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
+			 globalVarsMap.put("managerLastName",projectManager.getLastName());
+			 globalVarsMap.put("employeeFirstName",emailMessage.getFirstName());
+			 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 //setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 emailRecipientList.add(emailRecipient);
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		}
+	  
+	  /**
+	  * This method for send Email to project manager
+	  * @return
+	  * @throws Exception
+	  * @author  venkatKesav
+	  * @since   2016-07-25
+	  */
+	  private void sendEmailToProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList) throws Exception {
+		  	 User projectManager = userService.getUserById(approverUserId1.getId());
+		  	 
+		  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
+		  		teamMembersList = "-";
+		  	 }
+		  	
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(projectManager.getFirstName());
+			 emailMessage.setLastName(projectManager.getLastName());
+			 emailMessage.setToEmail(projectManager.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
+			 globalVarsMap.put("managerLastName",projectManager.getLastName());
+			 globalVarsMap.put("teamMembers",teamMembersList);
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 //setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 emailRecipientList.add(emailRecipient);
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 		}
 		 
 	 private String toJSON(Object obj){

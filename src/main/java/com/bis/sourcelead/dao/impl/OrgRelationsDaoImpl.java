@@ -73,7 +73,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
         Session session = this.sessionFactory.getCurrentSession();
         List<OrgRelations> clientsList = null;
 		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
-		clientsList=clientsListQuery.setLong("orgLocationId", orgLocationId).list();
+		clientsList=clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return clientsList;
 	}
 

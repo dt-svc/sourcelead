@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ import com.google.gson.GsonBuilder;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class OrgSettingsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsController.class);
@@ -97,6 +98,18 @@ public class OrgSettingsController {
 					ImageIO.write(bi, "jpg", out);
 					out.close();
 					
+				/*   try {
+					    InputStream in = new ByteArrayInputStream(org.getDocFile());
+			            BufferedImage img = colorImage(ImageIO.read(in));
+			            OutputStream out = response.getOutputStream();
+			            ImageIO.write(img, "png", out);
+			        } catch (IOException ex) {
+			            ex.printStackTrace();
+			        }*/
+					
+					
+				    
+					
 				}
 				
 			} catch (IOException e) {
@@ -109,5 +122,24 @@ public class OrgSettingsController {
 			
    }
    
+   
+   private static BufferedImage colorImage(BufferedImage image) {
+       int width = image.getWidth();
+       int height = image.getHeight();
+       WritableRaster raster = image.getRaster();
+
+       for (int xx = 0; xx < width; xx++) {
+           for (int yy = 0; yy < height; yy++) {
+               int[] pixels = raster.getPixel(xx, yy, (int[]) null);
+               pixels[0] = 0;
+               pixels[1] = 0;
+               pixels[2] = 255;
+               raster.setPixel(xx, yy, pixels);
+           }
+       }
+       return image;
+   }
+   
+  
 	   
 }

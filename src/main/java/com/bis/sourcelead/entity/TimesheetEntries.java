@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetEntries")
 public class TimesheetEntries {
 	
 	 

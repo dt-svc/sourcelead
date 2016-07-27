@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL )
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgLocation" )
 public class OrgLocations {
 	
 	@Id
@@ -34,7 +34,7 @@ public class OrgLocations {
     @Column(name = "id", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "ORG_ID", nullable = false)
     private Org org;

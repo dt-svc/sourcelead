@@ -1,8 +1,8 @@
 package com.bis.sourcelead.entity;
 
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissions")
 public class TimesheetSubmissions {
 	
 	 
@@ -136,7 +136,15 @@ public class TimesheetSubmissions {
 	@Transient
 	private String userId;
 	
-
+	@Transient
+	private  HashMap<String,Date> dateList;
+	
+	@Transient
+    private String managerLevel1;
+    
+    @Transient
+    private String managerLevel2;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -362,5 +370,28 @@ public class TimesheetSubmissions {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
+	public HashMap<String, Date> getDateList() {
+		return dateList;
+	}
+
+	public void setDateList(HashMap<String, Date> dateList) {
+		this.dateList = dateList;
+	}
+
+	public String getManagerLevel1() {
+		return managerLevel1;
+	}
+
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
+	}
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
+	}
 }

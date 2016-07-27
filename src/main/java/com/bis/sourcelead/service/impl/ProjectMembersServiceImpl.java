@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -84,11 +85,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsByUserId(userId);
 	}
 
-	@Override
-	public Integer updateProjectMemberStatus(Long projectMemberId) {
-		// TODO Auto-generated method stub
-		return projectMembersDao.updateProjectMemberStatus(projectMemberId);
-	}
 
 	@Override
 	public Integer getAllProjectMembersCountByProjectId(Long id) throws Exception {
@@ -98,19 +94,18 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersCount;
 	}
 	
-	/*@Override
-	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
-		
-		Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
-		return approvalStatusCount;
-	}
-	
-	
-	@Override
-	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
-		logger.debug("In ProjectMembersServiceImpl class getAllProjectMembersByProjectId method...");
-		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectId(id);
-		return projectMembersList;
-	}*/
 
+	@Override
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId ,String reason) {
+		return projectMembersDao.updateProjectMemberDeletedReason(projectMemberId,reason);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+		return projectMembersDao.getAllProjectsByUserIdAndStatus(userId,status);
+	}
+	@Override
+	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
+		return projectMembersDao.updateEndDateOfProjectMemberId(endDate,projectMemberId);
+	}
 }

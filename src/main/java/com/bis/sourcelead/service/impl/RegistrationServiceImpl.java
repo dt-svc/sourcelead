@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -105,6 +107,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private ActionRolesService actionRolesService;
+	
+	
 	@Override
 	public void addRegistration(Registration registration) throws Exception {
 		
@@ -157,6 +164,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		saveProject(registration, orgLocations, user, employee);
+		
+		saveActionRoles(org,orgLocations,user);
 		
 	}
 	
@@ -272,6 +281,28 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
+	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user) throws Exception {
+		 
+		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L);
+		 if(actionRolesList != null){
+			 for(ActionRoles actionRoles : actionRolesList){
+				 ActionRoles userActionroles = new ActionRoles();
+				 userActionroles.setTabActions(actionRoles.getTabActions());
+				 userActionroles.setRoles(actionRoles.getRoles());
+				 userActionroles.setIsNotify(actionRoles.getIsNotify());
+				 userActionroles.setOrg(org);
+				 userActionroles.setOrgLocations(orgLocations);
+				 userActionroles.setCreatedDate(new Date());
+				 userActionroles.setCreatedBy(user.getUserCode());
+				 actionRolesService.addActionRoles(userActionroles);
+			 }
+		 }
+		 
+		 
+		 
+	 }
+	
+	
 	private String convertWebsite(String website){
 		if(!website.startsWith("http") && !website.startsWith("https")){
 			 website = "http://" + website;
@@ -303,7 +334,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"'>Login</a>");
+		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -319,7 +350,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = null;
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -345,7 +376,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
-		 globalVarsMap.put("resetPasswordURL","<a href='"+sourceleadUrl+"/resetPassword"+"'>Reset Password</a>");
+		 globalVarsMap.put("resetPasswordURL","<a href='"+sourceleadUrl+"/resetPassword"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>");
 			
 		//setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -361,7 +392,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = null;
+		 String url = sourceleadUrl;
 		
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -402,7 +433,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = null;
+		 String url = sourceleadUrl;
 		 
 		//construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());

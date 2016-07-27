@@ -92,6 +92,7 @@ public class OrgServiceImpl implements OrgService {
         orgDao.updateOrg(org);
         orgLocationsDao.updateOrgLocations(orgLocations);
         SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+        SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
         
         return org;
 	}

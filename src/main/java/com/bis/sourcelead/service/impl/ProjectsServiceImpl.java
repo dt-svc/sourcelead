@@ -2,12 +2,20 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
 
+import java.util.Date;
+
+import java.util.List;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectsService;
 
@@ -18,6 +26,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 	@Autowired
 	private ProjectsDao projectsDao;
+	
+	@Autowired
+	private ProjectApproverHierarchyDao 	projectApproverHierarchyDao;
+;
+	
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -89,6 +102,54 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<Projects> clientProjectsList = projectsDao.getAllClientProjectsByOrgRelationId(orgRelationId,locationId);
 		return clientProjectsList;
 	}
+
+	@Override
+	public Integer updateStartDateOfProjectId(Date startDate , Long projectId) {
+		return projectsDao.updateStartDateOfProjectId(startDate,projectId);
+	}
+
+	@Override
+	public Integer updateEndDateOfProjectId(Date endDate, Long projectId) {
+		return projectsDao.updateEndDateOfProjectId(endDate,projectId);
+	}
+	
+	@Override
+	public List<Long> getApprovarAssignedProjects(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getApprovarAssignedProjects method...");
+		List<Long> projectIdsList = projectsDao.getApprovarAssignedProjects(userId, orgLocationId);
+		return projectIdsList;
+	}
+
+	@Override
+	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception {
+		
+		return projectsDao.getProjectByProjectSequenceNumber(projectSequeneNumber);
+	}
 	
 	
+	@Override
+	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+			String status) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
+		Collection<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status);
+		 for (Projects projects :projectList ){
+	    	 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+			    if(projects.getEndDate() != null){
+			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    }
+			    if(projects.getOrgRelationId()!=null) {
+	                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+	            }
+			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
+			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+			    	if(approverHierarchy.getLevel()==1){
+			    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    	}else if(approverHierarchy.getLevel()==2){
+			    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    	}
+			    }
+	    }
+		return projectList;
+		
+	}
 }

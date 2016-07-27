@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,13 +26,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
@@ -44,7 +46,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
 public class UsersListController {
 	
 private static final Logger logger = LoggerFactory.getLogger(UsersListController.class);
@@ -64,8 +65,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	UserService userService;
 
-	
-	
+	@Autowired
+	ProjectsService projectsService;
+		
 	
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
@@ -95,24 +97,25 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		return model;
 
 	}
-	
-	
-	
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
 			@RequestParam(value="searchByName", required=false) String searchByName,
-			@RequestParam(value="userState", required=false) String userState) {
+			@RequestParam(value="userState", required=false) String userState,
+			@RequestParam(value="loginUserRole", required=false) String loginUserRole) {
 
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		Collection<UserRole> rolesList = new ArrayList<UserRole>();
+		
+		
+	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){
 		try {
 			
-			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(userRole)){
+			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId());
 			}
 			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
@@ -137,6 +140,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	 }
+	
+	else if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+		List<Long> projectIdsList  = null;
+		try {
+			 projectIdsList = projectsService.getApprovarAssignedProjects(user.getId(), orgLocations.getId());
+			 rolesList = userRoleService.getApproverAssignedUsers(projectIdsList, userState, searchByName);
+			 for(UserRole role : rolesList){
+					role.setUserRoleName(role.getRoles().getDisplayName());
+					userRolesList.add(role);
+				}
+			 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 		 resultJson = toJSON(userRolesList);
 		 return resultJson;
 
@@ -224,7 +244,29 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			    }
 				return "success";
 		}
-	
+	/**
+	 * to get the start date and end date of the particular project by projectId
+	 * @param projectId
+	 * @return
+	 * @throws Exception
+	 */
+		//to get a start date and end date of the project
+	 @RequestMapping(value = "/getStartAndEndOfProject" , method = RequestMethod.POST)
+	 public @ResponseBody String getStartAndEndOfProject(@RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+		 	String resultJson = null;
+		 	
+		 	Projects projects = projectsService.getProjectById(projectId);
+			if(projects.getStartDate()!=null){
+				projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
+			}
+			if(projects.getEndDate()!=null){
+				projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
+			}
+
+			resultJson = toJSON(projects);
+			return resultJson;
+	   }
+	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

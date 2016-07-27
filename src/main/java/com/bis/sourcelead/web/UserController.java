@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
@@ -51,14 +52,13 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
 public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+	 
 	@Autowired
 	UserService userService;
 	
@@ -92,8 +92,8 @@ public class UserController {
 	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	   /* Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-		model.addObject("user_List", userList);*/
+	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+		model.addObject("user_List", userList);
 	    
 		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -248,27 +248,7 @@ public class UserController {
 			 	
 				return flag;
 		   }
-		 
-		 //to get the Project Manager Name by using projectId
-		 @RequestMapping(value = "/getApproversByUserId" , method = RequestMethod.POST)
-		 public @ResponseBody  String getApproversByUserId(@RequestParam(value="currentApproverId", required=false) Long currentApproverId, HttpServletRequest request) throws Exception {
-			 	String resultJson = null;
-			 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 	Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,orgLocations.getId());
-			 	resultJson = toJSON(userList);
-				return resultJson;
-		   }	 
 	 
-		 
-		 @RequestMapping(value = "/getAllApprovers")
-			public @ResponseBody  String  getAllApprovers(HttpServletRequest request) throws Exception {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				String resultJson = null;			    
-			    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-			    resultJson = toJSON(userList);
-				return resultJson;
-
-			}
 	 
 	//to validate Project SequeneNumber
 	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)
@@ -320,35 +300,20 @@ public class UserController {
 				 else if(projectMembers.getProjects().getEndDate() != null){
 					 projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_STD.format(projectMembers.getProjects().getEndDate()));
 				 }
-				 Integer draftTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
 				 
-			   	 projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
-			   	 
-			   	Integer submittedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
 				 
-			   	 projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
-			   	 
-			  	 Integer approvalTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
-			  	 projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-			  	 
-			  	 Integer rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
-			  	 projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+				 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(userId);
+			  	 projectMembers.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
+			     projectMembers.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
+			  	 projectMembers.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
+			  	 projectMembers.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
+			  
 			 }
 			 
 			 
 			 resultJson = toJSON(allProjectsList);
 			 return resultJson;
-		  }
-		 
-		 
-		 @RequestMapping(value = "/deleteProjectMemeber", method = RequestMethod.POST)
-			public @ResponseBody String deleteProjectMemeber(
-					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId){
-					Integer updatedCount = projectMembersService.updateProjectMemberStatus(projectMemberId);
-				return "success";
-			}
-		 
-
+      }
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

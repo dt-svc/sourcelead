@@ -19,7 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="NOTIFICATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="notifications")
 public class Notifications {
 	
 	@Id
@@ -27,15 +27,15 @@ public class Notifications {
 	@Column(name="ID")
 	private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="NOTIFICATION_SCENARIO_ID", nullable=false )	
 	private EmailScenario notificationScenarioId;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="NOTIFICATION_TO", nullable=false )	
 	private User notificationTo;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="NOTIFICATION_FORM", nullable=false )	
 	private User notificationFrom;
 	

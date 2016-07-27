@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -56,7 +57,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
@@ -79,11 +80,13 @@ public class ClientController {
 	@Autowired
 	private UserService userService;
 	
-	
-	
+	/**
+	 * Handles to display client jsp
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/client")
 		public ModelAndView client() throws Exception {
-
 			ModelAndView model = new ModelAndView();
 			 Collection<User> userList = userService.getUsersByUserRoles();
 			 model.addObject("user_List", userList);
@@ -92,7 +95,12 @@ public class ClientController {
 			return model;
 	    }
 	 
-	 
+	 /**
+	  * Handles to display clientdash board
+	  * @param request
+	  * @return ModelAndView
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -123,7 +131,13 @@ public class ClientController {
 	 
 	 
 	 
-	 
+	 /**
+	  * Handles client as well as project save
+	  * @param json
+	  * @param request
+	  * @return ResponseBody
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/saveClient" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveClient(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		 	
@@ -157,21 +171,16 @@ public class ClientController {
 			orgLocations.setLocationCode(org.getOrgCode()+clientCountry);
 			orgLocations.setCreatedDate(new Date());
 			orgLocations.setCreatedBy(loginUserCode);
-			OrgLocations addOrgLocations=orgLocationService.addOrgLocations(orgLocations);
-			
+			orgLocationService.addOrgLocations(orgLocations);
 			/*Saving for OrgRelations*/
-			
 			OrgRelations orgRelations = new OrgRelations();
-	//		orgRelations.setRelationType("Customer");
 			orgRelations.setClientLocationId(orgLocations);
 			orgRelations.setLocationId(loginOrgLocations);
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(loginUserCode);
 			orgRelations.setCreatedDate(new Date());
-			OrgRelations addRelations = orgRelationsService.addOrgRelations(orgRelations);
-			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Collection<Org> orgsList = orgService.getOrgs();
-			
+		   orgRelationsService.addOrgRelations(orgRelations);
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 			logger.info("The projects added by the admin are :"+maxCount);
@@ -187,19 +196,14 @@ public class ClientController {
 				project.setOrgLocationsId(orgLocationsID);
 				project.setOrgRelationId(orgRelations); // newly Added
 				
-//				OrgRelations orgRelations = new OrgRelations();
-//				orgRelations.setId(id);
-				
 				String startDateString = jsonObj.getString(c+"projectStartDate");
-				DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
-			    Date startDate = null;
-			    try {
-			        startDate = df.parse(startDateString);
-			        String newDateString = df.format(startDate);
-			    } catch (ParseException e) {
-			        e.printStackTrace();
-			    }
+				String endDateString = jsonObj.getString(c+"projectEndDate");//projectEndDate
+			    Date startDate = getDateFormat(startDateString); 
+			    Date endDate = getDateFormat(endDateString);
 				project.setStartDate(startDate);
+				project.setEndDate(endDate);
+				project.setProjectStatus(Project_Status.STARTED);
+				project.setCreatedDate(new Date());
 				projectApproverHierarchy.setProjectId(project);
 				User approverUserId1 = new User();
 		    	approverUserId1.setId(Long.parseLong(jsonObj.getString(c+"projectManager")));
@@ -213,22 +217,37 @@ public class ClientController {
 					projectApproverHierarchy1.setApproverUserId(approverUserId2);
 					projectApproverHierarchy1.setLevel(2);
 					projectApproverSet.add(projectApproverHierarchy1);
-//					ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 				}
 				projectApproverSet.add(projectApproverHierarchy);
 				
 				project.setProjectApprovers(projectApproverSet);
-				
+				/*Saving for Projects*/
 				projectsService.saveProject(project);
-				
 			}
-
-			
 			 return "clientDashboard";
 	   }
 	
 
-	//to validate Project SequeneNumber
+	private Date getDateFormat(String startDateString) {
+		
+		Date formatedDate = null;
+	    try {
+	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	formatedDate = df.parse(startDateString);
+	    } catch (ParseException e) {
+	        e.printStackTrace();
+	    }
+		return formatedDate;
+	}
+
+
+		/**
+		 * validate duplicate projects by project sequence number
+		 * @param ProjectSequeneNumber
+		 * @param request
+		 * @return boolean
+		 * @throws Exception
+		 */
 		 @RequestMapping(value = "/validateProjectSequeneNumberId" , method = RequestMethod.POST)
 		 public @ResponseBody  Boolean validateProjectSequeneNumberById(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -267,20 +286,52 @@ public class ClientController {
 		return resultJson;
 		  }
 		 
-		 
+		 /**
+		  * Read total number of projects 
+		  * @param orgRelationId
+		  * @param locationId
+		  * @param request
+		  * @return json
+		  * @throws Exception
+		  */
 		 @RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
 		 public @ResponseBody String getAllClientProjectsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception{ 
 			 
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 Collection<Projects> clientProjectsList = projectsService.getAllClientProjectsByOrgRelationId(orgRelationId,orgLocations.getId());
 			 ArrayList<Projects> clientProjectsArrList = new ArrayList<Projects>();
-			 for(Projects p : clientProjectsList){
-				 p.setProjectName(p.getProjectName());
-				 p.setStartDateStr(p.getStartDateStr());
-				 clientProjectsArrList.add(p);
+			 
+			 for(Projects project : clientProjectsList){
+				 project.setProjectName(project.getProjectName());
+				 
+				 if(project.getStartDate() !=null && !isNullOrEmpty(project.getStartDate().toString())){
+					 project.setStartDateStr(Constants.DF.format(project.getStartDate()));
+				 }
+				 if(project.getEndDate() !=null && !isNullOrEmpty(project.getEndDate().toString())){
+					 project.setEndDateStr(Constants.DF.format(project.getEndDate()));
+				 }
+				 
+				 if(project.getProjectStatus() !=null){
+					 project.setProjectStatus(project.getProjectStatus());
+				 }
+				 /*
+				  * Add managers to project list(shows in select box) in client tab
+				  */
+				 
+				 Collection<User> userList = userService.getUsersByUserRoles();
+				  String[] mngrs = new String[userList.size()];
+				    int i = 0;
+				    for(User user : userList){
+				    	mngrs[i] = user.getFirstName()+"&"+user.getId();
+				    	i++;
+				    }
+				    if(mngrs != null){
+				    	project.setProjectManagerName(mngrs);
+				    }
+				    project.setRelationId(project.getOrgRelationId().getId());
 			 }
 			 ObjectMapper mapper = new ObjectMapper();
-			 String jsonInString = mapper.writeValueAsString(clientProjectsArrList);
+			 String jsonInString = mapper.writeValueAsString(clientProjectsList);
 			 
 			 return jsonInString;
 		    }
@@ -298,5 +349,91 @@ public class ClientController {
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
-	
+		
+		
+		/**
+		 * Handles project inline editing
+		 * @param orgRelationId
+		 * @param fieldName
+		 * @param fieldValue
+		 * @param request
+		 * @return json
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
+		 public String updateClientProjectById(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
+		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+		Org org = orgRelation.getClientLocationId().getOrg();
+		if ("clientName".equalsIgnoreCase(fieldName)) {
+			logger.info("Client name before update is :" + orgRelation.getClientLocationId().getOrg().getOrgName());
+			org.setOrgName(fieldValue);
+			Org updatedOrg = orgService.updateOrg(org);
+			logger.info("Client name After update is :" + updatedOrg.getOrgName());
+		} else if ("clientWebsite".equalsIgnoreCase(fieldName)) {
+			logger.info("Client website before update is :" + orgRelation.getClientLocationId().getOrg().getWebSite());
+			org.setWebSite(fieldValue);
+			Org updatedWebsite = orgService.updateOrg(org);
+			logger.info("Client name After update is :" + updatedWebsite.getWebSite());
+		}else if("clientCity".equalsIgnoreCase(fieldName)){
+			logger.info("Client city before update is :" +orgRelation.getClientLocationId().getCity());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setCity(fieldValue);
+		     OrgLocations updatedCity =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client city After update is :" +updatedCity.getCity());
+		}else if("clientSate".equalsIgnoreCase(fieldName)){
+			logger.info("Client Stae before update is :" +orgRelation.getClientLocationId().getState());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setState(fieldValue);
+		     OrgLocations updatedState=  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client location After update is :" +updatedState.getState());
+		}else if("clientCountry".equalsIgnoreCase(fieldName)){
+			 logger.info("Client country before update is :" +orgRelation.getClientLocationId().getCountry());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setCountry(fieldValue);
+		     OrgLocations updatedCity =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client country After update is :" +updatedCity.getCountry());
+		}else if("clientEmail".equalsIgnoreCase(fieldName)){ 
+			 logger.info("Client Email before update is :" +orgRelation.getClientLocationId().getEmail());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setEmail(fieldValue);
+		     OrgLocations updatedEmail =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client Email After update is :" +updatedEmail.getEmail());
+		}else{
+			 logger.info("Client Ponenumber before update is :" +orgRelation.getClientLocationId().getPhone());
+		     OrgLocations orgLocations = orgRelation.getClientLocationId();
+		     orgLocations.setPhone(fieldValue);
+		     OrgLocations updatedPhone =  orgLocationService.updateOrgLocations(orgLocations);
+		     logger.info("Client Ponenumber After update is :" +updatedPhone.getEmail());
+		}
+
+		return "success";
+		  }
+		 
+//		inlineEditClientProjects
+		@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
+		 public String inlineEditClientProjects(@RequestParam(value="projectSequenceNumber", required=false) String projectSequenceNumber,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{
+			
+			
+			Projects projects = projectsService.getProjectByProjectSequenceNumber(projectSequenceNumber);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			logger.info("Project name before Edit "+projects.getProjectName());
+			if("projectName".equalsIgnoreCase(fieldName)){
+				projects.setProjectName(fieldValue);
+			}else if("startDate".equalsIgnoreCase(fieldName)){
+				Date startDate = getDateFormat(fieldValue);
+				projects.setStartDate(startDate);
+			}else if("endDate".equalsIgnoreCase(fieldName)){
+				Date endDate = getDateFormat(fieldValue);
+				projects.setEndDate(endDate);
+			}else if("projectManager".equalsIgnoreCase(fieldName)){
+//				user.setId(Long.parseLong(fieldValue));
+//				userService.up
+			}else{
+				projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
+			}
+			projectsService.updateProject(projects);
+			return fieldValue; 
+		
+		}
+		
 }
