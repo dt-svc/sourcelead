@@ -241,14 +241,14 @@
 								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
-									<select class="form-control select-bg" name="level1Manager"
-										field-name="Select Manager" data-validation="required">
+									<select class="form-control select-bg" name="level1Manager" id="level1Manager"
+										field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id}">${option.firstName}
 												${option.lastName}</option>
 										</c:forEach>
-									</select> <span class="btn btn-default formic1 addLevel">Add
+									</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add
 										Level-II</span>
 								</div>
 								<span class="hidden">Select Project Manager</span>
@@ -257,7 +257,7 @@
 						<div class="form-group level-second">
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg" name="level2Manager">
+								<select class="form-control select-bg" name="level2Manager" id="level2Manager">
 									<option value=''>-- Select Manager --</option>
 									<c:forEach var="option" items="${user_List}">
 										<option value="${option.id}">${option.firstName}
@@ -306,7 +306,7 @@
 									<div class="modal-dialog modal-lg">
 										<div class="modal-content">
 											<div class="modal-header">
-												<button data-dismiss="modal" class="close" type="button">×</button>
+												<button data-dismiss="modal" class="close" type="button">x</button>
 												<h4 class="modal-title">Assign Employees</h4>
 											</div>
 											<div class="modal-body clearfix">
@@ -386,7 +386,7 @@
 		<form:form id="addEmployee_form" name="addEmployee_form" method="post">
 			<div class="modal-content" id="newEmployee">
 				<div class="modal-header">
-					<button data-dismiss="modal" class="close" type="button">×</button>
+					<button data-dismiss="modal" class="close" type="button">x</button>
 					<h4 class="modal-title">Add Employees</h4>
 				</div>
 				<div class="modal-body clearfix">
@@ -459,7 +459,7 @@
 		<form:form id="addClient_form" name="addClient_form" method="post">
 			<div class="modal-content" id="newClient">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">×</button>
+					<button type="button" class="close" data-dismiss="modal">x</button>
 					<h4 class="modal-title">Add Client</h4>
 				</div>
 				<div class="modal-body clearfix">
@@ -1170,6 +1170,38 @@
 		});
 	}
 </script>
-
-
+<script type="text/javascript">
+function getLevel2Approvers(){
+	var currentApproverId = document.getElementById("level1Manager").value;
+	getChildLevel1Approvers(currentApproverId);
+} 
+</script>
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+	 }
+} 
+</script>
 
