@@ -26,36 +26,21 @@
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document
-				.getElementById("ProjectSequeneNumber").value;
+		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="
-								+ ProjectSequeneNumber,
+						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
 						success : function(data) {
 							if (data == true) {
-								$("input#ProjectSequeneNumber").after(
-										"<p class='jquery_form_error_message'>"
-												+ ProjectSequeneNumber
-												+ " is Already Existed</span>");
-								document.getElementById("ProjectSequeneNumber")
-										.setAttribute('record-exist', 'yes');
-								document
-										.getElementById("ProjectSequeneNumber")
-										.setAttribute(
-												'record-exist-errorMsg',
-												ProjectSequeneNumber
-														+ ' is Already Existed');
+								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
+								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist', 'yes');
+								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
 							} else {
-								$('input#ProjectSequeneNumber').removeAttr(
-										"record-exist record-exist-errormsg");
-								$('#ProjectIdDiv').find(
-										'p.jquery_form_error_message').remove();
+								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 							}
 						},
 					});
@@ -70,8 +55,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; General Form
-			&raquo; Form</div>
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -900,25 +884,15 @@
 							}
 
 							var count = 1;
-							$(".myCheckbox")
-									.each(
+							$(".myCheckbox").each(
 											function() {
 												var localId = this.id;
 												if ($(this).is(':checked')) {
-													var startDate = $(
-															"#startDate"
-																	+ localId)
-															.val();
-													var endDate = $(
-															"#endDate"
-																	+ localId)
-															.val();
-													result = result
-															+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
-													result = result
-															+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
-													result = result
-															+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+													var startDate = $("#startDate"+ localId).val();
+													var endDate = $("#endDate"+ localId).val();
+													result = result+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+													result = result+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+													result = result+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
 													count++;
 												}
 											});
@@ -926,22 +900,15 @@
 							if (opt.user.userType != 'Admin') {
 
 								output = output + "<tr>";
-								output = output
-										+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-								output = output + "<td>" + opt.user.firstName
-										+ "&nbsp;" + opt.user.lastName
-										+ "</td>";
-								output = output + "<td>" + opt.user.email
-										+ "</td>";
+								output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+								output = output + "<td>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</td>";
+								output = output + "<td>" + opt.user.email+ "</td>";
 								output = output + "<td>" + role + "</td>";
-								output = output
-										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
-								output = output
-										+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
+								output = output+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
-								output = output
-										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 								output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output + "</tr>";
