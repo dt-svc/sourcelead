@@ -111,6 +111,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		List<Long> projectIdsList = projectsDao.getApprovarAssignedProjects(userId, orgLocationId);
 		return projectIdsList;
 	}
+
+	@Override
+	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception {
+		
+		return projectsDao.getProjectByProjectSequenceNumber(projectSequeneNumber);
+	}
 	
 	
 }

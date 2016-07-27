@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,11 +30,11 @@ public class OrgRelations {
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
     private OrgLocations clientLocationId;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     

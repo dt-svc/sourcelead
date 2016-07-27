@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -99,4 +100,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.updateProjectMemberDeletedReason(projectMemberId,reason);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+		return projectMembersDao.getAllProjectsByUserIdAndStatus(userId,status);
+	}
+	@Override
+	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
+		return projectMembersDao.updateEndDateOfProjectMemberId(endDate,projectMemberId);
+	}
 }

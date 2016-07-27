@@ -3,8 +3,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<link rel="stylesheet" href="resources/css/timesheet.css"
-	type="text/css">
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css">
+
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="resources/js/formvalidator.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <body>
 	<!-- Content Area -->
 	<section class="content-wraper">
@@ -12,6 +26,7 @@
 			<div class="pull-left">
 				<h2>Clients</h2>
 			</div>
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
 			<!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
 		</section>
 
@@ -174,7 +189,6 @@
 
 						var json = JSON.parse(data);
 						var result = "";
-
 						result = result+ '<div class="project_tabs_inn_head">';
 						/* result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>'; */
 						result = result + '</div>';
@@ -192,26 +206,50 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result
-									+ '	 	<td><div><input type="text"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
-							result = result
-									+ '				            <td><input type="text" value="'+opt.startDateStr+'" class="project_inline_field"></div></td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'" class="project_inline_field"></div></td>';
-							result = result + ' <td><div><select>';
-									for (var i = 0; i < opt.projectManagerName.length; i++) {
-										var managers = opt.projectManagerName[i];
+							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectName\');" id="projectName" value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result + '<td>'+opt.startDateStr+'</td>';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate" class="project_inline_field" onclick="getEndDatePickerById('+opt.projectSequeneNumber+',\'endDate\');"></div></td>';
+							result = result + ' <td><div><select id="projectManager" onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectManager\');">';
+									for (var j = 0; j < opt.projectManagerName.length; j++) {
+										
+										var managers = opt.projectManagerName[j];
 										var projrctmanager = managers.split('&');
 								    	var name = projrctmanager[0];
 								    	var id = projrctmanager[1];
-										result = result+"<option value="+id+">"+name+"</option>";
+								    	var selected = '';
+					   		 	    	 if(opt.relationId==id){
+					   		 	    		 selected = 'selected';
+					   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+					   		 	    	 }else{
+					   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
+					   		 	    	 }
 									} 
 							result = result + '	</select></div></td>';
 							result = result+ '<td><div>30</div></td>';
-							result = result + '<td><div><select>';
-							result = result + '<option>Active</option>';
-							result = result + '<option>Closed</option>';
-							result = result+ '<option>Process</option>';
-							result = result + '<option>Option</option>';
+							result = result + '<td><div><select id="projectStatusId" onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectStatusId\');">';
+							if(opt.projectStatus == 'STARTED'){
+								result = result+'<option selected>Started</option>';
+							}else{
+								result = result+'<option>Started</option>';
+							}
+							
+							if(opt.projectStatus == 'INPROGRESS'){
+								result = result+'<option selected>In-Progress</option>';
+							}else{
+								result = result+'<option>In-Progress</option>';
+							}
+							
+							if(opt.projectStatus == 'COMPLETED'){
+								result = result+'<option selected>Completed</option>';
+							}else{
+								result = result+'<option>Completed</option>';
+							}
+						
+							if(opt.projectStatus == 'ONHOLD'){
+								result = result+'<option selected>On-Hold</option>';
+							}else{
+								result = result+'<option>On-Hold</option>';
+							}
 							result = result + '</select></div></td>';
 							result = result + '</tr>';
 						}
@@ -309,7 +347,21 @@
 				});
 	}
 </script>
-
+<script> 
+function  inlineEditClientProjects(projectSequenceNumber,localFieldName){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var fieldName = localFieldName;
+	var fieldValue = $("#"+localFieldName).val();
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/inlineEditClientProjects?${_csrf.parameterName}=${_csrf.token}&projectSequenceNumber="+projectSequenceNumber+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+   		    success: function(data) {
+   			   alert(data);
+   		    }
+	 }); 
+}
+</script> 
 
 <script> 
 function  inlineEditForProjects(orgRelationId,localFieldName){
@@ -320,11 +372,40 @@ function  inlineEditForProjects(orgRelationId,localFieldName){
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateClientProjectById?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
    		    success: function(data) {
-   			   alert(data);
    		    }
 	 }); 
 }
 </script> 
+
+<script>
+function getStartDatePickerById(projectSequeneNumber,localFieldName){
+	 $('#startDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        },
+	        onClose: function() {
+	        	inlineEditClientProjects(projectSequeneNumber,localFieldName);
+	     }
+	  });
+}
+</script>
+
+<script>
+function getEndDatePickerById(projectSequeneNumber,localFieldName){
+	$('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	        },
+	        onClose: function() {
+	        	inlineEditClientProjects(projectSequeneNumber,localFieldName);
+	     }
+	  });
+}
+</script>
 
 <script>
 	// Approved Popup

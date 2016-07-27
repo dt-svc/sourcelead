@@ -31,7 +31,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Saved</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/NEW" >Saved</a></p>
               <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -45,7 +45,7 @@
 				<i class="fa fa-clock-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Waiting</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/SUBMITTEDFORAPPROVAL" >Waiting</a></p>
               <p class="info-box-number"><span  id="waitingTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -59,7 +59,7 @@
 				<i class="fa fa-check-circle-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Approved</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/APPROVED" >Approved</a></p>
               <p class="info-box-number"><span id="approvalTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -73,7 +73,7 @@
 				<i class="fa fa-ban" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text">Rejected</p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/REJECTED" >Rejected</a></p>
               <p class="info-box-number"><span id="rejectedTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>
@@ -142,11 +142,10 @@ function timeSheetSubmissionStatusCount(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
-		        	var  savedTimesheetsSubmissionsCount = json[0];
-		        	var  waitingTimesheetsSubmissionsCount = json[1];
-		        	var  approvalTimesheetsSubmissionsCount = json[2];
-		        	var  rejectedTimesheetsSubmissionsCount = json[3];
-		        	
+		        	var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
+		        	var  waitingTimesheetsSubmissionsCount =json.waitingForApprovalTimesheetSubmissionCount;
+		        	var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
+		        	var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
 		        	
 		        	if(savedTimesheetsSubmissionsCount>0){
 	                      $("#savedTimesheetsSubmissionsCount").text(savedTimesheetsSubmissionsCount);

@@ -82,10 +82,10 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Employees getEmployeeByUserId(Long userId) throws Exception {
-        logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode method");
+        logger.debug("In EmployeeDaoImpl class getEmployeeByUserId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Employees emp left join fetch emp.user where emp.user.id = :userId";
-		List<Employees> employeesList =  session.createQuery(query.toString()) .setLong("userId", userId).list();
+		String query = "from Employees emp where emp.user.id = :userId";
+		List<Employees> employeesList =  session.createQuery(query.toString()) .setLong("userId", userId).setCacheable(true).list();
 		Employees employee = null;
 		if(employeesList != null && !employeesList.isEmpty())
 		{
@@ -105,7 +105,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 boolean flag = false;
 		 if(employeeId != null && orgLocationsId != null){
 				String query = "from Employees emp where emp.orgLocations = :orgLocationsId and emp.employeeId = :employeeId ";
-				Collection<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).list();
+				Collection<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).setCacheable(true).list();
 
 				if (employeesList != null && employeesList.size() > 0) {
 					flag = true;
@@ -121,7 +121,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 logger.debug("In EmployeesDaoImpl class getEmployeeByIdAndUserIdAndOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Employees emp left join fetch emp.user where emp.employeeId = :employeeId and  emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
-			List<Employees> employeesList =  session.createQuery(query.toString()) .setString("employeeId", employeeId).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
+			List<Employees> employeesList =  session.createQuery(query.toString()) .setString("employeeId", employeeId).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 			Employees employee = null;
 			if(employeesList != null && !employeesList.isEmpty())
 			{
@@ -147,7 +147,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.debug("In Employee getEmployeesExcludeTeamMembers method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
-		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId");
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' ");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
 	}

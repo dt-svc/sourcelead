@@ -25,9 +25,9 @@ $(document).ready(function() {
            type : "POST",
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
             success :function(data) {
-              
-                 var json = JSON.parse(data);
-                 if(json.length > 0){
+                 
+                 /* var json = JSON.parse(data); */
+                 /* if(json.length > 0){
                 	 
                  var output = "";
                  output = output+' <table>';
@@ -96,12 +96,33 @@ $(document).ready(function() {
 					 result = result+"  </div> "; 
 					$("#timesheetApprList").empty();
 				    $("#timesheetApprList").append(result); 
-              }   
+              }   */
+          	 $("#timesheetApprList").empty();
+             $("#timesheetApprList").append(data); 
           }
             
        }); 
   } 
-  </script>
+</script>
+
+<script type="text/javascript">
+function dynamicTimesheet(navigation , startDate,memberId,submissionId){    
+			var sourceleadUrl ='${sourceleadUrl}';  
+			$("#dynamic").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId, 	   
+				    success: function(data) {
+				       /*  $("row"+submissionId).empty();	  */ 
+				        alert("data"+data);
+				        $("#row"+submissionId).empty();	 
+				        $("#row"+submissionId).append(data);	
+				        
+				    }
+		    });
+}
+</script>	
+
 <body onclick="bodyClick();">
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -620,7 +641,20 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
 });	
-</script>	
+</script>
+	
+<!-- this script is for clear timesheet -->
+<script>
+function clearTimesheet(){ 
+	for (var i = 1; i < 8; i++){
+	 for (var p = 1; p < 200; p++){  
+		 for (var j = 1; j < 10; j++){
+			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
+		 }
+     }
+	}
+}
+</script>
 
 
   <script type="text/javascript">	
@@ -651,6 +685,14 @@ $(document).click(function(){
 	    var t = bsum; 
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
+		
+		 if (minutes < 10) {
+			minutes = '0' + minutes;
+		 }
+		 if (hours < 10) {
+			hours = '0' + hours;
+		 }
+			 
 		total = hours +":"+ minutes;
  }  
 	 $("#rowTotal"+i+"Id").val(total);
@@ -679,6 +721,13 @@ function grandTotal(){
 	     var t = bsum; 
 		 var hours = Math.floor(t / 60); 
 		 var minutes = t % 60;
+		 if (minutes < 10) {
+			minutes = '0' + minutes;
+		 }
+		 if (hours < 10) {
+			hours = '0' + hours;
+		 }
+			 
 		 total = hours +":"+ minutes;
 		 $("#grandTotal").val(total);
 	     
