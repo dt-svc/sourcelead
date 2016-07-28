@@ -270,38 +270,26 @@ function firstname(name)
 							   var submittedHrs = "";
 						    if(json.startDate != null && json.startDate != '' && json.startDate != 'undefined'){
 							 startDate = json.startDate ;
-						   }else{
-							   startDate = "--";
 						   }
 						   if(json.endDate  != null && json.endDate  != '' && json.endDate  != 'undefined'){
 						    	endDate = json.endDate;
-						   }else{
-							   endDate = "";
 						   }
 						   if(json.approvedHrs  != null && json.approvedHrs  != '' && json.approvedHrs  != 'undefined'){
 							   approvedHrs = json.approvedHrs;
-						   }else{
-							   approvedHrs = "--";
 						   }
 						   if(json.rejectedHrs  != null && json.rejectedHrs  != '' && json.rejectedHrs  != 'undefined'){
 							   rejectedHrs = json.rejectedHrs;
-						   }else{
-							   rejectedHrs = "--";
 						   }
 						   if(json.draftHrs  != null && json.draftHrs  != '' && json.draftHrs  != 'undefined'){
 							   draftHrs = json.draftHrs;
-						   }else{
-							   draftHrs = "--";
 						   }
 						   if(json.submittedHrs  != null && json.submittedHrs  != '' && json.submittedHrs  != 'undefined'){
 							   submittedHrs = json.submittedHrs;
-						   }else{
-							   submittedHrs = "--";
 						   }
 						   result = result + '       <tr>';
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
-						   result = result + '<td><div>'+startDate+'</div></td>';
+						   result = result + '<td><div id="startDate'+json.id+'">'+startDate+'</div></td>';
 						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
@@ -362,6 +350,7 @@ function firstname(name)
 				    		      onSelect: function (selected) {
 				    		            var dt = new Date(selected);
 				    		            dt.setDate(dt.getDate() + 1);
+				    		            $('#startDate'+json.id).datepicker("option", "maxDate", dt);
 				    		        },
 				    		        onClose: function() {
 				    		        	 var id = $(this).attr('id');
