@@ -24,26 +24,29 @@ window.onload = function () {
   <section class="content-wraper">
   <div class="content-dashboard clearfix">
     <section class="content-header clearfix">
+         <c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+	
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
     </section>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
-          <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Users&nbsp;</a>
+          <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getUsersList();">
 				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
-				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
 				<option value="INACTIVE" >In Active</option>
-				</c:if>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
           
-          </li>
+          </li>&nbsp;&nbsp;|&nbsp;
           
-		  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
-		   <li><a href="javascript:void(0)"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Role&nbsp;</a>
+		   <li><i class="fa fa-filter"></i>&nbsp;
 				<select id="userRole" onchange="getUsersList();">
 				<option value="">--Select Role--</option>
 				<option value="All" >All Roles</option>
@@ -52,13 +55,15 @@ window.onload = function () {
                 </c:forEach>
 				</select>
 		   </li>
-		   </c:if>
-		  
-		  <li>
+		   
+		 <li>
 			  <a href="javascript:void(0)">
-			  <i class="fa fa-user"></i>&nbsp;Emp&nbsp;&nbsp;</a>
-				<input type="text" id="searchByName" ><span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
-		  </li>
+			  <i class="fa fa-user"></i></a>
+				<span class="action-search"><input type="text" id="searchByName"></span>
+				<span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
+		  </li> 
+		
+		 
 		  <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
 		  <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
         </ul>
@@ -140,7 +145,7 @@ window.onload = function () {
 	       	    	result = result +"<p><label><i class='fa fa-phone'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	    	result = result +"<p><label>Projects</label><span class='label label-default'>5</span></p>";
 	       	    	result = result +"<p><label>Approved Timesheets</label> <span class='label label-success'>20</span></p>";
-	       	    	result = result +"<p><label>Rejected Timesheets</label> <span class='label label-danger'>"+userRole.rejectedHrs+"</span></p>";
+	       	    	result = result +"<p><label>Rejected Timesheets</label> <span class='label label-danger'>10</span></p>";
 	       	    	result = result +"<p><label>Waiting for Timesheets</label> <span class='label label-primary'>10</span> </p>";
 	       	    	result = result +"<p><label>Open Timesheets</label> <span class='label label-info'>10</span> </p>";
 	       	    	result = result +"</div>";
@@ -201,5 +206,9 @@ function getUserSummary(userId){
 	}
   
 </script>
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 
     
