@@ -147,7 +147,7 @@
 												<h4 class="modal-title">Add Tasks</h4>
 											</div>
 											<div class="modal-body clearfix">
-												<div class="modal-body-custom custom-table">
+												<div class="modal-body-custom custom-table tbl-cumstom-data">
 													<table class="table table-bordered table-striped  clearfix"
 														id="projectTaskTbl" cols="0">
 														<tr id="divTsRow0">
@@ -901,14 +901,14 @@
 
 								output = output + "<tr>";
 								output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-								output = output + "<td>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</td>";
-								output = output + "<td><span class='tbldata-dotdot' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
-								output = output + "<td>" + role + "</td>";
-								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";
+								output = output + "<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
+								output = output + "<td><span class='tbldata-dotdot-vsm' title='"+role+"'>" + role + "</span></td>";
+								output = output+ "<td><span class='' title='"+projectStartDate+"'><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
-								output = output+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
-								output = output + "</div></td>";
-								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
+								output = output + "</div></span></td>";
+								output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 								output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output + "</tr>";
