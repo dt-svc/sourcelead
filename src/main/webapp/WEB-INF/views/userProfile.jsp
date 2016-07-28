@@ -47,6 +47,7 @@
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
+        <div id="loading"></div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
@@ -341,6 +342,9 @@ var validationSettings = {
              		
              		$("#profile_submit").attr("disabled", "disabled");
              		$( "#profile_submit").addClass('button').val('Processing..');
+             		
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+             		
             		
                     $.ajax({
                 	      type: "POST",
@@ -390,6 +394,7 @@ var validationSettings = {
             		
             		$("#save_button").attr("disabled", "disabled");
              		$( "#save_button").addClass('button').val('Processing..');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
             		
                     $.ajax({
                 	      type: "POST",

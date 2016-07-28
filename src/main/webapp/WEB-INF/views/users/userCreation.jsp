@@ -32,6 +32,7 @@
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         <div class="content-area clearfix">
+        <div id="loading"></div> 
           <section class="action-btns clearfix">
             <ul class="pull-right list-unstyled list-inline">
               <li><a href="#" class="faclose"><i aria-hidden="true" class="fa fa-close"></i></a></li>
@@ -43,6 +44,7 @@
       <!-- modal dialog box start -->    
         <div class="modal fade" id="addProject" role="dialog">
           <div class="modal-dialog">
+          <div id="modelLoading"></div>
            <form:form id="addProject_form"  name="addProject_form" method="post">
              <div class="modal-content" id="newProject">
 		          <div class="modal-header">
@@ -504,6 +506,7 @@ function flushProject(){
 	        
 	        $("#save_project").attr("disabled", "disabled");
      		$("#save_project" ).addClass('button').val('Processing..');
+     		$("#modelLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        
 	        $.ajax({
 		    	type: "POST",
@@ -520,6 +523,7 @@ function flushProject(){
 		        	$("#proId").empty();
 			        $("#proId").append(output);
 			        $("#addProject").modal('hide');
+			        $("#modelLoading").removeAttr("style");
 		        },
 		        error: function(e){
 		            
@@ -562,6 +566,7 @@ function flushProject(){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#create_user").attr("disabled", "disabled");
      		$( "#create_user" ).addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
