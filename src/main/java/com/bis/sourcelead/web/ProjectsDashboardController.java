@@ -218,7 +218,9 @@ public class ProjectsDashboardController {
 		    if(projects.getEndDate() != null){
 		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 		    }
-		    projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+		    if(projects.getUpdatedDate() != null){
+		    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+		    }
 		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
 		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 		    String[] approvers = new String[projectApproverHierarchies.size()];

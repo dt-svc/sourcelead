@@ -88,7 +88,7 @@
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="ProjectName"
-									data-validation="required validate_length length2-250"
+									data-validation="required validate_Space validate_length length2-100"
 									field-name="Project Name" value=""> <span
 									class="hidden">Project Name</span>
 							</div>
@@ -98,7 +98,7 @@
 							<div class="col-md-9">
 								<textarea class="form-control" rows="3"
 									name="ProjectDescription"
-									data-validation="validate_length length10-500"
+									data-validation="validate_Space validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>

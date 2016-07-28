@@ -956,13 +956,12 @@ $(document).ready(function(){
         	 var result = ""; 
        	  result = result + '<div class="project_tabs_inn_head">';
        	  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
-       	  result = result + '<div class="project_tabs_inn_table">';
+       	  result = result + '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
        	  result = result + '<table>';
        	  result = result + '<tbody>';
        	  result = result + '<tr id="projectTaskTableId">';
        	  result = result + '<th>Task name</th>';
        	  result = result + '<th>Task description</th>';
-       	  result = result + '<th>Edit</th>';
        	  result = result + '</tr>';
         	for (var i=0; i<json.length; i++)
 			{
@@ -970,7 +969,6 @@ $(document).ready(function(){
 	        		result = result + '<tr>';
 	         		result = result + '<td><div><input type="text" value="'+opt.taskName+'" class="project_inline_field"></div></td>';
 	         		result = result + '<td><div><input type="text" value="'+opt.description+'" class="project_inline_field"></div></td>';
-	         		result = result + '<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
 	         		result = result + '</tr>'; 
 			}
 	        	result = result + '</tbody>';
