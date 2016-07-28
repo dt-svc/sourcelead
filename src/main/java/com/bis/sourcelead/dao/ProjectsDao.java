@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.Cacheable;
+
 import com.bis.sourcelead.entity.Projects;
 
 public interface ProjectsDao {
@@ -26,7 +29,8 @@ public interface ProjectsDao {
 	
 	Collection<Projects> getAllProjects() throws Exception;
 	
-	Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception;
+	@Cacheable(cacheNames={"projectMembers","projectApproverHierarchy"})
+	Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception;
 	
 	Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception;
 
