@@ -454,7 +454,8 @@ public class ProjectsDashboardController {
 				@RequestParam(value="ProjectId", required=false) Long projectId,
 				@RequestParam(value="employeeId", required=false) Long employeeId,
 				@RequestParam(value="startDate", required=false) String startDate,
-				@RequestParam(value="endDate", required=false) String endDate, HttpServletRequest request) throws Exception {
+				@RequestParam(value="endDate", required=false) String endDate,
+				@RequestParam(value="mailtoMembers", required=false) String mailtoMembers, HttpServletRequest request) throws Exception {
 		 	
 			 	ProjectMembers pm = new ProjectMembers();
 			 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -480,6 +481,7 @@ public class ProjectsDashboardController {
 		            	pm.setProjectEndDate(currentEndDate);
 		            }
 		            
+		            pm.setStatus(Constants.MEMBER_ACTIVE);
 					pm.setCreatedDate(new Date());
 					pm.setUpdatedDate(new Date());
 					projectMembersService.saveProjectMember(pm);
@@ -489,7 +491,10 @@ public class ProjectsDashboardController {
 				     * This method for send Email to team member while assign employee from project dashboard
 				     */
 					ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(projects.getId());
-					sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation);
+					
+					if(!isNullOrEmpty(mailtoMembers) && ("YES".equals(mailtoMembers))){
+						sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation);
+					}
 			  }
 				return null;
 		}

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -31,8 +32,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -41,6 +40,8 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -61,6 +62,34 @@ public class TimesheetSubmissionsController {
 	
 	@Autowired
 	private DataSource dataSource;
+	
+	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
+	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
+	public @ResponseBody void withDrawTimesheet(@RequestParam(value="json", required=false) String json) throws Exception {
+				
+		json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    	
+		String result = "";
+		String resultJson = null;
+		
+		String localsubmissionId = jsonObj.getString("submissionId");
+	    localsubmissionId = localsubmissionId.replaceAll("\\[", "").replaceAll("\\]","");
+	    String[] submissionIds = localsubmissionId.split(",");
+    	
+		if(submissionIds != null && submissionIds.length>0){ 
+			for(String submissionId : submissionIds){
+				  	submissionId = submissionId.replace("\"", "");
+				  	TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+				  	timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
+				  	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+				  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
+			}
+		}
+			
+	}
+		
 
 	
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
