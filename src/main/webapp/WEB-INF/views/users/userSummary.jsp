@@ -450,6 +450,10 @@ $(document).ready(function(){
 		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick=""><input class="u_can_color" type="button" value="Cancel"></b>
 	</div> -->
 
+<!-- <div class="remove_pop" id="user_remove_msg">
+	<i class="fa fa-trash"></i><span>user successfully removed in userlist</span>
+</div>  -->
+
 <div id="popUp"></div>
 </body>
 
@@ -497,12 +501,13 @@ $(document).ready(function(){
 
 <script type="text/javascript">
  function validateEmployeeId(id,userId) {
+	 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
+	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmployeeId != null && EmployeeId != ""){
-		 $("#update_user").attr("disabled", "disabled");
-         $( "#update_user" ).addClass('button').val('Processing..');
+		$("#update_user").attr("disabled", "disabled");
+        $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
@@ -687,7 +692,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
-					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
+					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
@@ -795,6 +800,7 @@ function terminateUser(userId){
 		    url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	userDetails(userId);
+   		    	
    		    }
 	   });
 		}
@@ -804,6 +810,7 @@ function terminateUser(userId){
 }
 
 </script>
+
 
 <script>
 function getConformation(userId,reason){ 
@@ -877,7 +884,9 @@ function inlineEditForUsers(userId,localFieldName){
 </script> -->
 <!-- this script for inline edit -->
 
-
+<!-- <script>
+  $('#user_remove_msg').delay(2000).fadeOut('slow');
+</script> -->
 
 <!-- Scripts for project details -->
 

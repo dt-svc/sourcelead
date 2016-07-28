@@ -6,14 +6,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,11 +30,9 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -43,8 +43,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -185,7 +183,7 @@ public class UserController {
 
 	  
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	 public @ResponseBody  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
@@ -196,7 +194,7 @@ public class UserController {
 		 	
 		 	//For Saving of User Details
 			userService.createUser(jsonObj,user,orgLocations.getId());
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
 			return "usersList";
 	   }
 	 
