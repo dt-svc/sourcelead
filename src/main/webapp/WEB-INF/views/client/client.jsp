@@ -1,10 +1,23 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<<<<<<< HEAD
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="resources/js/formvalidator.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+=======
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style>
@@ -19,8 +32,12 @@
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
+<<<<<<< HEAD
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="clientDashboard">Clients List</a>&raquo; Client Form</div>
+=======
 		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
 			&raquo; Client</div>
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -42,7 +59,7 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="orgName"
 									field-name="Client Name"
-									data-validation="required validate_length length2-100" value="">
+									data-validation="required validate_Space validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -50,7 +67,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value=""> <span
+									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -58,7 +75,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="">
+									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -68,7 +85,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value=""> <span class="hidden">Client
+									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -117,7 +134,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectId"
 																	name="projectId" placeholder="Enter Project Id"
-																	class="form-control" onblur="validateProjectId();">
+																	data-validation="required validate_Space validate_length length2-20" class="form-control" onblur="validateProjectId();">
 															</div>
 														</div>
 
@@ -125,8 +142,8 @@
 															<label class="col-md-3">Project Name</label>
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
-																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control">
+																	name="projectName" placeholder="Enter Project Name" field-name="Project Name"
+																	data-validation="required validate_Space validate_length length2-100" class="form-control" onblur="validateProjectName()">
 															</div>
 														</div>
 														<div class="form-group">
@@ -160,10 +177,20 @@
 															<label class="col-md-3">Date</label>
 															<div class="col-md-9">
 																<div class="row">
+<<<<<<< HEAD
+																	<div class="col-lg-6">
+																		<div class="input-group">
+																			<span class="input-group-addon"><i
+																				class="fa fa-calendar"></i></span> <input type="text"
+																				class="form-control" value="" id="projectStartDate"
+																				name="StartDate" onclick="selectStartDate();" onblur="validateProjecStartdate()">
+																		</div>
+=======
 																	<div class="col-lg-6 positionRelative">
 																		
 																     <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" readonly="readonly">
 																	 <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>																			
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 																	</div>
 																	<div class="col-lg-6 positionRelative">
 																		
@@ -204,8 +231,8 @@
 							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
-									name="webSite" field-name="Website"
-									data-validation="validate_length length2-100 validate_domain"
+									name="webSite" onblur="validateWebsite();" field-name="Website"
+									data-validation="validate_Space validate_length length2-100 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -214,7 +241,7 @@
 							<label class="col-md-3" for="Project Manager">Email</label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_length length2-100 validate_email"
+									data-validation="validate_Space validate_length length2-100 validate_email"
 									data-validation-optional="true" value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
@@ -224,7 +251,7 @@
 							<label class="col-md-3">Mobile Number</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="phone" name="phone"
-									data-validation="validate_phone  validate_length length9-20"
+									data-validation="validate_Space validate_phone  validate_length length9-20"
 									data-validation-optional="true" field-name="Mobile Number"
 									value=""> <span class="hidden">Mobile Number</span>
 							</div>
@@ -465,28 +492,51 @@
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
 		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
-		if ($('#projectId').val() == '' || $('#projectId').val() == 0
-				|| $('#projectId').val() == null) {
-			$("input#projectId")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project ID</span>");
+		
+		var namelength = documet.getElementById("projectId").value.length;
+		if ($('#projectId').val() == '' || $('#projectName').val() == '' || $('#projectStartDate').val() == '') {
+			
+			if($('#projectId').val() == '')
+			{
+				
+			$("input#projectId").after(	"<p class='jquery_form_error_message'>Enter Project ID</span>");
+			
+			if((namelength < 2) || (namelength >=100))
+				{
+				$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+				}
+			return false;
+			
+			}
+		
+			if($('#projectName').val() == '')
+			{
+				
+			$("input#projectName") .after( "<p class='jquery_form_error_message'>Enter Project Name</span>");
+			
+			}
+			
+			if($('#projectStartDate').val() == '')
+			{
+				
+			$("input#projectStartDate") .after( "<p class='jquery_form_error_message'>Enter Project Start Date</span>");
+			}
+			
 			return true;
 		}
 
-		if ($('#projectName').val() == '' || $('#projectName').val() == 0
-				|| $('#projectName').val() == null) {
-			$("input#projectName")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Name</span>");
+		/* if ($('#projectName').val() == '' || $('#projectName').val() == 0 || $('#projectName').val() == null) {
+			
+			$("input#projectName") .after( "<p class='jquery_form_error_message'>Enter Project Name</span>");
 			return true;
 		}
-		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0
-				|| $('#projectStartDate').val() == null) {
-			$("input#projectStartDate")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Start Date</span>");
+		
+		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0 || $('#projectStartDate').val() == null) {
+			
+			$("input#projectStartDate") .after( "<p class='jquery_form_error_message'>Enter Project Start Date</span>");
 			return true;
-		}
+		} */
+		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -546,6 +596,28 @@
 		$("#projectEndDate").val('');
 		addtasksCountafterAddingTask();
 	}
+</script>
+
+
+<script>
+function validateProjectName() {
+	
+		var Projectname = document.getElementById("projectName").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script type="text/javascript">
+
+function validateProjecStartdate()
+{
+	var Projectdate = document.getElementById("projectStartDate").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
+	
+	} 
+ 
 </script>
 <script type="text/javascript">
 	function removeRow(rowId) {
@@ -633,14 +705,14 @@
 		document.getElementById("project_form").reset();
 	});
 </script>
-
-
+ 
 
 <script type="text/javascript">
 	function validateProjectId() {
 		var ProjectSequeneNumber = document.getElementById("projectId").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 			$
 					.ajax({
@@ -720,7 +792,7 @@ var addtaskcount =null;
 		  var r = document.getElementById('projectTaskTbl').rows[rowId];
              var count = 2*(r.cells.length);
 			    for(i=0;i<=count;i++){
-			        r.deleteCell(0);
+			     r.deleteCell(0);
 			    }
 	}
  
@@ -770,4 +842,53 @@ function getChildLevel1Approvers(currentApproverId){
 function flushProject(){
 	 $('#level2Manager').val('');
 }
+</script>
+
+<script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="
+						+ website + "&sourceleadBLockedwebsites="
+						+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == 'Website Duplicated' || result == 'Invalid Website') {
+						//existed website
+						$("input#webSite").after(
+								"<p class='jquery_form_error_message'>"
+										+ website
+										+ " is Already Existed</span>");
+						document.getElementById("webSite").setAttribute(
+								'record-exist', 'yes');
+						document.getElementById("webSite").setAttribute(
+								'record-exist-errorMsg',
+								website + ' is '+result);
+					} else {
+						//New WebSite class="form-control"
+						//$("#save_client").removeAttr("disabled");
+						$('input#webSite').removeAttr(
+								"class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class',
+								'valid form-control');
+						$('#companyWebsiteDiv').find(
+								'p.jquery_form_error_message').remove();
+						$("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	}
 </script>

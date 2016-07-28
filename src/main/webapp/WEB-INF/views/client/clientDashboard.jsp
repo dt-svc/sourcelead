@@ -12,10 +12,20 @@
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
+		<c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
 			<div class="pull-left">
 				<h2>Clients</h2>
 			</div>
+<<<<<<< HEAD
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Client List</div>
+			<!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
+=======
 			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 		</section>
 
 		<!-- Project -->
@@ -431,3 +441,8 @@ function getEndDatePickerById(projectSequeneNumber,localFieldName){
 </script>
 
 
+<!-- Show success message after form submission script -->
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+<!-- End -->

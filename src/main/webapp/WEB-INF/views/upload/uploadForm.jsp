@@ -3,23 +3,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
+
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
 <style type="text/css">
 .center-div{
 width:300px;
@@ -38,7 +28,7 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Users</h2>
       </div>
-      <div class="pull-right brud-crum">Home Â» Users Â» Bulk Import</div>
+      <div class="pull-right brud-crum"><a href="dashboard">Home</a>» <a href="usersList">UserList</a>» Bulk Import</div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
@@ -62,7 +52,7 @@ margin:10px 220px 0;
 			<div class="dropzone">
 			  <div class="clearfix">
 			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();saveClient();">
+			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();uploadSave();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
 			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
@@ -190,7 +180,7 @@ function errorMsgAppend(){
 </script>
 
 <script type="text/javascript">
-function saveClient() {
+function uploadSave() {
 		
 		 $('#upload_form').submit(function() {
           if (($(this).validate(false, validationSettings)))
@@ -202,6 +192,7 @@ function saveClient() {
 	$('body').on('blur', '#upload_form', function() {
 		$("#upload_form").showHelpOnFocus();
 		$("#upload_form").validateOnBlur(false, validationSettings);
+		
 	});
 </script>
 

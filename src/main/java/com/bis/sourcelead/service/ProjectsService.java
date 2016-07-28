@@ -19,7 +19,7 @@ public interface ProjectsService {
 	
 	public Projects getProjectById(Long id) throws Exception;
 	
-	Collection<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
     Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
@@ -45,6 +45,6 @@ public interface ProjectsService {
 	
 	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
 
-	public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
+	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 
 }

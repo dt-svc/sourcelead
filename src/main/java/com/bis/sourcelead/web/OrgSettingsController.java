@@ -123,6 +123,19 @@ public class OrgSettingsController {
    }
    
    
+   
+   @RequestMapping(value = "/deleteOrgImage" , method = RequestMethod.GET)
+   public String deleteOrgImage(HttpServletRequest request) throws Exception {
+	   
+	   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	   org.setDocFile(null);
+	   org.setFileContentType(null);
+	   orgService.updateOrg(org);
+	   SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+	   return "success";
+   }
+   
+   
    private static BufferedImage colorImage(BufferedImage image) {
        int width = image.getWidth();
        int height = image.getHeight();

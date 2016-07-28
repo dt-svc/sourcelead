@@ -157,7 +157,15 @@ body {
      
 .reset_wrap_a label{
 left:12px
-}   
+}    
+ 
+.reset_wrap_a p{
+    display: block;
+ }
+ .reset_wrap_a .signin_fild{
+    padding: 5px 5px 0 10px;
+ }
+ 
  
 @media screen and (max-width: 767px){
 .regis_wrap.regis_wrap_a {
@@ -194,3 +202,6 @@ left:12px
 }               
      
 }           
+ 
+ 
+ 

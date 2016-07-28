@@ -157,9 +157,10 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						userImport.setRatePer("");
 					}
 					if(record.get(Constants.DATEOFJOIN) !=null || !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))){
-						userImport.setDateString(record.get(Constants.DATEOFJOIN));
+						Date date = getDateFormat(record.get(Constants.DATEOFJOIN),"dd/MM/yyyy");
+						userImport.setDateOfJoin(date);
 					}else{
-						userImport.setDateString("");
+						userImport.setDateOfJoin(null);
 					}
 					userImport.setRole(record.get(Constants.ROLE));
 					if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
