@@ -20,12 +20,9 @@
 			<div class="pull-left">
 				<h2>Clients</h2>
 			</div>
-<<<<<<< HEAD
-			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Client List</div>
-			<!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
-=======
+
 			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
+
 		</section>
 
 		<!-- Project -->

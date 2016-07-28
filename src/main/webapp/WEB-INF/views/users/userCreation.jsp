@@ -744,9 +744,9 @@ function flushProject(){
   } );
 </script>
 
-<<<<<<< HEAD
+
 <!-- end script for datepicker -->
-=======
+
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("StartDate").value;
@@ -755,4 +755,4 @@ function flushProject(){
 		 }
 }
 </script>
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
+
