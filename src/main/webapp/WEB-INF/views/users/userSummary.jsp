@@ -276,7 +276,7 @@ function firstname(name)
 						   if(json.endDate  != null && json.endDate  != '' && json.endDate  != 'undefined'){
 						    	endDate = json.endDate;
 						   }else{
-							   endDate = "--";
+							   endDate = "";
 						   }
 						   if(json.approvedHrs  != null && json.approvedHrs  != '' && json.approvedHrs  != 'undefined'){
 							   approvedHrs = json.approvedHrs;
@@ -302,7 +302,7 @@ function firstname(name)
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
 						   result = result + '<td><div>'+startDate+'</div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
+						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
@@ -321,7 +321,7 @@ function firstname(name)
 						   result = result + '    </table>            ';
 						   result = result + '        </div>';
 							 			
-						    result = result + ' <nav>';
+						   /*  result = result + ' <nav>';
 						    result = result + '<ul id="paging" class="pagination">';
 						    result = result + '	<li><a href="#">Previous</a></li>';
 						    result = result + '	<li><a href="#">3</a></li>';
@@ -331,7 +331,7 @@ function firstname(name)
 						    result = result + '<li data-page="last"><a href="#">Next</a></li>';
 						    result = result + '</ul>';
 						    result = result + '<div class="clearfix"></div>';
-						    result = result + '</nav>		';	
+						    result = result + '</nav>		';	 */
 						
 						    result = result + '   </div>';
 						    
@@ -521,7 +521,6 @@ function firstname(name)
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmployeeId != null && EmployeeId != ""){
 		$("#update_user").attr("disabled", "disabled");
         $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
@@ -541,7 +540,7 @@ function firstname(name)
 		        	} 
 		        },
 		    });
-	 }
+	
  }
  </script>
 
@@ -772,7 +771,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
