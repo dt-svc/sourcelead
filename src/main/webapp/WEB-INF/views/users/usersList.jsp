@@ -97,6 +97,9 @@ window.onload = function () {
 	   	}
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
+		
+		$("#usersListBody").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:80px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 		$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
@@ -157,7 +160,7 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	
-	       	        
+	       	    	$("#usersListBody").removeAttr("style"); 
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
@@ -165,6 +168,7 @@ window.onload = function () {
 	    	else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
 	    		$('#usersListBody').empty();
+	    		$("#usersListBody").removeAttr("style");
 	    		$('#usersListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
 	    	}
@@ -172,7 +176,7 @@ window.onload = function () {
 			 },
 	        error: function(e){
 	        }
-	    }); 
+	    });  
 	}
 </script>
 

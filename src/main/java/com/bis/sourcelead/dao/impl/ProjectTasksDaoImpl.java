@@ -80,7 +80,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId )" ;
-		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()) 
+		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true) 
 			    .list(); 
 		return projectTasksList;  
 		

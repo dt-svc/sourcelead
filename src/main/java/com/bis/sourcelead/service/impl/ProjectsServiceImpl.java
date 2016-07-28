@@ -83,9 +83,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsList;
 	}
 	
-	public Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception {
+	public Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getAllProjectsAndManagers method...");
-		Collection<Projects> projectsList = projectsDao.getAllProjectsAndManagersByLoginUserId(userId);
+		Collection<Projects> projectsList = projectsDao.getAllLoginUserProjectsList(projectIds,orgLocationId);
 		return projectsList;
 	}
 	
