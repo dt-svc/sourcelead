@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.ActionRoles;
 
@@ -8,8 +8,8 @@ public interface ActionRolesService {
 	
 	public ActionRoles addActionRoles(ActionRoles actionRoles) throws Exception;
 	
-	Collection<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception;
+	List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception;
 	
-	Collection<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
+	List<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
 
 }

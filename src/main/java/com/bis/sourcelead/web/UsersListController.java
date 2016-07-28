@@ -120,7 +120,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-		Collection<UserRole> rolesList = new ArrayList<UserRole>();
+		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 		
 	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){

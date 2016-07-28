@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +23,7 @@ public class TabsDaoImpl implements TabsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Tabs> getTabsListByLoginUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationId) throws Exception {
+	public List<Tabs> getTabsListByLoginUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationId) throws Exception {
 		
 	     Session session = this.sessionFactory.getCurrentSession();
 	     
@@ -40,7 +40,7 @@ public class TabsDaoImpl implements TabsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Tabs> getSourceLeadTabsListByOrgId(Long roleId,Long orgId) throws Exception {
+	public List<Tabs> getSourceLeadTabsListByOrgId(Long roleId,Long orgId) throws Exception {
 		
 	     Session session = this.sessionFactory.getCurrentSession();
 	     

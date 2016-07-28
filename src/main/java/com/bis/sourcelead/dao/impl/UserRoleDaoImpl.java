@@ -64,7 +64,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 
-	public Collection<UserRole> getUsersListByLocationId(Long locationId, String userState, Long userId)
+	public List<UserRole> getUsersListByLocationId(Long locationId, String userState, Long userId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
@@ -81,7 +81,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersListByRoleAndLocationId(Long roleId, Long locationId, String userState,
+	public List<UserRole> getUsersListByRoleAndLocationId(Long roleId, Long locationId, String userState,
 			Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
@@ -98,7 +98,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId, String userState,
+	public List<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId, String userState,
 			Long userId) throws Exception {
 
 		String subQuery = "";
@@ -115,7 +115,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName, Long locationId,
+	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName, Long locationId,
 			String userState, Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
@@ -134,7 +134,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId, Long userId)
+	public List<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId, Long userId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session
@@ -146,7 +146,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getUsersBasedOnUserRoles() throws Exception {
+	public List<UserRole> getUsersBasedOnUserRoles() throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN'";
@@ -157,7 +157,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<UserRole> getApproverAssignedUsers(List<Long> projectIds, String userState, String searchByName) throws Exception {
+	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds, String userState, String searchByName) throws Exception {
 		Long roleId = 2L;
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState)) {
