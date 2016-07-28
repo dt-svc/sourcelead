@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +26,13 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 	}
 
 	@Override
-	public Collection<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception {
+	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception {
 		logger.debug("In ActionRolesService class...");
 		return actionRolesDao.getSourceLeadActionRolesListByOrgId(orgId);
 	}
 
 	@Override
-	public Collection<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId, Long orgLocationId)
+	public List<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId, Long orgLocationId)
 			throws Exception {
 		logger.debug("In ActionRolesService class...");
 		return actionRolesDao.getOrgActionRolesByRoleAndOrgLocationId(roleId, orgLocationId);

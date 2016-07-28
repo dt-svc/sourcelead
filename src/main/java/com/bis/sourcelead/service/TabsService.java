@@ -1,13 +1,13 @@
 package com.bis.sourcelead.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.Tabs;
 
 public interface TabsService {
 	
-	Collection<Tabs> getTabsListByLoginUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
+	List<Tabs> getTabsListByLoginUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
 	
-	Collection<Tabs> getSourceLeadTabsListByOrgId(Long roleId,Long orgId) throws Exception;
+	List<Tabs> getSourceLeadTabsListByOrgId(Long roleId,Long orgId) throws Exception;
 
 }

@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,7 +41,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception {
+	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId")
 					  .setLong("orgId", orgId)
@@ -51,7 +51,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId, Long orgLocationId)
+	public List<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId, Long orgLocationId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.orgLocations left join fetch actionRoles.roles "

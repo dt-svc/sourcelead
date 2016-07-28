@@ -96,7 +96,7 @@ public class LoginSessionController {
 			}
 			
 			
-			Collection<Tabs> tabsList = null;
+			List<Tabs> tabsList = null;
 			
 			if("slead".equalsIgnoreCase(org.getOrgCode())){
 				tabsList = tabsService.getSourceLeadTabsListByOrgId(userRole.getRoles().getId(), org.getId());
