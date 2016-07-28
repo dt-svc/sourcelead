@@ -30,9 +30,11 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
@@ -66,6 +68,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	TimesheetSubmissionsService timesheetSubmissionsService;
 		
 	/**
 	 * To forward users List jsp page
@@ -163,6 +168,24 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			
 			for(UserRole role : rolesList){
 				role.setUserRoleName(role.getRoles().getDisplayName());
+				
+
+                Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
+				Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
+				Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
+				
+				Integer approvedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.APPROVED.toString(),orgLocations.getId());
+				Integer rejectedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.REJECTED.toString(),orgLocations.getId());
+				Integer waitingTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.toString(),orgLocations.getId());
+				
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(role.getUser().getId(), orgLocations.getId());
+				
+				role.setOpenTimeSheetsCount(totalOpenTimeSheetCount);
+				role.setApprovedTimeSheetsCount(approvedTimeSheetsCount);
+				role.setRejectedTimeSheetsCount(rejectedTimeSheetsCount);
+				role.setWaitingTimeSheetsCount(waitingTimeSheetsCount);
+				role.setProjectsCount(assignedProjectsCount);
+				
 				userRolesList.add(role);
 			}
 			 

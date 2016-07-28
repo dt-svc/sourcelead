@@ -45,5 +45,7 @@ public interface ProjectsDao {
 	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
 
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
+	
+	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 
 }

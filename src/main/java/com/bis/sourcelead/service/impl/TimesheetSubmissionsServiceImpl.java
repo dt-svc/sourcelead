@@ -186,5 +186,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getProjectsBasedOnUserIdAndStatusAndClientForFilters(userId,clientId,values);
 			return list;
 		}
+	
+	@Override
+	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId, String approvalStatus,Long orgLocationId) throws Exception {
+		Integer approvalStatusCount = timesheetSubmissionsDao.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus,orgLocationId);
+		return approvalStatusCount;
+	}
+	
 
 }
