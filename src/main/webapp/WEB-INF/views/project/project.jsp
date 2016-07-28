@@ -1061,7 +1061,7 @@ function validatetaskDescription()
 						+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
-					if (result == "success") {
+					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
 						$("input#companyWebsite").after(
 								"<p class='jquery_form_error_message'>"
@@ -1071,7 +1071,7 @@ function validatetaskDescription()
 								'record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute(
 								'record-exist-errorMsg',
-								website + ' is Already Existed');
+								website + ' is '+result);
 					} else {
 						//New WebSite class="form-control"
 						//$("#save_client").removeAttr("disabled");
