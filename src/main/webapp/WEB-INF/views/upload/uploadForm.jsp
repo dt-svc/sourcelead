@@ -28,10 +28,11 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Users</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a>» <a href="usersList">UserList</a>» Bulk Import</div>
+      <div class="pull-right brud-crum">Home Â» Users Â» Bulk Import</div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
+    <div id="loading"></div> 
       <section class="action-btns clearfix">
         <ul class="pull-right list-unstyled list-inline">
           <li><a class="faclose" href="#"><i class="fa fa-close" aria-hidden="true"></i></a></li>
@@ -183,10 +184,14 @@ function errorMsgAppend(){
 function uploadSave() {
 		
 		 $('#upload_form').submit(function() {
-          if (($(this).validate(false, validationSettings)))
-          	return true;
-          else
-          	return false;	
+          if (($(this).validate(false, validationSettings))){
+        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+            	return true;  
+          }
+          else{
+        	  return false;	
+          }
+          	
           })
 }
 	$('body').on('blur', '#upload_form', function() {
