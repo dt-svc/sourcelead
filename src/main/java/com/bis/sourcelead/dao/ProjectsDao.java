@@ -1,11 +1,8 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
-
 import java.util.Date;
-
 import java.util.List;
-
 
 import com.bis.sourcelead.entity.Projects;
 
@@ -40,5 +37,9 @@ public interface ProjectsDao {
 	List<Long> getApprovarAssignedProjects(Long userId,Long orgLocationId) throws Exception;
 	
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
+
+	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
+
+	public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 
 
 /**
@@ -196,7 +200,15 @@ public class HomeController {
 	//fileUpload
 	
 	 @RequestMapping(value = "/uploadForm")
-		public ModelAndView fileUploadForm() {
+		public ModelAndView fileUploadForm(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
 			ModelAndView model = new ModelAndView();
 			model.setViewName("upload/uploadForm");
 			model.addObject("sourceleadUrl", sourceleadUrl);

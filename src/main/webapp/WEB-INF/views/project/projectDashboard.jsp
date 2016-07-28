@@ -69,34 +69,34 @@
 		<div class="project_wrap">
 <div class="timesheet_head">
         	<ul>
-				<!-- <li><i class="fa fa-calendar"></i><input placeholder="DD/MM/YYYY" value="31/12/2020" class="project-date" type="text">|</li>
-                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input value="None" id="c1" type="checkbox"><label for="c1">All</label></li>
-							<li><input id="c2" type="checkbox"><label for="c2">Approved</label></li>
-							<li><input id="c3" type="checkbox"><label for="c3">Draft</label></li>
-							<li><input id="c4" type="checkbox"><label for="c4">Rejected</label></li>
+				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+                	<div id="filter1ApprovedPop" class="approved_pop">
+                    	<ul style="height:150px; overflow-y:auto;padding-bottom:5px;">
+                    	  <c:forEach var="report" items="${add_client}">  
+                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
+						  </c:forEach>
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input value="None" id="c5" type="checkbox"><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox"><label for="c6">Approved</label></li>
-							<li><input id="c7" type="checkbox"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"><label for="c8">Rejected</label></li>
+                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
                     </div>                	
-                </li> -->
+                </li>
 				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
         </div>
 			
-		    <div class="project_wrap_table">
+		    <div id="projectFilterList"></div>
+		    <div id="projectList" class="project_wrap_table">
 		    	<table>
 		        	<tbody>
 					<thead>
@@ -151,6 +151,7 @@
 		  </div> 
 		   </div>		
 	   </section>
+	   <div id="popUp"></div>
 	  </body>
 <!--   Popup's   -->
 
@@ -401,7 +402,7 @@ function projectEmployee(projectId){
             result = result + '	     <th>Rejected hrs</th>';
             result = result + '	     <th>Open hrs</th>';
             result = result + '	     <th>Wait for approval</th>';
-            result = result + '	     <th>Edit</th>';
+            result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';
         	for (var i=0; i<json.length; i++)
 			{        
@@ -414,14 +415,14 @@ function projectEmployee(projectId){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div><input type="text"  value="'+json[i].empName+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+json[i].projectAssignedDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
+	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
 	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><input type="text" value="HH:MM" class="project_inline_field project_inline_field_time"></div></td>';
-	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -445,6 +446,53 @@ function projectEmployee(projectId){
 </script>
 
 <script>
+function deleteProject(projectMemberId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveReason(projectMemberId,userId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reasonForProject = document.getElementById("reasonForProject").value;
+	
+	if(reasonForProject){
+		$("#reasonForProjectDiv").empty();
+		
+		var r = confirm("Do you want terminate the user from Project");
+		if (r == true) {
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+   		    success: function(data) {
+   		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   		    	userProjectDetails(userId,"All");
+   		    }
+	 }); 
+		}
+	}
+	else{
+		$("#reasonForProjectDiv").empty().append("<font class='jquery_form_error_message'>Reason is required</font>") ;
+	}
+}
+</script>
+
+<script>
   function projectTask(projectId){
 	  var result = ""; 
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -458,13 +506,12 @@ function projectEmployee(projectId){
 		    				  var result = ""; 
 		    				  result = result + '<div class="project_tabs_inn_head">';
 		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
-		    				  result = result + '<div class="project_tabs_inn_table">';
+		    				  result = result + '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
 		    				  result = result + '<table>';
 		    				  result = result + '<tbody>';
 		    				  result = result + '<tr id="projectTaskTableId">';
 		    				  result = result + '<th>Task name</th>';
 		    				  result = result + '<th>Task description</th>';
-		    				  result = result + '<th>Edit</th>';
 		    				  result = result + '</tr>';
 		    				  
 			   	        	for (var i=0; i<json.length; i++)
@@ -473,7 +520,6 @@ function projectEmployee(projectId){
 			   		        		result = result + '<tr>';        
 			   		        		result = result + '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.Id+',\'taskName\');"  id="taskName'+opt.Id+'" value="'+opt.taskName+'"  class="project_inline_field"></div></td>';
 			   		        		result = result + '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.Id+',\'description\');" id="description'+opt.Id+'" value="'+opt.description+'" class="project_inline_field"></div></td>';
-			   		        		result = result + '<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
 			   		        		result = result + '</tr>'; 
 			   		        		
 			   				}
@@ -622,14 +668,121 @@ function projectEmployee(projectId){
   }
 </script>     
 
+
+<script>
+$(document).ready(function() {
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+  
+    
+});
+
+</script>
+
+<script>
+function filter(){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var values = [];
+	$('input:checkbox[name=projectStatus]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
+	var clients = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+		    {
+		clients.push($(this).val());
+		    });
+	
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getProjectsByStatusAndClient?${_csrf.parameterName}=${_csrf.token}&values="+values+"&clients="+clients, 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<div class="project_wrap_table">';
+   		    	result = result +'<table>';
+   		    	result = result +'<tbody>';
+   		    	result = result +'<thead>';
+   		    	result = result +'	<tr>';
+   		    	result = result +'	<th>Id</th>';
+   		    	result = result +'    <th>Name</th>';
+   		    	result = result +'     <th>Manager</th>';
+   		    	result = result +'     <th>Date</th>';
+   		    	result = result +'      <th>Client</th>';
+   		    	result = result +'       <th>Status</th>';
+   		    	result = result +'    </tr>';
+   		    	result = result +'</thead>	';
+   		    	for (var i=0; i<json.length; i++)
+   				{   
+   		    		var report = json[i];
+   		    		result = result +'<tr>';
+   		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');">'+report.projectName+'<i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Manager">';
+   		    		result = result +'<div>';
+   		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
+   		    			result = result +'<td><div>'+report.managerLevel1+'</div></td>';
+   		    		}
+   		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
+   		    			result = result +'<td><div>'+report.managerLevel2+'</div></td>';
+   		    		}
+   		    		result = result +'</div>';
+   		    		result = result +'</td>';
+   		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
+   		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+   	   		    		result = result +'- '+report.endDateStr+' </div></td>';
+   		    		}
+   		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
+   		    			result = result +'<td data-title="Client"><div>'+report.client+'</div></td>';  
+   		    		}else{
+   		    			result = result +'<td data-title="Client"><div>---</div></td>';  
+   		    		}
+   		    		result = result +'<td data-title="Status"><div><b class="proj_active">'+report.projectStatus+'</b></div></td>';
+                    result = result +'</tr>';
+   				}
+                result = result +'  </tbody>';
+                result = result +' </table>';
+                result = result +'</div>';
+                $("#projectList").empty();  
+                $("#projectFilterList").empty();  
+   	    	    $("#projectFilterList").append(result);
+   	    	    
+   	    	 
+   		    }
+	 }); 
+	
+	
+}	
+</script> 
+
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
-	alert("fieldName"+fieldName);
 	var fieldValue = $("#"+localFieldName).val();
-	alert("fieldValue"+fieldValue);
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
@@ -660,6 +813,7 @@ function flushTasks() {
       </div>
        <div id="divTaskTd3" style="display:none; float:left;">
             <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+            <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
       </div>
   <!-- =============================== AddTask Divs  ============================ -->     
 <!-- Add Task Script start -->
@@ -730,7 +884,16 @@ $('body').on('blur', '#project_form', function() {
   }
  
 </script>
-
+<script type="text/javascript">
+	function removeRow(rowId) {
+		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		var r = document.getElementById('projectTaskTbl').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+	}
+</script>
 <script type="text/javascript">
  function updateTask(rowId) {
 	 $("#"+rowId+"taskName").val($("#taskName").val()); 
@@ -760,9 +923,12 @@ $(document).ready(function(){
     var frm = $('#project_form').serializeFormJSON();
     var con = JSON.stringify(frm);
     con = con.replace(/[{}]/g, "");
+  //It will escape all the special characters
+    var jsonData = encodeURIComponent(con);
+  
     $.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectId="+projectId, 
+        url: sourceleadUrl+"/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&projectId="+projectId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	 var result = ""; 
@@ -831,9 +997,11 @@ $(document).ready(function(){
 			var frm = $('#employee_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+		    var jsonData = encodeURIComponent(con);
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+con,
+			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 				success: function(data) {
 					 $('#addTeam').modal('hide');
 				},

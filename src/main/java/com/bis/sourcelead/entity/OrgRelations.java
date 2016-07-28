@@ -30,11 +30,11 @@ public class OrgRelations {
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
     private OrgLocations clientLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     
@@ -83,7 +83,8 @@ public class OrgRelations {
 	@Transient
 	private Long projectsCont;
 	
-	
+	@Transient
+	private String clientName;
 
 	public Long getProjectsCont() {
 		return projectsCont;
@@ -228,5 +229,13 @@ public class OrgRelations {
 
 	public void setOrgid(Long orgid) {
 		this.orgid = orgid;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 }

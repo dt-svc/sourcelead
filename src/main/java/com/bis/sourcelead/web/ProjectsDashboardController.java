@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -115,6 +117,11 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 EmailScenarioService emailScenarioService;
+	 
+	 @Autowired
+	 TimesheetSubmissionsService timesheetSubmissionsService;
+	 
+	 
 	
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
@@ -136,16 +143,22 @@ public class ProjectsDashboardController {
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
-		
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
         if(sessionData == null)
         {
             sessionData = new SessionMaintainanceData();
         }
         sessionData.setNav(com.bis.sourcelead.util.Constants.Projects);
-        
         request.getSession().setAttribute("sessionData",sessionData);
-
+        
+        Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+        for(OrgRelations orgRelations:orgClientList){
+        	orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
+        }
+        model.addObject("add_client", orgClientList);
+        model.addObject(orgClientList);
         
         Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
         for(Projects projects: projectsList){
@@ -160,6 +173,22 @@ public class ProjectsDashboardController {
 		return model;
 		
     }
+	
+	
+	// Sammeta David: this controller method is for getting ProjectsCount
+			// Counts based on Status.
+			@RequestMapping(value = "/getProjectsByStatusAndClient")
+			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+
+				String resultJson = "";
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values);
+				 resultJson = toJSON(projectsList);
+				 return resultJson;
+			}
+		/**
+
+
 	
 	/**
 	 * get project details by Id
@@ -275,14 +304,18 @@ public class ProjectsDashboardController {
 			
 			for (int c = 1; c < maxCount; c++) {
 				ProjectTasks  tasks  = new ProjectTasks();
-				tasks.setTaskName(jsonObj.getString(c+"taskName"));
-				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+				if(jsonObj.has(c+"taskName")){
+					tasks.setTaskName(jsonObj.getString(c+"taskName"));
+					if(jsonObj.has(c+"taskDescription")){
+					tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+					}
 				tasks.setCreatedDate(new Date());
 				tasks.setUpdatedDate(new Date());
 				Projects projects = projectsService.getProjectById(projectId);
 				tasks.setProjectId(projects);	
 				
 				ProjectTasks savedtasks = tasksService.addTasks(tasks);
+				}
 			}
 			Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
 		 	
@@ -317,7 +350,15 @@ public class ProjectsDashboardController {
         	 if(pm.getProjectEndDate()!=null){
         		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
         	 }
-	        	
+        	 if(pm.getEmployee()!=null){
+        		 
+        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+        	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
+        	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
+        	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
+        	 pm.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
+        	 
+        	 }	
 			 projectMembersArrList.add(pm);
 		 }
 		 ObjectMapper mapper = new ObjectMapper();
@@ -353,6 +394,9 @@ public class ProjectsDashboardController {
 			}else{
 				user.setIsMailSent(Status.N);
 			}
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
+			
 			User  usr=	userService.addUser(user);
 			
 			//Employee Saving
@@ -373,7 +417,7 @@ public class ProjectsDashboardController {
 			userRole.setRoles(roles);
 			userRole.setUser(usr);
 			userRole.setOrgLocations(loginOrgLocation);
-			userRole.setIsPrimary(0);
+			userRole.setIsPrimary(1);
 			userRole.setCreatedBy(users.getUserCode());
 			userRole.setCreatedDate(new Date());
 			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
