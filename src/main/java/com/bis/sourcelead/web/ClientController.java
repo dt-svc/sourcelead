@@ -137,6 +137,13 @@ public class ClientController {
 			}
 			sessionData.setNav(Constants.Clients);
 			request.getSession().setAttribute("sessionData",sessionData);
+			
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "clientCreateMsg");
+			}
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
@@ -237,6 +244,9 @@ public class ClientController {
 				/*Saving for Projects*/
 				projectsService.saveProject(project);
 			}
+			
+			 SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Successfully you have created a client");
+			 
 			 return "clientDashboard";
 	   }
 	

@@ -96,7 +96,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		  Session session = this.sessionFactory.getCurrentSession();
 	      String query = ("from OrgLocations orgLocations where  orgLocations.locationCode =:locationCode");
 		  
-	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("locationCode", locationCode).list();
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("locationCode", locationCode).setCacheable(true).list();
 	     
 	       OrgLocations orgLocation = null;
 			if(orgLocations != null && !orgLocations.isEmpty())
