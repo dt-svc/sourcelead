@@ -73,6 +73,21 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 				 																					 .list();
 	        return projectHirachyList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getProjectIdsByLoginUserId(Long userId) {
+		logger.debug("In ProjectsDaoImpl class getProjectIdsByLoginUserId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId =:userId";
+		List<Long> projectsIdList =  session.createQuery(query.toString())
+									.setLong("userId", userId)
+									.setCacheable(true).list();
+		
+		return projectsIdList;
+
+	}
 	
 	
 	

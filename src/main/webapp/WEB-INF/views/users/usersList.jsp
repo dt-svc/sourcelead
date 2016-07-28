@@ -24,6 +24,12 @@ window.onload = function () {
   <section class="content-wraper">
   <div class="content-dashboard clearfix">
     <section class="content-header clearfix">
+         <c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+	
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
@@ -200,5 +206,9 @@ function getUserSummary(userId){
 	}
   
 </script>
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 
     

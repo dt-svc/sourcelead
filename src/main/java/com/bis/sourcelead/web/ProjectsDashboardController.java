@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -160,7 +160,15 @@ public class ProjectsDashboardController {
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
         
-        Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
+        List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
+        
+        Collection<Projects> projectsList = null;
+        try{
+        	projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
@@ -406,6 +414,7 @@ public class ProjectsDashboardController {
 			}
 			employee.setOrgLocations(loginOrgLocation);
 			employee.setCreatedBy(users.getUserCode());
+			employee.setStatus("ACTIVE");
 			employee.setCreatedDate(new Date());
 			Employees  emp=	employeesService.addEmployee(employee);
 			

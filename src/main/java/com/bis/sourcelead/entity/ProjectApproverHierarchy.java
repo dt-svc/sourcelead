@@ -57,7 +57,7 @@ public class ProjectApproverHierarchy {
     private String updatedBy;
     
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
 
 	public Long getId() {

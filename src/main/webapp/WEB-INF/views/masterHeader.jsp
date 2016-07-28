@@ -82,11 +82,12 @@
         <ul class="list-inline list-unstyled pull-left custom-navbar-inner">
           <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
           <li> <a href="javascript:void(0)" title="Quick Links" id="qlinks"> <i class="fa fa-link"></i> </a>
-            <div class="qlinks-area">
+              <div class="qlinks-area ">
               <ul class="list-unstyled">
-                <li><a href="javascript:void(0)">Quick link1</a></li>
-                <li><a href="javascript:void(0)">Quick link1</a></li>
-                <li><a href="javascript:void(0)">Quick link1</a></li>
+                <li><a href="${sourceleadUrl}/userCreation"><i class="fa fa-user-plus"></i>&nbsp;Create User</a></li>
+                <li><a href="${sourceleadUrl}/client"><i class="fa fa-bar-chart"></i>&nbsp;Create Client</a></li>
+                <li><a href="${sourceleadUrl}/project"><i class="fa fa-users"></i>&nbsp;Create Project</a></li>
+                <li><a href="${sourceleadUrl}/uploadForm"><i class="fa fa-download"></i>&nbsp;Import Users</a></li>
               </ul>
             </div>
           </li>
