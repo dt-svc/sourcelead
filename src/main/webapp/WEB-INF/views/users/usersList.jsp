@@ -207,4 +207,8 @@ function getUserSummary(userId){
   
 </script>
 
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+
     
