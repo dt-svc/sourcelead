@@ -70,8 +70,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; General Form
-			&raquo; Form</div>
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="projectDashboard">Projects List</a> &raquo; Project Form</div>
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -191,15 +190,15 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="taskName"
 																	name="taskName" placeholder="Enter Task Name"
-																	class="form-control">
+																	class="form-control" onblur="validatetaskName();">
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group" id="taskDescriptionDIV">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
 																<textarea class="form-control"
 																	placeholder="Enter Task Description"
-																	id="taskDescription" name="taskDescription" rows="2"></textarea>
+																	id="taskDescription" name="taskDescription" rows="2" onblur="ValidatetaskDescription();"></textarea >
 															</div>
 														</div>
 													</div>
@@ -378,8 +377,6 @@
 <!-- Content Area Ends-->
 
 
-
-
 <!-- Modal content Add Team-->
 <div role="dialog" id="addTeam" class="modal fade">
 	<div class="modal-dialog">
@@ -532,17 +529,51 @@
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
+
+<script >
+
+function validatetaskName()
+{
+	var abc = document.getElementById("taskName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#taskNameDIV').find('p.jquery_form_error_message').remove();
+	
+	} 
+ 
+</script>
+
+<script >
+
+function validatetaskDescription()
+{
+	var abcd = document.getElementById("taskDescription").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#taskDescriptionDIV').find('p.jquery_form_error_message').remove();
+	
+	} 
+ 
+</script>
+
 <script type="text/javascript">
 	function addTasks() {
-
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-
-		if ($('#taskName').val() == '') {
-			$("input#taskName")
-					.after(
-							"<p class='jquery_form_error_message'>Task Name is required</span>");
+		 $('#taskDescriptionDIV').find('p.jquery_form_error_message').remove();
+		 
+		if ($('#taskName').val() == '' || $('#taskDescription').val() == '' ){
+			
+			if ($('#taskName').val() == '')
+				{
+				$("input#taskName").after("<p class='jquery_form_error_message'> Enter task name</span>");
+				}
+				
+				if ($('#taskDescription').val() == ''){
+					
+					$("textarea#taskDescription").after("<p class='jquery_form_error_message'>Task Description is required</span>");
+				}
+			
 			return true;
 		}
+		
 
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());

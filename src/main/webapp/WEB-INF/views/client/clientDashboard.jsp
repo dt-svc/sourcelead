@@ -26,7 +26,7 @@
 			<div class="pull-left">
 				<h2>Clients</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Client List</div>
 			<!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
 		</section>
 

@@ -27,6 +27,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Users List </div>
     </section>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">

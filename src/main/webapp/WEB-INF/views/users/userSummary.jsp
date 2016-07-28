@@ -27,8 +27,7 @@
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum">Home &raquo; General Form
-				&raquo; Create User</div>
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -40,7 +39,7 @@
 	}
 </script>
 
-		<script> 
+<script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 getUserSummaryDetails(userId);
@@ -115,8 +114,7 @@ $(document).ready(function(){
 			    var result = "";
 			    
 				result = result + '<div class="project_tabs_inn_table">';
-				
-				
+				firstname(json.user.firstName);
 				
 				result = result + '  <div class="project_details">';
 				if(json.user.userState != null && json.user.userState != "" && json.user.userState != 'INACTIVE'){
@@ -225,6 +223,19 @@ $(document).ready(function(){
 	});
  }
 </script>
+
+<!--  Script for First Name displaying right corner  -->
+<script type="text/javascript">
+
+var fName = document.getElementById('fname');
+function firstname(name)
+{
+	fName.innerHTML = name;
+} 
+</script>
+
+
+
 <script>
  function userProjectDetails(userId,filterValue){    
 	 var sourceleadUrl ='${sourceleadUrl}';

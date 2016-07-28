@@ -29,7 +29,7 @@
           <div class="pull-left">
             <h2>Create User</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; User Form </div>
         </section>
         <div class="content-area clearfix">
           <section class="action-btns clearfix">
@@ -133,14 +133,14 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="" onblur="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onblur="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-100">
+                    <input type="text" class="form-control" id="FirstName" name="FirstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20">
                     <span class="hidden">First Name</span>
                   </div>
                 </div>
@@ -156,7 +156,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-20 validate_email" onblur="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -694,6 +694,7 @@ function flushProject(){
  }
  </script>     
 
+ <!-- start script for project sequence number  -->
  
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
@@ -720,7 +721,9 @@ function flushProject(){
  }
  </script> 
  
-
+ <!-- end script for project sequence number  -->
+ 
+<!-- start script for datepicker -->
 <script>
   $( function() {
 	  
@@ -750,3 +753,4 @@ function flushProject(){
   } );
 </script>
 
+<!-- end script for datepicker -->

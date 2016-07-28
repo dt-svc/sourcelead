@@ -7,7 +7,7 @@
       <div class="pull-left">
         <h2>Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
+      
     </section>
     <div class="content-dashboard clearfix">
       <section class="clearfix section-action-btns hidden">

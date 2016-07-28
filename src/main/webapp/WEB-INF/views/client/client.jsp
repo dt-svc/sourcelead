@@ -1,21 +1,16 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
@@ -31,8 +26,7 @@
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="dashboard"> General Form
-			&raquo; Client</div>
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="clientDashboard">Clients List</a>&raquo; Client Form</div>
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -132,7 +126,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectId"
 																	name="projectId" placeholder="Enter Project Id"
-																	class="form-control" onblur="validateProjectId();">
+																	data-validation="required validate_Space validate_length length2-20" class="form-control" onblur="validateProjectId();">
 															</div>
 														</div>
 
@@ -140,8 +134,8 @@
 															<label class="col-md-3">Project Name</label>
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
-																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control">
+																	name="projectName" placeholder="Enter Project Name" field-name="Project Name"
+																	data-validation="required validate_Space validate_length length2-100" class="form-control" onblur="validateProjectName()">
 															</div>
 														</div>
 														<div class="form-group">
@@ -183,8 +177,7 @@
 																			<span class="input-group-addon"><i
 																				class="fa fa-calendar"></i></span> <input type="text"
 																				class="form-control" value="" id="projectStartDate"
-																				name="StartDate" field-name="Start Date"
-																				onclick="selectStartDate();">
+																				name="StartDate" onclick="selectStartDate();" onblur="validateProjecStartdate()">
 																		</div>
 																	</div>
 																	<div class="col-lg-6">
@@ -466,28 +459,51 @@
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
 		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
-		if ($('#projectId').val() == '' || $('#projectId').val() == 0
-				|| $('#projectId').val() == null) {
-			$("input#projectId")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project ID</span>");
+		
+		var namelength = documet.getElementById("projectId").value.length;
+		if ($('#projectId').val() == '' || $('#projectName').val() == '' || $('#projectStartDate').val() == '') {
+			
+			if($('#projectId').val() == '')
+			{
+				
+			$("input#projectId").after(	"<p class='jquery_form_error_message'>Enter Project ID</span>");
+			
+			if((namelength < 2) || (namelength >=100))
+				{
+				$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+				}
+			return false;
+			
+			}
+		
+			if($('#projectName').val() == '')
+			{
+				
+			$("input#projectName") .after( "<p class='jquery_form_error_message'>Enter Project Name</span>");
+			
+			}
+			
+			if($('#projectStartDate').val() == '')
+			{
+				
+			$("input#projectStartDate") .after( "<p class='jquery_form_error_message'>Enter Project Start Date</span>");
+			}
+			
 			return true;
 		}
 
-		if ($('#projectName').val() == '' || $('#projectName').val() == 0
-				|| $('#projectName').val() == null) {
-			$("input#projectName")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Name</span>");
+		/* if ($('#projectName').val() == '' || $('#projectName').val() == 0 || $('#projectName').val() == null) {
+			
+			$("input#projectName") .after( "<p class='jquery_form_error_message'>Enter Project Name</span>");
 			return true;
 		}
-		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0
-				|| $('#projectStartDate').val() == null) {
-			$("input#projectStartDate")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Start Date</span>");
+		
+		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0 || $('#projectStartDate').val() == null) {
+			
+			$("input#projectStartDate") .after( "<p class='jquery_form_error_message'>Enter Project Start Date</span>");
 			return true;
-		}
+		} */
+		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -547,6 +563,28 @@
 		$("#projectEndDate").val('');
 		addtasksCountafterAddingTask();
 	}
+</script>
+
+
+<script>
+function validateProjectName() {
+	
+		var Projectname = document.getElementById("projectName").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script type="text/javascript">
+
+function validateProjecStartdate()
+{
+	var Projectdate = document.getElementById("projectStartDate").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
+	
+	} 
+ 
 </script>
 <script type="text/javascript">
 	function removeRow(rowId) {
@@ -634,14 +672,14 @@
 		document.getElementById("project_form").reset();
 	});
 </script>
-
-
+ 
 
 <script type="text/javascript">
 	function validateProjectId() {
 		var ProjectSequeneNumber = document.getElementById("projectId").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 			$
 					.ajax({
@@ -746,7 +784,7 @@ var addtaskcount =null;
 		  var r = document.getElementById('projectTaskTbl').rows[rowId];
              var count = 2*(r.cells.length);
 			    for(i=0;i<=count;i++){
-			        r.deleteCell(0);
+			     r.deleteCell(0);
 			    }
 	}
  
