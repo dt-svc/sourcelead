@@ -644,7 +644,7 @@ function checkHours(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 200; p++){  
+	 for (var p = 1; p < 1000; p++){  
 		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {

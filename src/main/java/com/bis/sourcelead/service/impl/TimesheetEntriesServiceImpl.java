@@ -323,7 +323,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              else{
 						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
 										      for(ProjectTasks pt   : ProjectTasksList){
-										    	       if(pt.getId() == timesheetEntries.getProjectTask().getId()){
+										    	       if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 										    	       }
 										    	       else{
@@ -790,7 +790,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
 									      
 									      for(ProjectTasks pt   : ProjectTasksList){
-									    	  if(pt.getId() == timesheetEntries.getProjectTask().getId()){
+									    	  if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 								    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 								    	       }
 								    	       else{

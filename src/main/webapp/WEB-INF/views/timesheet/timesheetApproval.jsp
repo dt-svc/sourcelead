@@ -844,7 +844,7 @@ function checkHours(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 200; p++){  
+	 for (var p = 1; p < 1000; p++){  
 		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -866,7 +866,8 @@ function checkHours(){
 		var minutes = t % 60;
 		total = hours +":"+ minutes;
   }  
-	 var time = total.split(':'); 
+	 var time = total.split(':');
+	 if(!isNaN(time[0])){
 	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
 	    	 
 	 }else{
@@ -892,6 +893,7 @@ function checkHours(){
 	    		result = result+"Sunday ,";
 	    	}
 	    	
+	 }
 	 }
 }   
 	
