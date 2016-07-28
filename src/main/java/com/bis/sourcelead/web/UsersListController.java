@@ -94,10 +94,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			e.printStackTrace();
 		}
 		
-	/*	for(Roles roles : rolesList){
+	/*   for(Roles roles : rolesList){
 			try {
 				List<User> usersList = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roles.getId(), orgLocations.getId(),user.getId());
-				System.out.println(usersList.size());
+				roles.setRolesCount(usersList.size());
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
@@ -120,7 +120,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-		Collection<UserRole> rolesList = new ArrayList<UserRole>();
+		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 		
 	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){

@@ -34,12 +34,12 @@ public class OrgLocations {
     @Column(name = "id", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "ORG_ID", nullable = false)
     private Org org;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
     private User user;
 	

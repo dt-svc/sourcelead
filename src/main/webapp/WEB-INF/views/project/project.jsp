@@ -306,7 +306,7 @@
 									<div class="modal-dialog modal-lg">
 										<div class="modal-content">
 											<div class="modal-header">
-												<button data-dismiss="modal" class="close" type="button">×</button>
+												<button data-dismiss="modal" class="close" type="button">Ã—</button>
 												<h4 class="modal-title">Assign Employees</h4>
 											</div>
 											<div class="modal-body clearfix">
@@ -386,7 +386,7 @@
 		<form:form id="addEmployee_form" name="addEmployee_form" method="post">
 			<div class="modal-content" id="newEmployee">
 				<div class="modal-header">
-					<button data-dismiss="modal" class="close" type="button">×</button>
+					<button data-dismiss="modal" class="close" type="button">Ã—</button>
 					<h4 class="modal-title">Add Employees</h4>
 				</div>
 				<div class="modal-body clearfix">
@@ -459,7 +459,7 @@
 		<form:form id="addClient_form" name="addClient_form" method="post">
 			<div class="modal-content" id="newClient">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">×</button>
+					<button type="button" class="close" data-dismiss="modal">Ã—</button>
 					<h4 class="modal-title">Add Client</h4>
 				</div>
 				<div class="modal-body clearfix">
@@ -938,11 +938,11 @@
 										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
 								output = output
-										+ "<input  id='startDate"+ opt.id+ "' onclick='getStartDatePickerById(\"startDate"+ opt.id+ "\","+ opt.id+ ")'  type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
+										+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output
 										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-								output = output + "<input id='endDate" + opt.id + "' onclick='getEndDatePickerById(\"endDate" + opt.id + "\"," + opt.id + ")' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+								output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output + "</tr>";
 							}
@@ -952,6 +952,32 @@
 
 						$("#employeesList").empty();
 						$("#employeesList").append(output);
+						
+					  //StartDate And EndDate Pickers
+				       if(json.length > 0){
+					    	for (var i = 0; i < json.length; i++) {
+								var opt = json[i];
+								$('#startDate'+opt.id).datepicker({
+									dateFormat : 'yy-mm-dd',
+									onSelect : function(selected) {
+										var dt = new Date(selected);
+										dt.setDate(dt.getDate() + 1);
+										$("#endDate"+opt.id).datepicker("option", "minDate", dt);
+									}
+								});
+	
+								$('#endDate'+opt.id).datepicker({
+									dateFormat : 'yy-mm-dd',
+									onSelect : function(selected) {
+										var dt = new Date(selected);
+										dt.setDate(dt.getDate() - 1);
+										$("#startDate"+opt.id).datepicker("option", "maxDate", dt);
+									}
+								});
+							}
+				      }
+						
+						
 					},
 					error : function(e) {
 					}

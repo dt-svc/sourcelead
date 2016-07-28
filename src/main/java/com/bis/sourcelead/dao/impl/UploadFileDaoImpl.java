@@ -398,6 +398,8 @@ public class UploadFileDaoImpl implements UploadFileDao {
 						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xlsx");
 						createExcelworkbook.write(fos);
 						fos.close();
+					}
+					if(count > 0){
 						isFileCreated = "FailureUsersForCheck.xlsx";
 					}else{
 						isFileCreated = "failed";
@@ -569,11 +571,14 @@ public class UploadFileDaoImpl implements UploadFileDao {
 					FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
 					createExcelworkbook.write(fos);
 					fos.close();
+				}
+				if(count > 0){
 					isFileCreated = "FailureUsersForCheck.xls";
 				}else{
 					isFileCreated = "failed";
 				}
 			}
+			
 		}
 			fis.close();
 		} catch (IOException e) {
@@ -1050,6 +1055,13 @@ public class UploadFileDaoImpl implements UploadFileDao {
 								return isValidated;
 							}
 						}
+					}else{
+						isValidated = isMobileNumberValid(row.getCell(4).toString());
+						if(isValidated){
+						}else{
+							userImport.setReason("Invalid MobileNumber");
+							return isValidated;
+						}
 					}
 				}else{
 					HSSFCell myCell4 = (HSSFCell) row.getCell(4);
@@ -1076,13 +1088,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 			}
 			
-			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-				 DataFormatter formatter = new DataFormatter();
-				 Cell cell =row.getCell(7);
-				 String j_username = formatter.formatCellValue(cell);
-				 logger.info("================"+j_username);
-
-			}
 			/*Cell cell = row.getCell(7);
 			Date s = cell.getDateCellValue();
 			logger.info("=========================================="+cell.getDateCellValue());
@@ -1113,11 +1118,63 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
+			
+			// Day Hours Validation
+			
+			if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			    if (fileName.toLowerCase().endsWith("xlsx")) {
+					  XSSFCell myCell10 = (XSSFCell) row.getCell(10);
+					     if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					    	 myCell10.setCellType(Cell.CELL_TYPE_STRING);
+						String dayHours = myCell10.getStringCellValue();
+						if (dayHours != null && !"".endsWith(dayHours)) {
+							isValidated = isDayHourValid(dayHours);
+							if(isValidated){
+							}else{
+								userImport.setReason("Invalid Day Hours");
+								return isValidated;
+							}
+						}
+					}else{
+						isValidated = isDayHourValid(row.getCell(10).toString());
+						if(isValidated){
+						}else{
+							userImport.setReason("Invalid Day Hours");
+							return isValidated;
+						}
+					}
+				
+			    }else{
+					HSSFCell myCell10 = (HSSFCell) row.getCell(10);
+					if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						myCell10.setCellType(Cell.CELL_TYPE_STRING);
+						String dayHours = myCell10.getStringCellValue();
+						if (dayHours != null && !"".endsWith(dayHours)) {
+							isValidated = isDayHourValid(dayHours);
+							if(isValidated){
+							}else{
+								userImport.setReason("Invalid Day Hours");
+								return isValidated;
+							}
+					}
+				}else{
+					isValidated = isDayHourValid(row.getCell(10).toString());
+					if(isValidated){
+					}else{
+						userImport.setReason("Invalid Day Hours");
+						return isValidated;
+					}
+				}
+			
+			}
+			}
+			
+			
+			
 		}
 		return true;
 	}
-	
-	
+
 	/**
 	 * Validate CSV data whle storing it into Database
 	 * @param userImport 
@@ -1160,6 +1217,16 @@ public class UploadFileDaoImpl implements UploadFileDao {
 				userImport.setReason("Required field is  mandatory");
 				return false;
 			}
+			
+			if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
+				isValidated = isDayHourValid(record.get(Constants.DAY_HOURS));
+				if(isValidated){
+					
+				}else{
+					userImport.setReason("Invalid Date");
+					return isValidated;
+				}
+			}
 		return true;
 	}
 /**
@@ -1173,6 +1240,11 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
 	}
+	/**
+	 * Prepares Headers for xls and xlsx
+	 * @param createExcelsheet
+	 * @return
+	 */
 	private Sheet setExcelHeader(Sheet createExcelsheet) {
 		
 		Row excelHeader = createExcelsheet.createRow(0);
@@ -1297,12 +1369,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
-		//sdf.setLenient(false);
-
+		sdf.setLenient(false);
 		try {
 		Date date = sdf.parse(dateToValidate);
-		System.out.println(date);
-
 		} catch (ParseException e) {
 
 		logger.error(""+e.getMessage());
@@ -1338,13 +1407,25 @@ public class UploadFileDaoImpl implements UploadFileDao {
 	private boolean isMobileNumberValid(String mobileNmber){
 		String regex = "\\d+";
 		boolean flag = false;
-		if(mobileNmber.length() < 20){
+		if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
 			flag = mobileNmber.matches(regex);
 		}else{
 			flag=false;
 		}
 		return flag;
 	}
+	
+	  private boolean isDayHourValid(String dayHours) {
+		  String regex = "\\d+";
+			boolean flag = false;
+			int hours = Integer.parseInt(dayHours);
+			if(hours <=24){
+				flag = dayHours.matches(regex);
+			}else{
+				flag=false;
+			}
+			return flag;
+		  }
 		
 
 }
