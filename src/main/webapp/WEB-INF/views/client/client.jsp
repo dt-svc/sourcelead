@@ -42,7 +42,7 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="orgName"
 									field-name="Client Name"
-									data-validation="required validate_length length2-100" value="">
+									data-validation="required validate_Space validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -50,7 +50,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value=""> <span
+									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -58,7 +58,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="">
+									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value=""> <span class="hidden">Client
+									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -204,8 +204,8 @@
 							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
-									name="webSite" field-name="Website"
-									data-validation="validate_length length2-100 validate_domain"
+									name="webSite" onblur="validateWebsite();" field-name="Website"
+									data-validation="validate_Space validate_length length2-100 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -214,7 +214,7 @@
 							<label class="col-md-3" for="Project Manager">Email</label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_length length2-100 validate_email"
+									data-validation="validate_Space validate_length length2-100 validate_email"
 									data-validation-optional="true" value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
@@ -224,7 +224,7 @@
 							<label class="col-md-3">Mobile Number</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="phone" name="phone"
-									data-validation="validate_phone  validate_length length9-20"
+									data-validation="validate_Space validate_phone  validate_length length9-20"
 									data-validation-optional="true" field-name="Mobile Number"
 									value=""> <span class="hidden">Mobile Number</span>
 							</div>
@@ -770,4 +770,53 @@ function getChildLevel1Approvers(currentApproverId){
 function flushProject(){
 	 $('#level2Manager').val('');
 }
+</script>
+
+<script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="
+						+ website + "&sourceleadBLockedwebsites="
+						+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == 'Website Duplicated' || result == 'Invalid Website') {
+						//existed website
+						$("input#webSite").after(
+								"<p class='jquery_form_error_message'>"
+										+ website
+										+ " is Already Existed</span>");
+						document.getElementById("webSite").setAttribute(
+								'record-exist', 'yes');
+						document.getElementById("webSite").setAttribute(
+								'record-exist-errorMsg',
+								website + ' is '+result);
+					} else {
+						//New WebSite class="form-control"
+						//$("#save_client").removeAttr("disabled");
+						$('input#webSite').removeAttr(
+								"class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class',
+								'valid form-control');
+						$('#companyWebsiteDiv').find(
+								'p.jquery_form_error_message').remove();
+						$("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	}
 </script>
