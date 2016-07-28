@@ -12,6 +12,11 @@
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
+		<c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
 			<div class="pull-left">
 				<h2>Clients</h2>
 			</div>
@@ -431,3 +436,8 @@ function getEndDatePickerById(projectSequeneNumber,localFieldName){
 </script>
 
 
+<!-- Show success message after form submission script -->
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+<!-- End -->
