@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<<<<<<< HEAD
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 <link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -13,11 +12,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-=======
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style>
@@ -32,12 +26,7 @@
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-<<<<<<< HEAD
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="clientDashboard">Clients List</a>&raquo; Client Form</div>
-=======
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
-			&raquo; Client</div>
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="clientDashboard">Clients List</a>&raquo; Client</div>
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -59,7 +48,7 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="orgName"
 									field-name="Client Name"
-									data-validation="required validate_Space validate_length length2-100" value="">
+									data-validation="required validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -67,7 +56,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
+									name="country" field-name="Client Country" value=""> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -75,7 +64,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
+									field-name="Client State" class="form-control" value="">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -85,7 +74,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
+									field-name="Client City" value=""> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -98,7 +87,10 @@
 										<button class="btn btn-default" type="button">
 											<span class="badge" id="addTaskCount">0
 										</button>
-										<button class="btn btn-primary" type="button" data-toggle="modal"  onclick="flushProject();" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;Add Projects
+										<button class="btn btn-primary" type="button"
+											data-toggle="modal" data-target="#addTask">
+											<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View
+											/ Add Projects
 										</button>
 									</div>
 								</div>
@@ -151,12 +143,14 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();">
+																	<select class="form-control select-bg"
+																		name="projectManager" id="projectManager">
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
-																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
+																			<option value="${option.id}&${option.firstName}">${option.firstName}</option>
 																		</c:forEach>
-																	</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();"">Add Level-II</span>
+																	</select> <span class="btn btn-default formic1 addLevel">Add
+																		Level-II</span>
 																</div>
 																<span class="hidden">Select Project Manager</span>
 															</div>
@@ -164,10 +158,11 @@
 														<div class="form-group level-second">
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
-																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
+																<select class="form-control select-bg"
+																	name="level2Manager">
 																	<option value=''>-- Select Manager --</option>
 																	<c:forEach var="option" items="${user_List}">
-																		<option value="${option.id}">${option.firstName} ${option.lastName}</option>
+																		<option value="${option.id}">${option.firstName}</option>
 																	</c:forEach>
 																</select>
 															</div>
@@ -177,7 +172,6 @@
 															<label class="col-md-3">Date</label>
 															<div class="col-md-9">
 																<div class="row">
-<<<<<<< HEAD
 																	<div class="col-lg-6">
 																		<div class="input-group">
 																			<span class="input-group-addon"><i
@@ -185,17 +179,14 @@
 																				class="form-control" value="" id="projectStartDate"
 																				name="StartDate" onclick="selectStartDate();" onblur="validateProjecStartdate()">
 																		</div>
-=======
-																	<div class="col-lg-6 positionRelative">
-																		
-																     <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" readonly="readonly">
-																	 <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>																			
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 																	</div>
-																	<div class="col-lg-6 positionRelative">
-																		
-																	<input type="text" class="form-control" value="" id="projectEndDate" name="EndDate"  readonly="readonly" >
-																		<span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> 
+																	<div class="col-lg-6">
+																		<div class="input-group">
+																			<span class="input-group-addon"><i
+																				class="fa fa-calendar"></i></span> <input type="text"
+																				class="form-control" value="" id="projectEndDate"
+																				name="EndDate" onclick="selectStartDate();">
+																		</div>
 																	</div>
 																</div>
 															</div>
@@ -231,8 +222,8 @@
 							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
-									name="webSite" onblur="validateWebsite();" field-name="Website"
-									data-validation="validate_Space validate_length length2-100 validate_domain"
+									name="webSite" field-name="Website"
+									data-validation="validate_length length2-100 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -241,7 +232,7 @@
 							<label class="col-md-3" for="Project Manager">Email</label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_Space validate_length length2-100 validate_email"
+									data-validation="validate_length length2-100 validate_email"
 									data-validation-optional="true" value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
@@ -251,7 +242,7 @@
 							<label class="col-md-3">Mobile Number</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="phone" name="phone"
-									data-validation="validate_Space validate_phone  validate_length length9-20"
+									data-validation="validate_phone  validate_length length9-20"
 									data-validation-optional="true" field-name="Mobile Number"
 									value=""> <span class="hidden">Mobile Number</span>
 							</div>
@@ -282,6 +273,7 @@
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
 
 <script type="text/javascript">
 	(function($) {
@@ -461,31 +453,6 @@
 
 
 <!-- =============================== AddTask Divs  ============================ -->
-
-<!--  Date picker starts here -->
-<script>
-  $( function() {
-	  $('#projectStartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	            $("#EndDate").datepicker("option", "minDate", dt);
-	        }
-	  });
-	  
-	  $('#projectEndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	        onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() - 1);
-	            $("#projectStartDate").datepicker("option", "maxDate", dt);
-	        }
-	  });
-	  
-  } );
-</script>
-<!--  Date picker ends here -->
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
@@ -746,6 +713,31 @@ function validateProjecStartdate()
 	}
 </script>
 
+<!-- Add Task Script Ends -->
+
+<!-- Date Picker Script start here -->
+<script>
+	function selectStartDate() {
+		$('#projectStartDate').datepicker({
+			dateFormat : 'yy-mm-dd',
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1);
+				$("#projectEndDate").datepicker("option", "minDate", dt);
+			}
+		});
+
+		$('#projectEndDate').datepicker({
+			dateFormat : 'yy-mm-dd',
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				$("#projectStartDate").datepicker("option", "maxDate", dt);
+			}
+		});
+	};
+</script>
+<!-- Date Picker Script end here -->
 
 <script type="text/javascript">
 function addtasksCountafterRemoving(){
@@ -796,99 +788,4 @@ var addtaskcount =null;
 			    }
 	}
  
-</script>
-
-
-<script type="text/javascript">
-function getLevel2Approvers(fieldName){
-	   var managerID = document.getElementById("projectManager").value;
-		var mgr = managerID.split("&");
-		var currentApproverId = mgr[0];
-    	 getChildLevel1Approvers(currentApproverId); 
-} 
-</script>
-
-
-<script type="text/javascript">
-function getChildLevel1Approvers(currentApproverId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-Select Manager-</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-					}
-		        	$("#level2Manager").empty();
-			        $("#level2Manager").append(output);
-		        },
-		        error: function(e){
-		            
-		        }
-		    });
-	 }else{
-		 getApproversLevel2();
-	 }
-} 
-</script> 
-
-<script type="text/javascript">
-function flushProject(){
-	 $('#level2Manager').val('');
-}
-</script>
-
-<script type="text/javascript">
-	function validateWebsite() {
-		var website = document.getElementById("webSite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		if (website != null && website != '') {
-
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="
-						+ website + "&sourceleadBLockedwebsites="
-						+ sourceleadBLockedwebsites,
-				success : function(data) {
-					var result = data;
-					if (result == 'Website Duplicated' || result == 'Invalid Website') {
-						//existed website
-						$("input#webSite").after(
-								"<p class='jquery_form_error_message'>"
-										+ website
-										+ " is Already Existed</span>");
-						document.getElementById("webSite").setAttribute(
-								'record-exist', 'yes');
-						document.getElementById("webSite").setAttribute(
-								'record-exist-errorMsg',
-								website + ' is '+result);
-					} else {
-						//New WebSite class="form-control"
-						//$("#save_client").removeAttr("disabled");
-						$('input#webSite').removeAttr(
-								"class record-exist record-exist-errormsg");
-						$('input#webSite').attr('class',
-								'valid form-control');
-						$('#companyWebsiteDiv').find(
-								'p.jquery_form_error_message').remove();
-						$("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						});
-					}
-				},
-
-			});
-		}
-	}
 </script>

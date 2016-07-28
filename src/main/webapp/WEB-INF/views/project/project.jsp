@@ -55,11 +55,9 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-<<<<<<< HEAD
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="projectDashboard">Projects List</a> &raquo; Project Form</div>
-=======
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
+
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project</div>
+
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -187,7 +185,7 @@
 															<div class="col-md-9">
 																<textarea class="form-control"
 																	placeholder="Enter Task Description"
-																	id="taskDescription" name="taskDescription" rows="2" onblur="ValidatetaskDescription();"></textarea >
+																	id="taskDescription" name="taskDescription" rows="2" ></textarea >
 															</div>
 														</div>
 													</div>
@@ -546,20 +544,9 @@ function validatetaskDescription()
 <script type="text/javascript">
 	function addTasks() {
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-		 $('#taskDescriptionDIV').find('p.jquery_form_error_message').remove();
 		 
-		if ($('#taskName').val() == '' || $('#taskDescription').val() == '' ){
-			
-			if ($('#taskName').val() == '')
-				{
-				$("input#taskName").after("<p class='jquery_form_error_message'> Enter task name</span>");
-				}
-				
-				if ($('#taskDescription').val() == ''){
-					
-					$("textarea#taskDescription").after("<p class='jquery_form_error_message'>Task Description is required</span>");
-				}
-			
+		if ($('#taskName').val() == '' ){
+			$("input#taskName").after("<p class='jquery_form_error_message'> Enter task name</span>");
 			return true;
 		}
 		
