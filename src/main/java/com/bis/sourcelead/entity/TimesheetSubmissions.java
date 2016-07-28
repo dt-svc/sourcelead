@@ -39,7 +39,7 @@ public class TimesheetSubmissions {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
 	private ProjectMembers projectMembers;
 	
@@ -75,7 +75,7 @@ public class TimesheetSubmissions {
 	@Column(name = "LEVEL_OF_APPROVER")
 	private Integer levelOfApprover;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
 	private User approverUserId;
 	

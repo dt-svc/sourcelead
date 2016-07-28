@@ -318,7 +318,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              
 						              
 						              if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
-							              sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+						            	  if(timesheetEntries.getProjectTask() != null){
+						            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+						            	  }
 						              }
 						              else{
 						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
@@ -1206,8 +1208,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										timesheetEntries.setUpdatedDate(new Date());
 										
 										ProjectTasks projectTasks = new ProjectTasks();
+										if (jsonObj.has(c+"submission"+submissionId+"task1Id")){
 										projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
 										timesheetEntries.setProjectTask(projectTasks);
+										}
 										//For Monday Hours
 										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id")){
 											String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
