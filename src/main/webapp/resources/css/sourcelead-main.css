@@ -150,7 +150,7 @@ textarea {
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li a{
 	display:block;
-	padding:15px 14px;
+	padding:16.5px 14px;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li:hover{
 	background:#3081cb;
@@ -982,6 +982,9 @@ float:left;
 .form-icon-min .form-control {
 	width:70%;
 }
+.select-bg option {
+	max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+	}
 .form-icon .formic1, .form-icon-min .formic1 {
 	background:linear-gradient(#ffffff, #e6e9f3) 0 0;
 	background:-webkit-linear-gradient(#ffffff, #e6e9f3) 0 0;
@@ -996,11 +999,11 @@ float:left;
     top: 0;
 }
 .select-bg {
-background:-moz-linear-gradient(#ffffff, #e6e9f3);
-background:-webkit-linear-gradient(#ffffff, #e6e9f3);
-background:-webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e9f3));
-background:-o-linear-gradient(#ffffff, #e6e9f3);
-background:linear-gradient(#ffffff, #e6e9f3);
+background:-moz-linear-gradient(#ffffff, #e6e9f3) !important;
+background:-webkit-linear-gradient(#ffffff, #e6e9f3) !important;
+background:-webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e9f3)) !important;
+background:-o-linear-gradient(#ffffff, #e6e9f3) !important;
+background:linear-gradient(#ffffff, #e6e9f3) !important;
 /*background-image: url(../images/down-arrow.png);
 background-position:right;
 background-repeat:no-repeat;
@@ -1477,7 +1480,7 @@ border-bottom:1px solid #ccc;
 .noti-checkbox input[type="checkbox"]:checked + span:before {
     font-size:15px;
 	content:"\f046";
-	font-family: FontAwesome
+	font-family: FontAwesome;
 	
 }
 /* New Check box adminlte styles ends */
@@ -1494,7 +1497,7 @@ border-bottom:1px solid #ccc;
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
     background: #F4511E !important;
     border: 1px solid #F4511E !important;
-    color: #fff;
+    color: #fff !important;
 }
 /*Dashboard Styles */
 .info-box{
@@ -1546,8 +1549,14 @@ border-bottom:1px solid #ccc;
 }
 .db-widget-sm .info-box-text{
 	text-align:center;
-	font-size:15px;
 	font-weight:normal;
+}
+.db-widget-sm .info-box-text a{
+		font-size:16px;
+		transition:all 0.3s ease-in-out;
+}
+.db-widget-sm .info-box-text a:hover{
+	color:#909090;
 }
 .db-widget-sm .info-box-number{
 	text-align:center;
@@ -1643,9 +1652,9 @@ border-bottom:1px solid #ccc;
     margin:30px auto 0;
     min-height: 350px;
     min-width: 300px;
-    padding: 50px;
-	background-color:#EEEEEE;
-	border:1px solid #BDBDBD;
+    padding:0 30px 5px;
+/*	background-color:#EEEEEE;
+	border:1px solid #BDBDBD;*/
     text-align: center;
 	border-radius:3px;
 	margin-bottom:20px;
@@ -1654,11 +1663,14 @@ border-bottom:1px solid #ccc;
 	color:#FF7043;
 	text-shadow:1px 1px 1px #333;
 }
+.move-btn .fa-home{
+	padding:7px 10px;
+}
 .move-btn .fa-angle-double-right{
-		-webkit-transition: all 1s ease-in-out;
-            -moz-transition: all 1s ease-in-out;
-            -o-transition: all 1s ease-in-out;
-            -ms-transition: all 1s ease-in-out;
+		-webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
 }
 .move-btn:hover .fa-angle-double-right {
 		-webkit-transform: translate(0.5em,0);
@@ -1667,9 +1679,17 @@ border-bottom:1px solid #ccc;
             -ms-transform: translate(0.5em,0);
 }
 .blank-pages-tech .big-txt{
-	color: #202020;
+	color: #E64A19;
     font-size: 30px;
-    font-style: italic;
+}
+.pages-404 {		
+	background:url("../images/404-page.jpg") no-repeat scroll 50% 50%;
+    clear: both;
+    height:500px;
+	background-size: auto;
+}
+div.pages-404.width {
+    background-size: 80% auto;
 }
 /* For Addon styles */
 .positionRelative{
@@ -1698,50 +1718,73 @@ border-bottom:1px solid #ccc;
 }
 .div-checkbox span{
     position: relative;
-    top:0px;
+    top:3px;
     padding-left:5px;
 }
 .div-checkbox input[type="checkbox"] {
     position: relative;
-    top: 2px;
+    top: 15px;
 }
 .tblminwidth-50{
-	min-width:50px !important;
+    min-width:50px !important;
 }
 .tblminwidth-75 {
-	min-width:75px !important;
+    min-width:75px !important;
 }
 .tblminwidth-125
 {
-	min-width:125px !important;
+    min-width:125px !important;
+}
+.tblminwidth-150
+{
+    min-width:150px !important;
 }
 .tbldata-dotdot {
-	overflow: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-	width:180px;
-	display:block;
+    width:180px;
+    display:block;
 }
 .tbldata-dotdot-vsm {
-	overflow: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-	width:150px;
-	display:block;
+    width:125px;
+    display:block;
 }
 .tbldata-dotdot-sm {
-	overflow: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-	width:180px;
-	display:block;
+    width:150px;
+    display:block;
 }
 .tbldata-dotdot-me {
-	overflow: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-	width:225px;
-	display:block;
+    width:225px;
+    display:block;
+}
+.tbl-cumstom-data table tr td:first-child{
+    width:200px;
+    word-wrap: break-word;
+}
+.tbl-cumstom-data table tr td{
+    word-break: break-all;
+} 
+.tbl-cumstom-data table tr td:last-child{
+    width:50px;
+}
+ input[type="text"].mybtn:after{
+	content:"\f22d";
+	font-family:fontawesome;
+}
+.btn-404{
+	bottom: 5px;
+    left: 37%;
+    position: absolute;
 }
 @media (max-width: 320px) {
   .hidden-xs {
@@ -1753,8 +1796,21 @@ border-bottom:1px solid #ccc;
   .main-header .navbar .custom-navbar ul.custom-navbar-inner li a{
 	  padding:15px 5px;
   }
+
+	div.pages-404.width {
+    background-size:100% auto;
+}
+  .pages-404{
+		height:250px !important;
+}
+.btn-404{
+	left:25%;
+}
 }
 @media (max-width: 767px){
+	.pages-404{
+		height:375px;
+	}
 .tree-view.tree-view-active{
 	display:block !important;
 }

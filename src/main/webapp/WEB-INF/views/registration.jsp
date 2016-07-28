@@ -89,12 +89,12 @@
                  <div>
                  <span>
 	            	<label>First Name</label>
-	                <input type="text" name="firstName"  value="${firstName}" class="signin_fild" field-name="First Name" data-validation="required" />
+	                <input type="text" name="firstName"  value="${firstName}" class="signin_fild" field-name="First Name" data-validation="required validate_length length2-100" />
 	                <b></b>
 	            </span>
 	            <span>
 	            	<label>Last Name</label>
-	                <input type="text" name="lastName"  value="${lastName}" class="signin_fild" field-name="Last Name" data-validation="required"  />
+	                <input type="text" name="lastName"  value="${lastName}" class="signin_fild" field-name="Last Name" data-validation="required validate_length length2-100"  />
 	                <b></b>
 	            </span>
 	               <div class="clearfix"></div>
@@ -103,13 +103,13 @@
 	            <div>
 	            <span>
 	            	<label>Company Name</label>
-	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild"  field-name="Company Name" data-validation="required" />
+	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild"  field-name="Company Name" data-validation="required validate_length length2-250" />
 	                <b></b>
 	            </span>
 	            <span id="companyWebsiteDiv">
 	            	<label>Company website</label>
 
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required"    class="signin_fild" />
+	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_domain validate_length length2-100"    class="signin_fild" />
 
 	                <b></b>
 	            </span>
@@ -119,7 +119,7 @@
 	            <div>
 	            <span id="emailDiv">
 	            	<label>Company email</label>
-	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required" class="signin_fild"  />
+	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required validate_email validate_length length2-100" class="signin_fild"  />
 	                <b></b>
 	            </span>
 	            <span>
@@ -131,8 +131,8 @@
 	            </div>            
 	            <div id=passwordDiv>
 	            <span>
-		            	<label>Password</label>
-		                <input type="password" name="password"  field-name="Password" data-validation="required" value="${password}" id="password" class="signin_fild"   />
+		            	<label>Password</label> 
+		                <input type="password" name="password"  field-name="Password" data-validation="required validate_length length6-100" value="${password}" id="password" class="signin_fild"   />
 		                <b></b>
 		            </span>
 		            <span>

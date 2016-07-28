@@ -37,10 +37,10 @@
  		var msg = ".png extension not allowed";
  		alertMessage(msg);
     	
-    }else if(sizeinbytes > 1000000){
+    }else if(sizeinbytes > 200000){
     	$("#save_button").attr("disabled", "disabled");
  		$( "#save_button").addClass('button').val('Processing..');
- 		var msg = "Image size should be less than 1 MB";
+ 		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
     	
     }else{
@@ -67,6 +67,40 @@ function alertMessage(message){
 
 }
 
+</script>
+
+<script type="text/javascript">
+function deleteImage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteOrgImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function deleteOrgImage(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteOrgImage",
+	        success: function(data) {
+	        	 var result = data;
+     		if(result == "success"){
+     			location.replace(sourceleadUrl+"/orgSettings"); 
+        	 }
+	        
+	       },
+	        
+     }); 
+}
 </script>
 
 <script type="text/javascript">
@@ -98,6 +132,7 @@ function cancel(){
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
+      <div id="loading"></div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
@@ -110,11 +145,15 @@ function cancel(){
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  <div class="btn-group uploadfile">
-				  <button type="button" class="btn btn-primary">
+				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
-				  <label class="btn btn-primary">
+				   <label class="btn btn-sm btn-primary">
                     Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
-                </label>
+                  </label>
+ 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+	                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+					  <i class="fa fa-trash"></i></button>
+				  </c:if>
 				  </div>
 				  </div>
 			  </div>
@@ -228,6 +267,7 @@ var validationSettings = {
 	           		
 	           		$("#save_button").attr("disabled", "disabled");
              		$( "#save_button").addClass('button').val('Processing..');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	          		
 	                  $.ajax({
 	              	      type: "POST",

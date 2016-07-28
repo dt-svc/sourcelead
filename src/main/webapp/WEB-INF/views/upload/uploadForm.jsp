@@ -3,23 +3,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
+
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
 <style type="text/css">
 .center-div{
 width:300px;
@@ -42,6 +32,7 @@ margin:10px 220px 0;
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
+    <div id="loading"></div> 
       <section class="action-btns clearfix">
         <ul class="pull-right list-unstyled list-inline">
           <li><a class="faclose" href="#"><i class="fa fa-close" aria-hidden="true"></i></a></li>
@@ -62,7 +53,7 @@ margin:10px 220px 0;
 			<div class="dropzone">
 			  <div class="clearfix">
 			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();saveClient();">
+			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();uploadSave();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
 			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
@@ -190,18 +181,23 @@ function errorMsgAppend(){
 </script>
 
 <script type="text/javascript">
-function saveClient() {
+function uploadSave() {
 		
 		 $('#upload_form').submit(function() {
-          if (($(this).validate(false, validationSettings)))
-          	return true;
-          else
-          	return false;	
+          if (($(this).validate(false, validationSettings))){
+        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+            	return true;  
+          }
+          else{
+        	  return false;	
+          }
+          	
           })
 }
 	$('body').on('blur', '#upload_form', function() {
 		$("#upload_form").showHelpOnFocus();
 		$("#upload_form").validateOnBlur(false, validationSettings);
+		
 	});
 </script>
 

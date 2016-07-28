@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +32,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
-
+/**
+ * Handles uploads
+ */
 @Controller
 public class UploadController {
 
@@ -42,7 +45,14 @@ public class UploadController {
 
 	@Autowired
 	UploadFileService uploadFileService;
-
+/**
+ * Handles upload csv,xls and xlsx
+ * @param uploadedFile
+ * @param result
+ * @param model
+ * @param request
+ * @return
+ */
 	@RequestMapping("/fileUpload")
 	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile, BindingResult result,
 			Model model, HttpServletRequest request) {
@@ -59,12 +69,12 @@ public class UploadController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
-			if (isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xlsx")) {
-				model.addAttribute("errorMessage", "Please download Error file here  …");
+			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+				model.addAttribute("errorMessage", "Please download Error file here  â€¦");
                  model.addAttribute("fileName", "xlsx");
 				return "upload/uploadForm";
-			}else if(isFileCreated.equalsIgnoreCase("FailureUsersForCheck.xls")){
-				model.addAttribute("errorMessage", "Please download Error file here  …");
+			}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+				model.addAttribute("errorMessage", "Please download Error file here  â€¦");
                 model.addAttribute("fileName", "xls");
 				return "upload/uploadForm";
 			}
@@ -75,12 +85,17 @@ public class UploadController {
 		 model.addAttribute("fileName", "");
 		return "redirect:/usersList";
 	}
-
+/**
+ * Handles Errored file Download
+ * @param fileName
+ * @param response
+ * @throws IOException
+ */
 	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
 	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 		
-		File file = null;
-		if("xlsx".equalsIgnoreCase((fileName))){
+		File file;
+		if("xlsx".equalsIgnoreCase(fileName)){
 			file = new File("FailureUsersForCheck.xlsx");
 		}else{
 			 file = new File("FailureUsersForCheck.xls");
@@ -95,10 +110,16 @@ public class UploadController {
 		response.setContentLength((int) file.length());
 		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
 	}
-
+/**
+ * Handles Temaplate download
+ * @param response
+ * @throws IOException
+ * @throws URISyntaxException
+ */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
 	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException {
 
@@ -115,16 +136,20 @@ public class UploadController {
 		response.setContentLength((int) file.length());
 		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
 	}
 	
-	//cancelImport
+	/**
+	 * Handles cancel import
+	 * @return
+	 * @throws IOException
+	 */
 	
 	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
 	public ModelAndView cancelImport() throws IOException {
-		ModelAndView view = new ModelAndView("redirect:/timesheetexcel/excelDownload");
-		return view;
+		return  new ModelAndView("redirect:/timesheetexcel/excelDownload");
 		
 	}
 	
