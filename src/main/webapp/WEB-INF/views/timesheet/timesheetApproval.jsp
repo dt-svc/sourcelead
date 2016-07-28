@@ -20,12 +20,31 @@ $(document).ready(function() {
 <script>
   function approvalList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  /*$("#timesheetApprList").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
+	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
 	  $.ajax({
            type : "POST",
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
             success :function(data) {
-                 
+                 if(data != null && data != 'undefined' && data != ""){
+                	 $("#timesheetApprList").removeAttr("style");
+                	 $("#timesheetApprList").empty();
+                     $("#timesheetApprList").append(data); 
+                 }else{
+                	 $("#timesheetApprList").removeAttr("style");
+  	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Timesheets Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#timesheetApprList").empty();
+				    $("#timesheetApprList").append(result); 
+                 }
                  /* var json = JSON.parse(data); */
                  /* if(json.length > 0){
                 	 
@@ -97,8 +116,6 @@ $(document).ready(function() {
 					$("#timesheetApprList").empty();
 				    $("#timesheetApprList").append(result); 
               }   */
-          	 $("#timesheetApprList").empty();
-             $("#timesheetApprList").append(data); 
           }
             
        }); 
@@ -132,9 +149,9 @@ function dynamicTimesheet(navigation , startDate,memberId,submissionId){
         </section>
         
 <div class="timesheet_out">
-	<div class="timesheet_appr_wrap">
+	<div class="timesheet_appr_wrap" style="min-height: 300px;" >
 		<div class="timesheet_appr_wrap">
-		<div class="timesheet_head">
+		<!-- <div class="timesheet_head">
         	<ul>
                 <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">  
@@ -179,7 +196,7 @@ function dynamicTimesheet(navigation , startDate,memberId,submissionId){
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
-        </div>
+        </div> -->
 		
 		<div class="timesheet_appr_table">
 				<div id="timesheetApprList">   </div>

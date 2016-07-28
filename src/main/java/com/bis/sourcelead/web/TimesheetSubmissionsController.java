@@ -85,7 +85,8 @@ public class TimesheetSubmissionsController {
 		sb.append("     </tr>");
 		sb.append(" </thead>");*/
 		
-		
+		if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+			
         sb.append("	<div>");
 		sb.append("	<ul class='table_head'>");
 		sb.append("    <li>Employee</li> ");
@@ -237,10 +238,12 @@ public class TimesheetSubmissionsController {
                sb.append("</tr>");*/
              
          }
+         sb.append("	<div>");
+		}
         /* sb.append(" </tbody>");
          sb.append(" </table>");
           */
-        sb.append("	<div>");
+      
          return sb.toString();
          
 	}

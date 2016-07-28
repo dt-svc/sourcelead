@@ -30,7 +30,6 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -442,8 +441,23 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						     }
 						        sb.append(" </table>"); 
 						        sb.append("</td> "); 
-						        sb.append("<td class='pname'> <div>"+submissionStatus+"</div> </td>");
-					               
+						        sb.append("<td class='pname'> <div>");
+							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+							        	sb.append("<b>"+submissionStatus+"</b>");
+							        }
+							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+							        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
+							        }
+							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b></div> </td>");
+							        }
+							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+							        	sb.append("<b class='proj_active'>"+submissionStatus+"</b></div> </td>");
+							        }
+							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
+							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b></div> </td>");
+							        }
+						        sb.append("</div> </td>");
 				  }
 			      else{
 			    	    Integer maxCount = 1;
@@ -536,7 +550,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" </table>"); 
 						              sb.append(" </td>   "); 
 						              sb.append("</td> "); 
-								      sb.append("<td class='pname'> <div>"+submissionStatus+"</div> </td>");
+								      sb.append("<td class='pname'> <div> <b>"+submissionStatus+"</b></div> </td>");
+								      
 			       }
 			}
 			
@@ -905,8 +920,25 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			}
 			sb.append("</table>"); 
 			sb.append(" </td>   ");
-			sb.append("<td> <div>"); 
-            sb.append(" <input type='text' disabled  value='"+ts.getSubmissionStatus()+"'  class='inline_field_withoutMask' />"); 	
+			sb.append("<td class='pname'> <div>"); 
+            /*sb.append(" <input type='text' disabled  value='"+ts.getSubmissionStatus()+"'  class='inline_field_withoutMask' />");*/ 
+            /*sb.append("<b class='proj_active'>'"+ts.getSubmissionStatus()+"'</b>"); */
+            if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+	        	sb.append("<b>"+submissionStatus+"</b>");
+	        }
+            if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+	        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+	        	sb.append("<b class='proj_process'>"+submissionStatus+"</b></div> </td>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+	        	sb.append("<b class='proj_active'>"+submissionStatus+"</b></div> </td>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
+	        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b></div> </td>");
+	        }
+	        
             sb.append(" </div> </td> "); 
             
 			}
