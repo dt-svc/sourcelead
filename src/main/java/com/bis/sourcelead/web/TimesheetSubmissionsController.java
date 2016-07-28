@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -41,6 +42,8 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -61,6 +64,32 @@ public class TimesheetSubmissionsController {
 	
 	@Autowired
 	private DataSource dataSource;
+	
+	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
+	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
+	public @ResponseBody void withDrawTimesheet(@RequestParam(value="json", required=false) String json) throws Exception {
+				
+		json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    	
+		String result = "";
+		String resultJson = null;
+		
+		String localsubmissionId = jsonObj.getString("submissionId");
+	    localsubmissionId = localsubmissionId.replaceAll("\\[", "").replaceAll("\\]","");
+	    String[] submissionIds = localsubmissionId.split(",");
+    	
+		if(submissionIds != null && submissionIds.length>0){ 
+			for(String submissionId : submissionIds){
+				  	submissionId = submissionId.replace("\"", "");
+				  	System.out.println("submissionId"+submissionId);
+				  	
+			}
+		}
+			
+	}
+		
 
 	
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)

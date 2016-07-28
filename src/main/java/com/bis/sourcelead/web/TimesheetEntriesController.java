@@ -78,16 +78,6 @@ public class TimesheetEntriesController {
 			
 	}
 	
-	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
-	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
-	public @ResponseBody String withDrawTimesheet(@RequestParam(value="json", required=false) String json) throws Exception {
-				
-			
-			String result ="";
-			return result;
-			
-	}
-	
 	// sarath kumar punnana : this  controller method is for timesheet screen redirection.
 	@RequestMapping(value = "/timesheet")
 	public ModelAndView registration(HttpServletRequest request) throws Exception {

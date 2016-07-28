@@ -626,7 +626,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("        <input type='button' onClick='WITHDRAWMyTimesheet(\"Submit\");' value='withDraw' class='time_btn'>");
+				   sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");
 				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
