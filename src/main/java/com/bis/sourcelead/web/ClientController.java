@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -85,6 +86,9 @@ public class ClientController {
 	
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	/**
 	 * Handles to display client jsp
@@ -246,6 +250,9 @@ public class ClientController {
 				project.setProjectApprovers(projectApproverSet);
 				/*Saving for Projects*/
 				projectsService.saveProject(project);
+				
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			     commonUtil.storeSourceleadTasks(user, project);
 			}
 			
 			 SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Successfully you have created a client");
