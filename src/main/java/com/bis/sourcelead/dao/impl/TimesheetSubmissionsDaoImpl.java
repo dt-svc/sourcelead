@@ -37,7 +37,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(timesheetSubmissions);
+			session.saveOrUpdate(timesheetSubmissions);
 		}
 		catch(HibernateException exception)	{
 		}
@@ -134,13 +134,13 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();  
 			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  GROUP BY emp.id";   
-			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).list();
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).setCacheable(true).list();
 			
 			
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			
 			  String query1 = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
-			  List results1 = session.createQuery(query1).setLong("userId", ts.getProjectMembers().getEmployee().getUser().getId()).list();
+			  List results1 = session.createQuery(query1).setLong("userId", ts.getProjectMembers().getEmployee().getUser().getId()).setCacheable(true).list();
 														
 			  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
 			  if(results1 != null && !results1.isEmpty()){
@@ -169,13 +169,12 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 				Float combinedTotalHours = 0f ; 
 				Date startDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
-				/*java.sql.Date startDate = new java.sql.Date(ts.getStartDate().getTime());*/
 				Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
 				String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 				List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																			  .setInteger("empId", empId)	
 						                                                      .setInteger("userId", userId.intValue())
-						                                                      .setParameter("startDate", startDate).list();
+						                                                      .setParameter("startDate", startDate).setCacheable(true).list();
 			    Boolean isRejected = false; 
 			    Boolean isAPPROVED = false; 
 			    Boolean isSUBMITTEDFORAPPROVAL = false; 
@@ -232,7 +231,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																		  .setLong("empId", projectMemberId)	
 					                                                      .setLong("userId", userId)
-					                                                      .setParameter("startDate", startDate).list();
+					                                                      .setParameter("startDate", startDate).setCacheable(true).list();
 		  return timesheetSubmissionsList1;
    }
    
@@ -265,7 +264,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				sqlStartDate = new java.sql.Date(startDate.getTime());
 			}
 			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.user.id = :userId and ts.startDate = :startDate ";  
-			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).list();
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).setCacheable(true).list();
 			return timesheetSubmissionsList;
 	}
 	
@@ -277,7 +276,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	    // TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();  
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
-		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("startDate", startDate).list();
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("startDate", startDate).setCacheable(true).list();
 		
 		
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
@@ -288,7 +287,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																		  .setInteger("empId", empId)	
 					                                                      .setInteger("userId", userId.intValue())
-					                                                      .setParameter("startDate", sDate).list();
+					                                                      .setParameter("startDate", sDate).setCacheable(true).list();
 		    Boolean isRejected = false; 
 		    Boolean isAPPROVED = false; 
 		    Boolean isSUBMITTEDFORAPPROVAL = false; 
@@ -337,7 +336,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		
 		  Session session = this.sessionFactory.getCurrentSession();
 		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
-		  List results = session.createQuery(query).setLong("userId", userId).list();
+		  List results = session.createQuery(query).setLong("userId", userId).setCacheable(true).setCacheable(true).list();
 													
 		  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
 		  if(results != null && !results.isEmpty()){

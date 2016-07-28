@@ -27,8 +27,7 @@
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum">Home &raquo; General Form
-				&raquo; Create User</div>
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -40,7 +39,7 @@
 	}
 </script>
 
-		<script> 
+<script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 getUserSummaryDetails(userId);
@@ -115,8 +114,7 @@ $(document).ready(function(){
 			    var result = "";
 			    
 				result = result + '<div class="project_tabs_inn_table">';
-				
-				
+				firstname(json.user.firstName);
 				
 				result = result + '  <div class="project_details">';
 				if(json.user.userState != null && json.user.userState != "" && json.user.userState != 'INACTIVE'){
@@ -225,6 +223,19 @@ $(document).ready(function(){
 	});
  }
 </script>
+
+<!--  Script for First Name displaying right corner  -->
+<script type="text/javascript">
+
+var fName = document.getElementById('fname');
+function firstname(name)
+{
+	fName.innerHTML = name;
+} 
+</script>
+
+
+
 <script>
  function userProjectDetails(userId,filterValue){    
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -259,44 +270,37 @@ $(document).ready(function(){
 							   var submittedHrs = "";
 						    if(json.startDate != null && json.startDate != '' && json.startDate != 'undefined'){
 							 startDate = json.startDate ;
-						   }else{
-							   startDate = "--";
 						   }
 						   if(json.endDate  != null && json.endDate  != '' && json.endDate  != 'undefined'){
 						    	endDate = json.endDate;
-						   }else{
-							   endDate = "--";
 						   }
 						   if(json.approvedHrs  != null && json.approvedHrs  != '' && json.approvedHrs  != 'undefined'){
 							   approvedHrs = json.approvedHrs;
-						   }else{
-							   approvedHrs = "--";
 						   }
 						   if(json.rejectedHrs  != null && json.rejectedHrs  != '' && json.rejectedHrs  != 'undefined'){
 							   rejectedHrs = json.rejectedHrs;
-						   }else{
-							   rejectedHrs = "--";
 						   }
 						   if(json.draftHrs  != null && json.draftHrs  != '' && json.draftHrs  != 'undefined'){
 							   draftHrs = json.draftHrs;
-						   }else{
-							   draftHrs = "--";
 						   }
 						   if(json.submittedHrs  != null && json.submittedHrs  != '' && json.submittedHrs  != 'undefined'){
 							   submittedHrs = json.submittedHrs;
-						   }else{
-							   submittedHrs = "--";
 						   }
 						   result = result + '       <tr>';
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
-						   result = result + '<td><div>'+startDate+'</div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
+						   result = result + '<td><div id="startDate'+json.id+'">'+startDate+'</div></td>';
+						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
-						  result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
+                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+                            }
+                            else{
+                                 result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                            }
 							result = result + '</div></td> '; 
 						   
 						   result = result + '   </tr>';
@@ -305,7 +309,7 @@ $(document).ready(function(){
 						   result = result + '    </table>            ';
 						   result = result + '        </div>';
 							 			
-						    result = result + ' <nav>';
+						   /*  result = result + ' <nav>';
 						    result = result + '<ul id="paging" class="pagination">';
 						    result = result + '	<li><a href="#">Previous</a></li>';
 						    result = result + '	<li><a href="#">3</a></li>';
@@ -315,7 +319,7 @@ $(document).ready(function(){
 						    result = result + '<li data-page="last"><a href="#">Next</a></li>';
 						    result = result + '</ul>';
 						    result = result + '<div class="clearfix"></div>';
-						    result = result + '</nav>		';	
+						    result = result + '</nav>		';	 */
 						
 						    result = result + '   </div>';
 						    
@@ -346,6 +350,7 @@ $(document).ready(function(){
 				    		      onSelect: function (selected) {
 				    		            var dt = new Date(selected);
 				    		            dt.setDate(dt.getDate() + 1);
+				    		            $('#startDate'+json.id).datepicker("option", "maxDate", dt);
 				    		        },
 				    		        onClose: function() {
 				    		        	 var id = $(this).attr('id');
@@ -450,9 +455,9 @@ $(document).ready(function(){
 		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick=""><input class="u_can_color" type="button" value="Cancel"></b>
 	</div> -->
 
-<!-- <div class="remove_pop" id="user_remove_msg">
-	<i class="fa fa-trash"></i><span>user successfully removed in userlist</span>
-</div>  -->
+ <div class="remove_pop" style="display: none;">
+	<i class="fa fa-trash"></i><span>User successfully terminated</span>
+</div> 
 
 <div id="popUp"></div>
 </body>
@@ -505,7 +510,6 @@ $(document).ready(function(){
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmployeeId != null && EmployeeId != ""){
 		$("#update_user").attr("disabled", "disabled");
         $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
@@ -525,51 +529,65 @@ $(document).ready(function(){
 		        	} 
 		        },
 		    });
-	 }
+	
  }
  </script>
 
 
 <script type="text/javascript">
- function updateUser(userId) {
-	 var Rate = document.getElementById("Rate").value; 
-	 if(Rate != null && Rate != ""){
-		 $('#RatePer').removeAttr('data-validation-optional');
-		 $('#RatePer').attr("data-validation","required"); 
-	 }else{
-		 $('#RatePer').removeAttr('data-validation');
-		 $('#RatePer').attr("data-validation-optional","true"); 
-	 }
-	 
-	  if ($('#editUser_form').validate(false, validationSettings)){ 
-		    var frm = $('#editUser_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#update_user").attr("disabled", "disabled");
-     		$( "#update_user" ).addClass('button').val('Processing..');
-	        $.ajax({
-		    	type: "POST",
-		    	url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId, 
-		        success: function(result) {
-		        	userDetails(userId);
-			        
-		        },
-		    });
-	        return true;
-		
-	   }else{
-		return false;
-	  } 
+ function updateUser(id,userId) {
+     var EmployeeId = document.getElementById("EmployeeId").value;
+     var sourceleadUrl ='${sourceleadUrl}';
+     var Rate = document.getElementById("Rate").value;
+     if(Rate != null && Rate != ""){
+         $('#RatePer').removeAttr('data-validation-optional');
+         $('#RatePer').attr("data-validation","required");
+     }else{
+         $('#RatePer').removeAttr('data-validation');
+         $('#RatePer').attr("data-validation-optional","true");
+     }
+    
+      if ($('#editUser_form').validate(false, validationSettings)){
+          $.ajax({
+                type: "POST",
+                url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
+                success: function(data) {
+                    if(data == true){
+                          $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+                          document.getElementById("EmployeeId").setAttribute('record-exist','yes');
+                          document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed');
+                    }
+                    else{
+                       
+                        var frm = $('#editUser_form').serializeFormJSON();
+                        var con = JSON.stringify(frm);
+                        con = con.replace(/[{}]/g, "");
+                        
+                        //It will escape all the special characters
+                        var jsonData = encodeURIComponent(con);
+                        var sourceleadUrl ='${sourceleadUrl}';
+                        $("#update_user").attr("disabled", "disabled");
+                         $( "#update_user" ).addClass('button').val('Processing..');
+                        $.ajax({
+                            type: "POST",
+                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                            success: function(result) {
+                                userDetails(userId);
+                                
+                            },
+                        });
+                        return true;
+                    }
+                },
+            });
+       }else{
+        return false;
+      }
     }
     $('body').on('blur', '#editUser_form', function() {
-		$("#editUser_form").showHelpOnFocus();;
-		$("#editUser_form").validateOnBlur(false, validationSettings);  
-	});
+        $("#editUser_form").showHelpOnFocus();;
+        $("#editUser_form").validateOnBlur(false, validationSettings);  
+    });
 </script>
 
 <script type="text/javascript">
@@ -742,7 +760,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
@@ -793,17 +811,16 @@ function terminateUser(userId){
 		$("#reasonDiv").empty();
 		
 		//getConformation(userId,reason);
-		var r = confirm("Do you want terminate the user");
-		if (r == true) {
+		
 		 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	userDetails(userId);
-   		    	
+   		    	$(".remove_pop").fadeIn(200);
+   		        $('.remove_pop').delay(2000).fadeOut('slow');
    		    }
 	   });
-		}
 	}else{
 		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
 	}
@@ -884,9 +901,6 @@ function inlineEditForUsers(userId,localFieldName){
 </script> -->
 <!-- this script for inline edit -->
 
-<!-- <script>
-  $('#user_remove_msg').delay(2000).fadeOut('slow');
-</script> -->
 
 <!-- Scripts for project details -->
 
@@ -904,7 +918,7 @@ function getStartandEndDate(){
         	var json = JSON.parse(data);
         	$("#StartDate").val(json.startDateStr);
         	$("#EndDate").val(json.endDateStr);
-	        
+        	date();
         },
     });
 	}
@@ -953,6 +967,24 @@ function getStartandEndDate(){
 		$("#assignProject_form").validateOnBlur(false, validationSettings);  
 	});
  
+</script>
+
+<script>
+function date() {
+	 var selected = $("#StartDate").val();
+	 var dt = new Date(selected);
+     dt.setDate(dt.getDate() + 1);
+     $("#EndDate").datepicker("option", "minDate", dt);
+	  
+	  $('#EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  } 
 </script>
 
 <script>

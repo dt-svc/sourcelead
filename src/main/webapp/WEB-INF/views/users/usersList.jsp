@@ -19,6 +19,10 @@ window.onload = function () {
 	}
 </script>
 
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
+
   <!-- Content Area -->
   
   <section class="content-wraper">
@@ -33,6 +37,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Users List </div>
     </section>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
@@ -129,10 +134,10 @@ window.onload = function () {
 	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
 	       	    	
 	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
-	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
+	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
 	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
 	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
-	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='#' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
+	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
 	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
 	 			    	result = result +"<br/><span class='label label-success'>Active</span>";
 	 			    }else{
@@ -186,7 +191,9 @@ function resendInvitation(userId){
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 			        success: function(result) {
-			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#mailMsg").fadeIn(200);
+		   		        $('#mailMsg').delay(2000).fadeOut('slow');
 			        },
 			    });
 		 }

@@ -2,16 +2,8 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
@@ -29,7 +21,7 @@
           <div class="pull-left">
             <h2>Create User</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; User Form </div>
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
@@ -72,13 +64,11 @@
                   <label class="col-md-3"> Date<span class="text-danger">&nbsp; *</span> </label>
 		              <div class="col-md-9">
 		                <div class="row">
-		                  <div class="col-lg-6 positionRelative">
-		                    
+		                  <div class="col-lg-6 positionRelative" id="StartDateDiv">
 		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly">
 		                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 		                    </div>
 		                  <div class="col-lg-6 positionRelative">
-		                     
 		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly">
 		                   <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 		                   </div>
@@ -135,14 +125,14 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="" onblur="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onblur="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="FirstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-100">
+                    <input type="text" class="form-control" id="FirstName" name="FirstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20">
                     <span class="hidden">First Name</span>
                   </div>
                 </div>
@@ -158,7 +148,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-20 validate_email" onblur="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -699,6 +689,7 @@ function flushProject(){
  }
  </script>     
 
+ <!-- start script for project sequence number  -->
  
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
@@ -725,7 +716,9 @@ function flushProject(){
  }
  </script> 
  
-
+ <!-- end script for project sequence number  -->
+ 
+<!-- start script for datepicker -->
 <script>
   $( function() {
 	  
@@ -740,6 +733,7 @@ function flushProject(){
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
+	            addValidClass();
 	        }
 	  });
 	  
@@ -753,5 +747,17 @@ function flushProject(){
 	  });
 	  
   } );
+</script>
+
+
+<!-- end script for datepicker -->
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("StartDate").value;
+		 if(StartDate){
+			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
 </script>
 

@@ -58,6 +58,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -134,6 +135,15 @@ public class ProjectsController {
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		   
 				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.Projects);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
 				
 				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
 				for(OrgRelations ocl :orgClientList){
@@ -273,6 +283,7 @@ public class ProjectsController {
 						            	pm.setProjectEndDate(currentEndDate);
 						            }
 									pm.setProjects(projects);
+									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
 									pm.setUpdatedDate(new Date());
 									projectMembersService.saveProjectMember(pm);
@@ -558,15 +569,15 @@ public class ProjectsController {
 	   		@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
 		
-			String status = null;
-		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-			if (orgInfo != null) {
-				status = "success";
-			}
-			else{
-				status = "failure";
-			}
-			
+			String status = "success";
+            String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+            if(orgInfo !=null && !"".equalsIgnoreCase(orgInfo)){
+            	 if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
+                     status = "Website Duplicated";
+                 }else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+                     status = "Invalid Website";
+                 }
+            }
 	    return status;
 	   }
 	 

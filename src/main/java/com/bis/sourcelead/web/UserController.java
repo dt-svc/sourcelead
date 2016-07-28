@@ -2,14 +2,10 @@ package com.bis.sourcelead.web;
 
 import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -84,12 +80,18 @@ public class UserController {
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	
+	/**
+	 * To forward user creation jsp page
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/userCreation")
 	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	   
 		ModelAndView model = new ModelAndView();
-	    Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
 	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -107,13 +109,20 @@ public class UserController {
 
 	}
 	
+	/**
+	 * To forward user summary jsp with userId, and displays the user summary details
+	 * @param request
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 					// to get a project list by userId
-						Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
+		                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 						model.addObject("org_projectsList", projectsList);
 						request.setAttribute("userId", userId);
 						model.setViewName("users/userSummary");
@@ -122,6 +131,13 @@ public class UserController {
 
 	}
 	
+	/**
+	 * To create new project
+	 * @param json
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/addProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
@@ -185,30 +201,42 @@ public class UserController {
 		}
 	    	
 			
-		 Collection<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		 List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		
 		 resultJson = toJSON(projectsList);
 		 return resultJson;
 	   }
 
-	  
+	/**
+	 * To Create user
+	 * @param json
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
-		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	
-		 	//For Saving of User Details
-			userService.createUser(jsonObj,user,orgLocations.getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-			return "usersList";
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	
+	 	 //For Saving of User Details
+		 userService.createUser(jsonObj,user,orgLocations.getId());
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
+		 return "usersList";
 	   }
 	 
-	 //to get the Project Manager Name by using projectId
+	 /**
+	  * To get the Project Manager Name by using projectId
+	  * @param projectId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getProjectManager" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectManager(@RequestParam(value="projectId", required=false) String projectId, HttpServletRequest request) throws Exception {
 		 	
@@ -221,7 +249,12 @@ public class UserController {
 			return resultJson;
 	   }
 	 
-	 //to  validate user email
+	 /**
+	  * To  validate user email
+	  * @param EmailId
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/validateUserEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
 		 	
@@ -237,7 +270,13 @@ public class UserController {
 	   }
 	 
 	 
-	//to validate employee Id
+	 /**
+	  * To validate employee Id
+	  * @param EmployeeId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/validateEmployeeId" , method = RequestMethod.POST)
 	 public @ResponseBody  Boolean validateEmployeeId(@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -246,7 +285,16 @@ public class UserController {
 			return flag;
 	   }
 	 
-	//to validate existing employee Id
+	 
+	 /**
+	  * To validate existing employee Id
+	  * @param id
+	  * @param userId
+	  * @param EmployeeId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
 		 @RequestMapping(value = "/validateExistingEmployeeId" , method = RequestMethod.POST)
 		 public @ResponseBody  Boolean validateExistingEmployeeId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -259,7 +307,14 @@ public class UserController {
 				return flag;
 		   }
 	 
-	// to get the Project Manager Name by using projectId
+		 
+		 /**
+		  * To get the Project Manager Name by using projectId
+		  * @param currentApproverId
+		  * @param request
+		  * @return
+		  * @throws Exception
+		  */
 		@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
 		public @ResponseBody String getApproversByUserId(
 				@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
@@ -267,24 +322,36 @@ public class UserController {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
+			List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
 					orgLocations.getId());
 			resultJson = toJSON(userList);
 			return resultJson;
 		}
 
+		/**
+		 * To get All Approvers
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
 		@RequestMapping(value = "/getAllApprovers")
 		public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			String resultJson = null;
-			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			resultJson = toJSON(userList);
 			return resultJson;
 
 		}	 
-	 
-	//to validate Project SequeneNumber
+		
+	/**
+	 * To validate Project SequeneNumber 
+	 * @param ProjectSequeneNumber
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)
 	 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -294,33 +361,41 @@ public class UserController {
 	   }
 	 
 	 
-	    //to re send email to user
-		 @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
-		 public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
-			    
-			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    //get user by userId
-			    User user = userService.getUserById(Long.parseLong(userId));
-			    
-			    //generate random password
-			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		 		if(user != null){
-		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
-		 			user.setIsMailSent(Status.Y);
-		 			userService.addUser(user);
-		 			userService.sendEmail(user,loginUser,password);
-		 		}
-			
-		 	  return "success";
-		   }
-		 	/**
-		 	 * get the list of all projects of the particular user
-		 	 * @param request
-		 	 * @param userId
-		 	 * @return
-		 	 * @throws Exception
+	 /**
+	  * To re send email to user
+	  * @param userId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	  @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
+	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
+		    
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    //get user by userId
+		    User user = userService.getUserById(Long.parseLong(userId));
+		    
+		    //generate random password
+		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+	 		if(user != null){
+	 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+	 			user.setIsMailSent(Status.Y);
+	 			userService.addUser(user);
+	 			userService.sendEmail(user,loginUser,password);
+	 		}
+		
+	 	  return "success";
+	    }
+		 
+		 
+	 	/**
+	 	 * get the list of all projects of the particular user
+	 	 * @param request
+	 	 * @param userId
+	 	 * @return
+	 	 * @throws Exception
 
-		 	 */
+	 	 */
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 			public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
@@ -423,12 +498,12 @@ public class UserController {
 					}
 				}
 				User user = userService.getUserById(userId);
-				if (employee.getRate() != null && employee.getRate()!="") {
+				if (employee.getRate() != null && "".equalsIgnoreCase(employee.getRate())) {
 					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
 				}
 				// need change role
 				projectMembers.setRole(user.getUserType());
-				if (employee.getRatePer() != null) {
+				if (employee.getRatePer() != null && "".equalsIgnoreCase(employee.getRatePer())) {
 					projectMembers.setRateType(employee.getRatePer());
 				}
 				projectMembers.setStatus(Constants.MEMBER_ACTIVE);
