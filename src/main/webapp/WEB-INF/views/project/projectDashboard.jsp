@@ -28,11 +28,10 @@
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-<<<<<<< HEAD
-           <div class="pull-right brud-crum"><a href="dashboard">Home</a> » Projects List</div>
-=======
+
+
           <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;ProjectList</div>
->>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
+
         </section>
 
         
