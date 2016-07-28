@@ -761,7 +761,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
