@@ -131,7 +131,6 @@ function dynamicTimesheet(navigation , startDate,memberId,submissionId){
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId, 	   
 				    success: function(data) {
 				       /*  $("row"+submissionId).empty();	  */ 
-				        alert("data"+data);
 				        $("#row"+submissionId).empty();	 
 				        $("#row"+submissionId).append(data);	
 				        

@@ -169,7 +169,6 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 				Float combinedTotalHours = 0f ; 
 				Date startDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
-				/*java.sql.Date startDate = new java.sql.Date(ts.getStartDate().getTime());*/
 				Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
 				String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 				List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
