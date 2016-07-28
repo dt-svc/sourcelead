@@ -1,6 +1,8 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -173,7 +175,8 @@ public class ClientController {
 		 	/*Saving for Org*/
 		    Org org = new Org();
 			org.setOrgName(jsonObj.getString("orgName"));
-		    org.setWebSite(jsonObj.getString("webSite"));
+			org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+		   // org.setWebSite(jsonObj.getString("webSite"));convertWebsite
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(new Date());
 			org.setUpdatedBy(loginUserCode);
@@ -351,35 +354,7 @@ public class ClientController {
 				    	}
 				    }
 				    project.setProjectManagerName(approvers);
-				    
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-				 
-//				 Collection<User> userList = userService.getUsersByUserRoles();
-//				  String[] mngrs = new String[userList.size()];
-//				    int i = 0;
-//				    for(User user : userList){
-//				    	mngrs[i] = user.getFirstName()+"&"+user.getId();
-//				    	i++;
-//				    }
-//				    if(mngrs != null){
-//				    	project.setProjectManagerName(mngrs);
-//				    }
-//				    project.setRelationId(project.getOrgRelationId().getId());
+
 			 }
 			 ObjectMapper mapper = new ObjectMapper();
 			 String jsonInString = mapper.writeValueAsString(clientProjectsList);
@@ -504,6 +479,25 @@ public class ClientController {
 			projectsService.updateProject(projects);
 			return fieldValue; 
 		
+		}
+		
+
+		private String convertWebsite(String website){
+			if(!website.startsWith("http") && !website.startsWith("https")){
+				 website = "http://" + website;
+		    }        
+		    URL netUrl = null;
+			try {
+				netUrl = new URL(website);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			
+		    String host = netUrl.getHost();
+		    if(host.startsWith("www")){
+		        host = host.substring("www".length()+1);
+		    }
+		    return host;
 		}
 		
 }
