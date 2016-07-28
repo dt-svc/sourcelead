@@ -447,7 +447,9 @@ $('body').on('blur', '#timesheet_form', function() {
 <script type="text/javascript">
 function withDrawMyTimesheet(){
 	var frm = $('#timesheet_form').serializeFormJSON();
-	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var mydata = JSON.stringify(frm);
+	alert("mydata"+mydata);
 	 $.ajax({
 	      type : "POST",
  	      dataType : 'json',
