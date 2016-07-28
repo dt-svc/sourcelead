@@ -20,12 +20,31 @@ $(document).ready(function() {
 <script>
   function approvalList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  /*$("#timesheetApprList").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
+	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
 	  $.ajax({
            type : "POST",
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
             success :function(data) {
-                 
+                 if(data != null && data != 'undefined' && data != ""){
+                	 $("#timesheetApprList").removeAttr("style");
+                	 $("#timesheetApprList").empty();
+                     $("#timesheetApprList").append(data); 
+                 }else{
+                	 $("#timesheetApprList").removeAttr("style");
+  	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Timesheets Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#timesheetApprList").empty();
+				    $("#timesheetApprList").append(result); 
+                 }
                  /* var json = JSON.parse(data); */
                  /* if(json.length > 0){
                 	 
@@ -97,8 +116,6 @@ $(document).ready(function() {
 					$("#timesheetApprList").empty();
 				    $("#timesheetApprList").append(result); 
               }   */
-          	 $("#timesheetApprList").empty();
-             $("#timesheetApprList").append(data); 
           }
             
        }); 
@@ -114,7 +131,6 @@ function dynamicTimesheet(navigation , startDate,memberId,submissionId){
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId, 	   
 				    success: function(data) {
 				       /*  $("row"+submissionId).empty();	  */ 
-				        alert("data"+data);
 				        $("#row"+submissionId).empty();	 
 				        $("#row"+submissionId).append(data);	
 				        
@@ -133,9 +149,9 @@ function dynamicTimesheet(navigation , startDate,memberId,submissionId){
         </section>
         
 <div class="timesheet_out">
-	<div class="timesheet_appr_wrap">
+	<div class="timesheet_appr_wrap" >
 		<div class="timesheet_appr_wrap">
-		<div class="timesheet_head">
+		<!-- <div class="timesheet_head">
         	<ul>
                 <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">  
@@ -180,7 +196,7 @@ function dynamicTimesheet(navigation , startDate,memberId,submissionId){
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
-        </div>
+        </div> -->
 		
 		<div class="timesheet_appr_table">
 				<div id="timesheetApprList">   </div>
@@ -314,7 +330,7 @@ function addTimeSheetRow(submissionId,projectId) {
 			var row = tbl.insertRow(maxRowNum-1);
 			row.setAttribute("id", "timesheetRow"+maxRowNum+"submission"+submissionId);
 			
-			  
+			var previousMaxRowNum =parseInt(rowNum-1);  
 			var cell0 = row.insertCell(0);
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -324,7 +340,17 @@ function addTimeSheetRow(submissionId,projectId) {
 			
 			
 			
-			 var cell1 = row.insertCell(1);
+			var cell1 = row.insertCell(1);
+			var isCell1Disabled = $("#1submission"+submissionId+"timeSheetDay1Id").prop('disabled');
+			if(isCell1Disabled){
+				$("#divadttTd2 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon');
+				
+			}
+			else{
+				$("#divadttTd2 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
 			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
             divadttTd1Str = divadttTd1Str.replace(/submissionId/g, (submissionId));
@@ -332,6 +358,15 @@ function addTimeSheetRow(submissionId,projectId) {
 			
 			
 			var cell2 = row.insertCell(2);
+			var isCell2Disabled = $("#1submission"+submissionId+"timeSheetDay2Id").prop('disabled');
+			if(isCell2Disabled){
+				$("#divadttTd3 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd3 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd2Str = divadttTd2Str.replace(/submissionId/g, (submissionId));
@@ -339,30 +374,74 @@ function addTimeSheetRow(submissionId,projectId) {
 			
 			
 			var cell3 = row.insertCell(3);
+			var isCell3Disabled = $("#1submission"+submissionId+"timeSheetDay3Id").prop('disabled');
+			if(isCell3Disabled){
+				$("#divadttTd4 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd4 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd3Str = divadttTd3Str.replace(/submissionId/g, (submissionId));
 			cell3.innerHTML = divadttTd3Str;
 			
 			var cell4= row.insertCell(4);
+			var isCell4Disabled = $("#1submission"+submissionId+"timeSheetDay4Id").prop('disabled');
+			if(isCell4Disabled){
+				$("#divadttTd5 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd5 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
+			}
+			
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd4Str = divadttTd4Str.replace(/submissionId/g, (submissionId)); 
 			cell4.innerHTML = divadttTd4Str;
 			
 			var cell5 = row.insertCell(5);
+			var isCell5Disabled = $("#1submission"+submissionId+"timeSheetDay5Id").prop('disabled');
+			if(isCell5Disabled){
+				$("#divadttTd6 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd6 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd5Str = divadttTd5Str.replace(/submissionId/g, (submissionId)); 
 			cell5.innerHTML = divadttTd5Str;
 			
 			var cell6 = row.insertCell(6);
+			var isCell6Disabled = $("#1submission"+submissionId+"timeSheetDay6Id").prop('disabled');
+			if(isCell6Disabled){
+				$("#divadttTd7 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd7 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd6Str = divadttTd6Str.replace(/submissionId/g, (submissionId));
 			cell6.innerHTML = divadttTd6Str;
 			
 			var cell7 = row.insertCell(7);
+			var isCell7Disabled = $("#1submission"+submissionId+"timeSheetDay7Id").prop('disabled');
+			if(isCell7Disabled){
+				$("#divadttTd8 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd8 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
@@ -396,6 +475,28 @@ function getProjectTasks(projectTaskId,projectId){
 	   
 }
 </script>
+
+<!-- this script is for remove timesheet -->
+<script type="text/javascript">	
+
+function removeTimeSheetRow(rowId,submissionId) { 
+	
+			var rowNum = $("#maxRowNumber"+submissionId).val();
+			var maxRowNum = parseInt(rowNum);
+			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
+			
+			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).value= '';
+			 var  rId = "timesheetRow"+rowId+"submission"+submissionId;
+			  var r = document.getElementById("table"+submissionId).rows[rId];
+	          var count = 2*(r.cells.length);
+			    for(i=0;i<=count;i++){
+			        r.deleteCell(0);
+			    } 
+		}
+		
+</script>	
+
 
 <!-- this script is for masks for each entry  -->	  
 <script>
@@ -744,7 +845,7 @@ function checkHours(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 200; p++){  
+	 for (var p = 1; p < 1000; p++){  
 		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -766,7 +867,8 @@ function checkHours(){
 		var minutes = t % 60;
 		total = hours +":"+ minutes;
   }  
-	 var time = total.split(':'); 
+	 var time = total.split(':');
+	 if(!isNaN(time[0])){
 	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
 	    	 
 	 }else{
@@ -777,7 +879,7 @@ function checkHours(){
 	    		result = result+"TuesDay ,";
 	    	}
 	    	if(i == '3'){  
-	    		result = result+"Webnesday ,";
+	    		result = result+"Wednesday ,";
 	    	}
 	    	if(i == '4'){  
 	    		result = result+"Thursday ,";
@@ -792,6 +894,7 @@ function checkHours(){
 	    		result = result+"Sunday ,";
 	    	}
 	    	
+	 }
 	 }
 }   
 	

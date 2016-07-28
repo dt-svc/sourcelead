@@ -283,6 +283,7 @@ public class ProjectsController {
 						            	pm.setProjectEndDate(currentEndDate);
 						            }
 									pm.setProjects(projects);
+									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
 									pm.setUpdatedDate(new Date());
 									projectMembersService.saveProjectMember(pm);
