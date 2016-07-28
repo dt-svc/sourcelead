@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,12 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
 		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectHierarchyListByLoginUserId(userId);
+	}
+
+	@Override
+	public List<Long> getProjectIdsByLoginUserId(Long userId) {
+		// TODO Auto-generated method stub
+		return projectApproverHierarchyDao.getProjectIdsByLoginUserId(userId);
 	}
 
 	

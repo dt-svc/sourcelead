@@ -109,7 +109,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id");
-		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).setCacheable(true).list();
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         
 	}
