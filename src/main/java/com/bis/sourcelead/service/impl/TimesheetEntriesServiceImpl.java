@@ -345,21 +345,25 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									  sb.append("				<td> <div> ");   
 						              sb.append(" <input type='text' "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' class='inline_field' value='"+timesheetEntries.getMonHours()+"'  placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
-						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-						              }else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
+						              if(isNullOrEmpty(disbleCondition1)){
+						            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
+							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
+							              }else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
+							              }
 						              }
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' class='inline_field' value='"+timesheetEntries.getTueHours()+"' placeholder='HH:MM' />	"); 
-						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
-						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-						              }else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
+						              sb.append(" <div class='timesheet_comm'>");
+						              if(isNullOrEmpty(disbleCondition2)){
+							              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
+							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
+							              }else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
+							              }
 						              }
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -367,10 +371,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									  sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition3+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay3Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay3Id' class='inline_field' value='"+timesheetEntries.getWedHours()+"' placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
-						                  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");  
-						              }else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
+						              if(isNullOrEmpty(disbleCondition3)){
+							              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
+							                  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");  
+							              }else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
+							              }
 						              }
 						               
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>"); 
@@ -380,48 +386,54 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						    		  sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition4+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay4Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay4Id' class='inline_field' value='"+timesheetEntries.getThuHours()+"' placeholder='HH:MM' />"); 	
 						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getThucomments())){
-						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
+						              if(isNullOrEmpty(disbleCondition4)){
+						            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
+							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
+							              }
+							              else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
+							              }
 						              }
-						              else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
-						              }
+						             
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 						              sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text'  "+disbleCondition5+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay5Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay5Id' class='inline_field' value='"+timesheetEntries.getFriHours()+"' placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getFricomments())){
-						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
-						              }else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
+						              if(isNullOrEmpty(disbleCondition5)){
+						            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
+							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
+							              }else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
+							              }
 						              }
-						              
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id'>"+timesheetEntries.getFricomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append("<td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' class='inline_field' value='"+timesheetEntries.getSatHours()+"'  placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
-						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-						              }else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
+						              if(isNullOrEmpty(disbleCondition6)){
+						            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
+							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
+							              }else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
+							              }
 						              }
-						              
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append("						<td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition7+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='"+timesheetEntries.getSunHours()+"' />	"); 
-						              sb.append(" <div class='timesheet_comm'>"); 
-						              if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
-						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-						              }else{
-						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
+						              sb.append(" <div class='timesheet_comm'>");
+						              if(isNullOrEmpty(disbleCondition7)){
+						            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
+							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
+							              }else{
+							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
+							              }
 						              }
-						               
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 									                                         
@@ -465,7 +477,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append("                 </td> ");
 									  sb.append("				<td> <div> ");   
 						              sb.append(" <input type='text'  "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
-						              sb.append(" <div class='timesheet_comm'>"); 
+						              sb.append(" <div class='timesheet_comm'>");
+						              if(isNullOrEmpty(disbleCondition1))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -473,6 +486,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									  sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
+						              if(isNullOrEmpty(disbleCondition2))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -480,6 +494,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									  sb.append(" <td> <div>");  
 						              sb.append(" <input type='text' "+disbleCondition3+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay3Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay3Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
+						              if(isNullOrEmpty(disbleCondition3))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id'></textarea></span></div>"); 
 						              sb.append(" </div> "); 
@@ -488,6 +503,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						    		  sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition4+" onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay4Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay4Id' class='inline_field' value='' placeholder='HH:MM' />"); 	
 						              sb.append(" <div class='timesheet_comm'>"); 
+						              if(isNullOrEmpty(disbleCondition4))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -495,6 +511,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition5+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay5Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay5Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
+						              if(isNullOrEmpty(disbleCondition5))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -502,6 +519,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									  sb.append("<td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
+						              if(isNullOrEmpty(disbleCondition6))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -509,6 +527,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									  sb.append("						<td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition7+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
+						              if(isNullOrEmpty(disbleCondition7))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>"); 
 						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' ></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
@@ -1056,175 +1075,160 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								
 								
 								for (int c = 1; c < maxCount; c++) {
-									
-									
-									if ((jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id"))){
+								   if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id") ||
+									   jsonObj.has(c+"submission"+submissionId+"timeSheetDay2Id") ||
+									   jsonObj.has(c+"submission"+submissionId+"timeSheetDay3Id") ||
+									   jsonObj.has(c+"submission"+submissionId+"timeSheetDay4Id") ||
+								       jsonObj.has(c+"submission"+submissionId+"timeSheetDay5Id") ||
+									   jsonObj.has(c+"submission"+submissionId+"timeSheetDay6Id") ||
+									   jsonObj.has(c+"submission"+submissionId+"timeSheetDay7Id")){
 										
-									if (isNullOrEmpty(jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id")))
-										continue;
-									
-									TimesheetEntries timesheetEntries = new TimesheetEntries();
-									
-									if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
-										String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
-										if(!isNullOrEmpty(timesheetEntriesId)){
-											timesheetEntries.setId(Long.parseLong(timesheetEntriesId));
-										}	
-								    } 
-									
-									  
-									timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
-									timesheetEntries.setStartDate(new Date());
-									timesheetEntries.setEndDate(new Date());
-									timesheetEntries.setCreatedDate(new Date());
-									timesheetEntries.setUpdatedDate(new Date());
-									
-									ProjectTasks projectTasks = new ProjectTasks();
-									projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
-									timesheetEntries.setProjectTask(projectTasks);
-									
-									String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
-									if(!isNullOrEmpty(monHours)){
-										timesheetEntries.setMonHours(monHours);
+										TimesheetEntries timesheetEntries = new TimesheetEntries();
 										
-										String[] parts = monHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
+										//if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
+										if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
+											String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
+											if(!isNullOrEmpty(timesheetEntriesId)){
+												timesheetEntries.setId(Long.parseLong(timesheetEntriesId));
+											}	
+									    } 
 										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin;
-									}else{
-										timesheetEntries.setMonHours("00:00");
-									}
-									timesheetEntries.setMoncomments(jsonObj.getString(c+"submission"+submissionId+"comment1Id"));
-									
-									String tueHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay2Id");
-									if(!isNullOrEmpty(tueHours)){
-										timesheetEntries.setTueHours(tueHours);
+										  
+										timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+										timesheetEntries.setStartDate(new Date());
+										timesheetEntries.setEndDate(new Date());
+										timesheetEntries.setCreatedDate(new Date());
+										timesheetEntries.setUpdatedDate(new Date());
 										
-										String[] parts = tueHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
+										ProjectTasks projectTasks = new ProjectTasks();
+										projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
+										timesheetEntries.setProjectTask(projectTasks);
+										//For Monday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id")){
+											String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
+											if(!isNullOrEmpty(monHours)){
+												timesheetEntries.setMonHours(monHours);
+												total = getTotalHoursFormDayHours(monHours, total);
+											}else{
+												timesheetEntries.setMonHours("00:00");
+											}
+										}
+										//For Monday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment1Id")){
+											timesheetEntries.setMoncomments(jsonObj.getString(c+"submission"+submissionId+"comment1Id"));
+										}
 										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin; 
-									}else{
-										timesheetEntries.setTueHours("00:00");
-									}
-									timesheetEntries.setTuecomments(jsonObj.getString(c+"submission"+submissionId+"comment2Id"));
-				
-									
-									String wedHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay3Id");
-									if(!isNullOrEmpty(wedHours)){
-										timesheetEntries.setWedHours(wedHours);
+										//For Tuesday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay2Id")){
+											String tueHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay2Id");
+											if(!isNullOrEmpty(tueHours)){
+												timesheetEntries.setTueHours(tueHours);
+												total = getTotalHoursFormDayHours(tueHours, total);
+											}else{
+												timesheetEntries.setTueHours("00:00");
+											}
+											
+										}
+										//For Tuesday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment2Id")){
+											timesheetEntries.setTuecomments(jsonObj.getString(c+"submission"+submissionId+"comment2Id"));
+										}
+					                    
+										//For wednesday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay3Id")){
+											String wedHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay3Id");
+											if(!isNullOrEmpty(wedHours)){
+												timesheetEntries.setWedHours(wedHours);
+												total = getTotalHoursFormDayHours(wedHours, total);
+												
+											}else{
+												timesheetEntries.setWedHours("00:00");
+											}
+										}
+										//For wednesday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment3Id")){
+											timesheetEntries.setWedcomments(jsonObj.getString(c+"submission"+submissionId+"comment3Id"));
+										}
 										
-										String[] parts = wedHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
+										//For thursday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay4Id")){
+
+											String thuHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id");
+											if(!isNullOrEmpty(thuHours)){
+												timesheetEntries.setThuHours(thuHours);
+												total = getTotalHoursFormDayHours(thuHours, total);
+												
+											}else{
+												timesheetEntries.setThuHours("00:00");
+											}
+										}
+										 
+										//For thursday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment4Id")){
+											timesheetEntries.setThucomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
+										}
 										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin;
 										
-									}else{
-										timesheetEntries.setWedHours("00:00");
-									}
-									timesheetEntries.setWedcomments(jsonObj.getString(c+"submission"+submissionId+"comment3Id"));
-									 
-									
-									String thuHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay4Id");
-									if(!isNullOrEmpty(thuHours)){
-										timesheetEntries.setThuHours(thuHours);
+										//For friday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay5Id")){
+											String friHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay5Id");
+											if(!isNullOrEmpty(friHours)){
+												timesheetEntries.setFriHours(friHours);
+												total = getTotalHoursFormDayHours(friHours, total);
+											}else{
+												timesheetEntries.setFriHours("00:00");
+											}
+										}
+										 
+										//For friday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment5Id")){
+											timesheetEntries.setFricomments(jsonObj.getString(c+"submission"+submissionId+"comment5Id"));
+										}
 										
-										String[] parts = thuHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
 										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin;
+										//For saturday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay6Id")){
+											String satHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay6Id");
+											if(!isNullOrEmpty(satHours)){
+												timesheetEntries.setSatHours(satHours);
+												total = getTotalHoursFormDayHours(satHours, total);
+											}else{
+												timesheetEntries.setSatHours("00:00");
+											}
+										}
+										//For saturday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment6Id")){
+											timesheetEntries.setSatcomments(jsonObj.getString(c+"submission"+submissionId+"comment6Id"));
+										}
 										
-									}else{
-										timesheetEntries.setThuHours("00:00");
-									}
-									timesheetEntries.setThucomments(jsonObj.getString(c+"submission"+submissionId+"comment4Id"));
-									 
-									 
-									String friHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay5Id");
-									if(!isNullOrEmpty(friHours)){
-										timesheetEntries.setFriHours(friHours);
 										
-										String[] parts = friHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
+										//For sunday Hours
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay6Id")){
+											String sunHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay7Id");
+											if(!isNullOrEmpty(sunHours)){
+												timesheetEntries.setSunHours(sunHours);
+												total = getTotalHoursFormDayHours(sunHours, total);
+												
+											}else{
+												timesheetEntries.setSunHours("00:00");
+											}
+										}
 										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin;
-										
-									}else{
-										timesheetEntries.setFriHours("00:00");
-									}
-									timesheetEntries.setFricomments(jsonObj.getString(c+"submission"+submissionId+"comment5Id"));
-									
-									 
-									String satHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay6Id");
-									if(!isNullOrEmpty(satHours)){
-										timesheetEntries.setSatHours(satHours);
-										
-										String[] parts = satHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
-										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin;
-									}else{
-										timesheetEntries.setSatHours("00:00");
-									}
-									timesheetEntries.setSatcomments(jsonObj.getString(c+"submission"+submissionId+"comment6Id"));
-									 
-									
-									String sunHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay7Id");
-									if(!isNullOrEmpty(sunHours)){
-										timesheetEntries.setSunHours(sunHours);
-										
-										String[] parts = sunHours.split(":");
-										String hours = parts[0]; 
-										String min = parts[1];
-										
-										Long  localHours = Long.parseLong(hours) * 60;
-										Long  localHoursMinute = Long.parseLong(min);
-										Long  finalmin = localHours + localHoursMinute;
-										total = total + finalmin;
+										//For sunday Comments
+										if (jsonObj.has(c+"submission"+submissionId+"comment6Id")){
+											timesheetEntries.setSuncomments(jsonObj.getString(c+"submission"+submissionId+"comment7Id"));
+										}
+										rowNum++;
+										timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 										
 									}else{
-										timesheetEntries.setSunHours("00:00");
+										if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
+											String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
+											timesheetEntriesDao.deleteTimesheetEntries(timesheetEntriesId);
+										}
 									}
-									timesheetEntries.setSuncomments(jsonObj.getString(c+"submission"+submissionId+"comment7Id"));
-									
-									
-									rowNum++;
-									
-									timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
-									
-								}else{
-									if ((jsonObj.has(c+"submission"+submissionId+"timesheetEntriesId"))){
-										String timesheetEntriesId = jsonObj.getString(c+"submission"+submissionId+"timesheetEntriesId");
-										timesheetEntriesDao.deleteTimesheetEntries(timesheetEntriesId);
-									}
-								}
 								}
 								if(total != null){
-									
 						            int actualHours = (int) (total / 60);
 						            int actualMinutes =   (int)(total % 60);
 						            String actualTimeString =  actualHours+"."+actualMinutes;
@@ -1243,6 +1247,18 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	private Long getTotalHoursFormDayHours(String dayHours,Long total){
+				String[] parts = dayHours.split(":");
+				String hours = parts[0]; 
+				String min = parts[1];
+				
+				Long  localHours = Long.parseLong(hours) * 60;
+				Long  localHoursMinute = Long.parseLong(min);
+				Long  finalmin = localHours + localHoursMinute;
+				total = total + finalmin;
+				return total;
+			
+	}
 	
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));

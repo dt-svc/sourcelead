@@ -7,7 +7,10 @@
       <div class="pull-left">
         <h2>Dashboard</h2>
       </div>
+<<<<<<< HEAD
       
+=======
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
     </section>
     <div class="content-dashboard clearfix">
       <section class="clearfix section-action-btns hidden">

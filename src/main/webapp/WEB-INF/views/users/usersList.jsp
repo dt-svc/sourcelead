@@ -19,11 +19,21 @@ window.onload = function () {
 	}
 </script>
 
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
+
   <!-- Content Area -->
   
   <section class="content-wraper">
   <div class="content-dashboard clearfix">
     <section class="content-header clearfix">
+         <c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+	
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
@@ -35,15 +45,12 @@ window.onload = function () {
                <select id="userState" onchange="getUsersList();">
 				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
-				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
 				<option value="INACTIVE" >In Active</option>
-				</c:if>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
           
-          </li>&nbsp;|
+          </li>&nbsp;&nbsp;|&nbsp;
           
-		  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
 		   <li><i class="fa fa-filter"></i>&nbsp;
 				<select id="userRole" onchange="getUsersList();">
 				<option value="">--Select Role--</option>
@@ -53,12 +60,12 @@ window.onload = function () {
                 </c:forEach>
 				</select>
 		   </li>
-		   </c:if>
 		   
 		 <li>
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
-				<input type="text" id="searchByName" class=""><span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
+				<span class="action-search"><input type="text" id="searchByName"></span>
+				<span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		 
@@ -91,6 +98,9 @@ window.onload = function () {
 	   	}
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
+		
+		$("#usersListBody").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:80px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 		$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
@@ -123,10 +133,10 @@ window.onload = function () {
 	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
 	       	    	
 	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
-	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
+	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
 	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
 	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
-	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='#' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
+	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
 	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
 	 			    	result = result +"<br/><span class='label label-success'>Active</span>";
 	 			    }else{
@@ -151,7 +161,7 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	
-	       	        
+	       	    	$("#usersListBody").removeAttr("style"); 
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
@@ -159,6 +169,7 @@ window.onload = function () {
 	    	else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
 	    		$('#usersListBody').empty();
+	    		$("#usersListBody").removeAttr("style");
 	    		$('#usersListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
 	    	}
@@ -166,7 +177,7 @@ window.onload = function () {
 			 },
 	        error: function(e){
 	        }
-	    }); 
+	    });  
 	}
 </script>
 
@@ -179,7 +190,9 @@ function resendInvitation(userId){
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 			        success: function(result) {
-			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='#'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#mailMsg").fadeIn(200);
+		   		        $('#mailMsg').delay(2000).fadeOut('slow');
 			        },
 			    });
 		 }
@@ -204,5 +217,9 @@ function getUserSummary(userId){
 	}
   
 </script>
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 
     

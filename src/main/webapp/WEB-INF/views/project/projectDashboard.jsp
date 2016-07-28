@@ -28,7 +28,11 @@
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
+<<<<<<< HEAD
            <div class="pull-right brud-crum"><a href="dashboard">Home</a> » Projects List</div>
+=======
+          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;ProjectList</div>
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
         </section>
 
         
@@ -71,7 +75,7 @@
         	<ul>
 				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
-                    	<ul style="height:150px; overflow-y:auto;padding-bottom:5px;">
+                    	<ul>
                     	  <c:forEach var="report" items="${add_client}">  
                         	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
 						  </c:forEach>
@@ -377,6 +381,7 @@ $(document).ready(function() {
 		    projectEmployee(projectId);
  }
  </script> 
+ 
 <script>
 function projectEmployee(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -391,8 +396,9 @@ function projectEmployee(projectId){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result + '		</div>';
-    	    result = result + '        <div class="project_tabs_inn_table">';
-    		result = result + '	<table>';
+    		  result = result + '        <div class="project_tabs_inn_table">';
+    		if(json.length!=null && json.length!=''){
+    	    result = result + '	<table>';
     		result = result + '	<tbody>';
     		result = result + '		<tr>';
             result = result + '	 	<th>Emp name</th>';
@@ -413,7 +419,6 @@ function projectEmployee(projectId){
 	        		}else{
 	        			projectEndDateStr = "--"
 	        		}
-	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
@@ -426,8 +431,19 @@ function projectEmployee(projectId){
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
-    	    result = result + '	 </table>   ';         
-    	    result = result + '	     </div>';
+    	    result = result + '	 </table>   ';
+    		 }else{
+    		
+    			 result = result + '<div class="table_nodata">';
+    			 result = result + '<div class="table_nodata_inn">';
+    			 result = result + '<img src="resources/images/no-data.png" />';
+    			 result = result + '<span>Nothing is here to show <b>Click on Add Emp btn to add employess... </b>';
+    			 result = result + '</span>';
+    			 result = result + '<div class="clearfix"></div>';
+    			 result = result + '</div>';
+    			 result = result + '</div>';
+    		 }
+    		result = result + '	     </div>';
     	    $("#tab-1").empty();
     	    $("#tab-1").append(result);  
     	    
@@ -743,11 +759,11 @@ function filter(){
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
-   		    			result = result +'<td><div>'+report.managerLevel1+'</div></td>';
+   		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
-   		    			result = result +'<td><div>'+report.managerLevel2+'</div></td>';
-   		    		}
+   		    			result = result +report.managerLevel2;
+   		    		} 
    		    		result = result +'</div>';
    		    		result = result +'</td>';
    		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
@@ -819,12 +835,6 @@ function flushTasks() {
 <!-- Add Task Script start -->
 <script type="text/javascript">
 function addTasks(){
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-   }; 
 	
 	if ($('#project_form').validate(false, validationSettings)){
     	var tbl = document.getElementById("projectTaskTbl");
@@ -915,6 +925,15 @@ $(document).ready(function(){
 });
 </script>
 <!-- Add Task Script Ends -->
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
  
  <script type="text/javascript">
  function saveTasks() {
@@ -985,13 +1004,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function addEmployee() {
-		 var validationSettings = {
-			        errorMessagePosition : 'element',
-			       borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		   }; 
-		 
 		 if ($('#employee_form').validate(false, validationSettings)){
 			var sourceleadUrl ='${sourceleadUrl}';
 			var frm = $('#employee_form').serializeFormJSON();
@@ -1067,11 +1079,10 @@ function getTeamMembers(projectId) {
                  "<td>"+opt.user.email+"</td>"+
                  "<td>"+role+"</td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-	  
-                 "<input  id='startDate"+opt.id+"' onclick='getStartDatePickerById(\"startDate"+opt.id+"\","+opt.id+")'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
+                 "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input id='endDate"+opt.id+"' onclick='getEndDatePickerById(\"endDate"+opt.id+"\","+opt.id+")' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
+                 "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
                  "</div></td>"+
                  "</tr>";
 			}
@@ -1079,6 +1090,31 @@ function getTeamMembers(projectId) {
 	        output = output+' </table>';
         	$("#employeesList").empty();
 	        $("#employeesList").append(output);
+	        
+	        
+	        //StartDate And EndDate Pickers
+		       if(json.length > 0){
+			    	for (var i = 0; i < json.length; i++) {
+						var opt = json[i];
+						$('#startDate'+opt.id).datepicker({
+							dateFormat : 'yy-mm-dd',
+							onSelect : function(selected) {
+								var dt = new Date(selected);
+								dt.setDate(dt.getDate() + 1);
+								$("#endDate"+opt.id).datepicker("option", "minDate", dt);
+							}
+						});
+
+						$('#endDate'+opt.id).datepicker({
+							dateFormat : 'yy-mm-dd',
+							onSelect : function(selected) {
+								var dt = new Date(selected);
+								dt.setDate(dt.getDate() - 1);
+								$("#startDate"+opt.id).datepicker("option", "maxDate", dt);
+							}
+						});
+					}
+		      }
         },
         error: function(e){
         }
@@ -1136,28 +1172,6 @@ function assignEmployee(){
 	 }
  }
  </script> 
- <script>
- function getStartDatePickerById(id,incrementor) {
-	 $('#'+id).datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        }
-	  });
-  } 
-</script>
-<script>
- function getEndDatePickerById(id,incrementor) {
-	 $('#'+id).datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        }
-	  });
-  } 
-</script>
 
  <script>
  function projectEndtateStr() {
@@ -1182,4 +1196,6 @@ function flushEmployee(){
 	 $('#newEmployee').find('p.jquery_form_error_message').remove();
 }
 </script>
+
+
 </html>

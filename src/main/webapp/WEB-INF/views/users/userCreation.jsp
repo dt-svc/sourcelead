@@ -2,16 +2,8 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
@@ -70,13 +62,11 @@
                   <label class="col-md-3"> Date<span class="text-danger">&nbsp; *</span> </label>
 		              <div class="col-md-9">
 		                <div class="row">
-		                  <div class="col-lg-6 positionRelative">
-		                    
+		                  <div class="col-lg-6 positionRelative" id="StartDateDiv">
 		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly">
 		                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 		                    </div>
 		                  <div class="col-lg-6 positionRelative">
-		                     
 		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly">
 		                   <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 		                   </div>
@@ -738,6 +728,7 @@ function flushProject(){
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
+	            addValidClass();
 	        }
 	  });
 	  
@@ -753,4 +744,15 @@ function flushProject(){
   } );
 </script>
 
+<<<<<<< HEAD
 <!-- end script for datepicker -->
+=======
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("StartDate").value;
+		 if(StartDate){
+			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf

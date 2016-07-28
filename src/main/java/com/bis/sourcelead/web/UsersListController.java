@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +67,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	ProjectsService projectsService;
 		
-	
+	/**
+	 * To forward users List jsp page
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		
@@ -94,20 +97,36 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			e.printStackTrace();
 		}
 		
-	/*	for(Roles roles : rolesList){
+	/*   for(Roles roles : rolesList){
 			try {
 				List<User> usersList = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roles.getId(), orgLocations.getId(),user.getId());
-				System.out.println(usersList.size());
+				roles.setRolesCount(usersList.size());
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
 		}*/
+		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsg");
+		}
 		
 		model.addObject("rolesList", rolesList);
 		
 		return model;
 
 	}
+	
+	/**
+	 * To get All the Users by filtering 
+	 * @param request
+	 * @param userRole
+	 * @param searchByName
+	 * @param userState
+	 * @param loginUserRole
+	 * @return
+	 */
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
@@ -120,7 +139,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-		Collection<UserRole> rolesList = new ArrayList<UserRole>();
+		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 		
 	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){
@@ -174,7 +193,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	}
 	
 
-	//to get the user summary
+	/**
+	 * Forward to user controller by using userId as request param
+	 * @param userId
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/userSummary/{userId}" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummary(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			response.sendRedirect("/sourcelead/userSummaryDetails?userId="+userId);
@@ -182,6 +207,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	   }
 	 
 	 
+	 /**
+	  * Get Employee details by User ID
+	  * @param request
+	  * @param userId
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 		 String resultJson = null;   
@@ -194,23 +226,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 resultJson = toJSON(employee);
 		 return resultJson;
 	  }
-	 
-	 @RequestMapping(value = "/updateUserById", method = RequestMethod.POST)
-	 public String updateUserById(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
-		    User user = userService.getUserById(userId);
-		    if(fieldName.equalsIgnoreCase("firstName")){
-		    	user.setFirstName(fieldValue);
-		    }
-		    else if (fieldName.equalsIgnoreCase("lastName")) {
-		    	user.setLastName(fieldValue);
-			} 
-		    else if (fieldName.equalsIgnoreCase("mobilePhone")) {
-		    	user.setMobilePhone(fieldValue);
-			} 
-		    userService.addUser(user);
-		    return null;
-	  }
-	 
+
+	 /**
+	  * To terminate user by using User ID.
+	  * @param userId
+	  * @param reason
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 		public @ResponseBody String terminateUser(
 				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason) throws Exception{
@@ -224,7 +247,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 				return "success";
 		}
 	 
-	 
+	 /**
+	  * To update user and employee By User ID.
+	  * @param json
+	  * @param userId
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 		public @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId) throws Exception{
 				User user = userService.getUserById(userId);

@@ -3,37 +3,33 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css">
-
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ 
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
 <body>
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
+		<c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
 			<div class="pull-left">
 				<h2>Clients</h2>
 			</div>
+<<<<<<< HEAD
 			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Client List</div>
 			<!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
+=======
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
+>>>>>>> 9b055c84597a7dba788f08513f7c69ed37c456cf
 		</section>
 
 		<!-- Project -->
 		<div class="timesheet_out">
-
-
 			<div class="clients_wrap">
 				<div class="timesheet_head">
 					<ul>
@@ -206,10 +202,10 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectName\');" id="projectName" value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName" value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate" class="project_inline_field" onclick="getEndDatePickerById('+opt.projectSequeneNumber+',\'endDate\');"></div></td>';
-							result = result + ' <td><div><select id="projectManager" onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectManager\');">';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
+							result = result + ' <td><div><select id="clientId" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
 									for (var j = 0; j < opt.projectManagerName.length; j++) {
 										
 										var managers = opt.projectManagerName[j];
@@ -226,7 +222,7 @@
 									} 
 							result = result + '	</select></div></td>';
 							result = result+ '<td><div>30</div></td>';
-							result = result + '<td><div><select id="projectStatusId" onBlur="inlineEditClientProjects('+opt.projectSequeneNumber+',\'projectStatusId\');">';
+							result = result + '<td><div><select id="projectStatusId" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
 							if(opt.projectStatus == 'STARTED'){
 								result = result+'<option selected>Started</option>';
 							}else{
@@ -348,16 +344,16 @@
 	}
 </script>
 <script> 
-function  inlineEditClientProjects(projectSequenceNumber,localFieldName){
+function  inlineEditClientProjects(projectId,localFieldName){
+	alert("Hai"+projectId);
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/inlineEditClientProjects?${_csrf.parameterName}=${_csrf.token}&projectSequenceNumber="+projectSequenceNumber+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+		    url: sourceleadUrl+"/inlineEditClientProjects?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
    		    success: function(data) {
-   			   alert(data);
    		    }
 	 }); 
 }
@@ -378,7 +374,7 @@ function  inlineEditForProjects(orgRelationId,localFieldName){
 </script> 
 
 <script>
-function getStartDatePickerById(projectSequeneNumber,localFieldName){
+function getStartDatePickerById(projectId,localFieldName){
 	 $('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
@@ -386,7 +382,7 @@ function getStartDatePickerById(projectSequeneNumber,localFieldName){
 	            dt.setDate(dt.getDate() + 1);
 	        },
 	        onClose: function() {
-	        	inlineEditClientProjects(projectSequeneNumber,localFieldName);
+	        	inlineEditClientProjects(projectId,localFieldName);
 	     }
 	  });
 }
@@ -445,3 +441,8 @@ function getEndDatePickerById(projectSequeneNumber,localFieldName){
 </script>
 
 
+<!-- Show success message after form submission script -->
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+<!-- End -->

@@ -28,19 +28,22 @@
             <div id=passwordDiv>
             <span>
             	<label>Verification Code</label>
-                <input type="text" class="signin_fild" name="verificationCode" id="verificationCode" value="${verificationCode}" required/>
+                <input type="text" class="signin_fild" name="verificationCode" data-validation="required" field-name="Verification Code" id="verificationCode" value="${verificationCode}" />
                 <b></b>
             </span>
+            <div class="clearfix"></div>
             <span>
             	<label>Password</label>
-                <input type="Password" class="signin_fild" name="password"  value="${password}" id="password" onkeydown="$(this).clear();" required/>
+                <input type="Password" class="signin_fild" name="password" field-name="Password" data-validation="required validate_length length6-100" value="${password}" id="password" onkeydown="$(this).clear();" />
                 <b></b>
             </span>
+            <div class="clearfix"></div>
             <span>
             	<label>Confirm Password</label>
-                <input type="Password" class="signin_fild" value="" id="confirmPassword" onblur="$(this).checkPass();" required/>
+                <input type="Password" class="signin_fild" value="" data-validation="required" field-name="Confirm Password" id="confirmPassword" onblur="$(this).checkPass();" />
                 <b></b>
             </span>
+            <div class="clearfix"></div>
             </div>
             <input type="submit" value="Save" id="submit_button" class="sign_btn" />
             </form:form>
@@ -53,6 +56,8 @@
     <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/jquery-fun.js"></script> 
+    <script src="resources/js/formvalidator.js"></script>
+    
     
     
 </body>
@@ -88,7 +93,7 @@ function applyInputSlide() {
 			 $('#passwordDiv').find('span.jquery_form_error_message').remove(); 
 			 document.getElementById("confirmPassword").setAttribute('class','valid signin_fild');
 			 $("input#confirmPassword").removeAttr("style");
-			 document.getElementById('register_button').disabled = false;
+			 document.getElementById('submit_button').disabled = false;
 	    }
 	    else{ 
 		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -97,7 +102,7 @@ function applyInputSlide() {
 				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
 				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
 				$("input#confirmPassword").removeAttr("style");
-				document.getElementById('register_button').disabled = true;
+				document.getElementById('submit_button').disabled = true;
 	    }
    }
 	
@@ -112,7 +117,7 @@ function applyInputSlide() {
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
         $('#resetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
@@ -142,7 +147,56 @@ function applyInputSlide() {
 			        },  
                 });
             });
-</script>
+</script> -->
+
+
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#resetPassword_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+        		var form = $('#resetPassword_form').serializeFormJSON();
+              	var con = JSON.stringify(form);
+  			    con = con.replace(/[{}]/g, ""); 
+          		var sourceleadUrl ='${sourceleadUrl}';
+          		 $("#submit_button").attr("disabled", "disabled");
+          		 $( "#submit_button" ).addClass('button').val('Processing..');
+                  $.ajax({
+              	      type: "GET",
+              	      contentType : 'application/json; charset=utf-8',
+              	      dataType : 'json',
+                    	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                      	success: function(result) {
+                      		if((result == 'Invalid')){
+  	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();
+  	             		         document.getElementById("verificationCode").setAttribute('class','error signin_fild');
+  	             		         $("input#verificationCode").after("<span class='jquery_form_error_message'> <font color='red'>Invalid Verification Code</font></span>");
+  	             				 document.getElementById("verificationCode").setAttribute('pass-exist','yes');
+  	             				 document.getElementById("verificationCode").setAttribute('pass-exist-errorMsg', ' Invalid Verification Code'); 
+  	             				 $("input#verificationCode").removeAttr("style");
+      			        	}else{
+  								                   			     
+      			        		location.replace(sourceleadUrl+"/login"); 
+      			        	}
+  			        },  
+                  });
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#resetPassword_form').showHelpOnFocus();
+            
+     
+	</script>
 
 
 <script type="text/javascript">

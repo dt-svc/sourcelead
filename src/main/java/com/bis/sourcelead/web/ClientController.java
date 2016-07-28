@@ -1,6 +1,8 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,8 +37,10 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -80,16 +84,31 @@ public class ClientController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	/**
 	 * Handles to display client jsp
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/client")
-		public ModelAndView client() throws Exception {
+		public ModelAndView client(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
-			 Collection<User> userList = userService.getUsersByUserRoles();
-			 model.addObject("user_List", userList);
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Clients);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+				model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
@@ -124,6 +143,13 @@ public class ClientController {
 			}
 			sessionData.setNav(Constants.Clients);
 			request.getSession().setAttribute("sessionData",sessionData);
+			
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "clientCreateMsg");
+			}
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
@@ -153,7 +179,8 @@ public class ClientController {
 		 	/*Saving for Org*/
 		    Org org = new Org();
 			org.setOrgName(jsonObj.getString("orgName"));
-		    org.setWebSite(jsonObj.getString("webSite"));
+			org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+		   // org.setWebSite(jsonObj.getString("webSite"));convertWebsite
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(new Date());
 			org.setUpdatedBy(loginUserCode);
@@ -223,7 +250,13 @@ public class ClientController {
 				project.setProjectApprovers(projectApproverSet);
 				/*Saving for Projects*/
 				projectsService.saveProject(project);
+				
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			     commonUtil.storeSourceleadTasks(user, project);
 			}
+			
+			 SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Successfully you have created a client");
+			 
 			 return "clientDashboard";
 	   }
 	
@@ -317,18 +350,18 @@ public class ClientController {
 				 /*
 				  * Add managers to project list(shows in select box) in client tab
 				  */
-				 
-				 Collection<User> userList = userService.getUsersByUserRoles();
-				  String[] mngrs = new String[userList.size()];
+				 Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(project.getId());
+				    String[] approvers = new String[projectApproverHierarchies.size()];
 				    int i = 0;
-				    for(User user : userList){
-				    	mngrs[i] = user.getFirstName()+"&"+user.getId();
+				    for(ProjectApproverHierarchy php : projectApproverHierarchies){
+				    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
 				    	i++;
+				    	if(php.getLevel()==1){
+				    		project.setRelationId(php.getApproverUserId().getId());
+				    	}
 				    }
-				    if(mngrs != null){
-				    	project.setProjectManagerName(mngrs);
-				    }
-				    project.setRelationId(project.getOrgRelationId().getId());
+				    project.setProjectManagerName(approvers);
+
 			 }
 			 ObjectMapper mapper = new ObjectMapper();
 			 String jsonInString = mapper.writeValueAsString(clientProjectsList);
@@ -411,11 +444,13 @@ public class ClientController {
 		 
 //		inlineEditClientProjects
 		@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
-		 public String inlineEditClientProjects(@RequestParam(value="projectSequenceNumber", required=false) String projectSequenceNumber,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{
+		 public String inlineEditClientProjects(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{
 			
+//			Projects projects11 = projectsService.getProjectByProjectSequenceNumber(projectSequenceNumber);
+			Projects projects = projectsService.getProjectById(projectId);
 			
-			Projects projects = projectsService.getProjectByProjectSequenceNumber(projectSequenceNumber);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Set<ProjectApproverHierarchy> pahSet = new HashSet<ProjectApproverHierarchy>();
 			logger.info("Project name before Edit "+projects.getProjectName());
 			if("projectName".equalsIgnoreCase(fieldName)){
 				projects.setProjectName(fieldValue);
@@ -425,15 +460,51 @@ public class ClientController {
 			}else if("endDate".equalsIgnoreCase(fieldName)){
 				Date endDate = getDateFormat(fieldValue);
 				projects.setEndDate(endDate);
-			}else if("projectManager".equalsIgnoreCase(fieldName)){
-//				user.setId(Long.parseLong(fieldValue));
-//				userService.up
+			}else if("clientId".equalsIgnoreCase(fieldName)){
+				Long l1 = Long.parseLong(fieldValue);
+				Collection<ProjectApproverHierarchy> pah = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+				for(ProjectApproverHierarchy p1 :pah){
+					if(l1 == p1.getApproverUserId().getId()){
+						if(p1.getLevel() == 1){
+							  p1.setLevel(2);
+						  }else{
+							  p1.setLevel(1);
+						  }
+					}else{
+						if(p1.getLevel() == 1){
+							p1.setLevel(2);
+						}else{
+							 p1.setLevel(1);
+						}
+					}
+					pahSet.add(p1);
+				}
+		    	projects.setProjectApprovers(pahSet);
 			}else{
 				projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
 			}
 			projectsService.updateProject(projects);
 			return fieldValue; 
 		
+		}
+		
+
+		private String convertWebsite(String website){
+			if(!website.startsWith("http") && !website.startsWith("https")){
+				 website = "http://" + website;
+		    }        
+		    URL netUrl = null;
+			try {
+				netUrl = new URL(website);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			
+		    String host = netUrl.getHost();
+		    if(host.startsWith("www")){
+		        host = host.substring("www".length()+1);
+		    }
+		    return host;
 		}
 		
 }

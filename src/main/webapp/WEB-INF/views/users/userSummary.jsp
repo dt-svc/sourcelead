@@ -307,7 +307,12 @@ function firstname(name)
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
-						  result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
+                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+                            }
+                            else{
+                                 result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                            }
 							result = result + '</div></td> '; 
 						   
 						   result = result + '   </tr>';
@@ -461,6 +466,10 @@ function firstname(name)
 		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick=""><input class="u_can_color" type="button" value="Cancel"></b>
 	</div> -->
 
+ <div class="remove_pop" style="display: none;">
+	<i class="fa fa-trash"></i><span>User successfully terminated</span>
+</div> 
+
 <div id="popUp"></div>
 </body>
 
@@ -508,12 +517,13 @@ function firstname(name)
 
 <script type="text/javascript">
  function validateEmployeeId(id,userId) {
+	 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
+	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmployeeId != null && EmployeeId != ""){
-		 $("#update_user").attr("disabled", "disabled");
-         $( "#update_user" ).addClass('button').val('Processing..');
+		$("#update_user").attr("disabled", "disabled");
+        $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
@@ -537,45 +547,59 @@ function firstname(name)
 
 
 <script type="text/javascript">
- function updateUser(userId) {
-	 var Rate = document.getElementById("Rate").value; 
-	 if(Rate != null && Rate != ""){
-		 $('#RatePer').removeAttr('data-validation-optional');
-		 $('#RatePer').attr("data-validation","required"); 
-	 }else{
-		 $('#RatePer').removeAttr('data-validation');
-		 $('#RatePer').attr("data-validation-optional","true"); 
-	 }
-	 
-	  if ($('#editUser_form').validate(false, validationSettings)){ 
-		    var frm = $('#editUser_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#update_user").attr("disabled", "disabled");
-     		$( "#update_user" ).addClass('button').val('Processing..');
-	        $.ajax({
-		    	type: "POST",
-		    	url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId, 
-		        success: function(result) {
-		        	userDetails(userId);
-			        
-		        },
-		    });
-	        return true;
-		
-	   }else{
-		return false;
-	  } 
+ function updateUser(id,userId) {
+     var EmployeeId = document.getElementById("EmployeeId").value;
+     var sourceleadUrl ='${sourceleadUrl}';
+     var Rate = document.getElementById("Rate").value;
+     if(Rate != null && Rate != ""){
+         $('#RatePer').removeAttr('data-validation-optional');
+         $('#RatePer').attr("data-validation","required");
+     }else{
+         $('#RatePer').removeAttr('data-validation');
+         $('#RatePer').attr("data-validation-optional","true");
+     }
+    
+      if ($('#editUser_form').validate(false, validationSettings)){
+          $.ajax({
+                type: "POST",
+                url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
+                success: function(data) {
+                    if(data == true){
+                          $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+                          document.getElementById("EmployeeId").setAttribute('record-exist','yes');
+                          document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed');
+                    }
+                    else{
+                       
+                        var frm = $('#editUser_form').serializeFormJSON();
+                        var con = JSON.stringify(frm);
+                        con = con.replace(/[{}]/g, "");
+                        
+                        //It will escape all the special characters
+                        var jsonData = encodeURIComponent(con);
+                        var sourceleadUrl ='${sourceleadUrl}';
+                        $("#update_user").attr("disabled", "disabled");
+                         $( "#update_user" ).addClass('button').val('Processing..');
+                        $.ajax({
+                            type: "POST",
+                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                            success: function(result) {
+                                userDetails(userId);
+                                
+                            },
+                        });
+                        return true;
+                    }
+                },
+            });
+       }else{
+        return false;
+      }
     }
     $('body').on('blur', '#editUser_form', function() {
-		$("#editUser_form").showHelpOnFocus();;
-		$("#editUser_form").validateOnBlur(false, validationSettings);  
-	});
+        $("#editUser_form").showHelpOnFocus();;
+        $("#editUser_form").validateOnBlur(false, validationSettings);  
+    });
 </script>
 
 <script type="text/javascript">
@@ -698,7 +722,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
-					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onblur="validateEmployeeId('+json.id+','+json.user.id+');">';
+					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
@@ -799,22 +823,23 @@ function terminateUser(userId){
 		$("#reasonDiv").empty();
 		
 		//getConformation(userId,reason);
-		var r = confirm("Do you want terminate the user");
-		if (r == true) {
+		
 		 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	userDetails(userId);
+   		    	$(".remove_pop").fadeIn(200);
+   		        $('.remove_pop').delay(2000).fadeOut('slow');
    		    }
 	   });
-		}
 	}else{
 		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
 	}
 }
 
 </script>
+
 
 <script>
 function getConformation(userId,reason){ 
@@ -887,7 +912,6 @@ function inlineEditForUsers(userId,localFieldName){
 }
 </script> -->
 <!-- this script for inline edit -->
-
 
 
 <!-- Scripts for project details -->
