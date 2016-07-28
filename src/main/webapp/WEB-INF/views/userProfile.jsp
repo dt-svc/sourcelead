@@ -105,7 +105,7 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation="required validate_Alphabet validate_length length2-100" />
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation-optional="true" data-validation="validate_Alphabet validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
@@ -117,7 +117,7 @@
 						  <div class="form-group">
 							<label class="col-md-4">Location</label>
 							<div class="col-md-8">
-							  <textarea rows="1" name="location" field-name="Location" class="form-control" data-validation="required" />${SourceLeadWeb_user.location}</textarea>
+							  <textarea rows="1" name="location" field-name="Location" class="form-control" data-validation-optional="true" data-validation="validate_length length2-500" />${SourceLeadWeb_user.location}</textarea>
 							</div>
 						</div>
 					</div>
@@ -153,7 +153,7 @@
 						<div class="form-group">
 						<label class="col-md-4">New Password</label>
 						<div class="col-md-6">
-						  <input type="password" name="password"  value="${password}" id="password" field-name="New Password" class="form-control" data-validation="required"  onkeydown="$(this).clear();" />
+						  <input type="password" name="password"  value="${password}" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"  onkeydown="$(this).clear();" />
 						</div>
 				       </div>
 					  <div class="form-group">
@@ -238,10 +238,10 @@
  		var msg = ".png extension not allowed";
  		alertMessage(msg);
     	
-    }else if(sizeinbytes > 1000000){
+    }else if(sizeinbytes > 200000){
     	$("#profile_submit").attr("disabled", "disabled");
  		$( "#profile_submit").addClass('button').val('Processing..');
- 		var msg = "Image size should be less than 1 MB";
+ 		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
     	
     }else{
