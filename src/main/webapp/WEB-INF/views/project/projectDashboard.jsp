@@ -173,6 +173,13 @@
                         </div>
                         <div class="modal-body-custom mt clearfix" id="employeesList">
                         </div>
+                        <div class="col-md-9">
+							<div class="checkbox">
+								<label> <input type="checkbox" id="membermailCheckbox" value="Y"
+									name="isMailToTeamMembers"> Mail to Team Members
+								</label>
+							</div>
+						</div>
                       </div>
                       <div class="modal-footer">
                         <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
@@ -1127,6 +1134,10 @@ function getTeamMembers(projectId) {
 function assignEmployee(){
 	 	var projectId = $("#projectId").val();
 	    var result = "";
+	    var mailtoMembers = "NO";
+	    if(document.getElementById('membermailCheckbox').checked) {
+	    	mailtoMembers = "YES";
+	    }
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
@@ -1135,7 +1146,7 @@ function assignEmployee(){
 		        var endDate = $("#endDate"+employeeId).val();
 				$.ajax({
 		        	type: "POST",
-		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate, 
+		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
 		            success: function(data) {
 		            	projectEmployee(projectId);
 		            }
