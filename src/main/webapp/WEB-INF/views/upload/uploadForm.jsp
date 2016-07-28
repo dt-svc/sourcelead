@@ -4,6 +4,22 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<link rel="icon" type="resources/image/png"
+	href="resources/images/fav.png" />
+<link
+	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
+	rel="stylesheet" type="text/css">
+<link rel="stylesheet"
+	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="resources/js/formvalidator.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <style type="text/css">
 .center-div{
 width:300px;
@@ -15,48 +31,7 @@ margin:10px 220px 0;
 	background:transparent
 }
 </style>
-  <!-- Content Area -->
-  <%-- <section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>File Upload</h2>
-      </div>
-      <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Users Dashboard</div>
-    </section>
-   
-		<!--  <h2>Being Java Guys | Hello World</h2>
-		<h3>Please select a file to upload !</h3> -->
-		<span><a href="<c:url value='/download'/>">${error}</a></span> 
-		<span>${msg}</span> 
-		<br />
-		<form:form method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload.htm?${_csrf.parameterName}=${_csrf.token}">
-			<table>
-				<tr>
-					<td>Upload File:&nbsp;</td>
-					<td><input type="file" name="file" />
-					</td>
-					<td style="color: red; font-style: italic;">
-					<form:errors path="file" />
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><input type="submit" value="Upload" />
-					</td>
-					<td>&nbsp;</td>
-				</tr>
-			</table>
-		</form:form>
-
-  </section>
-      <!-- Content Area Ends--> 
-
-      <!-- Footer Area -->
-      <footer class="footer-area clearfix">
-        <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-        <div class="powered-by"> Powered by: businessintelli.com </div>
-      </footer>
-      <!-- Footer Area -->  --%>
+  
   
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -65,7 +40,7 @@ margin:10px 220px 0;
       </div>
       <div class="pull-right brud-crum">Home » Users » Bulk Import</div>
     </section>
-    <form:form method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
+    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
       <section class="action-btns clearfix">
         <ul class="pull-right list-unstyled list-inline">
@@ -87,7 +62,7 @@ margin:10px 220px 0;
 			<div class="dropzone">
 			  <div class="clearfix">
 			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();">
+			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();saveClient();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
 			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
@@ -95,11 +70,11 @@ margin:10px 220px 0;
 			  </button>
 			  </div>
 			  </div>
-			<div class="file-upload clearfix mt text-center" onclick = "check();">
+			<div class="file-upload clearfix mt text-center" id="fileDiv" onclick = "check();">
 		
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
-                <input type="file" name="file" style="display: none;" id="uploadBtn">
+                <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
             </label>
         	
         	
@@ -146,14 +121,16 @@ margin:10px 220px 0;
 		  <div class="errInfo clearfix">
 		  <div id="errorFileDiv"  style="display: none;">
 		  <p class="text-danger"><strong>Error File Dowload</strong></p>
-		   <div class="file-upload"> 
-		  <a href="<c:url value='/download'/>" onclick="errorMsgAppend();"> 
-			<label class="btn btn-block">
-			<i class="fa fa-download" aria-hidden="true"></i> <br>
-               ${errorMessage}
-            </label>
-            </a>
-			</div>
+		      <c:if test="${!empty errorMessage}">
+				   <div class="file-upload"> 
+				  <a href="<c:url value='/download/${fileName}'/>" onclick="errorMsgAppend();"> 
+					<label class="btn btn-block">
+					<i class="fa fa-download" aria-hidden="true"></i> <br>
+		               ${errorMessage}
+		            </label>
+		            </a>
+					</div>
+		     </c:if>			
           </div>
          <!--  <div id="sucessMsg"><p class="text-success" ><strong>File downloaded successfully</strong></p></div> -->
           </div>
@@ -194,6 +171,7 @@ function check(){
 		$("#errorFileDiv").hide();
 		$("#fileExist").empty();
 		$("#success").empty();
+		$('#fileDiv').find('p.jquery_form_error_message').remove();
 }
 
 </script>
@@ -210,6 +188,33 @@ function errorMsgAppend(){
 }
 
 </script>
+
+<script type="text/javascript">
+function saveClient() {
+		
+		 $('#upload_form').submit(function() {
+          if (($(this).validate(false, validationSettings)))
+          	return true;
+          else
+          	return false;	
+          })
+}
+	$('body').on('blur', '#upload_form', function() {
+		$("#upload_form").showHelpOnFocus();
+		$("#upload_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 
   <!-- Footer Area -->
   <footer class="footer-area clearfix">

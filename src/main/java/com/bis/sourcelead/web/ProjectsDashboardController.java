@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -115,6 +117,11 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 EmailScenarioService emailScenarioService;
+	 
+	 @Autowired
+	 TimesheetSubmissionsService timesheetSubmissionsService;
+	 
+	 
 	
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
@@ -153,7 +160,15 @@ public class ProjectsDashboardController {
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
         
-        Collection<Projects> projectsList = projectsService.getAllProjectsAndManagersByLoginUserId(user.getId());
+        List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
+        
+        Collection<Projects> projectsList = null;
+        try{
+        	projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
@@ -343,7 +358,15 @@ public class ProjectsDashboardController {
         	 if(pm.getProjectEndDate()!=null){
         		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
         	 }
-	        	
+        	 if(pm.getEmployee()!=null){
+        		 
+        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+        	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
+        	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
+        	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
+        	 pm.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
+        	 
+        	 }	
 			 projectMembersArrList.add(pm);
 		 }
 		 ObjectMapper mapper = new ObjectMapper();
@@ -391,6 +414,7 @@ public class ProjectsDashboardController {
 			}
 			employee.setOrgLocations(loginOrgLocation);
 			employee.setCreatedBy(users.getUserCode());
+			employee.setStatus("ACTIVE");
 			employee.setCreatedDate(new Date());
 			Employees  emp=	employeesService.addEmployee(employee);
 			

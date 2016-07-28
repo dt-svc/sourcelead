@@ -372,7 +372,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
+			   if(tslist.get(i).getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
+			   }
 		   }
 	   }
 		return totalHours;
@@ -388,8 +390,10 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
-		   }
+			   if(tslist.get(i).getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
+			   }
+		   }  
 	   }
 		return totalHours;
 	}

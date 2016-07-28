@@ -104,11 +104,11 @@ public class Projects {
     private String updatedBy;
     
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
     @Transient

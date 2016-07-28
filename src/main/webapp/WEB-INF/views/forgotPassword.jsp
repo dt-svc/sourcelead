@@ -33,7 +33,7 @@
 	                <input type="text" name="email" value="${email}" id="email" class="signin_fild" required />
 	            </span>
 	            </div>
-	            <input type="submit" value="Sumbit" id="submit_button" class="sign_btn sign_btn_for" />
+	            <input type="submit" value="Submit" id="submit_button" class="sign_btn sign_btn_for" />
 	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>  
             </form:form>         
         </div>        

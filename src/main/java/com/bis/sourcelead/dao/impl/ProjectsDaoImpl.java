@@ -15,6 +15,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -158,12 +159,13 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<Projects> getAllProjectsAndManagersByLoginUserId(Long userId) throws Exception {
+	public Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception {
 		logger.info("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
-        String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org  where (projects.id IN(select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId.id =:userId)  OR projects.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
-        List<Projects> projectsList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+        String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.clientLocationId orgLocation "
+        		+ "left join fetch orgLocation.org  where projects.id IN (:projectIds) and projects.orgLocationsId = :orgLocationId";
+        List<Projects> projectsList  =   session.createQuery(query.toString()).setParameterList("projectIds", projectIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
        
         return projectsList;
 	}
@@ -303,7 +305,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							 String subquery1 ="and ps.orgRelationId ="+clnt;
 							 String subquery3 ="(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)";
 							 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subquery3+"  "+subQuery2+" "+subquery1+")" ;
-							 plist = session.createQuery(query.toString()).setLong("userId", userId).list(); 
+							 plist = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list(); 
 							 
 							 projectssList.addAll(plist);
 					
