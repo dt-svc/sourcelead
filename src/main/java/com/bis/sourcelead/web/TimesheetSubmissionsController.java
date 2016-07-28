@@ -32,8 +32,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -83,8 +81,10 @@ public class TimesheetSubmissionsController {
 		if(submissionIds != null && submissionIds.length>0){ 
 			for(String submissionId : submissionIds){
 				  	submissionId = submissionId.replace("\"", "");
-				  	System.out.println("submissionId"+submissionId);
-				  	
+				  	TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+				  	timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
+				  	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+				  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
 			}
 		}
 			

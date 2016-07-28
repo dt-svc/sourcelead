@@ -678,7 +678,7 @@ function checkHours(){
 	    		result = result+"TuesDay ,";
 	    	}
 	    	if(i == '3'){  
-	    		result = result+"Webnesday ,";
+	    		result = result+"Wednesday ,";
 	    	}
 	    	if(i == '4'){  
 	    		result = result+"Thursday ,";

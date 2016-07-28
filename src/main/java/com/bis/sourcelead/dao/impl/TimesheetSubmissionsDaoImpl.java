@@ -37,7 +37,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(timesheetSubmissions);
+			session.saveOrUpdate(timesheetSubmissions);
 		}
 		catch(HibernateException exception)	{
 		}
