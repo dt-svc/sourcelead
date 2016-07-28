@@ -444,6 +444,22 @@ $('body').on('blur', '#timesheet_form', function() {
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 });
 </script>
+<script type="text/javascript">
+function withDrawMyTimesheet(){
+	var frm = $('#timesheet_form').serializeFormJSON();
+	
+	 $.ajax({
+	      type : "POST",
+ 	      dataType : 'json',
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+	      success :function(result) {
+	    	  alert("hii");
+	      }
+     	  
+   }); 
+	 
+}
+</script>
 
 <!-- this script is for delete document -->
 <script type="text/javascript">

@@ -318,9 +318,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              
 						              
 						              if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
-						            	  if(timesheetEntries.getProjectTask() != null){
-						            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
-						            	  }
+							              sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
 						              }
 						              else{
 						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
@@ -593,19 +591,27 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </table>");
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
-			sb.append("     	<textarea name='weekComment' placeholder='comments here...'></textarea>");
+			
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
+			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
+				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+			}else{
+				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'></textarea>");
+			}
+			
+			/*sb.append("     	<textarea name='weekComment' placeholder='comments here...'></textarea>");*/
+		
 			
 			if(!isNullOrEmpty(tsFirst.getFileName())){
 				sb.append("<strong>");
-				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
+				sb.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
 				sb.append("<i class='glyphicon glyphicon-save'></i>");
 				sb.append(" <input type='button' value='"+tsFirst.getFileName()+"'>");
 				sb.append("</a>");
 				
 				if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 				}else{
-					 sb.append("<input class='dele' type='button' value='X' onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\");' >");
+					 sb.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\");' >");
 				}
 				sb.append("</strong>");
 			}else{
@@ -619,11 +625,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
-				   /*sb.append("	<div class='timesheet_button'>");
-				   sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");
-				   sb.append("    </div>");
+				   sb.append("	<div class='timesheet_button'>");
+				   sb.append("        <input type='button' onClick='WITHDRAWMyTimesheet(\"Submit\");' value='withDraw' class='time_btn'>");
+				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");*/
+				   sb.append("</div>");
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
@@ -1067,14 +1073,18 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
-			sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
+				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+			}else{
+				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'></textarea>");
+			}
 			
 			
 			if(!isNullOrEmpty(tsFirst.getFileName())){
 				sb.append("<strong>");
 				
 				sb.append("<i class='glyphicon glyphicon-save'></i>");
-				sb.append(" <a href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
+				sb.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
 				sb.append(" <input type='button' value='"+tsFirst.getFileName()+"'>");
 				sb.append("</a>");
 				
@@ -1082,7 +1092,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			    String startDate1  =  sdf.format(tsFirst.getStartDate());
 			    String endDate1  =  sdf.format(tsFirst.getEndDate());
 				
-			    sb.append("<input class='dele' type='button' value='X' onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
+			    sb.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
 				
 				sb.append("</strong>");
 			}else{
@@ -1208,10 +1218,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										timesheetEntries.setUpdatedDate(new Date());
 										
 										ProjectTasks projectTasks = new ProjectTasks();
-										if (jsonObj.has(c+"submission"+submissionId+"task1Id")){
 										projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
 										timesheetEntries.setProjectTask(projectTasks);
-										}
 										//For Monday Hours
 										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id")){
 											String monHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay1Id");
@@ -1381,8 +1389,5 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	    });
 	    return xstream.toXML(obj);
 	}
-
-	
-	
 
 }
