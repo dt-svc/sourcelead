@@ -51,7 +51,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	@Override
-	public Collection<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
+	public List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProjectByOrgLocationsId method...");
 		return projectsDao.getProjectByOrgLocationsId(orgLocationsId);
 	}
@@ -154,7 +154,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public Collection<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId) {
+	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId) {
 		// TODO Auto-generated method stub
 		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
 	}
