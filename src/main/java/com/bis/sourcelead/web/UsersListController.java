@@ -103,6 +103,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			} 
 		}*/
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsg");
+		}
+		
 		model.addObject("rolesList", rolesList);
 		
 		return model;
