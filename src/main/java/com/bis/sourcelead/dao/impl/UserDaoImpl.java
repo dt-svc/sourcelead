@@ -174,7 +174,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId)
+	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -186,7 +186,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
+	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
 		// TODO Auto-generated method stub
 		
 		Session session = this.sessionFactory.getCurrentSession();
