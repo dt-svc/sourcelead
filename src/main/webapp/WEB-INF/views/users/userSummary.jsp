@@ -918,7 +918,7 @@ function getStartandEndDate(){
         	var json = JSON.parse(data);
         	$("#StartDate").val(json.startDateStr);
         	$("#EndDate").val(json.endDateStr);
-	        
+        	date();
         },
     });
 	}
@@ -967,6 +967,24 @@ function getStartandEndDate(){
 		$("#assignProject_form").validateOnBlur(false, validationSettings);  
 	});
  
+</script>
+
+<script>
+function date() {
+	 var selected = $("#StartDate").val();
+	 var dt = new Date(selected);
+     dt.setDate(dt.getDate() + 1);
+     $("#EndDate").datepicker("option", "minDate", dt);
+	  
+	  $('#EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  } 
 </script>
 
 <script>
