@@ -3,22 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css">
-
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ 
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
 <body>
 	<!-- Content Area -->
 	<section class="content-wraper">
@@ -27,13 +16,10 @@
 				<h2>Clients</h2>
 			</div>
 			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
-			<!--  <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create Client</div> -->
 		</section>
 
 		<!-- Project -->
 		<div class="timesheet_out">
-
-
 			<div class="clients_wrap">
 				<div class="timesheet_head">
 					<ul>
