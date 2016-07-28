@@ -19,7 +19,7 @@ public interface OrgService {
 
 	public List<Org> getOrgs() throws Exception;
 	
-	String websiteValidation(String website,String sourceleadBLockedwebsites);
+	public String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
 	public Org saveOrgSettings(OrgSettings orgSettings,MultipartHttpServletRequest request,Org org) throws Exception;
 	

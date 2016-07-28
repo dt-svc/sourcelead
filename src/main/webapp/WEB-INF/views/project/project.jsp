@@ -26,36 +26,21 @@
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document
-				.getElementById("ProjectSequeneNumber").value;
+		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="
-								+ ProjectSequeneNumber,
+						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
 						success : function(data) {
 							if (data == true) {
-								$("input#ProjectSequeneNumber").after(
-										"<p class='jquery_form_error_message'>"
-												+ ProjectSequeneNumber
-												+ " is Already Existed</span>");
-								document.getElementById("ProjectSequeneNumber")
-										.setAttribute('record-exist', 'yes');
-								document
-										.getElementById("ProjectSequeneNumber")
-										.setAttribute(
-												'record-exist-errorMsg',
-												ProjectSequeneNumber
-														+ ' is Already Existed');
+								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
+								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist', 'yes');
+								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
 							} else {
-								$('input#ProjectSequeneNumber').removeAttr(
-										"record-exist record-exist-errormsg");
-								$('#ProjectIdDiv').find(
-										'p.jquery_form_error_message').remove();
+								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 							}
 						},
 					});
@@ -70,8 +55,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; General Form
-			&raquo; Form</div>
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -241,14 +225,14 @@
 								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
-									<select class="form-control select-bg" name="level1Manager"
-										field-name="Select Manager" data-validation="required">
+									<select class="form-control select-bg" name="level1Manager" id="level1Manager"
+										field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id}">${option.firstName}
 												${option.lastName}</option>
 										</c:forEach>
-									</select> <span class="btn btn-default formic1 addLevel">Add
+									</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add
 										Level-II</span>
 								</div>
 								<span class="hidden">Select Project Manager</span>
@@ -257,7 +241,7 @@
 						<div class="form-group level-second">
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg" name="level2Manager">
+								<select class="form-control select-bg" name="level2Manager" id="level2Manager">
 									<option value=''>-- Select Manager --</option>
 									<c:forEach var="option" items="${user_List}">
 										<option value="${option.id}">${option.firstName}
@@ -306,7 +290,7 @@
 									<div class="modal-dialog modal-lg">
 										<div class="modal-content">
 											<div class="modal-header">
-												<button data-dismiss="modal" class="close" type="button">×</button>
+												<button data-dismiss="modal" class="close" type="button">x</button>
 												<h4 class="modal-title">Assign Employees</h4>
 											</div>
 											<div class="modal-body clearfix">
@@ -386,7 +370,7 @@
 		<form:form id="addEmployee_form" name="addEmployee_form" method="post">
 			<div class="modal-content" id="newEmployee">
 				<div class="modal-header">
-					<button data-dismiss="modal" class="close" type="button">×</button>
+					<button data-dismiss="modal" class="close" type="button">x</button>
 					<h4 class="modal-title">Add Employees</h4>
 				</div>
 				<div class="modal-body clearfix">
@@ -459,7 +443,7 @@
 		<form:form id="addClient_form" name="addClient_form" method="post">
 			<div class="modal-content" id="newClient">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">×</button>
+					<button type="button" class="close" data-dismiss="modal">x</button>
 					<h4 class="modal-title">Add Client</h4>
 				</div>
 				<div class="modal-body clearfix">
@@ -792,9 +776,9 @@
 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
+			$("#save_project").addClass('button').val('Processing..');
 
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/saveProject?${_csrf.parameterName}=${_csrf.token}&json="
@@ -900,25 +884,15 @@
 							}
 
 							var count = 1;
-							$(".myCheckbox")
-									.each(
+							$(".myCheckbox").each(
 											function() {
 												var localId = this.id;
 												if ($(this).is(':checked')) {
-													var startDate = $(
-															"#startDate"
-																	+ localId)
-															.val();
-													var endDate = $(
-															"#endDate"
-																	+ localId)
-															.val();
-													result = result
-															+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
-													result = result
-															+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
-													result = result
-															+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+													var startDate = $("#startDate"+ localId).val();
+													var endDate = $("#endDate"+ localId).val();
+													result = result+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+													result = result+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+													result = result+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
 													count++;
 												}
 											});
@@ -926,22 +900,15 @@
 							if (opt.user.userType != 'Admin') {
 
 								output = output + "<tr>";
-								output = output
-										+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-								output = output + "<td>" + opt.user.firstName
-										+ "&nbsp;" + opt.user.lastName
-										+ "</td>";
-								output = output + "<td>" + opt.user.email
-										+ "</td>";
+								output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+								output = output + "<td>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</td>";
+								output = output + "<td><span class='tbldata-dotdot' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
 								output = output + "<td>" + role + "</td>";
-								output = output
-										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
-								output = output
-										+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
+								output = output+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
-								output = output
-										+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 								output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output + "</tr>";
@@ -1170,6 +1137,46 @@
 		});
 	}
 </script>
+<script type="text/javascript">
+function getLevel2Approvers(){
+	var currentApproverId = document.getElementById("level1Manager").value;
+	getChildLevel1Approvers(currentApproverId);
+} 
+</script>
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+	 }
+} 
+</script>
 
-
-
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 

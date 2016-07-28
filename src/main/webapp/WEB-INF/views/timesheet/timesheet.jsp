@@ -42,44 +42,44 @@
 				             
 				        </div>
 				        <div id="divadttTd2" style="display:none;">
-					    	<input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
 				               <div class="timesheet_comm">
 				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
 				                <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ></textarea></span>
 				               </div>
 				   		</div>
 				        <div id="divadttTd3" style="display:none;">
-								  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
 				                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
 				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id"></textarea></span></div>
 				        </div>
 				        <div id="divadttTd4" style="display:none;">
-								  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
 				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
 				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id"></textarea></span></div>
 				        </div>
 				        <div id="divadttTd5" style="display:none;">
-								  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
 				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
 				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id"></textarea></span></div>           
 				        </div>
 				        <div id="divadttTd6" style="display:none;">
-								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
 				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
 				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id"></textarea></span></div>  
 				    	 </div>
 				         <div id="divadttTd7" style="display:none;">
-							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+							  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
 				                 <div class="timesheet_comm">
 				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
 				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id"></textarea></span></div>
 				         </div>
 				         <div id="divadttTd8" style="display:none;">
-							  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
 				                 <div class="timesheet_comm">
 				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
 				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
@@ -219,7 +219,9 @@ function addTimeSheetRow(submissionId,projectId) {
 			var row = tbl.insertRow(maxRowNum-1);
 			row.setAttribute("id", "timesheetRow"+maxRowNum+"submission"+submissionId);
 			
+			 
 			  
+		    var previousMaxRowNum =parseInt(rowNum-1);
 			var cell0 = row.insertCell(0);
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -228,8 +230,17 @@ function addTimeSheetRow(submissionId,projectId) {
 			cell0.innerHTML = divadttTd0Str;
 			
 			
-			
-			 var cell1 = row.insertCell(1);
+		    var cell1 = row.insertCell(1);
+			var isCell1Disabled = $("#1submission"+submissionId+"timeSheetDay1Id").prop('disabled');
+			if(isCell1Disabled){
+				$("#divadttTd2 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon');
+				
+			}
+			else{
+				$("#divadttTd2 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
 			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
             divadttTd1Str = divadttTd1Str.replace(/submissionId/g, (submissionId));
@@ -237,6 +248,15 @@ function addTimeSheetRow(submissionId,projectId) {
 			
 			
 			var cell2 = row.insertCell(2);
+			var isCell2Disabled = $("#1submission"+submissionId+"timeSheetDay2Id").prop('disabled');
+			if(isCell2Disabled){
+				$("#divadttTd3 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd3 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd2Str = divadttTd2Str.replace(/submissionId/g, (submissionId));
@@ -244,30 +264,74 @@ function addTimeSheetRow(submissionId,projectId) {
 			
 			
 			var cell3 = row.insertCell(3);
+			var isCell3Disabled = $("#1submission"+submissionId+"timeSheetDay3Id").prop('disabled');
+			if(isCell3Disabled){
+				$("#divadttTd4 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd4 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd3Str = divadttTd3Str.replace(/submissionId/g, (submissionId));
 			cell3.innerHTML = divadttTd3Str;
 			
 			var cell4= row.insertCell(4);
+			var isCell4Disabled = $("#1submission"+submissionId+"timeSheetDay4Id").prop('disabled');
+			if(isCell4Disabled){
+				$("#divadttTd5 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd5 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
+			}
+			
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd4Str = divadttTd4Str.replace(/submissionId/g, (submissionId)); 
 			cell4.innerHTML = divadttTd4Str;
 			
 			var cell5 = row.insertCell(5);
+			var isCell5Disabled = $("#1submission"+submissionId+"timeSheetDay5Id").prop('disabled');
+			if(isCell5Disabled){
+				$("#divadttTd6 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd6 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd5Str = divadttTd5Str.replace(/submissionId/g, (submissionId)); 
 			cell5.innerHTML = divadttTd5Str;
 			
 			var cell6 = row.insertCell(6);
+			var isCell6Disabled = $("#1submission"+submissionId+"timeSheetDay6Id").prop('disabled');
+			if(isCell6Disabled){
+				$("#divadttTd7 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd7 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd6Str = divadttTd6Str.replace(/submissionId/g, (submissionId));
 			cell6.innerHTML = divadttTd6Str;
 			
 			var cell7 = row.insertCell(7);
+			var isCell7Disabled = $("#1submission"+submissionId+"timeSheetDay7Id").prop('disabled');
+			if(isCell7Disabled){
+				$("#divadttTd8 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd8 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
+			}
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
@@ -282,6 +346,9 @@ function addTimeSheetRow(submissionId,projectId) {
 		}	
 	 
         
+        function disableInput(divId){
+        	$("#"+divId+" :input").attr("disabled", "disabled");
+        }
 	   function getProjectTasks(projectTaskId,projectId){
 		   var sourceleadUrl ='${sourceleadUrl}';
 		   $.ajax({

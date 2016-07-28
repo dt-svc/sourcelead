@@ -2,21 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
+
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style>
@@ -174,20 +162,13 @@
 																<div class="row">
 																	<div class="col-lg-6 positionRelative">
 																		
-																			<input type="text"
-																				class="form-control" value="" id="projectStartDate"
-																				name="StartDate" field-name="Start Date" readonly="readonly"
-																				onclick="selectStartDate();">
-																		<span class="input-group-addon input-groupAddon"><i
-																				class="fa fa-calendar"></i></span> 
+																     <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" readonly="readonly">
+																	 <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>																			
 																	</div>
 																	<div class="col-lg-6 positionRelative">
 																		
-																			<input type="text"
-																				class="form-control" value="" id="projectEndDate"
-																				name="EndDate"  readonly="readonly" onclick="selectStartDate();">
-																		<span class="input-group-addon input-groupAddon"><i
-																				class="fa fa-calendar"></i></span> 
+																	<input type="text" class="form-control" value="" id="projectEndDate" name="EndDate"  readonly="readonly" >
+																		<span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> 
 																	</div>
 																</div>
 															</div>
@@ -274,7 +255,6 @@
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
 
 <script type="text/javascript">
 	(function($) {
@@ -454,6 +434,31 @@
 
 
 <!-- =============================== AddTask Divs  ============================ -->
+
+<!--  Date picker starts here -->
+<script>
+  $( function() {
+	  $('#projectStartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#projectEndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#projectStartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	  
+  } );
+</script>
+<!--  Date picker ends here -->
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
@@ -669,31 +674,6 @@
 	}
 </script>
 
-<!-- Add Task Script Ends -->
-
-<!-- Date Picker Script start here -->
-<script>
-	function selectStartDate() {
-		$('#projectStartDate').datepicker({
-			dateFormat : 'yy-mm-dd',
-			onSelect : function(selected) {
-				var dt = new Date(selected);
-				dt.setDate(dt.getDate() + 1);
-				$("#projectEndDate").datepicker("option", "minDate", dt);
-			}
-		});
-
-		$('#projectEndDate').datepicker({
-			dateFormat : 'yy-mm-dd',
-			onSelect : function(selected) {
-				var dt = new Date(selected);
-				dt.setDate(dt.getDate() - 1);
-				$("#projectStartDate").datepicker("option", "maxDate", dt);
-			}
-		});
-	};
-</script>
-<!-- Date Picker Script end here -->
 
 <script type="text/javascript">
 function addtasksCountafterRemoving(){
