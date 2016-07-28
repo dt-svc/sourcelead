@@ -116,41 +116,6 @@ function applyInputSlide() {
 </script>
 
 
-
-<!-- <script type="text/javascript">
-        $('#resetPassword_form')
-           .submit(function(e) {
-        	    e.preventDefault(); 
-        	    var form = $('#resetPassword_form').serializeFormJSON();
-            	var con = JSON.stringify(form);
-			    con = con.replace(/[{}]/g, ""); 
-        		var sourceleadUrl ='${sourceleadUrl}';
-        		 $("#submit_button").attr("disabled", "disabled");
-        		 $( "#submit_button" ).addClass('button').val('Processing..');
-                $.ajax({
-            	      type: "GET",
-            	      contentType : 'application/json; charset=utf-8',
-            	      dataType : 'json',
-                  	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}&json="+con,
-                    	success: function(result) {
-                    		if((result == 'Invalid')){
-	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();
-	             		         document.getElementById("verificationCode").setAttribute('class','error signin_fild');
-	             		         $("input#verificationCode").after("<span class='jquery_form_error_message'> <font color='red'>Invalid Verification Code</font></span>");
-	             				 document.getElementById("verificationCode").setAttribute('pass-exist','yes');
-	             				 document.getElementById("verificationCode").setAttribute('pass-exist-errorMsg', ' Invalid Verification Code'); 
-	             				 $("input#verificationCode").removeAttr("style");
-    			        	}else{
-								                   			     
-    			        		location.replace(sourceleadUrl+"/login"); 
-    			        	}
-			        },  
-                });
-            });
-</script> -->
-
-
-
 <script type="text/javascript">
 var validationSettings = {
         errorMessagePosition : 'element',
@@ -180,6 +145,8 @@ var validationSettings = {
   	             				 document.getElementById("verificationCode").setAttribute('pass-exist','yes');
   	             				 document.getElementById("verificationCode").setAttribute('pass-exist-errorMsg', ' Invalid Verification Code'); 
   	             				 $("input#verificationCode").removeAttr("style");
+  	             				 $("#submit_button" ).addClass('sign_btn').val('Save');
+  			    				 $("#submit_button").removeAttr("disabled")
       			        	}else{
   								                   			     
       			        		location.replace(sourceleadUrl+"/login"); 
