@@ -158,4 +158,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		// TODO Auto-generated method stub
 		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
 	}
+	
+	
+
+    @Override
+	public Integer getUserAssignedProjectsCount(Long userId, Long orgLocationId) {
+		// TODO Auto-generated method stub
+		return projectsDao.getUserAssignedProjectsCount(userId, orgLocationId);
+	}
+	
+	
 }

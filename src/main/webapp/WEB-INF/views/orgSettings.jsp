@@ -32,21 +32,15 @@
     
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
-    	$("#save_button").attr("disabled", "disabled");
- 		$( "#save_button").addClass('button').val('Processing..');
  		var msg = ".png extension not allowed";
  		alertMessage(msg);
     	
     }else if(sizeinbytes > 200000){
-    	$("#save_button").attr("disabled", "disabled");
- 		$( "#save_button").addClass('button').val('Processing..');
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
-    	$( "#save_button" ).addClass('save_button').val('Save');
-		$("#save_button").removeAttr("disabled");
     }
     
   };

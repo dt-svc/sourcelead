@@ -343,6 +343,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				return userCollection;
 
 		}
+		
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
 		public List<Projects> getProjectByOrgLocationsIdAndUserId(Long orgLocationsId, Long userId) {
@@ -352,4 +353,21 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
+		
+		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Integer getUserAssignedProjectsCount(Long userId, Long orgLocationId) {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			String query = "select pj from  Projects pj where pj.id IN (select pm.projects.id from ProjectMembers pm  "
+					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))" ;
+			List<Projects> projectsList =session.createQuery(query.toString()).setLong("userId", userId)
+					.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+			      
+		    return projectsList.size();
+			  
+			
+}
 }

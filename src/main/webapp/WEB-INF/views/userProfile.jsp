@@ -241,21 +241,15 @@
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
-    	$("#profile_submit").attr("disabled", "disabled");
- 		$( "#profile_submit").addClass('button').val('Processing..');
  		var msg = ".png extension not allowed";
  		alertMessage(msg);
     	
     }else if(sizeinbytes > 200000){
-    	$("#profile_submit").attr("disabled", "disabled");
- 		$( "#profile_submit").addClass('button').val('Processing..');
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
-    	$("#profile_submit" ).addClass('profile_submit').val('Save');
-		$("#profile_submit").removeAttr("disabled");
     }
     
   };

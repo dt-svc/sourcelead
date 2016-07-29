@@ -766,7 +766,8 @@ $(document).click(function(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 200; p++){  
+		 $('.timesheetrProject').each(function() {
+		 var p = this.id;
 		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -796,7 +797,7 @@ $(document).click(function(){
 		 }
 			 
 		total = hours +":"+ minutes;
- }  
+	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
 	 
@@ -845,7 +846,8 @@ function checkHours(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 1000; p++){  
+		 $('.timesheetrProject').each(function() {
+		 var p = this.id;
 		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -866,7 +868,7 @@ function checkHours(){
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
 		total = hours +":"+ minutes;
-  }  
+     });  
 	 var time = total.split(':');
 	 if(!isNaN(time[0])){
 	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
