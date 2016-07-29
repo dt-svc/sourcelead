@@ -103,11 +103,11 @@ public class Projects {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
