@@ -86,7 +86,7 @@ window.onload = function () {
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: block;"><img src="resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
       
       
       

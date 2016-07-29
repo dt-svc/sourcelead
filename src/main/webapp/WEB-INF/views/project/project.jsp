@@ -108,7 +108,7 @@
 								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="row">
-									<div class="col-lg-6 positionRelative">
+									<div class="col-lg-6 positionRelative" id="StartDateDiv">
 										<input type="text" class="form-control" value=""
 											id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
@@ -1100,6 +1100,7 @@
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
+				addValidClass();
 			}
 		});
 
@@ -1113,6 +1114,14 @@
 		});
 
 	});
+</script>
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("StartDate").value;
+		 if(StartDate){
+			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
 </script>
 
 <script>

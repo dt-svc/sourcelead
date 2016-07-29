@@ -163,7 +163,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.info("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
-        String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.clientLocationId orgLocation "
+        String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.clientLocationId orgLocation "	
+
         		+ "left join fetch orgLocation.org  where projects.id IN (:projectIds) and projects.orgLocationsId = :orgLocationId";
         List<Projects> projectsList  =   session.createQuery(query.toString()).setParameterList("projectIds", projectIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
        
@@ -336,7 +337,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 					 
 					 String subquery3 ="(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)";
 					 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subquery3+"  "+subQuery2+")" ;
-					 plist = session.createQuery(query.toString()).setLong("userId", userId).list(); 
+					 plist = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list(); 
 					 projectssList.addAll(plist);
 				}
 				Collection<Projects> userCollection = new HashSet<Projects>(projectssList);
