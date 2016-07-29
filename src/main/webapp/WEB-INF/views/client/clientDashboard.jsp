@@ -199,10 +199,10 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName" value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
-							result = result + ' <td><div><select id="clientId" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
+							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
 									for (var j = 0; j < opt.projectManagerName.length; j++) {
 										
 										var managers = opt.projectManagerName[j];
@@ -219,7 +219,7 @@
 									} 
 							result = result + '	</select></div></td>';
 							result = result+ '<td><div>30</div></td>';
-							result = result + '<td><div><select id="projectStatusId" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
+							result = result + '<td><div><select id="projectStatusId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
 							if(opt.projectStatus == 'STARTED'){
 								result = result+'<option selected>Started</option>';
 							}else{
@@ -344,8 +344,7 @@
 function  inlineEditClientProjects(projectId,localFieldName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
-	var fieldValue = $("#"+localFieldName).val();
-	
+	var fieldValue = $("#"+localFieldName+""+projectId).val();
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/inlineEditClientProjects?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
@@ -370,8 +369,8 @@ function  inlineEditForProjects(orgRelationId,localFieldName){
 </script> 
 
 <script>
-function getStartDatePickerById(projectId,localFieldName){
-	 $('#startDate').datepicker({
+function getEndDatePickerById(projectId,localFieldName){
+	$('#endDate'+projectId).datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -379,21 +378,6 @@ function getStartDatePickerById(projectId,localFieldName){
 	        },
 	        onClose: function() {
 	        	inlineEditClientProjects(projectId,localFieldName);
-	     }
-	  });
-}
-</script>
-
-<script>
-function getEndDatePickerById(projectSequeneNumber,localFieldName){
-	$('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        },
-	        onClose: function() {
-	        	inlineEditClientProjects(projectSequeneNumber,localFieldName);
 	     }
 	  });
 }
