@@ -100,13 +100,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 
 	@Override
-	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
-		return timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId,approvalStatus);
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectId(Long projectId,Long userId, String approvalStatus) {
+		return timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectId,userId,approvalStatus);
 	}
 
 	@Override
-	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
-		return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId,submissionStatus);
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectId(Long projectId,Long userId, String submissionStatus) {
+		return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectId,userId,submissionStatus);
 	}
 	
 	@Override
@@ -152,7 +152,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 
 			// Sammeta David: this  controller method is for getting TimesheetSubmission Hours Counts based on login User Id.
 			@Override
-			public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId) {
+			public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long projectId,Long userId) {
 				// TODO Auto-generated method stub
 				
 				    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
@@ -163,16 +163,16 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				    Float rejectedTimesheetsSubmissionsHoursCount = null;
 					
 						       //draft
-						         draftTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId, "NEW");
+						         draftTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectId,userId, "NEW");
 					             timeSheetSubmissionCount.setDraftTimesheetsSubmissionsHoursCount(draftTimesheetsSubmissionsHoursCount.toString());
 					           //Submitted
-					             submittedTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTEDFORAPPROVAL");
+					             submittedTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectId,userId, "SUBMITTEDFORAPPROVAL");
 					             timeSheetSubmissionCount.setSubmittedTimesheetsSubmissionsHoursCount(submittedTimesheetsSubmissionsHoursCount.toString());
 					           //Approved
-					             approvalTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
+					             approvalTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectId,userId, "APPROVED");
 					  	         timeSheetSubmissionCount.setApprovalTimesheetsSubmissionsHoursCount(approvalTimesheetsSubmissionsHoursCount.toString());
 					  	       //Rejected  
-					  	        rejectedTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
+					  	        rejectedTimesheetsSubmissionsHoursCount = timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectId,userId, "REJECTED");
 						  	    timeSheetSubmissionCount.setRejectedTimesheetsSubmissionsHoursCount(rejectedTimesheetsSubmissionsHoursCount.toString());
 						  	  
 				  return timeSheetSubmissionCount;

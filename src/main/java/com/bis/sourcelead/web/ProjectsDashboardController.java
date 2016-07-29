@@ -369,7 +369,7 @@ public class ProjectsDashboardController {
         	 
         	 if(pm.getEmployee()!=null){
         		 
-        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+             TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(projectId,pm.getEmployee().getUser().getId());
         	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
         	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
         	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());

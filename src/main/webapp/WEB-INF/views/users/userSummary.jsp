@@ -949,6 +949,7 @@ function getStartandEndDate(){
 		        	if(data="success"){
 		        	 	$("#assignProject").modal('hide');
 		        		userProjectDetails(userId,"All");
+		        		getUnAssignedProjects(userId);
 		        	}
 		        },
 		        error: function(e){
@@ -968,6 +969,38 @@ function getStartandEndDate(){
 	});
  
 </script>
+
+
+
+<script type="text/javascript">
+ function getUnAssignedProjects(userId) {
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUnassignedProjects?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Project --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
+		        	$("#proId").empty();
+			        $("#proId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	  
+    }
+</script>
+
+
 
 <script>
 function date() {
