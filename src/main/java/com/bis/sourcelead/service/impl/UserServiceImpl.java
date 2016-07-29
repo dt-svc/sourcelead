@@ -243,6 +243,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		pm.setEmployee(employee);
+		pm.setStatus(Constants.MEMBER_ACTIVE);
 		pm.setProjectAssignedDate(new Date());
 		pm.setCreatedBy(userCode);
 		pm.setCreatedDate(new Date());
