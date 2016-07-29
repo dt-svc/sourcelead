@@ -1039,9 +1039,9 @@ function date() {
 <script> 
 function saveReason(projectMemberId,userId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reasonForProject = document.getElementById("reasonForProject").value;
+	var reason = document.getElementById("reasonForProject").value;
 	
-	if(reasonForProject){
+	if(reason){
 		$("#reasonForProjectDiv").empty();
 		
 		var r = confirm("Do you want terminate the user from Project");

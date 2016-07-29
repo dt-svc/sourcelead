@@ -375,7 +375,7 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '</div>'; 
-		  	$("#projectSideDiv").empty(); 299
+		  	$("#projectSideDiv").empty();  
 		    $("#projectSideDiv").append(result);  
 		    $("#projectNameById").empty(); 
 		    $("#projectNameById").append(projectName); 
@@ -431,7 +431,7 @@ function projectEmployee(projectId){
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+')";></i></div></td>';
+	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+', '+projectId+')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -466,14 +466,14 @@ function projectEmployee(projectId){
 </script>
 
 <script>
-function deleteProject(projectMemberId){ 
+function deleteProject(projectMemberId, projectId){ 
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";299
+	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+", "+projectId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -485,11 +485,11 @@ function cancelTermination(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 
-function saveReason(projectMemberId,userId){
+function saveReason(projectMemberId, projectId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reasonForProject = document.getElementById("reasonForProject").value;
+	var reason = document.getElementById("reasonForProject").value;
 	
-	if(reasonForProject){
+	if(reason){
 		$("#reasonForProjectDiv").empty();
 		
 		var r = confirm("Do you want terminate the user from Project");
@@ -501,7 +501,7 @@ function saveReason(projectMemberId,userId){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   		    	userProjectDetails(userId,"All");
+   			 	projectEmployee(projectId);
    		    }
 	 }); 
 		}
@@ -714,7 +714,7 @@ $(document).ready(function() {
     
   
     
-});299
+}); 
 
 </script>
 
@@ -747,7 +747,7 @@ function filter(){
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
-   		    	result = result +'    <th>Name</th>';299
+   		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Date</th>';
    		    	result = result +'      <th>Client</th>';
@@ -840,7 +840,7 @@ function flushTasks() {
 <script type="text/javascript">
 function addTasks(){
 	
-	if ($('#project_form').validate(false, validationSettings)){299
+	if ($('#project_form').validate(false, validationSettings)){ 
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
