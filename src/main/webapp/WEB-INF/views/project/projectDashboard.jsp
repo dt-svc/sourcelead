@@ -112,19 +112,20 @@
 						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
 	                        <tr>
 	                            <td data-title="Id"><div>${report.id}</div></td>
-	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');"><span>${report.projectName}</span><i class="fa fa-binoculars"></i></div></td>
 	                            <td data-title="Manager">
 	                                <div>
+	                                <span>
 	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
 	                                      <c:if test="${raId.index >0}">,</c:if>
 	                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
 	                                    </c:forEach>
-	                            
+	                               </span>
 	                               </div>
 	                            </td>
 	                            <td data-title="Date"><div>  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  -  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
 	                             <c:if test="${report.client != null}">
-	                                 <td data-title="Client"><div>${report.client}</div></td>   
+	                                 <td data-title="Client"><div><span>${report.client}</span></div></td>   
 	                              </c:if>
 	                              <c:if test="${empty report.client}">
 	                                 <td data-title="Client"><div>---</div></td>   
@@ -374,7 +375,7 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '</div>'; 
-		  	$("#projectSideDiv").empty(); 
+		  	$("#projectSideDiv").empty(); 299
 		    $("#projectSideDiv").append(result);  
 		    $("#projectNameById").empty(); 
 		    $("#projectNameById").append(projectName); 
@@ -467,7 +468,7 @@ function projectEmployee(projectId){
 <script>
 function deleteProject(projectMemberId){ 
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='project_inn_mask'></div>";299
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
@@ -713,7 +714,7 @@ $(document).ready(function() {
     
   
     
-});
+});299
 
 </script>
 
@@ -746,7 +747,7 @@ function filter(){
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
-   		    	result = result +'    <th>Name</th>';
+   		    	result = result +'    <th>Name</th>';299
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Date</th>';
    		    	result = result +'      <th>Client</th>';
@@ -758,23 +759,23 @@ function filter(){
    		    		var report = json[i];
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');">'+report.projectName+'<i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
-   		    		result = result +'<div>';
+   		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
    		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
    		    			result = result +report.managerLevel2;
    		    		} 
-   		    		result = result +'</div>';
+   		    		result = result +'</span></div>';
    		    		result = result +'</td>';
    		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
    		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
    	   		    		result = result +'- '+report.endDateStr+' </div></td>';
    		    		}
    		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
-   		    			result = result +'<td data-title="Client"><div>'+report.client+'</div></td>';  
+   		    			result = result +'<td data-title="Client"><div><span>'+report.client+'</span></div></td>';  
    		    		}else{
    		    			result = result +'<td data-title="Client"><div>---</div></td>';  
    		    		}
@@ -839,7 +840,7 @@ function flushTasks() {
 <script type="text/javascript">
 function addTasks(){
 	
-	if ($('#project_form').validate(false, validationSettings)){
+	if ($('#project_form').validate(false, validationSettings)){299
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
