@@ -186,6 +186,7 @@
 						/* result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>'; */
 						result = result + '</div>';
 						result = result+ '<div class="project_tabs_inn_table">';
+						if(json.length!=null && json.length!=''){
 						result = result + '<table>';
 						result = result + '<tbody>';
 						result = result + '<tr>';
@@ -248,6 +249,17 @@
 						}
 						rresult = result + '	     </tbody>';
 						result = result + '	 </table>   ';
+						}else{
+				    		
+			    			 result = result + '<div class="table_nodata">';
+			    			 result = result + '<div class="table_nodata_inn">';
+			    			 result = result + '<img src="resources/images/no-data.png" />';
+			    			 result = result + '<span>Nothing is here to show ';
+			    			 result = result + '</span>';
+			    			 result = result + '<div class="clearfix"></div>';
+			    			 result = result + '</div>';
+			    			 result = result + '</div>';
+			    		 } 
 						result = result + '	     </div>';
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
