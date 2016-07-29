@@ -177,17 +177,17 @@
 														</div>
 
 													</div>
-													<div class="col-xs-12 col-lg-5">
-														<a href="javascript:void(0)" class="btn btn-primary"
+													
+												</div>
+											</div>
+											
+											<div class="modal-footer">
+											<div class="col-xs-8 col-lg-11">
+											 <a href="javascript:void(0)" class="btn btn-primary"
 															id="save_task" onclick="addTasks();"
 															data-target="addTask"> <i class="fa fa-plus"></i><span
 															id="addTaskText"> Add Project</span></a>
-													</div>
-												</div>
 											</div>
-											<div class="modal-footer">
-												<!-- <button type="button" class="btn btn-primary"
-													data-dismiss="modal">Save</button> -->
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Close</button>
 											</div>
@@ -324,37 +324,32 @@
 <!-- =============================== AddTask Divs  ============================ -->
 
 <div id="divTaskTd1" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectId"
-		name="REPLACEROWIDprojectId" value="PROJECTIDVALUE" /><span
-		id="REPLACEROWIDprojectIdValue">PROJECTIDVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectId" name="REPLACEROWIDprojectId" value="PROJECTIDVALUE" />
+	<span  class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectIdValue" title='PROJECTIDVALUE'>PROJECTIDVALUE</span>
 </div>
 
 <div id="divTaskTd2" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectName"
-		name="REPLACEROWIDprojectName" value="TASKNAMEVALUE" /><span
-		id="REPLACEROWIDprojectNameValue">TASKNAMEVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectName" name="REPLACEROWIDprojectName" value="TASKNAMEVALUE" />
+	<span class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectNameValue" title='TASKNAMEVALUE'>TASKNAMEVALUE</span>
 </div>
 <div id="divTaskTd3" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectManager"
-		name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE" /><span
-		id="REPLACEROWIDprojectManagerValue">TASKDESCRIPTIONName</span>
+	<input type="hidden" id="REPLACEROWIDprojectManager" name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE" />
+	<span class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectManagerValue" title='TASKDESCRIPTIONName'>TASKDESCRIPTIONName</span>
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectStartDate"
-		name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE" /><span
-		id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectStartDate" name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE" />
+	<span id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
 </div>
 
 <div id="divTaskTd5" style="display:none; float:left;">
-        <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/><span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
-      </div> 
+     <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/>
+     <span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
+</div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-	<span><a title="Edit" href="javascript:void(0)"
-		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	<span><a title="Remove" href="javascript:void(0)"
-		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+	<span><a title="Edit" href="javascript:void(0)"onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+	<span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
 
 

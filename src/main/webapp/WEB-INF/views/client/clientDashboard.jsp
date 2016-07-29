@@ -81,31 +81,31 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}');">${report.clientLocationId.org.orgName}<i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-me" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
 							<c:if test="${!empty report.clientLocationId.org.webSite}">
-								<td><div>${report.clientLocationId.org.webSite}</div></td>
+								<td><div><span class="tbldata-dotdot-sm" title="${report.clientLocationId.org.webSite}">${report.clientLocationId.org.webSite}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.org.webSite}">
 								<td><div>--</div></td>
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div>${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
 							</c:if>
 							<c:if test="${!empty report.clientLocationId.email}">
-								<td><div>${report.clientLocationId.email}</div></td>
+								<td><div><span class="tbldata-dotdot-vsm" title="${report.clientLocationId.email}">${report.clientLocationId.email}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.email}">
 								<td><div>--</div></td>
 							</c:if>
 							<c:if test="${!empty report.clientLocationId.phone}">
-								<td><div>${report.clientLocationId.phone}</div></td>
+								<td><div><span class="tblminwidth-125">${report.clientLocationId.phone}</span></div></td>
 							</c:if>
 
 							<c:if test="${empty report.clientLocationId.phone}">
@@ -113,10 +113,10 @@
 							</c:if>
 
 							<c:if test="${!empty report.projectsCont}">
-								<td><div>${report.projectsCont}</td>
+								<td><div><span class="tblminwidth-50">${report.projectsCont}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.projectsCont}">
-								<td><div>--</td>
+								<td><div>--</div></td>
 							</c:if>
 						</tr>
 					</c:forEach>
@@ -129,7 +129,7 @@
 
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
-				<h1>Client name here</h1>
+				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
 					<i class="glyphicon glyphicon-share-alt"></i>
 				</div>
@@ -140,7 +140,7 @@
 </body>
 
 <script>
-	function clientSideBar(clientId) {
+	function clientSideBar(clientId,orgName) {
 
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -164,6 +164,10 @@
 		result = result + '</div>'
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
+		
+		$("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName);
+		
 
 		clientProjectDetails(clientId);
 	}
