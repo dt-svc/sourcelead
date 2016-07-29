@@ -490,4 +490,22 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	}
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId, String approvalStatus,Long orgLocationId) throws Exception {
+	
+	Session session = this.sessionFactory.getCurrentSession();
+	
+	String query = "from TimesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.orgLocations "
+			+ "where (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))"
+			+ " and ts.submissionApprovalStatus = :approvalStatus)" ;
+	List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId)
+			.setString("approvalStatus", approvalStatus).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+	      
+	return tslist.size();
+	  
+
+}
+
+
 }

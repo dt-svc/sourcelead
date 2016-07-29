@@ -131,32 +131,26 @@ window.onload = function () {
 	       	    	result = result +"<div class='col-sm-4'>";
 	       	    	result = result +"<div class='text-center image'>";
 	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
 	       	    	
 	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
-	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
+	       	    	  result = result +"<span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
 	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
 	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
-	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
+	 			    	result = result +"<span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
 	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
-	 			    	result = result +"<br/><span class='label label-success'>Active</span>";
+	 			    	result = result +"<span class='label label-success'>Active</span>";
 	 			    }else{
-	 			    	result = result +"<br/><span class='label label-danger'>Inactive</span>";
+	 			    	result = result +"<span class='label label-danger'>Inactive</span>";
 	 			    }
-	       	    	
 	       	    	
 	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-sm-8'>";
 	       	    	result = result +"<h4><strong><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </strong></h4>";
-	       	    	result = result +"<p><label> "+userRole.user.email+" </lable></p>";
-	       	    	result = result +"<p><label><i class='fa fa-phone'></i>&nbsp; "+mobilePhone+" </label></p>";
-	       	    	result = result +"<p><label>Projects</label><span class='label label-default'>5</span></p>";
-	       	    	result = result +"<p><label>Approved Timesheets</label> <span class='label label-success'>20</span></p>";
-	       	    	result = result +"<p><label>Rejected Timesheets</label> <span class='label label-danger'>10</span></p>";
-	       	    	result = result +"<p><label>Waiting for Timesheets</label> <span class='label label-primary'>10</span> </p>";
-	       	    	result = result +"<p><label>Open Timesheets</label> <span class='label label-info'>10</span> </p>";
+	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
+	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
+	       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='clearfix'></div>";
 	       	    	result = result +"</div>";

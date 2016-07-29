@@ -30,9 +30,11 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
@@ -66,6 +68,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	TimesheetSubmissionsService timesheetSubmissionsService;
 		
 	/**
 	 * To forward users List jsp page
