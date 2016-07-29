@@ -342,7 +342,6 @@
 </script>
 <script> 
 function  inlineEditClientProjects(projectId,localFieldName){
-	alert("Hai"+projectId);
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
