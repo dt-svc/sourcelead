@@ -9,7 +9,6 @@
 <title>::Org Settings</title>
 </head>
 
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <meta charset="utf-8">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -17,8 +16,12 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+ <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+ <script src="resources/js/bootstrap.min.js"></script>
+ <script src="resources/js/jquery-fun.js"></script> 
+ <script src="resources/js/formvalidator.js"></script>
     
 <script>
 	function predefineProfileImage(imageId){
@@ -44,6 +47,7 @@
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
+        <div id="loading"></div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
@@ -144,6 +148,7 @@
 					
 					<form:form class="login-form clearfix"  id="passwordSettings_form"  name="passwordSettings_form" method="post" >
 					<div class="col-md-8">
+					 <div id=passwordDiv>	
 						<div class="form-group">
 						<label class="col-md-4">Current Password</label>
 						<div class="col-md-6">
@@ -153,15 +158,16 @@
 						<div class="form-group">
 						<label class="col-md-4">New Password</label>
 						<div class="col-md-6">
-						  <input type="password" name="password"  value="${password}" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"  onkeydown="$(this).clear();" />
+						  <input type="password" name="password"  value="${password}" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"   />
 						</div>
 				       </div>
 					  <div class="form-group">
 						<label class="col-md-4">Confirm Password</label>
-						<div class="col-md-6" id="passwordDiv">
-						<input type="password"  value="" id="confirmPassword" class="form-control" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required"/>
+						<div class="col-md-6">
+						<input type="password"  value="" id="confirmPassword" class="form-control" field-name="Confirm Password" onblur="checkPass();" data-validation="required"/>
 						</div>
-				  </div>
+				      </div>
+				     </div> 
 					</div>
 				 <div class="col-md-7">
 				 <hr class="mr">
@@ -191,37 +197,39 @@
 
 
 
-
 <script type="text/javascript">
-(function($) {
-	$.fn.checkPass = function() {   
+	 function checkPass() {   
 		var pass1 =$('input#password').val();  
 	    var pass2 = $('input#confirmPassword').val();
-	    if(pass1 == pass2){
-	    	 $('input#confirmPassword').removeAttr( "class pass-exist pass-exist-errormsg");
-			 $('#passwordDiv').find('span.jquery_form_error_message').remove(); 
-			 document.getElementById("confirmPassword").setAttribute('class','valid form-control');
-			 $("input#confirmPassword").removeAttr("style");
-			 document.getElementById('save_button').disabled = false;
-	    }
-	    else{ 
-		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
-		        document.getElementById("confirmPassword").setAttribute('class','error form-control');
-		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Passwords Not Matched</font></span>");
-				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
-				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
-				$("input#confirmPassword").removeAttr("style");
-				document.getElementById('save_button').disabled = true;
+	    if((pass1 != null && pass1 != '' && pass1 != 'undefined') && (pass2 != null && pass2 != '' && pass2 != 'undefined')){
+	    	if(pass1 == pass2){
+	    		$("#save_button").removeAttr("disabled");
+	    		$('input#confirmPassword').removeAttr( "class record-exist record-exist-errormsg");
+				$('#passwordDiv').find('p.jquery_form_error_message').remove();
+				$('input#confirmPassword').attr('class','valid form-control');
+				$( "#save_button" ).removeAttr("style");
+				$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
+				$( "#save_button" ).click(function() {
+				 if ($(this).validate(false, validationSettings)){
+				 }
+				});
+				
+	    	}
+	    	else{
+	    		$("#save_button").attr("disabled", "disabled");
+	    		$('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+	    		$('input#confirmPassword').attr('class','error form-control');
+	    		$("input#confirmPassword").closest('b').after("<p class='jquery_form_error_message'> Passwords Do Not Match</p>");
+				$('input#confirmPassword').attr('record-exist','yes');
+				$('input#confirmPassword').attr('record-exist-errorMsg',' Passwords Do Not Match'); 
+				$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
+				$("#save_button").removeAttr("disabled");
+	    	
+	    	}
 	    }
    }
 	
-    $.fn.clear = function() {   
-         $('#confirmMessage').empty(); 
-    	 $('#confirmPassword').val('');
-    	
-	 return false;
-    }
-})(jQuery);
+   
 </script>
 
 
@@ -334,6 +342,9 @@ var validationSettings = {
              		
              		$("#profile_submit").attr("disabled", "disabled");
              		$( "#profile_submit").addClass('button').val('Processing..');
+             		
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+             		
             		
                     $.ajax({
                 	      type: "POST",
@@ -383,6 +394,7 @@ var validationSettings = {
             		
             		$("#save_button").attr("disabled", "disabled");
              		$( "#save_button").addClass('button').val('Processing..');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
             		
                     $.ajax({
                 	      type: "POST",
@@ -399,6 +411,8 @@ var validationSettings = {
                  				 document.getElementById("currentPassword").setAttribute('pass-exist','yes');
                  				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
                  				 $("input#currentPassword").removeAttr("style");
+                 				 $("#save_button" ).addClass('btn btn-primary mr').val('Save');
+ 			    				 $("#save_button").removeAttr("disabled")
     			        	} 
     			        },  
                     });

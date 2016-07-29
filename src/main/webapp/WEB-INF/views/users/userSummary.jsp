@@ -27,8 +27,7 @@
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum">Home &raquo; General Form
-				&raquo; Create User</div>
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -40,7 +39,7 @@
 	}
 </script>
 
-		<script> 
+<script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 getUserSummaryDetails(userId);
@@ -115,8 +114,7 @@ $(document).ready(function(){
 			    var result = "";
 			    
 				result = result + '<div class="project_tabs_inn_table">';
-				
-				
+				firstname(json.user.firstName);
 				
 				result = result + '  <div class="project_details">';
 				if(json.user.userState != null && json.user.userState != "" && json.user.userState != 'INACTIVE'){
@@ -225,6 +223,19 @@ $(document).ready(function(){
 	});
  }
 </script>
+
+<!--  Script for First Name displaying right corner  -->
+<script type="text/javascript">
+
+var fName = document.getElementById('fname');
+function firstname(name)
+{
+	fName.innerHTML = name;
+} 
+</script>
+
+
+
 <script>
  function userProjectDetails(userId,filterValue){    
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -259,38 +270,26 @@ $(document).ready(function(){
 							   var submittedHrs = "";
 						    if(json.startDate != null && json.startDate != '' && json.startDate != 'undefined'){
 							 startDate = json.startDate ;
-						   }else{
-							   startDate = "--";
 						   }
 						   if(json.endDate  != null && json.endDate  != '' && json.endDate  != 'undefined'){
 						    	endDate = json.endDate;
-						   }else{
-							   endDate = "";
 						   }
 						   if(json.approvedHrs  != null && json.approvedHrs  != '' && json.approvedHrs  != 'undefined'){
 							   approvedHrs = json.approvedHrs;
-						   }else{
-							   approvedHrs = "--";
 						   }
 						   if(json.rejectedHrs  != null && json.rejectedHrs  != '' && json.rejectedHrs  != 'undefined'){
 							   rejectedHrs = json.rejectedHrs;
-						   }else{
-							   rejectedHrs = "--";
 						   }
 						   if(json.draftHrs  != null && json.draftHrs  != '' && json.draftHrs  != 'undefined'){
 							   draftHrs = json.draftHrs;
-						   }else{
-							   draftHrs = "--";
 						   }
 						   if(json.submittedHrs  != null && json.submittedHrs  != '' && json.submittedHrs  != 'undefined'){
 							   submittedHrs = json.submittedHrs;
-						   }else{
-							   submittedHrs = "--";
 						   }
 						   result = result + '       <tr>';
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
-						   result = result + '<td><div>'+startDate+'</div></td>';
+						   result = result + '<td><div id="startDate'+json.id+'">'+startDate+'</div></td>';
 						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
@@ -351,6 +350,7 @@ $(document).ready(function(){
 				    		      onSelect: function (selected) {
 				    		            var dt = new Date(selected);
 				    		            dt.setDate(dt.getDate() + 1);
+				    		            $('#startDate'+json.id).datepicker("option", "maxDate", dt);
 				    		        },
 				    		        onClose: function() {
 				    		        	 var id = $(this).attr('id');
@@ -918,7 +918,7 @@ function getStartandEndDate(){
         	var json = JSON.parse(data);
         	$("#StartDate").val(json.startDateStr);
         	$("#EndDate").val(json.endDateStr);
-	        
+        	date();
         },
     });
 	}
@@ -967,6 +967,24 @@ function getStartandEndDate(){
 		$("#assignProject_form").validateOnBlur(false, validationSettings);  
 	});
  
+</script>
+
+<script>
+function date() {
+	 var selected = $("#StartDate").val();
+	 var dt = new Date(selected);
+     dt.setDate(dt.getDate() + 1);
+     $("#EndDate").datepicker("option", "minDate", dt);
+	  
+	  $('#EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  } 
 </script>
 
 <script>

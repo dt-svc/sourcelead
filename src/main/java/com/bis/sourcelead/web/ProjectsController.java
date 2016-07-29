@@ -283,6 +283,7 @@ public class ProjectsController {
 						            	pm.setProjectEndDate(currentEndDate);
 						            }
 									pm.setProjects(projects);
+									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
 									pm.setUpdatedDate(new Date());
 									projectMembersService.saveProjectMember(pm);
@@ -568,15 +569,15 @@ public class ProjectsController {
 	   		@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
 		
-			String status = null;
-		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-			if (orgInfo != null) {
-				status = "success";
-			}
-			else{
-				status = "failure";
-			}
-			
+			String status = "success";
+            String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+            if(orgInfo !=null && !"".equalsIgnoreCase(orgInfo)){
+            	 if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
+                     status = "Website Duplicated";
+                 }else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+                     status = "Invalid Website";
+                 }
+            }
 	    return status;
 	   }
 	 

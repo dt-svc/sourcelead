@@ -1,12 +1,14 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="resources/js/jquery-fun.js"></script> 
 
+ 
+ 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -42,7 +44,7 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="orgName"
 									field-name="Client Name"
-									data-validation="required validate_length length2-100" value="">
+									data-validation="required validate_Space validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -50,7 +52,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value=""> <span
+									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -58,7 +60,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="">
+									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -68,7 +70,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value=""> <span class="hidden">Client
+									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -204,8 +206,8 @@
 							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
-									name="webSite" field-name="Website"
-									data-validation="validate_length length2-100 validate_domain"
+									name="webSite" onblur="validateWebsite();" field-name="Website"
+									data-validation="validate_Space validate_length length2-100 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -214,7 +216,7 @@
 							<label class="col-md-3" for="Project Manager">Email</label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_length length2-100 validate_email"
+									data-validation="validate_Space validate_length length2-100 validate_email"
 									data-validation-optional="true" value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
@@ -224,7 +226,7 @@
 							<label class="col-md-3">Mobile Number</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="phone" name="phone"
-									data-validation="validate_phone  validate_length length9-20"
+									data-validation="validate_Space validate_phone  validate_length length9-20"
 									data-validation-optional="true" field-name="Mobile Number"
 									value=""> <span class="hidden">Mobile Number</span>
 							</div>
@@ -276,81 +278,6 @@
 	})(jQuery);
 </script>
 <script type="text/javascript">
-	$(document).ready(
-			function(e) {
-				$('.side-menu').click(function() {
-					$('.side-bar').toggleClass("side-bar-active");
-					$('.user-panel').toggleClass("user-panel-active");
-					$('.content-wraper').toggleClass("content-wraper-active");
-				});
-				$('.srch-btn-xs').click(function() {
-					$(".search-area").toggleClass("search-area-active");
-				});
-				$('html').click(function() {
-					$(".search-area").removeClass("search-area-active");
-				});
-				$('.srch-btn-xs, .search-area-txt').click(function(e) {
-					e.stopPropagation();
-				});
-				$('.login-user').click(function() {
-					$('.user-details').toggleClass('user-details-active');
-				});
-
-				$("#notification").click(function() {
-					$('.note-area').toggleClass('note-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.setting-area').removeClass('setting-area-active');
-					$('.alert-area').removeClass('alert-area-active');
-				});
-				$("#alert").click(function() {
-					$('.alert-area').toggleClass('alert-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.setting-area').removeClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-					$('.qlinks-area').removeClass('qlinks-area-active');
-				});
-				$("#qlinks").click(function() {
-					$('.qlinks-area').toggleClass('qlinks-area-active');
-					$('.alert-area').removeClass('alert-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.setting-area').removeClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-				});
-				$('html').click(function() {
-					$('.user-details').removeClass("user-details-active");
-					$('.setting-area').removeClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-					$('.alert-area').removeClass('alert-area-active');
-					$('.qlinks-area').removeClass('qlinks-area-active');
-				});
-				$('.header-nav .navbar, .custom-navbar, .user-details').click(
-						function(e) {
-							e.stopPropagation();
-						});
-				$('.settings').click(function() {
-					$('.setting-area').toggleClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.alert-area').removeClass('alert-area-active');
-				});
-				$(".collpase-div").click(function() {
-					$(".toggle-div").slideToggle(800);
-				});
-				$(".faclose").click(function() {
-					$(".remove-div").addClass('hidden');
-				});
-				$(".bell").click(function() {
-					$(this).toggleClass('bell-active');
-				});
-				/* $(".addLevel").click(function(){
-				   $(".level-second").toggleClass("level-second-active");
-				}); */
-			});
-</script>
-
-
-
-<script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {
 			errorMessagePosition : 'element',
@@ -391,7 +318,6 @@
 		$("#client_form").validateOnBlur(false, validationSettings);
 	});
 </script>
-
 
 
 
@@ -770,4 +696,53 @@ function getChildLevel1Approvers(currentApproverId){
 function flushProject(){
 	 $('#level2Manager').val('');
 }
+</script>
+
+<script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="
+						+ website + "&sourceleadBLockedwebsites="
+						+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == 'Website Duplicated' || result == 'Invalid Website') {
+						//existed website
+						$("input#webSite").after(
+								"<p class='jquery_form_error_message'>"
+										+ website
+										+ " is Already Existed</span>");
+						document.getElementById("webSite").setAttribute(
+								'record-exist', 'yes');
+						document.getElementById("webSite").setAttribute(
+								'record-exist-errorMsg',
+								website + ' is '+result);
+					} else {
+						//New WebSite class="form-control"
+						//$("#save_client").removeAttr("disabled");
+						$('input#webSite').removeAttr(
+								"class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class',
+								'valid form-control');
+						$('#companyWebsiteDiv').find(
+								'p.jquery_form_error_message').remove();
+						$("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	}
 </script>

@@ -37,6 +37,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Users List </div>
     </section>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
@@ -98,6 +99,9 @@ window.onload = function () {
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
+	    $('#usersListBody').empty();
+        $('#usersListEmptyBody').empty();
+		
 		$("#usersListBody").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:80px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		$.ajax({ 
@@ -106,8 +110,6 @@ window.onload = function () {
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
-	        $('#usersListBody').empty();
-	        $('#usersListEmptyBody').empty();
 	        var result = "";
 	        
 	    	if(json.length > 0)

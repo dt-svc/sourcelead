@@ -42,4 +42,8 @@ public class Constants {
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
+	
+	/** projectMember  constants**/
+	public static String MEMBER_ACTIVE = "ACTIVE";
+	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
 }

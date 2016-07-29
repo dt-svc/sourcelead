@@ -498,12 +498,12 @@ public class UserController {
 					}
 				}
 				User user = userService.getUserById(userId);
-				if (employee.getRate() != null && employee.getRate()!="") {
+				if (employee.getRate() != null && "".equalsIgnoreCase(employee.getRate())) {
 					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
 				}
 				// need change role
 				projectMembers.setRole(user.getUserType());
-				if (employee.getRatePer() != null) {
+				if (employee.getRatePer() != null && "".equalsIgnoreCase(employee.getRatePer())) {
 					projectMembers.setRateType(employee.getRatePer());
 				}
 				projectMembers.setStatus(Constants.MEMBER_ACTIVE);

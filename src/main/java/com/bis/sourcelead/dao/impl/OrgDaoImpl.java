@@ -117,52 +117,48 @@ public class OrgDaoImpl implements OrgDao {
 	}
 	
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public String websiteValidation(String webSite,String sourceleadBLockedwebsites) {
-		Collection<Org> orgList =null;
-				Session session = this.sessionFactory.getCurrentSession();
-				Criteria crit = session.createCriteria(Org.class);
-				 orgList = crit.list();
-				  String flag = null;
-				  
-				 if(!webSite.startsWith("http") && !webSite.startsWith("https")){
-						webSite = "http://" + webSite;
-				    }     
-					String status = null;
-				    URL netUrl = null;
-					try {
-						netUrl = new URL(webSite);
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				    String host = netUrl.getHost();
-				    if(host.startsWith("www")){
-				    	if(host.length()>3){
-				    		host = host.substring("www".length()+1);
-				    	}else{
-				    		flag="Website Duplicated";
-				    	}
-				    }else{
-				    	host ="Website Duplicated";
-				    }
-				    
-				    //for Blocked Websites Domains
-				    String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
-				    if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
-				    	flag="Website Duplicated";
-		 	    	}
-					if (orgList != null && orgList.size() > 0 && host !=null) {
-					    for(Org org :orgList){
-					    	if((org.getWebSite()!= null && (org.getWebSite().equalsIgnoreCase(host)))){
-								   flag ="Website Duplicated"; 
-						    }
-					    }
-					}
-		
-		return flag;
-	}	
-	
+    @Transactional(rollbackFor = { Exception.class })
+    public String websiteValidation(String webSite,String sourceleadBLockedwebsites) {
+        Org orgList =null;
+                Session session = this.sessionFactory.getCurrentSession();
+                Criteria crit = session.createCriteria(Org.class);
+                  String flag = null;
+                 
+                 if(!webSite.startsWith("http") && !webSite.startsWith("https")){
+                        webSite = "http://" + webSite;
+                    }    
+                    String status = null;
+                    URL netUrl = null;
+                    try {
+                        netUrl = new URL(webSite);
+                    } catch (MalformedURLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    String host = netUrl.getHost();
+                    if(host.startsWith("www")){
+                        if(host.length()>3){
+                            host = host.substring("www".length()+1);
+                        }else{
+                            flag="Website Duplicated";
+                        }
+                    }else{
+                        flag ="Invalid Website";
+                    }
+                   
+                    //for Blocked Websites Domains
+                    String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
+                    if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+                        flag="Website Duplicated";
+                     }
+                    boolean isFuond = isDuplicateWebsite(host);
+                    if(isFuond){
+                         flag ="Website Duplicated";
+                    }
+                   
+        return flag;
+    }   
+
 	
 	
 	@Override
@@ -195,4 +191,16 @@ public class OrgDaoImpl implements OrgDao {
 			return null;
 		}
    	}
+	
+	private boolean isDuplicateWebsite(String host) {
+        boolean isWebSiteFound = false;
+        Session session = this.sessionFactory.getCurrentSession();
+        String query = "from Org org where org.webSite = :host";
+         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).setCacheable(true).list();
+            if (orglist != null && orglist.size() >0) {
+                isWebSiteFound = true;
+            }
+            return isWebSiteFound;
+    }
+
 }
