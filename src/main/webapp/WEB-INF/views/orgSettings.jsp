@@ -122,7 +122,7 @@ function cancel(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">

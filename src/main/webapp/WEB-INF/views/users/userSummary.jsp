@@ -227,11 +227,21 @@ $(document).ready(function(){
 <!--  Script for First Name displaying right corner  -->
 <script type="text/javascript">
 
-var fName = document.getElementById('fname');
+var Name = document.getElementById('fname');
 function firstname(name)
 {
-	fName.innerHTML = name;
-} 
+	var lengthName = name.length;
+		if(lengthName > 10)
+		{
+		var startlength = 0;
+		var endlength = 10;
+		var trimname = name.substring(startlength, endlength) + "..." ;
+		Name.innerHTML = trimname;
+		}else{
+			Name.innerHTML = name;	
+		}
+	
+}
 </script>
 
 
@@ -975,6 +985,8 @@ function date() {
 	 var dt = new Date(selected);
      dt.setDate(dt.getDate() + 1);
      $("#EndDate").datepicker("option", "minDate", dt);
+     
+     
 	  
 	  $('#EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
