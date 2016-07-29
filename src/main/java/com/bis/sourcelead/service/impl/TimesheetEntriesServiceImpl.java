@@ -295,7 +295,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		   	
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
@@ -757,7 +757,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
