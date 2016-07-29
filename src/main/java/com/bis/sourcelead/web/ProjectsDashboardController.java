@@ -357,14 +357,19 @@ public class ProjectsDashboardController {
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
 			 
 			 if(pm.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pm.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pm.getProjectAssignedDate()));
              }
         	 if(pm.getProjectEndDate()!=null){
-        		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
+        		pm.setProjectEndDateStr(Constants.DF_YMD.format(pm.getProjectEndDate()));
         	 }
+        	 //to set actual project end date
+        	 if(pm.getProjects().getEndDate() != null){
+         		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
+         	 }
+        	 
         	 if(pm.getEmployee()!=null){
         		 
-        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+             TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(projectId,pm.getEmployee().getUser().getId());
         	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
         	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
         	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());

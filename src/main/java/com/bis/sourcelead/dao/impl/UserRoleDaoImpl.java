@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
 @Repository
@@ -184,4 +184,25 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isUserAdmin(Long userId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("isUserAdmin By UserId start");
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN' and userRole.user =:userId")
+						   .setLong("userId", userId).setCacheable(true).list();
+		
+		logger.debug("isUserAdmin By UserId End");
+		
+		Boolean flag = false;
+		if (userRole.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+	}
+
+	
+	
 }
