@@ -180,7 +180,7 @@
 											<div class="modal-footer">
 											<div class="col-xs-8 col-lg-11">
 											 <a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();"
+															id="save_task" onclick="addTasks();flushProject();"
 															data-target="addTask"> <i class="fa fa-plus"></i><span
 															id="addTaskText"> Add Project</span></a>
 											</div>
