@@ -65,7 +65,7 @@
 		</div>
 
 		<c:if test="${!empty clientsList}">
-			<div class="clients_wrap_table">
+			<div class="clients_wrap_table clients_wrapTable ">
 				<table>
 					<tbody>
 					<thead>
@@ -81,7 +81,7 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-me" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm mt" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
