@@ -27,16 +27,17 @@ window.onload = function () {
   
   <section class="content-wraper">
   <div class="content-dashboard clearfix">
+   <div id="loading"></div>
     <section class="content-header clearfix">
          <c:if test="${not empty msg}">
 	        <div class="success_pop" id="selector">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-	
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
+      
     <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Users List </div>
     </section>
       <section class="clearfix section-action-btns">
@@ -85,6 +86,7 @@ window.onload = function () {
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />
+      <div class="backtotop" style="display: block;"><img src="resources/images/backtotop.png"></div>  
       
       
       
@@ -102,9 +104,9 @@ window.onload = function () {
 	    $('#usersListBody').empty();
         $('#usersListEmptyBody').empty();
 		
-		$("#usersListBody").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:80px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
-		$.ajax({ 
+		 $.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 	    			 
@@ -156,7 +158,7 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	
-	       	    	$("#usersListBody").removeAttr("style"); 
+	       	    	$("#loading").removeAttr("style"); 
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
@@ -164,7 +166,7 @@ window.onload = function () {
 	    	else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
 	    		$('#usersListBody').empty();
-	    		$("#usersListBody").removeAttr("style");
+	    		$("#loading").removeAttr("style");
 	    		$('#usersListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
 	    	}
@@ -212,6 +214,22 @@ function getUserSummary(userId){
 	}
   
 </script>
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script> 
+   
 
 <script>
   $('#selector').delay(2000).fadeOut('slow');
