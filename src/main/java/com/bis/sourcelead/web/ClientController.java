@@ -511,5 +511,17 @@ public class ClientController {
 		    }
 		    return host;
 		}
+		/**
+		 * Handles ClientName duplicate or not
+		 * @param clientName
+		 * @return
+		 * @throws Exception 
+		 */
+		 @RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
+		   public @ResponseBody boolean isClientNameValidated(@RequestParam(value="clientName", required=false) String clientName) throws Exception {
+
+			 return  orgService.isClientNameValid(clientName);
+		   }
+		 
 		
 }
