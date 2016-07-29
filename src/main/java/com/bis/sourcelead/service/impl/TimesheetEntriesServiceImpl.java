@@ -250,34 +250,34 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			//currentStartDate
 			
 			String submissionStatusStr = submissionStatus.getValue();
-			String disbleCondition1 = null;
+			String disbleCondition1 = "";
 			 Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 currentCal.setLenient(false);
 			 currentCal.setTime(currentStartDate);
 			if(assignDate.after(currentStartDate) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition1 = "disabled";
 			}
-			String disbleCondition2 = null;
+			String disbleCondition2 = "";
             if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition2 = "disabled";
 			}
-			String disbleCondition3 = null;
+			String disbleCondition3 = "";
             if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition3 = "disabled";
 			}
-			String disbleCondition4 = null;
+			String disbleCondition4 = "";
             if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition4 = "disabled";
 			} 
-			String disbleCondition5 = null;
+			String disbleCondition5 = "";
             if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition5 = "disabled";
 			}
-			String disbleCondition6 = null;
+			String disbleCondition6 = "";
             if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition6 = "disabled";
 			}
-			String disbleCondition7 = null;
+			String disbleCondition7 = "";
             if(assignDate.after(currentEndDate) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition7 = "disabled";
 			} 
@@ -295,7 +295,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		   	
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='timesheetrProject pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname' id='"+ts.getId()+"' > <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
@@ -757,7 +757,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='timesheetrProject pname'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname' id='"+ts.getId()+"'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
