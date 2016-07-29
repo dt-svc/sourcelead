@@ -93,7 +93,7 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TimesheetEntries te left join fetch te.projectTask pt  where te.timesheetSubmissions.Id =:submissionId and (te.status = '0' or te.status = '' or te.status IS NULL)  ";
-		List<TimesheetEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).list();	
+		List<TimesheetEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();	
 		return timesheetEntriesList;
 	}
 

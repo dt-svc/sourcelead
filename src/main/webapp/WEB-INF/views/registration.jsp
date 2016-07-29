@@ -279,13 +279,13 @@ function validateWebsite(){
        	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
-		        		if(result == "success"){
+			        		if (result == "Website Duplicated" || result == "Invalid Website") {
 		        			//existed website
 		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
 		    	    		$('input#companyWebsite').attr('class','error signin_fild');
-		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" Already Existed</p>");
+		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
 		    				$('input#companyWebsite').attr('record-exist','yes');
-		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' Already Existed'); 
+		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
 		    				$( "#register_button" ).addClass('sign_btn').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
