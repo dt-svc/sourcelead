@@ -183,11 +183,13 @@ window.onload = function () {
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#loading").removeAttr("style"); 
 			        	$("#mailMsg").fadeIn(200);
 		   		        $('#mailMsg').delay(2000).fadeOut('slow');
 			        },
