@@ -538,7 +538,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 										userImport.setDayHours(dayHours);
 									}
 								}else{
-									userImport.setDayHours(row.getCell(9).toString());
+									userImport.setDayHours(row.getCell(10).toString());
 								}
 							} else {
 								userImport.setDayHours("");
