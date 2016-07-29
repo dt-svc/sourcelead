@@ -423,10 +423,11 @@ function projectEmployee(projectId){
 	        		}else{
 	        			projectEndDateStr = "--"
 	        		}
+	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
@@ -460,9 +461,54 @@ function projectEmployee(projectId){
     		     $(".project_tabs_inn").not(tab).css("display", "none");
     		     $(tab).fadeIn();
     		 });
+    		
+    		if(json.length > 0)
+	   		{
+    			 for(var i=0; i<json.length; i++){
+					 var jsonData = json[i];
+					 
+					 //Assign date of project member
+					 var selected = jsonData.projectAssignedDateStr;
+					 var dt = new Date(selected);
+ 		             dt.setDate(dt.getDate());
+ 		             
+ 		             //Main project end date
+ 		             var projectEndDate = jsonData.endDate;
+ 		             var endDate = "";
+ 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+ 		            	 endDate = new Date(projectEndDate);
+ 	 		             endDate.setDate(endDate.getDate()); 
+ 		             }
+ 		             
+					 $('#endDate'+jsonData.id).datepicker({
+			    		      dateFormat: 'yy-mm-dd',
+			    		      minDate: dt,
+			    		      maxDate: endDate,
+			    		      onClose: function() {
+			    		        	 var id = $(this).attr('id');
+									 var projectMemberId = $(this).attr('id').split('endDate')[1];
+			    		        	 inlineEditForEndDate(id,projectMemberId);
+			    		      }
+			    		  }); 
+    			 }
+	   		}
         },
     });
     }	
+</script>
+
+<script> 
+function inlineEditForEndDate(id,projectMemberId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 var endDate = document.getElementById(id).value;
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 });  
+}
 </script>
 
 <script>
