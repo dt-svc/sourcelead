@@ -168,24 +168,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			
 			for(UserRole role : rolesList){
 				role.setUserRoleName(role.getRoles().getDisplayName());
-				
-
-                Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
-				Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
-				Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
-				
-				Integer approvedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.APPROVED.toString(),orgLocations.getId());
-				Integer rejectedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.REJECTED.toString(),orgLocations.getId());
-				Integer waitingTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(role.getUser().getId(), Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.toString(),orgLocations.getId());
-				
-				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(role.getUser().getId(), orgLocations.getId());
-				
-				role.setOpenTimeSheetsCount(totalOpenTimeSheetCount);
-				role.setApprovedTimeSheetsCount(approvedTimeSheetsCount);
-				role.setRejectedTimeSheetsCount(rejectedTimeSheetsCount);
-				role.setWaitingTimeSheetsCount(waitingTimeSheetsCount);
-				role.setProjectsCount(assignedProjectsCount);
-				
 				userRolesList.add(role);
 			}
 			 
