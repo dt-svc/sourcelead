@@ -370,6 +370,9 @@
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
+	        },
+	        onClose: function() {
+	  		  $('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
 	        }
 	  });
 	  
@@ -388,31 +391,11 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
-		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
-		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
-		if ($('#projectId').val() == '' || $('#projectId').val() == 0
-				|| $('#projectId').val() == null) {
-			$("input#projectId")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project ID</span>");
-			return true;
-		}
-
-		if ($('#projectName').val() == '' || $('#projectName').val() == 0
-				|| $('#projectName').val() == null) {
-			$("input#projectName")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Name</span>");
-			return true;
-		}
-		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0
-				|| $('#projectStartDate').val() == null) {
-			$("input#projectStartDate")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Start Date</span>");
-			return true;
-		}
+		if(projectvalidation()==false)
+			{
+			return false;
+			}
+		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -744,5 +727,44 @@ function flushProject(){
 
 			});
 		}
+	}
+</script>
+
+<script type="text/javascript">
+function projectvalidation(){
+	
+	/*  validation for projectId start */
+		var namelength = document.getElementById("projectId").value.length;
+		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectId').val() == '' || $('#projectId').val() == 0 || $('#projectId').val() == null) {
+			$("input#projectId").after("<p class='jquery_form_error_message'> <span>Enter Project Id </span> ");
+			return false;
+		}
+		 else if ((namelength < 2) || (namelength >= 100)) {
+			$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+			return false;
+		}
+		/* validation for projectId end */
+
+		/*  validation for project name start */
+		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectName').val() == '' || $('#projectName').val() == 0|| $('#projectName').val() == null) {
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>Enter Project Name</span>");
+			return false;
+		}
+		var namelength = document.getElementById("projectName").value.length;
+		if ((namelength < 2) || (namelength >= 100)) {
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+			return false;
+		}
+		/*validation for project name end */
+
+		/*validation for project Start Date */
+		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectStartDate').val() == ''|| $('#projectStartDate').val() == 0	|| $('#projectStartDate').val() == null) {
+			$("input#projectStartDate").after("<p class='jquery_form_error_message'><span>Enter Project Start Date</span>");
+			return false;
+		}
+		/* validation for project Start Date end */
 	}
 </script>

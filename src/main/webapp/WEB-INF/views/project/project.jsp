@@ -55,9 +55,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project</div>
-
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -90,7 +88,7 @@
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="ProjectName"
-									data-validation="required validate_length length2-250"
+									data-validation="required validate_Space validate_length length2-100"
 									field-name="Project Name" value=""> <span
 									class="hidden">Project Name</span>
 							</div>
@@ -100,7 +98,7 @@
 							<div class="col-md-9">
 								<textarea class="form-control" rows="3"
 									name="ProjectDescription"
-									data-validation="validate_length length10-500"
+									data-validation="validate_Space validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -149,7 +147,7 @@
 												<h4 class="modal-title">Add Tasks</h4>
 											</div>
 											<div class="modal-body clearfix">
-												<div class="modal-body-custom custom-table">
+												<div class="modal-body-custom custom-table tbl-cumstom-data">
 													<table class="table table-bordered table-striped  clearfix"
 														id="projectTaskTbl" cols="0">
 														<tr id="divTsRow0">
@@ -177,15 +175,15 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="taskName"
 																	name="taskName" placeholder="Enter Task Name"
-																	class="form-control" onblur="validatetaskName();">
+																	class="form-control">
 															</div>
 														</div>
-														<div class="form-group" id="taskDescriptionDIV">
+														<div class="form-group">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
 																<textarea class="form-control"
 																	placeholder="Enter Task Description"
-																	id="taskDescription" name="taskDescription" rows="2" ></textarea >
+																	id="taskDescription" name="taskDescription" rows="2"></textarea>
 															</div>
 														</div>
 													</div>
@@ -364,6 +362,8 @@
 <!-- Content Area Ends-->
 
 
+
+
 <!-- Modal content Add Team-->
 <div role="dialog" id="addTeam" class="modal fade">
 	<div class="modal-dialog">
@@ -516,40 +516,17 @@
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
-
-<script >
-
-function validatetaskName()
-{
-	var abc = document.getElementById("taskName").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-	
-	} 
- 
-</script>
-
-<script >
-
-function validatetaskDescription()
-{
-	var abcd = document.getElementById("taskDescription").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	$('#taskDescriptionDIV').find('p.jquery_form_error_message').remove();
-	
-	} 
- 
-</script>
-
 <script type="text/javascript">
 	function addTasks() {
+
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-		 
-		if ($('#taskName').val() == '' ){
-			$("input#taskName").after("<p class='jquery_form_error_message'> Enter task name</span>");
+
+		if ($('#taskName').val() == '') {
+			$("input#taskName")
+					.after(
+							"<p class='jquery_form_error_message'>Task Name is required</span>");
 			return true;
 		}
-		
 
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -924,14 +901,14 @@ function validatetaskDescription()
 
 								output = output + "<tr>";
 								output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-								output = output + "<td>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</td>";
-								output = output + "<td><span class='tbldata-dotdot' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
-								output = output + "<td>" + role + "</td>";
-								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";
+								output = output + "<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
+								output = output + "<td><span class='tbldata-dotdot-vsm' title='"+role+"'>" + role + "</span></td>";
+								output = output+ "<td><span class='' title='"+projectStartDate+"'><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 
-								output = output+ "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
-								output = output + "</div></td>";
-								output = output+ "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+								output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
+								output = output + "</div></span></td>";
+								output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 								output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 								output = output + "</div></td>";
 								output = output + "</tr>";
@@ -1061,7 +1038,7 @@ function validatetaskDescription()
 						+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
-					if (result == "success") {
+					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
 						$("input#companyWebsite").after(
 								"<p class='jquery_form_error_message'>"
@@ -1071,7 +1048,7 @@ function validatetaskDescription()
 								'record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute(
 								'record-exist-errorMsg',
-								website + ' is Already Existed');
+								website + ' is '+result);
 					} else {
 						//New WebSite class="form-control"
 						//$("#save_client").removeAttr("disabled");
