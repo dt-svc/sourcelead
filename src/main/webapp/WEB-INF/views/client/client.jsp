@@ -38,13 +38,9 @@
 			<form:form id="client_form" name="client_form" method="post">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-						<div class="form-group">
-							<label class="col-md-3" for="Project Id">Client Name<span
-								class="text-danger">*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" name="orgName"
-									field-name="Client Name"
-									data-validation="required validate_Space validate_length length2-100" value="">
+						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
+							<div class="col-md-9" id="clientNameDiv">
+								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -150,7 +146,7 @@
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
 																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
-																	<option value=''>-- Select Manager --</option>
+																	<option value=''>-- Select Manager --</option>id="companyWebsiteDiv"
 																	<c:forEach var="option" items="${user_List}">
 																		<option value="${option.id}">${option.firstName} ${option.lastName}</option>
 																	</c:forEach>
@@ -763,3 +759,48 @@ function projectvalidation(){
 		/* validation for project Start Date end */
 	}
 </script>
+
+<script type="text/javascript">
+function validateClientName(){
+	var clientName = document.getElementById("orgName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (clientName != null && clientName != '') {
+		//$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?clientName="+clientName,
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("input#orgName").after(
+							"<p class='jquery_form_error_message'>"
+									+ clientName
+									+ " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute(
+							'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute(
+							'record-exist-errorMsg',
+							clientName +"  already existed");
+				} else {
+					//New WebSite class="form-control"
+					//$("#save_client").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						if ($(this).validate(false, validationSettings)) {
+						}
+					});
+				}
+			},
+
+		});
+	}
+}
+</script>
+
+
