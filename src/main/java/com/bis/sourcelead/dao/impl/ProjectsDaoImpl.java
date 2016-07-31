@@ -366,4 +366,20 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Projects project left join fetch project.orgRelationId where project.id = :projectId and project.orgLocationsId = :orgLocationId ";
+			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId)
+					.setCacheable(true).list();
+			
+			
+			Projects projects = null;
+			if (projectsList != null && projectsList.size() > 0) {
+				projects = (Projects) projectsList.iterator().next();
+			}
+			return projects;
+		}
 }

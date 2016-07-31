@@ -206,10 +206,10 @@ public class ProjectsDashboardController {
 	 */
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
-		 Projects projects = projectsService.getProjectById(projectId);
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Projects projects = projectsService.getProjectByIdAndLoginOrgId(projectId, loginOrgLocations.getId());
 			
 			if(projects.getCreatedDate() != null){
 				projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
@@ -235,8 +235,8 @@ public class ProjectsDashboardController {
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				if(projects.getOrgRelationId() !=null){
-					if(projects.getOrgRelationId().getId()==ocl.getId()){
+				if(projects.getOrgRelationId().getId() !=null){
+					if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 						projects.setRelationId(ocl.getId());
 					}
 				}
