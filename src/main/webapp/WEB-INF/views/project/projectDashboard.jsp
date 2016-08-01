@@ -750,6 +750,7 @@ $(document).ready(function() {
 </script>
 
 <!-- this script is for Projects Filter functionality at Projects screen -->
+
 <script>
 function filter(){
 	
@@ -775,6 +776,7 @@ function filter(){
    	        	var result = "";
    	        	result = result +'<div class="project_wrap_table">';
    		    	result = result +'<table>';
+   		    	if(json.length !=null && json.length>0 ){
    		    	result = result +'<tbody>';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
@@ -815,6 +817,19 @@ function filter(){
                     result = result +'</tr>';
    				}
                 result = result +'  </tbody>';
+   		    	}else{
+   	        		result = result +'<div class="row">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p><i class="fa fa-5x fa-bar-chart"></i></p>';
+   	        		result = result +'<p>No Projects in our organisation... Add Projects</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		
+   	        	}
                 result = result +' </table>';
                 result = result +'</div>';
                 $("#projectList").empty();  

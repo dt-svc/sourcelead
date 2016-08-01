@@ -43,8 +43,8 @@ public interface ProjectsService {
 	
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 	
-	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
-
+	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
+	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
