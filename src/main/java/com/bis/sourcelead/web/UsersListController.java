@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -71,6 +73,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 		
 	/**
 	 * To forward users List jsp page
@@ -260,15 +265,28 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-		public @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId) throws Exception{
+	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
 				User user = userService.getUserById(userId);
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
+			    String password = "";
 				if(user != null){
 					user.setFirstName(jsonObj.getString("FirstName"));
 					user.setLastName(jsonObj.getString("LastName"));
 					user.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					if(user.getUserState() != null && !"".equals(user.getUserState()) && "NOT_LOGGEDIN".equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+						//generate random password
+						user.setEmail(jsonObj.getString("EmailId"));
+						user.setUserName(jsonObj.getString("EmailId"));
+						password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			 			user.setIsMailSent(Status.Y);
+					}
 					userService.addUser(user);
+					if(user.getUserState() != null && !"".equals(user.getUserState()) && "NOT_LOGGEDIN".equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+						userService.sendEmail(user,loginUser,password);
+					}
 				}
 			    Employees employees = employeesService.getEmployeeByUserId(userId);
 			    if(employees !=  null){
