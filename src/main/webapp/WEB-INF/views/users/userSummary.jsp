@@ -103,7 +103,7 @@ $(document).ready(function(){
 		<script>
  function userDetails(userId){    
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
+	 alert("userType"+'${userType}');
 	 var projectsCount = '${assignedProjectsCount}';
 	 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
 	 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
@@ -608,7 +608,7 @@ function firstname(name)
                         $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
-                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                                 userDetails(userId);
                                 
@@ -634,6 +634,7 @@ function firstname(name)
                         	  var frm = $('#editUser_form').serializeFormJSON();
                               var con = JSON.stringify(frm);
                               con = con.replace(/[{}]/g, "");
+                              alert("con"+con);
                               //It will escape all the special characters
                               var jsonData = encodeURIComponent(con);
                               var sourceleadUrl ='${sourceleadUrl}';
@@ -641,7 +642,7 @@ function firstname(name)
                               $( "#update_user" ).addClass('button').val('Processing..');
                               $.ajax({
                                   type: "POST",
-                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                       userDetails(userId);
                                       
@@ -663,7 +664,7 @@ function firstname(name)
                   $( "#update_user" ).addClass('button').val('Processing..');
                   $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                           userDetails(userId);
                           
@@ -823,11 +824,12 @@ function editUserDetails(userId){
 						result = result + ' </div>';
 					
 					}
-					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
-					result = result + ' </div>';
-					
+					else{
+						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+						result = result + ' </div>';
+					}
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
