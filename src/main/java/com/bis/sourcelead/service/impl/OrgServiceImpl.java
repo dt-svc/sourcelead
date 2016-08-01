@@ -101,6 +101,11 @@ public class OrgServiceImpl implements OrgService {
 	public Org getOrgByOrgCode(String orgCode) throws Exception {
 		return orgDao.getOrgByOrgCode(orgCode);
 	}
+
+	@Override
+	public boolean isClientNameValid(String clientName) throws Exception {
+		return orgDao.isClientNameValid(clientName);
+	}
 	
 	
 }

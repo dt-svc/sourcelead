@@ -25,5 +25,12 @@ public interface OrgDao {
 	String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
+	/**
+	 * Handles whether the given client is duplicate or not
+	 * @param clienName
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public boolean isClientNameValid(String clientName) throws Exception;
 	
 }

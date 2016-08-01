@@ -34,13 +34,15 @@ public interface TimesheetSubmissionsDao {
      
     public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId ,String approvalStatus)throws Exception;
 
-	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus);
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectId(Long projectId,Long userId, String approvalStatus);
 	
-	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus); 
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectId(Long projectId,Long userId, String submissionStatus); 
 	
 	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId ,String approvalStatus)throws Exception;
 	
 	public Collection<TimesheetSubmissions> getProjectsBasedOnUserIdAndStatusAndClientForFilters(Long userId ,String clientId,String values)throws Exception;
+	
+	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus,Long orgLocationId)throws Exception;
 
 
 }

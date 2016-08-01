@@ -283,6 +283,7 @@ public class ProjectsController {
 						            	pm.setProjectEndDate(currentEndDate);
 						            }
 									pm.setProjects(projects);
+									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
 									pm.setUpdatedDate(new Date());
 									projectMembersService.saveProjectMember(pm);
@@ -496,7 +497,7 @@ public class ProjectsController {
 			userRole.setRoles(roles);
 			userRole.setUser(usr);
 			userRole.setOrgLocations(loginOrgLocation);
-			userRole.setIsPrimary(0);
+			userRole.setIsPrimary(1);
 			userRole.setCreatedBy(users.getUserCode());
 			userRole.setCreatedDate(new Date());
 			UserRole userRolesSaving = userRoleService.addUserRole(userRole);

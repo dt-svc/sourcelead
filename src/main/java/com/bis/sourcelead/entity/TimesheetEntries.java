@@ -36,11 +36,11 @@ public class TimesheetEntries {
 	private Long Id;
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_TASK")
 	private ProjectTasks projectTask;
 	

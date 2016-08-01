@@ -2,18 +2,13 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="resources/js/jquery-fun.js"></script> 
+
+ 
+ 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -26,7 +21,8 @@
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; <a href="clientDashboard">Clients List</a>&raquo; Client</div>
+		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
+			&raquo; Client</div>
 	</section>
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
@@ -42,13 +38,9 @@
 			<form:form id="client_form" name="client_form" method="post">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-						<div class="form-group">
-							<label class="col-md-3" for="Project Id">Client Name<span
-								class="text-danger">*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" name="orgName"
-									field-name="Client Name"
-									data-validation="required validate_length length2-100" value="">
+						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
+							<div class="col-md-9" id="clientNameDiv">
+								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -56,7 +48,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value=""> <span
+									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -64,7 +56,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="">
+									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -74,7 +66,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value=""> <span class="hidden">Client
+									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -87,10 +79,7 @@
 										<button class="btn btn-default" type="button">
 											<span class="badge" id="addTaskCount">0
 										</button>
-										<button class="btn btn-primary" type="button"
-											data-toggle="modal" data-target="#addTask">
-											<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View
-											/ Add Projects
+										<button class="btn btn-primary" type="button" data-toggle="modal"  onclick="flushProject();" data-target="#addTask"> <i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;Add Projects
 										</button>
 									</div>
 								</div>
@@ -126,7 +115,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectId"
 																	name="projectId" placeholder="Enter Project Id"
-																	data-validation="required validate_Space validate_length length2-20" class="form-control" onblur="validateProjectId();">
+																	class="form-control" onblur="validateProjectId();">
 															</div>
 														</div>
 
@@ -134,8 +123,8 @@
 															<label class="col-md-3">Project Name</label>
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
-																	name="projectName" placeholder="Enter Project Name" field-name="Project Name"
-																	data-validation="required validate_Space validate_length length2-100" class="form-control" onblur="validateProjectName()">
+																	name="projectName" placeholder="Enter Project Name"
+																	class="form-control">
 															</div>
 														</div>
 														<div class="form-group">
@@ -143,14 +132,12 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg"
-																		name="projectManager" id="projectManager">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();">
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
-																			<option value="${option.id}&${option.firstName}">${option.firstName}</option>
+																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
 																		</c:forEach>
-																	</select> <span class="btn btn-default formic1 addLevel">Add
-																		Level-II</span>
+																	</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();"">Add Level-II</span>
 																</div>
 																<span class="hidden">Select Project Manager</span>
 															</div>
@@ -158,11 +145,10 @@
 														<div class="form-group level-second">
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
-																<select class="form-control select-bg"
-																	name="level2Manager">
-																	<option value=''>-- Select Manager --</option>
+																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
+																	<option value=''>-- Select Manager --</option>id="companyWebsiteDiv"
 																	<c:forEach var="option" items="${user_List}">
-																		<option value="${option.id}">${option.firstName}</option>
+																		<option value="${option.id}">${option.firstName} ${option.lastName}</option>
 																	</c:forEach>
 																</select>
 															</div>
@@ -172,38 +158,32 @@
 															<label class="col-md-3">Date</label>
 															<div class="col-md-9">
 																<div class="row">
-																	<div class="col-lg-6">
-																		<div class="input-group">
-																			<span class="input-group-addon"><i
-																				class="fa fa-calendar"></i></span> <input type="text"
-																				class="form-control" value="" id="projectStartDate"
-																				name="StartDate" onclick="selectStartDate();" onblur="validateProjecStartdate()">
-																		</div>
+																	<div class="col-lg-6 positionRelative">
+																		
+																     <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" readonly="readonly">
+																	 <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>																			
 																	</div>
-																	<div class="col-lg-6">
-																		<div class="input-group">
-																			<span class="input-group-addon"><i
-																				class="fa fa-calendar"></i></span> <input type="text"
-																				class="form-control" value="" id="projectEndDate"
-																				name="EndDate" onclick="selectStartDate();">
-																		</div>
+																	<div class="col-lg-6 positionRelative">
+																		
+																	<input type="text" class="form-control" value="" id="projectEndDate" name="EndDate"  readonly="readonly" >
+																		<span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> 
 																	</div>
 																</div>
 															</div>
 														</div>
 
 													</div>
-													<div class="col-xs-12 col-lg-5">
-														<a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();"
-															data-target="addTask"> <i class="fa fa-plus"></i><span
-															id="addTaskText"> Add Project</span></a>
-													</div>
+													
 												</div>
 											</div>
+											
 											<div class="modal-footer">
-												<!-- <button type="button" class="btn btn-primary"
-													data-dismiss="modal">Save</button> -->
+											<div class="col-xs-8 col-lg-11">
+											 <a href="javascript:void(0)" class="btn btn-primary"
+															id="save_task" onclick="addTasks();flushProject();"
+															data-target="addTask"> <i class="fa fa-plus"></i><span
+															id="addTaskText"> Add Project</span></a>
+											</div>
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Close</button>
 											</div>
@@ -222,8 +202,8 @@
 							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
-									name="webSite" field-name="Website"
-									data-validation="validate_length length2-100 validate_domain"
+									name="webSite" onblur="validateWebsite();" field-name="Website"
+									data-validation="validate_Space validate_length length2-100 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -232,7 +212,7 @@
 							<label class="col-md-3" for="Project Manager">Email</label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_length length2-100 validate_email"
+									data-validation="validate_Space validate_length length2-100 validate_email"
 									data-validation-optional="true" value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
@@ -242,7 +222,7 @@
 							<label class="col-md-3">Mobile Number</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="phone" name="phone"
-									data-validation="validate_phone  validate_length length9-20"
+									data-validation="validate_Space validate_phone  validate_length length9-20"
 									data-validation-optional="true" field-name="Mobile Number"
 									value=""> <span class="hidden">Mobile Number</span>
 							</div>
@@ -274,7 +254,6 @@
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
 
-
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -294,81 +273,6 @@
 		};
 	})(jQuery);
 </script>
-<script type="text/javascript">
-	$(document).ready(
-			function(e) {
-				$('.side-menu').click(function() {
-					$('.side-bar').toggleClass("side-bar-active");
-					$('.user-panel').toggleClass("user-panel-active");
-					$('.content-wraper').toggleClass("content-wraper-active");
-				});
-				$('.srch-btn-xs').click(function() {
-					$(".search-area").toggleClass("search-area-active");
-				});
-				$('html').click(function() {
-					$(".search-area").removeClass("search-area-active");
-				});
-				$('.srch-btn-xs, .search-area-txt').click(function(e) {
-					e.stopPropagation();
-				});
-				$('.login-user').click(function() {
-					$('.user-details').toggleClass('user-details-active');
-				});
-
-				$("#notification").click(function() {
-					$('.note-area').toggleClass('note-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.setting-area').removeClass('setting-area-active');
-					$('.alert-area').removeClass('alert-area-active');
-				});
-				$("#alert").click(function() {
-					$('.alert-area').toggleClass('alert-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.setting-area').removeClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-					$('.qlinks-area').removeClass('qlinks-area-active');
-				});
-				$("#qlinks").click(function() {
-					$('.qlinks-area').toggleClass('qlinks-area-active');
-					$('.alert-area').removeClass('alert-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.setting-area').removeClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-				});
-				$('html').click(function() {
-					$('.user-details').removeClass("user-details-active");
-					$('.setting-area').removeClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-					$('.alert-area').removeClass('alert-area-active');
-					$('.qlinks-area').removeClass('qlinks-area-active');
-				});
-				$('.header-nav .navbar, .custom-navbar, .user-details').click(
-						function(e) {
-							e.stopPropagation();
-						});
-				$('.settings').click(function() {
-					$('.setting-area').toggleClass('setting-area-active');
-					$('.note-area').removeClass('note-area-active');
-					$('.user-details').removeClass('user-details-active');
-					$('.alert-area').removeClass('alert-area-active');
-				});
-				$(".collpase-div").click(function() {
-					$(".toggle-div").slideToggle(800);
-				});
-				$(".faclose").click(function() {
-					$(".remove-div").addClass('hidden');
-				});
-				$(".bell").click(function() {
-					$(this).toggleClass('bell-active');
-				});
-				/* $(".addLevel").click(function(){
-				   $(".level-second").toggleClass("level-second-active");
-				}); */
-			});
-</script>
-
-
-
 <script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {
@@ -413,96 +317,75 @@
 
 
 
-
 <!-- =============================== AddTask Divs  ============================ -->
 
 <div id="divTaskTd1" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectId"
-		name="REPLACEROWIDprojectId" value="PROJECTIDVALUE" /><span
-		id="REPLACEROWIDprojectIdValue">PROJECTIDVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectId" name="REPLACEROWIDprojectId" value="PROJECTIDVALUE" />
+	<span  class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectIdValue" title='PROJECTIDVALUE'>PROJECTIDVALUE</span>
 </div>
 
 <div id="divTaskTd2" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectName"
-		name="REPLACEROWIDprojectName" value="TASKNAMEVALUE" /><span
-		id="REPLACEROWIDprojectNameValue">TASKNAMEVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectName" name="REPLACEROWIDprojectName" value="TASKNAMEVALUE" />
+	<span class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectNameValue" title='TASKNAMEVALUE'>TASKNAMEVALUE</span>
 </div>
 <div id="divTaskTd3" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectManager"
-		name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE" /><span
-		id="REPLACEROWIDprojectManagerValue">TASKDESCRIPTIONName</span>
+	<input type="hidden" id="REPLACEROWIDprojectManager" name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE" />
+	<span class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectManagerValue" title='TASKDESCRIPTIONName'>TASKDESCRIPTIONName</span>
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectStartDate"
-		name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE" /><span
-		id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectStartDate" name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE" />
+	<span id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
 </div>
 
 <div id="divTaskTd5" style="display:none; float:left;">
-        <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/><span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
-      </div> 
+     <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/>
+     <span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
+</div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-	<span><a title="Edit" href="javascript:void(0)"
-		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	<span><a title="Remove" href="javascript:void(0)"
-		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+	<span><a title="Edit" href="javascript:void(0)"onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+	<span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
 
 
 
 <!-- =============================== AddTask Divs  ============================ -->
+
+<!--  Date picker starts here -->
+<script>
+  $( function() {
+	  $('#projectStartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#EndDate").datepicker("option", "minDate", dt);
+	        },
+	        onClose: function() {
+	  		  $('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
+	        }
+	  });
+	  
+	  $('#projectEndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#projectStartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	  
+  } );
+</script>
+<!--  Date picker ends here -->
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
-		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
-		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
-		
-		var namelength = documet.getElementById("projectId").value.length;
-		if ($('#projectId').val() == '' || $('#projectName').val() == '' || $('#projectStartDate').val() == '') {
-			
-			if($('#projectId').val() == '')
+		if(projectvalidation()==false)
 			{
-				
-			$("input#projectId").after(	"<p class='jquery_form_error_message'>Enter Project ID</span>");
-			
-			if((namelength < 2) || (namelength >=100))
-				{
-				$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-				}
 			return false;
-			
 			}
-		
-			if($('#projectName').val() == '')
-			{
-				
-			$("input#projectName") .after( "<p class='jquery_form_error_message'>Enter Project Name</span>");
-			
-			}
-			
-			if($('#projectStartDate').val() == '')
-			{
-				
-			$("input#projectStartDate") .after( "<p class='jquery_form_error_message'>Enter Project Start Date</span>");
-			}
-			
-			return true;
-		}
-
-		/* if ($('#projectName').val() == '' || $('#projectName').val() == 0 || $('#projectName').val() == null) {
-			
-			$("input#projectName") .after( "<p class='jquery_form_error_message'>Enter Project Name</span>");
-			return true;
-		}
-		
-		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0 || $('#projectStartDate').val() == null) {
-			
-			$("input#projectStartDate") .after( "<p class='jquery_form_error_message'>Enter Project Start Date</span>");
-			return true;
-		} */
 		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -563,28 +446,6 @@
 		$("#projectEndDate").val('');
 		addtasksCountafterAddingTask();
 	}
-</script>
-
-
-<script>
-function validateProjectName() {
-	
-		var Projectname = document.getElementById("projectName").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
-}
-</script>
-
-<script type="text/javascript">
-
-function validateProjecStartdate()
-{
-	var Projectdate = document.getElementById("projectStartDate").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
-	
-	} 
- 
 </script>
 <script type="text/javascript">
 	function removeRow(rowId) {
@@ -672,14 +533,14 @@ function validateProjecStartdate()
 		document.getElementById("project_form").reset();
 	});
 </script>
- 
+
+
 
 <script type="text/javascript">
 	function validateProjectId() {
 		var ProjectSequeneNumber = document.getElementById("projectId").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 			$
 					.ajax({
@@ -713,31 +574,6 @@ function validateProjecStartdate()
 	}
 </script>
 
-<!-- Add Task Script Ends -->
-
-<!-- Date Picker Script start here -->
-<script>
-	function selectStartDate() {
-		$('#projectStartDate').datepicker({
-			dateFormat : 'yy-mm-dd',
-			onSelect : function(selected) {
-				var dt = new Date(selected);
-				dt.setDate(dt.getDate() + 1);
-				$("#projectEndDate").datepicker("option", "minDate", dt);
-			}
-		});
-
-		$('#projectEndDate').datepicker({
-			dateFormat : 'yy-mm-dd',
-			onSelect : function(selected) {
-				var dt = new Date(selected);
-				dt.setDate(dt.getDate() - 1);
-				$("#projectStartDate").datepicker("option", "maxDate", dt);
-			}
-		});
-	};
-</script>
-<!-- Date Picker Script end here -->
 
 <script type="text/javascript">
 function addtasksCountafterRemoving(){
@@ -784,8 +620,187 @@ var addtaskcount =null;
 		  var r = document.getElementById('projectTaskTbl').rows[rowId];
              var count = 2*(r.cells.length);
 			    for(i=0;i<=count;i++){
-			     r.deleteCell(0);
+			        r.deleteCell(0);
 			    }
 	}
  
 </script>
+
+
+<script type="text/javascript">
+function getLevel2Approvers(fieldName){
+	   var managerID = document.getElementById("projectManager").value;
+		var mgr = managerID.split("&");
+		var currentApproverId = mgr[0];
+    	 getChildLevel1Approvers(currentApproverId); 
+} 
+</script>
+
+
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+	 }
+} 
+</script> 
+
+<script type="text/javascript">
+function flushProject(){
+	 $('#level2Manager').val('');
+}
+</script>
+
+<script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="
+						+ website + "&sourceleadBLockedwebsites="
+						+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == 'Website Duplicated' || result == 'Invalid Website') {
+						//existed website
+						$("input#webSite").after(
+								"<p class='jquery_form_error_message'>"
+										+ website
+										+ " is Already Existed</span>");
+						document.getElementById("webSite").setAttribute(
+								'record-exist', 'yes');
+						document.getElementById("webSite").setAttribute(
+								'record-exist-errorMsg',
+								website + ' is '+result);
+					} else {
+						//New WebSite class="form-control"
+						//$("#save_client").removeAttr("disabled");
+						$('input#webSite').removeAttr(
+								"class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class',
+								'valid form-control');
+						$('#companyWebsiteDiv').find(
+								'p.jquery_form_error_message').remove();
+						$("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	}
+</script>
+
+<script type="text/javascript">
+function projectvalidation(){
+	
+	/*  validation for projectId start */
+		var namelength = document.getElementById("projectId").value.length;
+		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectId').val() == '' || $('#projectId').val() == 0 || $('#projectId').val() == null) {
+			$("input#projectId").after("<p class='jquery_form_error_message'> <span>Enter Project Id </span> ");
+			return false;
+		}
+		 else if ((namelength < 2) || (namelength >= 100)) {
+			$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+			return false;
+		}
+		/* validation for projectId end */
+
+		/*  validation for project name start */
+		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectName').val() == '' || $('#projectName').val() == 0|| $('#projectName').val() == null) {
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>Enter Project Name</span>");
+			return false;
+		}
+		var namelength = document.getElementById("projectName").value.length;
+		if ((namelength < 2) || (namelength >= 100)) {
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+			return false;
+		}
+		/*validation for project name end */
+
+		/*validation for project Start Date */
+		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectStartDate').val() == ''|| $('#projectStartDate').val() == 0	|| $('#projectStartDate').val() == null) {
+			$("input#projectStartDate").after("<p class='jquery_form_error_message'><span>Enter Project Start Date</span>");
+			return false;
+		}
+		/* validation for project Start Date end */
+	}
+</script>
+
+<script type="text/javascript">
+function validateClientName(){
+	var clientName = document.getElementById("orgName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (clientName != null && clientName != '') {
+		//$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?clientName="+clientName,
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("input#orgName").after(
+							"<p class='jquery_form_error_message'>"
+									+ clientName
+									+ " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute(
+							'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute(
+							'record-exist-errorMsg',
+							clientName +"  already existed");
+				} else {
+					//New WebSite class="form-control"
+					//$("#save_client").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						if ($(this).validate(false, validationSettings)) {
+						}
+					});
+				}
+			},
+
+		});
+	}
+}
+</script>
+
+

@@ -153,11 +153,13 @@ public class RegistrationController {
 		
 			String status = null;
 		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-			if (orgInfo != null) {
-				status = "success";
+			if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
+				status = "Website Duplicated";
+			}else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+				status = "Invalid Website";
 			}
 			else{
-				status = "failure";
+				status = "SUCCESS";
 			}
 			
 	    return status;

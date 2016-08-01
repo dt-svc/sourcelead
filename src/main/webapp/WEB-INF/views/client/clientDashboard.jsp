@@ -81,31 +81,31 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}');">${report.clientLocationId.org.orgName}<i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-me" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
 							<c:if test="${!empty report.clientLocationId.org.webSite}">
-								<td><div>${report.clientLocationId.org.webSite}</div></td>
+								<td><div><span class="tbldata-dotdot-sm" title="${report.clientLocationId.org.webSite}">${report.clientLocationId.org.webSite}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.org.webSite}">
 								<td><div>--</div></td>
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div>${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
 							</c:if>
 							<c:if test="${!empty report.clientLocationId.email}">
-								<td><div>${report.clientLocationId.email}</div></td>
+								<td><div><span class="tbldata-dotdot-vsm" title="${report.clientLocationId.email}">${report.clientLocationId.email}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.email}">
 								<td><div>--</div></td>
 							</c:if>
 							<c:if test="${!empty report.clientLocationId.phone}">
-								<td><div>${report.clientLocationId.phone}</div></td>
+								<td><div><span class="tblminwidth-125">${report.clientLocationId.phone}</span></div></td>
 							</c:if>
 
 							<c:if test="${empty report.clientLocationId.phone}">
@@ -113,10 +113,10 @@
 							</c:if>
 
 							<c:if test="${!empty report.projectsCont}">
-								<td><div>${report.projectsCont}</td>
+								<td><div><span class="tblminwidth-50">${report.projectsCont}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.projectsCont}">
-								<td><div>--</td>
+								<td><div>--</div></td>
 							</c:if>
 						</tr>
 					</c:forEach>
@@ -129,7 +129,7 @@
 
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
-				<h1>Client name here</h1>
+				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
 					<i class="glyphicon glyphicon-share-alt"></i>
 				</div>
@@ -140,7 +140,7 @@
 </body>
 
 <script>
-	function clientSideBar(clientId) {
+	function clientSideBar(clientId,orgName) {
 
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -164,6 +164,10 @@
 		result = result + '</div>'
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
+		
+		$("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName);
+		
 
 		clientProjectDetails(clientId);
 	}
@@ -186,6 +190,7 @@
 						/* result = result + '					<a href="create-project.html"><i class="glyphicon glyphicon-plus"></i>Add project</a>'; */
 						result = result + '</div>';
 						result = result+ '<div class="project_tabs_inn_table">';
+						if(json.length!=null && json.length!=''){
 						result = result + '<table>';
 						result = result + '<tbody>';
 						result = result + '<tr>';
@@ -199,10 +204,10 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName" value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
-							result = result + ' <td><div><select id="clientId" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
+							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
 									for (var j = 0; j < opt.projectManagerName.length; j++) {
 										
 										var managers = opt.projectManagerName[j];
@@ -219,7 +224,7 @@
 									} 
 							result = result + '	</select></div></td>';
 							result = result+ '<td><div>30</div></td>';
-							result = result + '<td><div><select id="projectStatusId" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
+							result = result + '<td><div><select id="projectStatusId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
 							if(opt.projectStatus == 'STARTED'){
 								result = result+'<option selected>Started</option>';
 							}else{
@@ -248,6 +253,17 @@
 						}
 						rresult = result + '	     </tbody>';
 						result = result + '	 </table>   ';
+						}else{
+				    		
+			    			 result = result + '<div class="table_nodata">';
+			    			 result = result + '<div class="table_nodata_inn">';
+			    			 result = result + '<img src="resources/images/no-data.png" />';
+			    			 result = result + '<span>Nothing is here to show ';
+			    			 result = result + '</span>';
+			    			 result = result + '<div class="clearfix"></div>';
+			    			 result = result + '</div>';
+			    			 result = result + '</div>';
+			    		 } 
 						result = result + '	     </div>';
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
@@ -342,11 +358,9 @@
 </script>
 <script> 
 function  inlineEditClientProjects(projectId,localFieldName){
-	alert("Hai"+projectId);
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
-	var fieldValue = $("#"+localFieldName).val();
-	
+	var fieldValue = $("#"+localFieldName+""+projectId).val();
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/inlineEditClientProjects?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
@@ -371,8 +385,8 @@ function  inlineEditForProjects(orgRelationId,localFieldName){
 </script> 
 
 <script>
-function getStartDatePickerById(projectId,localFieldName){
-	 $('#startDate').datepicker({
+function getEndDatePickerById(projectId,localFieldName){
+	$('#endDate'+projectId).datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -380,21 +394,6 @@ function getStartDatePickerById(projectId,localFieldName){
 	        },
 	        onClose: function() {
 	        	inlineEditClientProjects(projectId,localFieldName);
-	     }
-	  });
-}
-</script>
-
-<script>
-function getEndDatePickerById(projectSequeneNumber,localFieldName){
-	$('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        },
-	        onClose: function() {
-	        	inlineEditClientProjects(projectSequeneNumber,localFieldName);
 	     }
 	  });
 }

@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -124,12 +125,44 @@ public class UserController {
 					// to get a project list by userId
 		                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 						model.addObject("org_projectsList", projectsList);
+						
+						Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
+						Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
+						Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
+						
+						Integer approvedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.APPROVED.toString(),orgLocations.getId());
+						Integer rejectedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REJECTED.toString(),orgLocations.getId());
+						Integer waitingTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.toString(),orgLocations.getId());
+						
+						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
+						
+						model.addObject("totalOpenTimeSheetCount", totalOpenTimeSheetCount);
+						model.addObject("approvedTimeSheetsCount", approvedTimeSheetsCount);
+						model.addObject("rejectedTimeSheetsCount", rejectedTimeSheetsCount);
+						model.addObject("waitingTimeSheetsCount", waitingTimeSheetsCount);
+						model.addObject("assignedProjectsCount", assignedProjectsCount);
+						
 						request.setAttribute("userId", userId);
 						model.setViewName("users/userSummary");
 						model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}
+	
+	/**
+	 * To get All Approvers
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getUnassignedProjects")
+	public @ResponseBody String getUnassignedProjects(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
+		String resultJson = toJSON(projectsList);
+		return resultJson;
+
+	}	
 	
 	/**
 	 * To create new project
@@ -425,19 +458,19 @@ public class UserController {
 								.format(projectMembers.getProjects().getEndDate()));
 					}
 					Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalDraftAndSubmittedHoursByuserId(userId, "DRAFT");
+							.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "DRAFT");
 					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
 					Float submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalDraftAndSubmittedHoursByuserId(userId, "SUBMITTED");
+							.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "SUBMITTED");
 					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
 
 					Float approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalApprovedOrRejectedHoursByuserId(userId, "APPROVED");
+							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "APPROVED");
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 
 					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalApprovedOrRejectedHoursByuserId(userId, "REJECTED");
+							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
 					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 				}
 
@@ -498,12 +531,12 @@ public class UserController {
 					}
 				}
 				User user = userService.getUserById(userId);
-				if (employee.getRate() != null && "".equalsIgnoreCase(employee.getRate())) {
+				if (employee.getRate() != null && !"".equalsIgnoreCase(employee.getRate())) {
 					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
 				}
 				// need change role
 				projectMembers.setRole(user.getUserType());
-				if (employee.getRatePer() != null && "".equalsIgnoreCase(employee.getRatePer())) {
+				if (employee.getRatePer() != null && !"".equalsIgnoreCase(employee.getRatePer())) {
 					projectMembers.setRateType(employee.getRatePer());
 				}
 				projectMembers.setStatus(Constants.MEMBER_ACTIVE);
@@ -543,8 +576,8 @@ public class UserController {
 
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					Date endDate1=sdf.parse(endDate);
-					if (endDate != null) {
+					if (endDate != null && !"".equals(endDate)) {
+						Date endDate1=sdf.parse(endDate);
 						if(projectMembers.getProjectEndDate()== null){
 							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}

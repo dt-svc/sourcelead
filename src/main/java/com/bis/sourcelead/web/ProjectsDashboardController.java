@@ -162,13 +162,13 @@ public class ProjectsDashboardController {
         
         List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
-        Collection<Projects> projectsList = null;
+        /*Collection<Projects> projectsList = null;
         try{
-        	projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
+        	Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         }catch(Exception e){
         	e.printStackTrace();
-        }
-        
+        }*/
+        Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
@@ -218,7 +218,9 @@ public class ProjectsDashboardController {
 		    if(projects.getEndDate() != null){
 		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 		    }
-		    projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+		    if(projects.getUpdatedDate() != null){
+		    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+		    }
 		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
 		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 		    String[] approvers = new String[projectApproverHierarchies.size()];
@@ -273,8 +275,10 @@ public class ProjectsDashboardController {
 		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
 			}else if (fieldName.equalsIgnoreCase("clientId")) {
 				OrgRelations orgRelations = new OrgRelations();
+				 if(fieldValue != null && fieldValue != ""){
 				orgRelations.setId(Long.valueOf(fieldValue));
 		    	projects.setOrgRelationId(orgRelations);
+				 }
 			}
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(new Date());
@@ -353,14 +357,19 @@ public class ProjectsDashboardController {
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
 			 
 			 if(pm.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pm.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pm.getProjectAssignedDate()));
              }
         	 if(pm.getProjectEndDate()!=null){
-        		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
+        		pm.setProjectEndDateStr(Constants.DF_YMD.format(pm.getProjectEndDate()));
         	 }
+        	 //to set actual project end date
+        	 if(pm.getProjects().getEndDate() != null){
+         		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
+         	 }
+        	 
         	 if(pm.getEmployee()!=null){
         		 
-        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+             TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(projectId,pm.getEmployee().getUser().getId());
         	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
         	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
         	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
@@ -454,7 +463,8 @@ public class ProjectsDashboardController {
 				@RequestParam(value="ProjectId", required=false) Long projectId,
 				@RequestParam(value="employeeId", required=false) Long employeeId,
 				@RequestParam(value="startDate", required=false) String startDate,
-				@RequestParam(value="endDate", required=false) String endDate, HttpServletRequest request) throws Exception {
+				@RequestParam(value="endDate", required=false) String endDate,
+				@RequestParam(value="mailtoMembers", required=false) String mailtoMembers, HttpServletRequest request) throws Exception {
 		 	
 			 	ProjectMembers pm = new ProjectMembers();
 			 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -480,6 +490,7 @@ public class ProjectsDashboardController {
 		            	pm.setProjectEndDate(currentEndDate);
 		            }
 		            
+		            pm.setStatus(Constants.MEMBER_ACTIVE);
 					pm.setCreatedDate(new Date());
 					pm.setUpdatedDate(new Date());
 					projectMembersService.saveProjectMember(pm);
@@ -489,7 +500,10 @@ public class ProjectsDashboardController {
 				     * This method for send Email to team member while assign employee from project dashboard
 				     */
 					ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(projects.getId());
-					sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation);
+					
+					if(!isNullOrEmpty(mailtoMembers) && ("YES".equals(mailtoMembers))){
+						sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation);
+					}
 			  }
 				return null;
 		}

@@ -105,7 +105,7 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
-function dynamicTimesheet(navigation , startDate){    
+function dynamicTimesheet(navigation , startDate){ 
 			var sourceleadUrl ='${sourceleadUrl}';  
 			$("#dynamic").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
@@ -430,7 +430,7 @@ function saveMyTimesheet(status){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	  dynamicTimesheet();
+        		    	   dynamicTimesheet();
         		      }
         	      	  
         	    }); 
@@ -444,6 +444,25 @@ $('body').on('blur', '#timesheet_form', function() {
 	$("#timesheet_form").showHelpOnFocus();
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 });
+</script>
+<script type="text/javascript">
+function withdrawMyTimesheet(){ 
+	var frm = $('#timesheet_form').serializeFormJSON();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var startdate;
+	var navigation;
+	   
+	var mydata = JSON.stringify(frm);
+	mydata = mydata.replace(/[{}]/g, "");
+	
+	$.ajax({
+	      type : "POST",
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+	      success :function(result) {
+	    	  dynamicTimesheet(navigation,startdate); 
+	      }
+   }); 
+}
 </script>
 
 <!-- this script is for delete document -->
@@ -513,7 +532,8 @@ $(document).click(function(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 200; p++){  
+		 $('.timesheetrProject').each(function() {
+		 var p = this.id;
 		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
@@ -543,7 +563,7 @@ $(document).click(function(){
 		}
 		
 		total = hours +":"+ minutes;
- }  
+	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
 	
@@ -626,8 +646,9 @@ function checkHours(){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-	 for (var p = 1; p < 200; p++){  
-		 for (var j = 1; j < 10; j++){
+		 $('.timesheetrProject').each(function() {
+		 var p = this.id;
+		 for (var j = 1; j < 2; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -647,7 +668,7 @@ function checkHours(){
 		var hours = Math.floor(t / 60); 
 		var minutes = t % 60;
 		total = hours +":"+ minutes;
-  }  
+	 });  
 	 var time = total.split(':'); 
 	 if(!isNaN(time[0])){
 	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
@@ -660,7 +681,7 @@ function checkHours(){
 	    		result = result+"TuesDay ,";
 	    	}
 	    	if(i == '3'){  
-	    		result = result+"Webnesday ,";
+	    		result = result+"Wednesday ,";
 	    	}
 	    	if(i == '4'){  
 	    		result = result+"Thursday ,";

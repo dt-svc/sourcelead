@@ -29,7 +29,6 @@ public interface ProjectsDao {
 	
 	Collection<Projects> getAllProjects() throws Exception;
 	
-	@Cacheable(cacheNames={"projectMembers","projectApproverHierarchy"})
 	Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception;
 	
 	Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception;
@@ -45,5 +44,7 @@ public interface ProjectsDao {
 	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status) throws Exception;
 
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
+	
+	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 
 }
