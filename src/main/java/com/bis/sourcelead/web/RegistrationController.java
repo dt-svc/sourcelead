@@ -152,14 +152,18 @@ public class RegistrationController {
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
 		
 			String status = null;
-		    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-			if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
-				status = "Website Duplicated";
-			}else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+			if(!isNullOrEmpty(website)){
+			    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
+				if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
+					status = "Website Duplicated";
+				}else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+					status = "Invalid Website";
+				}
+				else{
+					status = "SUCCESS";
+				}
+			}else{
 				status = "Invalid Website";
-			}
-			else{
-				status = "SUCCESS";
 			}
 			
 	    return status;
@@ -175,7 +179,9 @@ public class RegistrationController {
 		  return status;
 	   }
 	
-	
+	   protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
 	
 	
 	}
