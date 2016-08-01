@@ -214,7 +214,6 @@ function uploadSave() {
  function checkFile()
     {
      var fsize = $('#uploadBtn')[0].files[0].size;
-     alert(fsize);
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      /* $("#upload_button").removeAttr("disabled"); */
      if (fsize>50000)
