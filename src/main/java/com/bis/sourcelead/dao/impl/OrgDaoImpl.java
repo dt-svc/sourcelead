@@ -203,4 +203,18 @@ public class OrgDaoImpl implements OrgDao {
             return isWebSiteFound;
     }
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean isClientNameValid(String clientName) throws Exception {
+		   boolean isClientFound = false;
+	        Session session = this.sessionFactory.getCurrentSession();
+	        String query = "from Org org where org.orgName = :clientName";
+	         List<Org> orglist = session.createQuery(query.toString()).setString("clientName", clientName).setCacheable(true).list();
+	            if (orglist != null && !orglist.isEmpty()) {
+	            	isClientFound = true;
+	            }
+	            return isClientFound;
+	}
+
 }

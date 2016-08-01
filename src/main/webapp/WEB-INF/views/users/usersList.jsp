@@ -27,16 +27,17 @@ window.onload = function () {
   
   <section class="content-wraper">
   <div class="content-dashboard clearfix">
+   <div id="loading"></div>
     <section class="content-header clearfix">
          <c:if test="${not empty msg}">
 	        <div class="success_pop" id="selector">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-	
       <div class="pull-left">
         <h2>Users List</h2>
       </div>
+      
     <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Users List </div>
     </section>
       <section class="clearfix section-action-btns">
@@ -85,6 +86,7 @@ window.onload = function () {
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />
+      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
       
       
       
@@ -102,9 +104,9 @@ window.onload = function () {
 	    $('#usersListBody').empty();
         $('#usersListEmptyBody').empty();
 		
-		$("#usersListBody").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:80px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
-		$.ajax({ 
+		 $.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 	    			 
@@ -131,38 +133,32 @@ window.onload = function () {
 	       	    	result = result +"<div class='col-sm-4'>";
 	       	    	result = result +"<div class='text-center image'>";
 	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	       	    	result = result +"<span> "+userRole.userRoleName+" </span>";
 	       	    	
 	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
-	       	    	  result = result +"<br/><span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
+	       	    	  result = result +"<span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
 	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
 	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
-	 			    	result = result +"<br/><span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
+	 			    	result = result +"<span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
 	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
-	 			    	result = result +"<br/><span class='label label-success'>Active</span>";
+	 			    	result = result +"<span class='label label-success'>Active</span>";
 	 			    }else{
-	 			    	result = result +"<br/><span class='label label-danger'>Inactive</span>";
+	 			    	result = result +"<span class='label label-danger'>Inactive</span>";
 	 			    }
-	       	    	
 	       	    	
 	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-sm-8'>";
 	       	    	result = result +"<h4><strong><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </strong></h4>";
-	       	    	result = result +"<p><label> "+userRole.user.email+" </lable></p>";
-	       	    	result = result +"<p><label><i class='fa fa-phone'></i>&nbsp; "+mobilePhone+" </label></p>";
-	       	    	result = result +"<p><label>Projects</label><span class='label label-default'>5</span></p>";
-	       	    	result = result +"<p><label>Approved Timesheets</label> <span class='label label-success'>20</span></p>";
-	       	    	result = result +"<p><label>Rejected Timesheets</label> <span class='label label-danger'>10</span></p>";
-	       	    	result = result +"<p><label>Waiting for Timesheets</label> <span class='label label-primary'>10</span> </p>";
-	       	    	result = result +"<p><label>Open Timesheets</label> <span class='label label-info'>10</span> </p>";
+	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
+	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
+	       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='clearfix'></div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	
-	       	    	$("#usersListBody").removeAttr("style"); 
+	       	    	$("#loading").removeAttr("style"); 
 	       	 	    $('#usersListBody').append(result);
 	       	 	    $("#searchByName").val("");
 				   }
@@ -170,7 +166,7 @@ window.onload = function () {
 	    	else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
 	    		$('#usersListBody').empty();
-	    		$("#usersListBody").removeAttr("style");
+	    		$("#loading").removeAttr("style");
 	    		$('#usersListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
 	    	}
@@ -187,11 +183,13 @@ window.onload = function () {
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#loading").removeAttr("style"); 
 			        	$("#mailMsg").fadeIn(200);
 		   		        $('#mailMsg').delay(2000).fadeOut('slow');
 			        },
@@ -218,6 +216,22 @@ function getUserSummary(userId){
 	}
   
 </script>
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script> 
+   
 
 <script>
   $('#selector').delay(2000).fadeOut('slow');

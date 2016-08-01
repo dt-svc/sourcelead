@@ -58,6 +58,26 @@ public class UserRole{
 	
 	@Transient
 	private String userRoleName;
+	
+	
+	@Transient
+	private Integer projectsCount;
+	
+	
+	@Transient
+	private Integer openTimeSheetsCount;
+	
+	
+	@Transient
+	private Integer approvedTimeSheetsCount;
+	
+	
+	@Transient
+	private Integer rejectedTimeSheetsCount;
+	
+	
+	@Transient
+	private Integer waitingTimeSheetsCount;
 
 	public Long getId() {
 		return id;
@@ -149,6 +169,48 @@ public class UserRole{
 	public void setUserRoleName(String userRoleName) {
 		this.userRoleName = userRoleName;
 	}
+
+	public Integer getProjectsCount() {
+		return projectsCount;
+	}
+
+	public void setProjectsCount(Integer projectsCount) {
+		this.projectsCount = projectsCount;
+	}
+
+	public Integer getOpenTimeSheetsCount() {
+		return openTimeSheetsCount;
+	}
+
+	public void setOpenTimeSheetsCount(Integer openTimeSheetsCount) {
+		this.openTimeSheetsCount = openTimeSheetsCount;
+	}
+
+	public Integer getApprovedTimeSheetsCount() {
+		return approvedTimeSheetsCount;
+	}
+
+	public void setApprovedTimeSheetsCount(Integer approvedTimeSheetsCount) {
+		this.approvedTimeSheetsCount = approvedTimeSheetsCount;
+	}
+
+	public Integer getRejectedTimeSheetsCount() {
+		return rejectedTimeSheetsCount;
+	}
+
+	public void setRejectedTimeSheetsCount(Integer rejectedTimeSheetsCount) {
+		this.rejectedTimeSheetsCount = rejectedTimeSheetsCount;
+	}
+
+	public Integer getWaitingTimeSheetsCount() {
+		return waitingTimeSheetsCount;
+	}
+
+	public void setWaitingTimeSheetsCount(Integer waitingTimeSheetsCount) {
+		this.waitingTimeSheetsCount = waitingTimeSheetsCount;
+	}
+
+	
 	
 
 }

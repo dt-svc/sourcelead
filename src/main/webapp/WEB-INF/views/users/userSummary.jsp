@@ -104,6 +104,12 @@ $(document).ready(function(){
  function userDetails(userId){    
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	 var projectsCount = '${assignedProjectsCount}';
+	 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
+	 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
+	 var rejectedTimeSheetsCount = '${rejectedTimeSheetsCount}';
+	 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
+	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
@@ -112,6 +118,13 @@ $(document).ready(function(){
 			    var json = JSON.parse(data);
 			     
 			    var result = "";
+			    var submissionCountsResult = "";
+			    
+			    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 			    
 				result = result + '<div class="project_tabs_inn_table">';
 				firstname(json.user.firstName);
@@ -136,8 +149,9 @@ $(document).ready(function(){
 				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
-				result = result + ' 		    <b>'+json.user.userType+'</b>';
-				result = result + ' 		    <b>'+json.user.email+'</b>';
+				result = result + ' <div class="user_badg" id="counts">';
+				result = result +submissionCountsResult;
+				result = result + '	</div>';
 				result = result + '		 </div>';
 				
 				result = result + '	     <div class="user_details_cta">';
@@ -208,6 +222,7 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
+				
 				result = result + '	   </div>';				
 				result = result + ' <div class="user_summary_edit" id="editUserDiv"></div>';
 				result = result + '	  <div class="clearfix"></div>';
@@ -215,6 +230,7 @@ $(document).ready(function(){
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
 				result = result + '</div>';
+				
 				
 				$("#tab-1").empty(); 
 			    $("#tab-1").append(result);  
@@ -959,6 +975,7 @@ function getStartandEndDate(){
 		        	if(data="success"){
 		        	 	$("#assignProject").modal('hide');
 		        		userProjectDetails(userId,"All");
+		        		getUnAssignedProjects(userId);
 		        	}
 		        },
 		        error: function(e){
@@ -978,6 +995,38 @@ function getStartandEndDate(){
 	});
  
 </script>
+
+
+
+<script type="text/javascript">
+ function getUnAssignedProjects(userId) {
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUnassignedProjects?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Project --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
+		        	$("#proId").empty();
+			        $("#proId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	  
+    }
+</script>
+
+
 
 <script>
 function date() {
@@ -1051,9 +1100,9 @@ function date() {
 <script> 
 function saveReason(projectMemberId,userId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reasonForProject = document.getElementById("reasonForProject").value;
+	var reason = document.getElementById("reasonForProject").value;
 	
-	if(reasonForProject){
+	if(reason){
 		$("#reasonForProjectDiv").empty();
 		
 		var r = confirm("Do you want terminate the user from Project");
