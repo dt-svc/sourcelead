@@ -176,6 +176,12 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				if(json.user.email != null && json.user.email != "" && json.user.email != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Email Id:</strong><span class="fix">'+json.user.email+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
