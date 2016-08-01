@@ -766,11 +766,8 @@ function validateRole()
 {
 	var rolename=document.getElementById("roleValue").value;
 	if(rolename != null){
-
 		$('#RoleDiv').find('p.jquery_form_error_message').remove();
-		
 	}
-		
 }
 
 </script>
