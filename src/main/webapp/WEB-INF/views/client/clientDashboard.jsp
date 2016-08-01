@@ -65,7 +65,7 @@
 		</div>
 
 		<c:if test="${!empty clientsList}">
-			<div class="clients_wrap_table">
+			<div class="clients_wrap_table clients_wrapTable ">
 				<table>
 					<tbody>
 					<thead>
@@ -81,7 +81,7 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-me" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm mt" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
@@ -308,42 +308,53 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
+						
 						result = result + '<strong>Website:</strong>';
-						result = result
-								+ '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientWebsite\');" id="clientWebsite"  value="'+json.webSite+'" placeholder="Project website" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientWebsite\');" id="clientWebsite"  value="'+json.webSite+'" placeholder="Project website" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 					
 					
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+json.city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.city !=null && json.city !='' && json.city !='undefined'){
+							result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+json.city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
+	   		    		}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
+						if(json.state !=null && json.state !='' && json.state !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+json.state+'" placeholder="Project state" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
+						if(json.country !=null && json.country !='' && json.country !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+json.country+'" placeholder="Project country" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Email:</strong>';
-						result = result
-								+ '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="Project email" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.email !=null && json.email !='' && json.email !='undefined'){
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="Project email" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Phone number:</strong>';
-						result = result
-								+ '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.phone !=null && json.phone !='' && json.phone !='undefined'){
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Projects:</strong>';
-						result = result
-								+ '<span><input type="text" value="'+json.projectsCont+'" placeholder="Project count" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
+						result = result + '<span><input type="text" value="'+json.projectsCont+'" placeholder="Project count" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>	';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
