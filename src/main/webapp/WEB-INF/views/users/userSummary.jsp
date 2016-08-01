@@ -103,7 +103,6 @@ $(document).ready(function(){
 		<script>
  function userDetails(userId){    
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 alert("userType"+'${userType}');
 	 var projectsCount = '${assignedProjectsCount}';
 	 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
 	 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
@@ -143,7 +142,7 @@ $(document).ready(function(){
 				}
 				
 				else{
-                    result = result + ' <a id="edit-user" href="javascript:reActiveUser('+userId+');">Re-Active</a>';
+                    result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
                 }
 				
 				result = result + '	 <div class="user_details_cta_img">';
@@ -634,7 +633,6 @@ function firstname(name)
                         	  var frm = $('#editUser_form').serializeFormJSON();
                               var con = JSON.stringify(frm);
                               con = con.replace(/[{}]/g, "");
-                              alert("con"+con);
                               //It will escape all the special characters
                               var jsonData = encodeURIComponent(con);
                               var sourceleadUrl ='${sourceleadUrl}';
