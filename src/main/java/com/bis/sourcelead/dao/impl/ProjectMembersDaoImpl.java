@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
@@ -219,5 +220,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		int result = query.executeUpdate();
 		return result;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from ProjectMembers pm where pm.projects.id IN (select p.id from Projects p  "
+				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId)" ;
+		List<ProjectMembers> projectMembersList =session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId)
+				.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+		      
+	    return projectMembersList.size();
+}
 
 }
