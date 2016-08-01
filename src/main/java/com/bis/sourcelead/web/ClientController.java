@@ -349,6 +349,7 @@ public class ClientController {
 					 project.setEndDateStr(Constants.DATEFORMAT.format(project.getEndDate()));
 				 }
 				 
+				 // get team members count(assigned employees for projects)
 				 if(project.getOrgRelationId().getId() != null){
 					 Integer assignedEmpSize=projectMembersService.getEmployeeAssignedProjectsCount(project.getOrgRelationId().getId() , orgLocations.getId());
 				     project.setAssignedEmpCount(assignedEmpSize);
@@ -356,8 +357,6 @@ public class ClientController {
 				 if(project.getProjectStatus() !=null){
 					 project.setProjectStatus(project.getProjectStatus());
 				 }
-				 
-				 
 				 
 				 /*
 				  * Add managers to project list(shows in select box) in client tab
