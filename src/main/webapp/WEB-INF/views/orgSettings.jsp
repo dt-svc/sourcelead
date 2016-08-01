@@ -32,21 +32,15 @@
     
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
-    	$("#save_button").attr("disabled", "disabled");
- 		$( "#save_button").addClass('button').val('Processing..');
  		var msg = ".png extension not allowed";
  		alertMessage(msg);
     	
     }else if(sizeinbytes > 200000){
-    	$("#save_button").attr("disabled", "disabled");
- 		$( "#save_button").addClass('button').val('Processing..');
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
-    	$( "#save_button" ).addClass('save_button').val('Save');
-		$("#save_button").removeAttr("disabled");
     }
     
   };
@@ -122,7 +116,7 @@ function cancel(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <section class="action-btns clearfix">

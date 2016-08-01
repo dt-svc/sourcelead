@@ -21,7 +21,7 @@
           <div class="pull-left">
             <h2>Create User</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; User Form </div>
+          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; Create User </div>
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
@@ -125,7 +125,7 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onblur="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
@@ -148,7 +148,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-20 validate_email" onblur="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>

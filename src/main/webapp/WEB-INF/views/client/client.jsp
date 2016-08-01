@@ -38,13 +38,9 @@
 			<form:form id="client_form" name="client_form" method="post">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-						<div class="form-group">
-							<label class="col-md-3" for="Project Id">Client Name<span
-								class="text-danger">*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" name="orgName"
-									field-name="Client Name"
-									data-validation="required validate_Space validate_length length2-100" value="">
+						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
+							<div class="col-md-9" id="clientNameDiv">
+								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -150,7 +146,7 @@
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
 																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
-																	<option value=''>-- Select Manager --</option>
+																	<option value=''>-- Select Manager --</option>id="companyWebsiteDiv"
 																	<c:forEach var="option" items="${user_List}">
 																		<option value="${option.id}">${option.firstName} ${option.lastName}</option>
 																	</c:forEach>
@@ -177,17 +173,17 @@
 														</div>
 
 													</div>
-													<div class="col-xs-12 col-lg-5">
-														<a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();"
-															data-target="addTask"> <i class="fa fa-plus"></i><span
-															id="addTaskText"> Add Project</span></a>
-													</div>
+													
 												</div>
 											</div>
+											
 											<div class="modal-footer">
-												<!-- <button type="button" class="btn btn-primary"
-													data-dismiss="modal">Save</button> -->
+											<div class="col-xs-8 col-lg-11">
+											 <a href="javascript:void(0)" class="btn btn-primary"
+															id="save_task" onclick="addTasks();flushProject();"
+															data-target="addTask"> <i class="fa fa-plus"></i><span
+															id="addTaskText"> Add Project</span></a>
+											</div>
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Close</button>
 											</div>
@@ -324,37 +320,32 @@
 <!-- =============================== AddTask Divs  ============================ -->
 
 <div id="divTaskTd1" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectId"
-		name="REPLACEROWIDprojectId" value="PROJECTIDVALUE" /><span
-		id="REPLACEROWIDprojectIdValue">PROJECTIDVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectId" name="REPLACEROWIDprojectId" value="PROJECTIDVALUE" />
+	<span  class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectIdValue" title='PROJECTIDVALUE'>PROJECTIDVALUE</span>
 </div>
 
 <div id="divTaskTd2" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectName"
-		name="REPLACEROWIDprojectName" value="TASKNAMEVALUE" /><span
-		id="REPLACEROWIDprojectNameValue">TASKNAMEVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectName" name="REPLACEROWIDprojectName" value="TASKNAMEVALUE" />
+	<span class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectNameValue" title='TASKNAMEVALUE'>TASKNAMEVALUE</span>
 </div>
 <div id="divTaskTd3" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectManager"
-		name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE" /><span
-		id="REPLACEROWIDprojectManagerValue">TASKDESCRIPTIONName</span>
+	<input type="hidden" id="REPLACEROWIDprojectManager" name="REPLACEROWIDprojectManager" value="TASKDESCRIPTIONVALUE" />
+	<span class="tbldata-dotdot-vsm" id="REPLACEROWIDprojectManagerValue" title='TASKDESCRIPTIONName'>TASKDESCRIPTIONName</span>
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDprojectStartDate"
-		name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE" /><span
-		id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
+	<input type="hidden" id="REPLACEROWIDprojectStartDate" name="REPLACEROWIDprojectStartDate" value="PROJECTSTARTDATEVALUE" />
+	<span id="REPLACEROWIDprojectStartDateValue">PROJECTSTARTDATEVALUE</span>
 </div>
 
 <div id="divTaskTd5" style="display:none; float:left;">
-        <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/><span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
-      </div> 
+     <input type="hidden" id="REPLACEROWIDprojectEndDate" name="REPLACEROWIDprojectEndDate" value="PROJECTENDDATEVALUE"/>
+     <span id="REPLACEROWIDprojectEndDateValue">PROJECTENDDATEVALUE</span> 
+</div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-	<span><a title="Edit" href="javascript:void(0)"
-		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	<span><a title="Remove" href="javascript:void(0)"
-		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+	<span><a title="Edit" href="javascript:void(0)"onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+	<span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
 
 
@@ -370,6 +361,9 @@
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
+	        },
+	        onClose: function() {
+	  		  $('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
 	        }
 	  });
 	  
@@ -388,31 +382,11 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
-		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
-		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
-		if ($('#projectId').val() == '' || $('#projectId').val() == 0
-				|| $('#projectId').val() == null) {
-			$("input#projectId")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project ID</span>");
-			return true;
-		}
-
-		if ($('#projectName').val() == '' || $('#projectName').val() == 0
-				|| $('#projectName').val() == null) {
-			$("input#projectName")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Name</span>");
-			return true;
-		}
-		if ($('#projectStartDate').val() == '' || $('#projectStartDate').val() == 0
-				|| $('#projectStartDate').val() == null) {
-			$("input#projectStartDate")
-					.after(
-							"<p class='jquery_form_error_message'>Enter Project Start Date</span>");
-			return true;
-		}
+		if(projectvalidation()==false)
+			{
+			return false;
+			}
+		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -746,3 +720,87 @@ function flushProject(){
 		}
 	}
 </script>
+
+<script type="text/javascript">
+function projectvalidation(){
+	
+	/*  validation for projectId start */
+		var namelength = document.getElementById("projectId").value.length;
+		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectId').val() == '' || $('#projectId').val() == 0 || $('#projectId').val() == null) {
+			$("input#projectId").after("<p class='jquery_form_error_message'> <span>Enter Project Id </span> ");
+			return false;
+		}
+		 else if ((namelength < 2) || (namelength >= 100)) {
+			$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+			return false;
+		}
+		/* validation for projectId end */
+
+		/*  validation for project name start */
+		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectName').val() == '' || $('#projectName').val() == 0|| $('#projectName').val() == null) {
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>Enter Project Name</span>");
+			return false;
+		}
+		var namelength = document.getElementById("projectName").value.length;
+		if ((namelength < 2) || (namelength >= 100)) {
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+			return false;
+		}
+		/*validation for project name end */
+
+		/*validation for project Start Date */
+		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
+		if ($('#projectStartDate').val() == ''|| $('#projectStartDate').val() == 0	|| $('#projectStartDate').val() == null) {
+			$("input#projectStartDate").after("<p class='jquery_form_error_message'><span>Enter Project Start Date</span>");
+			return false;
+		}
+		/* validation for project Start Date end */
+	}
+</script>
+
+<script type="text/javascript">
+function validateClientName(){
+	var clientName = document.getElementById("orgName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (clientName != null && clientName != '') {
+		//$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?clientName="+clientName,
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("input#orgName").after(
+							"<p class='jquery_form_error_message'>"
+									+ clientName
+									+ " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute(
+							'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute(
+							'record-exist-errorMsg',
+							clientName +"  already existed");
+				} else {
+					//New WebSite class="form-control"
+					//$("#save_client").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						if ($(this).validate(false, validationSettings)) {
+						}
+					});
+				}
+			},
+
+		});
+	}
+}
+</script>
+
+

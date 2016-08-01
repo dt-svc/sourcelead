@@ -45,6 +45,10 @@ public interface ProjectsDao {
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
+
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
+
+	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
+
 
 }

@@ -49,4 +49,6 @@ public interface TimesheetSubmissionsService {
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId);
 	
 	public Collection<TimesheetSubmissions> getProjectsBasedOnUserIdAndStatusAndClientForFilters(Long userId ,String clientId,String values)throws Exception;
+	
+	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus,Long orgLocationId)throws Exception;
 }

@@ -38,6 +38,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -88,6 +89,9 @@ public class ClientController {
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 	
 	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	/**
@@ -127,7 +131,7 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			
-	
+	        
 			
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			for(OrgRelations orgRelation : clientsList){
@@ -265,7 +269,8 @@ public class ClientController {
 		
 		Date formatedDate = null;
 	    try {
-	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	df.setLenient(false);
 	    	formatedDate = df.parse(startDateString);
 	    } catch (ParseException e) {
 	        e.printStackTrace();
@@ -338,15 +343,21 @@ public class ClientController {
 				 project.setProjectName(project.getProjectName());
 				 
 				 if(project.getStartDate() !=null && !isNullOrEmpty(project.getStartDate().toString())){
-					 project.setStartDateStr(Constants.DF.format(project.getStartDate()));
+					 project.setStartDateStr(Constants.DATEFORMAT.format(project.getStartDate()));
 				 }
 				 if(project.getEndDate() !=null && !isNullOrEmpty(project.getEndDate().toString())){
-					 project.setEndDateStr(Constants.DF.format(project.getEndDate()));
+					 project.setEndDateStr(Constants.DATEFORMAT.format(project.getEndDate()));
 				 }
 				 
+				 // get team members count(assigned employees for projects)
+				 if(project.getOrgRelationId().getId() != null){
+					 Integer assignedEmpSize=projectMembersService.getEmployeeAssignedProjectsCount(project.getOrgRelationId().getId() , orgLocations.getId());
+				     project.setAssignedEmpCount(assignedEmpSize);
+				 }
 				 if(project.getProjectStatus() !=null){
 					 project.setProjectStatus(project.getProjectStatus());
 				 }
+				 
 				 /*
 				  * Add managers to project list(shows in select box) in client tab
 				  */
@@ -442,24 +453,28 @@ public class ClientController {
 		return "success";
 		  }
 		 
-//		inlineEditClientProjects
+/**
+ * Handles Inline edit for client projects
+ * @param projectId
+ * @param fieldName
+ * @param fieldValue
+ * @param request
+ * @return Json
+ * @throws Exception
+ */
 		@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
 		 public String inlineEditClientProjects(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{
 			
-//			Projects projects11 = projectsService.getProjectByProjectSequenceNumber(projectSequenceNumber);
 			Projects projects = projectsService.getProjectById(projectId);
-			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Set<ProjectApproverHierarchy> pahSet = new HashSet<ProjectApproverHierarchy>();
 			logger.info("Project name before Edit "+projects.getProjectName());
 			if("projectName".equalsIgnoreCase(fieldName)){
 				projects.setProjectName(fieldValue);
-			}else if("startDate".equalsIgnoreCase(fieldName)){
-				Date startDate = getDateFormat(fieldValue);
-				projects.setStartDate(startDate);
 			}else if("endDate".equalsIgnoreCase(fieldName)){
+				if(fieldValue != null && !"".equalsIgnoreCase(fieldValue)){
 				Date endDate = getDateFormat(fieldValue);
 				projects.setEndDate(endDate);
+				}
 			}else if("clientId".equalsIgnoreCase(fieldName)){
 				Long l1 = Long.parseLong(fieldValue);
 				Collection<ProjectApproverHierarchy> pah = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
@@ -506,5 +521,17 @@ public class ClientController {
 		    }
 		    return host;
 		}
+		/**
+		 * Handles ClientName duplicate or not
+		 * @param clientName
+		 * @return
+		 * @throws Exception 
+		 */
+		 @RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
+		   public @ResponseBody boolean isClientNameValidated(@RequestParam(value="clientName", required=false) String clientName) throws Exception {
+
+			 return  orgService.isClientNameValid(clientName);
+		   }
+		 
 		
 }

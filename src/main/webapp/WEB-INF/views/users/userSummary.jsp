@@ -104,6 +104,12 @@ $(document).ready(function(){
  function userDetails(userId){    
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	 var projectsCount = '${assignedProjectsCount}';
+	 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
+	 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
+	 var rejectedTimeSheetsCount = '${rejectedTimeSheetsCount}';
+	 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
+	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
@@ -112,6 +118,13 @@ $(document).ready(function(){
 			    var json = JSON.parse(data);
 			     
 			    var result = "";
+			    var submissionCountsResult = "";
+			    
+			    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 			    
 				result = result + '<div class="project_tabs_inn_table">';
 				firstname(json.user.firstName);
@@ -136,8 +149,9 @@ $(document).ready(function(){
 				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
-				result = result + ' 		    <b>'+json.user.userType+'</b>';
-				result = result + ' 		    <b>'+json.user.email+'</b>';
+				result = result + ' <div class="user_badg" id="counts">';
+				result = result +submissionCountsResult;
+				result = result + '	</div>';
 				result = result + '		 </div>';
 				
 				result = result + '	     <div class="user_details_cta">';
@@ -159,6 +173,12 @@ $(document).ready(function(){
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				 <strong>Last Name:</strong><span class="fix">'+json.user.lastName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
+				if(json.user.email != null && json.user.email != "" && json.user.email != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Email Id:</strong><span class="fix">'+json.user.email+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
@@ -208,6 +228,7 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
+				
 				result = result + '	   </div>';				
 				result = result + ' <div class="user_summary_edit" id="editUserDiv"></div>';
 				result = result + '	  <div class="clearfix"></div>';
@@ -215,6 +236,7 @@ $(document).ready(function(){
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
 				result = result + '</div>';
+				
 				
 				$("#tab-1").empty(); 
 			    $("#tab-1").append(result);  
@@ -227,11 +249,21 @@ $(document).ready(function(){
 <!--  Script for First Name displaying right corner  -->
 <script type="text/javascript">
 
-var fName = document.getElementById('fname');
+var Name = document.getElementById('fname');
 function firstname(name)
 {
-	fName.innerHTML = name;
-} 
+	var lengthName = name.length;
+		if(lengthName > 10)
+		{
+		var startlength = 0;
+		var endlength = 10;
+		var trimname = name.substring(startlength, endlength) + "..." ;
+		Name.innerHTML = trimname;
+		}else{
+			Name.innerHTML = name;	
+		}
+	
+}
 </script>
 
 
@@ -510,8 +542,9 @@ function firstname(name)
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-		$("#update_user").attr("disabled", "disabled");
-        $( "#update_user" ).addClass('button').val('Processing..');
+        if(EmployeeId!=null&&EmployeeId!=""){
+        	$("#update_user").attr("disabled", "disabled");
+            $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
@@ -529,6 +562,7 @@ function firstname(name)
 		        	} 
 		        },
 		    });
+        }
 	
  }
  </script>
@@ -548,6 +582,7 @@ function firstname(name)
      }
     
       if ($('#editUser_form').validate(false, validationSettings)){
+    	  if(EmployeeId!=null&&EmployeeId!=""){
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -558,7 +593,6 @@ function firstname(name)
                           document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed');
                     }
                     else{
-                       
                         var frm = $('#editUser_form').serializeFormJSON();
                         var con = JSON.stringify(frm);
                         con = con.replace(/[{}]/g, "");
@@ -567,7 +601,7 @@ function firstname(name)
                         var jsonData = encodeURIComponent(con);
                         var sourceleadUrl ='${sourceleadUrl}';
                         $("#update_user").attr("disabled", "disabled");
-                         $( "#update_user" ).addClass('button').val('Processing..');
+                        $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
@@ -580,6 +614,26 @@ function firstname(name)
                     }
                 },
             });
+    	  }else{
+    		  var frm = $('#editUser_form').serializeFormJSON();
+              var con = JSON.stringify(frm);
+              con = con.replace(/[{}]/g, "");
+              
+              //It will escape all the special characters
+              var jsonData = encodeURIComponent(con);
+              var sourceleadUrl ='${sourceleadUrl}';
+              $("#update_user").attr("disabled", "disabled");
+              $( "#update_user" ).addClass('button').val('Processing..');
+              $.ajax({
+                  type: "POST",
+                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                  success: function(result) {
+                      userDetails(userId);
+                      
+                  },
+              });
+              return true;
+    	  }
        }else{
         return false;
       }
@@ -1008,6 +1062,8 @@ function date() {
 	 var dt = new Date(selected);
      dt.setDate(dt.getDate() + 1);
      $("#EndDate").datepicker("option", "minDate", dt);
+     
+     
 	  
 	  $('#EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',

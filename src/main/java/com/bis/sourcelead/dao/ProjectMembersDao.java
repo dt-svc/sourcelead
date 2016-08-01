@@ -34,4 +34,6 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status);
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
+	
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) ;
 }

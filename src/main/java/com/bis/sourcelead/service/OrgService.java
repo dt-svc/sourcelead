@@ -24,5 +24,13 @@ public interface OrgService {
 	public Org saveOrgSettings(OrgSettings orgSettings,MultipartHttpServletRequest request,Org org) throws Exception;
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
+	
+	/**
+	 * Handles whether the given client is duplicate or not
+	 * @param clienName
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public boolean isClientNameValid(String clientName) throws Exception;
 
 }
