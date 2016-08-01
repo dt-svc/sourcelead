@@ -473,6 +473,7 @@ public class ProjectsDashboardController {
 		 	
 			 	ProjectMembers pm = new ProjectMembers();
 			 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 			 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 	
 			  if(projectId != null){
@@ -507,7 +508,7 @@ public class ProjectsDashboardController {
 					ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(projects.getId());
 					
 					if(!isNullOrEmpty(mailtoMembers) && ("YES".equals(mailtoMembers))){
-						sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation);
+						sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation, loginOrgCode);
 					}
 			  }
 				return null;
@@ -520,7 +521,7 @@ public class ProjectsDashboardController {
 	  * @author  venkatKesav
 	  * @since   2016-07-22
 	  */
-	  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, ProjectApproverHierarchy projectApproverHierarchy, OrgLocations loginOrgLocation) throws Exception {
+	  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, ProjectApproverHierarchy projectApproverHierarchy, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		  	 User projectManager = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 		  	
 		     EmailMessage emailMessage = new EmailMessage();
@@ -565,6 +566,16 @@ public class ProjectsDashboardController {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
 		}
 	  
 	  /**

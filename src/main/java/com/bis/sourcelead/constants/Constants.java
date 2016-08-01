@@ -40,6 +40,7 @@ public class Constants {
 	public static String INVITE_USER = "Invite User";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
+	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
