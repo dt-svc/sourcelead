@@ -254,24 +254,24 @@
     </div>
                     </div>
                 </div> -->
-                <div class="form-group">
+                <div class="form-group" id="RoleDiv">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                    <c:if test="${SourceLeadWeb_userType == 'Admin'}">
 	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);">Admin
+	                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);validateRole();">Admin
 	                    </label>
 	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);">Approver/Manager
+	                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);validateRole();">Approver/Manager
 	                    </label>
 	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
+	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);validateRole();">Employee
 	                    </label>
                     </c:if>
                     
                     <c:if test="${SourceLeadWeb_userType == 'Approver'}">
                          <label class="radio-inline">
-	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);">Employee
+	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);validateRole();">Employee
 	                    </label>
                     </c:if>
                     <span class="hidden">Select Role</span> 
@@ -760,4 +760,19 @@ function flushProject(){
 		 }
 }
 </script>
+<script>
+
+function validateRole()
+{
+	var rolename=document.getElementById("roleValue").value;
+	if(rolename != null){
+
+		$('#RoleDiv').find('p.jquery_form_error_message').remove();
+		
+	}
+		
+}
+
+</script>
+
 
