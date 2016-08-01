@@ -572,7 +572,6 @@ function firstname(name)
 
 <script type="text/javascript">
  function updateUser(id,userId,emailId) {
-	 alert("hhhhh");
 	 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
      var EmployeeId = document.getElementById("EmployeeId").value;
@@ -586,7 +585,6 @@ function firstname(name)
          $('#RatePer').removeAttr('data-validation');
          $('#RatePer').attr("data-validation-optional","true");
      }
-     alert("dfasdfsdf");
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!=""){
           $.ajax({
@@ -825,6 +823,11 @@ function editUserDetails(userId){
 						result = result + ' </div>';
 					
 					}
+					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' </div>';
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
