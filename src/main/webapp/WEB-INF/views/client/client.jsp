@@ -669,6 +669,11 @@ function getChildLevel1Approvers(currentApproverId){
 <script type="text/javascript">
 function flushProject(){
 	 $('#level2Manager').val('');
+	 $('#projectId').val('');
+	 $('#projectName').val('');
+	 $('#projectManager').val('');
+	 $('#projectStartDate').val('');
+	 $('#projectEndDate').val('');
 }
 </script>
 
