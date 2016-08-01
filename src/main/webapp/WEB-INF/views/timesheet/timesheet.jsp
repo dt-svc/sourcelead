@@ -722,3 +722,31 @@ function checkHours(){
 }
 </script>
 		
+		
+<!-- this script is for check file length -->		
+<script language="javascript" type="text/javascript">
+ function checkFile()
+    {
+     var fsize = $('#uploadBtn')[0].files[0].size;
+     alert(fsize);
+     $('#clientNameDiv').find('p.jquery_form_error_message').remove();
+     /* $("#upload_button").removeAttr("disabled"); */
+     if (fsize>50000)
+     {
+         $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
+            document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
+            document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
+         return false;
+     }
+     $    //New WebSite class="form-control"
+        //$("#save_client").removeAttr("disabled");
+        $('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
+        $('input#uploadBtn').attr('class','valid form-control');
+        $('#clientNameDiv').find('p.jquery_form_error_message').remove();
+        $("#upload_form").click(function() {
+            if ($(this).validate(false, validationSettings)) {
+            }
+        });
+       
+    }
+</script>		
