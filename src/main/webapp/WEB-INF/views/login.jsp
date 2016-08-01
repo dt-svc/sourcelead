@@ -34,7 +34,7 @@
 	      	</c:if>
 	      		
 	      	<c:if test="${!empty login_inActive_error}">
-	      			<div class="error">You are In Active user</div>
+	      			<div class="error"><font color="red">You are In active user</font></div>
 	    	</c:if>
 	        <c:if test="${!empty login_unRegistered_error}">
 	         		<div class="error"><font color="red">You are not registered user. Please get register.</font></div>
@@ -42,7 +42,7 @@
 	       <c:if test="${!empty login_password_error}">
 	         		<div class="error"><font color="red">Invalid Username or Password.</font></div>
 	    	</c:if> 
-	    	 <c:if test="${!empty login_blocked_user_error}">
+	    	<c:if test="${!empty login_blocked_user_error}">
 	         		<div class="error"><font color="red">Your User has blocked. Please contact your admin</font></div>
 	    	</c:if> 
     	<br/>

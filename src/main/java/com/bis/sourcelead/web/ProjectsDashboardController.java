@@ -183,17 +183,22 @@ public class ProjectsDashboardController {
     }
 	
 	
+
 	// Sammeta David: this controller method is for getting ProjectsCount
 			// Counts based on Status.
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
 			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
+			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 				String resultJson = "";
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values);
+			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
 				 resultJson = toJSON(projectsList);
 				 return resultJson;
 			}
+		/**
+
 		/**
 
 
@@ -206,10 +211,10 @@ public class ProjectsDashboardController {
 	 */
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
-		 Projects projects = projectsService.getProjectById(projectId);
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Projects projects = projectsService.getProjectByIdAndLoginOrgId(projectId, loginOrgLocations.getId());
 			
 			if(projects.getCreatedDate() != null){
 				projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
@@ -235,8 +240,8 @@ public class ProjectsDashboardController {
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				if(projects.getOrgRelationId() !=null){
-					if(projects.getOrgRelationId().getId()==ocl.getId()){
+				if(projects.getOrgRelationId().getId() !=null){
+					if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 						projects.setRelationId(ocl.getId());
 					}
 				}
@@ -357,18 +362,23 @@ public class ProjectsDashboardController {
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
 			 
 			 if(pm.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pm.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pm.getProjectAssignedDate()));
              }
         	 if(pm.getProjectEndDate()!=null){
-        		pm.setProjectEndDateStr(Constants.DF_DMY.format(pm.getProjectEndDate()));
+        		pm.setProjectEndDateStr(Constants.DF_YMD.format(pm.getProjectEndDate()));
         	 }
+        	 //to set actual project end date
+        	 if(pm.getProjects().getEndDate() != null){
+         		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
+         	 }
+        	 
         	 if(pm.getEmployee()!=null){
         		 
-        	 TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(pm.getEmployee().getUser().getId());
+            /* TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(projectId,pm.getEmployee().getUser().getId());
         	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
         	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
         	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
-        	 pm.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());
+        	 pm.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());*/
         	 
         	 }	
 			 projectMembersArrList.add(pm);

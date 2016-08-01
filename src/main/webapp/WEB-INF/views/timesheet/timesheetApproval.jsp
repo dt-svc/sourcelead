@@ -123,16 +123,16 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
-function dynamicTimesheet(navigation , startDate,memberId,submissionId){    
+function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,employeeId){    
 			var sourceleadUrl ='${sourceleadUrl}';  
 			$("#dynamic").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId, 	   
+		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
 				       /*  $("row"+submissionId).empty();	  */ 
-				        $("#row"+submissionId).empty();	 
-				        $("#row"+submissionId).append(data);	
+				        $("#row"+projectMemberUserId).empty();	 
+				        $("#row"+projectMemberUserId).append(data);	
 				        
 				    }
 		    });
@@ -749,17 +749,19 @@ $(document).ready(function() {
 <script>
 function clearTimesheet(){ 
 	for (var i = 1; i < 8; i++){
-	 for (var p = 1; p < 200; p++){  
+	 /* for (var p = 1; p < 200; p++){   */
+		 $('.timesheetrProject').each(function() {
+		 var p = this.id;
 		 for (var j = 1; j < 10; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
 		 }
-     }
+		 });  
 	}
 }
 </script>
 
 
-  <script type="text/javascript">	
+<script type="text/javascript">	
 $(document).click(function(){    
 	 var total;
 	 for (var i = 1; i < 8; i++){

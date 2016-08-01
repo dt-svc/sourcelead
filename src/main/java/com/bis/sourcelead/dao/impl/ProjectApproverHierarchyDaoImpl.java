@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.UserRole;
 
 @Repository
 public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchyDao{
@@ -20,7 +22,12 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectApproverHierarchyDaoImpl.class);
+	
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
@@ -80,15 +87,22 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		logger.debug("In ProjectsDaoImpl class getProjectIdsByLoginUserId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId =:userId";
-		List<Long> projectsIdList =  session.createQuery(query.toString())
-									.setLong("userId", userId)
-									.setCacheable(true).list();
+		List<Long> projectsIdList = null;
 		
+		Boolean isadmin = userRoleDao.isUserAdmin(userId);
+		
+		if(isadmin){
+						 String query = "select ph.projectId.id from ProjectApproverHierarchy ph";
+						 projectsIdList =  session.createQuery(query.toString())
+												  .setCacheable(true).list();
+		}else{
+				String query = "select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId =:userId";
+			    projectsIdList =  session.createQuery(query.toString())
+											.setLong("userId", userId)
+											.setCacheable(true).list();
+		}
 		return projectsIdList;
-
 	}
-	
 	
 	
 }

@@ -176,6 +176,12 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				if(json.user.email != null && json.user.email != "" && json.user.email != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Email Id:</strong><span class="fix">'+json.user.email+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
@@ -536,8 +542,9 @@ function firstname(name)
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-		$("#update_user").attr("disabled", "disabled");
-        $( "#update_user" ).addClass('button').val('Processing..');
+        if(EmployeeId!=null&&EmployeeId!=""){
+        	$("#update_user").attr("disabled", "disabled");
+            $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
@@ -555,6 +562,7 @@ function firstname(name)
 		        	} 
 		        },
 		    });
+        }
 	
  }
  </script>
@@ -574,6 +582,7 @@ function firstname(name)
      }
     
       if ($('#editUser_form').validate(false, validationSettings)){
+    	  if(EmployeeId!=null&&EmployeeId!=""){
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -584,7 +593,6 @@ function firstname(name)
                           document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed');
                     }
                     else{
-                       
                         var frm = $('#editUser_form').serializeFormJSON();
                         var con = JSON.stringify(frm);
                         con = con.replace(/[{}]/g, "");
@@ -593,7 +601,7 @@ function firstname(name)
                         var jsonData = encodeURIComponent(con);
                         var sourceleadUrl ='${sourceleadUrl}';
                         $("#update_user").attr("disabled", "disabled");
-                         $( "#update_user" ).addClass('button').val('Processing..');
+                        $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
@@ -606,6 +614,26 @@ function firstname(name)
                     }
                 },
             });
+    	  }else{
+    		  var frm = $('#editUser_form').serializeFormJSON();
+              var con = JSON.stringify(frm);
+              con = con.replace(/[{}]/g, "");
+              
+              //It will escape all the special characters
+              var jsonData = encodeURIComponent(con);
+              var sourceleadUrl ='${sourceleadUrl}';
+              $("#update_user").attr("disabled", "disabled");
+              $( "#update_user" ).addClass('button').val('Processing..');
+              $.ajax({
+                  type: "POST",
+                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                  success: function(result) {
+                      userDetails(userId);
+                      
+                  },
+              });
+              return true;
+    	  }
        }else{
         return false;
       }
@@ -975,6 +1003,7 @@ function getStartandEndDate(){
 		        	if(data="success"){
 		        	 	$("#assignProject").modal('hide');
 		        		userProjectDetails(userId,"All");
+		        		getUnAssignedProjects(userId);
 		        	}
 		        },
 		        error: function(e){
@@ -994,6 +1023,38 @@ function getStartandEndDate(){
 	});
  
 </script>
+
+
+
+<script type="text/javascript">
+ function getUnAssignedProjects(userId) {
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUnassignedProjects?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Project --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
+		        	$("#proId").empty();
+			        $("#proId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	  
+    }
+</script>
+
+
 
 <script>
 function date() {

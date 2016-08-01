@@ -177,7 +177,7 @@ public class TimesheetSubmissionsController {
         		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
         	   }
         	   
-               				sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getId()+"'>");
+               				sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
 		                    sb.append("  <li><div class='time_appr_user'>");
 		                    sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 		                    sb.append("    <span><b>"+ts.getFullName()+"</b></span></div>");
@@ -185,12 +185,12 @@ public class TimesheetSubmissionsController {
 		                    
 		                    sb.append("<li><div>");
 		     		       if(employeeStartDate.before(currentStartDate)){
-		     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+		     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 		     	       	   }
 		     	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
 		     	       		
 		     	       	   if(currentEndDate.before(employeeEndDate)){
-		     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+		     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 		     	       	   }
 		     	       	   sb.append("    </div>");
 		     	       	   sb.append("    </li>");
@@ -280,11 +280,11 @@ public class TimesheetSubmissionsController {
 	
 	// sarath kumar punnana : this controller  method is for get new timwsheet screen at page load.
 	@RequestMapping(value = "/dynamicTimesheet", method = RequestMethod.POST )    
-	public @ResponseBody String dynamicTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="memberId", required=false) Long memberId) throws Exception {
+	public @ResponseBody String dynamicTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="memberId", required=false) Long memberId,@RequestParam(value="projectMemberUserId", required=false) Long projectMemberUserId,@RequestParam(value="employeeId", required=false) Long employeeId) throws Exception {
 		 
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(memberId);
+		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(projectMemberUserId);
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
 		TimesheetSubmissions  ts = null;
@@ -322,7 +322,7 @@ public class TimesheetSubmissionsController {
 	        	  
 		         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
 		         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
-		         ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
+		         ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),memberId,employeeId);
                  
                  currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
                  currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
@@ -341,7 +341,7 @@ public class TimesheetSubmissionsController {
 	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
 			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
 	                
-			        ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId());
+			        ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId(),memberId,employeeId);
 	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
 	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
                  }
@@ -356,7 +356,7 @@ public class TimesheetSubmissionsController {
 	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
 			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
 	                
-			        ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId());
+			        ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId(),memberId,employeeId);
 	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
 	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
                  }
@@ -374,7 +374,7 @@ public class TimesheetSubmissionsController {
 	   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
 		   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
 	   }
-  
+	   		
          sb.append("  <li><div class='time_appr_user'>");
          sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
          sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
@@ -382,16 +382,17 @@ public class TimesheetSubmissionsController {
          
          sb.append("<li><div>");
 	       if(employeeStartDate.before(currentStartDate)){
-	       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+	       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
      	   }
      	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
      		
      	   if(currentEndDate.before(employeeEndDate)){
-     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
      	   }
      	   sb.append("    </div>");
      	   sb.append("    </li>");
      	   
+     	 
          sb.append("    <li><div> " );
          sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
          sb.append("    </div>");
@@ -416,6 +417,7 @@ public class TimesheetSubmissionsController {
             }  
             sb.append(" </div>");
             sb.append("    </li>");
+            sb.append("<div class='clearfix'></div>");
 		}
         
         return sb.toString();

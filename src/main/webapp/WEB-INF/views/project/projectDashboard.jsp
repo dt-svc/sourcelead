@@ -32,26 +32,6 @@
         </section>
 
         
-		<!-- Project -->
-<!-- <div class="project_side_wrap">
-	<div class="project_side_wrap_inn">
-    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
-     <div id="projectSideDiv">
-     </div>   --> 
-  <!-- <div class="project_side_wrap_inn_tabs">
-    <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1">Employees</a></li>
-        <li><a href="#tab-2">Tasks</a></li>
-        <li><a href="#tab-3">Details</a></li>
-        <div class="clearfix"></div>
-    </ul>
-    
-    <div class="project_tabs">
-        <div id="tab-1" class="project_tabs_inn">
-        	<div class="project_tabs_inn_head">
-			<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>
-			<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>
-	   <!-- Project -->
 	   <div class="timesheet_out">
 	   <c:if test="${empty projectsList}">
 			<div class="row">
@@ -67,7 +47,7 @@
 		</c:if>
 		<c:if test="${!empty projectsList}">
 		<div class="project_wrap">
-<div class="timesheet_head">
+        <div class="timesheet_head">
         	<ul>
 				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
@@ -352,6 +332,7 @@ $(document).ready(function() {
  });
 });
 </script> 
+<!-- this script is for side navigation functionality at Projects screen -->
  <script>
  function projectSideBar(projectId,projectName){
 	  	    var result = "";
@@ -386,6 +367,7 @@ $(document).ready(function() {
  }
  </script> 
  
+ <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
 function projectEmployee(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -423,10 +405,11 @@ function projectEmployee(projectId){
 	        		}else{
 	        			projectEndDateStr = "--"
 	        		}
+	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
@@ -460,11 +443,57 @@ function projectEmployee(projectId){
     		     $(".project_tabs_inn").not(tab).css("display", "none");
     		     $(tab).fadeIn();
     		 });
+    		
+    		if(json.length > 0)
+	   		{
+    			 for(var i=0; i<json.length; i++){
+					 var jsonData = json[i];
+					 
+					 //Assign date of project member
+					 var selected = jsonData.projectAssignedDateStr;
+					 var dt = new Date(selected);
+ 		             dt.setDate(dt.getDate());
+ 		             
+ 		             //Main project end date
+ 		             var projectEndDate = jsonData.endDate;
+ 		             var endDate = "";
+ 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+ 		            	 endDate = new Date(projectEndDate);
+ 	 		             endDate.setDate(endDate.getDate()); 
+ 		             }
+ 		             
+					 $('#endDate'+jsonData.id).datepicker({
+			    		      dateFormat: 'yy-mm-dd',
+			    		      minDate: dt,
+			    		      maxDate: endDate,
+			    		      onClose: function() {
+			    		        	 var id = $(this).attr('id');
+									 var projectMemberId = $(this).attr('id').split('endDate')[1];
+			    		        	 inlineEditForEndDate(id,projectMemberId);
+			    		      }
+			    		  }); 
+    			 }
+	   		}
         },
     });
     }	
 </script>
+<!-- this script is for Employee EndDate Inline functionality at Projects screen -->
+<script> 
+function inlineEditForEndDate(id,projectMemberId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 var endDate = document.getElementById(id).value;
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 });  
+}
+</script>
 
+<!-- this script is for Employee Terminate functionality at Projects screen -->
 <script>
 function deleteProject(projectMemberId, projectId){ 
 	var result = "";
@@ -512,6 +541,7 @@ function saveReason(projectMemberId, projectId){
 }
 </script>
 
+<!-- this script is for Tasks list functionality at Projects screen -->
 <script>
   function projectTask(projectId){
 	  var result = ""; 
@@ -555,6 +585,7 @@ function saveReason(projectMemberId, projectId){
   }
 </script> 
 
+<!-- this script is for Project Details functionality at Projects screen -->
 <script>
   function pojectDetails(projectId){  
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -718,6 +749,8 @@ $(document).ready(function() {
 
 </script>
 
+<!-- this script is for Projects Filter functionality at Projects screen -->
+
 <script>
 function filter(){
 	
@@ -743,6 +776,7 @@ function filter(){
    	        	var result = "";
    	        	result = result +'<div class="project_wrap_table">';
    		    	result = result +'<table>';
+   		    	if(json.length !=null && json.length>0 ){
    		    	result = result +'<tbody>';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
@@ -783,6 +817,19 @@ function filter(){
                     result = result +'</tr>';
    				}
                 result = result +'  </tbody>';
+   		    	}else{
+   	        		result = result +'<div class="row">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p><i class="fa fa-5x fa-bar-chart"></i></p>';
+   	        		result = result +'<p>No Projects in our organisation... Add Projects</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		
+   	        	}
                 result = result +' </table>';
                 result = result +'</div>';
                 $("#projectList").empty();  
@@ -797,6 +844,7 @@ function filter(){
 }	
 </script> 
 
+<!-- this script is for Project Details Inline Edit functionality at Projects screen -->
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){
 	
@@ -939,6 +987,7 @@ $(document).ready(function(){
             };
 </script> 
  
+ <!-- this script is for Save Tasks functionality at Projects screen -->
  <script type="text/javascript">
  function saveTasks() {
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1004,6 +1053,7 @@ $(document).ready(function(){
 })(jQuery);
 </script>
 
+<!-- this script is for Add Employee functionality at Projects screen -->
 <script type="text/javascript">
 	function addEmployee() {
 		 if ($('#employee_form').validate(false, validationSettings)){
@@ -1046,6 +1096,7 @@ function  inlineEditForProjectsTasks(taskId,localFieldName){
 }
 </script> 
 
+<!-- this script is for TeamMembers List functionality at Projects screen -->
 <script type="text/javascript">
 function getTeamMembers(projectId) {
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1129,6 +1180,7 @@ function getTeamMembers(projectId) {
 }
 </script>
 
+<!-- this script is for Assign Employee functionality at Projects screen -->
 <script>
 function assignEmployee(){
 	 	var projectId = $("#projectId").val();
@@ -1154,6 +1206,8 @@ function assignEmployee(){
 	    });
 }
 </script>
+
+<!-- this script is for Email verification functionality at Projects screen -->
 <script type="text/javascript">
  function emailVerification() {
 	 var EmailId = document.getElementById("EmailId").value; 

@@ -41,7 +41,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("findByUserName start");
-		users = session.createQuery("from User where userName=:username" ).setString( "username", username ).list();
+		users = session.createQuery("from User where userName=:username" ).setString( "username", username ).setCacheable(true).list();
 		logger.debug("findByUserName end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -58,7 +58,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("findByEmail start");
-		users = session.createQuery("from User where email=:email" ).setString( "email", email ).list();
+		users = session.createQuery("from User where email=:email" ).setString( "email", email ).setCacheable(true).list();
 		logger.debug("findByEmail end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -140,7 +140,7 @@ public class UserDaoImpl implements UserDao {
 	public Collection<User> getUsers() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(User.class);
-		Collection<User> orgList = crit.list();
+		Collection<User> orgList = crit.setCacheable(true).list();
 		return orgList;
 	}
 
@@ -151,7 +151,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("getUserById start");
-		users = session.createQuery("from User where id=:id" ).setCacheable(true).setLong( "id", Id ).list();
+		users = session.createQuery("from User where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
 		logger.debug("getUserById end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -167,7 +167,7 @@ public class UserDaoImpl implements UserDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles = '1') ";
-	    List<User> userRoleList = session.createQuery(query.toString()).list();
+	    List<User> userRoleList = session.createQuery(query.toString()).setCacheable(true).list();
         return userRoleList;
         
 	}
