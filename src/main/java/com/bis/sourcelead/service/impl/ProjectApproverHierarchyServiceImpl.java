@@ -30,14 +30,14 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 
 
 	@Override
-	public Collection<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception {
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception {
 		return projectApproverHierarchyDao.getApproverUsersByProjectId(Id);
 		
 	}
 
 
 	@Override
-	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
+	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
 		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectHierarchyListByLoginUserId(userId);
 	}

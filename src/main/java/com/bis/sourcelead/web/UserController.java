@@ -457,7 +457,7 @@ public class UserController {
 						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
 								.format(projectMembers.getProjects().getEndDate()));
 					}
-					Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
+					/*Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "DRAFT");
 					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
@@ -470,8 +470,8 @@ public class UserController {
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 
 					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
-					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");*/
+					/*projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
 				}
 
 				resultJson = toJSON(allProjectsList);
