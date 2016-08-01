@@ -105,7 +105,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 boolean flag = false;
 		 if(employeeId != null && orgLocationsId != null){
 				String query = "from Employees emp where emp.orgLocations = :orgLocationsId and emp.employeeId = :employeeId ";
-				Collection<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).setCacheable(true).list();
+				List<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).setCacheable(true).list();
 
 				if (employeesList != null && employeesList.size() > 0) {
 					flag = true;
@@ -161,6 +161,22 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId");
 		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
 		return employeeList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateEmployeeEmailId(Long userId, String emailId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(userId != null && emailId != null){
+				String query = "from User user where user.email = :emailId and user.id != :userId ";
+				List<Employees> userEmailIdList = session.createQuery(query).setLong("userId", userId).setString("emailId", emailId).setCacheable(true).list();
+
+				if (userEmailIdList != null && userEmailIdList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 
 }

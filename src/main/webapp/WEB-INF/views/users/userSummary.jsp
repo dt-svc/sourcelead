@@ -142,7 +142,9 @@ $(document).ready(function(){
 				     result = result + ' </div>';
 				}
 				
-				
+				else{
+                    result = result + ' <a id="edit-user" href="javascript:reActiveUser('+userId+');">Re-Active</a>';
+                }
 				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
@@ -569,8 +571,12 @@ function firstname(name)
 
 
 <script type="text/javascript">
- function updateUser(id,userId) {
+ function updateUser(id,userId,emailId) {
+	 alert("hhhhh");
+	 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
      var EmployeeId = document.getElementById("EmployeeId").value;
+     var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
      var Rate = document.getElementById("Rate").value;
      if(Rate != null && Rate != ""){
@@ -580,7 +586,7 @@ function firstname(name)
          $('#RatePer').removeAttr('data-validation');
          $('#RatePer').attr("data-validation-optional","true");
      }
-    
+     alert("dfasdfsdf");
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!=""){
           $.ajax({
@@ -614,25 +620,61 @@ function firstname(name)
                     }
                 },
             });
-    	  }else{
-    		  var frm = $('#editUser_form').serializeFormJSON();
-              var con = JSON.stringify(frm);
-              con = con.replace(/[{}]/g, "");
-              
-              //It will escape all the special characters
-              var jsonData = encodeURIComponent(con);
-              var sourceleadUrl ='${sourceleadUrl}';
-              $("#update_user").attr("disabled", "disabled");
-              $( "#update_user" ).addClass('button').val('Processing..');
-              $.ajax({
-                  type: "POST",
-                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
-                  success: function(result) {
-                      userDetails(userId);
-                      
-                  },
-              });
-              return true;
+    	  }
+    	  else{
+    		  if(emailId != EmailId){
+    			  $.ajax({
+                      type: "POST",
+                      url: sourceleadUrl+"/validateExistingEmployeeEmailId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmailId="+EmailId,
+                      success: function(data) {
+                          if(data == true){
+                                $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+                                document.getElementById("EmailId").setAttribute('record-exist','yes');
+                                document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed');
+                          }
+                          else{
+                        	  var frm = $('#editUser_form').serializeFormJSON();
+                              var con = JSON.stringify(frm);
+                              con = con.replace(/[{}]/g, "");
+                              //It will escape all the special characters
+                              var jsonData = encodeURIComponent(con);
+                              var sourceleadUrl ='${sourceleadUrl}';
+                              $("#update_user").attr("disabled", "disabled");
+                              $( "#update_user" ).addClass('button').val('Processing..');
+                              $.ajax({
+                                  type: "POST",
+                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                                  success: function(result) {
+                                      userDetails(userId);
+                                      
+                                  },
+                              });
+                              return true;
+                          }
+                      }
+                      });
+    		  }
+    		  else{
+    			  var frm = $('#editUser_form').serializeFormJSON();
+                  var con = JSON.stringify(frm);
+                  con = con.replace(/[{}]/g, "");
+                  //It will escape all the special characters
+                  var jsonData = encodeURIComponent(con);
+                  var sourceleadUrl ='${sourceleadUrl}';
+                  $("#update_user").attr("disabled", "disabled");
+                  $( "#update_user" ).addClass('button').val('Processing..');
+                  $.ajax({
+                      type: "POST",
+                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                      success: function(result) {
+                          userDetails(userId);
+                          
+                      },
+                  });
+                  return true;
+    		  }
+    		 
+    		 
     	  }
        }else{
         return false;
@@ -729,6 +771,7 @@ function editUserDetails(userId){
 			    var rate = "";
 			    var mobilePhone = "";
 			    var dailyHours = "";
+			    var emailId= "";
 				
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
@@ -750,7 +793,9 @@ function editUserDetails(userId){
 					dailyHours = json.dailyHours;
 				}
 				
-				
+				if(json.user.email != null && json.user.email != "" && json.user.email != 'undefined'){
+					emailId = json.user.email;
+				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp; *</span></label>';
@@ -772,6 +817,14 @@ function editUserDetails(userId){
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="PhoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
+					if(json.user.userState == "NOT_LOGGEDIN"){
+						
+						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+						result = result + ' </div>';
+					
+					}
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
@@ -814,7 +867,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
@@ -1196,4 +1249,20 @@ function userStatusFilter() {
 	}
 }
 </script>
+<script>
+function reActiveUser(userId){   
+    var sourceleadUrl = '${sourceleadUrl}';
+         $.ajax({
+               type: "POST",
+            url: sourceleadUrl+"/reActiveUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId,        
+               success: function(data) {
+            	   userDetails(userId);
+               }
+       });
+    
+}
+
+</script>
+
+
 <!-- end project scripts -->
