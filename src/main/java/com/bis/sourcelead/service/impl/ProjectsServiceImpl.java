@@ -127,11 +127,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	
+
 	@Override
 	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
-			String status) throws Exception {
+			String status,Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
-		Collection<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status);
+    	Collection<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
 		 for (Projects projects :projectList ){
 	    	 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
@@ -153,11 +154,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 
+
 	@Override
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId) {
 		// TODO Auto-generated method stub
 		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
 	}
+
+
+	@Override
+	public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectByIdAndLoginOrgId(projectId, orgLocationId);
+	}
+
 	
 	
 
@@ -168,4 +178,5 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	
+
 }

@@ -4,14 +4,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
 
 @Service
@@ -108,4 +111,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
 		return projectMembersDao.updateEndDateOfProjectMemberId(endDate,projectMemberId);
 	}
+
+	@Override
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) {
+		// TODO Auto-generated method stub
+		return projectMembersDao.getEmployeeAssignedProjectsCount(orgRelationId, orgLocationId);
+	}
+	
+	
 }
