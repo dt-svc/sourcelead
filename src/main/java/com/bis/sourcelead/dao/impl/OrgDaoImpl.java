@@ -136,7 +136,7 @@ public class OrgDaoImpl implements OrgDao {
                         e.printStackTrace();
                     }
                     String host = netUrl.getHost();
-                    if(host.startsWith("www")){
+                    if(host.startsWith("www.")){
                         if(host.length()>3){
                             host = host.substring("www".length()+1);
                         }else{
