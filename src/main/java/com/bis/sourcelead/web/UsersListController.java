@@ -260,7 +260,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-		public @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId) throws Exception{
+	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId) throws Exception{
 				User user = userService.getUserById(userId);
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
@@ -268,6 +268,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 					user.setFirstName(jsonObj.getString("FirstName"));
 					user.setLastName(jsonObj.getString("LastName"));
 					user.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					if(jsonObj.getString("EmailId")!=null && !("").equals(jsonObj.getString("EmailId"))){
+						user.setEmail(jsonObj.getString("EmailId"));
+						user.setUserName(jsonObj.getString("EmailId"));
+					}
 					userService.addUser(user);
 				}
 			    Employees employees = employeesService.getEmployeeByUserId(userId);
