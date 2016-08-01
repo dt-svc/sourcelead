@@ -76,7 +76,7 @@
 							<div class="col-lg-9">
 								<input type="text" value="" id="ProjectSequeneNumber"
 									name="ProjectSequeneNumber"
-									data-validation="validate_length length2-50"
+									data-validation="validate_Space validate_length length2-50"
 									data-validation-optional="true" class="form-control"
 									onblur="validateProjectSequeneNumber();">
 							</div>
@@ -382,7 +382,7 @@
 								<div class="col-lg-9">
 									<input type="text" class="form-control" value=""
 										name="employeeFirstName" id="employeeFirstName"
-										field-name="Frist Name" data-validation="required">
+										field-name="Frist Name" data-validation="required validate_Space validate_length length2-100">
 								</div>
 							</div>
 							<div class="form-group">
@@ -453,7 +453,7 @@
 								<label class="col-lg-3">Client Name <span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" id="orgName" name="orgName" value="" class="form-control" field-name="Client Name" data-validation="required">
+									<input type="text" id="orgName" name="orgName" value="" class="form-control" field-name="Client Name" data-validation="required validate_Space validate_length length2-100">
 								</div>
 							</div>
 							<div class="form-group" id="companyWebsiteDiv">

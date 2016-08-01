@@ -219,9 +219,9 @@ public class ProjectsDashboardController {
 			if(projects.getCreatedDate() != null){
 				projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
 			}
-		    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		    projects.setStartDateStr(Constants.DF_YMD.format(projects.getStartDate()));
 		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    	 projects.setEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 		    }
 		    if(projects.getUpdatedDate() != null){
 		    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
@@ -270,7 +270,7 @@ public class ProjectsDashboardController {
 		    else if (fieldName.equalsIgnoreCase("description")) {
 		    	projects.setDescription(fieldValue);
 			}else if(fieldName.equalsIgnoreCase("endDateStr"))  {
-		    	String pattern = "dd-mm-yy";
+				String pattern = "yyyy-MM-dd";
 		        SimpleDateFormat format = new SimpleDateFormat(pattern);
 		          if(fieldValue != null && fieldValue != ""){
 		        	  Date endtDate = format.parse(fieldValue);
