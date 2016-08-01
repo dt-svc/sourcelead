@@ -29,7 +29,6 @@ public interface ProjectsDao {
 	
 	Collection<Projects> getAllProjects() throws Exception;
 	
-	@Cacheable(cacheNames={"projectMembers","projectApproverHierarchy"})
 	Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception;
 	
 	Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception;

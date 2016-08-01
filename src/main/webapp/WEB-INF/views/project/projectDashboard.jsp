@@ -112,19 +112,20 @@
 						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
 	                        <tr>
 	                            <td data-title="Id"><div>${report.id}</div></td>
-	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');">${report.projectName}<i class="fa fa-binoculars"></i></div></td>
+	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');"><span>${report.projectName}</span><i class="fa fa-binoculars"></i></div></td>
 	                            <td data-title="Manager">
 	                                <div>
+	                                <span>
 	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
 	                                      <c:if test="${raId.index >0}">,</c:if>
 	                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
 	                                    </c:forEach>
-	                            
+	                               </span>
 	                               </div>
 	                            </td>
 	                            <td data-title="Date"><div>  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  -  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
 	                             <c:if test="${report.client != null}">
-	                                 <td data-title="Client"><div>${report.client}</div></td>   
+	                                 <td data-title="Client"><div><span>${report.client}</span></div></td>   
 	                              </c:if>
 	                              <c:if test="${empty report.client}">
 	                                 <td data-title="Client"><div>---</div></td>   
@@ -374,7 +375,7 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '</div>'; 
-		  	$("#projectSideDiv").empty(); 
+		  	$("#projectSideDiv").empty();  
 		    $("#projectSideDiv").append(result);  
 		    $("#projectNameById").empty(); 
 		    $("#projectNameById").append(projectName); 
@@ -422,15 +423,16 @@ function projectEmployee(projectId){
 	        		}else{
 	        			projectEndDateStr = "--"
 	        		}
+	        		
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+')";></i></div></td>';
+	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+', '+projectId+')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -459,20 +461,65 @@ function projectEmployee(projectId){
     		     $(".project_tabs_inn").not(tab).css("display", "none");
     		     $(tab).fadeIn();
     		 });
+    		
+    		if(json.length > 0)
+	   		{
+    			 for(var i=0; i<json.length; i++){
+					 var jsonData = json[i];
+					 
+					 //Assign date of project member
+					 var selected = jsonData.projectAssignedDateStr;
+					 var dt = new Date(selected);
+ 		             dt.setDate(dt.getDate());
+ 		             
+ 		             //Main project end date
+ 		             var projectEndDate = jsonData.endDate;
+ 		             var endDate = "";
+ 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+ 		            	 endDate = new Date(projectEndDate);
+ 	 		             endDate.setDate(endDate.getDate()); 
+ 		             }
+ 		             
+					 $('#endDate'+jsonData.id).datepicker({
+			    		      dateFormat: 'yy-mm-dd',
+			    		      minDate: dt,
+			    		      maxDate: endDate,
+			    		      onClose: function() {
+			    		        	 var id = $(this).attr('id');
+									 var projectMemberId = $(this).attr('id').split('endDate')[1];
+			    		        	 inlineEditForEndDate(id,projectMemberId);
+			    		      }
+			    		  }); 
+    			 }
+	   		}
         },
     });
     }	
 </script>
 
+<script> 
+function inlineEditForEndDate(id,projectMemberId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 var endDate = document.getElementById(id).value;
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 });  
+}
+</script>
+
 <script>
-function deleteProject(projectMemberId){ 
+function deleteProject(projectMemberId, projectId){ 
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+", "+projectId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -484,11 +531,11 @@ function cancelTermination(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 
-function saveReason(projectMemberId,userId){
+function saveReason(projectMemberId, projectId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reasonForProject = document.getElementById("reasonForProject").value;
+	var reason = document.getElementById("reasonForProject").value;
 	
-	if(reasonForProject){
+	if(reason){
 		$("#reasonForProjectDiv").empty();
 		
 		var r = confirm("Do you want terminate the user from Project");
@@ -500,7 +547,7 @@ function saveReason(projectMemberId,userId){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   		    	userProjectDetails(userId,"All");
+   			 	projectEmployee(projectId);
    		    }
 	 }); 
 		}
@@ -713,7 +760,7 @@ $(document).ready(function() {
     
   
     
-});
+}); 
 
 </script>
 
@@ -746,7 +793,7 @@ function filter(){
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
-   		    	result = result +'    <th>Name</th>';
+   		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Date</th>';
    		    	result = result +'      <th>Client</th>';
@@ -758,23 +805,23 @@ function filter(){
    		    		var report = json[i];
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');">'+report.projectName+'<i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
-   		    		result = result +'<div>';
+   		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
    		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
    		    			result = result +report.managerLevel2;
    		    		} 
-   		    		result = result +'</div>';
+   		    		result = result +'</span></div>';
    		    		result = result +'</td>';
    		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
    		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
    	   		    		result = result +'- '+report.endDateStr+' </div></td>';
    		    		}
    		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
-   		    			result = result +'<td data-title="Client"><div>'+report.client+'</div></td>';  
+   		    			result = result +'<td data-title="Client"><div><span>'+report.client+'</span></div></td>';  
    		    		}else{
    		    			result = result +'<td data-title="Client"><div>---</div></td>';  
    		    		}
@@ -839,7 +886,7 @@ function flushTasks() {
 <script type="text/javascript">
 function addTasks(){
 	
-	if ($('#project_form').validate(false, validationSettings)){
+	if ($('#project_form').validate(false, validationSettings)){ 
     	var tbl = document.getElementById("projectTaskTbl");
     	var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
     	$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);

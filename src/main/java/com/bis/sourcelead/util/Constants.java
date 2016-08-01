@@ -14,6 +14,7 @@ public class Constants {
 	public static transient DateFormat STDF = new SimpleDateFormat("MM-dd-yyyy");
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
+	public static transient DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat DF_TM = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
