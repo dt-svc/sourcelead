@@ -136,7 +136,7 @@ public class OrgDaoImpl implements OrgDao {
                         e.printStackTrace();
                     }
                     String host = netUrl.getHost();
-                    if(host.startsWith("www")){
+                    if(host.startsWith("www.")){
                         if(host.length()>3){
                             host = host.substring("www".length()+1);
                         }else{
@@ -183,7 +183,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Org> orgList = new ArrayList<Org>();
 		logger.debug("getOrgByOrgCode start");
-		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).list();
+		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
 		logger.debug("getOrgByOrgCode end");
 		if (orgList.size() > 0) {
 			return orgList.get(0);
@@ -196,7 +196,7 @@ public class OrgDaoImpl implements OrgDao {
         boolean isWebSiteFound = false;
         Session session = this.sessionFactory.getCurrentSession();
         String query = "from Org org where org.webSite = :host";
-         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).setCacheable(true).list();
+         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).setCacheable(true).setCacheable(true).list();
             if (orglist != null && orglist.size() >0) {
                 isWebSiteFound = true;
             }

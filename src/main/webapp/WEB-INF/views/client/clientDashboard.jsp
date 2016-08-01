@@ -223,7 +223,7 @@
 					   		 	    	 }
 									} 
 							result = result + '	</select></div></td>';
-							result = result+ '<td><div>30</div></td>';
+							result = result+ '<td><div>'+opt.assignedEmpCount+'</div></td>';
 							result = result + '<td><div><select id="projectStatusId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
 							if(opt.projectStatus == 'STARTED'){
 								result = result+'<option selected>Started</option>';

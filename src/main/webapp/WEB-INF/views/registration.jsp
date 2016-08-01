@@ -89,12 +89,12 @@
                  <div>
                  <span>
 	            	<label>First Name</label>
-	                <input type="text" name="firstName"  value="${firstName}" class="signin_fild" field-name="First Name" data-validation="required validate_length length2-100" />
+	                <input type="text" name="firstName"  value="${firstName}" class="signin_fild" field-name="First Name" data-validation="required validate_Space validate_length length2-100" />
 	                <b></b>
 	            </span>
 	            <span>
 	            	<label>Last Name</label>
-	                <input type="text" name="lastName"  value="${lastName}" class="signin_fild" field-name="Last Name" data-validation="required validate_length length2-100"  />
+	                <input type="text" name="lastName"  value="${lastName}" class="signin_fild" field-name="Last Name" data-validation="required validate_Space validate_length length2-100"  />
 	                <b></b>
 	            </span>
 	               <div class="clearfix"></div>
@@ -103,13 +103,13 @@
 	            <div>
 	            <span>
 	            	<label>Company Name</label>
-	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild"  field-name="Company Name" data-validation="required validate_length length2-250" />
+	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
 	                <b></b>
 	            </span>
 	            <span id="companyWebsiteDiv">
 	            	<label>Company website</label>
 
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_domain validate_length length2-100"    class="signin_fild" />
+	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="signin_fild" />
 
 	                <b></b>
 	            </span>
@@ -119,12 +119,12 @@
 	            <div>
 	            <span id="emailDiv">
 	            	<label>Company email</label>
-	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required validate_email validate_length length2-100" class="signin_fild"  />
+	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required validate_Space validate_email validate_length length2-100" class="signin_fild"  />
 	                <b></b>
 	            </span>
 	            <span>
 	            	<label>Select Country</label>
-	                <input id="company-autocomplete" name="country" field-name="Country" data-validation="required" value="${country}" type="text" class="signin_fild signin_fild_arrow"  />
+	                <input id="company-autocomplete" name="country" field-name="Country" data-validation="required validate_Space" value="${country}" type="text" class="signin_fild signin_fild_arrow"  />
 	                <b></b>
 	            </span>
 	             <div class="clearfix"></div>
@@ -132,12 +132,12 @@
 	            <div id=passwordDiv>
 	            <span>
 		            	<label>Password</label> 
-		                <input type="password" name="password"  field-name="Password" data-validation="required validate_length length6-100" value="${password}" id="password" class="signin_fild"   />
+		                <input type="password" name="password"  field-name="Password" data-validation="required validate_Space validate_length length6-100" value="${password}" id="password" class="signin_fild"   />
 		                <b></b>
 		            </span>
 		            <span>
 		            	<label>Confirm password</label>
-		                <input type="password"  value="" field-name="Confirm Password" data-validation="required" id="confirmPassword" class="signin_fild"  onblur="checkPass();" />
+		                <input type="password"  value="" field-name="Confirm Password" data-validation="required validate_Space" id="confirmPassword" class="signin_fild"  onblur="checkPass();" />
 		                <b id='confirmPasswordb'></b>
 		            </span>
 		            <div class="clearfix"></div>

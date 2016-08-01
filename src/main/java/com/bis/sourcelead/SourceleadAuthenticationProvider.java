@@ -54,6 +54,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           if(user == null){
         	  throw new BadCredentialsException("login_unRegistered_error");
           }
+          else if(user.getUserState().equals(Status.INACTIVE)){
+        	  throw new BadCredentialsException("login_inActive_error");
+          }
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole()); 
