@@ -542,8 +542,9 @@ function firstname(name)
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
 	 var EmployeeId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-		$("#update_user").attr("disabled", "disabled");
-        $( "#update_user" ).addClass('button').val('Processing..');
+        if(EmployeeId!=null&&EmployeeId!=""){
+        	$("#update_user").attr("disabled", "disabled");
+            $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
@@ -561,6 +562,7 @@ function firstname(name)
 		        	} 
 		        },
 		    });
+        }
 	
  }
  </script>
@@ -580,6 +582,7 @@ function firstname(name)
      }
     
       if ($('#editUser_form').validate(false, validationSettings)){
+    	  if(EmployeeId!=null&&EmployeeId!=""){
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -590,7 +593,6 @@ function firstname(name)
                           document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed');
                     }
                     else{
-                       
                         var frm = $('#editUser_form').serializeFormJSON();
                         var con = JSON.stringify(frm);
                         con = con.replace(/[{}]/g, "");
@@ -599,7 +601,7 @@ function firstname(name)
                         var jsonData = encodeURIComponent(con);
                         var sourceleadUrl ='${sourceleadUrl}';
                         $("#update_user").attr("disabled", "disabled");
-                         $( "#update_user" ).addClass('button').val('Processing..');
+                        $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
@@ -612,6 +614,26 @@ function firstname(name)
                     }
                 },
             });
+    	  }else{
+    		  var frm = $('#editUser_form').serializeFormJSON();
+              var con = JSON.stringify(frm);
+              con = con.replace(/[{}]/g, "");
+              
+              //It will escape all the special characters
+              var jsonData = encodeURIComponent(con);
+              var sourceleadUrl ='${sourceleadUrl}';
+              $("#update_user").attr("disabled", "disabled");
+              $( "#update_user" ).addClass('button').val('Processing..');
+              $.ajax({
+                  type: "POST",
+                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId,
+                  success: function(result) {
+                      userDetails(userId);
+                      
+                  },
+              });
+              return true;
+    	  }
        }else{
         return false;
       }
