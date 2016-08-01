@@ -694,7 +694,7 @@ function flushProject(){
 						$("input#webSite").after(
 								"<p class='jquery_form_error_message'>"
 										+ website
-										+ " is Already Existed</span>");
+										+ " "+result+"</span>");
 						document.getElementById("webSite").setAttribute(
 								'record-exist', 'yes');
 						document.getElementById("webSite").setAttribute(
