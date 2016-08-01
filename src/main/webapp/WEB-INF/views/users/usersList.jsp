@@ -50,11 +50,11 @@ window.onload = function () {
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
           
-          </li>&nbsp;&nbsp;|&nbsp;
+          </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
 				<select id="userRole" onchange="getUsersList();">
-				<option value="">--Select Role--</option>
+				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<option value="All" >All Roles</option>
 				<c:forEach var="roles" items="${rolesList}">
 	                 <option value="${roles.id}">${roles.displayName}</option>
@@ -130,7 +130,7 @@ window.onload = function () {
 	 				
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 	       	    	result = result +"<div class='user-profile'>";
-	       	    	result = result +"<div class='col-sm-4'>";
+	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image'>";
 	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
 	 			    result = result +"<span>"+userRole.userRoleName+" </span>";
@@ -138,7 +138,7 @@ window.onload = function () {
 	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
-	       	    	result = result +"<div class='col-sm-8'>";
+	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 	       	    	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
