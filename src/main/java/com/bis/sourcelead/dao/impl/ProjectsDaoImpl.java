@@ -271,93 +271,100 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	
 	
-	  /**
-	   * This method for get projects based on clients and Status (Any number of Client)
-	   */
-		@Override
-		@Transactional(rollbackFor = { Exception.class })
-		public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
-				String status) throws Exception {
+	/**
+	 * This method for get projects based on clients and Status (Any number of
+	 * Client)
+	 */
 
-			
-			    Collection<Projects> plist = null;
-		        Session session = this.sessionFactory.getCurrentSession();
-				String[] tokens = status.split(",");
-				ArrayList<Projects> projectssList = new ArrayList<Projects>();
-				String[] client = clients.split(",");
-				String subQuery2 = "";
-				if(Arrays.asList(tokens).contains("All")){
-					subQuery2 = subQuery2+ "ps.projectStatus = 'STARTED' or ps.projectStatus = 'INPROGRESS' or ps.projectStatus = 'COMPLETED' or ps.projectStatus = 'ONHOLD' or ";
-				}
-				  
-				if(Arrays.asList(tokens).contains("STARTED")){
-					subQuery2 = subQuery2+ "ps.projectStatus = 'STARTED' or ";
-				}
-				
-				if(Arrays.asList(tokens).contains("INPROGRESS")){
-					subQuery2 = subQuery2 + "ps.projectStatus = 'INPROGRESS' or ";
-				}
-				if(Arrays.asList(tokens).contains("COMPLETED")){
-					subQuery2 = subQuery2 + "ps.projectStatus = 'COMPLETED' or ";
-				}
-				if(Arrays.asList(tokens).contains("ONHOLD")){
-					subQuery2 = subQuery2 + "ps.projectStatus = 'ONHOLD' or ";
-				}
-				
-				if ((tokens[0] != null && tokens[0].length() > 0) && (client[0] != null && client[0].length() > 0)){
-					subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
-				}else if(subQuery2 != null && !"".equals(subQuery2)){
-					subQuery2 = " (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
-				}
-				
-				Boolean isadmin = userRoleDao.isUserAdmin(userId);
-				
-				if(isadmin){
-							if(client[0] != null && client[0].length() > 0){
-									for(String clnt :client){
-										
-									 String subquery1 ="ps.orgRelationId ="+clnt;
-									 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subquery1+"  "+subQuery2+" " ;
-									 plist = session.createQuery(query.toString()).setCacheable(true).list(); 
-									 projectssList.addAll(plist);
-								
-									}
-							}else if(subQuery2 != null && !"".equals(subQuery2)){
-								
-									 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subQuery2+" " ;
-									 plist = session.createQuery(query.toString()).setCacheable(true).list(); 
-									 projectssList.addAll(plist);
-							}else{
-								 String query = "from  Projects ps   left join fetch ps.orgLocationsId  " ;
-								 plist = session.createQuery(query.toString()).setCacheable(true).list(); 
-								 projectssList.addAll(plist);
-							}
-				
-			   }else{
-				   
-				   if(client[0] != null && client[0].length() > 0){
-						for(String clnt :client){
-							
-									 String subquery1 ="and ps.orgRelationId ="+clnt;
-									 String subquery3 =" (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
-									 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subquery3+" "+subquery1+" "+subQuery2+" " ;
-									 plist = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list(); 
-									 projectssList.addAll(plist);
-					
-						}
-				}else{
-										 String subquery3 ="(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
-										 String query = "from  Projects ps   left join fetch ps.orgLocationsId  where "+subQuery2+" "+subquery3+"   " ;
-										 plist = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list(); 
-										 projectssList.addAll(plist);
-				}
-			   }
-				   
-				Collection<Projects> userCollection = new HashSet<Projects>(projectssList);
-				return userCollection;
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+			String status, Long orgLocationsId) throws Exception {
 
+		Collection<Projects> plist = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] tokens = status.split(",");
+		ArrayList<Projects> projectssList = new ArrayList<Projects>();
+		String[] client = clients.split(",");
+		String subQuery2 = "";
+		if (Arrays.asList(tokens).contains("All")) {
+			subQuery2 = subQuery2
+					+ "ps.projectStatus = 'STARTED' or ps.projectStatus = 'INPROGRESS' or ps.projectStatus = 'COMPLETED' or ps.projectStatus = 'ONHOLD' or ";
 		}
-		
+
+		if (Arrays.asList(tokens).contains("STARTED")) {
+			subQuery2 = subQuery2 + "ps.projectStatus = 'STARTED' or ";
+		}
+
+		if (Arrays.asList(tokens).contains("INPROGRESS")) {
+			subQuery2 = subQuery2 + "ps.projectStatus = 'INPROGRESS' or ";
+		}
+		if (Arrays.asList(tokens).contains("COMPLETED")) {
+			subQuery2 = subQuery2 + "ps.projectStatus = 'COMPLETED' or ";
+		}
+		if (Arrays.asList(tokens).contains("ONHOLD")) {
+			subQuery2 = subQuery2 + "ps.projectStatus = 'ONHOLD' or ";
+		}
+
+		if ((tokens[0] != null && tokens[0].length() > 0) && (client[0] != null && client[0].length() > 0)) {
+			subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+		} else if (subQuery2 != null && !"".equals(subQuery2)) {
+			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+		}
+
+		Boolean isadmin = userRoleDao.isUserAdmin(userId);
+
+		if (isadmin) {
+			if (client[0] != null && client[0].length() > 0) {
+				for (String clnt : client) {
+
+					String subquery1 = "ps.orgRelationId =" + clnt;
+					String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subquery1 + " "
+							+ subQuery2 + "   and ps.orgLocationsId = :orgLocationsId ";
+					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+					projectssList.addAll(plist);
+
+				}
+			} else if (subQuery2 != null && !"".equals(subQuery2)) {
+
+				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subQuery2 + " and  ps.orgLocationsId = :orgLocationsId ";
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+				projectssList.addAll(plist);
+			} else {
+				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where ps.orgLocationsId = :orgLocationsId";
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+				projectssList.addAll(plist);
+			}
+
+		} else {
+
+			if (client[0] != null && client[0].length() > 0) {
+				for (String clnt : client) {
+
+					String subquery1 = "and ps.orgRelationId =" + clnt;
+					String subquery3 = " (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
+					String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subquery3 + " and  ps.orgLocationsId = :orgLocationsId "
+							+ subquery1 + " " + subQuery2 + " ";
+					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+					projectssList.addAll(plist);
+
+				}
+			} else {
+				String subquery3 = "(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
+				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where " + subQuery2 + " "
+						+ subquery3 + " and ps.orgLocationsId = :orgLocationsId";
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+				projectssList.addAll(plist);
+			}
+		}
+
+
+		Collection<Projects> userCollection = new HashSet<Projects>(projectssList);
+		return userCollection;
+
+	}
+	
+
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
 		public List<Projects> getProjectByOrgLocationsIdAndUserId(Long orgLocationsId, Long userId) {
@@ -367,6 +374,24 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
+
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Projects project left join fetch project.orgRelationId where project.id = :projectId and project.orgLocationsId = :orgLocationId ";
+			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId)
+					.setCacheable(true).list();
+			
+			
+			Projects projects = null;
+			if (projectsList != null && projectsList.size() > 0) {
+				projects = (Projects) projectsList.iterator().next();
+			}
+			return projects;
+		}
+
 		
 		
 		@Override
@@ -384,4 +409,5 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			  
 			
 }
+
 }
