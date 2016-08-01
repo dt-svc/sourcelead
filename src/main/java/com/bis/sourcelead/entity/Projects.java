@@ -150,6 +150,9 @@ public class Projects {
     
     @Transient
     Collection<OrgRelations> clientList;
+    
+    @Transient
+	private Integer assignedEmpCount;
 
 	public Long getId() {
 		return id;
@@ -431,7 +434,12 @@ public class Projects {
 		this.relationId = relationId;
 	}
 
-	
-	
-	
+	public Integer getAssignedEmpCount() {
+		return assignedEmpCount;
+	}
+
+	public void setAssignedEmpCount(Integer assignedEmpCount) {
+		this.assignedEmpCount = assignedEmpCount;
+	}
+
 }
