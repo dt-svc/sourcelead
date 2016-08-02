@@ -27,6 +27,8 @@
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
 		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		 //space value  consider this condition 
+		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
@@ -44,6 +46,7 @@
 							}
 						},
 					});
+	     	}
 		}
 	}
 </script>
@@ -743,7 +746,7 @@
 				}
 			});
 
-			$('#save_client').attr('data-dismiss', 'modal');
+			//$('#save_client').attr('data-dismiss', 'modal');
 			$('#orgName').attr('');
 			$('#webSite').attr('');
 			return true;

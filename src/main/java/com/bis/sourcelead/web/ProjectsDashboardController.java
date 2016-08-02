@@ -176,6 +176,13 @@ public class ProjectsDashboardController {
             }
         }
 		model.addObject(projectsList);
+		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "projectCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "projectCreateMsg");
+		}
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 
 		return model;

@@ -175,8 +175,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public Integer getAllProjectMembersCountByProjectId(Long id) {
 		
 		    Session session = this.sessionFactory.getCurrentSession();
-		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id";
-		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+		    String status = Constants.MEMBER_ACTIVE;
+		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id and pm.status = :status";
+		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query.toString()).setLong("id", id).setString("status", status).setCacheable(true).list();
 		    
 		    Integer count = null;
 			if(ProjectMembersCount != null && !ProjectMembersCount.isEmpty()){

@@ -3,16 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
  <style>
  
@@ -25,6 +18,12 @@
       <!-- Content Area -->
        <section class="content-wraper">
         <section class="content-header clearfix">
+        
+        <c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
@@ -138,7 +137,7 @@
 		     </div>   
 			<div class="project_inn_mask"></div>
 			<div class="project_error">
-				<p>User delete message here ....</p>
+				<p>Employee delete message here ....</p>
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
 			</div>	
 		    </div>
@@ -514,10 +513,10 @@ function deleteProject(projectMemberId, projectId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
-	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
+	result = result +"		<p>Project delete message here</p>";
+	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+projectMemberId+", "+projectId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Terminate' onclick='saveReason("+projectMemberId+", "+projectId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -532,7 +531,7 @@ function cancelTermination(){
 function saveReason(projectMemberId, projectId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForProject").value;
-	
+	if(reason.match(/^[^\s-](.*)*$/) !== null){
 	if(reason){
 		$("#reasonForProjectDiv").empty();
 		
@@ -547,8 +546,9 @@ function saveReason(projectMemberId, projectId){
    			 	$(".project_inn_mask").fadeOut(200);
    			 	projectEmployee(projectId);
    		    }
-	 }); 
+	     }); 
 		}
+	  }
 	}
 	else{
 		$("#reasonForProjectDiv").empty().append("<font class='jquery_form_error_message'>Reason is required</font>") ;
@@ -1287,5 +1287,7 @@ function flushEmployee(){
 }
 </script>
 
-
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 </html>
