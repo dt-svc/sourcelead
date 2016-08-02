@@ -68,7 +68,6 @@ public class LoginSessionController {
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
-		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -76,7 +75,6 @@ public class LoginSessionController {
 		}
 		sessionData.setNav(Constants.Dashboard);
 		request.getSession().setAttribute("sessionData",sessionData);
-		
 		
 		User user = userService.findByUserName(authentication.getName());
 		setSessionUserAttributes(user,request,sourceleadUrl);
@@ -112,16 +110,19 @@ public class LoginSessionController {
 			e.printStackTrace();
 		}
 		
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		ModelAndView model = new ModelAndView();
 		//get notification count
-		String orgCode = Constants.SOURCELEAD_ORGCODE;
-		String locationCode = Constants.SOURCELEAD_LOCATIONCODE_IN;
-		Long scenarioId = 8L;
-		Integer notificationCount = notificationsService.getNotificationsCountByUserId(scenarioId,orgCode,locationCode);
+		String orgCode = loginOrgCode;
+		String locationCode = loginOrgLocation;
+		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
 		model.addObject("notificationCount", notificationCount);
 		
 		// get notification list by user id
-		Long notificationTo = 2L;
+		Long notificationTo = loginUser.getId();
 		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);

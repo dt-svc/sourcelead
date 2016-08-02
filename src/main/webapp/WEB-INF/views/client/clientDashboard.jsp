@@ -93,7 +93,7 @@
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}">${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
@@ -204,24 +204,30 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.projectName+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" ></div></td>';
 							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
-									for (var j = 0; j < opt.projectManagerName.length; j++) {
+									
+							for (var j = 0; j < opt.projectManagerName.length; j++) {
 										
 										var managers = opt.projectManagerName[j];
 										var projrctmanager = managers.split('&');
 								    	var name = projrctmanager[0];
 								    	var id = projrctmanager[1];
 								    	var selected = '';
+								    	
 					   		 	    	 if(opt.relationId==id){
 					   		 	    		 selected = 'selected';
+					   		 	    		
 					   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+					   		 	    	    
 					   		 	    	 }else{
 					   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
 					   		 	    	 }
+					   		 	    	 
 									} 
+							
 							result = result + '	</select></div></td>';
 							result = result+ '<td><div>'+opt.assignedEmpCount+'</div></td>';
 							result = result + '<td><div><select id="projectStatusId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
@@ -280,6 +286,28 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
+						
+						if(json.length > 0)
+				   		{
+			    			 for(var i=0; i<json.length; i++){
+								 var jsonData = json[i];
+								 
+								 //Assign date of project member
+								 var selected = jsonData.startDateStr;
+								 var dt = new Date(selected);
+			 		             dt.setDate(dt.getDate());
+			 		             
+								 $('#endDate'+jsonData.id).datepicker({
+						    		      dateFormat: 'yy-mm-dd',
+						    		      minDate: dt,
+						    		      onClose: function() {
+						    		        	  var id = $(this).attr('id');
+												 var projectMemberId = $(this).attr('id').split('endDate')[1];
+												 inlineEditClientProjects(jsonData.id,'endDate'); 
+						    		      }
+						    		  }); 
+			    			 }
+				   		}
 					},
 				});
 	}
@@ -304,7 +332,9 @@
 						result = result + '<div class="project_details">';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client name:</strong>';
+						
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientName\');" id="clientName" value="'+json.orgName+'" placeholder="Project name" class="project_detfield"></span>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';

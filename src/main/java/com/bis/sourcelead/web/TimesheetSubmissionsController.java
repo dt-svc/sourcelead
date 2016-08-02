@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -56,6 +57,9 @@ public class TimesheetSubmissionsController {
 	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -81,10 +85,11 @@ public class TimesheetSubmissionsController {
 		if(submissionIds != null && submissionIds.length>0){ 
 			for(String submissionId : submissionIds){
 				  	submissionId = submissionId.replace("\"", "");
-				  	TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+				  	submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), Submission_Status.DRAFT.getValue());
+				  	/*TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 				  	timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
-				  	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
-				  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
+				    timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+				  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);*/
 			}
 		}
 			
@@ -208,11 +213,11 @@ public class TimesheetSubmissionsController {
 		     	                   sb.append("<div id='rejectedPopup'></div>");
 		     	               }
 		     	               if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
-		     	                 sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
-		     	                 sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
-		     	                 sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
-		     	                 sb.append(" </i>");
-		     	                 sb.append(" </div>");
+		     	            	  sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
+		     	                  sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
+		     	                  sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
+		     	                  sb.append(" </i>");
+		     	                  sb.append(" </div>");
 		     	              }
 		     	              if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
 		     	            	  sb.append(" <div><h3>Approved</h3></div>");
@@ -436,7 +441,9 @@ public class TimesheetSubmissionsController {
         Date sDate  =  Constants.DMY.parse(startDate);
         
         
-        Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(), sDate);
+        submissionApproverHierarchyService.updateApprovalStatusForApprover(employeeId, user.getId(), sDate, approvalStatus, rejectedReason);
+        
+      /*  Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(), sDate);
         if(timesheetSubmissionsList!=null){
         	for(TimesheetSubmissions timesheetSubmissions :timesheetSubmissionsList){
 	             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
@@ -450,7 +457,7 @@ public class TimesheetSubmissionsController {
 	             
 	             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
         	}  
-        }
+        }*/
         return "success";
     }
 	
