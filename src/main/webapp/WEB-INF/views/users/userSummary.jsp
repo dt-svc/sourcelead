@@ -570,7 +570,7 @@ function firstname(name)
 
 
 <script type="text/javascript">
- function updateUser(id,userId,emailId) {
+ function updateUser(id,userId,emailId,empId) {
 	 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
      var EmployeeId = document.getElementById("EmployeeId").value;
@@ -585,7 +585,7 @@ function firstname(name)
          $('#RatePer').attr("data-validation-optional","true");
      }
       if ($('#editUser_form').validate(false, validationSettings)){
-    	  if(EmployeeId!=null&&EmployeeId!=""){
+    	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -870,7 +870,7 @@ function editUserDetails(userId){
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
