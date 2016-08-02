@@ -275,7 +275,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 					user.setFirstName(jsonObj.getString("FirstName"));
 					user.setLastName(jsonObj.getString("LastName"));
 					user.setMobilePhone(jsonObj.getString("PhoneNumber"));
-					if(user.getUserState() != null && !"".equals(user.getUserState()) && "NOT_LOGGEDIN".equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+					if(user.getUserState() != null && !"".equals(user.getUserState()) && Status.NOT_LOGGEDIN.equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						//generate random password
 						user.setEmail(jsonObj.getString("EmailId"));
 						user.setUserName(jsonObj.getString("EmailId"));
@@ -284,7 +284,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			 			user.setIsMailSent(Status.Y);
 					}
 					userService.addUser(user);
-					if(user.getUserState() != null && !"".equals(user.getUserState()) && "NOT_LOGGEDIN".equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+					if(user.getUserState() != null && !"".equals(user.getUserState()) && Status.NOT_LOGGEDIN.equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						userService.sendEmail(user,loginUser,password);
 					}
 				}
