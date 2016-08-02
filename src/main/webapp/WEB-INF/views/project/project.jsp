@@ -281,7 +281,7 @@
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
 										<input type="text" value="Select Team" class="form-control"
 										data-target="#assignTeam" data-toggle="modal"
-										onclick="getTeamMembers();flushEmployee();">
+										onclick="getTeamMembers();flushEmployee();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> <i
 										class="fa fa-plus btn btn-default formic1"
 										onclick="flushEmployee();"></i>
