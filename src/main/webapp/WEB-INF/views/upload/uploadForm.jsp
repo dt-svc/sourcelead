@@ -28,7 +28,7 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Users</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Users » Bulk Import</div>
+      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; Users Import </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">

@@ -32,7 +32,7 @@ public interface EmployeesService {
 
 	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager)throws Exception;
 
-	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId)throws Exception;
+	//public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId)throws Exception;
 
 	public Boolean validateEmployeeEmailId(Long userId, String emailId);
 

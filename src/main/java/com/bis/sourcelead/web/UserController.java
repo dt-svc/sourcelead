@@ -486,7 +486,7 @@ public class UserController {
 							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");*/
 					/*projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
 
-							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
+							/*.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
 					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
 
 				}
