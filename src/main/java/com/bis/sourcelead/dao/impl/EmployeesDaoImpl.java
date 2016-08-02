@@ -105,7 +105,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 boolean flag = false;
 		 if(employeeId != null && orgLocationsId != null){
 				String query = "from Employees emp where emp.orgLocations = :orgLocationsId and emp.employeeId = :employeeId ";
-				Collection<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).setCacheable(true).list();
+				List<Employees> employeesList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).setCacheable(true).list();
 
 				if (employeesList != null && employeesList.size() > 0) {
 					flag = true;
@@ -147,6 +147,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.debug("In Employee getEmployeesExcludeTeamMembers method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
+		
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' ");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
@@ -154,13 +155,38 @@ public class EmployeesDaoImpl implements EmployeesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId) throws Exception {
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager) throws Exception {
 		logger.debug("In Employees getAllClientsByOrgLocationId method");
         Session session = this.sessionFactory.getCurrentSession();
+        
+        Long raj = level1Manager;
         List<Employees> employeeList = null;
-		Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId");
-		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
+        if(level2Manager!=null && level1Manager!=null){
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
+        }else{
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager'");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
+        }
 		return employeeList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateEmployeeEmailId(Long userId, String emailId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(userId != null && emailId != null){
+				String query = "from User user where user.email = :emailId and user.id != :userId ";
+				List<Employees> userEmailIdList = session.createQuery(query).setLong("userId", userId).setString("emailId", emailId).setCacheable(true).list();
+
+				if (userEmailIdList != null && userEmailIdList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 
 }

@@ -271,6 +271,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	
 	
+
 	/**
 	 * This method for get projects based on clients and Status (Any number of
 	 * Client)
@@ -349,21 +350,30 @@ public class ProjectsDaoImpl implements ProjectsDao{
 					projectssList.addAll(plist);
 
 				}
-			} else {
-				String subquery3 = "(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
+			} else if(tokens[0] != null && tokens[0].length() > 0){
+				
+				String subquery3 = " and (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
 				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where " + subQuery2 + " "
 						+ subquery3 + " and ps.orgLocationsId = :orgLocationsId";
 				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 				projectssList.addAll(plist);
 			}
+			else{
+				
+				String subquery3 = "(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
+				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where "+ subquery3 + " and ps.orgLocationsId = :orgLocationsId";
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+				projectssList.addAll(plist);
+			}
 		}
-
 
 		Collection<Projects> userCollection = new HashSet<Projects>(projectssList);
 		return userCollection;
 
 	}
-	
+
+
+
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
