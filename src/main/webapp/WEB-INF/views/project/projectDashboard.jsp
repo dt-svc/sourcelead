@@ -1169,18 +1169,18 @@ function getTeamMembers(projectId) {
 	        		}else{
 	        			role = 'Employee';
 	        		}
-	        		output = output + "<tr>"+
-                 "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
-                 "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
-                 "<td>"+opt.user.email+"</td>"+
-                 "<td>"+role+"</td>"+
-                 "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
-                 "</div></td>"+
-                 "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
-                 "</div></td>"+
-                 "</tr>";
+	        		output = output + "<tr>";
+	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+	        		output = output +"<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>";
+	        		output = output +"<td>"+opt.user.email+"</td>";
+	        		output = output +"<td>"+role+"</td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output + "</tr>";
 			}
         	output = output+' </tbody>';
 	        output = output+' </table>';
@@ -1190,23 +1190,27 @@ function getTeamMembers(projectId) {
 	        
 	        //StartDate And EndDate Pickers
 		       if(json.length > 0){
-			    	for (var i = 0; i < json.length; i++) {
-						var opt = json[i];
-						$('#startDate'+opt.id).datepicker({
+			    	for (var i = 0; i <json.length; i++) {
+						var report = json[i];
+						$('#startDate'+report.id).datepicker({
 							dateFormat : 'yy-mm-dd',
 							onSelect : function(selected) {
+								var id = $(this).attr('id');
+								var actualId = $(this).attr('id').split('startDate')[1];
 								var dt = new Date(selected);
 								dt.setDate(dt.getDate() + 1);
-								$("#endDate"+opt.id).datepicker("option", "minDate", dt);
+								$("#endDate"+actualId).datepicker("option", "minDate", dt);
 							}
 						});
 
-						$('#endDate'+opt.id).datepicker({
+						$('#endDate'+report.id).datepicker({
 							dateFormat : 'yy-mm-dd',
 							onSelect : function(selected) {
 								var dt = new Date(selected);
 								dt.setDate(dt.getDate() - 1);
-								$("#startDate"+opt.id).datepicker("option", "maxDate", dt);
+								var id = $(this).attr('id');
+								var actualId = $(this).attr('id').split('endDate')[1];
+								$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 							}
 						});
 					}
