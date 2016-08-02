@@ -1130,6 +1130,36 @@ background-repeat:no-repeat;
     width: 80px;
     background-size: cover;
     }
+    .image-parent {
+    background: #e6e6e6 none repeat scroll 0 0;
+    border-radius: 3px;
+    padding: 8px 0 2px;
+    text-align: center;
+}
+    .imageParent {
+    height: 85px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    width: 80px;
+    margin:0px auto 5px;
+     
+    }
+.imageParent img {
+    height: auto;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    vertical-align: middle;
+    width: auto;
+}
     .user-profile  p {
       margin-bottom:2px;
     }
