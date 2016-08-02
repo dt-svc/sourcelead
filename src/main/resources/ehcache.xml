@@ -169,6 +169,11 @@
         <persistence strategy="localTempSwap" />
     </cache>
     
+     <cache name="submissionApproverHeirarchy"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
     <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
         maxEntriesLocalHeap="5000" eternal="true">
         <persistence strategy="localTempSwap" />

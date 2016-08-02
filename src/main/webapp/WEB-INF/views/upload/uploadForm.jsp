@@ -28,7 +28,7 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Users</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Users » Bulk Import</div>
+      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; Users Import </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
@@ -53,7 +53,7 @@ margin:10px 220px 0;
 			<div class="dropzone">
 			  <div class="clearfix">
 			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" type="submit" onclick = "check();uploadSave();">
+			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
 			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
@@ -62,12 +62,12 @@ margin:10px 220px 0;
 			  </div>
 			  </div>
 			<div class="file-upload clearfix mt text-center" id="fileDiv" onclick = "check();">
-		
+		<div class="col-md-9" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
                 <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
             </label>
-        	
+        	</div>
         	
         	<div class="center-div">
         	<input id="uploadFile" placeholder="" disabled="disabled"/>
@@ -182,8 +182,7 @@ function errorMsgAppend(){
 
 <script type="text/javascript">
 function uploadSave() {
-		
-		 $('#upload_form').submit(function() {
+	$('#upload_form').submit(function() {
           if (($(this).validate(false, validationSettings))){
         	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
             	return true;  
@@ -208,8 +207,33 @@ function uploadSave() {
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
+</script> 
 
-        
+
+<script language="javascript" type="text/javascript">
+ function checkFile()
+    {
+     var fsize = $('#uploadBtn')[0].files[0].size;
+     $('#clientNameDiv').find('p.jquery_form_error_message').remove();
+     /* $("#upload_button").removeAttr("disabled"); */
+     if (fsize>50000)
+     {
+    	 $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
+			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
+			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
+         return false;
+     }
+     $	//New WebSite class="form-control"
+		//$("#save_client").removeAttr("disabled");
+		$('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
+		$('input#uploadBtn').attr('class','valid form-control');
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+		$("#upload_form").click(function() {
+			if ($(this).validate(false, validationSettings)) {
+			}
+		});
+	   
+    }
 </script> 
 
   <!-- Footer Area -->

@@ -38,6 +38,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -88,6 +89,9 @@ public class ClientController {
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 	
 	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	/**
@@ -127,7 +131,7 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			
-	
+	        
 			
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			for(OrgRelations orgRelation : clientsList){
@@ -345,9 +349,15 @@ public class ClientController {
 					 project.setEndDateStr(Constants.DATEFORMAT.format(project.getEndDate()));
 				 }
 				 
+				 // get team members count(assigned employees for projects)
+				 if(project.getOrgRelationId().getId() != null){
+					 Integer assignedEmpSize=projectMembersService.getEmployeeAssignedProjectsCount(project.getOrgRelationId().getId() , orgLocations.getId());
+				     project.setAssignedEmpCount(assignedEmpSize);
+				 }
 				 if(project.getProjectStatus() !=null){
 					 project.setProjectStatus(project.getProjectStatus());
 				 }
+				 
 				 /*
 				  * Add managers to project list(shows in select box) in client tab
 				  */

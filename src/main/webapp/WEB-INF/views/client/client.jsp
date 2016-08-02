@@ -669,6 +669,11 @@ function getChildLevel1Approvers(currentApproverId){
 <script type="text/javascript">
 function flushProject(){
 	 $('#level2Manager').val('');
+	 $('#projectId').val('');
+	 $('#projectName').val('');
+	 $('#projectManager').val('');
+	 $('#projectStartDate').val('');
+	 $('#projectEndDate').val('');
 }
 </script>
 
@@ -694,7 +699,7 @@ function flushProject(){
 						$("input#webSite").after(
 								"<p class='jquery_form_error_message'>"
 										+ website
-										+ " is Already Existed</span>");
+										+ " "+result+"</span>");
 						document.getElementById("webSite").setAttribute(
 								'record-exist', 'yes');
 						document.getElementById("webSite").setAttribute(

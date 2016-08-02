@@ -65,7 +65,7 @@
 		</div>
 
 		<c:if test="${!empty clientsList}">
-			<div class="clients_wrap_table">
+			<div class="clients_wrap_table clients_wrapTable ">
 				<table>
 					<tbody>
 					<thead>
@@ -81,7 +81,7 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-me" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm mt" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
@@ -93,7 +93,7 @@
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}">${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
@@ -204,26 +204,32 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							result = result + '<td><div><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
+							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.projectName+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" onclick="getEndDatePickerById('+opt.id+',\'endDate\');"></div></td>';
+							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" ></div></td>';
 							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
-									for (var j = 0; j < opt.projectManagerName.length; j++) {
+									
+							for (var j = 0; j < opt.projectManagerName.length; j++) {
 										
 										var managers = opt.projectManagerName[j];
 										var projrctmanager = managers.split('&');
 								    	var name = projrctmanager[0];
 								    	var id = projrctmanager[1];
 								    	var selected = '';
+								    	
 					   		 	    	 if(opt.relationId==id){
 					   		 	    		 selected = 'selected';
+					   		 	    		
 					   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+					   		 	    	    
 					   		 	    	 }else{
 					   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
 					   		 	    	 }
+					   		 	    	 
 									} 
+							
 							result = result + '	</select></div></td>';
-							result = result+ '<td><div>30</div></td>';
+							result = result+ '<td><div>'+opt.assignedEmpCount+'</div></td>';
 							result = result + '<td><div><select id="projectStatusId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'projectStatusId\');">';
 							if(opt.projectStatus == 'STARTED'){
 								result = result+'<option selected>Started</option>';
@@ -280,6 +286,28 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
+						
+						if(json.length > 0)
+				   		{
+			    			 for(var i=0; i<json.length; i++){
+								 var jsonData = json[i];
+								 
+								 //Assign date of project member
+								 var selected = jsonData.startDateStr;
+								 var dt = new Date(selected);
+			 		             dt.setDate(dt.getDate());
+			 		             
+								 $('#endDate'+jsonData.id).datepicker({
+						    		      dateFormat: 'yy-mm-dd',
+						    		      minDate: dt,
+						    		      onClose: function() {
+						    		        	  var id = $(this).attr('id');
+												 var projectMemberId = $(this).attr('id').split('endDate')[1];
+												 inlineEditClientProjects(jsonData.id,'endDate'); 
+						    		      }
+						    		  }); 
+			    			 }
+				   		}
 					},
 				});
 	}
@@ -304,46 +332,59 @@
 						result = result + '<div class="project_details">';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client name:</strong>';
+						
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientName\');" id="clientName" value="'+json.orgName+'" placeholder="Project name" class="project_detfield"></span>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
+						
 						result = result + '<strong>Website:</strong>';
-						result = result
-								+ '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientWebsite\');" id="clientWebsite"  value="'+json.webSite+'" placeholder="Project website" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientWebsite\');" id="clientWebsite"  value="'+json.webSite+'" placeholder="Project website" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 					
 					
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+json.city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.city !=null && json.city !='' && json.city !='undefined'){
+							result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+json.city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
+	   		    		}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
+						if(json.state !=null && json.state !='' && json.state !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+json.state+'" placeholder="Project state" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
+						if(json.country !=null && json.country !='' && json.country !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+json.country+'" placeholder="Project country" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Email:</strong>';
-						result = result
-								+ '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="Project email" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.email !=null && json.email !='' && json.email !='undefined'){
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="Project email" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Phone number:</strong>';
-						result = result
-								+ '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.phone !=null && json.phone !='' && json.phone !='undefined'){
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Projects:</strong>';
-						result = result
-								+ '<span><input type="text" value="'+json.projectsCont+'" placeholder="Project count" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
+						result = result + '<span><input type="text" value="'+json.projectsCont+'" placeholder="Project count" class="project_detfield"></span><div class="clearfix"></div>';
+						}
 						result = result + '</div>	';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';

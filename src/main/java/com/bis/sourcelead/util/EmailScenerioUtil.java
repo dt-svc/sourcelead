@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -114,23 +115,19 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 	}
 
 
-public void sendNotification(String actionLink,User loginUser,EmailScenario emailScenario) throws Exception{
+public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
 	
-		User u = new User();
-		User u1 = new User();
-		u.setId(1L);
-		u1.setId(2L);
 	//new Notification logic
 	Notifications notification = new Notifications();
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
-	notification.setNotificationFrom(u);
-	notification.setNotificationTo(u1);
+	notification.setNotificationFrom(loginUser);
+	notification.setNotificationTo(toUser);
 	notification.setNotificationScenarioId(emailScenario);
 	notification.setMode(Constants.NOTIFICATION_UNREAD);
-	notification.setCreatedBy("usercode");
+	notification.setCreatedBy(loginUser.getUserCode());
 	notification.setCreatedDate(new Date());
-	notification.setLocationCode(emailScenario.getLocationCode());
+	notification.setLocationCode(loginOrgLocation.getLocationCode());
 	notification.setOrgCode(emailScenario.getOrgCode());
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	

@@ -126,7 +126,7 @@ public class UserController {
 		                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 						model.addObject("org_projectsList", projectsList);
 						
-						Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
+						/*Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
 						Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
 						Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
 						
@@ -140,7 +140,7 @@ public class UserController {
 						model.addObject("approvedTimeSheetsCount", approvedTimeSheetsCount);
 						model.addObject("rejectedTimeSheetsCount", rejectedTimeSheetsCount);
 						model.addObject("waitingTimeSheetsCount", waitingTimeSheetsCount);
-						model.addObject("assignedProjectsCount", assignedProjectsCount);
+						model.addObject("assignedProjectsCount", assignedProjectsCount);*/
 						
 						request.setAttribute("userId", userId);
 						model.setViewName("users/userSummary");
@@ -341,6 +341,18 @@ public class UserController {
 		   }
 	 
 		 
+		 @RequestMapping(value = "/validateExistingEmployeeEmailId" , method = RequestMethod.POST)
+		 @ResponseBody  Boolean validateExistingEmployeeEmailId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmailId", required=false) String emailId, HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    Boolean flag = false;
+ 
+			    if(emailId != null){
+			    	flag = employeesService.validateEmployeeEmailId(userId,emailId);
+			    }
+			 	
+				return flag;
+		   }
+		 
 		 /**
 		  * To get the Project Manager Name by using projectId
 		  * @param currentApproverId
@@ -457,7 +469,7 @@ public class UserController {
 						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
 								.format(projectMembers.getProjects().getEndDate()));
 					}
-					Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
+					/*Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
 							.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "DRAFT");
 					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
@@ -470,8 +482,13 @@ public class UserController {
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 
 					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
-					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+
+							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");*/
+					/*projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
+
+							/*.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
+					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
+
 				}
 
 				resultJson = toJSON(allProjectsList);
@@ -588,7 +605,21 @@ public class UserController {
 					}
 					return "updated";
 		       }
-
+		/**
+		 * 
+		 * @param userID
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
+        public String reActiveUser(@RequestParam(value = "userId", required = false) String userID) throws Exception {
+                    User user = userService.getUserById(Long.parseLong(userID));
+                    logger.info("The user state is "+user.getUserState());
+                    user.setUserState(Status.ACTIVE);
+                    userService.addUser(user);
+                    return "updated";
+               }
+		
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

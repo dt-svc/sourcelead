@@ -15,7 +15,7 @@ window.onload = function () {
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','resources/images/userprofileImg.jpg');
 	}
 </script>
 
@@ -50,11 +50,11 @@ window.onload = function () {
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
           
-          </li>&nbsp;&nbsp;|&nbsp;
+          </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
 				<select id="userRole" onchange="getUsersList();">
-				<option value="">--Select Role--</option>
+				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<option value="All" >All Roles</option>
 				<c:forEach var="roles" items="${rolesList}">
 	                 <option value="${roles.id}">${roles.displayName}</option>
@@ -125,34 +125,37 @@ window.onload = function () {
 	 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
 	 			    	mobilePhone = userRole.user.mobilePhone;
 	 			    }else{
-	 			    	mobilePhone = "NO DATA"
+	 			    	mobilePhone = "No Data"
 	 			    }
 	 				
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 	       	    	result = result +"<div class='user-profile'>";
-	       	    	result = result +"<div class='col-sm-4'>";
-	       	    	result = result +"<div class='text-center image'>";
-	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	       	    	
-	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
-	       	    	  result = result +"<span id='user"+userRole.user.id+"'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Invite</a></span>";
-	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
-	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
-	 			    	result = result +"<span><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;Resend</a></span>";
-	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
-	 			    	result = result +"<span class='label label-success'>Active</span>";
-	 			    }else{
-	 			    	result = result +"<span class='label label-danger'>Inactive</span>";
-	 			    }
+	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
+	       	    	result = result +"<div class='text-center image-parent'>";
+	       	    	result = result +"<div class='imageParent'>";
+	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
+	       	    	result = result +"</div>";
+	       	    	result = result +"<span>"+userRole.userRoleName+" </span>";
 	       	    	
 	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
-	       	    	result = result +"<div class='col-sm-8'>";
-	       	    	result = result +"<h4><strong><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </strong></h4>";
+	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+	       	    	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
-	       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
+	       	        
+	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
+	       	    	  result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Invite</a></label></p>";
+	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
+	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
+	 			    	 result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
+	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'INACTIVE'){
+	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+	 			    } 
+	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='clearfix'></div>";
 	       	    	result = result +"</div>";

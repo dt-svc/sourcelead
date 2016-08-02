@@ -32,26 +32,6 @@
         </section>
 
         
-		<!-- Project -->
-<!-- <div class="project_side_wrap">
-	<div class="project_side_wrap_inn">
-    <h1>Project name here</h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
-     <div id="projectSideDiv">
-     </div>   --> 
-  <!-- <div class="project_side_wrap_inn_tabs">
-    <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1">Employees</a></li>
-        <li><a href="#tab-2">Tasks</a></li>
-        <li><a href="#tab-3">Details</a></li>
-        <div class="clearfix"></div>
-    </ul>
-    
-    <div class="project_tabs">
-        <div id="tab-1" class="project_tabs_inn">
-        	<div class="project_tabs_inn_head">
-			<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>
-			<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>Add Emp</a>
-	   <!-- Project -->
 	   <div class="timesheet_out">
 	   <c:if test="${empty projectsList}">
 			<div class="row">
@@ -67,7 +47,7 @@
 		</c:if>
 		<c:if test="${!empty projectsList}">
 		<div class="project_wrap">
-<div class="timesheet_head">
+        <div class="timesheet_head">
         	<ul>
 				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
@@ -112,11 +92,11 @@
 						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
 	                        <tr>
 	                            <td data-title="Id"><div>${report.id}</div></td>
-	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');"><span>${report.projectName}</span><i class="fa fa-binoculars"></i></div></td>
+	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');" title="${report.projectName}"><span>${report.projectName}</span><i class="fa fa-binoculars"></i></div></td>
 	                            <td data-title="Manager">
 	                                <div>
 	                                <span>
-	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId">
+	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId" >
 	                                      <c:if test="${raId.index >0}">,</c:if>
 	                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
 	                                    </c:forEach>
@@ -125,12 +105,25 @@
 	                            </td>
 	                            <td data-title="Date"><div>  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  -  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
 	                             <c:if test="${report.client != null}">
-	                                 <td data-title="Client"><div><span>${report.client}</span></div></td>   
+	                                 <td data-title="Client" title="${report.client}"><div><span>${report.client}</span></div></td>   
 	                              </c:if>
 	                              <c:if test="${empty report.client}">
 	                                 <td data-title="Client"><div>---</div></td>   
 	                              </c:if>
-	                            <td data-title="Status"><div><b class="proj_active">${report.projectStatus}</b></div></td>
+	                            <td data-title="Status"><div>
+	                            <c:if test="${report.projectStatus == 'STARTED'}">
+	                            <b>${report.projectStatus}</b>
+	                            </c:if>
+	                            <c:if test="${report.projectStatus == 'INPROGRESS'}">
+	                            <b class="proj_process">${report.projectStatus}</b>
+	                            </c:if>
+	                            <c:if test="${report.projectStatus == 'COMPLETED'}">
+	                            <b class="proj_active">${report.projectStatus}</b>
+	                            </c:if>
+	                            <c:if test="${report.projectStatus == 'ONHOLD'}">
+	                            <b class="proj_deactivate">${report.projectStatus}</b>
+	                            </c:if>
+	                            </div></td>
 	                        </tr>
 	                    </c:forEach> 
 		           </tbody>
@@ -352,6 +345,7 @@ $(document).ready(function() {
  });
 });
 </script> 
+<!-- this script is for side navigation functionality at Projects screen -->
  <script>
  function projectSideBar(projectId,projectName){
 	  	    var result = "";
@@ -386,6 +380,7 @@ $(document).ready(function() {
  }
  </script> 
  
+ <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
 function projectEmployee(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -427,7 +422,7 @@ function projectEmployee(projectId){
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
@@ -449,6 +444,8 @@ function projectEmployee(projectId){
     			 result = result + '</div>';
     		 }
     		result = result + '	     </div>';
+    		$("#tab-3").empty();  
+    		$("#tab-2").empty();  
     	    $("#tab-1").empty();
     	    $("#tab-1").append(result);  
     	    
@@ -496,7 +493,7 @@ function projectEmployee(projectId){
     });
     }	
 </script>
-
+<!-- this script is for Employee EndDate Inline functionality at Projects screen -->
 <script> 
 function inlineEditForEndDate(id,projectMemberId){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -511,6 +508,7 @@ function inlineEditForEndDate(id,projectMemberId){
 }
 </script>
 
+<!-- this script is for Employee Terminate functionality at Projects screen -->
 <script>
 function deleteProject(projectMemberId, projectId){ 
 	var result = "";
@@ -558,6 +556,7 @@ function saveReason(projectMemberId, projectId){
 }
 </script>
 
+<!-- this script is for Tasks list functionality at Projects screen -->
 <script>
   function projectTask(projectId){
 	  var result = ""; 
@@ -592,6 +591,8 @@ function saveReason(projectMemberId, projectId){
 			   	        	result = result + '</tbody>';
 			   	    	 result = result + '</table>   ';         
 			   	    	 result = result + '</div>';
+			   	    	 $("#tab-1").empty();  
+			   	    	 $("#tab-3").empty();  
 			   	    	 $("#tab-2").empty();  
 			   	    	 $("#tab-2").append(result);
 		    			   
@@ -601,6 +602,7 @@ function saveReason(projectMemberId, projectId){
   }
 </script> 
 
+<!-- this script is for Project Details functionality at Projects screen -->
 <script>
   function pojectDetails(projectId){  
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -610,10 +612,16 @@ function saveReason(projectMemberId, projectId){
     success: function(data) {
    	var json = JSON.parse(data);
    	var endDateStr = "";
+   	var description = "";
    	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
    		endDateStr =  json.endDateStr;
    	}else{
    		endDateStr = " ";
+   	}
+   	if(json.description != null && json.description != '' && json.description != 'undefined'){
+   		description  = json.description;
+   	}else{
+   		description = "NO DATA";
    	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
@@ -682,7 +690,7 @@ function saveReason(projectMemberId, projectId){
 	   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
 	   		 	    	 }else{
 	   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
-	   		 	    	 }
+	   		 	    	 }projectEndDate
 	   		 	    	 
 	   		 	    	 
 					}
@@ -700,14 +708,10 @@ function saveReason(projectMemberId, projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" class="project_detfield" id="endDateStr" onBlur="inlineEditForProjects('+projectId+',\'endDateStr\');projectEndtateStr();" name="endDateStr"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" class="project_detfield" id="endDateStr" name="endDateStr" ></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
-	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
-	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
-	result = result + json.description;
-	result = result + '				</textarea>';
-	result = result + '				<div class="clearfix"></div>';
+	
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -721,14 +725,39 @@ function saveReason(projectMemberId, projectId){
 	result = result + '				</div>';
 	}
 	result = result + '				<div class="clearfix"></div>';
+	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
+	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
+	result = result + description;
+	result = result + '				</textarea>';
+	result = result + '				<div class="clearfix"></div>';
+	
 	result = result + '			</div>';
 	result = result + '      </div>';
 	result = result + '  </div>   ';     
 	result = result + '</div>'; 
 		
+	$("#tab-1").empty();  
+	$("#tab-2").empty();  
 	$("#tab-3").empty();  
 	$("#tab-3").append(result);
 	
+	
+	//Assign date of project member
+	 var selected = json.startDateStr;
+	 var dt = new Date(selected);
+     dt.setDate(dt.getDate());
+     
+	 //Main project end date
+     var projectEndDate = json.endDateStr;
+	
+		 $('#endDateStr').datepicker({
+			  dateFormat: 'yy-mm-dd',
+			  minDate: dt,
+		      onClose: function() {
+			   inlineEditForProjects(projectId,'endDateStr');
+	          }
+		  });
+		 
   }
    });
   }
@@ -764,6 +793,7 @@ $(document).ready(function() {
 
 </script>
 
+<!-- this script is for Projects Filter functionality at Projects screen -->
 <script>
 function filter(){
 	
@@ -825,7 +855,22 @@ function filter(){
    		    		}else{
    		    			result = result +'<td data-title="Client"><div>---</div></td>';  
    		    		}
-   		    		result = result +'<td data-title="Status"><div><b class="proj_active">'+report.projectStatus+'</b></div></td>';
+   		    		result = result +'<td data-title="Status"><div>';
+   		    		if(report.projectStatus == 'STARTED'){
+	    			  result = result +'<b>'+report.projectStatus+'</b>';
+	    			}
+   		    		if(report.projectStatus == 'INPROGRESS'){
+  	    			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+  	    			}
+   		    		if(report.projectStatus == 'COMPLETED'){
+  	    			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+  	    			}
+   		    		if(report.projectStatus == 'ONHOLD'){
+  	    			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+  	    			}
+   		    		
+   		    		result = result +'</div></td>';
+   		    		
                     result = result +'</tr>';
    				}
                 result = result +'  </tbody>';
@@ -843,9 +888,9 @@ function filter(){
 }	
 </script> 
 
+<!-- this script is for Project Details Inline Edit functionality at Projects screen -->
 <script> 
 function  inlineEditForProjects(projectId,localFieldName){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
@@ -985,6 +1030,7 @@ $(document).ready(function(){
             };
 </script> 
  
+ <!-- this script is for Save Tasks functionality at Projects screen -->
  <script type="text/javascript">
  function saveTasks() {
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1050,6 +1096,7 @@ $(document).ready(function(){
 })(jQuery);
 </script>
 
+<!-- this script is for Add Employee functionality at Projects screen -->
 <script type="text/javascript">
 	function addEmployee() {
 		 if ($('#employee_form').validate(false, validationSettings)){
@@ -1092,6 +1139,7 @@ function  inlineEditForProjectsTasks(taskId,localFieldName){
 }
 </script> 
 
+<!-- this script is for TeamMembers List functionality at Projects screen -->
 <script type="text/javascript">
 function getTeamMembers(projectId) {
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1175,6 +1223,7 @@ function getTeamMembers(projectId) {
 }
 </script>
 
+<!-- this script is for Assign Employee functionality at Projects screen -->
 <script>
 function assignEmployee(){
 	 	var projectId = $("#projectId").val();
@@ -1200,6 +1249,8 @@ function assignEmployee(){
 	    });
 }
 </script>
+
+<!-- this script is for Email verification functionality at Projects screen -->
 <script type="text/javascript">
  function emailVerification() {
 	 var EmailId = document.getElementById("EmailId").value; 
@@ -1225,19 +1276,6 @@ function assignEmployee(){
  }
  </script> 
 
- <script>
- function projectEndtateStr() {
-	 $('#endDateStr').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	        }
-	  });
-	 
-	 
-  } 
-</script>
 <script type="text/javascript">
 function flushEmployee(){
      $('#employeeFirstName').val('');
