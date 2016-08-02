@@ -33,11 +33,6 @@ public class ProjectsServiceTest {
 		public ProjectsService projectsService() {
 			return new ProjectsServiceImpl();
 		}
-		
-		@Bean
-		public ProjectsDao projectsDao() {
-			return new ProjectsDaoImpl();
-		}
 	}
 	
 	@Autowired

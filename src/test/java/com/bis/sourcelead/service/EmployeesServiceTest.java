@@ -29,10 +29,6 @@ public class EmployeesServiceTest {
 	static class EmployeeServiceConfigTest {
 		
 		@Bean
-		public EmployeesDao employeesDao(){
-			return new EmployeesDaoImpl();
-		}
-		@Bean
 		public EmployeesService employeesService() {
 			return new EmployeesServiceImpl();
 		}
@@ -45,9 +41,6 @@ public class EmployeesServiceTest {
 	@Autowired
 	EmployeesService employeesService;
 	
-	@Autowired
-	
-	EmployeesDao employeesDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeesServiceTest.class);
 
