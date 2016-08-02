@@ -81,6 +81,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		// TODO Auto-generated method stub
 		submissionApproverHierarchyDao.updateApprovalStatusForApprover(empId, approverUserId, startDate, status, rejectedReason);
 	}
+
+	@Override
+	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForTheSubmission(submissionId,approvalStatus);
+	}
 	
 	
 	

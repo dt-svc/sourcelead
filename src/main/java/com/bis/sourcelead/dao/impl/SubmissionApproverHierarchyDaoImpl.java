@@ -293,6 +293,22 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus) {
+		// TODO Auto-generated method stub
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId where sah.submissionId.id = :submissionId and sah.submissionApprovalStatus = :approvalStatus");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setString("approvalStatus", approvalStatus).setCacheable(true).list();
+		SubmissionApproverHierarchy sah = null;
+		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+			sah = submissionApproverHierarchyList.iterator().next();
+		}
+		return sah;
+	}
+
 	/*@Override
 	public void updateSubmissionStatusForApprover(Long submissionId, Long approverUserId,String status) {
 		// TODO Auto-generated method stub

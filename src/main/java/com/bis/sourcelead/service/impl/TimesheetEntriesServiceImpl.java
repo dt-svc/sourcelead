@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -244,11 +245,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("</tr>");
         
         String approvalStatus = null;
-		
+        ArrayList<Boolean> isThereAnyApproverApproved = null;
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
-			
+			isThereAnyApproverApproved = new ArrayList<Boolean>();
 			
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForTheSubmission(ts.getId(), "APPROVED");
+			if(isSah != null){
+				isThereAnyApproverApproved.add(true);
+			}
+			else{
+				isThereAnyApproverApproved.add(false);
+			}
+			
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
 			//CommonUtil
@@ -625,7 +634,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </div>");
 			
 			
-			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+			if(isThereAnyApproverApproved != null && !isThereAnyApproverApproved.isEmpty() && isThereAnyApproverApproved.contains(new Boolean("false"))){
+			//if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");
 				   sb.append("  </div>");
