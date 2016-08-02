@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.UserRole;
 
 @Repository
 public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchyDao{
@@ -23,11 +22,9 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	private SessionFactory sessionFactory;
 	
 	@Autowired
-	private UserRoleDao userRoleDao;
+	UserRoleDao userRoleDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectApproverHierarchyDaoImpl.class);
-	
-	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
@@ -58,12 +55,11 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ProjectApproverHierarchy projectHirachy  where   projectHirachy.projectId =:projectId";
 	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
-	        																							.setCacheable(true)
 	        																							.list();
 	        return projectHirachyList;
 		
@@ -71,7 +67,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
+	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ProjectApproverHierarchy projectHirachy where (projectHirachy.approverUserId.id =:userId OR projectHirachy.projectId.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
@@ -103,6 +99,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		}
 		return projectsIdList;
 	}
+	
 	
 	
 }

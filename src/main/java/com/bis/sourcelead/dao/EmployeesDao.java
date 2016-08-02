@@ -25,8 +25,12 @@ public interface EmployeesDao {
 	
 	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId, Long orgLocationsId) throws Exception;
 	
+
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager)throws Exception;
+
 	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId)throws Exception;
 
 	public Boolean validateEmployeeEmailId(Long userId, String emailId);
+
 	
 }

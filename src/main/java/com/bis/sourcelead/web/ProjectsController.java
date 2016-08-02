@@ -172,6 +172,7 @@ public class ProjectsController {
 		 	String resultJson = null;
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		 	String pattern = "yyyy-MM-dd";
             SimpleDateFormat format = new SimpleDateFormat(pattern);
 		 	
@@ -290,7 +291,7 @@ public class ProjectsController {
 									
 									//send mail to assigned team members
 									if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
-										sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation);
+										sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
 										
 									}
 									
@@ -311,10 +312,10 @@ public class ProjectsController {
 			//send mail to assigned Project Manager
 			if((jsonObj.has("isMailToProjectManager") && !isNullOrEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 				if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
-					sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList);
+					sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList, loginOrgCode);
 				}
 				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
-					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, teamMembersList);
+					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, teamMembersList, loginOrgCode);
 				}
 			}
 			
@@ -511,15 +512,21 @@ public class ProjectsController {
 			return null;
 		}
 	  
-	
-	@RequestMapping(value = "/getEmployeesList",  method = RequestMethod.POST)
-		public @ResponseBody  String getEmployeesList(HttpServletRequest request) throws Exception {
+	  /**
+		  * This method for getEmployeesList by by excluding  Level1 and Level2 Managers 
+		  * @param id
+		  * @return
+		  * @throws Exception
+		  */
+	  @RequestMapping(value = "/getEmployeesListByExcludingManagers",  method = RequestMethod.POST)
+		public @ResponseBody  String getEmployeesListByExcludingManagers(HttpServletRequest request,@RequestParam(value="level1Manager", required=false) Long level1Manager,@RequestParam(value="level2Manager", required=false) Long level2Manager) throws Exception {
 		 	String resultJson = null;
+		 	
+		 	
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		 	
-		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId());
-			//Collection<Employees> employeeList = employeesService.getAllEmployees();
+		    
+		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId(),level1Manager,level2Manager);
 			resultJson = toJSON(employeList);
 			return resultJson;
 	  }
@@ -536,7 +543,8 @@ public class ProjectsController {
 			String url = null;
 			String actionLink = "";
 			User user = new User();
-			emailScenerioUtil.sendNotification(actionLink, user, emailScenario);
+			OrgLocations loginOrgLocation = new OrgLocations();
+			emailScenerioUtil.sendNotification(actionLink, user, user, loginOrgLocation, emailScenario);
 	}
 	 
 	 //to  validate user email
@@ -635,7 +643,7 @@ public class ProjectsController {
 	  * @author  venkatKesav
 	  * @since   2016-07-22
 	  */
-	  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation) throws Exception {
+	  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		  	 User projectManager = userService.getUserById(approverUserId1.getId());
 		  	
 		     EmailMessage emailMessage = new EmailMessage();
@@ -680,6 +688,16 @@ public class ProjectsController {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
 		}
 	  
 	  /**
@@ -689,7 +707,7 @@ public class ProjectsController {
 	  * @author  venkatKesav
 	  * @since   2016-07-25
 	  */
-	  private void sendEmailToProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList) throws Exception {
+	  private void sendEmailToProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList, String loginOrgCode) throws Exception {
 		  	 User projectManager = userService.getUserById(approverUserId1.getId());
 		  	 
 		  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
@@ -737,6 +755,16 @@ public class ProjectsController {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
 		}
 		 
 	 private String toJSON(Object obj){

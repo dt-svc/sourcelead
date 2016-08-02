@@ -644,14 +644,14 @@ function clearTimesheet(){
 <script>
 function checkHours(){
 	 var result = "";		
-	 var total;
+	 var total; 
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 2; j++){
+		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -721,32 +721,3 @@ function checkHours(){
 	
 }
 </script>
-		
-		
-<!-- this script is for check file length -->		
-<script language="javascript" type="text/javascript">
- function checkFile()
-    {
-     var fsize = $('#uploadBtn')[0].files[0].size;
-     alert(fsize);
-     $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     /* $("#upload_button").removeAttr("disabled"); */
-     if (fsize>50000)
-     {
-         $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-            document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-            document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
-         return false;
-     }
-     $    //New WebSite class="form-control"
-        //$("#save_client").removeAttr("disabled");
-        $('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
-        $('input#uploadBtn').attr('class','valid form-control');
-        $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-        $("#upload_form").click(function() {
-            if ($(this).validate(false, validationSettings)) {
-            }
-        });
-       
-    }
-</script>		

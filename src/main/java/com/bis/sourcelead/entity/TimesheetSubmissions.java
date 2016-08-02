@@ -3,24 +3,27 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -59,13 +62,18 @@ public class TimesheetSubmissions {
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
 	
-	@Column(name = "SUBMISSION_STATUS")
+	/*@Column(name = "SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_Status submissionStatus;
 	
 	@Column(name = "SUBMISSION_APPROVALSTATUS")
 	@Enumerated(EnumType.STRING)
-	private Submission_ApprovalStatus submissionApprovalStatus;
+    private Submission_ApprovalStatus submissionApprovalStatus;*/
+	
+	
+	@OneToMany(mappedBy = "submissionId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<SubmissionApproverHierarchy> approverHierarchyList = new HashSet<SubmissionApproverHierarchy>(0);
 	
   
 	@Column(name = "REJECTED_REASON")
@@ -178,7 +186,7 @@ public class TimesheetSubmissions {
 		this.endDate = endDate;
 	}
 
-	public Submission_Status getSubmissionStatus() {
+	/*public Submission_Status getSubmissionStatus() {
 		return submissionStatus;
 	}
 
@@ -192,7 +200,7 @@ public class TimesheetSubmissions {
 
 	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
 		this.submissionApprovalStatus = submissionApprovalStatus;
-	}
+	}*/
 
 	public String getRejectedReason() {
 		return rejectedReason;
@@ -394,4 +402,14 @@ public class TimesheetSubmissions {
 	public void setManagerLevel2(String managerLevel2) {
 		this.managerLevel2 = managerLevel2;
 	}
+
+	public Set<SubmissionApproverHierarchy> getApproverHierarchyList() {
+		return approverHierarchyList;
+	}
+
+	public void setApproverHierarchyList(Set<SubmissionApproverHierarchy> approverHierarchyList) {
+		this.approverHierarchyList = approverHierarchyList;
+	}
+	
+	
 }
