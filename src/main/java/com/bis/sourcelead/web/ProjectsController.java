@@ -322,7 +322,7 @@ public class ProjectsController {
 			Collection<ProjectTasks> tasksList = tasksService.getAllTasks();
 			
 			 resultJson = toJSON(tasksList);
-			 
+			 SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
 			 return "projectDashboard";
 			 
 	   }

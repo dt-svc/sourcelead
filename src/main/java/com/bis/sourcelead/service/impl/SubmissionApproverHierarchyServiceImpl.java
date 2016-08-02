@@ -87,6 +87,34 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForTheSubmission(submissionId,approvalStatus);
 	}
+
+	@Override
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
+			String approvalStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectId, approvalStatus);
+	}
+
+	@Override
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
+			String submissionStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectId, submissionStatus);
+	}
+
+	@Override
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
+			String approvalStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectId, approvalStatus);
+	}
+
+	@Override
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
+			String submissionStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectId, submissionStatus);
+	}
 	
 	
 	

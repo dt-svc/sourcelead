@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 
@@ -308,26 +307,106 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		return sah;
 	}
-
-	/*@Override
-	public void updateSubmissionStatusForApprover(Long submissionId, Long approverUserId,String status) {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId where sah.submissionId.id = :submissionId and hierarchy.approverUserId.id = :approverUserId ");
-		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).list();
-		
-		Query queryForMaxLevel = session.createQuery("select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionId.id = :submissionId");
-		List<Integer> maxList = queryForMaxLevel.setLong("submissionId", submissionId).list();
-		Integer maxLevel = 0;
-		if(maxList !=null && !maxList.isEmpty()){
-			maxLevel = maxList.iterator().next();
-		}
-		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
-		    	for(SubmissionApproverHierarchy sah :submissionApproverHierarchyList){
-		    		
-		    	}
-		 }
 	
-	}*/
+	
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
+			String approvalStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQueryForUserIdChecking = " hierarchy.approverUserId.id = :userId ";
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId and  sah.submissionApprovalStatus = :submissionApprovalStatus)" ;
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionApprovalStatus", approvalStatus).list(); 
+		Float totalHours = 0.0F;
+		if(tslist !=null){
+		   for (int i = 0; i < tslist.size(); i++) {
+			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
+			   }
+		   }  
+	   }
+		return totalHours;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,String submissionStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQueryForUserIdChecking = " hierarchy.approverUserId.id = :userId ";
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId and  sah.submissionStatus = :submissionStatus)" ;
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionStatus", submissionStatus).list(); 
+		Float totalHours = 0.0F;
+		if(tslist !=null){
+		   for (int i = 0; i < tslist.size(); i++) {
+			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
+			   }
+		   }  
+	   }
+		return totalHours;
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
+			String approvalStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		//Getting List for which employee  is Assigned
+		String subQueryForUserIdChecking = " (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
+		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId ";
+		
+		//Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and pm.projects.id = :projectId ";
+		
+		String query = subQueryForList +" and  ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionApprovalStatus = :submissionApprovalStatus " ;
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionApprovalStatus", approvalStatus).list(); 
+		Float totalHours = 0.0F;
+		if(tslist !=null){
+		   for (int i = 0; i < tslist.size(); i++) {
+			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
+			   }
+		   }  
+	   }
+		return totalHours;
+	}
+	
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
+			String submissionStatus) {
+        Session session = this.sessionFactory.getCurrentSession();
+		
+		//Getting List for which employee  is Assigned
+		String subQueryForUserIdChecking = " (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
+		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId ";
+		
+		//Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and pm.projects.id = :projectId ";
+		
+		String query = subQueryForList +" and  ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionStatus = :submissionStatus " ;
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionStatus", submissionStatus).list(); 
+		Float totalHours = 0.0F;
+		if(tslist !=null){
+		   for (int i = 0; i < tslist.size(); i++) {
+			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
+			   }
+		   }  
+	   }
+		return totalHours;
+	}
+
+	
 
 }
