@@ -87,5 +87,11 @@ public class EmployeesServiceImpl implements EmployeesService {
 		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationId(orgLocationId);
 		return employeeList;
 	}
+
+	@Override
+	public Boolean validateEmployeeEmailId(Long userId, String emailId) {
+		return employeesDao.validateEmployeeEmailId(userId,emailId);
+	}
+
 	
 }
