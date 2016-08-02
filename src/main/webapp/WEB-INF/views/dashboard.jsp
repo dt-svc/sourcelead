@@ -82,7 +82,7 @@
 		</div>
 		
 		<!-- Pie chart -->
-			<div class="clearfix row">
+			<!-- <div class="clearfix row">
 				<section class="clearfix">
 				 <div class="dropdown col-xs-2">
 					<button class="btn btn-primary dropdown-toggle  btn-block" type="button" data-toggle="dropdown">Select Client
@@ -105,13 +105,13 @@
 					</ul>
 				  </div>
 				</section>
-				<!-- Highchart -->
+				Highchart
 				<div class="col-md-12">
 				<section class="clearfix piechart-area mt">
 						<h3>Timesheet Highchart</h3>
 				</section></div>
-				<!-- Highchart Ends -->
-			</div>
+				Highchart Ends
+			</div> -->
 				
 				
 			</div>
