@@ -148,20 +148,21 @@
               <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${notificationCount}</span></a>
+          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
-              <c:if test="${empty notificationList}">
+              <c:if test="${empty SourceLeadWeb_notificationList}">
               	<div class="clearfix msg">
                      All Caught UP!!! 
                   </div>
               	</c:if>
-               <c:if test="${!empty notificationList}">
-                <c:forEach var="report" items="${notificationList}" end="4">
+               <c:if test="${!empty SourceLeadWeb_notificationList}">
+                <c:forEach var="report" items="${SourceLeadWeb_notificationList}" end="4">
                 <li>
                   <div class="clearfix msg">
                     <div class="msg-img"> <span>
-                    <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
+                    <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
+                    </span> </div>
                     <div class="msg-content">
                       <p>${report.body}</p>
                      <c:out value="${userId}" />
@@ -194,11 +195,11 @@
   <script>
 function notificationStatusAsRead(){   
 	var sourceleadUrl = '${sourceleadUrl}';
-	var  orgCode ='${orgCode}';
-	 var locationCode = '${locationCode}';
+	var  orgCode ='${SourceLeadWeb_orgCode}';
+	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 $.ajax({
 	      type: "POST",
-	  	  url: "${sourceleadUrl}"+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&userId=2&orgCode="+orgCode+"&locationCode="+locationCode,
+	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
 	  			  success :function(data) {
 	    	      			
       			 }							     
