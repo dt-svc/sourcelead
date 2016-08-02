@@ -378,6 +378,7 @@ function firstname(name)
 		   		{
 	    			 for(var i=0; i<jsonData.length; i++){
 						   var json = jsonData[i];
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
 						   $('#endDate'+json.id).datepicker({
 				    		      dateFormat: 'yy-mm-dd',
 				    		      onSelect: function (selected) {
@@ -391,6 +392,7 @@ function firstname(name)
 				    		        	 inlineEditForEndDate(id,projectMemberId);
 				    		      }
 				    		  }); 
+						   }
 			         
 	    			 }
 		   		}
