@@ -27,6 +27,8 @@
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
 		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		 //space value  consider this condition 
+		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
@@ -44,6 +46,7 @@
 							}
 						},
 					});
+	     	}
 		}
 	}
 </script>
@@ -278,7 +281,7 @@
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
 										<input type="text" value="Select Team" class="form-control"
 										data-target="#assignTeam" data-toggle="modal"
-										onclick="getTeamMembers();flushEmployee();">
+										onclick="getTeamMembers();flushEmployee();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> <i
 										class="fa fa-plus btn btn-default formic1"
 										onclick="flushEmployee();"></i>
@@ -743,7 +746,7 @@
 				}
 			});
 
-			$('#save_client').attr('data-dismiss', 'modal');
+			//$('#save_client').attr('data-dismiss', 'modal');
 			$('#orgName').attr('');
 			$('#webSite').attr('');
 			return true;

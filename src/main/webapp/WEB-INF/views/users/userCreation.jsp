@@ -492,6 +492,10 @@ function flushProject(){
 	        var frm = $('#addProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
 	        $("#save_project").attr("disabled", "disabled");
@@ -500,7 +504,7 @@ function flushProject(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

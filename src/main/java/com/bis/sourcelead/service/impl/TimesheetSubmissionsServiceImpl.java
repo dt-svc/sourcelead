@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -18,6 +19,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 
 	@Autowired
 	TimesheetSubmissionsDao timesheetSubmissionsDao;
+	
+	@Autowired
+	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
 	
 	
 	@Override
@@ -126,33 +130,51 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	
 	
 	// Sammeta David: this  controller method is for getting TimesheetSubmission Counts based on Status.
-			@Override
-			public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception {
+		@Override
+		public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception {
+			
+			
+			
 				
 
 				 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-			     Integer draftTimesheetsSubmissionsCount = null;
-			     Integer newTimesheetsSubmissionsCount   = null;
-				 Integer savedTimesheetsSubmissionsCount = null;
-				 Integer waitingForApprovalTimesheetSubmissionCount = null;
-				 Integer approvedTimesheetSubmissionCount = null;
-				 Integer rejectedTimesheetSubmissionCount =null;
 				 
 				      //draft
-				         draftTimesheetsSubmissionsCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "DRAFT");
+				         //draftTimesheetsSubmissionsCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "DRAFT");
 				      //new
-				         newTimesheetsSubmissionsCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "NEW");
-				         savedTimesheetsSubmissionsCount =  newTimesheetsSubmissionsCount +draftTimesheetsSubmissionsCount;
-				         timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(savedTimesheetsSubmissionsCount);
+				 // newTimesheetsSubmissionsCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "NEW");
+				 // savedTimesheetsSubmissionsCount =  newTimesheetsSubmissionsCount +draftTimesheetsSubmissionsCount;
+				 //  timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(savedTimesheetsSubmissionsCount);
 			  	       //submitted
-				         waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTEDFORAPPROVAL");
-				         timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(waitingForApprovalTimesheetSubmissionCount);
+				 // waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTEDFORAPPROVAL");
+				 //   timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(waitingForApprovalTimesheetSubmissionCount);
 			  	       //approved
-				         approvedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "APPROVED");
-				         timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(approvedTimesheetSubmissionCount);
+				 //  approvedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "APPROVED");
+				 // timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(approvedTimesheetSubmissionCount);
 			 	       //rejected
-				         rejectedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "REJECTED");
-				         timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(rejectedTimesheetSubmissionCount);
+				 //  rejectedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "REJECTED");
+				 // timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(rejectedTimesheetSubmissionCount);
+				         
+				         
+				            Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, new Long(3), "DRAFT");
+					        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "DRAFT");
+					        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+					        timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(draftTimesheetsSubmissionsCount);
+
+					        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "SUBMITTED");
+					        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "SUBMITTED");
+					        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
+					        timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(submittedTimesheetsSubmissionsCount);
+							
+						    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "APPROVED");
+						    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "APPROVED");
+					        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
+					        timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(approvalTimesheetsSubmissionsCount);
+							
+							Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "REJECTED");
+						    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "REJECTED");
+						    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
+						    timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(rejectedTimesheetsSubmissionsCount);
 				
 				        return timeSheetSubmissionCount;
 			}
