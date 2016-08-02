@@ -4,21 +4,21 @@ import java.util.Collection;
 
 public class TimeSheetSubmissionCount {
 	
-	private Integer savedTimesheetSubmissionCount;
+	private Float savedTimesheetSubmissionCount;
 	
-	private Integer waitingForApprovalTimesheetSubmissionCount;	
+	private Float waitingForApprovalTimesheetSubmissionCount;	
 	
-	private Integer approvedTimesheetSubmissionCount;	
+	private Float approvedTimesheetSubmissionCount;	
 	
-	private Integer rejectedTimesheetSubmissionCount;
+	private Float rejectedTimesheetSubmissionCount;
 	
-	Collection<TimesheetSubmissions>  savedTimesheetSubmissionsList;
+	Collection<SubmissionApproverHierarchy>  savedTimesheetSubmissionsList;
 	
-	Collection<TimesheetSubmissions>  waitingForApprovalTimesheetSubmissionList;
+	Collection<SubmissionApproverHierarchy>  waitingForApprovalTimesheetSubmissionList;
 	
-	Collection<TimesheetSubmissions>  approvedTimesheetSubmissionList;
+	Collection<SubmissionApproverHierarchy>  approvedTimesheetSubmissionList;
 	
-	Collection<TimesheetSubmissions>  rejectedTimesheetSubmissionList;
+	Collection<SubmissionApproverHierarchy>  rejectedTimesheetSubmissionList;
 	
 	private  String draftTimesheetsSubmissionsHoursCount ;
 	
@@ -27,70 +27,72 @@ public class TimeSheetSubmissionCount {
 	private  String  approvalTimesheetsSubmissionsHoursCount;
 	
 	private  String  rejectedTimesheetsSubmissionsHoursCount;
-	
+	 
 
-	public Integer getSavedTimesheetSubmissionCount() {
+	public Float getSavedTimesheetSubmissionCount() {
 		return savedTimesheetSubmissionCount;
 	}
 
-	public void setSavedTimesheetSubmissionCount(Integer savedTimesheetSubmissionCount) {
+	public void setSavedTimesheetSubmissionCount(Float savedTimesheetSubmissionCount) {
 		this.savedTimesheetSubmissionCount = savedTimesheetSubmissionCount;
 	}
 
-	public Integer getWaitingForApprovalTimesheetSubmissionCount() {
+	public Float getWaitingForApprovalTimesheetSubmissionCount() {
 		return waitingForApprovalTimesheetSubmissionCount;
 	}
 
-	public void setWaitingForApprovalTimesheetSubmissionCount(Integer waitingForApprovalTimesheetSubmissionCount) {
+	public void setWaitingForApprovalTimesheetSubmissionCount(Float waitingForApprovalTimesheetSubmissionCount) {
 		this.waitingForApprovalTimesheetSubmissionCount = waitingForApprovalTimesheetSubmissionCount;
 	}
 
-	public Integer getApprovedTimesheetSubmissionCount() {
+	public Float getApprovedTimesheetSubmissionCount() {
 		return approvedTimesheetSubmissionCount;
 	}
 
-	public void setApprovedTimesheetSubmissionCount(Integer approvedTimesheetSubmissionCount) {
+	public void setApprovedTimesheetSubmissionCount(Float approvedTimesheetSubmissionCount) {
 		this.approvedTimesheetSubmissionCount = approvedTimesheetSubmissionCount;
 	}
 
-	public Integer getRejectedTimesheetSubmissionCount() {
+	public Float getRejectedTimesheetSubmissionCount() {
 		return rejectedTimesheetSubmissionCount;
 	}
 
-	public void setRejectedTimesheetSubmissionCount(Integer rejectedTimesheetSubmissionCount) {
+	public void setRejectedTimesheetSubmissionCount(Float rejectedTimesheetSubmissionCount) {
 		this.rejectedTimesheetSubmissionCount = rejectedTimesheetSubmissionCount;
 	}
 
-	public Collection<TimesheetSubmissions> getSavedTimesheetSubmissionsList() {
+	public Collection<SubmissionApproverHierarchy> getSavedTimesheetSubmissionsList() {
 		return savedTimesheetSubmissionsList;
 	}
 
-	public void setSavedTimesheetSubmissionsList(Collection<TimesheetSubmissions> savedTimesheetSubmissionsList) {
+	public void setSavedTimesheetSubmissionsList(Collection<SubmissionApproverHierarchy> savedTimesheetSubmissionsList) {
 		this.savedTimesheetSubmissionsList = savedTimesheetSubmissionsList;
 	}
 
-	public Collection<TimesheetSubmissions> getWaitingForApprovalTimesheetSubmissionList() {
+	public Collection<SubmissionApproverHierarchy> getWaitingForApprovalTimesheetSubmissionList() {
 		return waitingForApprovalTimesheetSubmissionList;
 	}
 
 	public void setWaitingForApprovalTimesheetSubmissionList(
-			Collection<TimesheetSubmissions> waitingForApprovalTimesheetSubmissionList) {
+			Collection<SubmissionApproverHierarchy> waitingForApprovalTimesheetSubmissionList) {
 		this.waitingForApprovalTimesheetSubmissionList = waitingForApprovalTimesheetSubmissionList;
 	}
 
-	public Collection<TimesheetSubmissions> getApprovedTimesheetSubmissionList() {
+	public Collection<SubmissionApproverHierarchy> getApprovedTimesheetSubmissionList() {
 		return approvedTimesheetSubmissionList;
 	}
 
-	public void setApprovedTimesheetSubmissionList(Collection<TimesheetSubmissions> approvedTimesheetSubmissionList) {
+	public void setApprovedTimesheetSubmissionList(
+			Collection<SubmissionApproverHierarchy> approvedTimesheetSubmissionList) {
 		this.approvedTimesheetSubmissionList = approvedTimesheetSubmissionList;
 	}
 
-	public Collection<TimesheetSubmissions> getRejectedTimesheetSubmissionList() {
+	public Collection<SubmissionApproverHierarchy> getRejectedTimesheetSubmissionList() {
 		return rejectedTimesheetSubmissionList;
 	}
 
-	public void setRejectedTimesheetSubmissionList(Collection<TimesheetSubmissions> rejectedTimesheetSubmissionList) {
+	public void setRejectedTimesheetSubmissionList(
+			Collection<SubmissionApproverHierarchy> rejectedTimesheetSubmissionList) {
 		this.rejectedTimesheetSubmissionList = rejectedTimesheetSubmissionList;
 	}
 
