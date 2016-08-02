@@ -353,6 +353,7 @@
 <!-- =============================== AddTask Divs  ============================ -->
 
 <!--  Date picker starts here -->
+
 <script>
   $( function() {
 	  $('#projectStartDate').datepicker({

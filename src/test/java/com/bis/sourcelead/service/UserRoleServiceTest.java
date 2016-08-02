@@ -15,8 +15,6 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dao.impl.UserRoleDaoImpl;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -36,10 +34,6 @@ public class UserRoleServiceTest {
 		public UserRoleService userRoleService() {
 			return new UserRoleServiceImpl();
 		}
-		@Bean
-		public UserRoleDao userRoleDao() {
-			return new UserRoleDaoImpl();
-		}	
 		
 		@Autowired
 		UserRoleService userRoleService;
@@ -50,8 +44,8 @@ public class UserRoleServiceTest {
 		@Autowired
 		UserService userService;
 		
-		@Autowired
-		OrgLocationService locationService;
+		/*@Autowired
+		OrgLocationService locationService;*/
 		
 		@Test
 		public void addUserRole() throws Exception{
