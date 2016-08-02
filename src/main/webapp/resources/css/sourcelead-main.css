@@ -55,6 +55,7 @@ textarea {
     min-height:100%;
     overflow:hidden;
     position:relative;
+    width: 100%;
 }
 .wrapper::before, .wrapper::after {
     content: " ";

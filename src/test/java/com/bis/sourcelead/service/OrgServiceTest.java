@@ -34,11 +34,6 @@ public class OrgServiceTest {
 
 	@Configuration
 	static class OrgServiceTestContextConfiguration {
-		@Bean
-		public OrgDao orgDao() {
-			return new OrgDaoImpl();
-
-		}
 
 		@Bean
 		public OrgService orgService() {
@@ -48,9 +43,6 @@ public class OrgServiceTest {
 
 	@Autowired
 	OrgService orgService;
-
-	@Autowired
-	OrgDao orgDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgServiceTest.class);
 

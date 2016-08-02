@@ -33,10 +33,6 @@ public class ProjectMembersServiceTest {
 			return new ProjectMembersServiceImpl();
 		}
 		
-		@Bean
-		public ProjectMembersDao projectMembersDao() {
-			return new ProjectMembersDaoImpl();
-		}
 	}
 	
 	@Autowired

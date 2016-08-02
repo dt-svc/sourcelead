@@ -25,65 +25,11 @@
 <div class="regis_bg">
 	<div class="regis_logo regis_logo_a"><img src="resources/images/logo-regis.png" alt=""/></div>
     <div class="regis_wrap regis_wrap_a">
+     <div id="loading"></div>
     	<div class="signin_wrap" id="signin">
         	<h1>Registration</h1>
-            <!-- <div class="regis_tabs">
-            	<a id="pro-tab" href="javascript:void(0)" class="activetab">Professional</a> <a id="comp-tab" href="javascript:void(0)">Company</a>
-                <div class="clearfix"></div>
-            </div> -->
-        <!-- <div id="profe-regis">    
-            <div>
-            <span>
-            	<label>First Name</label>
-                <input type="text" class="signin_fild" />
-                <b></b>
-                <p>Password incorrect</p>
-            </span>
-            <span>
-            	<label>Last Name</label>
-                <input type="text" class="signin_fild" />
-                <b></b>
-                <p>Password incorrect</p>
-            </span>
-            </div>
-            
-            <div>
-            <span>
-            	<label>Personal email</label>
-                <input type="text" class="signin_fild" />
-                <b></b>
-                <p>User name incorrect.</p>
-            </span>
-            <span>
-            	<label>Select Country</label>
-                <input id="professional-autocomplete" type="text" class="signin_fild signin_fild_arrow" />
-                <b></b>
-                <p>Password incorrect</p>
-            </span>
-            </div>
-            
-            <div>
-            <span>
-            	<label>Password</label>
-                <input type="password" class="signin_fild" />
-                <b></b>
-                <p>User name incorrect.</p>
-            </span>
-            <span>
-            	<label>Confirm password</label>
-                <input type="password" class="signin_fild" />
-                <b></b>
-                <p>Password incorrect</p>
-            </span>
-            </div>  
-            
-            <div class="clearfix"></div>
-<div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
-            <input type="submit" value="Register" class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="sign-in.html"> Sign In</a></div> 
-           
-        </div> -->
         
-<div style="padding:20px 0px 0px 0px;">
+	<div style="padding:20px 0px 0px 0px;">
        <form:form class="login-form clearfix"  id="companyRegistration_form"  name="companyRegistration_form" method="post" >    
                      <div id="comp-regis">  
                  <div>
@@ -198,6 +144,7 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          		$("#register_button").attr("disabled", "disabled");
          		$( "#register_button" ).addClass('button').val('Processing..');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	           	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
@@ -211,7 +158,7 @@ var validationSettings = {
 			        	}
 			        	
 			        },  
-              });
+              }); 
                 
             	    return true;
             }
