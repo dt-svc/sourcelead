@@ -83,8 +83,8 @@ public class EmployeesServiceImpl implements EmployeesService {
 	}
 
 	@Override
-	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId) throws Exception {
-		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationId(orgLocationId);
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager) throws Exception {
+		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationId(orgLocationId,level1Manager,level2Manager);
 		return employeeList;
 	}
 	

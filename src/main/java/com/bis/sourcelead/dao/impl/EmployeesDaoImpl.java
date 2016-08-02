@@ -147,6 +147,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.debug("In Employee getEmployeesExcludeTeamMembers method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
+		
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' ");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
@@ -154,12 +155,21 @@ public class EmployeesDaoImpl implements EmployeesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId) throws Exception {
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager) throws Exception {
 		logger.debug("In Employees getAllClientsByOrgLocationId method");
         Session session = this.sessionFactory.getCurrentSession();
+        
+        Long raj = level1Manager;
         List<Employees> employeeList = null;
-		Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId");
-		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
+        if(level2Manager!=null && level1Manager!=null){
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
+        }else{
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager'");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
+        }
 		return employeeList;
 	}
 

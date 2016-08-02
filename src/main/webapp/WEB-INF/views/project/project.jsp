@@ -850,11 +850,15 @@
 
 <script type="text/javascript">
 	function getTeamMembers() {
+		
+		var level1Manager = document.getElementById("level1Manager").value;
+		var level2Manager = document.getElementById("level2Manager").value;
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getEmployeesList?${_csrf.parameterName}=${_csrf.token}",
+							+ "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var output = "";
@@ -955,7 +959,6 @@
 		$('#employeeEmail').val('');
 	}
 </script>
-
 
 <script>
 	function assignEmployee() {
