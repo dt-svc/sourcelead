@@ -571,7 +571,6 @@ function firstname(name)
 
 <script type="text/javascript">
  function updateUser(id,userId,emailId,empId) {
-	 alert("empId"+empId);
 	 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
      var EmployeeId = document.getElementById("EmployeeId").value;
@@ -587,7 +586,6 @@ function firstname(name)
      }
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
-    		  alert("fdgdfgd"+EmployeeId);
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -621,8 +619,6 @@ function firstname(name)
             });
     	  }
     	  else{
-    		  alert("EmailId"+EmailId);
-    		  alert("emailId"+emailId);
     		  if(emailId != EmailId){
     			  $.ajax({
                       type: "POST",
