@@ -66,7 +66,7 @@
 				<c:forEach var="report" items="${Timesheet_Submissions}" varStatus="raId">   	
                 <tr>
                 	<td><div>${report.projectMembers.projects.projectName}</div></td>
-                	<td><div> From &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  to  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
+                	<td><div><fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  - &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
                     <td><div>${report.totalHours}</div></td>
                     <td><div>
                     	<c:if test="${!empty report.managerLevel1}">

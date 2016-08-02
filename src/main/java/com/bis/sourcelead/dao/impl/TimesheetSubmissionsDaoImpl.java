@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -30,6 +32,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	private SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsDaoImpl.class);
 	
 	@Override
@@ -168,13 +173,18 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 				Float combinedTotalHours = 0f ; 
+				
 				Date startDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
+				Long empId = ts.getProjectMembers().getEmployee().getId();
+				
+			    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, startDate);
+			/*	java.sql.Date startDate = new java.sql.Date(ts.getStartDate().getTime());
 				Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
 				String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 				List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																			  .setInteger("empId", empId)	
 						                                                      .setInteger("userId", userId.intValue())
-						                                                      .setParameter("startDate", startDate).list();
+						                                                      .setParameter("startDate", startDate).list();*/
 			    Boolean isRejected = false; 
 			    Boolean isAPPROVED = false; 
 			    Boolean isSUBMITTEDFORAPPROVAL = false; 
@@ -182,23 +192,23 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			    String status = "";
 				
 			    
-				for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
-					if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
-					combinedTotalHours = combinedTotalHours + Float.parseFloat(ts1.getTotalHours());
+				for(SubmissionApproverHierarchy sah : sahList){
+					if(sah.getSubmissionId().getTotalHours()!=null && !sah.getSubmissionId().getTotalHours().isEmpty()){
+					combinedTotalHours = combinedTotalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
 					}
-						if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+						if( sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 							isRejected   = true;  
 							status = "REJECTED";
 						}
-						else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+						else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
 							 isNEW   = true;  
 							 status = "NEW";
 						}
-						else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+						else if(!isRejected && !isNEW &&  sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 							 isSUBMITTEDFORAPPROVAL   = true;  
 							 status = "SUBMITTED FOR APPROVAL";
 						}
-						else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+						else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
 							 isAPPROVED   = true;  
 							 status = "APPROVED";
 						}
@@ -206,8 +216,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				
 				ts.setCombinedTotalHours(combinedTotalHours.toString());
 				ts.setCombinedStatus(status);
-				ts.setRejectedReason(ts1.getRejectedReason());
-			}
+			 }
 			}
 			
 			
@@ -282,13 +291,17 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			Float combinedTotalHours = 0f ; 
-			java.sql.Date sDate = new java.sql.Date(ts.getStartDate().getTime());
-			Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
-			String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+			Date sDate = ts.getStartDate();
+			Long empId = ts.getProjectMembers().getEmployee().getId();
+			
+			
+			 List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, sDate);
+			 
+			/*String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 			List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																		  .setInteger("empId", empId)	
 					                                                      .setInteger("userId", userId.intValue())
-					                                                      .setParameter("startDate", sDate).list();
+					                                                      .setParameter("startDate", sDate).list();*/
 		    Boolean isRejected = false; 
 		    Boolean isAPPROVED = false; 
 		    Boolean isSUBMITTEDFORAPPROVAL = false; 
@@ -296,23 +309,23 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		    String status = "";
 			
 		    
-			for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
-				if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
-				combinedTotalHours = combinedTotalHours + Float.parseFloat(ts1.getTotalHours());
-				}
-					if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+			for(SubmissionApproverHierarchy sah : sahList){
+				if(sah.getSubmissionId().getTotalHours()!=null && !sah.getSubmissionId().getTotalHours().isEmpty()){
+					combinedTotalHours = combinedTotalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
+					}
+					if( sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 						isRejected   = true;  
 						status = "REJECTED";
 					}
-					else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+					else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
 						 isNEW   = true;  
 						 status = "NEW";
 					}
-					else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+					else if(!isRejected && !isNEW &&  sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 						 isSUBMITTEDFORAPPROVAL   = true;  
 						 status = "SUBMITTED FOR APPROVAL";
 					}
-					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
 						 isAPPROVED   = true;  
 						 status = "APPROVED";
 					}
@@ -332,6 +345,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	
 	
 	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate,Long  userId,Long  memberId,Long employeeId) throws Exception {
@@ -345,12 +359,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			Float combinedTotalHours = 0f ; 
 			java.sql.Date sDate = new java.sql.Date(ts.getStartDate().getTime());
-			Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
-			String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:employeeId  and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+			Long empId = ts.getProjectMembers().getEmployee().getId();
+			
+		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, startDate);
+			 
+			/*String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:employeeId  and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 			List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 					                                                      .setLong("employeeId", employeeId)
 					                                                      .setLong("userId", userId)
-					                                                      .setParameter("startDate", sDate).list();
+					                                                      .setParameter("startDate", sDate).list();*/
 		    Boolean isRejected = false; 
 		    Boolean isAPPROVED = false; 
 		    Boolean isSUBMITTEDFORAPPROVAL = false; 
@@ -358,7 +375,35 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		    String status = "";
 			
 		    
-			for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
+		    
+		    for(SubmissionApproverHierarchy sah : sahList){
+				if(sah.getSubmissionId().getTotalHours()!=null && !sah.getSubmissionId().getTotalHours().isEmpty()){
+				combinedTotalHours = combinedTotalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
+				}
+					if( sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+						isRejected   = true;  
+						status = "REJECTED";
+					}
+					else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+						 isNEW   = true;  
+						 status = "NEW";
+					}
+					else if(!isRejected && !isNEW &&  sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+						 isSUBMITTEDFORAPPROVAL   = true;  
+						 status = "SUBMITTED FOR APPROVAL";
+					}
+					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+						 isAPPROVED   = true;  
+						 status = "APPROVED";
+					}
+				
+			
+			   ts.setCombinedTotalHours(combinedTotalHours.toString());
+			   ts.setCombinedStatus(status);
+		    }
+		    
+		    
+			/*for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
 				if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
 				combinedTotalHours = combinedTotalHours + Float.parseFloat(ts1.getTotalHours());
 				}
@@ -382,7 +427,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 			ts.setCombinedTotalHours(combinedTotalHours.toString());
 			ts.setCombinedStatus(status);
-		}
+		}*/
 		}
 		TimesheetSubmissions timesheetSubmissions = null;
 		if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){

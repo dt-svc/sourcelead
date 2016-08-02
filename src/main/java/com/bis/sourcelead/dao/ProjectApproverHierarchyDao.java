@@ -14,9 +14,9 @@ public interface ProjectApproverHierarchyDao {
 	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception;
 	
 	@Cacheable(cacheNames={"projectApproverHierarchy"})
-	public Collection<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
 	
-	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
+	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
 	

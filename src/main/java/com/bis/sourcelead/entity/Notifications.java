@@ -75,6 +75,10 @@ public class Notifications {
 	//to calculate days
 	@Transient
 	private Long calDays;
+	
+	//to notification count
+	@Transient
+	private Long notificationCount;
 
 	
 	
@@ -101,6 +105,14 @@ public class Notifications {
 
 	public void setDateValue(String dateValue) {
 		this.dateValue = dateValue;
+	}
+
+	public Long getNotificationCount() {
+		return notificationCount;
+	}
+
+	public void setNotificationCount(Long notificationCount) {
+		this.notificationCount = notificationCount;
 	}
 
 	public String getTime() {

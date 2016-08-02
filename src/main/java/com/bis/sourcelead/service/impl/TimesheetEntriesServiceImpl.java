@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -27,6 +29,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -48,6 +51,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	ProjectTasksService projectTasksService;
@@ -240,11 +245,20 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("</tr>");
         
         String approvalStatus = null;
-		
+        ArrayList<Boolean> isThereAnyApproverApproved = null;
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
+			isThereAnyApproverApproved = new ArrayList<Boolean>();
 			
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForTheSubmission(ts.getId(), "APPROVED");
+			if(isSah != null){
+				isThereAnyApproverApproved.add(true);
+			}
+			else{
+				isThereAnyApproverApproved.add(false);
+			}
 			
-			Submission_Status submissionStatus = ts.getSubmissionStatus();
+			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
 			//CommonUtil
 			//currentStartDate
@@ -285,8 +299,15 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			/*if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition = "disabled";
 			}*/
-			if(ts.getSubmissionApprovalStatus() != null){
+			/*if(ts.getSubmissionApprovalStatus() != null){
 				approvalStatus = ts.getSubmissionApprovalStatus().getValue();
+			}
+			else{
+				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
+			}*/
+            
+            if(sah.getSubmissionApprovalStatus() != null){
+				approvalStatus = sah.getSubmissionApprovalStatus().getValue();
 			}
 			else{
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
@@ -613,7 +634,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </div>");
 			
 			
-			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+			if(isThereAnyApproverApproved != null && !isThereAnyApproverApproved.isEmpty() && isThereAnyApproverApproved.contains(new Boolean("false"))){
+			//if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");
 				   sb.append("  </div>");
@@ -696,7 +718,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 		    	
-			Submission_Status submissionStatus = ts.getSubmissionStatus();
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			String submissionStatusStr = submissionStatus.getValue();
 			
 			Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
@@ -735,8 +758,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition = "disabled";
 			}*/
-			if(ts.getSubmissionApprovalStatus() != null){
-				approvalStatus = ts.getSubmissionApprovalStatus().getValue();
+			if(sah.getSubmissionApprovalStatus() != null){
+				approvalStatus = sah.getSubmissionApprovalStatus().getValue();
 			}
 			else{
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
@@ -1074,7 +1097,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("<div class='clearfix'></div>");
 			sb.append("</div>");
 			
-			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
@@ -1131,14 +1154,16 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			for(String submissionId : submissionIds){
 				  				submissionId = submissionId.replace("\"", "");
 				                Long total = 0l;
-					    		TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
-					    		if(status.equalsIgnoreCase("Draft")){
+				                TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+					             submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);
+					    		/*if(status.equalsIgnoreCase("Draft")){
 					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
 					    		}
 					    		if(status.equalsIgnoreCase("Submit")){
 					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.SUBMITTED);
 					    			timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
-					    		}
+					    		}*/
+					    		
 					    		
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
 								Iterator<String> itrator = request.getFileNames();

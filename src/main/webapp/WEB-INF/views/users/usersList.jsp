@@ -131,9 +131,11 @@ window.onload = function () {
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 	       	    	result = result +"<div class='user-profile'>";
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
-	       	    	result = result +"<div class='text-center image'>";
-	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='img-circle m-t-xs img-responsive' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	 			    result = result +"<span>"+userRole.userRoleName+" </span>";
+	       	    	result = result +"<div class='text-center image-parent'>";
+	       	    	result = result +"<div class='imageParent'>";
+	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
+	       	    	result = result +"</div>";
+	       	    	result = result +"<span>"+userRole.userRoleName+" </span>";
 	       	    	
 	       	    	
 	       	    	result = result +"</div>";

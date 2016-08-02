@@ -432,7 +432,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
     font-size:12px; padding:2px; cursor:pointer; margin:0px 1px; color:#368ee0; position:relative; 
     }
 .timesheet_appr_table .glyphicon strong {
-    position:absolute; right:-10px; top:25px; display:none; z-index:100;
+    position:absolute; right:-10px; top:25px; display:none;
     }
 .timesheet_appr_table .glyphicon p {
     background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
@@ -1145,7 +1145,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .project_details_cta { width:100%;}
  
 .project_details textarea { width:100%;}
-.user_details_cta { width:62%;}
  
  
 }
@@ -1162,13 +1161,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .content-wraper .content-header h2 {font-size:20px;}
  
 .user_summ_wrap .project_details { padding:20px 15px;}
-.user_details_cta { width:100%; padding:20px 0px 0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);}
- 
-.user_details_cta_img { width:268px; margin:10px auto 15px; float:none;}
-.user_summary_edit {
-    position:fixed; left:0px; right:0px; z-index:10000; top:0px; padding:20px 10px 20px 10px; max-height:100%; overflow-y:auto;
-    }
-.footer-area { height:auto; font-size:12px;}    
+.user_details_cta { width:100%; padding:20px 0px 0px 0px;}
  
  
 }
@@ -1222,8 +1215,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .project_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
  
 .project_wrap  .timesheet_head ul li span {display:inline-block;}
- 
-.user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
  
 }
  
@@ -1359,4 +1350,5 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .app_error_mes.app_error_mes_active {
     right:160px;
-    }          
+    }           
+        

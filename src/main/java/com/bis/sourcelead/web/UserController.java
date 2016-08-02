@@ -482,8 +482,13 @@ public class UserController {
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 
 					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
+
+							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");*/
+					/*projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
+
+							/*.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
 					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
+
 				}
 
 				resultJson = toJSON(allProjectsList);
