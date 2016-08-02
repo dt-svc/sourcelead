@@ -21,6 +21,8 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		/*
 		 * need to replace image location
 		 * src='"+url+"/resources/images/mail-logo.png'
+		 * 
+		 * src='http://vannamnew.xp3.biz/html/images/mail-logo.png'
 		 */
 		
 		
@@ -32,7 +34,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												tempHTML.append("<td>");
 												  tempHTML.append("<table width='600' align='center'>");
 												      tempHTML.append("<tr>");
-												           tempHTML.append("<td><img src='http://vannamnew.xp3.biz/html/images/mail-logo.png' width='300px' height='71px'></td>");
+												           tempHTML.append("<td><img src='"+url+"/resources/images/mail-logo.png' width='300px' height='71px'></td>");
 										             tempHTML.append("</tr>");
 								                 tempHTML.append("</table>");
 						                      tempHTML.append("</td>");
