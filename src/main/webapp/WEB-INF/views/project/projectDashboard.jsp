@@ -1,3 +1,4 @@
+<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -7,6 +8,10 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.12.3.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
  <style>
  
  .clsDatePicker {
@@ -75,6 +80,11 @@
         </div>
 			
 		    <div id="projectFilterList"></div>
+		    <div class="project_wrap_table">
+		    				<table id="example" class="display" cellspacing="0" width="100%">
+							</table>
+			</div>	   
+				
 		    <%-- <div id="projectList" class="project_wrap_table">
 		    	<table>
 		        	<tbody>
@@ -809,6 +819,18 @@ $(document).ready(function() {
 </script>
 
 <!-- this script is for Projects Filter functionality at Projects screen -->
+
+<script>
+function pagination(){  
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false
+		
+    } );
+}
+</script>
+
 <script>
 function filter(){
 	
@@ -832,9 +854,6 @@ function filter(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	result = result +'<div class="project_wrap_table">';
-   		    	result = result +'<table>';
-   		    	result = result +'<tbody>';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
@@ -845,6 +864,7 @@ function filter(){
    		    	result = result +'       <th>Status</th>';
    		    	result = result +'    </tr>';
    		    	result = result +'</thead>	';
+   		    	result = result +'<tbody>';
    		    	for (var i=0; i<json.length; i++)
    				{   
    		    		var report = json[i];
@@ -891,11 +911,10 @@ function filter(){
                 result = result +'  </tbody>';
                 result = result +' </table>';
                 result = result +'</div>';
-                $("#projectList").empty();  
-                $("#projectFilterList").empty();  
-   	    	    $("#projectFilterList").append(result);
-   	    	    
-   	    	 
+                $("#example").empty();  
+                $("#example").empty();  
+   	    	    $("#example").append(result);
+   	    	    pagination();	
    		    }
 	 }); 
 	
