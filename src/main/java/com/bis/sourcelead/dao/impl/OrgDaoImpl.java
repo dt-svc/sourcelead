@@ -132,7 +132,6 @@ public class OrgDaoImpl implements OrgDao {
                     try {
                         netUrl = new URL(webSite);
                     } catch (MalformedURLException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     String host = netUrl.getHost();
