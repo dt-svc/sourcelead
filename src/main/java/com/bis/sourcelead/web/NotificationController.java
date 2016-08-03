@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -55,12 +56,17 @@ public class NotificationController {
 	 * @return
 	 */
 	@RequestMapping(value = "/notificationStatusAsRead", method = RequestMethod.POST)
-	public @ResponseBody String notificationStatusAsRead(@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "orgCode", required = false) String orgCode,
-			@RequestParam(value = "locationCode", required = false) String locationCode) {
-		Integer updatecount = notificationsService.updateNotificationStatusAsRead(userId, orgCode, locationCode);
+	public @ResponseBody String notificationStatusAsRead(@RequestParam(value = "orgCode", required = false) String orgCode,
+						@RequestParam(value = "locationCode", required = false) String locationCode, HttpServletRequest request) {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
+		
+		for(Notifications notification : notificationList){
+			notification.setMode(Constants.NOTIFICATION_READ);
+			Integer updatecount = notificationsService.updateNotificationStatusAsRead(loginUser.getId(), orgCode, locationCode);
+		}
 		return "success";
-
 	}
 
 	/**
