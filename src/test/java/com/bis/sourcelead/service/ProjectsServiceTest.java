@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,6 +124,9 @@ public class ProjectsServiceTest {
 	
 	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
-		projectsService.getAllUesrTimeSheetSubmissionStatus();
+		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
+		for(User user : usrList){
+			projectsService.userEmailNotificationForTimeShhetSubmission(user);
+		}
 	}
 }
