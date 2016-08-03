@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,9 @@ import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -419,5 +423,36 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			  
 			
 }
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+			Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			currentCal.setLenient(false);
+			currentCal.setTime(new Date());
+			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
+			Date MondayDate = startMonday.getTime();
+			java.sql.Date  startMondayDate = new java.sql.Date(MondayDate.getTime());
+			
+			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			
+			List<User> userList  = session.createQuery(query.toString()).setDate("startDate", startMondayDate).setCacheable(true).list(); 
+			logger.info("=============calling Every 1 Minute===============");
+			logger.info("============="+userList.size());
+			for(User user :userList){
+				logger.info("----------->"+user.getEmail());
+				logger.info("----------->"+user.getFirstName());
+			}
+			
+			return userList;
+		}
+
+		@Override
+		public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
+			
+		}
 
 }
