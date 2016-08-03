@@ -126,12 +126,12 @@
 
 		</c:if>
 
-
+       <div class="side_mask"></div>
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
-					<i class="glyphicon glyphicon-share-alt"></i>
+					<i></i>
 				</div>
 				<div id="clientSideDiv"></div>
 			</div>
@@ -458,9 +458,13 @@ function getEndDatePickerById(projectId,localFieldName){
 	$(document).ready(function() {
 		$(".proj_show").click(function() {
 			$(".clients_side_wrap").addClass("clients_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
 		});
 		$(".proj_close").click(function() {
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			$(".side_mask").fadeOut(200);
+			$("body").css('overflow-y', 'auto');
 		});
 	});
 
