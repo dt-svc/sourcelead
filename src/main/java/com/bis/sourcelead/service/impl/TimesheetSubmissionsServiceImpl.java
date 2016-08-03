@@ -275,5 +275,21 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return timeSheetSubmissionCount;
 	}
 	
+	@Override
+		public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,
+				String employeeId) throws Exception {
+			Collection<TimesheetSubmissions> thslist = timesheetSubmissionsDao.getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(userId,employeeId);
+			return thslist;
+		}
+		
+		
+		@Override
+		public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)
+				throws Exception {
+			// TODO Auto-generated method stubgetSubmissionApproverHierarchyForEmployeeList
+			List<TimesheetSubmissions> list = timesheetSubmissionsDao.getSubmissionApproverHierarchyForEmployeeList(approverUserId);
+			return list;
+		}
+		
 
 }

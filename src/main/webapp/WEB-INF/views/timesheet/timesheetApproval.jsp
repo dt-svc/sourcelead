@@ -20,10 +20,17 @@ $(document).ready(function() {
 <script>
   function approvalList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
+	  var employeeId = [];
+		$('input:checkbox[name=employeeById]:checked').each(function() 
+		{
+			employeeId.push($(this).val());
+	   });
+		
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
+            url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId,        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
                 	 $("#timesheetApprList").removeAttr("style");
@@ -151,9 +158,22 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 <div class="timesheet_out">
 	<div class="timesheet_appr_wrap" >
 		<div class="timesheet_appr_wrap">
-		<!-- <div class="timesheet_head">
+		<div class="timesheet_head">
         	<ul>
-                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+        	<li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+                	<div id="filter3ApprovedPop" class="approved_pop">
+                    	<ul>
+                    	 <c:forEach var="report" items="${thslist}">  
+                        	<li><input  id="employee${report.employeeId}" name="employeeById" value ="${report.employeeId}"  onclick="approvalList();"  type="checkbox"><label for="employee${report.employeeId}">${report.fullName}</label></li>
+						  </c:forEach>
+                        	<!-- <li><input type="checkbox" value="None" id="c9"><label for="c9">employee1</label></li>
+							<li><input type="checkbox" id="c10"><label for="c10">employee2</label></li>
+							<li><input type="checkbox" id="c11"><label for="c11">employee3</label></li>
+							<li><input type="checkbox" id="c12"><label for="c12">employee4</label></li> -->
+                        </ul>
+                    </div>                	
+                </li>	
+                <!-- <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">  
                     	<ul>
                         	<li><input type="checkbox" value="None" id="c1"><label for="c1">client1</label></li>
@@ -193,10 +213,10 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
                         </ul>
                     </div>                	
                 </li>				
-                <div class="clearfix"></div>
+                <div class="clearfix"></div>-->
             </ul>
             <div class="clearfix"></div>
-        </div> -->
+        </div> 
 		
 		<div class="timesheet_appr_table">
 				<div id="timesheetApprList">   </div>
@@ -958,7 +978,7 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
     
-    
+   /*  
     $("#filter3ApprovePop").click(function(){
 		$("#filter3ApprovedPop").slideToggle(200);
 	});
@@ -968,7 +988,7 @@ $(document).ready(function() {
     $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
-    
+     */
     
      $("#filter4ApprovePop").click(function(){
 		$("#filter4ApprovedPop").slideToggle(200);
