@@ -26,9 +26,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -55,6 +57,10 @@ public class TimesheetSubmissionListController {
 	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
+	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	
+	@Autowired
 	public ProjectApproverHierarchyService projectApproverHierarchyService;
 
 	@RequestMapping(value = "/timesheetlistByStatus")
@@ -67,6 +73,7 @@ public class TimesheetSubmissionListController {
 		Collection<TimesheetSubmissions> list = null  ;
 		
 		if(status != null){
+			
 			list  = timesheetSubmissionsService.getTimeSheetSubmissionsListByStatus(user.getId(), status);
 		}
 		for(TimesheetSubmissions timesheetSubmissions:list){

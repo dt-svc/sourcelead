@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -41,6 +43,11 @@ public class DashboardController {
 	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	public OrgLocationService orgLocationService;
+	
+	
 
 	@RequestMapping(value = "/dashboard")
 	public ModelAndView projects() throws Exception {
@@ -56,10 +63,22 @@ public class DashboardController {
 	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+		
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(user.getId());
+		if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
 
+		}else if(userRole.equalsIgnoreCase("ROLE_USER")){
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
+		}else if(userRole.equalsIgnoreCase("ROLE_APPROVER")){
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
+		}
+		
 		resultJson = toJSON(timeSheetSubmissionCount);
 		return resultJson;
 	}

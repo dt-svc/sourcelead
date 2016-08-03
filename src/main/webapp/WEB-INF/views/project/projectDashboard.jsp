@@ -75,7 +75,7 @@
         </div>
 			
 		    <div id="projectFilterList"></div>
-		    <div id="projectList" class="project_wrap_table">
+		    <%-- <div id="projectList" class="project_wrap_table">
 		    	<table>
 		        	<tbody>
 					<thead>
@@ -127,7 +127,7 @@
 	                    </c:forEach> 
 		           </tbody>
 		        </table>
-			</div>
+			</div> --%>
 		</div>
 		</c:if>
 		<div class="side_mask"></div>
@@ -300,6 +300,16 @@
                <!--   Popup's   -->	
 <jsp:include page="../masterFooter.jsp" />	
 	
+	
+	
+<script type="text/javascript">
+window.onload = function () {
+	filter();
+ };
+</script>
+
+
+
 <script>
 //project side bar
 $(document).ready(function() {
