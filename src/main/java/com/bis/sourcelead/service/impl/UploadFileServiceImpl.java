@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,16 @@ public class UploadFileServiceImpl implements UploadFileService {
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
 
 		return uploadFileDao.uploadFile(multipartFile, orgLocations,user, isMailChecked);
+	}
+
+	@Override
+	public void downloadFile(String fileName, HttpServletResponse response) throws Exception {
+		uploadFileDao.downloadFile(fileName, response);
+	}
+
+	@Override
+	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
+		uploadFileDao.downloadCreateUserTemplate(response);		
 	}
 
 }
