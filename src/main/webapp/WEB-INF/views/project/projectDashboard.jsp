@@ -130,9 +130,10 @@
 			</div>
 		</div>
 		</c:if>
+		<div class="side_mask"></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
-		    <h1 id="projectNameById"></h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+		    <h1 id="projectNameById"></h1> <div class="proj_close"><i></i></div>
 		     <div id="projectSideDiv">
 		     </div>   
 			<div class="project_inn_mask"></div>
@@ -303,7 +304,9 @@
 //project side bar
 $(document).ready(function() {
      $(".proj_close").click(function(){
-		$(".project_side_wrap").removeClass("project_side_wrap_active");
+    	$(".project_side_wrap").removeClass("project_side_wrap_active");
+ 		$(".side_mask").fadeOut(200);
+ 		$("body").css('overflow-y', 'auto');
 	});	
 });
 //project side bar tabs
@@ -374,6 +377,8 @@ $(document).ready(function() {
 		    $("#projectNameById").append(projectName); 
 		    
 		    $(".project_side_wrap").addClass("project_side_wrap_active");
+		    $(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
 			
 		    projectEmployee(projectId);
  }
@@ -656,9 +661,9 @@ function saveReason(projectMemberId, projectId){
 	result = result + '</select>';
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
-	result = result + '				<div class="project_details_cta">';
+	result = result + '				<div class="project_details_cta" id="projectNameId">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onBlur="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onBlur="validate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project manager:</strong><span>';
@@ -1294,4 +1299,25 @@ function flushEmployee(){
 <script>
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
+
+ <script type="text/javascript">
+        function validate(projectId,localFieldName) {
+	           
+	            var ProjectName = document.getElementById("projectName").value;
+	            $('#projectNameId').find('p.jquery_form_error_message').remove();
+	      		if ($('#projectName').val() == '') {
+	      			$("input#projectName").after("<p class='jquery_form_error_message'>Project Name is required</span>");
+	      			return true;
+	      		} else{
+	      			if(ProjectName.trim().match(/^\S*$/) == ''){
+	      				$("input#projectName").after("<p class='jquery_form_error_message'>Must not start with spaces</span>");
+		      			return true;
+	               }else{
+	            	   inlineEditForProjects(projectId,localFieldName);
+	               }
+               	}
+	          }
+        
+    </script>
+    
 </html>
