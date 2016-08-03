@@ -7,23 +7,22 @@
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
 
- 
- 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
 }
 </style>
 
-<!-- Content Area -->
-<section class="content-wraper">
-	<section class="content-header clearfix">
-		<div class="pull-left">
-			<h2>Create Client</h2>
-		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
-			&raquo; Client</div>
-	</section>
+	<!-- Content Area -->
+	<section class="content-wraper">
+		<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>Create Client</h2>
+			</div>
+			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
+				&raquo; Client</div>
+		</section>
+		
 	<div class="content-area clearfix">
 		<section class="action-btns clearfix">
 			<ul class="pull-right list-unstyled list-inline">
@@ -40,7 +39,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
 							<div class="col-md-9" id="clientNameDiv">
-								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" value="">
+								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -48,7 +47,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
+									name="country" field-name="Client Country" value="" data-validation="validate_Alphabet validate_Space validate_length length2-50" data-validation-optional="true"> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -56,7 +55,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
+									field-name="Client State" class="form-control" value="" field-name="State"  data-validation="validate_Alphabet validate_Space validate_length length2-50" data-validation-optional="true"">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -66,7 +65,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
+									field-name="Client City" value="" field-name="City" data-validation="validate_Alphabet validate_Space validate_length length2-50" data-validation-optional="true"> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -125,7 +124,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
 																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control" field-name="Project Name" data-validation="required validate_Space validate_length length2-250">
+																	class="form-control" field-name="Project Name" data-validation="validate_Space validate_length length2-250">
 																	<span class="hidden">Enter Project Name</span>
 															</div>
 														</div>
@@ -134,7 +133,7 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" data-validation="required validate_Space">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" field-name="Project Manager" data-validation="required validate_Space">
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
 																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
@@ -144,7 +143,7 @@
 																<span class="hidden">Select Project Manager</span>
 															</div>
 														</div>
-														<div class="form-group level-second">
+														<div class="form-group level-second">  
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
 																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
@@ -206,7 +205,7 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
 									name="webSite" onblur="validateWebsite();" field-name="Website"
-									data-validation="validate_Space validate_length length2-100 validate_domain"
+									data-validation="validate_Space validate_length length2-50 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -249,8 +248,8 @@
 			</form:form>
 		</div>
 
-	</div>
-</section>
+		</div>
+	</section>
 <!-- Content Area Ends-->
 
 <!-- Footer Area -->
@@ -469,7 +468,6 @@
 		var updateProjectStartDate = $("#" + rowId + "projectStartDate").val();
 		var updateProjectEndDate = $("#"+rowId+"projectEndDate").val(); 
 		
-		
 		$("#projectManager").empty();
 		var outPut= "";
 		<c:forEach var="option" items="${user_List}">
@@ -482,9 +480,6 @@
 		     
 		</c:forEach>
 		$("#projectManager").append(outPut);
-		
-	
-		
 		$("#projectId").val('');
 		$("#projectName").val('');
 		/* $("#projectManager").val(''); */
@@ -531,14 +526,13 @@
 
 	}
 </script>
+
 <script>
 	$(document).ready(function() {
 		$("#maxTsRowNum").val('1');
 		document.getElementById("project_form").reset();
 	});
 </script>
-
-
 
 <script type="text/javascript">
 	function validateProjectId() {
@@ -811,5 +805,3 @@ function validateClientName(){
 	}
 }
 </script>
-
-
