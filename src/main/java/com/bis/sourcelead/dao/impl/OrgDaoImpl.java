@@ -216,4 +216,14 @@ public class OrgDaoImpl implements OrgDao {
 	            return isClientFound;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Org> getEnrolledOrgs(Long orgId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from Org org where org.id <> :orgId ";
+	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
+        return orgsList;
+	}
+
 }

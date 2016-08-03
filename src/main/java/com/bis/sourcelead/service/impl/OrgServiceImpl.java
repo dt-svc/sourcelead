@@ -106,6 +106,11 @@ public class OrgServiceImpl implements OrgService {
 	public boolean isClientNameValid(String clientName) throws Exception {
 		return orgDao.isClientNameValid(clientName);
 	}
+
+	@Override
+	public List<Org> getEnrolledOrgs(Long orgId) throws Exception {
+		return orgDao.getEnrolledOrgs(orgId);
+	}
 	
 	
 }

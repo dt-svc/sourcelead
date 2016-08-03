@@ -1,10 +1,16 @@
 package com.bis.sourcelead.web;
 
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,25 +20,36 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class RegistrationController {
 	
-	 @Autowired
+	@Autowired
 	 RegistrationService registrationService;
 	
 	 @Autowired
@@ -47,6 +64,61 @@ public class RegistrationController {
 	 @Autowired
 	 OrgService orgService;
 	 
+	 @Value("${sourceLeadBlockedSocialDomains}")
+	 private String sourceLeadBlockedSocialDomains;
+	 
+	 @Value("${sourceleadUrl}")
+	 private String sourceleadUrl;
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
+	 @RequestMapping(value = "/enrolledOrgsList")
+		public ModelAndView enrolledOrgsList() {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("registration/enrolledOrgsList");
+
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+	 }
+	 
+	 
+	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
+	 @RequestMapping(value = "/enrollOrg")
+		public ModelAndView registration() {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("registration/enrollOrg");
+
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+			return model;
+
+		}
+	 
+	 
+	 @RequestMapping(value = "/getOrgsList")
+		@ResponseBody
+		public String getUsersList(HttpServletRequest request,
+				@RequestParam(value="searchByName", required=false) String searchByName,
+				@RequestParam(value="userState", required=false) String userState) {
+
+		 	String resultJson = null;
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			ArrayList<Org> enrolledOrgsList = new ArrayList<Org>();
+			List<Org> orgsList = new ArrayList<Org>();
+			
+			try {
+				orgsList = orgService.getEnrolledOrgs(org.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+			 resultJson = toJSON(orgsList);
+			 return resultJson;
+
+		}
 	 
 	 
 	
@@ -178,6 +250,17 @@ public class RegistrationController {
 		  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
 		  return status;
 	   }
+	   
+	   
+	   private String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
+		
 	
 	   protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));

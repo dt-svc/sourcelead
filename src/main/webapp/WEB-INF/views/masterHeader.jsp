@@ -180,6 +180,11 @@
                  <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y'}">
                      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
                  </c:if>
+                 
+                 <c:if test="${SourceLeadWeb_enrollOrgVisible == 'Y'}">
+                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-gears" aria-hidden="true"></i>Enroll Org</a></li>
+                 </c:if>
+                 
                  <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>

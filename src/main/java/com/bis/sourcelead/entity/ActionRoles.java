@@ -55,6 +55,12 @@ public class ActionRoles {
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MODULE_ID", nullable = false)
+	private Modules modules;
+	
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -117,6 +123,15 @@ public class ActionRoles {
 
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
+	}
+	
+
+	public Modules getModules() {
+		return modules;
+	}
+
+	public void setModules(Modules modules) {
+		this.modules = modules;
 	}
 
 	public Date getCreatedDate() {

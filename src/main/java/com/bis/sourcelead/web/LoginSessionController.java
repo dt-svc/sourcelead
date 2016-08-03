@@ -93,6 +93,10 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			
+			if(userRole.getRoles().getRoleName().equalsIgnoreCase("SOURCELEAD_ADMIN")){
+				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
+			}
+			
 			
 			List<Tabs> tabsList = null;
 			
