@@ -2,11 +2,13 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -21,7 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -36,7 +48,12 @@ public class ProjectsDaoImpl implements ProjectsDao{
     @Autowired
    	private UserRoleDao userRoleDao;
     
+    @Autowired
+    private EmailScenarioService emailScenarioService;
     
+    @Autowired
+    
+    private EmailScenerioUtil emailScenerioUtil;
     
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
@@ -419,5 +436,74 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			  
 			
 }
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+			Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			currentCal.setLenient(false);
+			currentCal.setTime(new Date());
+			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
+			Date MondayDate = startMonday.getTime();
+			java.sql.Date  startMondayDate = new java.sql.Date(MondayDate.getTime());
+			
+			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			
+			List<User> userList  = session.createQuery(query.toString()).setDate("startDate", startMondayDate).setCacheable(true).list(); 
+			logger.info("=============calling Every 1 Minute===============");
+			logger.info("============="+userList.size());
+			for(User user :userList){
+				logger.info("----------->"+user.getEmail());
+				logger.info("----------->"+user.getFirstName());
+			}
+			
+			return userList;
+		}
+
+		@Override
+		public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(user.getFirstName());
+			 emailMessage.setLastName(user.getLastName());
+			 emailMessage.setToEmail(user.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("firstName", emailMessage.getFirstName());
+			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("administratorFirstName", user.getFirstName());
+			 globalVarsMap.put("administratorLastName",user.getLastName());
+			 globalVarsMap.put("role",user.getUserType());
+			 globalVarsMap.put("userEmailId",user.getEmail());
+			
+			 //setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 emailRecipientList.add(emailRecipient);
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = "";
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		}
 
 }

@@ -253,7 +253,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void sendEmail(User user, User loginUser, String password) throws Exception {
-		EmailMessage emailMessage = new EmailMessage();
+		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());

@@ -73,7 +73,7 @@ public class CommonUtil {
 			
 			/**
 			 * Getting List Of all Projectmembers based on login user who is approver/employee to that particular project
-			 *  who did have 4 weeks prior/post submission records in DB
+			 *  who didn't have 4 weeks prior/post submission records in DB
 			 * 
 			 */
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());

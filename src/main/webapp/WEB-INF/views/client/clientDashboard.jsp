@@ -93,7 +93,7 @@
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}">${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}</span></div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
@@ -204,9 +204,16 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
+							var endDateStr ="";
+							if(opt.endDateStr != null && opt.endDateStr != '' & opt.endDateStr != 'undefined'){
+								endDateStr = opt.endDateStr;
+							}else{
+								endDateStr = "NO DATA";
+							}
 							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.projectName+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" readonly="readonly"></div></td>';
+							
+							result = result+ '<td><div><input type="text" value="'+endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" readonly="readonly"></div></td>';
 							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
 									
 							for (var j = 0; j < opt.projectManagerName.length; j++) {
