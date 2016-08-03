@@ -698,6 +698,7 @@ function flushProject(){
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
 	 var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value; 
+	 if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
@@ -716,6 +717,7 @@ function flushProject(){
 		        	} 
 		        },
 		    });
+	    }
 	 }
  }
  </script> 
