@@ -182,7 +182,7 @@
 											<div class="modal-footer">
 											<div class="col-xs-8 col-lg-11">
 											 <a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();flushProject();"
+															id="save_task" onclick="addTasks(); flushProject();"
 															data-target="addTask"> <i class="fa fa-plus"></i><span
 															id="addTaskText"> Add Project</span></a>
 											</div>
@@ -211,11 +211,11 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3" for="Project Manager">Email</label>
+							<label class="col-md-3" for="Project Manager">Email<span class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_Space validate_length length2-100 validate_email"
-									data-validation-optional="true" value="" class="form-control">
+									 data-validation="required validate_Space validate_length length2-100 validate_email"
+									 value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
 						</div>
