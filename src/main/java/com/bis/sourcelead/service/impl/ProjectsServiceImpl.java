@@ -17,6 +17,7 @@ import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
 
@@ -187,6 +188,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
 		projectsDao.userEmailNotificationForTimeShhetSubmission(user);
+	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getApproveUserForTimeSheets(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
