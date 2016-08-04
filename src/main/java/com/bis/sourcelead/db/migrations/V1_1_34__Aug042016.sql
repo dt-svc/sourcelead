@@ -5,15 +5,15 @@ UPDATE `sourcelead`.`USER_ROLE` SET `ROLE_ID`='4' WHERE `ID`='1';
 
 
 
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ID`, `ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('18', '1', '4', 'Y', '1');
+INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('1', '4', 'Y', '1');
 
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ID`, `ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('19', '2', '4', 'Y', '1');
+INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('2', '4', 'Y', '1');
 
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ID`, `ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('20', '3', '4', 'Y', '1');
+INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('3', '4', 'Y', '1');
 
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ID`, `ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('21', '4', '4', 'Y', '1');
+INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('4', '4', 'Y', '1');
 
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ID`, `ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('22', '7', '4', 'Y', '1');
+INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('7', '4', 'Y', '1');
 
 
 DROP TABLE IF EXISTS `sourcelead`.`MODULES`;
