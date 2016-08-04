@@ -492,6 +492,10 @@ function flushProject(){
 	        var frm = $('#addProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
 	        $("#save_project").attr("disabled", "disabled");
@@ -500,7 +504,7 @@ function flushProject(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -694,6 +698,7 @@ function flushProject(){
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
 	 var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value; 
+	 if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
@@ -712,6 +717,7 @@ function flushProject(){
 		        	} 
 		        },
 		    });
+	    }
 	 }
  }
  </script> 

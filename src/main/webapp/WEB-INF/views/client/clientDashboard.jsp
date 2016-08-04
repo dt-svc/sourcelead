@@ -65,7 +65,7 @@
 		</div>
 
 		<c:if test="${!empty clientsList}">
-			<div class="clients_wrap_table clients_wrapTable ">
+			<div class="clients_wrap_table ">
 				<table>
 					<tbody>
 					<thead>
@@ -81,7 +81,7 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm mt" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
@@ -93,7 +93,7 @@
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}">${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}</span></div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
@@ -126,12 +126,12 @@
 
 		</c:if>
 
-
+       <div class="side_mask"></div>
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
-					<i class="glyphicon glyphicon-share-alt"></i>
+					<i></i>
 				</div>
 				<div id="clientSideDiv"></div>
 			</div>
@@ -204,9 +204,16 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
+							var endDateStr ="";
+							if(opt.endDateStr != null && opt.endDateStr != '' & opt.endDateStr != 'undefined'){
+								endDateStr = opt.endDateStr;
+							}else{
+								endDateStr = "NO DATA";
+							}
 							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.projectName+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" ></div></td>';
+							
+							result = result+ '<td><div><input type="text" value="'+endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" readonly="readonly"></div></td>';
 							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
 									
 							for (var j = 0; j < opt.projectManagerName.length; j++) {
@@ -322,8 +329,7 @@
 		$
 				.ajax({
 					type : "POST",
-					url : "http://localhost:8080/sourcelead/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="
-							+ orgRelationID,
+					url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -333,7 +339,9 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client name:</strong>';
 						
+						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientName\');" id="clientName" value="'+json.orgName+'" placeholder="Project name" class="project_detfield"></span>';
+						}
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
@@ -457,9 +465,13 @@ function getEndDatePickerById(projectId,localFieldName){
 	$(document).ready(function() {
 		$(".proj_show").click(function() {
 			$(".clients_side_wrap").addClass("clients_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
 		});
 		$(".proj_close").click(function() {
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			$(".side_mask").fadeOut(200);
+			$("body").css('overflow-y', 'auto');
 		});
 	});
 

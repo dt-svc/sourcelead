@@ -167,7 +167,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
         }else{
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager'");
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
         }
 		return employeeList;

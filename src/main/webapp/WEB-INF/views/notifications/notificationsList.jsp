@@ -92,17 +92,17 @@
 					</td>
                     <td>
 					<div class="notifi-image pull-left">
-						<img src="resources/images/pratap-bis.jpg" alt="User Image" class="img-responsive img-circle" title="Noficiation User">
+						<img class="img-responsive img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
 					</div>
 					</td>
 					<td>
 					<div class="mailbox-name">
-						${report.notificationTo.firstName}
+						${report.notificationFrom.firstName}
 					</div>
 					</td>
                     <td>
 						<div class="mailbox-subject">
-							<a href="readmail.html"><b>${report.body}</b></a>
+							<a href="#"><b>${report.body}</b></a>
 						</div>
                     </td>
                     <td><div class="mailbox-date">${report.calDays} days ago</div></td>
@@ -134,7 +134,6 @@ function deleteNotification(notificationId){
 	      type: "POST",
 	  	  url: "${sourceleadUrl}"+"/deleteNotification?${_csrf.parameterName}=${_csrf.token}&notificationId="+notificationId+"&orgCode="+orgCode+"&locationCode="+locationCode,
 	  			  success :function(data) {
-	  				alert("data"+data);
 	  				  if(data == 'success'){
 		        		location.replace(sourceleadUrl+"/notificationsList");  
 		        	} 		

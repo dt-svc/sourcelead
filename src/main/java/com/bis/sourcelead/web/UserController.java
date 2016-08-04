@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -64,6 +66,9 @@ public class UserController {
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
@@ -126,7 +131,12 @@ public class UserController {
 		                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 						model.addObject("org_projectsList", projectsList);
 						
-						/*Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
+						
+						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
+						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
+						/*Integer newTimeSheetsCount = submissionApproverHierarchyService.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocations.getId(),"NEW");
+						
+						
 						Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
 						Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
 						
@@ -136,11 +146,12 @@ public class UserController {
 						
 						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
 						
-						model.addObject("totalOpenTimeSheetCount", totalOpenTimeSheetCount);
-						model.addObject("approvedTimeSheetsCount", approvedTimeSheetsCount);
-						model.addObject("rejectedTimeSheetsCount", rejectedTimeSheetsCount);
-						model.addObject("waitingTimeSheetsCount", waitingTimeSheetsCount);
-						model.addObject("assignedProjectsCount", assignedProjectsCount);*/
+						*/
+						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
+						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
+						model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
+						model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
+						model.addObject("assignedProjectsCount", assignedProjectsCount);
 						
 						request.setAttribute("userId", userId);
 						model.setViewName("users/userSummary");
@@ -469,25 +480,25 @@ public class UserController {
 						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
 								.format(projectMembers.getProjects().getEndDate()));
 					}
-					/*Float draftTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "DRAFT");
-					projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
+			        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
+			        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
+			        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+			        projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
-					Float submittedTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalDraftAndSubmittedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "SUBMITTED");
+			        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "SUBMITTED");
+			        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "SUBMITTED");
+			        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
 					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
-
-					Float approvalTimesheetsSubmissionsCount = timesheetSubmissionsService
-							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "APPROVED");
+					
+				    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "APPROVED");
+				    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "APPROVED");
+			        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
 					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-
-					Float rejectedTimesheetsSubmissionsCount = timesheetSubmissionsService
-
-							.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");*/
-					/*projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
-
-							/*.getTotalApprovedOrRejectedHoursByuserIdAndProjectId(projectMembers.getProjects().getId(),userId, "REJECTED");
-					projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());*/
+					
+					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "REJECTED");
+				    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "REJECTED");
+				    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
+				    projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 
 				}
 

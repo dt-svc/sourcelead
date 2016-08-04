@@ -28,4 +28,16 @@ public interface SubmissionApproverHierarchyService {
 	public void updateApprovalStatusForApprover(Long empId,Long approverUserId,Date startDate,String status,String rejectedReason);
 	
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus);
+	
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId,Long projectId, String approvalStatus);
+
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(Long userId,Long projectId, String submissionStatus); 
+	
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String approvalStatus);
+
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
+	
+	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String submissionStatus); 
+
+	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String submissionStatus); 
 }

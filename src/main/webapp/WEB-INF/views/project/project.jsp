@@ -27,6 +27,8 @@
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
 		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		 //space value  consider this condition 
+		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
@@ -44,6 +46,7 @@
 							}
 						},
 					});
+	     	}
 		}
 	}
 </script>
@@ -278,7 +281,7 @@
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
 										<input type="text" value="Select Team" class="form-control"
 										data-target="#assignTeam" data-toggle="modal"
-										onclick="getTeamMembers();flushEmployee();">
+										onclick="getTeamMembers();flushEmployee();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> <i
 										class="fa fa-plus btn btn-default formic1"
 										onclick="flushEmployee();"></i>
@@ -743,7 +746,7 @@
 				}
 			});
 
-			$('#save_client').attr('data-dismiss', 'modal');
+			//$('#save_client').attr('data-dismiss', 'modal');
 			$('#orgName').attr('');
 			$('#webSite').attr('');
 			return true;
@@ -863,8 +866,7 @@
 						var json = JSON.parse(data);
 						var output = "";
 
-						output = output
-								+ ' <table cols="0" class="table table-bordered table-striped  clearfix">';
+						output = output + ' <table cols="0" class="table table-bordered table-striped  clearfix">';
 						output = output + ' <tbody>';
 						output = output + ' <tr>';
 						output = output + ' <th>&nbsp;&nbsp;</th>';
@@ -932,8 +934,10 @@
 									dateFormat : 'yy-mm-dd',
 									onSelect : function(selected) {
 										var dt = new Date(selected);
+										var id = $(this).attr('id');
+										var actualId = $(this).attr('id').split('startDate')[1];
 										dt.setDate(dt.getDate() + 1);
-										$("#endDate"+opt.id).datepicker("option", "minDate", dt);
+										$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									}
 								});
 	
@@ -941,8 +945,10 @@
 									dateFormat : 'yy-mm-dd',
 									onSelect : function(selected) {
 										var dt = new Date(selected);
+										var id = $(this).attr('id');
+										var actualId = $(this).attr('id').split('endDate')[1];
 										dt.setDate(dt.getDate() - 1);
-										$("#startDate"+opt.id).datepicker("option", "maxDate", dt);
+										$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 									}
 								});
 							}

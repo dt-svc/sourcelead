@@ -28,4 +28,29 @@ public interface SubmissionApproverHierarchyDao {
 	
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus);
 	
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId,Long projectId, String approvalStatus);
+
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(Long userId,Long projectId, String submissionStatus); 
+	
+	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String approvalStatus);
+
+	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
+	
+	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
+	
+	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
+    
+	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String submissionStatus); 
+
+	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String submissionStatus); 
+
+	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndProjectIdForApprover(Long userId,Long projectId, String approvalStatus);
+
+	public  List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndProjectIdForApprover(Long userId,Long projectId, String submissionStatus); 
+	
+	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String approvalStatus);
+
+	public  List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String submissionStatus); 
+	
+	
 }

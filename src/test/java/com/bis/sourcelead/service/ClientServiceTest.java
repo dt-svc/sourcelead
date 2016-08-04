@@ -17,6 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.impl.OrgRelationsDaoImpl;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.impl.OrgRelationsServiceImpl;
 
@@ -34,12 +35,6 @@ public class ClientServiceTest {
 	@Configuration
 	static class OrgServiceTestContextConfiguration {
 		@Bean
-		public OrgRelationsDao OrgRelationsDao() {
-			return new OrgRelationsDaoImpl();
-
-		}
-
-		@Bean
 		public OrgRelationsService orgRelationsService() {
 			return new OrgRelationsServiceImpl();
 		}
@@ -48,8 +43,7 @@ public class ClientServiceTest {
 	@Autowired
 	OrgRelationsService orgRelationsService;
 
-	@Autowired
-	OrgRelationsDao orgRelationsDao;
+
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientServiceTest.class);
 
@@ -65,6 +59,14 @@ public class ClientServiceTest {
 		orgRelations.setCountry("india");
 		orgRelations.setState("Ap");
 		orgRelations.setCity("Vizag");
+		OrgLocations clientLocation = new OrgLocations();
+		clientLocation.setId(1L);
+		orgRelations.setClientLocationId(clientLocation);
+		
+		OrgLocations location = new OrgLocations();
+		location.setId(3L);
+		
+		orgRelations.setLocationId(location);
 		orgRelations.setRelationType("Customer Relation");
 		orgRelations.setCreatedDate(new Date());
 		orgRelations.setCreatedBy("PrasadK");
