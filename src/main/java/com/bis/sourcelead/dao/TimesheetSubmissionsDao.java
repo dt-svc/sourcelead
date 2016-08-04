@@ -45,6 +45,10 @@ public interface TimesheetSubmissionsDao {
 	public Collection<TimesheetSubmissions> getProjectsBasedOnUserIdAndStatusAndClientForFilters(Long userId ,String clientId,String values)throws Exception;
 	
 	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus,Long orgLocationId)throws Exception;
+	
+	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId);
+	
+	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,String employeeId) throws Exception ;
 
 
 }

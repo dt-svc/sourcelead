@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -63,6 +65,8 @@ public class TimesheetSubmissionsController {
 	
 	@Autowired
 	private ApplicationContext applicationContext;
+	
+	
 	
 	@Autowired
 	private DataSource dataSource;
@@ -98,11 +102,20 @@ public class TimesheetSubmissionsController {
 
 	
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
-	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request) throws Exception {
+	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request, @RequestParam(value="employeeId", required=false) String employeeId) throws Exception {
 		
 		String resultJson = null;
+		Collection<TimesheetSubmissions> timesheetSubmissionsList  = null;
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
+        if(!employeeId.isEmpty()){
+        	
+        	 timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(user.getId(),employeeId);
+        	 
+        }else{
+        	
+        	  timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
+        }
+      
         
         ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
         
@@ -513,6 +526,14 @@ public class TimesheetSubmissionsController {
 			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
 			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
 			
+			
+			List<TimesheetSubmissions> thslist = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(user.getId());
+			for(TimesheetSubmissions ths : thslist ){
+				ths.setFullName(ths.getProjectMembers().getEmployee().getUser().getFirstName() +""+ths.getProjectMembers().getEmployee().getUser().getLastName());
+				ths.setEmployeeId(ths.getProjectMembers().getEmployee().getId().toString());
+			}
+			model.addObject("thslist",thslist);
+
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheetApproval");
 	        return model;
