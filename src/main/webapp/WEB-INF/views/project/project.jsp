@@ -463,7 +463,7 @@
 								<label class="col-lg-3">Client Website <span
 								class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="required ">
+									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="required validate_Space">
 								</div>
 							</div>
 						</div>
@@ -1034,39 +1034,33 @@
 	function validateWebsite() {
 		var website = document.getElementById("companyWebsite").value;
 		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		
 		if (website != null && website != '') {
 
 			//$("#save_client").attr("disabled", "disabled");
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="
-						+ website + "&sourceleadBLockedwebsites="
-						+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
-						$("input#companyWebsite").after(
-								"<p class='jquery_form_error_message'>"
-										+ website
-										+ " is Already Existed</span>");
-						document.getElementById("companyWebsite").setAttribute(
-								'record-exist', 'yes');
-						document.getElementById("companyWebsite").setAttribute(
-								'record-exist-errorMsg',
-								website + ' is '+result);
+						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
+						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
+						
 					} else {
 						//New WebSite class="form-control"
 						//$("#save_client").removeAttr("disabled");
-						$('input#companyWebsite').removeAttr(
-								"class record-exist record-exist-errormsg");
-						$('input#companyWebsite').attr('class',
-								'valid form-control');
-						$('#companyWebsiteDiv').find(
-								'p.jquery_form_error_message').remove();
+						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#companyWebsite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+				
 						$("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
@@ -1076,6 +1070,7 @@
 
 			});
 		}
+	  }
 	}
 </script>
 <script type="text/javascript">

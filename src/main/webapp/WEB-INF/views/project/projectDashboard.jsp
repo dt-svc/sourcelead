@@ -701,25 +701,29 @@ function saveReason(projectMemberId, projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
-		result = result+"<option value=''>Select</option>";
-					for (var i = 0; i < json.clientName.length; i++) {
-						
-						var managers = json.clientName[i];
-						var projrctmanager = managers.split('&');
-				    	var name = projrctmanager[0];
-				    	var id = projrctmanager[1];
-				    	 var selected = '';
-	   		 	    	 if(json.relationId==id){
-	   		 	    		 selected = 'selected';
-	   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
-	   		 	    	 }else{
-	   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
-	   		 	    	 }projectEndDate
-	   		 	    	 
-	   		 	    	 
-					}
-		result = result + '</select>';
+	 if(json.relationId != null){
+	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');" disabled="disabled">';
+	 }else{
+		 result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
+	 }
+	 result = result+"<option value=''>Select</option>";
+				for (var i = 0; i < json.clientName.length; i++) {
+					
+					var managers = json.clientName[i];
+					var projrctmanager = managers.split('&');
+			    	var name = projrctmanager[0];
+			    	var id = projrctmanager[1];
+			    	 var selected = '';
+   		 	    	 if(json.relationId==id){
+   		 	    		 selected = 'selected';
+   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+   		 	    	 }else{
+   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
+   		 	    	 }
+   		 	    	 
+   		 	    	 
+				}
+	result = result + '</select>';
 	
 	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -825,7 +829,8 @@ function pagination(){
     $('#example').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false
+    	"bLengthChange": false,
+    	"bDestroy": true
 		
     } );
 }
