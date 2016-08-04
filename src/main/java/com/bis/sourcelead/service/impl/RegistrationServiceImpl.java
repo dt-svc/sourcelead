@@ -113,7 +113,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	
 	@Override
-	public void addRegistration(Registration registration) throws Exception {
+	public void addRegistration(Registration registration,User loginUser) throws Exception {
 		
 		//For Saving of Org Details
 		Org org = getOrgDetails(registration);
@@ -124,7 +124,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		//For Saving of User Details
-		User user = getUserDetails(registration);
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		User user = getUserDetails(registration,password);
 		try {
 			userService.addUser(user);
 		} catch (Exception e1) {
@@ -167,6 +168,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveActionRoles(org,orgLocations,user);
 		
+		
+		userService.sendEmail(user, loginUser, password);
+		
+		
+		
 	}
 	
 	private Org getOrgDetails(Registration registration){
@@ -180,18 +186,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 		return org;
 	}
 	
-	private User getUserDetails(Registration registration){
+	private User getUserDetails(Registration registration,String password){
 		User user = new User();
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
 		user.setEmail(registration.getEmail());
 		user.setUserName(registration.getEmail());
-		user.setUserState(Status.ACTIVE);
+		user.setUserState(Status.NOT_LOGGEDIN);
 		user.setUserType("Admin");
-		user.setPassword(sourceleadPasswordEncoder.encode(registration.getPassword()));
+		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		user.setIsMailSent(Status.Y);
 		return user;
 	}
 	

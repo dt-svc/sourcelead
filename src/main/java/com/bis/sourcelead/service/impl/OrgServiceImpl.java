@@ -108,8 +108,8 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public List<Org> getEnrolledOrgs(Long orgId) throws Exception {
-		return orgDao.getEnrolledOrgs(orgId);
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
+		return orgDao.getEnrolledOrgs(orgId, userState, searchByName);
 	}
 	
 	

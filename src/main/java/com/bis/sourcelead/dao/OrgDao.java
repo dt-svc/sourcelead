@@ -33,6 +33,6 @@ public interface OrgDao {
 	 */
 	public boolean isClientNameValid(String clientName) throws Exception;
 	
-	public List<Org> getEnrolledOrgs(Long orgId) throws Exception;
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;
 	
 }

@@ -74,11 +74,15 @@ public class RegistrationController {
 	 
 	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrolledOrgsList")
-		public ModelAndView enrolledOrgsList() {
+		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			model.setViewName("registration/enrolledOrgsList");
-
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
+			}
 			return model;
 
 	 }
@@ -105,12 +109,10 @@ public class RegistrationController {
 
 		 	String resultJson = null;
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			ArrayList<Org> enrolledOrgsList = new ArrayList<Org>();
 			List<Org> orgsList = new ArrayList<Org>();
 			
 			try {
-				orgsList = orgService.getEnrolledOrgs(org.getId());
+				orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -131,21 +133,17 @@ public class RegistrationController {
 				JSONObject jsonObj = new JSONObject(json);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json,Registration.class);
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				registrationService.addRegistration(registration);
+				registrationService.addRegistration(registration,user);
+				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 				
-				//For User Authentication
-				Authentication authentication = new UsernamePasswordAuthenticationToken(registration.getEmail(), registration.getPassword());
-				authentication = surceleadAuthenticationProvider.authenticate(authentication);
-				SecurityContextHolder.getContext().setAuthentication(authentication);
 				
-				//email to user
-				registrationService.sendEmail(registration);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			return "home";
+			return "orgList";
 	     
 	   }
 	

@@ -52,6 +52,11 @@ public class OrgDaoImpl implements OrgDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Org addOrganization(Org org) throws Exception
@@ -218,10 +223,21 @@ public class OrgDaoImpl implements OrgDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Org> getEnrolledOrgs(Long orgId) throws Exception {
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from Org org where org.id <> :orgId ";
+		
+		String userStateSubQuery = "";
+		if (!isNullOrEmpty(userState)) {
+			userStateSubQuery = "and org.user.userState = '" + userState + "'";
+		}
+		
+		String orgNameSubQuery = "";
+		if (!isNullOrEmpty(searchByName)) {
+			orgNameSubQuery = "and org.orgName LIKE '" + searchByName + "%' ";
+		}
+		
+	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
 	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
         return orgsList;
 	}

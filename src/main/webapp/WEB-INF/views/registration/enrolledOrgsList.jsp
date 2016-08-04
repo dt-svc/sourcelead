@@ -14,8 +14,8 @@ window.onload = function () {
 </script>
 
 <script>
-	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
 </script>
 
@@ -54,12 +54,12 @@ window.onload = function () {
 		   
 		 <li>
 			  <a href="javascript:void(0)">
-			  <i class="fa fa-user"></i></a>
+			  <i class="fa fa-building"></i></a>
 				<span class="action-search"><input type="text" id="searchByName"></span>
 				<span class="action-search" onclick="getOrgsList();"><i class="fa fa-search"></i></span>
 		  </li> 
 		
-		  <li><a href="<c:url value='/enrollOrg'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+		  <li><a href="<c:url value='/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -88,7 +88,7 @@ window.onload = function () {
 	    $('#orgListBody').empty();
         $('#orgListEmptyBody').empty();
 		
-		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
@@ -98,16 +98,16 @@ window.onload = function () {
 	        var json = JSON.parse(data);
 	        var result = "";
 	        
-	    	/* if(json.length > 0)
+	    	 if(json.length > 0)
 	   		{
 	    		
 	 			for(var i=0; i<json.length; i++){
 		       	 
-	 				var userRole = json[i];
+	 				var org = json[i];
 	 				var mobilePhone = ""
 	 			    
-	 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-	 			    	mobilePhone = userRole.user.mobilePhone;
+	 			    if(org.user.mobilePhone != null && org.user.mobilePhone != ''){
+	 			    	mobilePhone = org.user.mobilePhone;
 	 			    }else{
 	 			    	mobilePhone = "No Data"
 	 			    }
@@ -117,26 +117,22 @@ window.onload = function () {
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+org.orgCode+"' alt='image'>";
 	       	    	result = result +"</div>";
-	       	    	result = result +"<span>"+userRole.userRoleName+" </span>";
-	       	    	
 	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
-	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
+	       	    	result = result +"<h4><a href='#'> "+org.orgName+"</a> </h4>";
+	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+org.user.email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	        
-	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
-	       	    	  result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Invite</a></label></p>";
-	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
-	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
-	 			    	 result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
-	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
+	       	    	if((org.user.isMailSent != null && org.user.isMailSent != "" && org.user.isMailSent == 'Y') &&
+	 			    		(org.user.userState != null && org.user.userState != "" && org.user.userState == 'NOT_LOGGEDIN') ){
+	 			    	 result = result +"<p><label id='user"+org.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+	 			    }else if(org.user.userState != null && org.user.userState != "" && org.user.userState == 'ACTIVE'){
 	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'INACTIVE'){
+	 			    }else if(org.user.userState != null && org.user.userState != "" && org.user.userState == 'INACTIVE'){
 	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
 	 			    } 
 	       	    	
@@ -151,12 +147,12 @@ window.onload = function () {
 				   }
 	   		    }
 	    	else{
-	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
+	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Orgs List is Empty</h3></div>";
 	    		$('#orgListBody').empty();
 	    		$("#loading").removeAttr("style");
 	    		$('#orgListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
-	    	} */
+	    	} 
 
 			 },
 	        error: function(e){
@@ -166,6 +162,25 @@ window.onload = function () {
 </script>
 
 
+<script type="text/javascript">
+function resendInvitation(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        success: function(result) {
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#loading").removeAttr("style"); 
+			        	$("#mailMsg").fadeIn(200);
+		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        },
+			    });
+		 }
+	}
+  
+</script>
 
 
 <script>
