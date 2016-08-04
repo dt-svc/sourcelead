@@ -22,8 +22,14 @@
 <div class="regis_bg">
 	<div class="regis_logo"><img src="resources/images/logo-regis.png" alt=""/></div>
     <div class="regis_wrap">
+    <div id="loading"></div>
     	<div class="signin_wrap reset_wrap_a" id="signin">
         	<h1>Reset Password</h1>
+        	<c:if test="${not empty msg}">
+	        <div id="selector">
+		         <span><font color="green">${msg}</font></span>
+			</div>
+           </c:if>
              <form:form class="login-form clearfix"  id="resetPassword_form"  name="resetPassword_form" method="post" >
             <div id=passwordDiv>
             <span>
@@ -131,7 +137,7 @@ var validationSettings = {
   			    con = con.replace(/[{}]/g, ""); 
           		var sourceleadUrl ='${sourceleadUrl}';
           		 $("#submit_button").attr("disabled", "disabled");
-          		 $( "#submit_button" ).addClass('button').val('Processing..');
+          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
                   $.ajax({
               	      type: "GET",
               	      contentType : 'application/json; charset=utf-8',
@@ -145,8 +151,8 @@ var validationSettings = {
   	             				 document.getElementById("verificationCode").setAttribute('pass-exist','yes');
   	             				 document.getElementById("verificationCode").setAttribute('pass-exist-errorMsg', ' Invalid Verification Code'); 
   	             				 $("input#verificationCode").removeAttr("style");
-  	             				 $("#submit_button" ).addClass('sign_btn').val('Save');
   			    				 $("#submit_button").removeAttr("disabled")
+  			    				 $("#loading").removeAttr("style");
       			        	}else{
   								                   			     
       			        		location.replace(sourceleadUrl+"/login"); 
@@ -186,4 +192,9 @@ var validationSettings = {
    };
 })(jQuery);
 </script>
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+
 </html>

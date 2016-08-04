@@ -25,9 +25,6 @@
 	       	<c:if test="${not empty error}">
 				<div class="error">${error}</div>
 			</c:if>
-			<c:if test="${not empty msg}">
-				<div class="msg">${msg}</div>
-			</c:if>
 			
 			<c:if test="${!empty login_blocked_error}">
 					 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
@@ -44,7 +41,12 @@
 	    	</c:if> 
 	    	<c:if test="${!empty login_blocked_user_error}">
 	         		<div class="error"><font color="red">Your User has blocked. Please contact your admin</font></div>
-	    	</c:if> 
+	    	</c:if>
+	    	<c:if test="${not empty msg}">
+		        <div id="selector">
+			         <span><font color="green">${msg}</font></span>
+				</div>
+           </c:if> 
     	<br/>
         	 <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
 	            <span>
@@ -94,6 +96,10 @@ function applyInputSlide() {
     });	    
 }
 </script>
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 
 </html>
 
