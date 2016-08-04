@@ -78,7 +78,7 @@
                <span class="hidden">Country</span>
             </div>
             </div>
-          <%-- <div class="form-group">
+          <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkbox">
             <ul class="list-unstyled pull-left">
@@ -90,19 +90,20 @@
                 	<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
                     	<li>
                             <label>
-                            <input type="checkbox" value="">
+                            <input type="checkbox" id="ats" onblur="subModuleCheckValidation(this)">
                             ATS
                             </label>
 		                </li>
                         
                     	<li>
                             <label class="mr">
-                                <input type="checkbox" value="">
+                                <input type="checkbox" id="vms" onblur="subModuleCheckValidation(this)">
                                 VMS
                             </label>
 		                </li>
                     </ul>
                 </li>
+                <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
             </ul>
               <label class="mr">
                 <input type="checkbox" id="isTimeSheet" onblur="moduleCheckValidation(this)">
@@ -110,7 +111,7 @@
             </div>
             
             <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 
-          </div> --%>
+          </div> 
 </div>
       </div>
       
@@ -144,12 +145,26 @@
 	} 
 </script>
 
+
+<script type="text/javascript">
+	function subModuleCheckValidation(id){
+		if (document.getElementById('ats').checked || document.getElementById('ats').checked) {
+		    document.getElementById("subModule").style.display="none";
+		}else{
+			document.getElementById("subModule").style.display=""; 
+		}
+	} 
+</script>
+
  <script type="text/javascript">
 function getRecruitmentTypes(){
 		if (document.getElementById('isRecruiting').checked) {
 		 document.getElementById("recrutmentTypes").style.display="";
 		}else{
 			document.getElementById("recrutmentTypes").style.display="none";
+			document.getElementById("subModule").style.display="none";
+			document.getElementById("ats").checked = false;
+			document.getElementById("vms").checked = false;
 		}
 	} 
 </script>
@@ -172,19 +187,40 @@ var validationSettings = {
 			    con = con.replace(/[{}]/g, ""); 
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
-         		$("#register_button").attr("disabled", "disabled");
-         		$( "#register_button" ).addClass('button').val('Processing..');
+         		
+         		var modules = "";
+         		if (document.getElementById('isRecruiting').checked) {
+         			modules = modules + "Recruiting"+","
+                }
+         		
+         		if (document.getElementById('isTimeSheet').checked) {
+         			modules = modules + "TimeSheet"+","
+                }
+         		
+         		var subModules = "";
+         		if (document.getElementById('ats').checked) {
+         			subModules = subModules + "ATS"+","
+                }
+         		
+         		if (document.getElementById('vms').checked) {
+         			subModules = subModules + "VMS"+","
+                }
+         		
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&json="+con,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modules="+modules+"&subModules="+subModules+"&json="+con,
                 			  
                 			  
                   	success: function(result) {
 			        	if((result == 'orgList')){
 			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
+			        	}
+			        	else if((result == 'Invalid Sub Modules')){
+			        		$("#loading").removeAttr("style");
+			        		document.getElementById("subModule").style.display="";
 			        	}
 			        	
 			        },  

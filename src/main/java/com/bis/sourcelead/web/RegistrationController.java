@@ -126,7 +126,10 @@ public class RegistrationController {
 	
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
-				@RequestParam(value="json", required=false) String json ,HttpServletRequest request) {
+				@RequestParam(value="json", required=false) String json ,
+				@RequestParam(value="modules", required=false) String modules ,
+				@RequestParam(value="subModules", required=false) String subModules ,
+	   			HttpServletRequest request) {
 
 		try {
 				json = "{"+json+"}";
@@ -134,6 +137,13 @@ public class RegistrationController {
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+			    String[] registredModules =  modules.split(",");
+			    if(registredModules[0].equalsIgnoreCase("Recruiting")){
+			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
+			    		return "Invalid Sub Modules";
+			    	}
+			    }
 				
 				registrationService.addRegistration(registration,user);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
