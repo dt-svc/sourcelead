@@ -39,7 +39,7 @@
 	                </c:if> 
 	                
 	                <c:if test="${userTabs.tabName == 'Jobs'}">
-	                   <li class="${sessionData.nav == 'Jobs' ? 'side-nav-active' : ''}"><a href="<c:url value='/jobsList'/>"><span><i class="fa fa-suitcase"></i></span>Jobs</a></li>
+	                   <li class="${sessionData.nav == 'Jobs' ? 'side-nav-active' : ''}"><a href="<c:url value='/jobsList'/>"><span><i class="fa fa-briefcase"></i></span>Jobs</a></li>
 	                </c:if>
 	                
 	                <c:if test="${SourceLeadWeb_ats == 'Y'}">
