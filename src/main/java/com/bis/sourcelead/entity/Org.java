@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -192,7 +193,6 @@ public class Org {
 	public void setOrgDescription(String orgDescription) {
 		this.orgDescription = orgDescription;
 	}
-	
 	
 
 }

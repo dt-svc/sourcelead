@@ -820,7 +820,7 @@ function editUserDetails(userId){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
 						result = result + ' </div>';
 					
 					}
@@ -934,7 +934,7 @@ function terminateUser(userId){
    		    }
 	   });
 	}else{
-		$("#reasonDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
+		$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 }
 
