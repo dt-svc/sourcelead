@@ -27,13 +27,33 @@
           <div class="pull-left">
             <h2>Timesheet Status</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+          <div class="pull-right brud-crum"><a href="/sourcelead/dashboard">Home</a> &raquo;
+          <c:if test="${status =='NEW'}">Saved</c:if>
+          <c:if test="${status =='SUBMITTEDFORAPPROVAL'}">Waiting</c:if>
+          <c:if test="${status =='APPROVED'}">Approved</c:if>
+          <c:if test="${status =='REJECTED'}">Rejected</c:if>
+          </div>
         </section>
         
 		<!-- Project -->
 <div class="timesheet_out">
 	
-	<div class="timesheet_status_wrap">
+	
+		 <c:if test="${empty Timesheet_Submissions}">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="content-area clearfix">
+						<div class="blank-pages">
+						        <p><i class="fa fa-5x fa-bar-chart"></i></p>
+						        <p>No Submissions </p>
+						 </div>
+					</div>
+				</div>
+			</div> 
+		</c:if>
+		<c:if test="${!empty Timesheet_Submissions}">
+		
+		<div class="timesheet_status_wrap">
 		<div class="timesheet_head">
         	<ul>								
                 <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>
@@ -50,7 +70,6 @@
             </ul>
             <div class="clearfix"></div>
         </div>
-		
 		<div class="timesheet_appr_table">
     	<table>
         	<tbody>
@@ -65,9 +84,9 @@
 			</thead>
 				<c:forEach var="report" items="${Timesheet_Submissions}" varStatus="raId">   	
                 <tr>
-                	<td><div>${report.projectMembers.projects.projectName}</div></td>
-                	<td><div><fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  - &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
-                    <td><div>${report.totalHours}</div></td>
+                	<td><div>${report.submissionId.projectMembers.projects.projectName}</div></td>
+                	<td><div><fmt:formatDate type="date"  value="${report.submissionId.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.submissionId.endDate}">  - &nbsp;<fmt:formatDate type="date" value="${report.submissionId.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
+                    <td><div>${report.submissionId.totalHours}</div></td>
                     <td><div>
                     	<c:if test="${!empty report.managerLevel1}">
                     	${report.managerLevel1}
@@ -83,8 +102,8 @@
             </tbody>
         </table>
 	</div>
-		
-<nav>
+	
+	<nav>
 <ul id="paging" class="pagination">
 	<li><a href="#">Previous</a></li>
 	<li><a href="#">2</a></li>
@@ -95,7 +114,10 @@
 	<li data-page="last"><a href="#">Next</a></li>
 	</ul>
 	<div class="clearfix"></div>
-</nav>		
+</nav>
+	</c:if>
+		
+		
 		
 	</div>
 	

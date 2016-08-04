@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -60,6 +61,7 @@ public class ProjectApproverHierarchy {
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
 
+    
 	public Long getId() {
 		return id;
 	}
