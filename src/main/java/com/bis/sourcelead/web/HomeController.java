@@ -101,7 +101,7 @@ public class HomeController {
 	}
    
    
-   @RequestMapping(value = "/registration")
+   /*@RequestMapping(value = "/registration")
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
@@ -110,7 +110,7 @@ public class HomeController {
 		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;
 
-	}
+	}*/
    
    
    

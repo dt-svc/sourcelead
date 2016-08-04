@@ -87,15 +87,15 @@ public class SecurityConfig  {
         	http
     		.authorizeRequests()                                                                
     			.antMatchers("/login").permitAll() 
-    			.antMatchers("/registration").permitAll() 
-    			.antMatchers("/companyRegistration").permitAll() 
+    			/*.antMatchers("/registration").permitAll() 
+    			.antMatchers("/companyRegistration").permitAll() */
     			.antMatchers("/forgotPassword").permitAll() 
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
-    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER')") 
+    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('SOURCELEAD_ADMIN')") 
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")
