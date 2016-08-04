@@ -27,10 +27,15 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -55,6 +60,12 @@ public class ProjectsDaoImpl implements ProjectsDao{
     
     private EmailScenerioUtil emailScenerioUtil;
     
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    
+    private ProjectsService projectsService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 
@@ -449,9 +460,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
 			Date MondayDate = startMonday.getTime();
 			java.sql.Date  startMondayDate = new java.sql.Date(MondayDate.getTime());
-			
 			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-			
 			List<User> userList  = session.createQuery(query.toString()).setDate("startDate", startMondayDate).setCacheable(true).list(); 
 			logger.info("=============calling Every 1 Minute===============");
 			logger.info("============="+userList.size());
@@ -504,6 +513,37 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 sendWeeklyBaseNotiFication(user);
 		}
+		
+          private void sendWeeklyBaseNotiFication(User user) throws Exception{
+        	    List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
+        	    Employees emp = empList.get(0);
+        	    User toUser = emp.getUser();
+        	    List<SubmissionApproverHierarchy> sah = projectsService.getApproveUserForTimeSheets(user.getId());
+        	    User fromUser = sah.get(0).getHeirarchyId().getApproverUserId();
+        	    EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
+     		    Map<String, String> globalVarsMap = new HashMap<String, String>();
+     		    globalVarsMap.put("firstName", user.getFirstName());
+     		    globalVarsMap.put("lastName",user.getLastName());
+     			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+     			emailScenario.setBody(body);
+     			String url = null;
+     			String actionLink = "";
+     			OrgLocations loginOrgLocation = new OrgLocations();
+//     			loginOrgLocation.set
+     			emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
+     			logger.info("<-------------------------------sendWeeklyBaseNotiFication------------------------->");
+     	}
 
-}
+		@Override
+		public List<SubmissionApproverHierarchy> getApproveUserForTimeSheets(Long userId) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SubmissionApproverHierarchy sah left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.user where emp.user.id = :userID";
+			List<SubmissionApproverHierarchy> userList  = session.createQuery(query.toString()).setLong("userID", userId).setCacheable(true).list(); 
+			logger.info("========SubmissionApproverHierarchy size====="+userList.size());
+			return userList;
+		}
+          }
+
