@@ -1196,7 +1196,7 @@ function saveReason(projectMemberId,userId){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
