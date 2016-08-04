@@ -6,7 +6,7 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
-
+<script src="resources/js/formvalidator.js"></script>
  
  
 <style>
@@ -206,7 +206,7 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
 									name="webSite" onblur="validateWebsite();" field-name="Website"
-									data-validation="validate_Space validate_length length2-100 validate_domain"
+									data-validation="validate_Space validate_length length2-100"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
@@ -277,13 +277,16 @@
 	})(jQuery);
 </script>
 <script type="text/javascript">
-	function saveClient() {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+</script>	
+<script type="text/javascript">
+	function saveClient() {
+		
 		if ($('#client_form').validate(false, validationSettings)) {
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -685,6 +688,7 @@ function flushProject(){
 	function validateWebsite() {
 		var website = document.getElementById("webSite").value;
 		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		if (website != null && website != '') {
@@ -700,24 +704,16 @@ function flushProject(){
 					var result = data;
 					if (result == 'Website Duplicated' || result == 'Invalid Website') {
 						//existed website
-						$("input#webSite").after(
-								"<p class='jquery_form_error_message'>"
-										+ website
-										+ " "+result+"</span>");
-						document.getElementById("webSite").setAttribute(
-								'record-exist', 'yes');
-						document.getElementById("webSite").setAttribute(
-								'record-exist-errorMsg',
-								website + ' is '+result);
+						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " "+result+"</span>");
+						document.getElementById("webSite").setAttribute('record-exist', 'yes');
+						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#webSite').removeAttr( "record-exist record-exist-errorMsg");
 					} else {
 						//New WebSite class="form-control"
 						//$("#save_client").removeAttr("disabled");
-						$('input#webSite').removeAttr(
-								"class record-exist record-exist-errormsg");
-						$('input#webSite').attr('class',
-								'valid form-control');
-						$('#companyWebsiteDiv').find(
-								'p.jquery_form_error_message').remove();
+						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 						$("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
@@ -727,6 +723,7 @@ function flushProject(){
 
 			});
 		}
+	 }
 	}
 </script>
 
