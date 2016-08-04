@@ -682,7 +682,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
 		sb.append("<div id='hideError' style='display:none;'></div>");
 		sb.append("<div class='time_appr_side_wrap_inn'>");
-	    sb.append("<div class='proj_close'><i class='glyphicon glyphicon-share-alt' onClick='removeTimesheetPopup();' ></i></div>");
+	    sb.append("<div class='proj_close'  onClick='removeTimesheetPopup();' ><i></i></div>");
 	    
 		sb.append("<div class='timesheet_table' id='dynamic'>");
         sb.append("<table id='timesheet' cellpadding='0' cellspacing='0'>");
