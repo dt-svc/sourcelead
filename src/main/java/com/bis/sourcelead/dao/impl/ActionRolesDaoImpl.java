@@ -41,10 +41,11 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception {
+	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId")
-					  .setLong("orgId", orgId)
+		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId "
+				+ "and actionRoles.tabActions.modules.id IN (:modulesId) ")
+					  .setLong("orgId", orgId).setParameterList("modulesId", modulesId)
 					  .setCacheable(true).list();
 	}
 

@@ -33,6 +33,10 @@ public class Constants {
 	public static  String TimeSheet = "TimeSheet";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	
+	public static  String Jobs = "Jobs";
+	public static  String Vendors = "Vendors";
+	public static  String Candidates = "Candidates";
+	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	

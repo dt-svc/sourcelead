@@ -190,6 +190,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "vms", org.getVms());
+		SourceLeadSessionManager.setSessionAttribute(request, "ats", org.getAts());
+		SourceLeadSessionManager.setSessionAttribute(request, "timesheet", org.getTimeSheet());
+		
 	}
 	
 	
