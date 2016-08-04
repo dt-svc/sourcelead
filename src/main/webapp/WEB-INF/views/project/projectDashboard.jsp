@@ -1,4 +1,5 @@
 <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -9,7 +10,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
-<script src="https://code.jquery.com/jquery-1.12.3.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
  <style>
@@ -140,13 +140,12 @@
 			</div> --%>
 		</div>
 		</c:if>
-		<div class="side_mask"></div>
+		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
 		    <h1 id="projectNameById"></h1> <div class="proj_close"><i></i></div>
 		     <div id="projectSideDiv">
 		     </div>   
-			<div class="project_inn_mask"></div>
 			<div class="project_error">
 				<p>Employee delete message here ....</p>
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
@@ -314,6 +313,8 @@
 	
 <script type="text/javascript">
 window.onload = function () {
+	$('input[name=projectStatus]').attr('checked',false);
+	$('input[name=clientNameById]').attr('checked',false);
 	filter();
  };
 </script>
@@ -323,7 +324,7 @@ window.onload = function () {
 <script>
 //project side bar
 $(document).ready(function() {
-     $(".proj_close").click(function(){
+     $(".proj_close, .side_mask").click(function(){
     	$(".project_side_wrap").removeClass("project_side_wrap_active");
  		$(".side_mask").fadeOut(200);
  		$("body").css('overflow-y', 'auto');

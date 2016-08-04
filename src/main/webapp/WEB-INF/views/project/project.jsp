@@ -40,6 +40,7 @@
 								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
 								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist', 'yes');
 								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
+								$('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
 							} else {
 								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
 								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();

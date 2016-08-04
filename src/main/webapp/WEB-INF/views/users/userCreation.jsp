@@ -608,7 +608,7 @@ function flushProject(){
 		        url: sourceleadUrl+"/getProjectManager?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$("#managerName").val(json.approverUserId.firstName+" "+json.approverUserId.lastName);
+		        	$("#managerName").val(json.fullName);
 			        
 		        },
 		    });
@@ -709,7 +709,8 @@ function flushProject(){
 		        	if(data == true){
 						  $("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");
 						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist','yes');
-						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+' is Already Existed'); 
+						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+' is Already Existed');
+						  $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
 		        	}
 		        	else{
 		        		 $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errormsg");
