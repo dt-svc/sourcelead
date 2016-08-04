@@ -186,7 +186,7 @@ public class RegistrationController {
 					registrationService.sendResetPasswordEmail(user,passwordResets.getVerificationCode());
 				}
 				
-				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg", "Password sent to your mail");
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg", "Verification Code sent to your mail.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
