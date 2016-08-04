@@ -81,7 +81,7 @@
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkbox">
-            <ul class="list-unstyled pull-left">
+            <!-- <ul class="list-unstyled pull-left">
             	<li>
                 <label class="mr pull-left">
                 <input type="checkbox" id="isRecruiting" onclick="getRecruitmentTypes()" onblur="moduleCheckValidation(this)">
@@ -104,7 +104,7 @@
                     </ul>
                 </li>
                 <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            </ul>
+            </ul> -->
               <label class="mr">
                 <input type="checkbox" id="isTimeSheet" onblur="moduleCheckValidation(this)">
                 Timesheet</label>
