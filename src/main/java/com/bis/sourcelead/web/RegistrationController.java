@@ -145,7 +145,7 @@ public class RegistrationController {
 			    	}
 			    }
 				
-				registrationService.addRegistration(registration,user);
+				registrationService.addRegistration(registration,user,modules,subModules);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 				
 				

@@ -6,7 +6,7 @@ import com.bis.sourcelead.form.Registration;
 
 public interface RegistrationService {
 	
-	public void addRegistration(Registration registration,User user) throws Exception;
+	public void addRegistration(Registration registration,User user,String modules,String subModules) throws Exception;
 	
 	public void sendEmail(Registration registration) throws Exception;
 	
