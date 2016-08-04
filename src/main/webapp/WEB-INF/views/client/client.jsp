@@ -40,7 +40,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
 							<div class="col-md-9" id="clientNameDiv">
-								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" value="">
+								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -125,7 +125,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
 																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control" field-name="Project Name" data-validation="required validate_Space validate_length length2-250">
+																	class="form-control" field-name="Project Name" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
 																	<span class="hidden">Enter Project Name</span>
 															</div>
 														</div>
@@ -134,7 +134,7 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" data-validation="required validate_Space">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" data-validation="validate_Space" data-validation-optional="true">
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
 																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
@@ -212,11 +212,11 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3" for="Project Manager">Email</label>
+							<label class="col-md-3" for="Project Manager">Email<span class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_Space validate_length length2-100 validate_email"
-									data-validation-optional="true" value="" class="form-control">
+									data-validation="required validate_Space validate_length length2-100 validate_email"
+									value="" class="form-control">
 								<span class="hidden">Enter Email</span>
 							</div>
 						</div>
@@ -780,7 +780,7 @@ function validateClientName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
 			success : function(data) {
 				var result = data;
 				if (result == true) {

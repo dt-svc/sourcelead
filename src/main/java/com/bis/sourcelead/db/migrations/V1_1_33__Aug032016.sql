@@ -33,3 +33,6 @@ INSERT INTO `sourcelead`.`MODULES` (`ID`, `MODULE_NAME`, `ORG_ID`, `IS_ENROLED`)
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ACTION_ROLES','MODULE_ID','BIGINT NULL AFTER `ORG_ID`');
 ALTER TABLE `sourcelead`.`ACTION_ROLES` ADD FOREIGN KEY(MODULE_ID) REFERENCES MODULES(ID);
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SIGNATURE`='Best Regards \n\n SourceLead' WHERE `ID`='17';
+

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,6 @@ public class ProjectsServiceTest {
 	
 	@Configuration
 	static class ProjectServiceTestContextConfiguration {
-		
 		@Bean
 		public ProjectsService projectsService() {
 			return new ProjectsServiceImpl();
@@ -42,7 +42,7 @@ public class ProjectsServiceTest {
 	 * this method for save project
 	 * @throws Exception
 	 */
-	@Test
+//	@Test
 	public void saveProject() throws Exception{
 		
 		Projects projects = new Projects();
@@ -120,5 +120,13 @@ public class ProjectsServiceTest {
 	//@Test
 	public void getProjects() throws Exception{
 		projectsService.getAllProjects();
+	}
+	
+	@Test
+	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
+		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
+		for(User user : usrList){
+			projectsService.userEmailNotificationForTimeShhetSubmission(user);
+		}
 	}
 }

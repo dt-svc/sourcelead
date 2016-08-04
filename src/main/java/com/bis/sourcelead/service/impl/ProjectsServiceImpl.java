@@ -17,6 +17,7 @@ import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
 
 @Service
@@ -175,6 +176,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Integer getUserAssignedProjectsCount(Long userId, Long orgLocationId) {
 		// TODO Auto-generated method stub
 		return projectsDao.getUserAssignedProjectsCount(userId, orgLocationId);
+	}
+
+	@Override
+	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+		
+		return projectsDao.getAllUesrTimeSheetSubmissionStatus();
+	}
+
+	@Override
+	public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
+		projectsDao.userEmailNotificationForTimeShhetSubmission(user);
 	}
 	
 	

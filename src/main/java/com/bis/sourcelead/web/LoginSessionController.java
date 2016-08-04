@@ -123,14 +123,18 @@ public class LoginSessionController {
 		String orgCode = loginOrgCode;
 		String locationCode = loginOrgLocation;
 		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
-		model.addObject("notificationCount", notificationCount);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+		//model.addObject("notificationCount", notificationCount);
 		
 		// get notification list by user id
 		Long notificationTo = loginUser.getId();
 		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
-		model.addObject("notificationList", notificationList);
+		//model.addObject("notificationList", notificationList);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 	    return model;

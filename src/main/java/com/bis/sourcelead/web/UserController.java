@@ -26,14 +26,17 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Constants;
@@ -66,6 +69,9 @@ public class UserController {
 	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -125,7 +131,12 @@ public class UserController {
 		                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 						model.addObject("org_projectsList", projectsList);
 						
-						/*Integer newTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.NEW.toString(),orgLocations.getId());
+						
+						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
+						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
+						/*Integer newTimeSheetsCount = submissionApproverHierarchyService.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocations.getId(),"NEW");
+						
+						
 						Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
 						Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
 						
@@ -135,11 +146,12 @@ public class UserController {
 						
 						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
 						
-						model.addObject("totalOpenTimeSheetCount", totalOpenTimeSheetCount);
-						model.addObject("approvedTimeSheetsCount", approvedTimeSheetsCount);
-						model.addObject("rejectedTimeSheetsCount", rejectedTimeSheetsCount);
-						model.addObject("waitingTimeSheetsCount", waitingTimeSheetsCount);
-						model.addObject("assignedProjectsCount", assignedProjectsCount);*/
+						*/
+						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
+						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
+						model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
+						model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
+						model.addObject("assignedProjectsCount", assignedProjectsCount);
 						
 						request.setAttribute("userId", userId);
 						model.setViewName("users/userSummary");

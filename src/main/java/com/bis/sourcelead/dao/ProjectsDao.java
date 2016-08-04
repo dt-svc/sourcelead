@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 
 public interface ProjectsDao {
 
@@ -49,6 +50,10 @@ public interface ProjectsDao {
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
+	
+	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
+	
+	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
 
 
 }

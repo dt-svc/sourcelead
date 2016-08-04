@@ -115,6 +115,21 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectId, submissionStatus);
 	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(
+			Long userId, Long orgLocationId, String submissionStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,submissionStatus);
+	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(
+			Long userId, Long orgLocationId, String submissionStatus) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,submissionStatus);
+
+	}
 	
 	
 	
