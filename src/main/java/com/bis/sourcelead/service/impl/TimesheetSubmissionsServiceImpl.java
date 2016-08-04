@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -221,6 +222,74 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		Integer approvalStatusCount = timesheetSubmissionsDao.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus,orgLocationId);
 		return approvalStatusCount;
 	}
+
+	@Override
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		 
+		Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "APPROVED");
+		timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeList.size()));
+		 
+		Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
+		timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
+		
+		Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL");
+		timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
+		
+		Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"NEW");
+		
+		Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"DRAFT");
+		Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() +draftindividualEmployeeList.size();
+		
+		timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
+		
+		return timeSheetSubmissionCount;
+		 
+	}
+
+	@Override
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,
+			Long orgLocationId) throws Exception {
+		
+		 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		
+		 
+		    Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  "APPROVED");
+			timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeList.size()));
+			 
+			Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, "REJECTED");
+			timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
+			
+			Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL");
+			timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
+			
+			Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"NEW");
+			
+			Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"DRAFT");
+			Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() +draftindividualEmployeeList.size();
+			
+			timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
+			
+		return timeSheetSubmissionCount;
+	}
 	
+	@Override
+		public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,
+				String employeeId) throws Exception {
+			Collection<TimesheetSubmissions> thslist = timesheetSubmissionsDao.getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(userId,employeeId);
+			return thslist;
+		}
+		
+		
+		@Override
+		public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)
+				throws Exception {
+			// TODO Auto-generated method stubgetSubmissionApproverHierarchyForEmployeeList
+			List<TimesheetSubmissions> list = timesheetSubmissionsDao.getSubmissionApproverHierarchyForEmployeeList(approverUserId);
+			return list;
+		}
+		
 
 }
