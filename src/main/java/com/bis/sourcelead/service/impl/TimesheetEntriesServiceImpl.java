@@ -102,10 +102,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	}
 
 	@Override
-	public String newTimesheet(HttpServletRequest request,String navigation, String startDate) throws Exception {
+	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
 		 
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");

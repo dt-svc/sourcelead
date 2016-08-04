@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -54,7 +56,9 @@ public class TimesheetEntriesController {
 	// sarath kumar punnana : this controller  method is for get new timwsheet screen at page load.
 	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
-		String result = timesheetEntriesService.newTimesheet(request, navigation, startDate);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String result = timesheetEntriesService.newTimesheet(user, navigation, startDate);
 		return result;
 	}
 	
