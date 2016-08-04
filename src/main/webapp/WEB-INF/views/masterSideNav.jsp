@@ -32,6 +32,28 @@
 	                 <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard'/>"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
 	                 </c:if>
 	                 
+	                 <c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_timesheet == 'Y'}">
+		                 <c:if test="${userTabs.tabName == 'Clients'}">
+		                   <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
+		                 </c:if>
+	                </c:if> 
+	                
+	                <c:if test="${userTabs.tabName == 'Jobs'}">
+	                   <li class="${sessionData.nav == 'Jobs' ? 'side-nav-active' : ''}"><a href="<c:url value='/jobsList'/>"><span><i class="fa fa-suitcase"></i></span>Jobs</a></li>
+	                </c:if>
+	                
+	                <c:if test="${SourceLeadWeb_ats == 'Y'}">
+		                <c:if test="${userTabs.tabName == 'Candidates'}">
+		                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>"><span><i class="fa fa-user"></i></span>Candidates</a></li>
+		                </c:if> 
+	                </c:if>
+	                
+	                <c:if test="${SourceLeadWeb_vms == 'Y'}">
+		                <c:if test="${userTabs.tabName == 'Vendors'}">
+		                   <li class="${sessionData.nav == 'Vendors' ? 'side-nav-active' : ''}"><a href="<c:url value='/vendorsList'/>"><span><i class="fa fa-suitcase"></i></span>Vendors</a></li>
+		                </c:if> 
+	                </c:if>  
+	                 
 	                 <c:if test="${userTabs.tabName == 'Users'}">
 	                 <li class="${sessionData.nav == 'Users' ? 'side-nav-active' : ''}"><a href="<c:url value='/usersList'/>"><span><i class="fa fa-users"></i></span>Users</a></li>
 	                 </c:if>
@@ -72,10 +94,7 @@
 	                
 	                 </c:if>
 	                 
-	                <c:if test="${userTabs.tabName == 'Clients'}">
-	                   <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
-	                </c:if> 
-	                 
+	               
 	                 
           </c:forEach>
           

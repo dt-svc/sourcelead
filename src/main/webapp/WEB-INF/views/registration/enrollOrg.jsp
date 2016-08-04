@@ -148,7 +148,7 @@
 
 <script type="text/javascript">
 	function subModuleCheckValidation(id){
-		if (document.getElementById('ats').checked || document.getElementById('ats').checked) {
+		if (document.getElementById('ats').checked || document.getElementById('vms').checked) {
 		    document.getElementById("subModule").style.display="none";
 		}else{
 			document.getElementById("subModule").style.display=""; 

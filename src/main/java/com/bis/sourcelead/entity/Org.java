@@ -88,7 +88,13 @@ public class Org {
 	@Column(name = "VMS")
 	@Enumerated(EnumType.STRING)
 	private Status vms;
+	
+	@Column(name = "TIMESHEET")
+	@Enumerated(EnumType.STRING)
+	private Status timeSheet;
 
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -216,6 +222,14 @@ public class Org {
 
 	public void setVms(Status vms) {
 		this.vms = vms;
+	}
+
+	public Status getTimeSheet() {
+		return timeSheet;
+	}
+
+	public void setTimeSheet(Status timeSheet) {
+		this.timeSheet = timeSheet;
 	}
 	
 

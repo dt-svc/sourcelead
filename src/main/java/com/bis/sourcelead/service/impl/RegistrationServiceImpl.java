@@ -124,7 +124,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		String[] registredModules =  modules.split(",");
 		
 		//For Saving of Org Details
-		Org org = getOrgDetails(registration,subModules);
+		Org org = getOrgDetails(registration,subModules,modules);
 		try {
 			orgService.addOrganization(org);
 		} catch (Exception e) {
@@ -193,7 +193,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 	
-	private Org getOrgDetails(Registration registration,String subModules){
+	private Org getOrgDetails(Registration registration,String subModules,String modules){
 		
 		Org org = new Org();
 		org.setOrgName(registration.getCompanyName());
@@ -201,6 +201,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
+		
+		if(!isNullOrEmpty(modules)){
+			String[] registeredModules =  modules.split(",");
+			if(registeredModules.length == 2){
+				org.setTimeSheet(Status.Y);
+			}
+			else if(registeredModules[0].equalsIgnoreCase("TimeSheet")){
+					org.setTimeSheet(Status.Y);
+			}else{
+				org.setTimeSheet(Status.N);
+			}
+		}
+		
 		if(!isNullOrEmpty(subModules)){
 			String[] recruitingModules =  subModules.split(",");
 			if(recruitingModules.length == 2){
