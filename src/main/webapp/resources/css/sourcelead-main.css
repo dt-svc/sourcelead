@@ -1923,12 +1923,13 @@ ul.tree-checkbox::before {
  font-size:15px;
  margin:0;
  border-bottom:1px solid #cfcfcf;
+ transition:all 0.2s ease-in-out;
 }
 #accordion .content {
  background-color:#f5f5f5;
  padding:10px 15px;
  color:black;
- height:120px;  
+ min-height:1px;
  border:1px solid #ddd;
  border-top:0;
 }
@@ -1950,9 +1951,7 @@ ul.tree-checkbox::before {
     font-family:FontAwesome;   
     color:#fff;
 }
- 
 /* Accordion Styles ends */
- 
 @media (max-width: 320px) {
   .hidden-xs {
     display: none !important;
