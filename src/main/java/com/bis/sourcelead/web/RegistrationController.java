@@ -185,6 +185,8 @@ public class RegistrationController {
 					//email to user
 					registrationService.sendResetPasswordEmail(user,passwordResets.getVerificationCode());
 				}
+				
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg", "Password sent to your mail");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -215,6 +217,8 @@ public class RegistrationController {
 				//email to user
 				User user = userService.findByUserName(passwordResets.getEmail());
 				registrationService.sendUpdatePasswordEmail(user);
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
