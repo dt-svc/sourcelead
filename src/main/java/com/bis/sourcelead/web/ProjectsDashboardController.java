@@ -247,7 +247,7 @@ public class ProjectsDashboardController {
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				if(projects.getOrgRelationId().getId() !=null){
+				if(projects.getOrgRelationId() !=null){
 					if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 						projects.setRelationId(ocl.getId());
 					}

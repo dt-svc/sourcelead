@@ -1205,9 +1205,9 @@ function getTeamMembers(projectId) {
 	        		}
 	        		output = output + "<tr>";
 	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-	        		output = output +"<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>";
-	        		output = output +"<td>"+opt.user.email+"</td>";
-	        		output = output +"<td>"+role+"</td>";
+	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 	        		output = output + "</div></td>";
