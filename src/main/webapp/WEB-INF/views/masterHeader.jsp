@@ -210,7 +210,10 @@ function notificationStatusAsRead(){
 	  			  success :function(data) {
 	    	      			
       			 }							     
-	});  
+	}); 
+	 $("#alert").click(function(){
+         $("span.label-warning").text(0);
+	 });
 }
 </script>
 
