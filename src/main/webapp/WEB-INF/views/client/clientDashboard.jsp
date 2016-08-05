@@ -392,7 +392,7 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Projects:</strong>';
 						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
-						result = result + '<span><input type="text" value="'+json.projectsCont+'" placeholder="Project count" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
 						}
 						result = result + '</div>	';
 						result = result + '<div class="clearfix"></div>';

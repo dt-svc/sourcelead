@@ -2,7 +2,6 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
 
 public interface OrgLocationService {
@@ -14,4 +13,6 @@ public interface OrgLocationService {
     public List<OrgLocations> getAllOrgLocations()throws Exception; 
     public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
     public  OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception;
+    
+    public OrgLocations findByEmail(String email)  throws Exception;
 }
