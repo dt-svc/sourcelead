@@ -85,8 +85,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		
-		/*OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Collection<Roles> rolesList = null;
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
@@ -102,20 +101,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		try {
-			rolesList = rolesService.getRoles();
+			rolesList = rolesService.getRoles(orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-	/*   for(Roles roles : rolesList){
-			try {
-				List<User> usersList = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roles.getId(), orgLocations.getId(),user.getId());
-				roles.setRolesCount(usersList.size());
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		}*/
-		
+	
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsg");
 		if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);

@@ -44,7 +44,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId "
-				+ "and actionRoles.tabActions.modules.id IN (:modulesId) ")
+				+ "and actionRoles.tabActions.modules.id IN (:modulesId) and actionRoles.roles.id <> '4' ")
 					  .setLong("orgId", orgId).setParameterList("modulesId", modulesId)
 					  .setCacheable(true).list();
 	}
