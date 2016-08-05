@@ -627,6 +627,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
+		employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
 //		if(!fileName.toLowerCase().endsWith("csv"))
@@ -1045,7 +1046,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 			
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
-				userImport.setReason("Invalid email");
+				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 			
