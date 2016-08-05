@@ -7,7 +7,7 @@
 
 
  <section class="content-wraper">
-    <div class="content-dashboard clearfix mt">
+    <div class="content-dashboard clearfix">
         <div class="row">
           <div class="col-lg-12">
             <div class="content-area mt clearfix">
