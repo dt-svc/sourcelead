@@ -24,8 +24,8 @@ public class RolesServiceImpl implements RolesService{
 
 
 	@Override
-	public Collection<Roles> getRoles() throws Exception {
-		return rolesDao.getRoles();
+	public Collection<Roles> getRoles(Long orgLocationId) throws Exception {
+		return rolesDao.getRoles(orgLocationId);
 	}
 
 
