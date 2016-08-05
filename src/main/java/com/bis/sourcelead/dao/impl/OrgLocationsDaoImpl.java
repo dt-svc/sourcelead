@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -17,6 +18,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 
 @Repository
@@ -127,9 +129,24 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		
 		
 	}
+
 	
-	
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public OrgLocations findByEmail(String email) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
+		logger.debug("findByEmail start");
+		orgLocations = session.createQuery("from OrgLocations where email=:email" ).setString( "email", email ).setCacheable(true).list();
+		logger.debug("findByEmail end");
+		if (orgLocations.size() > 0) {
+			return orgLocations.get(0);
+		} else {
+			return null;
+		}
+   	}
 	
 
 }
