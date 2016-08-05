@@ -134,19 +134,7 @@ public class UserController {
 						
 						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
 						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
-						/*Integer newTimeSheetsCount = submissionApproverHierarchyService.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocations.getId(),"NEW");
 						
-						
-						Integer reOpenedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REOPENED.toString(),orgLocations.getId());
-						Integer totalOpenTimeSheetCount = newTimeSheetsCount+reOpenedTimeSheetsCount;
-						
-						Integer approvedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.APPROVED.toString(),orgLocations.getId());
-						Integer rejectedTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.REJECTED.toString(),orgLocations.getId());
-						Integer waitingTimeSheetsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId, Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.toString(),orgLocations.getId());
-						
-						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
-						
-						*/
 						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
 						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
 						model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
