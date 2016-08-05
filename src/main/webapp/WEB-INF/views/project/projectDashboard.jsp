@@ -874,8 +874,14 @@ function filter(){
    		    	for (var i=0; i<json.length; i++)
    				{   
    		    		var report = json[i];
+   		    		var projectSequeneNumber;
+   		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
+   		    				projectSequeneNumber = report.projectSequeneNumber;
+   		    		}else{
+   		    			projectSequeneNumber = "---";
+   		    		}
    		    		result = result +'<tr>';
-   		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
+   		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
    		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';

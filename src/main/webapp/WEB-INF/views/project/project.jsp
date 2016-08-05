@@ -461,10 +461,9 @@
 								</div>
 							</div>
 							<div class="form-group" id="companyWebsiteDiv">
-								<label class="col-lg-3">Client Website <span
-								class="text-danger">*</span></label>
+								<label class="col-lg-3">Client Website </label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="required validate_Space">
+									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space">
 								</div>
 							</div>
 						</div>

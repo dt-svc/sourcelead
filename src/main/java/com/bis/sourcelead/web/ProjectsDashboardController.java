@@ -499,8 +499,11 @@ public class ProjectsDashboardController {
 		            	 pm.setProjectAssignedDate(projects.getStartDate());
 		            }
 		            if(StringUtils.isNotEmpty(endDate)){
-		            	Date currentEndDate = format.parse(endDate);
-		            	pm.setProjectEndDate(currentEndDate);
+		            	if(endDate != null && endDate != "--"){
+		            		Date currentEndDate = format.parse(endDate);
+			            	pm.setProjectEndDate(currentEndDate);
+		            	}
+		            	
 		            }
 		            
 		            pm.setStatus(Constants.MEMBER_ACTIVE);

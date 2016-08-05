@@ -278,7 +278,10 @@ public class ProjectsController {
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
 						            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
 						            	  pm.setProjectAssignedDate(currentStartDate);
+						            }else{
+						            	 pm.setProjectAssignedDate(projects.getStartDate());
 						            }
+						            
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
 						            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
 						            	pm.setProjectEndDate(currentEndDate);
