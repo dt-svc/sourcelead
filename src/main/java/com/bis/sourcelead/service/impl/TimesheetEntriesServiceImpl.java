@@ -692,11 +692,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 
 	@Override
-	public String dynamicTimesheetpopUp(HttpServletRequest request, Long employeeId, String startDate, String endDate)
+	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate)
 			throws Exception {
 		
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);

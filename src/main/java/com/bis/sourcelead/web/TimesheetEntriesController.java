@@ -68,7 +68,8 @@ public class TimesheetEntriesController {
 																				 @RequestParam(value="startDate", required=false) String startDate,
 																				 @RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		
-		String result = timesheetEntriesService.dynamicTimesheetpopUp(request, employeeId, startDate, endDate);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String result = timesheetEntriesService.dynamicTimesheetpopUp(user, employeeId, startDate, endDate);
 		return result;
 	}
 
