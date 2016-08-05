@@ -215,12 +215,6 @@ public class UserDaoImpl implements UserDao {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from Employees emp left join fetch emp.orgLocations orgLocation left join fetch orgLocation.org org where emp.user.id IN(select id from User user where user.id =:userId)"; 
 		List<Employees> empList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
-		for(Employees employee : empList){
-			logger.info("========================="+employee.getOrgLocations().getLocationCode());
-			logger.info("========================="+employee.getOrgLocations().getOrg().getOrgCode());
-		}
-		
-		logger.info("========================="+empList.size());
 		return empList;
 	}
 	

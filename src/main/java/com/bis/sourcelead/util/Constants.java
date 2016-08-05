@@ -58,8 +58,8 @@ public class Constants {
 	
 	
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
-	
-	
+	//Week Time Sheet Submission
+	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "IN-ACTIVE";
