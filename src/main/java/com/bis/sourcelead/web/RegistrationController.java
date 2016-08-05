@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +11,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,17 +25,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -76,8 +73,9 @@ public class RegistrationController {
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String loginUser = (String) auth.getPrincipal();
-			if("SourceLeadAdmin".equalsIgnoreCase(loginUser)){
+			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
+			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
+			if(authorities.contains(authority)){
 				model.setViewName("registration/enrolledOrgsList");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
@@ -100,8 +98,9 @@ public class RegistrationController {
 			ModelAndView model = new ModelAndView();
 			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String loginUser = (String) auth.getPrincipal();
-			if("SourceLeadAdmin".equalsIgnoreCase(loginUser)){
+			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
+			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
+			if(authorities.contains(authority)){
 				model.setViewName("registration/enrollOrg");
 
 				model.addObject("sourceleadUrl", sourceleadUrl);
