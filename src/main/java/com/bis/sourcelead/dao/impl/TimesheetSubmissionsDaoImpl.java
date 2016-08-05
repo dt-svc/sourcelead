@@ -139,7 +139,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();  
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  GROUP BY emp.id";   
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user user where user.userState != 'INACTIVE' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  GROUP BY emp.id";   
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).list();
 			
 			
@@ -200,6 +200,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 						if( sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 							isRejected   = true;  
 							status = "REJECTED";
+							ts.setRejectedReason(sah.getRejectedReason());
 						}
 						else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
 							 isNEW   = true;  
@@ -274,7 +275,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			if(startDate != null){
 				sqlStartDate = new java.sql.Date(startDate.getTime());
 			}
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where emp.user.id = :userId and ts.startDate = :startDate  order by pr.id ";  
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.status != 'IN-ACTIVE' and emp.user.id = :userId and ts.startDate = :startDate  order by pr.id ";  
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).list();
 			return timesheetSubmissionsList;
 	}
@@ -609,7 +610,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			+ "where (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))"
 			+ " and ts.submissionApprovalStatus = :approvalStatus)" ;
 	List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId)
-			.setString("approvalStatus", approvalStatus).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+			.setString("approvalStatus", approvalStatus).setLong("orgLocationId", orgLocationId).list(); 
 	      
 	return tslist.size();
 	  
