@@ -16,7 +16,7 @@
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
-    <div class="clearfix form-horizontal inner-content">
+    <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">

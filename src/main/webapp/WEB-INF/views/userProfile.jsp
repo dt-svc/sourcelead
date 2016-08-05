@@ -61,7 +61,8 @@
 			<div id="profile" class="tab-pane fade in active">
 		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
 			  
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
+			  <div class="col-xs-12 col-sm-3 col-md-3">
+			  <div class="well text-center">
 			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
 				  <div class="profile-img-container profile-image" style="position:relative;">
 				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
@@ -78,6 +79,9 @@
 				  
 				  </div>
 				  </div>
+				 </div> 
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png images are not allowed</p>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
