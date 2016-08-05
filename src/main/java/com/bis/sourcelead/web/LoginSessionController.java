@@ -129,7 +129,7 @@ public class LoginSessionController {
 		
 		// get notification list by user id
 		Long notificationTo = loginUser.getId();
-		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
+		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		//model.addObject("notificationList", notificationList);

@@ -380,4 +380,10 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roleId, orgLocationsId,userId);
 	}
 
+	@Override
+	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userID) throws Exception {
+		
+		return userDao.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(userID);
+	}
+
 }

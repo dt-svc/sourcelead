@@ -126,7 +126,8 @@
 
 		</c:if>
 
-       <div class="side_mask"></div>
+       <div class="side_mask"><div class="proj_close"></div></div>
+       
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
@@ -468,7 +469,7 @@ function getEndDatePickerById(projectId,localFieldName){
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 		});
-		$(".proj_close").click(function() {
+		$(".proj_close, .side_mask").click(function() {
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			$(".side_mask").fadeOut(200);
 			$("body").css('overflow-y', 'auto');

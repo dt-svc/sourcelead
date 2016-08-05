@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 
 public interface ProjectsDao {
@@ -54,6 +55,9 @@ public interface ProjectsDao {
 	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
 	
 	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
+	
+	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
+	
 
 
 }
