@@ -72,30 +72,44 @@ public class RegistrationController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
-			model.setViewName("registration/enrolledOrgsList");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
-			if(!isNullOrEmpty(msg)){
-				model.addObject("msg", msg);
-				SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String loginUser = (String) auth.getPrincipal();
+			if("SourceLeadAdmin".equalsIgnoreCase(loginUser)){
+				model.setViewName("registration/enrolledOrgsList");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
+				if(!isNullOrEmpty(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
+				}
+			}else{
+				model.setViewName("registration/persmissionDenied");
 			}
+			
+			
 			return model;
 
 	 }
 	 
 	 
-	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrollOrg")
 		public ModelAndView registration() {
 			ModelAndView model = new ModelAndView();
-			model.setViewName("registration/enrollOrg");
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String loginUser = (String) auth.getPrincipal();
+			if("SourceLeadAdmin".equalsIgnoreCase(loginUser)){
+				model.setViewName("registration/enrollOrg");
 
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			
 			return model;
 
 		}

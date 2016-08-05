@@ -137,7 +137,8 @@
       
   <script type="text/javascript">
 	function moduleCheckValidation(id){
-		if (document.getElementById('isRecruiting').checked || document.getElementById('isTimeSheet').checked) {
+		/* if (document.getElementById('isRecruiting').checked || document.getElementById('isTimeSheet').checked) { */
+		if (document.getElementById('isTimeSheet').checked) {
 		document.getElementById("moduleValue").value = id.value;
 		}else{
 			$('#moduleValue').val(''); 
@@ -189,22 +190,22 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          		
          		var modules = "";
-         		if (document.getElementById('isRecruiting').checked) {
+         		/* if (document.getElementById('isRecruiting').checked) {
          			modules = modules + "Recruiting"+","
-                }
+                } */
          		
          		if (document.getElementById('isTimeSheet').checked) {
          			modules = modules + "TimeSheet"+","
                 }
          		
-         		var subModules = "";
-         		if (document.getElementById('ats').checked) {
+         		 var subModules = "";
+         		/* if (document.getElementById('ats').checked) {
          			subModules = subModules + "ATS"+","
                 }
          		
          		if (document.getElementById('vms').checked) {
          			subModules = subModules + "VMS"+","
-                }
+                }  */
          		
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
          		 	$.ajax({

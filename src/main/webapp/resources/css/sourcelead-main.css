@@ -1736,7 +1736,7 @@ border-bottom:1px solid #ccc;
     text-shadow:1px 1px 1px #333;
 }
 .move-btn .fa-home{
-    padding:7px 10px;
+    padding:6px 10px;
 }
 .move-btn .fa-angle-double-right{
         -webkit-transition: all 0.3s ease-in-out;
@@ -1952,6 +1952,19 @@ ul.tree-checkbox::before {
     color:#fff;
 }
 /* Accordion Styles ends */
+
+
+.permissondenied {
+	margin-bottom:35px;
+}
+.permissondenied img{
+	max-height:100px;
+	width:auto;
+	height:auto;
+	margin-top:20px;
+}
+
+
 @media (max-width: 320px) {
   .hidden-xs {
     display: none !important;
