@@ -533,7 +533,7 @@ public class ClientController {
 			 return  orgService.isClientNameValid(clientName);
 		   }
 		 
-		 //to  validate user email
+		 //to  validate client email
 		 @RequestMapping(value = "/getClientEmailVerification" , method = RequestMethod.POST)
 		 public @ResponseBody  String validateClientEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
 			 	
