@@ -19,7 +19,7 @@
                 <p class="text-muted">You don't have permission to access this page.</p>
                 <p class="positionRelative move-btn btn-group mt">
                 <i class="fa fa-home btn btn-primary"></i>
-                <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Go to Home Page<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
+                <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
                 </span></a>
                 </p>
               </div>
