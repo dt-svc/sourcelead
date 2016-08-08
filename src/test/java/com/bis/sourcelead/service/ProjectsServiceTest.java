@@ -1,9 +1,13 @@
 package com.bis.sourcelead.service;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +17,6 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.ProjectsDao;
-import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
@@ -25,6 +26,9 @@ import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 @WebAppConfiguration
 @ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
 public class ProjectsServiceTest {
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceTest.class);
 	
 	@Configuration
 	static class ProjectServiceTestContextConfiguration {
@@ -99,7 +103,8 @@ public class ProjectsServiceTest {
 	 */
 	//@Test
 	public void getProjectById() throws Exception{
-		projectsService.getProjectById(1L);
+		Projects getProjectbyid = projectsService.getProjectById(1L);
+		logger.info("getProjectById added successfully"+getProjectbyid);
 	}
 	
 	/**
@@ -117,8 +122,84 @@ public class ProjectsServiceTest {
 	 * this method for get all projects
 	 * @throws Exception
 	 */
+	
 	//@Test
-	public void getProjects() throws Exception{
-		projectsService.getAllProjects();
+	public void getallProjects() throws Exception{
+		Collection<Projects> allprojects = projectsService.getAllProjects();
+		logger.info("getProjects added successfully"+allprojects.size());
 	}
+	
+	//@Test
+    public void getPrimaryProjectByOrgLocationsId() throws Exception{
+        System.out.println("sadasdsadasdsadsadsa");
+        //Long orgLocationsId= 3l;
+        projectsService.getPrimaryProjectByOrgLocationsId(3L);
+        logger.info("getPrimaryProjectByOrgLocationsId added successfully");
+        
+    }
+    
+    @Test
+    public void getProjectByOrgLocationsId() throws Exception{
+        Long orgLocationsId= 3l;
+        List<Projects> projects = projectsService.getProjectByOrgLocationsId(orgLocationsId);
+        logger.info("project list in getProjectByOrgLocationsId"+projects.size());
+    }
+	
+	@Test
+	@SuppressWarnings("null")
+	public void getAllLoginUserProjectsList() throws Exception{
+		List<Long> projectIds=  null;
+		projectIds.add(1L);
+		projectIds.add(9L);
+		projectIds.add(10L);
+		Long orgLocationId = 3L;
+		Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds,orgLocationId);
+		logger.info("projects list in getAllLoginUserProjectsList"+projectsList.size());
+	}
+	@Test
+	public void getAllClientProjectsByOrgRelationId() throws Exception{
+		Collection<Projects> AllClientProjects = projectsService.getAllClientProjectsByOrgRelationId(1l,1l);
+		logger.info("projects list in getAllLoginUserProjectsList"+AllClientProjects.size());
+	}
+	@Test
+	public void updateStartDateOfProjectId() throws Exception{
+		Integer updateStartDate = projectsService.updateStartDateOfProjectId(new Date(),1l);
+		logger.info("updateStartDate addded successfully"+updateStartDate.intValue());
+	}
+	@Test
+	public void updateEndDateOfProjectId() throws Exception{
+		Integer updateEndDate = projectsService.updateEndDateOfProjectId(new Date(),1l);
+		logger.info("updateEndDate addded successfully"+updateEndDate.intValue());
+	}
+	@Test
+	public void getApprovarAssignedProjects() throws Exception{
+		List<Long> updateEndDate = projectsService.getApprovarAssignedProjects(1l,1l);
+		logger.info("getApprovarAssignedProjects addded successfully"+updateEndDate.size());
+	}
+	@Test
+	public void getProjectByProjectSequenceNumber() throws Exception{
+		Projects updateEndDate = projectsService.getProjectByProjectSequenceNumber("1231");
+		logger.info("getProjectByProjectSequenceNumber addded successfully"+updateEndDate);
+	}
+	@Test
+	public void getProjectsBasedOnClientsAndStatusSelectionInFilters() throws Exception{
+		Collection<Projects> ProjectsBasedOnClients = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(1l,"TCS","ACTIVE",1l);
+		logger.info("getProjectsBasedOnClientsAndStatusSelectionInFilters addded successfully"+ProjectsBasedOnClients.size());
+	}
+	@Test
+	public void getProjectByOrgLocationsIdAndUserId() throws Exception{
+		List<Projects> ProjectByOrgLocationsId = projectsService.getProjectByOrgLocationsIdAndUserId(1l,1l);
+		logger.info("getProjectByOrgLocationsIdAndUserId addded successfully"+ProjectByOrgLocationsId.size());
+	}
+	@Test
+	public void getProjectByIdAndLoginOrgId() throws Exception{
+		Projects ProjectByIdAndLogin = projectsService.getProjectByIdAndLoginOrgId(1l,1l);
+		logger.info("getProjectByIdAndLoginOrgId addded successfully"+ProjectByIdAndLogin);
+	}
+	@Test
+	public void getUserAssignedProjectsCount() throws Exception{
+		Integer UserAssignedProjectsCount = projectsService.getUserAssignedProjectsCount(1l,1l);
+		logger.info("getUserAssignedProjectsCount addded successfully"+UserAssignedProjectsCount.intValue());
+	}
+	
 }

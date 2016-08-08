@@ -1,6 +1,10 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +19,8 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.TimesheetEntriesDao;
-import com.bis.sourcelead.dao.impl.TimesheetEntriesDaoImpl;
 import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.TimesheetEntriesServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,9 +42,9 @@ public class TimesheetEntriesServiceTest {
 	TimesheetEntriesService timesheetEntriesService;
 	
 
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceTest.class);
 
-	@Test
+	//@Test
 	public void addTimesheetSubmissions() throws Exception{
 		
 		TimesheetEntries timesheetEntries = new TimesheetEntries();
@@ -49,9 +52,10 @@ public class TimesheetEntriesServiceTest {
 		timesheetEntries.setStatus("agredd");
 		timesheetEntriesService.addTimesheetEntries(timesheetEntries);
 		System.out.println("Successfully Added!!!!");
+		logger.info("registration added successfully");
 	}
 	
-	@Test
+	//@Test
 	public void updateTimesheetEntries() throws Exception{
 		
 		
@@ -59,35 +63,40 @@ public class TimesheetEntriesServiceTest {
 		timesheetEntries.setId((long) 1);
 		timesheetEntries.setStatus("updated");
 		timesheetEntriesService.addTimesheetEntries(timesheetEntries);
-		System.out.println("Successfully Added!!!!");
+		logger.info("Successfully Added!!!!");
 	}
 	
-	@Test
+	//@Test
 	public void getTimesheetEntries() throws Exception{
 		
 		String id = "1";
 		TimesheetEntries timesheetEntries = timesheetEntriesService.getTimesheetEntries(id);
-		System.out.println("Successfully retrived!!!!"+timesheetEntries.getStatus());
+		logger.info("Successfully retrived!!!!"+timesheetEntries.getStatus());
 	}
 	 
 	
-	@Test
+	//@Test
 	public void getAllTimesheetEntries() throws Exception{
 		
 		Collection<TimesheetEntries> timesheetEntries = timesheetEntriesService.getAllTimesheetEntries();
 		for(TimesheetEntries  tm : timesheetEntries ){
-			System.out.println("Successfully retrived!!!!"+tm.getStatus());
+			logger.info("Successfully retrived!!!!"+tm.getStatus());
 		}
 		
 	}
 	
 
-	@Test
+	//@Test
 	public void deleteTimesheetEntries() throws Exception{
 		String id = "1";  
-		timesheetEntriesService.deleteTimesheetEntries(id);
+		Boolean deleteTimesheet = timesheetEntriesService.deleteTimesheetEntries(id);
+		logger.info("Deleted Successfully!!!!"+deleteTimesheet);
 	}
-	
-	
-	
+	//@Test
+	public void getAllTimesheetEntriesBySubmissionId() throws Exception	{
+		Collection<TimesheetEntries> AllTimesheetEntries = timesheetEntriesService.getAllTimesheetEntriesBySubmissionId(1l);
+		for(TimesheetEntries  tm : AllTimesheetEntries ){
+			logger.info("Successfully retrived!!!!"+tm.getStatus());
+		}
+	}
 }
