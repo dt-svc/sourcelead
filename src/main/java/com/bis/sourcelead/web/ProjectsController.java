@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -230,6 +231,8 @@ public class ProjectsController {
 	    	
 	    	Projects updatedProjects = projectsService.saveProject(projects);
 	    	
+	    	Long[] ids = new Long[1000];
+	    	
 	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 	    	pah1.setProjectId(updatedProjects);
 	    	User approverUserId1 = new User();
@@ -237,7 +240,7 @@ public class ProjectsController {
 	    	pah1.setApproverUserId(approverUserId1);
 	    	pah1.setLevel(1);
 	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-	    	
+	    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
 	    	//send mail to assigned Project Manager
 	    	String teamMembersList = "";
 			
@@ -248,8 +251,29 @@ public class ProjectsController {
 			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 			pah2.setApproverUserId(approverUserId2);
 			pah2.setLevel(2);
-			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+			ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+			ids[1] = projectApproverHierarchy.getApproverUserId().getId();
 		}
+		
+		//admin as approver hierarchy ..
+		Collection<User> uLsit = userService.getUsersByUserRoles();
+		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
+		for(User userRole : userLsit){
+			  if(ids[0].equals(userRole.getId())){
+				  userLsit.remove(userRole);
+			  }
+			  else if (ids[1].equals(userRole.getId())) {
+				  userLsit.remove(userRole);
+			  }else{
+				    ProjectApproverHierarchy pah3 = new ProjectApproverHierarchy();
+				    pah3.setProjectId(updatedProjects);
+					pah3.setApproverUserId(userRole);
+					pah3.setLevel(2);
+				    ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah3);
+			  } 
+			  
+		}
+		
 	    	
 		
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
