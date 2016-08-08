@@ -293,6 +293,9 @@ public class ProjectsController {
 						            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
 						            	pm.setProjectEndDate(currentEndDate);
 						            }
+						            else{
+							    		pm.setProjectEndDate(projects.getEndDate());
+							    	}
 									pm.setProjects(projects);
 									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
