@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +11,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,17 +25,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -72,30 +69,46 @@ public class RegistrationController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
-			model.setViewName("registration/enrolledOrgsList");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
-			if(!isNullOrEmpty(msg)){
-				model.addObject("msg", msg);
-				SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
+			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
+			if(authorities.contains(authority)){
+				model.setViewName("registration/enrolledOrgsList");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
+				if(!isNullOrEmpty(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
+				}
+			}else{
+				model.setViewName("registration/persmissionDenied");
 			}
+			
+			
 			return model;
 
 	 }
 	 
 	 
-	 @PreAuthorize("hasRole('SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrollOrg")
 		public ModelAndView registration() {
 			ModelAndView model = new ModelAndView();
-			model.setViewName("registration/enrollOrg");
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
+			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
+			if(authorities.contains(authority)){
+				model.setViewName("registration/enrollOrg");
 
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			
 			return model;
 
 		}
@@ -126,7 +139,10 @@ public class RegistrationController {
 	
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
-				@RequestParam(value="json", required=false) String json ,HttpServletRequest request) {
+				@RequestParam(value="json", required=false) String json ,
+				@RequestParam(value="modules", required=false) String modules ,
+				@RequestParam(value="subModules", required=false) String subModules ,
+	   			HttpServletRequest request) {
 
 		try {
 				json = "{"+json+"}";
@@ -135,7 +151,14 @@ public class RegistrationController {
 				Registration registration =  gson.fromJson(json,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				registrationService.addRegistration(registration,user);
+			    String[] registredModules =  modules.split(",");
+			    if(registredModules[0].equalsIgnoreCase("Recruiting")){
+			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
+			    		return "Invalid Sub Modules";
+			    	}
+			    }
+				
+				registrationService.addRegistration(registration,user,modules,subModules);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 				
 				
@@ -175,6 +198,8 @@ public class RegistrationController {
 					//email to user
 					registrationService.sendResetPasswordEmail(user,passwordResets.getVerificationCode());
 				}
+				
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg", "Verification Code sent to your mail.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -205,6 +230,8 @@ public class RegistrationController {
 				//email to user
 				User user = userService.findByUserName(passwordResets.getEmail());
 				registrationService.sendUpdatePasswordEmail(user);
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

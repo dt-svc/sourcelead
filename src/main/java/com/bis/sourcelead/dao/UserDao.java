@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Collection;
 import java.util.List;
 
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -26,4 +27,6 @@ public interface UserDao {
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
+	
+	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 }

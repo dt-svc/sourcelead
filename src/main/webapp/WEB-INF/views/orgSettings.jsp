@@ -135,7 +135,8 @@ function cancel(){
 			<div class="clearfix">
 			  <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
 			  
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
+			  <div class="col-xs-12 col-sm-3 col-md-3">
+				 <div class="well text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  <div class="btn-group uploadfile">
@@ -150,6 +151,9 @@ function cancel(){
 				  </c:if>
 				  </div>
 				  </div>
+				  </div>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png images are not allowed</p>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			  <div id="popUp" ></div>
 			  			

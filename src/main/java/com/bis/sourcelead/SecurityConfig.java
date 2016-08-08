@@ -31,7 +31,7 @@ import org.springframework.stereotype.Controller;
 @EnableWebSecurity
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
-@PropertySource(value = { "classpath:config.properties" })
+@PropertySource(value = { "${propertyLocation:app.properties}" })
 public class SecurityConfig  {
 	
     @Configuration
