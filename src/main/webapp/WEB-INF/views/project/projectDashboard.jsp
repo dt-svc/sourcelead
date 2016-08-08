@@ -17,6 +17,10 @@
  .clsDatePicker {
    z-index: 100000 !important;
 }
+.side-bar .side-nav ul li span{
+  display: inline-block;
+  float: none;
+}
  </style>
 
 <body>
@@ -889,6 +893,7 @@ function filter(){
    		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
+   		    			result = result + " , ";
    		    			result = result +report.managerLevel2;
    		    		} 
    		    		result = result +'</span></div>';

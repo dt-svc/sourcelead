@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.Projects;
 
 @Repository
 public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchyDao{
@@ -35,6 +36,20 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 			session.save(projectApproverHierarchy);
 			return projectApproverHierarchy;
 	}
+	/**
+	 * This method is for updating the ProjectApproverHierarchy  by  projectApproverHierarchy
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception {
+		logger.debug("In ProjectApproverHierarchy Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		session.saveOrUpdate(projectApproverHierarchy);
+		logger.info("Record updated successfully..!");
+		return projectApproverHierarchy;
+		
+	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
@@ -99,7 +114,6 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		}
 		return projectsIdList;
 	}
-	
-	
+
 	
 }

@@ -458,16 +458,12 @@ public class UserController {
 				}
 				for (ProjectMembers projectMembers : allProjectsList) {
 					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
-					if (projectMembers.getProjectAssignedDate() != null) {
-						projectMembers.setStartDate(
-								com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
-					}
+					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
 					if (projectMembers.getProjectEndDate() != null) {
-						projectMembers.setEndDate(
-								com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
-					} else if (projectMembers.getProjects().getEndDate() != null) {
-						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD
-								.format(projectMembers.getProjects().getEndDate()));
+						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
+					}
+					if (projectMembers.getProjects().getEndDate() != null) {
+						projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
 					}
 			        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
 			        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
@@ -512,7 +508,7 @@ public class UserController {
 				Employees employee = employeesService.getEmployeeByUserId(userId);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Projects projects = projectsService.getProjectById(jsonObj.getLong("projectId"));
-				Date projectStartdate = projects.getStartDate();
+				/*Date projectStartdate = projects.getStartDate();
 				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
 					if (projectStartdate.compareTo(sdf.parse(jsonObj.getString("StartDate"))) != 0) {
 						projectsService.updateStartDateOfProjectId(sdf.parse(jsonObj.getString("StartDate")),
@@ -527,7 +523,7 @@ public class UserController {
 									jsonObj.getLong("projectId"));
 						}
 					}
-				}
+				}*/
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);

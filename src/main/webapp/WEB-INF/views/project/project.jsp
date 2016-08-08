@@ -62,15 +62,7 @@
 		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
-		<section class="action-btns clearfix">
-			<ul class="pull-right list-unstyled list-inline">
-				<li><a href="#" class="faclose"><i aria-hidden="true"
-						class="fa fa-close"></i></a></li>
-				<li><a href="#" class="collpase-div"><i aria-hidden="true"
-						class="fa fa-angle-down"></i></a></li>
-			</ul>
-		</section>
-		<div class="clearfix form-area form-horizontal toggle-div remove-div">
+		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<form:form id="project_form" name="project_form" method="post">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -78,11 +70,8 @@
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber"
-									name="ProjectSequeneNumber"
-									data-validation="validate_Space validate_length length2-50"
-									data-validation-optional="true" class="form-control"
-									onblur="validateProjectSequeneNumber();">
+								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50"
+									data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
 
@@ -91,18 +80,14 @@
 								class="text-danger">*</span>
 							</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" name="ProjectName"
-									data-validation="required validate_Space validate_length length2-100"
-									field-name="Project Name" value=""> <span
+								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" value=""> <span
 									class="hidden">Project Name</span>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3"
-									name="ProjectDescription"
-									data-validation="validate_Space validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_Space validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -113,11 +98,9 @@
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value=""
-											id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<div class="col-lg-6 positionRelative">
-
 										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<span class="hidden">Enter Project Id</span>
@@ -132,12 +115,8 @@
 										<button class="btn btn-default" type="button">
 											<span class="badge" id="addTaskCount">0
 										</button>
-										<button class="btn btn-primary" id="david" type="button"
-											onclick="addSourceleadTasks();" data-toggle="modal"
-											data-target="#addTask">
-											<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View
-											/ Add Tasks
-										</button>
+										<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();" data-toggle="modal" data-target="#addTask">
+											<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks </button>
 									</div>
 								</div>
 								<!-- Modal -->
@@ -151,58 +130,37 @@
 												<h4 class="modal-title">Add Tasks</h4>
 											</div>
 											<div class="modal-body clearfix">
-												<div class="modal-body-custom custom-table tbl-cumstom-data">
-													<table class="table table-bordered table-striped  clearfix"
-														id="projectTaskTbl" cols="0">
-														<tr id="divTsRow0">
-															<th><input type="hidden" id="maxTsRowNum"
-																name="maxTsRowNum" value="1" />Task Name</th>
-															<th>Description</th>
-															<th class="tblminwidth-75">Action</th>
-														</tr>
-
-														<!--  <tr>
-                              <td>Task Name</td>
-                              <td>The home page has a section in the middle of the page that needs to be to the right.</td>
-                              <td>
-                              <span><a title="Edit" href="javasript:void(0)"><i class="fa fa-edit"></i></a></span>
-                              <span><a title="Remove" href="javasript:void(0)"><i class="fa fa-close"></i></a></span>
-                              </td>
-                            </tr> -->
-
-													</table>
-												</div>
-												<div class="form-horizontal row custom-form">
+											<div class="modal-body-custom custom-table tbl-cumstom-data">
+												<table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
+													<tr id="divTsRow0">
+														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
+														<th>Description</th>
+														<th class="tblminwidth-75">Action</th>
+													</tr>
+												  </table>
+											   </div>
+											   <div class="form-horizontal row custom-form">
 													<div class="col-xs-12 col-lg-7">
 														<div class="form-group" id="taskNameDIV">
 															<label class="col-md-3">Task Name</label>
 															<div class="col-md-9">
-																<input type="text" value="" id="taskName"
-																	name="taskName" placeholder="Enter Task Name"
-																	class="form-control">
+																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
 														<div class="form-group">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control"
-																	placeholder="Enter Task Description"
-																	id="taskDescription" name="taskDescription" rows="2"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription" rows="2"></textarea>
 															</div>
 														</div>
 													</div>
 													<div class="col-xs-12 col-lg-5">
-														<a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();"
-															data-target="addTask"> <i class="fa fa-plus"></i><span
-															id="addTaskText"> Add Task</span></a>
+														<a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask"> <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
 													</div>
 												</div>
 											</div>
 											<div class="modal-footer">
-												<!--  <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button> -->
-												<button type="button" class="btn btn-default"
-													data-dismiss="modal">Close</button>
+												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 											</div>
 										</div>
 									</div>
@@ -229,8 +187,7 @@
 								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
-									<select class="form-control select-bg" name="level1Manager" id="level1Manager"
-										field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
+									<select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id}">${option.firstName}
@@ -258,15 +215,12 @@
 							<label class="col-md-3">Client</label>
 							<div class="col-md-9">
 								<div class="form-icon">
-									<select class="form-control select-bg" name="selectClient"
-										id="addClientId">
+									<select class="form-control select-bg" name="selectClient" id="addClientId">
 										<option value=''>-- Select Client --</option>
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
 										</c:forEach>
-									</select> <i class="fa fa-plus btn btn-default formic1"
-										data-toggle="modal" onclick="flushProject();"
-										data-target="#addClient"></i>
+									</select> <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i>
 								</div>
 								<span class="hidden">Enter Project Id</span>
 							</div>
@@ -280,12 +234,8 @@
 							<div class="col-md-9">
 								<div class="form-icon">
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="Select Team" class="form-control"
-										data-target="#assignTeam" data-toggle="modal"
-										onclick="getTeamMembers();flushEmployee();" readonly="readonly">
-									</span> <span data-target="#addTeam" data-toggle="modal"> <i
-										class="fa fa-plus btn btn-default formic1"
-										onclick="flushEmployee();"></i>
+										<input type="text" value="Select Team" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();flushEmployee();" readonly="readonly">
+									</span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushEmployee();"></i>
 									</span>
 								</div>
 								<span class="hidden">Select Team</span>
@@ -349,13 +299,8 @@
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_project"
-								onclick="saveProject();flushSaveProject()"
-								class="btn btn-primary"> <input type="button"
-								value="Cancel"
-								onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"
-								class="btn btn-default ml">
-
+							<input type="button" value="Save" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
+							 <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-default ml">
 						</div>
 					</div>
 				</div>
@@ -364,8 +309,6 @@
 	</div>
 </section>
 <!-- Content Area Ends-->
-
-
 
 
 <!-- Modal content Add Team-->
@@ -384,25 +327,21 @@
 								<label class="col-lg-3">Frist Name<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value=""
-										name="employeeFirstName" id="employeeFirstName"
+									<input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName"
 										field-name="Frist Name" data-validation="required validate_Space validate_length length2-100">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-lg-3">Last Name</label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value=""
-										name="employeeLastName" id="employeeLastName">
+									<input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
 								</div>
 							</div>
 							<div class="form-group" id="EmailIdDiv">
 								<label class="col-lg-3">Email <span class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="EmailId"
-										id="EmailId" field-name="Email"
-										data-validation="required validate_email"
-										onblur="emailVerification();">
+									<input type="text" class="form-control" value="" name="EmailId" id="EmailId" field-name="Email"
+										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
 							<div class="form-group">
@@ -746,7 +685,6 @@
 				}
 			});
 
-			//$('#save_client').attr('data-dismiss', 'modal');
 			$('#orgName').attr('');
 			$('#webSite').attr('');
 			return true;
@@ -810,6 +748,7 @@
 	}
 </script>
 
+<!-- this script is for Save Employee functionality Start-->
 <script type="text/javascript">
 	function addEmployee() {
 		var validationSettings = {
@@ -851,6 +790,9 @@
 	});
 </script>
 
+<!-- this script is for Save Employee functionality Ends -->
+
+<!-- this script is for Get the TeamMembers functionality Start -->
 <script type="text/javascript">
 	function getTeamMembers() {
 		
@@ -965,7 +907,9 @@
 		$('#employeeEmail').val('');
 	}
 </script>
+<!-- this script is for Get the TeamMembers functionality Ends -->
 
+<!-- this script is for Assign Employee functionality Start -->
 <script>
 	function assignEmployee() {
 		var result = "";
@@ -992,8 +936,9 @@
 		$("#assignTeamSavingDiv").append(result);
 	}
 </script>
+<!-- this script is for Assign Employee functionality Ends -->
 
-
+<!-- this script is for Email verfication functionality Start -->
 <script type="text/javascript">
 	function emailVerification() {
 		var EmailId = document.getElementById("EmailId").value;
@@ -1029,7 +974,9 @@
 		}
 	}
 </script>
+<!-- this script is for Email verfication functionality Ends -->
 
+<!-- this script is for website validation functionality Start -->
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("companyWebsite").value;
@@ -1073,6 +1020,8 @@
 	  }
 	}
 </script>
+<!-- this script is for website validation functionality Ends -->
+
 <script type="text/javascript">
 	function flushProject() {
 		$("#save_client").removeAttr("disabled");
