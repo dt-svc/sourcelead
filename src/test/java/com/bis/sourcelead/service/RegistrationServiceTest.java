@@ -45,7 +45,9 @@ public class RegistrationServiceTest {
 		registration.setPassword("PWD123");
 		registration.setVerificationCode("12345");
 		registration.setWebsite("www.tesla.com");
-		registrationService.addRegistration(registration);
+		User user = new User();
+		user.setId(3L);
+		registrationService.addRegistration(registration, user, " ", " ");
 		logger.info("registration added successfully");
 		
 	}

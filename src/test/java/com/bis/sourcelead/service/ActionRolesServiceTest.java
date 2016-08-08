@@ -56,7 +56,8 @@ public class ActionRolesServiceTest {
 	public void getSourceLeadActionRolesListByOrgId() throws Exception{
 		Org org = new Org();
 		org.setId(2L);
-		List<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(org.getId());
+		List<Long> modulesid = null;
+		List<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(org.getId(), modulesid);
 		System.out.println("Action Roles List is...> "+actionRolesList.size());
 	}
 	

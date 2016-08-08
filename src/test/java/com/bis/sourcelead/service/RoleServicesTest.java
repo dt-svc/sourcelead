@@ -33,7 +33,7 @@ public class RoleServicesTest {
 	
 	@Test
 	public void getRoles()throws Exception{
-		Collection<Roles> roles = roleservice.getRoles();
+		Collection<Roles> roles = roleservice.getRoles(2L);
 		logger.info("getRoles added successfully"+roles.size());
 	}
 	@Test
