@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
@@ -28,12 +36,17 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,6 +69,21 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 	@Autowired
 	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -664,11 +692,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 
 	@Override
-	public String dynamicTimesheetpopUp(HttpServletRequest request, Long employeeId, String startDate, String endDate)
+	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate)
 			throws Exception {
 		
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -1132,7 +1159,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	public String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm, String json,
 			MultipartHttpServletRequest request, String status) throws Exception {
 		// TODO Auto-generated method stub
-
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
@@ -1346,6 +1376,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            
 									timesheetSubmissions.setTotalHours(actualTimeString);
 									timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+									
+									//send mail to assigned manager at time sheet submission
+									if(!actualTimeString.equalsIgnoreCase("0.0")){
+										sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+									}
 								}
 								
 								
@@ -1369,6 +1404,74 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				total = total + finalmin;
 				return total;
 			
+	}
+	
+	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
+		
+		for(ProjectApproverHierarchy approver : approverHierarchyList){
+				 
+			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
+			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
+				
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(projectManager.getFirstName());
+			 emailMessage.setLastName(projectManager.getLastName());
+			 emailMessage.setToEmail(projectManager.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+			 
+			 String pattern = "dd-MM-yyyy";
+	         SimpleDateFormat format = new SimpleDateFormat(pattern);
+	         String startDateStr = format.format(timesheetSubmissions.getStartDate());
+	         String endDateStr = format.format(timesheetSubmissions.getEndDate());
+
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
+			 globalVarsMap.put("managerLastName",projectManager.getLastName());
+			 //globalVarsMap.put("projectName", project.getProjectName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 //setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 emailRecipientList.add(emailRecipient);
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+			
+		}
 	}
 	
 	public static boolean isNullOrEmpty(String str) {

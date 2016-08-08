@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,15 +33,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -66,10 +77,17 @@ public class TimesheetSubmissionsController {
 	@Autowired
 	private ApplicationContext applicationContext;
 	
-	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Autowired
 	private DataSource dataSource;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
@@ -449,12 +467,16 @@ public class TimesheetSubmissionsController {
 												@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
 									             
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         Date sDate  =  Constants.DMY.parse(startDate);
         
         
         submissionApproverHierarchyService.updateApprovalStatusForApprover(employeeId, user.getId(), sDate, approvalStatus, rejectedReason);
+        
+        sendEmailToEmployeeTimesheetApprovalStatus(employeeId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
         
       /*  Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(), sDate);
         if(timesheetSubmissionsList!=null){
@@ -612,6 +634,78 @@ public class TimesheetSubmissionsController {
             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
             return "success";
     }
+	
+	private void sendEmailToEmployeeTimesheetApprovalStatus(Long empId, User loginUser, String startDate, String endDate, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+		
+			 Employees emp = employeesService.getEmployee(empId.toString());
+		
+	     	 EmailMessage emailMessage = new EmailMessage();
+	     	 emailMessage.setFirstName(emp.getUser().getFirstName());
+		 	 emailMessage.setLastName(emp.getUser().getLastName());
+		 	 emailMessage.setToEmail(emp.getUser().getEmail());
+		 	 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 	 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+	
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 globalVarsMap.put("employeeFirstName",emp.getUser().getFirstName());
+			 globalVarsMap.put("employeeLastName",emp.getUser().getLastName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("timeFrequency",startDate+" to "+endDate);
+			 if(status.equalsIgnoreCase("REJECTED")){
+				 globalVarsMap.put("rejectedReason",rejectedReason);
+			 }
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 //setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 emailRecipientList.add(emailRecipient);
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 if(status.equalsIgnoreCase("REJECTED")){
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 if(status.equalsIgnoreCase("APPROVED")){
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+			 
+			 //calling the sendNotification method of emailScenerioUtil
+			 EmailScenario  notificationScenario = null;
+			 if(status.equalsIgnoreCase("REJECTED")){
+				 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			 if(status.equalsIgnoreCase("APPROVED")){
+				 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+	}
 	
 	/*@RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception

@@ -60,6 +60,9 @@ public class ProjectApproverHierarchy {
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
+    
+    @Transient
+    private String fullName;
 
     
 	public Long getId() {
@@ -142,5 +145,12 @@ public class ProjectApproverHierarchy {
 	public void setProjectMembers(Set<ProjectMembers> projectMembers) {
 		this.projectMembers = projectMembers;
 	}
-	
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 }
