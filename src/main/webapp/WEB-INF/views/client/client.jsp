@@ -206,20 +206,19 @@
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="webSite"
 									name="webSite" onblur="validateWebsite();" field-name="Website"
-									data-validation="validate_Space validate_length length2-100"
+									data-validation="validate_Space validate_length length2-100 validate_domain"
 									data-validation-optional="true" value=""> <span
 									class="hidden">Website</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group" id="EmailIdDiv">
 							<label class="col-md-3" for="Project Manager">Email<span class="text-danger">*</span></label>
 							<div class="col-md-9">
-								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="required validate_Space validate_length length2-100 validate_email"
-									value="" class="form-control">
-								<span class="hidden">Enter Email</span>
+								<input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
+                                <span class="hidden">Valid Email</span>
 							</div>
 						</div>
+						
 
 						<div class="form-group">
 							<label class="col-md-3">Mobile Number</label>
@@ -238,11 +237,8 @@
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_client"
-								onclick="saveClient();" onclick="flushProject();" class="btn btn-primary"> <input
-								type="button" value="Cancel"
-								onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'"
-								class="btn btn-default ml">
+							<input type="button" value="Save" id="save_client" onclick="saveClient();" class="btn btn-primary"> 
+							<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
 						</div>
 					</div>
 				</div>
@@ -276,17 +272,15 @@
 		};
 	})(jQuery);
 </script>
+
 <script type="text/javascript">
+	function saveClient() {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-</script>	
-<script type="text/javascript">
-	function saveClient() {
-		
 		if ($('#client_form').validate(false, validationSettings)) {
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -684,6 +678,7 @@ function flushProject(){
 }
 </script>
 
+
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("webSite").value;
@@ -697,9 +692,7 @@ function flushProject(){
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="
-						+ website + "&sourceleadBLockedwebsites="
-						+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/ws/validateClientWebsite?${_csrf.parameterName}=${_csrf.token}&website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == 'Website Duplicated' || result == 'Invalid Website') {
@@ -810,3 +803,33 @@ function validateClientName(){
 </script>
 
 
+
+<script type="text/javascript">
+ function validateClientEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*  $("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_client" ).addClass('button').val('Save');
+                         $("#save_client").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     

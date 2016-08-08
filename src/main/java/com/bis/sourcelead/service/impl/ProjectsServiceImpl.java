@@ -192,8 +192,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 	@Override
 	public List<SubmissionApproverHierarchy> getApproveUserForTimeSheets(Long userId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return projectsDao.getApproveUserForTimeSheets(userId);
 	}
 	
 	

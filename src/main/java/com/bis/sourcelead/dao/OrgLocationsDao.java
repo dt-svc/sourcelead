@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
 
 public interface OrgLocationsDao {
@@ -15,4 +14,6 @@ public interface OrgLocationsDao {
     public List<OrgLocations> getAllOrgLocations()throws Exception; 
     public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
     public  OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception;
+    
+    OrgLocations findByEmail(String email);
 }

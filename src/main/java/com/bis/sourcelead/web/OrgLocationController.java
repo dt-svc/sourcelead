@@ -41,10 +41,10 @@ public class OrgLocationController {
 	{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(2L);
+		org.setId(5L);
 		
 		User user = new User();
-		user.setId(2L);
+		user.setId(5L);
 		
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
