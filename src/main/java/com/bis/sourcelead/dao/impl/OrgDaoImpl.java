@@ -85,6 +85,12 @@ public class OrgDaoImpl implements OrgDao {
 		if (org != null) {
 			session.saveOrUpdate(org);
 		}
+		if(org == null){
+			StringBuffer message= new StringBuffer(MessageFormat.format(statusUpdate,"ORG"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
+		
+		
 		return org;
 	}
 	
@@ -117,6 +123,9 @@ public class OrgDaoImpl implements OrgDao {
 			session.saveOrUpdate(org);
 			isDeleted = true;
 			logger.info("Successfully deleted..!");
+		}if(id == null){
+			StringBuffer message= new StringBuffer(MessageFormat.format(statusDelete,"ORG"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
 		}
 		return isDeleted;
 	}
@@ -137,7 +146,7 @@ public class OrgDaoImpl implements OrgDao {
                     try {
                         netUrl = new URL(webSite);
                     } catch (MalformedURLException e) {
-                        e.printStackTrace();
+                        e.printStackTrace();;
                     }
                     String host = netUrl.getHost();
                     if(host.startsWith("www.")){
@@ -174,7 +183,7 @@ public class OrgDaoImpl implements OrgDao {
 		List<Org> orgList = crit.list();
 		if(orgList.isEmpty())
 		{
-			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords," Orgs ","ORG"));
+			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords,"ORG"));
 			throw new NoRecordsFoundException(message.toString());
 		}
 		return orgList;
@@ -189,11 +198,17 @@ public class OrgDaoImpl implements OrgDao {
 		logger.debug("getOrgByOrgCode start");
 		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
 		logger.debug("getOrgByOrgCode end");
-		if (orgList.size() > 0) {
+		if(orgList.isEmpty()){
+			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords,"ORG"));
+			throw new NoRecordsFoundException(message.toString());
+		}
+		 return orgList.get(0);
+		 // Below code is Commented to written Exception
+		/*if (orgList.size() > 0) {
 			return orgList.get(0);
 		} else {
 			return null;
-		}
+		}*/
    	}
 	
 	private boolean isDuplicateWebsite(String host) {

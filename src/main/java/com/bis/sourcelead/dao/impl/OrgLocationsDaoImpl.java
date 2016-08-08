@@ -1,14 +1,18 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +21,28 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.exception.NoRecordsFoundException;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class OrgLocationsDaoImpl implements OrgLocationsDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgLocationsDaoImpl.class);
 
@@ -37,8 +56,9 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 				session.save(orgLocations);
 			}
 			logger.debug("orgLocations Added Successfully");
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORGLOCATIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return orgLocations;
 	}
@@ -56,7 +76,15 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgLocations getOrgLocations(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return (OrgLocations) session.get(OrgLocations.class, id);
+		OrgLocations orgLocations = session.get(OrgLocations.class, id);
+		if(orgLocations == null)
+		{
+			StringBuffer message= new StringBuffer(MessageFormat.format(notFound,"ORGLOCATIONS", id));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
+		return orgLocations;
+		
+		
 	}
 
 	@Override
@@ -81,11 +109,14 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgLocations> orgLocationsList = null;
 		Query citiesListQuery= session.createQuery("from OrgLocations");
-		orgLocationsList=citiesListQuery.list();;
+		orgLocationsList=citiesListQuery.list();
+		if(orgLocationsList.isEmpty()){
+			StringBuilder message= new StringBuilder(MessageFormat.format(noRecords,"ORGLOCATION"));
+			throw new NoRecordsFoundException(message.toString());
+		}
 		return orgLocationsList;
 	}
 
@@ -127,9 +158,24 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		
 		
 	}
+
 	
-	
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public OrgLocations findByEmail(String email) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
+		logger.debug("findByEmail start");
+		orgLocations = session.createQuery("from OrgLocations where email=:email" ).setString( "email", email ).setCacheable(true).list();
+		logger.debug("findByEmail end");
+		if (orgLocations.size() > 0) {
+			return orgLocations.get(0);
+		} else {
+			return null;
+		}
+   	}
 	
 
 }

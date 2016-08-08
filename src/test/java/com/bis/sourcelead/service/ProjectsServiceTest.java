@@ -121,7 +121,10 @@ public class ProjectsServiceTest {
 	public void getProjects() throws Exception{
 		projectsService.getAllProjects();
 	}
-	
+	/**
+	 * test case Weekly base Emails and Notification
+	 * @throws Exception
+	 */
 	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
 		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
