@@ -294,7 +294,10 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 
 	
 <!--   Timesheet approval popup   -->
-<div class="side_mask"></div>
+<div class="side_mask" onclick="removeTimesheetPopup();">
+<div class="proj_close"></div>
+</div>
+
 <div class="time_appr_side_wrap">
 	   <div id="myId">
 	   </div>
