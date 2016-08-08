@@ -872,8 +872,12 @@
 				       if(json.length > 0){
 					    	for (var i = 0; i < json.length; i++) {
 								var opt = json[i];
+								var projectStartDate = $("#StartDate").val();
+								var projectEndDate = $("#EndDate").val();
+								
 								$('#startDate'+opt.id).datepicker({
 									dateFormat : 'yy-mm-dd',
+									minDate:projectStartDate,
 									onSelect : function(selected) {
 										var dt = new Date(selected);
 										var id = $(this).attr('id');
@@ -885,6 +889,7 @@
 	
 								$('#endDate'+opt.id).datepicker({
 									dateFormat : 'yy-mm-dd',
+									maxDate:projectEndDate,
 									onSelect : function(selected) {
 										var dt = new Date(selected);
 										var id = $(this).attr('id');
