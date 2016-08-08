@@ -81,16 +81,18 @@
         <!-- login User details -->
         <ul class="list-inline list-unstyled pull-left custom-navbar-inner">
           <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
-          <li> <a href="javascript:void(0)" title="Quick Links" id="qlinks"> <i class="fa fa-link"></i> </a>
-              <div class="qlinks-area ">
-              <ul class="list-unstyled">
-                <li><a href="${sourceleadUrl}/userCreation"><i class="fa fa-user-plus"></i>&nbsp;Create User</a></li>
-                <li><a href="${sourceleadUrl}/client"><i class="fa fa-bar-chart"></i>&nbsp;Create Client</a></li>
-                <li><a href="${sourceleadUrl}/project"><i class="fa fa-users"></i>&nbsp;Create Project</a></li>
-                <li><a href="${sourceleadUrl}/uploadForm"><i class="fa fa-download"></i>&nbsp;Import Users</a></li>
-              </ul>
-            </div>
-          </li>
+           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
+	          <li> <a href="javascript:void(0)" title="Quick Links" id="qlinks"> <i class="fa fa-link"></i> </a>
+	              <div class="qlinks-area ">
+	              <ul class="list-unstyled">
+	                <li><a href="${sourceleadUrl}/userCreation"><i class="fa fa-users"></i>&nbsp;Create User</a></li>
+	                <li><a href="${sourceleadUrl}/client"><i class="fa fa-user-plus"></i>&nbsp;Create Client</a></li>
+	                <li><a href="${sourceleadUrl}/project"><i class="fa fa-bar-chart"></i>&nbsp;Create Project</a></li>
+	                <li><a href="${sourceleadUrl}/uploadForm"><i class="fa fa-download"></i>&nbsp;Import Users</a></li>
+	              </ul>
+	            </div>
+	          </li>
+            </c:if>
           <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
             <div class="header-widget note-area">
               <ul class="list-unstyled">
@@ -148,20 +150,21 @@
               <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${notificationCount}</span></a>
+          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
-              <c:if test="${empty notificationList}">
+              <c:if test="${empty SourceLeadWeb_notificationList}">
               	<div class="clearfix msg">
                      All Caught UP!!! 
                   </div>
               	</c:if>
-               <c:if test="${!empty notificationList}">
-                <c:forEach var="report" items="${notificationList}" end="4">
+               <c:if test="${!empty SourceLeadWeb_notificationList}">
+                <c:forEach var="report" items="${SourceLeadWeb_notificationList}" end="4">
                 <li>
                   <div class="clearfix msg">
                     <div class="msg-img"> <span>
-                    <img class="img-circle" alt="Admin" title="Pratap Reddy" src="resources/images/pratap-bis.jpg"> </span> </div>
+                    <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
+                    </span> </div>
                     <div class="msg-content">
                       <p>${report.body}</p>
                      <c:out value="${userId}" />
@@ -180,6 +183,11 @@
                  <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y'}">
                      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
                  </c:if>
+                 
+                 <c:if test="${SourceLeadWeb_enrollOrgVisible == 'Y'}">
+                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
+                 </c:if>
+                 
                  <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
               </ul>
             </div>
@@ -194,15 +202,18 @@
   <script>
 function notificationStatusAsRead(){   
 	var sourceleadUrl = '${sourceleadUrl}';
-	var  orgCode ='${orgCode}';
-	 var locationCode = '${locationCode}';
+	var  orgCode ='${SourceLeadWeb_orgCode}';
+	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 $.ajax({
 	      type: "POST",
-	  	  url: "${sourceleadUrl}"+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&userId=2&orgCode="+orgCode+"&locationCode="+locationCode,
+	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
 	  			  success :function(data) {
 	    	      			
       			 }							     
-	});  
+	}); 
+	 $("#alert").click(function(){
+         $("span.label-warning").text(0);
+	 });
 }
 </script>
 

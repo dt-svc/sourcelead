@@ -93,6 +93,10 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			
+			if(userRole.getRoles().getRoleName().equalsIgnoreCase("SOURCELEAD_ADMIN")){
+				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
+			}
+			
 			
 			List<Tabs> tabsList = null;
 			
@@ -119,14 +123,18 @@ public class LoginSessionController {
 		String orgCode = loginOrgCode;
 		String locationCode = loginOrgLocation;
 		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
-		model.addObject("notificationCount", notificationCount);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+		//model.addObject("notificationCount", notificationCount);
 		
 		// get notification list by user id
 		Long notificationTo = loginUser.getId();
-		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
+		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
-		model.addObject("notificationList", notificationList);
+		//model.addObject("notificationList", notificationList);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 	    return model;
@@ -182,6 +190,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "vms", org.getVms());
+		SourceLeadSessionManager.setSessionAttribute(request, "ats", org.getAts());
+		SourceLeadSessionManager.setSessionAttribute(request, "timesheet", org.getTimeSheet());
+		
 	}
 	
 	

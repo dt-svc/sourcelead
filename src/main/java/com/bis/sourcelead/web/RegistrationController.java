@@ -1,12 +1,19 @@
 package com.bis.sourcelead.web;
 
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
@@ -24,15 +33,20 @@ import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class RegistrationController {
 	
-	 @Autowired
+	@Autowired
 	 RegistrationService registrationService;
 	
 	 @Autowired
@@ -47,33 +61,112 @@ public class RegistrationController {
 	 @Autowired
 	 OrgService orgService;
 	 
+	 @Value("${sourceLeadBlockedSocialDomains}")
+	 private String sourceLeadBlockedSocialDomains;
+	 
+	 @Value("${sourceleadUrl}")
+	 private String sourceleadUrl;
+	 
+	 
+	 
+	 @RequestMapping(value = "/enrolledOrgsList")
+		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
+			ModelAndView model = new ModelAndView();
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
+			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
+			if(authorities.contains(authority)){
+				model.setViewName("registration/enrolledOrgsList");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
+				if(!isNullOrEmpty(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
+				}
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			
+			
+			return model;
+
+	 }
+	 
+	 
+	 @RequestMapping(value = "/enrollOrg")
+		public ModelAndView registration() {
+			ModelAndView model = new ModelAndView();
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
+			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
+			if(authorities.contains(authority)){
+				model.setViewName("registration/enrollOrg");
+
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			
+			return model;
+
+		}
+	 
+	 
+	 @RequestMapping(value = "/getOrgsList")
+		@ResponseBody
+		public String getUsersList(HttpServletRequest request,
+				@RequestParam(value="searchByName", required=false) String searchByName,
+				@RequestParam(value="userState", required=false) String userState) {
+
+		 	String resultJson = null;
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			List<Org> orgsList = new ArrayList<Org>();
+			
+			try {
+				orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+			 resultJson = toJSON(orgsList);
+			 return resultJson;
+
+		}
 	 
 	 
 	
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
-				@RequestParam(value="json", required=false) String json ,HttpServletRequest request) {
+				@RequestParam(value="json", required=false) String json ,
+				@RequestParam(value="modules", required=false) String modules ,
+				@RequestParam(value="subModules", required=false) String subModules ,
+	   			HttpServletRequest request) {
 
 		try {
 				json = "{"+json+"}";
 				JSONObject jsonObj = new JSONObject(json);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json,Registration.class);
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				registrationService.addRegistration(registration);
+			    String[] registredModules =  modules.split(",");
+			    if(registredModules[0].equalsIgnoreCase("Recruiting")){
+			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
+			    		return "Invalid Sub Modules";
+			    	}
+			    }
 				
-				//For User Authentication
-				Authentication authentication = new UsernamePasswordAuthenticationToken(registration.getEmail(), registration.getPassword());
-				authentication = surceleadAuthenticationProvider.authenticate(authentication);
-				SecurityContextHolder.getContext().setAuthentication(authentication);
+				registrationService.addRegistration(registration,user,modules,subModules);
+				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 				
-				//email to user
-				registrationService.sendEmail(registration);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			return "home";
+			return "orgList";
 	     
 	   }
 	
@@ -105,6 +198,8 @@ public class RegistrationController {
 					//email to user
 					registrationService.sendResetPasswordEmail(user,passwordResets.getVerificationCode());
 				}
+				
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg", "Verification Code sent to your mail.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -135,6 +230,8 @@ public class RegistrationController {
 				//email to user
 				User user = userService.findByUserName(passwordResets.getEmail());
 				registrationService.sendUpdatePasswordEmail(user);
+				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -178,6 +275,17 @@ public class RegistrationController {
 		  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
 		  return status;
 	   }
+	   
+	   
+	   private String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
+		
 	
 	   protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));

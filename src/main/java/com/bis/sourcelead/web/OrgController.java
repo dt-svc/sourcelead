@@ -77,11 +77,8 @@ public class OrgController {
 
 	@RequestMapping(value = "/updateOrg", method = RequestMethod.GET, headers = "Accept=application/json")
 	public @ResponseBody Org updateOrg() throws Exception {
-		Org org = new Org();
-		org.setId(4L);
-		org.setCreatedDate(new Date());
-		org.setOrgName("Munnii");
-		return orgService.updateOrg(org);
+		
+		return orgService.updateOrg(null);
 
 	}
 

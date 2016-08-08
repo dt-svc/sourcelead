@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -59,7 +60,11 @@ public class ProjectApproverHierarchy {
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
+    
+    @Transient
+    private String fullName;
 
+    
 	public Long getId() {
 		return id;
 	}
@@ -140,5 +145,12 @@ public class ProjectApproverHierarchy {
 	public void setProjectMembers(Set<ProjectMembers> projectMembers) {
 		this.projectMembers = projectMembers;
 	}
-	
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 }

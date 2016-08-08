@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.UserProfile;
@@ -38,6 +39,7 @@ public interface UserService  {
 	
 	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 	
+	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 }	
 		
 	

@@ -1,3 +1,5 @@
+<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -7,10 +9,17 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
  <style>
  
  .clsDatePicker {
    z-index: 100000 !important;
+}
+.side-bar .side-nav ul li span{
+  display: inline-block;
+  float: none;
 }
  </style>
 
@@ -75,7 +84,12 @@
         </div>
 			
 		    <div id="projectFilterList"></div>
-		    <div id="projectList" class="project_wrap_table">
+		    <div class="project_wrap_table">
+		    				<table id="example" class="display" cellspacing="0" width="100%">
+							</table>
+			</div>	   
+				
+		    <%-- <div id="projectList" class="project_wrap_table">
 		    	<table>
 		        	<tbody>
 					<thead>
@@ -127,15 +141,15 @@
 	                    </c:forEach> 
 		           </tbody>
 		        </table>
-			</div>
+			</div> --%>
 		</div>
 		</c:if>
+		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
-		    <h1 id="projectNameById"></h1> <div class="proj_close"><i class="glyphicon glyphicon-share-alt"></i></div>
+		    <h1 id="projectNameById"></h1> <div class="proj_close"><i></i></div>
 		     <div id="projectSideDiv">
 		     </div>   
-			<div class="project_inn_mask"></div>
 			<div class="project_error">
 				<p>Employee delete message here ....</p>
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
@@ -299,11 +313,25 @@
                <!--   Popup's   -->	
 <jsp:include page="../masterFooter.jsp" />	
 	
+	
+	
+<script type="text/javascript">
+window.onload = function () {
+	$('input[name=projectStatus]').attr('checked',false);
+	$('input[name=clientNameById]').attr('checked',false);
+	filter();
+ };
+</script>
+
+
+
 <script>
 //project side bar
 $(document).ready(function() {
-     $(".proj_close").click(function(){
-		$(".project_side_wrap").removeClass("project_side_wrap_active");
+     $(".proj_close, .side_mask").click(function(){
+    	$(".project_side_wrap").removeClass("project_side_wrap_active");
+ 		$(".side_mask").fadeOut(200);
+ 		$("body").css('overflow-y', 'auto');
 	});	
 });
 //project side bar tabs
@@ -374,6 +402,8 @@ $(document).ready(function() {
 		    $("#projectNameById").append(projectName); 
 		    
 		    $(".project_side_wrap").addClass("project_side_wrap_active");
+		    $(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
 			
 		    projectEmployee(projectId);
  }
@@ -656,9 +686,9 @@ function saveReason(projectMemberId, projectId){
 	result = result + '</select>';
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
-	result = result + '				<div class="project_details_cta">';
+	result = result + '				<div class="project_details_cta" id="projectNameId">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onBlur="inlineEditForProjects('+projectId+',\'projectName\');"  id="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onBlur="validate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Project manager:</strong><span>';
@@ -676,25 +706,29 @@ function saveReason(projectMemberId, projectId){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
-		result = result+"<option value=''>Select</option>";
-					for (var i = 0; i < json.clientName.length; i++) {
-						
-						var managers = json.clientName[i];
-						var projrctmanager = managers.split('&');
-				    	var name = projrctmanager[0];
-				    	var id = projrctmanager[1];
-				    	 var selected = '';
-	   		 	    	 if(json.relationId==id){
-	   		 	    		 selected = 'selected';
-	   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
-	   		 	    	 }else{
-	   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
-	   		 	    	 }projectEndDate
-	   		 	    	 
-	   		 	    	 
-					}
-		result = result + '</select>';
+	 if(json.relationId != null){
+	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');" disabled="disabled">';
+	 }else{
+		 result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
+	 }
+	 result = result+"<option value=''>Select</option>";
+				for (var i = 0; i < json.clientName.length; i++) {
+					
+					var managers = json.clientName[i];
+					var projrctmanager = managers.split('&');
+			    	var name = projrctmanager[0];
+			    	var id = projrctmanager[1];
+			    	 var selected = '';
+   		 	    	 if(json.relationId==id){
+   		 	    		 selected = 'selected';
+   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+   		 	    	 }else{
+   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
+   		 	    	 }
+   		 	    	 
+   		 	    	 
+				}
+	result = result + '</select>';
 	
 	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -794,6 +828,19 @@ $(document).ready(function() {
 </script>
 
 <!-- this script is for Projects Filter functionality at Projects screen -->
+
+<script>
+function pagination(){  
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true
+		
+    } );
+}
+</script>
+
 <script>
 function filter(){
 	
@@ -817,9 +864,6 @@ function filter(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	result = result +'<div class="project_wrap_table">';
-   		    	result = result +'<table>';
-   		    	result = result +'<tbody>';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
@@ -830,11 +874,18 @@ function filter(){
    		    	result = result +'       <th>Status</th>';
    		    	result = result +'    </tr>';
    		    	result = result +'</thead>	';
+   		    	result = result +'<tbody>';
    		    	for (var i=0; i<json.length; i++)
    				{   
    		    		var report = json[i];
+   		    		var projectSequeneNumber;
+   		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
+   		    				projectSequeneNumber = report.projectSequeneNumber;
+   		    		}else{
+   		    			projectSequeneNumber = "---";
+   		    		}
    		    		result = result +'<tr>';
-   		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
+   		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
    		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
@@ -842,6 +893,7 @@ function filter(){
    		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
+   		    			result = result + " , ";
    		    			result = result +report.managerLevel2;
    		    		} 
    		    		result = result +'</span></div>';
@@ -876,11 +928,10 @@ function filter(){
                 result = result +'  </tbody>';
                 result = result +' </table>';
                 result = result +'</div>';
-                $("#projectList").empty();  
-                $("#projectFilterList").empty();  
-   	    	    $("#projectFilterList").append(result);
-   	    	    
-   	    	 
+                $("#example").empty();  
+                $("#example").empty();  
+   	    	    $("#example").append(result);
+   	    	    pagination();	
    		    }
 	 }); 
 	
@@ -1169,18 +1220,18 @@ function getTeamMembers(projectId) {
 	        		}else{
 	        			role = 'Employee';
 	        		}
-	        		output = output + "<tr>"+
-                 "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>"+
-                 "<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>"+
-                 "<td>"+opt.user.email+"</td>"+
-                 "<td>"+role+"</td>"+
-                 "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
-                 "</div></td>"+
-                 "<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>"+
-                 "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>"+
-                 "</div></td>"+
-                 "</tr>";
+	        		output = output + "<tr>";
+	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output + "</tr>";
 			}
         	output = output+' </tbody>';
 	        output = output+' </table>';
@@ -1190,23 +1241,27 @@ function getTeamMembers(projectId) {
 	        
 	        //StartDate And EndDate Pickers
 		       if(json.length > 0){
-			    	for (var i = 0; i < json.length; i++) {
-						var opt = json[i];
-						$('#startDate'+opt.id).datepicker({
+			    	for (var i = 0; i <json.length; i++) {
+						var report = json[i];
+						$('#startDate'+report.id).datepicker({
 							dateFormat : 'yy-mm-dd',
 							onSelect : function(selected) {
+								var id = $(this).attr('id');
+								var actualId = $(this).attr('id').split('startDate')[1];
 								var dt = new Date(selected);
 								dt.setDate(dt.getDate() + 1);
-								$("#endDate"+opt.id).datepicker("option", "minDate", dt);
+								$("#endDate"+actualId).datepicker("option", "minDate", dt);
 							}
 						});
 
-						$('#endDate'+opt.id).datepicker({
+						$('#endDate'+report.id).datepicker({
 							dateFormat : 'yy-mm-dd',
 							onSelect : function(selected) {
 								var dt = new Date(selected);
 								dt.setDate(dt.getDate() - 1);
-								$("#startDate"+opt.id).datepicker("option", "maxDate", dt);
+								var id = $(this).attr('id');
+								var actualId = $(this).attr('id').split('endDate')[1];
+								$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 							}
 						});
 					}
@@ -1290,4 +1345,25 @@ function flushEmployee(){
 <script>
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
+
+ <script type="text/javascript">
+        function validate(projectId,localFieldName) {
+	           
+	            var ProjectName = document.getElementById("projectName").value;
+	            $('#projectNameId').find('p.jquery_form_error_message').remove();
+	      		if ($('#projectName').val() == '') {
+	      			$("input#projectName").after("<p class='jquery_form_error_message'>Project Name is required</span>");
+	      			return true;
+	      		} else{
+	      			if(ProjectName.trim().match(/^\S*$/) == ''){
+	      				$("input#projectName").after("<p class='jquery_form_error_message'>Must not start with spaces</span>");
+		      			return true;
+	               }else{
+	            	   inlineEditForProjects(projectId,localFieldName);
+	               }
+               	}
+	          }
+        
+    </script>
+    
 </html>

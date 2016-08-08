@@ -23,6 +23,7 @@
 <div class="regis_bg">
 	<div class="regis_logo"><img src="resources/images/logo-regis.png" alt=""/></div>
     <div class="regis_wrap">
+    <div id="loading"></div>
     	<div class="signin_wrap">
         	<h1>Forgot Password</h1>
             <form:form class="login-form clearfix"  id="forgetPassword_form"  name="forgetPassword_form" method="post" >
@@ -79,8 +80,7 @@ function applyInputSlide() {
 			    con = con.replace(/[{}]/g, ""); 
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
-        		 $("#submit_button").attr("disabled", "disabled");
-        		 $( "#submit_button" ).addClass('button').val('Processing..');
+        		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
                 $.ajax({
             	      type: "GET",
             	      contentType : 'application/json; charset=utf-8',
@@ -94,6 +94,7 @@ function applyInputSlide() {
 	             				 document.getElementById("email").setAttribute('pass-exist','yes');
 	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', ' Invalid Email'); 
 	             				 $("input#email").removeAttr("style");
+	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if((result == 'login')){
     			        		  location.replace(sourceleadUrl+"/login"); 

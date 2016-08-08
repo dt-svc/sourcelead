@@ -627,6 +627,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
+		employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
 //		if(!fileName.toLowerCase().endsWith("csv"))
@@ -1045,7 +1046,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 			
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
-				userImport.setReason("Invalid email");
+				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 			
@@ -1095,12 +1096,58 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			
 			}
 			}
+			/*code to check Rate validation*/
+			if (row.getCell(5) == null || "".equals(row.getCell(5).toString())) {
+			if (fileName.toLowerCase().endsWith("xlsx")) {
+			XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+			if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+			String Rate = myCell5.getStringCellValue();
+			userImport.setReason("Length must be greater then 2 and less then 8");
+			isValidated = isratelengthvalid(Rate);
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			return false;
+			}
+			} else {
+			isValidated = isratelengthvalid(row.getCell(5).toString());
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			}
+			} else {
+			{
+			HSSFCell myCell5 = (HSSFCell) row.getCell(5);
+			if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+			myCell5.setCellType(Cell.CELL_TYPE_STRING);
+			String Rate = myCell5.getStringCellValue();
+			if (Rate != null && !"".endsWith(Rate)) {
+			isValidated = isratelengthvalid(Rate);
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			}
+			} else {
+			isValidated = isratelengthvalid(row.getCell(5).toString());
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			}
+
+			}
+			}
+			/*end of Rate Validation Code*/
 			
-			/*Cell cell = row.getCell(7);
-			Date s = cell.getDateCellValue();
-			logger.info("=========================================="+cell.getDateCellValue());
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			logger.info("======================================"+dateFormat.format(s));*/
+			
+			
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 				DataFormatter formatter = new DataFormatter();
 				 Cell cell =row.getCell(7);
@@ -1423,17 +1470,22 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return flag;
 	}
 	
-	  private boolean isDayHourValid(String dayHours) {
-		  String regex = "\\d+";
-			boolean flag = false;
-			int hours = Integer.parseInt(dayHours);
-			if(hours <=24){
-				flag = dayHours.matches(regex);
-			}else{
-				flag=false;
+	private boolean isDayHourValid(String dayHours) {
+		String regex = "\\d+";
+		boolean flag = false;
+		int hours = 0;
+		if (dayHours.matches(regex)) {
+			hours = Integer.parseInt(dayHours);
+			if (hours <= 24) {
+				flag = true;
+			} else {
+				flag = false;
 			}
-			return flag;
-		  }
+		} else {
+			flag = false;
+		}
+		return flag;
+	}
 
 	@Override
 	public void downloadFile(String fileName, HttpServletResponse response) throws IOException {
@@ -1478,6 +1530,18 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
 	}
+	
+	private boolean isratelengthvalid(String Rate){
+		String regex = "\\d+";
+		boolean flag = false;
+		if (Rate.length() > 2 && Rate.length() <= 8) {
+			flag = Rate.matches(regex);
+		} else {
+			flag = false;
+		}
+		return flag;
+
+		}
 		
 
 }

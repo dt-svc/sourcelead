@@ -31,7 +31,7 @@ import org.springframework.stereotype.Controller;
 @EnableWebSecurity
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
-@PropertySource(value = { "classpath:config.properties" })
+@PropertySource(value = { "${propertyLocation:app.properties}" })
 public class SecurityConfig  {
 	
     @Configuration
@@ -87,15 +87,15 @@ public class SecurityConfig  {
         	http
     		.authorizeRequests()                                                                
     			.antMatchers("/login").permitAll() 
-    			.antMatchers("/registration").permitAll() 
-    			.antMatchers("/companyRegistration").permitAll() 
+    			/*.antMatchers("/registration").permitAll() 
+    			.antMatchers("/companyRegistration").permitAll() */
     			.antMatchers("/forgotPassword").permitAll() 
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
-    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER')") 
+    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('SOURCELEAD_ADMIN')") 
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")

@@ -32,7 +32,6 @@ public class ProjectsServiceTest {
 	
 	@Configuration
 	static class ProjectServiceTestContextConfiguration {
-		
 		@Bean
 		public ProjectsService projectsService() {
 			return new ProjectsServiceImpl();
@@ -46,7 +45,7 @@ public class ProjectsServiceTest {
 	 * this method for save project
 	 * @throws Exception
 	 */
-	@Test
+//	@Test
 	public void saveProject() throws Exception{
 		
 		Projects projects = new Projects();
@@ -171,6 +170,7 @@ public class ProjectsServiceTest {
 		Integer updateEndDate = projectsService.updateEndDateOfProjectId(new Date(),1l);
 		logger.info("updateEndDate addded successfully"+updateEndDate.intValue());
 	}
+
 	@Test
 	public void getApprovarAssignedProjects() throws Exception{
 		List<Long> updateEndDate = projectsService.getApprovarAssignedProjects(1l,1l);
@@ -202,4 +202,17 @@ public class ProjectsServiceTest {
 		logger.info("getUserAssignedProjectsCount addded successfully"+UserAssignedProjectsCount.intValue());
 	}
 	
+
+	/**
+	 * test case Weekly base Emails and Notification
+	 * @throws Exception
+	 */
+	@Test
+	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
+		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
+		for(User user : usrList){
+			projectsService.userEmailNotificationForTimeShhetSubmission(user);
+		}
+	}
+
 }

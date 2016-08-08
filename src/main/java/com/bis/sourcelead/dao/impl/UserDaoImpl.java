@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
@@ -205,6 +206,16 @@ public class UserDaoImpl implements UserDao {
 		String query = "select user.id from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id = :roleId and userRole.orgLocations.id = :orgLocationsId and userRole.user.id <> :userId)";
 		List<User> usersList = session.createQuery(query.toString()).setLong("roleId", roleId).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
         return usersList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception{
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Employees emp left join fetch emp.orgLocations orgLocation left join fetch orgLocation.org org where emp.user.id IN(select id from User user where user.id =:userId)"; 
+		List<Employees> empList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		return empList;
 	}
 	
 
