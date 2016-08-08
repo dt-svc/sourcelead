@@ -8,7 +8,7 @@ public interface RolesService {
 	
 	public Roles getRolesByRoleName(String roleName) throws Exception;
 	
-	Collection<Roles> getRoles() throws Exception;
+	Collection<Roles> getRoles(Long orgLocationId) throws Exception;
 	
 	public Roles getRolesByDisplayName(String displayName) throws Exception;
 

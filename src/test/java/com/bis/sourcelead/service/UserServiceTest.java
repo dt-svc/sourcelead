@@ -44,7 +44,7 @@ public class UserServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
-	@Test
+	//@Test
 	public void findByUserName() {
 		String username = "SourceLeadAdmin";
 		logger.debug("In UserServiceTest class...");
@@ -52,5 +52,8 @@ public class UserServiceTest {
 		Assert.assertEquals("SourceLeadAdmin",user.getUserName());
 		
 	}
-
+	@Test
+	public void getOrgCodeandLocationCodeTimeSheetNotification() throws Exception{
+		userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(7l);
+	}
 }

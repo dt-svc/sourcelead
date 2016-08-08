@@ -80,7 +80,21 @@ public class Org {
 	@Type(type="text")
 	private String orgDescription;
 	
+	
+	@Column(name = "ATS")
+	@Enumerated(EnumType.STRING)
+	private Status ats;
+	
+	@Column(name = "VMS")
+	@Enumerated(EnumType.STRING)
+	private Status vms;
+	
+	@Column(name = "TIMESHEET")
+	@Enumerated(EnumType.STRING)
+	private Status timeSheet;
 
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -192,6 +206,30 @@ public class Org {
 
 	public void setOrgDescription(String orgDescription) {
 		this.orgDescription = orgDescription;
+	}
+
+	public Status getAts() {
+		return ats;
+	}
+
+	public void setAts(Status ats) {
+		this.ats = ats;
+	}
+
+	public Status getVms() {
+		return vms;
+	}
+
+	public void setVms(Status vms) {
+		this.vms = vms;
+	}
+
+	public Status getTimeSheet() {
+		return timeSheet;
+	}
+
+	public void setTimeSheet(Status timeSheet) {
+		this.timeSheet = timeSheet;
 	}
 	
 

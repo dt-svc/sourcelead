@@ -129,7 +129,7 @@ public class LoginSessionController {
 		
 		// get notification list by user id
 		Long notificationTo = loginUser.getId();
-		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
+		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		//model.addObject("notificationList", notificationList);
@@ -190,6 +190,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "vms", org.getVms());
+		SourceLeadSessionManager.setSessionAttribute(request, "ats", org.getAts());
+		SourceLeadSessionManager.setSessionAttribute(request, "timesheet", org.getTimeSheet());
+		
 	}
 	
 	

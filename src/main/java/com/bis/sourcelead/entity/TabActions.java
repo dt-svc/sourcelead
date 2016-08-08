@@ -32,6 +32,10 @@ public class TabActions {
 	@JoinColumn(name = "TAB_ID", nullable = false)
 	private Tabs tabs;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MODULE_ID", nullable = false)
+	private Modules modules;
+	
 	
 	
 
@@ -57,6 +61,14 @@ public class TabActions {
 
 	public void setTabs(Tabs tabs) {
 		this.tabs = tabs;
+	}
+
+	public Modules getModules() {
+		return modules;
+	}
+
+	public void setModules(Modules modules) {
+		this.modules = modules;
 	}
 	
 
