@@ -1,28 +1,40 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class EmployeesDaoImpl implements EmployeesDao{
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeesDaoImpl.class);
 	
@@ -32,9 +44,14 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	    logger.debug("In Employee Save method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(employee);
-		}
-		catch(HibernateException exception)	{
+			if(employee != null){
+				 session.save(employee);
+				 logger.info("Record saved successfully..!");
+			}
+		}catch(Exception exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Employees"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return employee;
 		
@@ -45,8 +62,14 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Employees updateEmployee(Employees employee) throws Exception {
 		logger.debug("In Employee Update method");
 		Session session = this.sessionFactory.getCurrentSession();
-	    session.merge(employee);
-	    logger.info("Record updated successfully..!");
+			if(employee != null){
+				 session.merge(employee);
+				 logger.info("Record Updated successfully..!");
+			}
+			if(employee == null){
+				StringBuffer message= new StringBuffer(MessageFormat.format(statusUpdate,"Employees"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
 	    return employee;
 		
 	}
@@ -71,27 +94,36 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Boolean deleteEmployee(String id) throws Exception {
 		logger.debug("In Employee deleteEmployee method");
 		Session session = this.sessionFactory.getCurrentSession();
-		Employees employee = (Employees)session.get(Employees.class, Long.parseLong(id));
-		employee.setEmployeeState("prasad");
-		session.update(employee);
-		logger.info("Successfully deleted !!!");
-		return null;
+		boolean isDeleted = false;
+		
+		try{
+			Employees employee = (Employees)session.get(Employees.class, Long.parseLong(id));
+			employee.setEmployeeState("terminate");
+			session.update(employee);
+			isDeleted = true;
+			logger.info("Successfully deleted !!!");
+		}catch(Exception exception){
+			StringBuffer message= new StringBuffer(MessageFormat.format(statusDelete,"Employees"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
+		
+		return isDeleted;
 		
 	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Employees getEmployeeByUserId(Long userId) throws Exception {
-        logger.debug("In EmployeeDaoImpl class getEmployeeByUserId method");
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Employees emp where emp.user.id = :userId";
-		List<Employees> employeesList =  session.createQuery(query.toString()) .setLong("userId", userId).setCacheable(true).list();
-		Employees employee = null;
-		if(employeesList != null && !employeesList.isEmpty())
-		{
-			employee = (Employees) employeesList.iterator().next();
-		}
-		return employee;
+		 logger.debug("In EmployeeDaoImpl class getEmployeeByUserId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Employees emp where emp.user.id = :userId";
+			List<Employees> employeesList =  session.createQuery(query.toString()) .setLong("userId", userId).setCacheable(true).list();
+			Employees employee = null;
+			if(employeesList != null && !employeesList.isEmpty())
+			{
+				employee = (Employees) employeesList.iterator().next();
+			}
+			return employee;
 	}
 	
 	/**
