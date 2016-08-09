@@ -403,6 +403,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 			   ts.setCombinedTotalHours(combinedTotalHours.toString());
 			   ts.setCombinedStatus(status);
+			   ts.setRejectedReason(sah.getRejectedReason());
 		    }
 		    
 		    
