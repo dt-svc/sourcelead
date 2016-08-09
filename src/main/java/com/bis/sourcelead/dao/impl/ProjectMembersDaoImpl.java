@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -52,7 +55,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception {
 		logger.debug("In ProjectMember Save method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(projectMembers);
+		try{
+			if(projectMembers != null){
+				session.save(projectMembers);
+				logger.debug("Project Member saved successfully..");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return projectMembers;
 	}
 
@@ -64,8 +77,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception {
 		logger.debug("In ProjectMember Update method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.saveOrUpdate(projectMembers);
-		logger.info("Record updated successfully..!");
+		try{
+			if(projectMembers != null){
+				session.saveOrUpdate(projectMembers);
+				logger.info("Record updated successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_MEMBERS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return projectMembers;
 	}
 
@@ -96,11 +118,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		  boolean isDeleted = false;
 		  if(id != null){
+			  try{
 			  ProjectMembers projectMembers= (ProjectMembers)session.load(ProjectMembers.class,id);
 			  projectMembers.setStatus("0");
 			  session.saveOrUpdate(projectMembers);
 			  logger.info("Successfully deleted !!!"); 
 			  isDeleted = true;
+			  }catch(ObjectNotFoundException exception){
+				  StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"PROJECT_MEMBERS"));
+				 throw new SourceLeadObjectNotFoundException(message.toString());  
+			  }
 		  }
 		return isDeleted;
 	}
