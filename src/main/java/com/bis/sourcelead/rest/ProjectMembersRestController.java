@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 import java.util.Collection;
 import java.util.Date;
@@ -18,9 +18,9 @@ import com.bis.sourcelead.service.ProjectMembersService;
 
 @RestController
 @RequestMapping(value = "/projectMembers")
-public class ProjectMembersController {
+public class ProjectMembersRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectMembersController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProjectMembersRestController.class);
 	
 	 @Autowired
 	 private ProjectMembersService projectMembersService; 

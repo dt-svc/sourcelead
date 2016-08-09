@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 
 import java.util.Collection;
@@ -19,7 +19,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 
 @RestController 
 @RequestMapping("/ProjectTasks")
-public class ProjectTasksController {
+public class ProjectTasksRestController {
 	
 	 
 	@Autowired
