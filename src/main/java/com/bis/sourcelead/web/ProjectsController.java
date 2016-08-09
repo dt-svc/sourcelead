@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -163,6 +164,13 @@ public class ProjectsController {
 				return model;
 	}
 	 
+	 /**
+	  * This method for save the  project by json
+	  * @param json
+	  * @param request
+	  * @return value is Project pojo
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
@@ -223,6 +231,8 @@ public class ProjectsController {
 	    	
 	    	Projects updatedProjects = projectsService.saveProject(projects);
 	    	
+	    	Long[] ids = new Long[1000];
+	    	
 	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 	    	pah1.setProjectId(updatedProjects);
 	    	User approverUserId1 = new User();
@@ -230,7 +240,7 @@ public class ProjectsController {
 	    	pah1.setApproverUserId(approverUserId1);
 	    	pah1.setLevel(1);
 	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-	    	
+	    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
 	    	//send mail to assigned Project Manager
 	    	String teamMembersList = "";
 			
@@ -241,7 +251,29 @@ public class ProjectsController {
 			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 			pah2.setApproverUserId(approverUserId2);
 			pah2.setLevel(2);
-			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+			ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+			ids[1] = projectApproverHierarchy.getApproverUserId().getId();
+		}
+		
+		//admin as approver hierarchy ..
+		Collection<User> uLsit = userService.getUsersByUserRoles();
+		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
+		if(userLsit != null && !userLsit.isEmpty()){
+		for(User userRole : userLsit){
+			  if(ids[0] != null &&  ids[0].equals(userRole.getId())){
+				  userLsit.remove(userRole);
+			  }
+			  else if (ids[1] != null && ids[1].equals(userRole.getId())) {
+				  userLsit.remove(userRole);
+			  }else{
+				    ProjectApproverHierarchy pah3 = new ProjectApproverHierarchy();
+				    pah3.setProjectId(updatedProjects);
+					pah3.setApproverUserId(userRole);
+					pah3.setLevel(2);
+				    ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah3);
+			  } 
+			  
+		}
 		}
 	    	
 		
@@ -278,11 +310,17 @@ public class ProjectsController {
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
 						            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
 						            	  pm.setProjectAssignedDate(currentStartDate);
+						            }else{
+						            	 pm.setProjectAssignedDate(projects.getStartDate());
 						            }
+						            
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
 						            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
 						            	pm.setProjectEndDate(currentEndDate);
 						            }
+						            else{
+							    		pm.setProjectEndDate(projects.getEndDate());
+							    	}
 									pm.setProjects(projects);
 									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
@@ -365,47 +403,6 @@ public class ProjectsController {
 		    return projects;
 	  }
 	 
-	 /**
-	  * This method for get all projects
-	  * @return
-	  * @throws Exception
-	  */
-/*	 @RequestMapping(value = "/getAll", method = RequestMethod.GET)
-	 public Collection<Projects> getAll() throws Exception { 
-		 Collection<Projects> projectsList = projectsService.getAllProjects();
-		 for(Projects projects : projectsList){
-			 System.out.println(projects.getProjectManagerUser().getId());
-			 System.out.println(projects.getOrg().getId());
-		 }
-		 return projectsList;
-	  }*/
-	
-	 /**
-	  * This method for save project
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/save", method = RequestMethod.GET,headers="Accept=application/json")
-	 public Projects save() throws Exception { 
-		    Projects projects = new Projects();
-			User superiorUser = new User();
-			superiorUser.setId(1L);
-			projects.setSuperiorUser(superiorUser);
-			
-			projects.setProjectName("VADALU");
-			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
-			projects.setDescription("sourcelead desc");
-			projects.setStatus("1");
-			projects.setStartDate(new Date());
-			projects.setEndDate(new Date());
-			projects.setTimesheetFrequency("Monthly");
-			projects.setCreatedDate(new Date());
-			projects.setCreatedBy("OfferTab");
-			projects.setUpdatedDate(new Date());
-			projects.setUpdatedBy("Idly");
-
-		    return projectsService.saveProject(projects);
-	  }
 	 
 	 /**
 	  * This method for update project
@@ -449,8 +446,8 @@ public class ProjectsController {
 		return isDeleted;
 	  }
 	  
-	  @RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
-		public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		    
 		    json = "{"+json+"}";	
 		    JSONObject jsonObj = new JSONObject(json);

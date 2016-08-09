@@ -54,6 +54,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -99,6 +100,11 @@ public class ProjectsDashboardController {
 	
 	 @Autowired
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 
+	 @Autowired
+	 public SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	 
+	 
 	
 	 @Autowired
 	 private OrgLocationService orgLocationService;
@@ -201,6 +207,12 @@ public class ProjectsDashboardController {
 				String resultJson = "";
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
+			    for(Projects ps : projectsList){
+			    	ps.setManagerLevel1(ps.getManagerLevel1());
+			    	if(ps.getManagerLevel2() != null){
+			    		ps.setManagerLevel2(ps.getManagerLevel2());	
+			    	}
+			    }
 				 resultJson = toJSON(projectsList);
 				 return resultJson;
 			}
@@ -223,6 +235,8 @@ public class ProjectsDashboardController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Projects projects = projectsService.getProjectByIdAndLoginOrgId(projectId, loginOrgLocations.getId());
 			
+			String resultJson =null;
+			
 			if(projects.getCreatedDate() != null){
 				projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
 			}
@@ -233,8 +247,31 @@ public class ProjectsDashboardController {
 		    if(projects.getUpdatedDate() != null){
 		    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
 		    }
+		    if(projects.getProjectSequeneNumber() != null){
+		    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+		    }
 		    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
 		    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+		   
+		    for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
+		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    	}
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
+		    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    	}
+		    	
+		    }
+		    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
+		    
+		    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
+		    projects.setManagersList(userList);
+		    List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
+		    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+		    
+		    
 		    String[] approvers = new String[projectApproverHierarchies.size()];
 		    int i = 0;
 		    for(ProjectApproverHierarchy php : projectApproverHierarchies){
@@ -247,7 +284,7 @@ public class ProjectsDashboardController {
 		    String[] clientList = new String[orgClientList.size()];
 		    int j = 0;
 			for(OrgRelations ocl :orgClientList){
-				if(projects.getOrgRelationId().getId() !=null){
+				if(projects.getOrgRelationId() !=null){
 					if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 						projects.setRelationId(ocl.getId());
 					}
@@ -261,9 +298,8 @@ public class ProjectsDashboardController {
 			Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
 			projects.setProjectMembersCount(projectMembersCount.toString());
 			
-		    ObjectMapper mapper = new ObjectMapper();
-            String jsonInString = mapper.writeValueAsString(projects);
-			return jsonInString;
+			resultJson = toJSON(projects);
+			 return resultJson;
 	  }
 	 
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
@@ -276,13 +312,17 @@ public class ProjectsDashboardController {
 		    }
 		    else if (fieldName.equalsIgnoreCase("description")) {
 		    	projects.setDescription(fieldValue);
-			}else if(fieldName.equalsIgnoreCase("endDateStr"))  {
-				String pattern = "yyyy-MM-dd";
-		        SimpleDateFormat format = new SimpleDateFormat(pattern);
-		          if(fieldValue != null && fieldValue != ""){
-		        	  Date endtDate = format.parse(fieldValue);
-						projects.setEndDate(endtDate);
-		          }
+			}else if(fieldName.equalsIgnoreCase("projectSequeneNumber")){
+				if(fieldValue != null && fieldValue != ""){
+	        	  projects.setProjectSequeneNumber(fieldValue);
+				}
+	        }else if(fieldName.equalsIgnoreCase("endDateStr"))  {
+			 String pattern = "yyyy-MM-dd";
+		     SimpleDateFormat format = new SimpleDateFormat(pattern);
+	          if(fieldValue != null && fieldValue != ""){
+	        	  Date endtDate = format.parse(fieldValue);
+					projects.setEndDate(endtDate);
+	         }
 			}else if (fieldName.equalsIgnoreCase("projectStatusId")) {
 		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
 			}else if (fieldName.equalsIgnoreCase("clientId")) {
@@ -290,6 +330,32 @@ public class ProjectsDashboardController {
 				 if(fieldValue != null && fieldValue != ""){
 				orgRelations.setId(Long.valueOf(fieldValue));
 		    	projects.setOrgRelationId(orgRelations);
+				 }
+			}else if (fieldName.equalsIgnoreCase("level1Manager")) {
+				if(fieldValue != null && fieldValue != ""){
+					Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+						 if(prHierarchy.getLevel() == 1){
+							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+							 Long fieldValuelong = Long.valueOf(fieldValue);
+							 User usr = userService.getUserById(fieldValuelong);
+							 pah.setApproverUserId(usr);
+							 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+						 }
+					 }
+				 }
+			}else if (fieldName.equalsIgnoreCase("level2Manager")) {
+				if(fieldValue != null && fieldValue != ""){
+					Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+						 if(prHierarchy.getLevel() == 2){
+							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+							 Long fieldValuelong = Long.valueOf(fieldValue);
+							 User usr = userService.getUserById(fieldValuelong);
+							 pah.setApproverUserId(usr);
+							 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+						 }
+					 }
 				 }
 			}
 			    projects.setUpdatedBy(user.getUserCode());
@@ -378,15 +444,32 @@ public class ProjectsDashboardController {
         	 if(pm.getProjects().getEndDate() != null){
          		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
          	 }
-        	 
+        	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
+           		pm.setUserId(pm.getEmployee().getUser().getId().toString());
+           	 }
         	 if(pm.getEmployee()!=null){
-        		 
-            /* TimeSheetSubmissionCount timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(projectId,pm.getEmployee().getUser().getId());
-        	 pm.setDraftHrs(timeSheetSubmissionCount.getDraftTimesheetsSubmissionsHoursCount().toString());
-        	 pm.setRejectedHrs(timeSheetSubmissionCount.getRejectedTimesheetsSubmissionsHoursCount());
-        	 pm.setApprovedHrs(timeSheetSubmissionCount.getApprovalTimesheetsSubmissionsHoursCount());
-        	 pm.setSubmittedHrs(timeSheetSubmissionCount.getSubmittedTimesheetsSubmissionsHoursCount());*/
-        	 
+
+                 Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+     	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+     	        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+     	        pm.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
+
+     	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+     	        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+     	        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
+     	        pm.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
+     			
+     		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+     		    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+     	        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
+     	        pm.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
+     			
+     			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+     		    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+     		    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
+     		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+                 
+                 
         	 }	
 			 projectMembersArrList.add(pm);
 		 }
@@ -499,8 +582,13 @@ public class ProjectsDashboardController {
 		            	 pm.setProjectAssignedDate(projects.getStartDate());
 		            }
 		            if(StringUtils.isNotEmpty(endDate)){
-		            	Date currentEndDate = format.parse(endDate);
-		            	pm.setProjectEndDate(currentEndDate);
+		            	if(endDate != null && endDate != "--"){
+		            		Date currentEndDate = format.parse(endDate);
+			            	pm.setProjectEndDate(currentEndDate);
+		            	}
+		            	
+		            }else{
+		            	 pm.setProjectEndDate(projects.getEndDate());
 		            }
 		            
 		            pm.setStatus(Constants.MEMBER_ACTIVE);

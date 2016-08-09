@@ -378,22 +378,29 @@ function firstname(name)
 		   		{
 	    			 for(var i=0; i<jsonData.length; i++){
 						   var json = jsonData[i];
-						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
-						   $('#endDate'+json.id).datepicker({
-				    		      dateFormat: 'yy-mm-dd',
-				    		      onSelect: function (selected) {
-				    		            var dt = new Date(selected);
-				    		            dt.setDate(dt.getDate() + 1);
-				    		            $('#startDate'+json.id).datepicker("option", "maxDate", dt);
-				    		        },
-				    		        onClose: function() {
-				    		        	 var id = $(this).attr('id');
-										 var projectMemberId = $(this).attr('id').split('endDate')[1];
-				    		        	 inlineEditForEndDate(id,projectMemberId);
-				    		      }
-				    		  }); 
-						   }
-			         
+	    			 
+			    			var selected = json.startDate;
+							 var dt = new Date(selected);
+				             dt.setDate(dt.getDate());
+				             
+				             //Main project end date
+				             var projectEndDate = json.projectEndDateStr;
+				             var endDate = "";
+				             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+				            	 endDate = new Date(projectEndDate);
+			 		             endDate.setDate(endDate.getDate()); 
+				             }
+				             
+							 $('#endDate'+json.id).datepicker({
+					    		      dateFormat: 'yy-mm-dd',
+					    		      minDate: dt,
+					    		      maxDate: endDate,
+					    		      onClose: function() {
+					    		    	  	 var id = $(this).attr('id');
+											 var projectMemberId = $(this).attr('id').split('endDate')[1];
+					    		        	 inlineEditForEndDate(id,projectMemberId);
+					    		      }
+					    		  }); 
 	    			 }
 		   		}
 	        },
@@ -1116,14 +1123,18 @@ function getStartandEndDate(){
 
 <script>
 function date() {
-	 var selected = $("#StartDate").val();
-	 var dt = new Date(selected);
-     dt.setDate(dt.getDate() + 1);
-     $("#EndDate").datepicker("option", "minDate", dt);
-     
-     
-	  
-	  $('#EndDate').datepicker({
+	
+	  if($("#EndDate").val()==""){
+		  var selected = $("#StartDate").val();
+			 var dt = new Date(selected);
+		     dt.setDate(dt.getDate() + 1);
+		     $("#StartDate").datepicker("option", "minDate", dt);
+		     
+		  var selected = $("#StartDate").val();
+		  var dt = new Date(selected);
+		  dt.setDate(dt.getDate() + 1);
+		  $("#EndDate").datepicker("option", "minDate", dt);
+	 	 $('#EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -1131,6 +1142,30 @@ function date() {
 	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
+	}
+	  else{
+		  
+		   var selected = $("#StartDate").val();
+		   var dt = new Date(selected);
+           dt.setDate(dt.getDate());
+           //Main project end date
+           var projectEndDate = $("#EndDate").val();
+           var endDate1 = "";
+           if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+          	 endDate1 = new Date(projectEndDate);
+	          endDate1.setDate(endDate1.getDate()); 
+           }
+           var selected = $("#StartDate").val();
+ 		   var dt = new Date(selected);
+ 		   dt.setDate(dt.getDate() + 1);
+ 		   $("#EndDate").datepicker("option", "minDate", dt);
+ 		   $("#EndDate").datepicker("option", "maxDate", endDate1);
+ 		   
+ 		 	
+		     $("#StartDate").datepicker("option", "minDate", dt);
+		     $("#StartDate").datepicker("option", "maxDate", endDate1);
+		  
+	  }
   } 
 </script>
 
@@ -1196,7 +1231,7 @@ function saveReason(projectMemberId,userId){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: "http://localhost:8080/sourcelead/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);

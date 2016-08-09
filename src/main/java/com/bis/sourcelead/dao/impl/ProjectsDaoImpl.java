@@ -408,7 +408,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		public List<Projects> getProjectByOrgLocationsIdAndUserId(Long orgLocationsId, Long userId) {
 			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Projects pj where pj.orgLocationsId = :orgLocationsId and pj.id NOT IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ) ";
+			String query = "from Projects pj where pj.orgLocationsId = :orgLocationsId and pj.id NOT IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )) ";
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
@@ -439,7 +439,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			String query = "select pj from  Projects pj where pj.id IN (select pm.projects.id from ProjectMembers pm  "
-					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))" ;
+					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and pm.status <> 'IN-ACTIVE'  and  emp.orgLocations.id = :orgLocationId ))" ;
 			List<Projects> projectsList =session.createQuery(query.toString()).setLong("userId", userId)
 					.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
 			      
