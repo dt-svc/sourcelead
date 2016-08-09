@@ -94,6 +94,8 @@ public class ProjectMembers {
     private String projectEndDateStr;  
     @Transient
     private String projectName;
+    @Transient
+    private String userId;
     
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
@@ -106,6 +108,14 @@ public class ProjectMembers {
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getTerminateReason() {

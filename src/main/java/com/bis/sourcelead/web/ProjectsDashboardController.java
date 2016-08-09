@@ -444,7 +444,9 @@ public class ProjectsDashboardController {
         	 if(pm.getProjects().getEndDate() != null){
          		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
          	 }
-        	 
+        	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
+           		pm.setUserId(pm.getEmployee().getUser().getId().toString());
+           	 }
         	 if(pm.getEmployee()!=null){
 
                  Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
