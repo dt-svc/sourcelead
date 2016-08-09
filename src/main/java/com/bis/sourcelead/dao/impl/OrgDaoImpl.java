@@ -70,7 +70,7 @@ public class OrgDaoImpl implements OrgDao {
 			logger.debug("Organization Added Successfully");
 		}catch(ConstraintViolationException exception)
 			{
-				StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORG"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 			}
 		return org;
@@ -86,7 +86,7 @@ public class OrgDaoImpl implements OrgDao {
 			session.saveOrUpdate(org);
 		}
 		if(org == null){
-			StringBuffer message= new StringBuffer(MessageFormat.format(statusUpdate,"ORG"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
 		
@@ -105,7 +105,7 @@ public class OrgDaoImpl implements OrgDao {
 		}
 		if(org == null)
 		{
-			StringBuffer message= new StringBuffer(MessageFormat.format(notFound,"ORG", id));
+			StringBuilder message= new StringBuilder(MessageFormat.format(notFound,"ORG", id));
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
 		return org;
@@ -124,7 +124,7 @@ public class OrgDaoImpl implements OrgDao {
 			isDeleted = true;
 			logger.info("Successfully deleted..!");
 		}if(id == null){
-			StringBuffer message= new StringBuffer(MessageFormat.format(statusDelete,"ORG"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORG"));
 			throw new SourceLeadObjectNotFoundException(message.toString());	
 		}
 		return isDeleted;
@@ -181,11 +181,6 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Org.class);
 		List<Org> orgList = crit.list();
-		if(orgList.isEmpty())
-		{
-			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords,"ORG"));
-			throw new NoRecordsFoundException(message.toString());
-		}
 		return orgList;
 	}
 
@@ -198,10 +193,6 @@ public class OrgDaoImpl implements OrgDao {
 		logger.debug("getOrgByOrgCode start");
 		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
 		logger.debug("getOrgByOrgCode end");
-		if(orgList.isEmpty()){
-			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords,"ORG"));
-			throw new NoRecordsFoundException(message.toString());
-		}
 		 return orgList.get(0);
 		 // Below code is Commented to written Exception
 		/*if (orgList.size() > 0) {

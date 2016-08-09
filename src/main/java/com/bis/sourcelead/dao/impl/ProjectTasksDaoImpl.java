@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,17 +11,31 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectTasksDaoImpl.class);
 
@@ -30,7 +45,9 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.save(tasks);
-		} catch (HibernateException exception) {
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS_TASKS"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return tasks;
 	}
@@ -39,7 +56,15 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectTasks updateTasks(ProjectTasks tasks) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.saveOrUpdate(tasks);
+		
+		try{
+			if(tasks != null){
+				session.saveOrUpdate(tasks);
+			}
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"PROJECTS_TASKS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
 		return tasks;
 	}
 
@@ -54,12 +79,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteTask(String id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		ProjectTasks tasks = (ProjectTasks) session.get(ProjectTasks.class, Long.valueOf(id));
-		tasks.setStatus("1");
-		System.out.println("in timesheetEntriesdddddd " + tasks.getId());
-		session.saveOrUpdate(tasks);
-		logger.info("Successfully deleted !!!");
-		return null;
+		boolean isDeleted = false;
+		try{
+			ProjectTasks tasks = (ProjectTasks) session.get(ProjectTasks.class, Long.valueOf(id));
+			tasks.setStatus("1");
+			session.saveOrUpdate(tasks);
+			isDeleted = true;
+			logger.info("Successfully deleted !!!");
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"TASK"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
+		}
+		
+		return isDeleted;
 	}
 
 	@Override
