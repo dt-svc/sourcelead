@@ -108,16 +108,5 @@ public class UploadController {
 		
 	}
 	
-	/**
-	 * Handles cancel import
-	 * @return
-	 * @throws IOException
-	 */
-	
-	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
-	public ModelAndView cancelImport() throws IOException {
-		return  new ModelAndView("redirect:/timesheetexcel/excelDownload");
-		
-	}
 	
 }

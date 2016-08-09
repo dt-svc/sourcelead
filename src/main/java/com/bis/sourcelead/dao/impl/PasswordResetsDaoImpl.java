@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +9,14 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PasswordResetsDao;
 import com.bis.sourcelead.entity.PasswordResets;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class PasswordResetsDaoImpl implements PasswordResetsDao{
@@ -20,20 +24,32 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(PasswordResetsDaoImpl.class);
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public PasswordResets savePasswordResets(PasswordResets passwordResets) {
+	public PasswordResets savePasswordResets(PasswordResets passwordResets) throws Exception {
 
 		logger.debug("Adding PasswordResets");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.saveOrUpdate(passwordResets);
 			logger.debug("PasswordResets Added Successfully");
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			  StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return passwordResets;
 	
@@ -42,7 +58,7 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public PasswordResets getPasswordResetsByUserId(Long userId) {
+	public PasswordResets getPasswordResetsByUserId(Long userId) throws Exception{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PasswordResets> passwordResets = new ArrayList<PasswordResets>();
@@ -58,7 +74,7 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public PasswordResets getPasswordResetsByVerificationCode(String verificationCode) {
+	public PasswordResets getPasswordResetsByVerificationCode(String verificationCode)throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PasswordResets> passwordResets = new ArrayList<PasswordResets>();
@@ -74,7 +90,7 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public PasswordResets deletePasswordResets(PasswordResets passwordResets) {
+	public PasswordResets deletePasswordResets(PasswordResets passwordResets) throws Exception{
 
 		logger.debug("Deleting PasswordResets");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -82,7 +98,8 @@ public class PasswordResetsDaoImpl implements PasswordResetsDao{
 			session.delete(passwordResets);
 			logger.debug("PasswordResets Deleting Successfully");
 		} catch (Exception e) {
-			e.printStackTrace();
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"PASSWORD_RESET"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
 		}
 		return passwordResets;
 	

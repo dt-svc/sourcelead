@@ -292,7 +292,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	 
 	 
-	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ){
+	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ) throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setCountry(registration.getCountry());
