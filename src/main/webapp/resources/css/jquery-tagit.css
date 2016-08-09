@@ -1,0 +1,312 @@
+
+
+.ui-autocomplete {
+	position: absolute;
+	cursor: default;
+}
+
+/* workarounds */
+html .ui-autocomplete {
+	width: 300px !important;
+}
+
+/* without this, the menu expands to 100% in IE6 */
+.ui-menu {
+	list-style: none;
+	padding: 2px;
+	margin: 0;
+	display: block;
+	float: left;
+}
+
+
+.ui-menu .ui-menu {
+	margin-top: -3px;
+}
+
+.ui-menu .ui-menu-item {
+	margin: 0;
+	padding: 0;
+	float: left;
+	clear: left;
+	width: 91%;
+}
+
+.ui-menu .ui-menu-item a {
+	text-decoration: none;
+	display: block;
+	padding: .2em .4em;
+	line-height: 1.5;
+}
+
+.ui-menu .ui-menu-item a.ui-state-hover,.ui-menu .ui-menu-item a.ui-state-active
+	{
+	font-weight: normal;
+	margin: -1px;
+	color: #3399ff;
+}
+
+
+
+.ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button
+	{
+	 
+}
+
+.ui-widget-content {
+	border: 1px solid #dadada /*{borderColorContent}*/;
+	background: #fff !important;  
+	color: #222222 /*{fcContent}*/;
+}
+
+.ui-widget-content a {
+	color: #222222 /*{fcContent}*/;
+}
+
+.ui-widget-header {
+	border: 1px solid #aaaaaa /*{borderColorHeader}*/;
+	background: #cccccc /*{bgColorHeader}*/  
+		url(images/ui-bg_highlight-soft_75_cccccc_1x100.png)
+		/*{bgImgUrlHeader}*/   50% /*{bgHeaderXPos}*/   50% /*{bgHeaderYPos}*/
+		  repeat-x /*{bgHeaderRepeat}*/;
+	color: #222222 /*{fcHeader}*/;
+	font-weight: bold;
+}
+
+.ui-widget-header a {
+	color: #222222 /*{fcHeader}*/;
+}
+/* Interaction states
+----------------------------------*/
+.ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default
+	{
+	border: 1px solid #d3d3d3 /*{borderColorDefault}*/;
+	background: #e6e6e6 /*{bgColorDefault}*/  
+		url(images/ui-bg_glass_75_e6e6e6_1x400.png) /*{bgImgUrlDefault}*/  
+		50% /*{bgDefaultXPos}*/   50% /*{bgDefaultYPos}*/   repeat-x
+		/*{bgDefaultRepeat}*/;
+	font-weight: normal /*{fwDefault}*/;
+	color: #555555 /*{fcDefault}*/;
+}
+
+.ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited
+	{
+	color: #555555 /*{fcDefault}*/;
+	text-decoration: none;
+}
+
+.ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus
+	{
+	border: 1px solid #999999 /*{borderColorHover}*/;
+	background: #dadada /*{bgColorHover}*/   url(../img/nav-bg.png)
+		/*{bgImgUrlHover}*/   50% /*{bgHoverXPos}*/   50% /*{bgHoverYPos}*/  
+		repeat-x /*{bgHoverRepeat}*/;
+	font-weight: normal /*{fwDefault}*/;
+	color: #212121 /*{fcHover}*/;
+	background: #f2f2f2 !important;
+	border: 1px solid #dadada !important;
+}
+
+.ui-state-hover a,.ui-state-hover a:hover {
+	color: #212121 /*{fcHover}*/;
+	text-decoration: none;
+}
+
+.ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active
+	{
+	border: 1px solid #aaaaaa /*{borderColorActive}*/;
+	background: #ffffff /*{bgColorActive}*/  
+		url(images/ui-bg_glass_65_ffffff_1x400.png) /*{bgImgUrlActive}*/   50%
+		/*{bgActiveXPos}*/   50% /*{bgActiveYPos}*/   repeat-x
+		/*{bgActiveRepeat}*/;
+	font-weight: normal /*{fwDefault}*/;
+	color: #212121 /*{fcActive}*/;
+}
+
+.ui-state-active a,.ui-state-active a:link,.ui-state-active a:visited {
+	color: #212121 /*{fcActive}*/;
+	text-decoration: none;
+}
+
+.ui-widget :active {
+	outline: none;
+}
+
+.ui-autocomplete-input {
+	width: 80%;
+}
+
+.tagit.ui-widget.ui-widget-content.ui-corner-all {
+	height: 32px;
+	border-radius: 4px;
+	overflow: hidden; width: 78%;
+}
+
+/* Optional scoped theme for tag-it which mimics the zendesk widget. */
+ul.tagit {
+	height: 25px;
+	border-style: solid;
+	border-width: 1px;
+	background: inherit;
+	width: 95%;
+	right: 5px;
+}
+ul.tagit li:focus.tagit-choice{border-color:#3399ff !important; background-color: #DEE7F8 !important; }
+ul.tagit li.tagit-choice { /* -moz-border-radius: 6px;*/
+	/*border-radius: 6px;*/
+	/* -webkit-border-radius: 6px;*/
+	border: 1px solid #3399ff !important;
+	background: none;
+	background-color: #DEE7F8 !important;
+	font-weight: normal;
+	border-radius:0 !important;
+}
+ul.tagit li.tagit-choice:hover, ul.tagit li.tagit-choice.remove {
+    background-color: #bbcef1 !important;
+    border-color: #6d95e0 !important;
+}
+a.cmpListBtnBlue:hover {
+	color: #fff;
+	}
+
+ul.tagit li.tagit-choice .tagit-label:not(a) {
+	color: #555;
+}
+ul.tagit li.tagit-choice .tagit-label{color:red;}
+ul.tagit li.tagit-choice a.tagit-close {
+	text-decoration: none;
+}
+
+ul.tagit li.tagit-choice .tagit-close {
+	right: .4em;
+}
+
+ul.tagit li.tagit-choice .ui-icon {
+	display: none;
+}
+
+ul.tagit li.tagit-choice .tagit-close .text-icon {
+	display: inline;
+	font-family: arial, sans-serif;
+	line-height: 16px;
+	color: #777;
+}
+
+ul.tagit li.tagit-choice:hover,ul.tagit li.tagit-choice.remove {
+	background-color: #bbcef1;
+	border-color: #6d95e0;
+}
+
+ul.tagit li.tagit-choice a.tagLabel:hover,ul.tagit li.tagit-choice a.tagit-close .text-icon:hover
+	{
+	color: #222;
+}
+
+ul.tagit input[type="text"] {
+	color: #333333;
+	background: none;
+}
+
+
+ul.tagit {
+	padding: 1px 5px;
+	overflow: auto;
+	margin-left: inherit;
+	/* usually we don't want the regular ul margins. */
+	margin-right: inherit;
+	/*margin-right: 0.2em;*/
+	margin-top: 1px;
+}
+
+ul.tagit li {
+	display: inline;
+	float: left;
+	margin: 2px 5px 2px 0;
+}
+
+ul.tagit li.tagit-choice {
+	position: relative;
+	line-height: inherit;
+}
+
+ul.tagit li.tagit-choice-read-only {
+	padding: .2em .5em .2em .5em;
+}
+
+ul.tagit li.tagit-choice-editable {
+	padding: .2em 18px .2em .5em;
+}
+
+ul.tagit li.tagit-new {
+	padding: .25em 4px .25em 0px;
+	width: 50%;
+}
+
+ul.tagit li.tagit-choice a.tagit-label {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+ul.tagit li.tagit-choice .tagit-close {
+	cursor: pointer;
+	position: absolute;
+	right: .1em;
+	top: 50%;
+	margin-top: -8px;
+	line-height: 17px;
+}
+
+/* used for some custom themes that don't need image icons */
+ul.tagit li.tagit-choice .tagit-close .text-icon {
+	color: #FF0000;
+}
+
+ul.tagit li.tagit-choice input {
+	display: block;
+	float: left;
+	margin: 2px 5px 2px 0;
+}
+
+ul.tagit input[type="text"] {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border: none;
+	margin: 0;
+	padding: 0;
+	width: inherit;
+	background-color: inherit;
+	outline: none;
+	color:#AAA;
+}
+/************************/
+
+ul.tagit input.test {
+	/*background:url(../img/ajax-loader.gif) right center no-repeat;*/
+	
+}
+
+
+
+ul li input {
+	margin-top: 20px;
+}
+
+
+
+/*************************skill Views *************************************/
+ul#skillSimpleViewId.tagit.ui-widget-content {
+	height: 50px;
+	margin-left:0px;
+	width: 96%;
+}
+
+ul#hirewinjobtitle.tagit.ui-widget-content {
+	height: 50px;
+	margin-left:5px;
+}
+
+/*************************skill Views *************************************/
