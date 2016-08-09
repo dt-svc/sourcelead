@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.exception.NoRecordsFoundException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -100,10 +101,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getProjectMember method");
 		Session session = this.sessionFactory.getCurrentSession();
 		ProjectMembers projectMembers = session.get(ProjectMembers.class, id);
-		if(projectMembers == null){
-			StringBuilder message= new StringBuilder(MessageFormat.format(notFound,"PROJECT_MEMBERS", id));
-			throw new SourceLeadObjectNotFoundException(message.toString());
-		}
         return session.get(ProjectMembers.class, id);
 	}
 
@@ -124,7 +121,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  session.saveOrUpdate(projectMembers);
 			  logger.info("Successfully deleted !!!"); 
 			  isDeleted = true;
-			  }catch(ObjectNotFoundException exception){
+			  }catch(Exception exception){
 				  StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"PROJECT_MEMBERS"));
 				 throw new SourceLeadObjectNotFoundException(message.toString());  
 			  }

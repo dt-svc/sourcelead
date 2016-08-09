@@ -77,11 +77,6 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	public OrgLocations getOrgLocations(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		OrgLocations orgLocations = session.get(OrgLocations.class, id);
-		if(orgLocations == null)
-		{
-			StringBuffer message= new StringBuffer(MessageFormat.format(notFound,"ORGLOCATIONS", id));
-			throw new SourceLeadObjectNotFoundException(message.toString());
-		}
 		return orgLocations;
 		
 		
@@ -93,16 +88,23 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isDeleted = false;
-		if (id != null) {
-			OrgLocations orgLocations = (OrgLocations) session.get(OrgLocations.class, id);
-			orgLocations.setStatus(Status.INACTIVE);
-			session.saveOrUpdate(orgLocations);
-			isDeleted = true;
-			logger.info("Successfully deleted..!");
+		try{
+			if (id != null) {
+				OrgLocations orgLocations = (OrgLocations) session.get(OrgLocations.class, id);
+				orgLocations.setStatus(Status.INACTIVE);
+				session.saveOrUpdate(orgLocations);
+				isDeleted = true;
+				logger.info("Successfully deleted..!");
+			}
+			else {
+				isDeleted = false;
+			}
+			
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORGLOCATIONS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
 		}
-		else {
-			isDeleted = false;
-		}
+		
 		return isDeleted;
 	}
 
@@ -113,10 +115,6 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		List<OrgLocations> orgLocationsList = null;
 		Query citiesListQuery= session.createQuery("from OrgLocations");
 		orgLocationsList=citiesListQuery.list();
-		if(orgLocationsList.isEmpty()){
-			StringBuilder message= new StringBuilder(MessageFormat.format(noRecords,"ORGLOCATION"));
-			throw new NoRecordsFoundException(message.toString());
-		}
 		return orgLocationsList;
 	}
 
@@ -129,7 +127,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("locationCode", locationCode).setCacheable(true).list();
 	     
-	       OrgLocations orgLocation = null;
+	        OrgLocations orgLocation = null;
 			if(orgLocations != null && !orgLocations.isEmpty())
 			{
 				orgLocation = (OrgLocations) orgLocations.iterator().next();
@@ -147,7 +145,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	      String query = ("from OrgLocations orgLocations where  orgLocations.org =:orgCode");
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("orgCode", orgCode).list();
-	     
+	       
 	       OrgLocations orgLocation = null;
 			if(orgLocations != null && !orgLocations.isEmpty())
 			{
@@ -163,18 +161,26 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public OrgLocations findByEmail(String email) {
+	public OrgLocations findByEmail(String email) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
 		logger.debug("findByEmail start");
-		orgLocations = session.createQuery("from OrgLocations where email=:email" ).setString( "email", email ).setCacheable(true).list();
-		logger.debug("findByEmail end");
-		if (orgLocations.size() > 0) {
-			return orgLocations.get(0);
-		} else {
-			return null;
+		try{
+			orgLocations = session.createQuery("from OrgLocations where email=:email" ).setString( "email", email ).setCacheable(true).list();
+			
+			logger.debug("findByEmail end");
+			if (orgLocations.size() > 0) {
+				return orgLocations.get(0);
+			} else {
+				return null;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			
 		}
+		return null;
+		
    	}
 	
 
