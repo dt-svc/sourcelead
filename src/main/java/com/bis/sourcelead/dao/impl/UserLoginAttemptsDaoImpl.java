@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,17 +9,31 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserLoginAttemptsDao;
 import com.bis.sourcelead.entity.UserLoginAttempts;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class UserLoginAttemptsDaoImpl implements UserLoginAttemptsDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserLoginAttemptsDaoImpl.class);
 	
@@ -29,10 +44,13 @@ public class UserLoginAttemptsDaoImpl implements UserLoginAttemptsDao{
 		logger.debug("Adding UserLoginAttempts");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.saveOrUpdate(userLoginAttempts);
-			logger.debug("UserLoginAttempts Added/Updated Successfully");
-		} catch (Exception e) {
-			e.printStackTrace();
+			if(userLoginAttempts != null){
+				session.saveOrUpdate(userLoginAttempts);
+				logger.debug("UserLoginAttempts Added/Updated Successfully");
+			}
+		} catch (Exception exception) {
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"UserLoginAttempts"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return userLoginAttempts;
 	}
@@ -63,8 +81,9 @@ public class UserLoginAttemptsDaoImpl implements UserLoginAttemptsDao{
 		try {
 			session.delete(userLoginAttempts);
 			logger.debug("Deleting Added/Updated Successfully");
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(statusDelete,"UserLoginAttempts"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
 		return userLoginAttempts;
 	}

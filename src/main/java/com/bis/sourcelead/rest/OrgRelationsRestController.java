@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -43,9 +43,9 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
-public class OrgRelationsController {
+public class OrgRelationsRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsController.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsRestController.class);
 
 	
 	@Autowired

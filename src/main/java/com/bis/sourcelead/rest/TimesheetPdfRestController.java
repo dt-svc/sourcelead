@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.service.TimesheetEntriesService;
+import com.bis.sourcelead.web.DocumentFonts;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -37,7 +38,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
 @RequestMapping(value = "/timesheetPdf")
-public class TimesheetPdfController {
+public class TimesheetPdfRestController {
 
 	@Autowired
 	public TimesheetEntriesService timesheetEntriesService;
