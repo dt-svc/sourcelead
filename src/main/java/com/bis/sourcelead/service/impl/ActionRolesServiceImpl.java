@@ -26,9 +26,9 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 	}
 
 	@Override
-	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId) throws Exception {
+	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId) throws Exception {
 		logger.debug("In ActionRolesService class...");
-		return actionRolesDao.getSourceLeadActionRolesListByOrgId(orgId);
+		return actionRolesDao.getSourceLeadActionRolesListByOrgId(orgId,modulesId);
 	}
 
 	@Override

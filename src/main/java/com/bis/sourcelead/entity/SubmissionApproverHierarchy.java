@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -75,6 +76,12 @@ public class SubmissionApproverHierarchy {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String managerLevel1;
+	    
+	@Transient
+	private String managerLevel2;
 
 	public Long getId() {
 		return id;
@@ -178,6 +185,22 @@ public class SubmissionApproverHierarchy {
 
 	public void setActionPerformedBy(String actionPerformedBy) {
 		this.actionPerformedBy = actionPerformedBy;
+	}
+
+	public String getManagerLevel1() {
+		return managerLevel1;
+	}
+
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
+	}
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
 	}
 	
 	

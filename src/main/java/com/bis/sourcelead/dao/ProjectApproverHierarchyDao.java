@@ -11,14 +11,16 @@ public interface ProjectApproverHierarchyDao {
 
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
 	
+	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy) throws Exception;
+	
 	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception;
 	
-	@Cacheable(cacheNames={"projectApproverHierarchy"})
+	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
+
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
 	
-
 }

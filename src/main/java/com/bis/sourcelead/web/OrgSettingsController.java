@@ -53,10 +53,6 @@ public class OrgSettingsController {
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
-
-	
-	
-
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
    public String saveOrgSettings(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 		

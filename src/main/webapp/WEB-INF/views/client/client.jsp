@@ -6,7 +6,7 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
-
+<script src="resources/js/formvalidator.js"></script>
  
  
 <style>
@@ -211,15 +211,14 @@
 									class="hidden">Website</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group" id="EmailIdDiv">
 							<label class="col-md-3" for="Project Manager">Email<span class="text-danger">*</span></label>
 							<div class="col-md-9">
-								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="required validate_Space validate_length length2-100 validate_email"
-									value="" class="form-control">
-								<span class="hidden">Enter Email</span>
+								<input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
+                                <span class="hidden">Valid Email</span>
 							</div>
 						</div>
+						
 
 						<div class="form-group">
 							<label class="col-md-3">Mobile Number</label>
@@ -238,11 +237,8 @@
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_client"
-								onclick="saveClient();" onclick="flushProject();" class="btn btn-primary"> <input
-								type="button" value="Cancel"
-								onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'"
-								class="btn btn-default ml">
+							<input type="button" value="Save" id="save_client" onclick="saveClient();" class="btn btn-primary"> 
+							<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
 						</div>
 					</div>
 				</div>
@@ -276,6 +272,7 @@
 		};
 	})(jQuery);
 </script>
+
 <script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {
@@ -681,10 +678,12 @@ function flushProject(){
 }
 </script>
 
+
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("webSite").value;
 		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		if (website != null && website != '') {
@@ -693,31 +692,21 @@ function flushProject(){
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="
-						+ website + "&sourceleadBLockedwebsites="
-						+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/ws/validateClientWebsite?${_csrf.parameterName}=${_csrf.token}&website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == 'Website Duplicated' || result == 'Invalid Website') {
 						//existed website
-						$("input#webSite").after(
-								"<p class='jquery_form_error_message'>"
-										+ website
-										+ " "+result+"</span>");
-						document.getElementById("webSite").setAttribute(
-								'record-exist', 'yes');
-						document.getElementById("webSite").setAttribute(
-								'record-exist-errorMsg',
-								website + ' is '+result);
+						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " "+result+"</span>");
+						document.getElementById("webSite").setAttribute('record-exist', 'yes');
+						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#webSite').removeAttr( "record-exist record-exist-errorMsg");
 					} else {
 						//New WebSite class="form-control"
 						//$("#save_client").removeAttr("disabled");
-						$('input#webSite').removeAttr(
-								"class record-exist record-exist-errormsg");
-						$('input#webSite').attr('class',
-								'valid form-control');
-						$('#companyWebsiteDiv').find(
-								'p.jquery_form_error_message').remove();
+						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 						$("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
@@ -727,6 +716,7 @@ function flushProject(){
 
 			});
 		}
+	 }
 	}
 </script>
 
@@ -780,7 +770,7 @@ function validateClientName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -813,3 +803,33 @@ function validateClientName(){
 </script>
 
 
+
+<script type="text/javascript">
+ function validateClientEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*  $("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_client" ).addClass('button').val('Save');
+                         $("#save_client").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     

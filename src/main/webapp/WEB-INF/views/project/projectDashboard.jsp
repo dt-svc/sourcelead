@@ -1,4 +1,5 @@
 <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -9,13 +10,16 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
-<script src="https://code.jquery.com/jquery-1.12.3.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
  <style>
  
  .clsDatePicker {
    z-index: 100000 !important;
+}
+.side-bar .side-nav ul li span{
+  display: inline-block;
+  float: none;
 }
  </style>
 
@@ -62,7 +66,7 @@
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                <li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
@@ -140,13 +144,12 @@
 			</div> --%>
 		</div>
 		</c:if>
-		<div class="side_mask"></div>
+		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
 		    <h1 id="projectNameById"></h1> <div class="proj_close"><i></i></div>
 		     <div id="projectSideDiv">
 		     </div>   
-			<div class="project_inn_mask"></div>
 			<div class="project_error">
 				<p>Employee delete message here ....</p>
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
@@ -314,6 +317,8 @@
 	
 <script type="text/javascript">
 window.onload = function () {
+	$('input[name=projectStatus]').attr('checked',false);
+	$('input[name=clientNameById]').attr('checked',false);
 	filter();
  };
 </script>
@@ -323,7 +328,7 @@ window.onload = function () {
 <script>
 //project side bar
 $(document).ready(function() {
-     $(".proj_close").click(function(){
+     $(".proj_close, .side_mask").click(function(){
     	$(".project_side_wrap").removeClass("project_side_wrap_active");
  		$(".side_mask").fadeOut(200);
  		$("body").css('overflow-y', 'auto');
@@ -444,7 +449,7 @@ function projectEmployee(projectId){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
+	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+json[i].empName+' </a></div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
 	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
@@ -638,15 +643,21 @@ function saveReason(projectMemberId, projectId){
    	var json = JSON.parse(data);
    	var endDateStr = "";
    	var description = "";
+   	var projectSequeneNumber ="";
    	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
    		endDateStr =  json.endDateStr;
    	}else{
-   		endDateStr = " ";
+   		endDateStr = "--";
    	}
    	if(json.description != null && json.description != '' && json.description != 'undefined'){
    		description  = json.description;
    	}else{
    		description = "NO DATA";
+   	}
+   	if(json.projectSequeneNumber != null && json.projectSequeneNumber != '' && json.projectSequeneNumber != 'undefiend'){
+   		projectSequeneNumber = json.projectSequeneNumber;
+   	}else{
+   		projectSequeneNumber = "--";
    	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
@@ -681,45 +692,85 @@ function saveReason(projectMemberId, projectId){
 	result = result + '</select>';
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
+	
+	result = result + '				<div class="clearfix"></div>';
+	result = result + '				<div class="project_details_cta">';
+	result = result + '					<strong>Project Id:</strong>';
+	result = result + '					<span><input type="text" onBlur="validate('+projectId+',\'projectSequeneNumber\');"  id="projectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '				</div>';
+	
+	
 	result = result + '				<div class="project_details_cta" id="projectNameId">';
 	result = result + '					<strong>Project name:</strong>';
 	result = result + '					<span><input type="text" onBlur="validate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
 	result = result + '				</div>';
-	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Project manager:</strong><span>';
-					result = result + '<select>';
-						for (var i = 0; i < json.projectManagerName.length; i++) {
-							
-							var managers = json.projectManagerName[i];
-							var projrctmanager = managers.split('&');
-					    	var name = projrctmanager[0];
-					    	var id = projrctmanager[1];
-							result = result+"<option value="+id+">"+name+"</option>";
+	
+	
+	
+	
+	result = result + '<div class="project_details_cta">';
+	result = result + '<strong>Project manager1:</strong><span>';
+					result = result + '<select onchange="getLevel2Approvers('+json.manager2+');" id="level1Manager" onBlur="inlineEditForProjects('+projectId+',\'level1Manager\');">';
+				
+					for (var j = 0; j < json.managersList.length; j++) {
+							  var manager = json.managersList[j];
+							  if(json.manager1 == manager.id){
+								   selected = 'selected';
+								   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
+							  }else{
+									  result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
+			   		 	    	 }
 						}
                 result = result + '</select>';
 	result = result + '			</span><div class="clearfix"></div>';
 	result = result + '				</div>';
+	
+	if(json.manager2  != null && json.manager2  != "" && json.manager2  !="undefined"){
+		result = result + '				<div class="project_details_cta">';
+		result = result + '					<strong>Project manager2:</strong><span>';
+		
+						result = result + '<select id="level2Manager" onBlur="inlineEditForProjects('+projectId+',\'level2Manager\');">';
+						for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
+							  var manager = json.managersListwithoutManager1[j];
+							  if(json.manager2 == manager.id){
+								   selected = 'selected';
+								   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
+							  }else{
+								  
+			   		 	    		result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
+			   		 	    	 }
+						}
+	                result = result + '</select>';
+		result = result + '			</span><div class="clearfix"></div>';
+		result = result + '				</div>';
+	}
+	
+	
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Client:</strong>';
-	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
-		result = result+"<option value=''>Select</option>";
-					for (var i = 0; i < json.clientName.length; i++) {
-						
-						var managers = json.clientName[i];
-						var projrctmanager = managers.split('&');
-				    	var name = projrctmanager[0];
-				    	var id = projrctmanager[1];
-				    	 var selected = '';
-	   		 	    	 if(json.relationId==id){
-	   		 	    		 selected = 'selected';
-	   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
-	   		 	    	 }else{
-	   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
-	   		 	    	 }projectEndDate
-	   		 	    	 
-	   		 	    	 
-					}
-		result = result + '</select>';
+	 if(json.relationId != null){
+	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');" disabled="disabled">';
+	 }else{
+		 result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
+	 }
+	 result = result+"<option value=''>Select</option>";
+				for (var i = 0; i < json.clientName.length; i++) {
+					
+					var managers = json.clientName[i];
+					var projrctmanager = managers.split('&');
+			    	var name = projrctmanager[0];
+			    	var id = projrctmanager[1];
+			    	 var selected = '';
+   		 	    	 if(json.relationId==id){
+   		 	    		 selected = 'selected';
+   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+   		 	    	 }else{
+   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
+   		 	    	 }
+   		 	    	 
+   		 	    	 
+				}
+	result = result + '</select>';
 	
 	result = result + '			  <div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -825,7 +876,8 @@ function pagination(){
     $('#example').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false
+    	"bLengthChange": false,
+    	"bDestroy": true
 		
     } );
 }
@@ -868,8 +920,14 @@ function filter(){
    		    	for (var i=0; i<json.length; i++)
    				{   
    		    		var report = json[i];
+   		    		var projectSequeneNumber;
+   		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
+   		    				projectSequeneNumber = report.projectSequeneNumber;
+   		    		}else{
+   		    			projectSequeneNumber = "---";
+   		    		}
    		    		result = result +'<tr>';
-   		    		result = result +'<td data-title="Id"><div>'+report.id+'</div></td>';
+   		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
    		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
@@ -877,6 +935,7 @@ function filter(){
    		    			result = result +report.managerLevel1;
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
+   		    			result = result + " , ";
    		    			result = result +report.managerLevel2;
    		    		} 
    		    		result = result +'</span></div>';
@@ -911,7 +970,6 @@ function filter(){
                 result = result +'  </tbody>';
                 result = result +' </table>';
                 result = result +'</div>';
-                $("#example").empty();  
                 $("#example").empty();  
    	    	    $("#example").append(result);
    	    	    pagination();	
@@ -1205,9 +1263,9 @@ function getTeamMembers(projectId) {
 	        		}
 	        		output = output + "<tr>";
 	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-	        		output = output +"<td>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</td>";
-	        		output = output +"<td>"+opt.user.email+"</td>";
-	        		output = output +"<td>"+role+"</td>";
+	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 	        		output = output + "</div></td>";
@@ -1324,6 +1382,49 @@ function flushEmployee(){
 	 $('#newEmployee').find('p.jquery_form_error_message').remove();
 }
 </script>
+
+
+
+
+
+<script type="text/javascript">
+function getLevel2Approvers(manager2){
+	var currentApproverId = document.getElementById("level1Manager").value;
+	getChildLevel1Approvers(currentApproverId,manager2);
+} 
+</script>
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId,manager2){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId == manager2){
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+	 }else{
+		 getApproversLevel2();
+	 }
+} 
+</script>
+
+
 
 <script>
   $('#selector').delay(2000).fadeOut('slow');

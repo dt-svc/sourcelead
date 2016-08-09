@@ -33,6 +33,10 @@ public class Constants {
 	public static  String TimeSheet = "TimeSheet";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	
+	public static  String Jobs = "Jobs";
+	public static  String Vendors = "Vendors";
+	public static  String Candidates = "Candidates";
+	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	
@@ -44,6 +48,10 @@ public class Constants {
 	public static String INVITE_USER = "Invite User";
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
+	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
+	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved";
+	public static String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
@@ -57,8 +65,8 @@ public class Constants {
 	
 	
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
-	
-	
+	//Week Time Sheet Submission
+	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "IN-ACTIVE";

@@ -294,7 +294,10 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 
 	
 <!--   Timesheet approval popup   -->
-	
+<div class="side_mask" onclick="removeTimesheetPopup();">
+	<!-- <div class="proj_close"></div> -->
+</div>
+
 <div class="time_appr_side_wrap">
 	   <div id="myId">
 	   </div>
@@ -310,16 +313,27 @@ function myTimesheet(local,startDate,endDate){
    	type: "POST",
     url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
-              $("#myId").empty();
-              $("#myId").append(data); 
-              maskme();   
-              $("html").trigger('click');
+    	 
+	    	if( data.indexOf('DOCTYPE') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	}else{
+	    		$("#myId").empty();
+	              $("#myId").append(data); 
+	              maskme();   
+	              $("html").trigger('click');
+	    	}
+              
     }
     });
     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+    $(".side_mask").fadeIn(200); 
+    $("body").css('overflow-y', 'hidden');
+
 } 
 function removeTimesheetPopup(){
 	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	 $(".side_mask").fadeOut(200); 
+	 $("body").css('overflow-y', 'scrool');
 }
 </script>	
 

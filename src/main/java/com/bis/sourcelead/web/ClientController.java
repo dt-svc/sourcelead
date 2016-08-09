@@ -194,7 +194,7 @@ public class ClientController {
 			OrgLocations  orgLocations = new OrgLocations();
 			orgLocations.setOrg(addOrg);
 			orgLocations.setPhone(jsonObj.getString("phone"));
-			orgLocations.setEmail(jsonObj.getString("email"));
+			orgLocations.setEmail(jsonObj.getString("EmailId"));
 			orgLocations.setCountry(jsonObj.getString("country"));
 			orgLocations.setState(jsonObj.getString("state"));
 			orgLocations.setCity(jsonObj.getString("city"));
@@ -533,5 +533,20 @@ public class ClientController {
 			 return  orgService.isClientNameValid(clientName);
 		   }
 		 
-		
+		 //to  validate client email
+		 @RequestMapping(value = "/getClientEmailVerification" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateClientEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
+			 	
+			 	String result = null;
+			 	OrgLocations orgLocations = orgLocationService.findByEmail(EmailId);
+			 	
+			 	if (orgLocations != null) {
+					result = "true";
+				}else{
+					result = "false";
+				}
+				return result;
+		   }
+		 
+		 
 }
