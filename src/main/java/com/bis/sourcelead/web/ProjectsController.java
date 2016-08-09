@@ -133,6 +133,7 @@ public class ProjectsController {
 	 @RequestMapping(value = "/project")
 		public ModelAndView projects(HttpServletRequest request) throws Exception {
 		    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		   
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		   
 				ModelAndView model = new ModelAndView();

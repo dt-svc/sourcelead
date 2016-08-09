@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,8 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
 
@@ -32,6 +36,17 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	@Autowired
 	private SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
@@ -45,7 +60,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		try {
 			session.saveOrUpdate(timesheetSubmissions);
 		}
-		catch(HibernateException exception)	{
+		catch(Exception exception)	{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return timesheetSubmissions;
 		
@@ -64,7 +81,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			}
 			
 		}
-		catch(HibernateException exception)	{
+		catch(Exception exception)	{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		
 	}
@@ -75,7 +94,14 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-	    session.update(timesheetSubmissions);
+	   if(timesheetSubmissions != null){
+		   session.update(timesheetSubmissions);
+	   }
+	   if(timesheetSubmissions == null){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"TIMESHEET_SUBMISSIONS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+	   }
+		
 	    return timesheetSubmissions;
 		
 	}
@@ -99,12 +125,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		session.update(timesheetSubmissions);
 		logger.info("Successfully deleted !!!");
 		return null;
-		/*Query query = session.createQuery("delete Cities where id = :ID");
-		query.setParameter("ID", new Long(18));
-		 
-		int result = query.executeUpdate();
-		return null;*/
-		
+	
 	}
 	
 	

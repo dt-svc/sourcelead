@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +19,25 @@ import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHierarchyDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(SubmissionApproverHierarchyDaoImpl.class);
 	
@@ -34,7 +49,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		try {
 			session.save(submissionApproverHierarchy);
 		}
-		catch(HibernateException exception)	{
+		catch(Exception exception)	{
+			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"SUBMISSION_APPROVE_HIERARCHY"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return submissionApproverHierarchy;
 	}
@@ -43,9 +60,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy updateSubmissionApproverHierarchy(
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-	    session.saveOrUpdate(submissionApproverHierarchy);
+		if(submissionApproverHierarchy != null){
+			 session.saveOrUpdate(submissionApproverHierarchy);
+		}
+		if(submissionApproverHierarchy == null){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"SUBMISSION_APPROVE_HIERARCHY"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
+	   
 	    return submissionApproverHierarchy;
 	}
 
@@ -66,16 +89,22 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isDeleted = false;
-		if (id != null) {
-			SubmissionApproverHierarchy submissionApproverHierarchy = (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, id);
-			submissionApproverHierarchy.setStatus("INACTIVE");;
-			session.saveOrUpdate(submissionApproverHierarchy);
-			isDeleted = true;
-			logger.info("Successfully deleted..!");
+		try{
+			if (id != null) {
+				SubmissionApproverHierarchy submissionApproverHierarchy = (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, id);
+				submissionApproverHierarchy.setStatus("INACTIVE");;
+				session.saveOrUpdate(submissionApproverHierarchy);
+				isDeleted = true;
+				logger.info("Successfully deleted..!");
+			}
+			else {
+				isDeleted = false;
+			}
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"SUBMISSION_APPROVE_HIERARCHY"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
-		else {
-			isDeleted = false;
-		}
+		
 		return isDeleted;
 	}
 
