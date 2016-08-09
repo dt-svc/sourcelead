@@ -215,7 +215,11 @@ public class HomeController {
 		return name;
 	}
 
-	//fileUpload
+	/**
+	 * Returns File upload jsp
+	 * @param request
+	 * @return ModelAndView
+	 */
 	
 	 @RequestMapping(value = "/uploadForm")
 		public ModelAndView fileUploadForm(HttpServletRequest request) {
