@@ -20,7 +20,7 @@ public class CountriesServiceImpl implements CountriesService{
 	private static final Logger logger = LoggerFactory.getLogger(CountriesServiceImpl.class);
 
 	@Override
-	public Countries getCountriesByCountryName(String name) {
+	public Countries getCountriesByCountryName(String name) throws Exception{
 		logger.debug("In Countries class...");
 		return countriesDao.getCountriesByCountryName(name);
 	}

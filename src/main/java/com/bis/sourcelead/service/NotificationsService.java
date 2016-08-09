@@ -11,7 +11,7 @@ import com.bis.sourcelead.entity.Notifications;
  */
 public interface NotificationsService {
 
-	Notifications saveNotification(Notifications notification);
+	Notifications saveNotification(Notifications notification) throws Exception;
 
 	Integer getNotificationsCountByUserId(Long userId, String orgCode, String locationCode);
 
