@@ -585,6 +585,8 @@ public class ProjectsDashboardController {
 			            	pm.setProjectEndDate(currentEndDate);
 		            	}
 		            	
+		            }else{
+		            	 pm.setProjectEndDate(projects.getEndDate());
 		            }
 		            
 		            pm.setStatus(Constants.MEMBER_ACTIVE);

@@ -258,11 +258,12 @@ public class ProjectsController {
 		//admin as approver hierarchy ..
 		Collection<User> uLsit = userService.getUsersByUserRoles();
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
+		if(userLsit != null && !userLsit.isEmpty()){
 		for(User userRole : userLsit){
-			  if(ids[0].equals(userRole.getId())){
+			  if(ids[0] != null &&  ids[0].equals(userRole.getId())){
 				  userLsit.remove(userRole);
 			  }
-			  else if (ids[1].equals(userRole.getId())) {
+			  else if (ids[1] != null && ids[1].equals(userRole.getId())) {
 				  userLsit.remove(userRole);
 			  }else{
 				    ProjectApproverHierarchy pah3 = new ProjectApproverHierarchy();
@@ -273,7 +274,7 @@ public class ProjectsController {
 			  } 
 			  
 		}
-		
+		}
 	    	
 		
 	    	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
