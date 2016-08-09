@@ -66,7 +66,7 @@
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                <li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
@@ -449,7 +449,7 @@ function projectEmployee(projectId){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div>'+json[i].empName+'</div></td>';
+	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+json[i].empName+' </a></div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
 	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';

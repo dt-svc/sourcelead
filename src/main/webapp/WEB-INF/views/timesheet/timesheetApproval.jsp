@@ -313,10 +313,16 @@ function myTimesheet(local,startDate,endDate){
    	type: "POST",
     url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
-              $("#myId").empty();
-              $("#myId").append(data); 
-              maskme();   
-              $("html").trigger('click');
+    	 
+	    	if( data.indexOf('DOCTYPE') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	}else{
+	    		$("#myId").empty();
+	              $("#myId").append(data); 
+	              maskme();   
+	              $("html").trigger('click');
+	    	}
+              
     }
     });
     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
