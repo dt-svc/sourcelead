@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,13 @@ public class CountriesServiceImpl implements CountriesService{
 	public Countries getCountriesByCountryName(String name) {
 		logger.debug("In Countries class...");
 		return countriesDao.getCountriesByCountryName(name);
+	}
+
+	@Override
+	public List<Countries> getAllCountries() throws Exception {
+		logger.debug("In ProjectsServiceImpl class getAllProjects method...");
+		List<Countries> countriesList = countriesDao.getAllCountries();
+		return countriesList;
 	}
 
 }
