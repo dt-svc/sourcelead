@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CountriesDao;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Projects;
 
 @Repository
 public class CountriesDaoImpl implements CountriesDao{
@@ -37,5 +39,14 @@ public class CountriesDaoImpl implements CountriesDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Countries> getAllCountries() {
+		logger.debug("In Projects getAllProjects method");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Countries> countriesList= session.createQuery("from Countries " ).list();
+        return countriesList;
+	}
 
 }

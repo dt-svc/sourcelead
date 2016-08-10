@@ -140,23 +140,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 
 				 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 				 
-				      //draft
-				         //draftTimesheetsSubmissionsCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "DRAFT");
-				      //new
-				 // newTimesheetsSubmissionsCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "NEW");
-				 // savedTimesheetsSubmissionsCount =  newTimesheetsSubmissionsCount +draftTimesheetsSubmissionsCount;
-				 //  timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(savedTimesheetsSubmissionsCount);
-			  	       //submitted
-				 // waitingForApprovalTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "SUBMITTEDFORAPPROVAL");
-				 //   timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(waitingForApprovalTimesheetSubmissionCount);
-			  	       //approved
-				 //  approvedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "APPROVED");
-				 // timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(approvedTimesheetSubmissionCount);
-			 	       //rejected
-				 //  rejectedTimesheetSubmissionCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId, "REJECTED");
-				 // timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(rejectedTimesheetSubmissionCount);
-				         
-				         
 				            Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, new Long(3), "DRAFT");
 					        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "DRAFT");
 					        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
