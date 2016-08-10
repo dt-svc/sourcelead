@@ -133,7 +133,7 @@ public class ProjectsDashboardRestController {
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 				String resultJson = "";
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
+			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
 			    for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){

@@ -363,36 +363,6 @@ public class ProjectsRestController {
 	 
 	 
 	 /**
-	  * This method for update project
-	  * @param id
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/update/{id}", method = RequestMethod.GET,headers="Accept=application/json")
-	 public Projects update(@PathVariable Long id) throws Exception { 
-		    Projects projects = new Projects();
-		    projects.setId(id);
-		    
-			User superiorUser = new User();
-			superiorUser.setId(1L);
-			projects.setSuperiorUser(superiorUser);
-			
-			projects.setProjectName("SOURCELEAD");
-			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
-			projects.setDescription("sourcelead desc");
-			projects.setStatus("1");
-			projects.setStartDate(new Date());
-			projects.setEndDate(new Date());
-			projects.setTimesheetFrequency("Monthly");
-			projects.setCreatedDate(new Date());
-			projects.setCreatedBy("Prasad");
-			projects.setUpdatedDate(new Date());
-			projects.setUpdatedBy("Yaswanth");
-
-		    return projectsService.updateProject(projects);
-	  }
-	 
-	 /**
 	  * This method for delete project by id
 	  * @param id
 	  * @return

@@ -374,12 +374,12 @@ $(document).ready(function() {
 </script> 
 <!-- this script is for side navigation functionality at Projects screen -->
  <script>
- function projectSideBar(projectId,projectName){
+ function projectSideBar(projectId,projectName,startDateStr,endDateStr){ 
 	  	    var result = "";
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+');" >Employees</a></li>';
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');" >Employees</a></li>';
 		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+');">Tasks</a></li>';
 		  	result = result + ' <li><a href="#tab-3" onClick="pojectDetails('+projectId+');" >Details</a></li>';
 		  	result = result + ' <div class="clearfix"></div>';
@@ -405,13 +405,13 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId);
+		    projectEmployee(projectId,startDateStr,endDateStr);
  }
  </script> 
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
-function projectEmployee(projectId){
+function projectEmployee(projectId,startDateStr,endDateStr){
 	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
     	type: "POST",
@@ -421,7 +421,7 @@ function projectEmployee(projectId){
         	var json = JSON.parse(data);
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
-    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result + '		</div>';
     		  result = result + '        <div class="project_tabs_inn_table">';
@@ -456,7 +456,7 @@ function projectEmployee(projectId){
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+', '+projectId+')";></i></div></td>';
+	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\',\''+projectId+',\''+startDateStr+'\',\''+endDateStr+'\')";></i></div></td>';
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -539,14 +539,14 @@ function inlineEditForEndDate(id,projectMemberId){
 
 <!-- this script is for Employee Terminate functionality at Projects screen -->
 <script>
-function deleteProject(projectMemberId, projectId){ 
+function deleteProject(projectMemberId, projectId,startDateStr,endDateStr){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Project delete message here</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Terminate' onclick='saveReason("+projectMemberId+", "+projectId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Terminate' onclick='saveReason("+projectMemberId+", "+projectId+","+startDateStr+","+endDateStr+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -558,7 +558,7 @@ function cancelTermination(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 
-function saveReason(projectMemberId, projectId){
+function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForProject").value;
 	if(reason.match(/^[^\s-](.*)*$/) !== null){
@@ -574,7 +574,7 @@ function saveReason(projectMemberId, projectId){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			 	projectEmployee(projectId);
+   			 	projectEmployee(projectId,startDateStr,endDateStr);
    		    }
 	     }); 
 		}
@@ -694,15 +694,15 @@ function saveReason(projectMemberId, projectId){
 	result = result + '				</div></span><div class="clearfix"></div>';
 	
 	result = result + '				<div class="clearfix"></div>';
-	result = result + '				<div class="project_details_cta">';
+	result = result + '				<div class="project_details_cta" id="ProjectIdDiv">';
 	result = result + '					<strong>Project Id:</strong>';
-	result = result + '					<span><input type="text" onBlur="validate('+projectId+',\'projectSequeneNumber\');"  id="projectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onBlur="projectIdValidate('+projectId+',\'projectSequeneNumber\');"  id="projectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
 	
 	result = result + '				<div class="project_details_cta" id="projectNameId">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onBlur="validate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '					<span><input type="text" onBlur="projectNameValidate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
 	
@@ -877,7 +877,8 @@ function pagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
-    	"bDestroy": true
+    	"bDestroy": true,
+    	 "ordering": false
 		
     } );
 }
@@ -928,7 +929,7 @@ function filter(){
    		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
@@ -1198,6 +1199,7 @@ $(document).ready(function(){
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
 		    var jsonData = encodeURIComponent(con);
+		    $("#add_employee").attr("disabled", "disabled");
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
@@ -1233,8 +1235,10 @@ function  inlineEditForProjectsTasks(taskId,localFieldName){
 
 <!-- this script is for TeamMembers List functionality at Projects screen -->
 <script type="text/javascript">
-function getTeamMembers(projectId) {
+function getTeamMembers(projectId,startDateStr,endDateStr) {
 	var sourceleadUrl ='${sourceleadUrl}';
+	var startDateStr = startDateStr;
+	var endDateStr = endDateStr;
     $.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
@@ -1267,7 +1271,7 @@ function getTeamMembers(projectId) {
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+startDateStr+"' class='form-control clsDatePicker' readonly='readonly'>";
 	        		output = output + "</div></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
 	        		output = output +"<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
@@ -1279,39 +1283,72 @@ function getTeamMembers(projectId) {
         	$("#employeesList").empty();
 	        $("#employeesList").append(output);
 	        
-	        
 	        //StartDate And EndDate Pickers
 		       if(json.length > 0){
 			    	for (var i = 0; i <json.length; i++) {
-						var report = json[i];
-						$('#startDate'+report.id).datepicker({
-							dateFormat : 'yy-mm-dd',
-							onSelect : function(selected) {
-								var id = $(this).attr('id');
-								var actualId = $(this).attr('id').split('startDate')[1];
-								var dt = new Date(selected);
-								dt.setDate(dt.getDate() + 1);
-								$("#endDate"+actualId).datepicker("option", "minDate", dt);
-							}
-						});
+						var opt = json[i];
+						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
+							$('#startDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								minDate:startDateStr,
+								maxDate:endDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('startDate')[1];
+									dt.setDate(dt.getDate() + 1);
+									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									
+								}
+							});
 
-						$('#endDate'+report.id).datepicker({
-							dateFormat : 'yy-mm-dd',
-							onSelect : function(selected) {
-								var dt = new Date(selected);
-								dt.setDate(dt.getDate() - 1);
-								var id = $(this).attr('id');
-								var actualId = $(this).attr('id').split('endDate')[1];
-								$("#startDate"+actualId).datepicker("option", "maxDate", dt);
-							}
-						});
+							$('#endDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								maxDate:endDateStr,
+								minDate:startDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('endDate')[1];
+									dt.setDate(dt.getDate() - 1);
+									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+								}
+							});
+							
+						}else{
+							$('#startDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								minDate:startDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('startDate')[1];
+									dt.setDate(dt.getDate() + 1);
+									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									
+								}
+							});
+
+							$('#endDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								minDate:startDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('endDate')[1];
+									dt.setDate(dt.getDate() - 1);
+									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+								}
+							});
+						}
+						
+						
 					}
 		      }
         },
         error: function(e){
         }
     });
-    $('#add_employee').attr('data-dismiss','modal');
 	$('#employeeFirstName').val('');
 	$('#employeeLastName').val('');}
 </script>
@@ -1323,6 +1360,9 @@ function getTeamMembers(projectId) {
 <script>
 function assignEmployee(){
 	 	var projectId = $("#projectId").val();
+	 	var startDateStr =  $("#startDateStr").val();
+	 	var endDateStr =  $("#endDateStr").val();
+	 	
 	    var result = "";
 	    var mailtoMembers = "NO";
 	    if(document.getElementById('membermailCheckbox').checked) {
@@ -1338,7 +1378,7 @@ function assignEmployee(){
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
 		            success: function(data) {
-		            	projectEmployee(projectId);
+		            	projectEmployee(projectId,startDateStr,endDateStr);
 		            }
 				})
 	        }
@@ -1374,6 +1414,7 @@ function assignEmployee(){
 
 <script type="text/javascript">
 function flushEmployee(){
+	 $("#add_employee").removeAttr("disabled");
      $('#employeeFirstName').val('');
      $('#employeeLastName').val('');
 	 $('#EmailId').val('');
@@ -1382,9 +1423,6 @@ function flushEmployee(){
 	 $('#newEmployee').find('p.jquery_form_error_message').remove();
 }
 </script>
-
-
-
 
 
 <script type="text/javascript">
@@ -1431,7 +1469,7 @@ function getChildLevel1Approvers(currentApproverId,manager2){
 </script> 
 
  <script type="text/javascript">
-        function validate(projectId,localFieldName) {
+        function projectNameValidate(projectId,localFieldName) {
 	           
 	            var ProjectName = document.getElementById("projectName").value;
 	            $('#projectNameId').find('p.jquery_form_error_message').remove();
@@ -1446,6 +1484,40 @@ function getChildLevel1Approvers(currentApproverId,manager2){
 	            	   inlineEditForProjects(projectId,localFieldName);
 	               }
                	}
+	          }
+        
+    </script>
+    <script type="text/javascript">
+        function projectIdValidate(projectId,localFieldName) {
+	            var ProjectSequeneNumber = document.getElementById("projectSequeneNumber").value;
+	            var sourceleadUrl = '${sourceleadUrl}';
+	            $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+	            if(ProjectSequeneNumber.trim().match(/^\S*$/) == ''){
+	            	if(ProjectSequeneNumber != ""){
+	            		$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>Must not start with spaces</span>");
+	            	}
+	            }else{
+	            	if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {	
+	            		$.ajax({
+								type : "POST",
+								url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
+								success : function(data) {
+									if (data == true) {
+										$("input#projectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
+										document.getElementById("projectSequeneNumber").setAttribute('record-exist', 'yes');
+										document.getElementById("projectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
+										$('input#projectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
+									} else {
+										$('input#projectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+										$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+										inlineEditForProjects(projectId,localFieldName);
+									}
+								},
+							});
+	            	}
+	            	
+	            	
+	            }
 	          }
         
     </script>
