@@ -195,6 +195,7 @@
 						result = result + '<table>';
 						result = result + '<tbody>';
 						result = result + '<tr>';
+						result = result + '<th>Project Id</th>';
 						result = result + '<th>Projects name</th>';
 						result = result + '<th>Start Date</th>';
 						result = result + '<th>End Date</th>';
@@ -211,6 +212,7 @@
 							}else{
 								endDateStr = "NO DATA";
 							}
+							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.id+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'id\');" id="id'+opt.id+'"  value="'+opt.id+'" class="project_inline_field"></div></td>';
 							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.projectName+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
 							
@@ -334,6 +336,27 @@
 					success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
+						var city = "";
+						var state = "";
+						var country = "";
+						if(json.city != null && json.city != '' && json.city != 'undefined'){
+							city = json.city;
+						}else{
+							city = "NO DATA";
+						}
+						
+						if(json.state != null && json.state != '' && json.state != 'undefined'){
+							state = json.state;
+						}else{
+							state = "NO DATA";
+						}
+						
+						if(json.country != null && json.country != '' && json.country != 'undefined'){
+							country = json.country;
+						}else{
+							country = "NO DATA";
+						}
+						
 						result = result
 								+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
@@ -358,35 +381,35 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						if(json.city !=null && json.city !='' && json.city !='undefined'){
-							result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+json.city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
-	   		    		}
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
-						if(json.state !=null && json.state !='' && json.state !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+json.state+'" placeholder="Project state" class="project_detfield"></span><div class="clearfix"></div>';
-						}
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+state+'" placeholder="Project state" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
-						if(json.country !=null && json.country !='' && json.country !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+json.country+'" placeholder="Project country" class="project_detfield"></span><div class="clearfix"></div>';
-						}
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+country+'" placeholder="Project country" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Email:</strong>';
 						if(json.email !=null && json.email !='' && json.email !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="Project email" class="project_detfield"></span><div class="clearfix"></div>';
+						}else{
+							
+							result = result + '<span><input type="text"  id="clientEmail" value="" placeholder="client email" class="project_detfield"></span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Phone number:</strong>';
 						if(json.phone !=null && json.phone !='' && json.phone !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';
+						}else{
+							
+							result = result + '<span><input type="text"  id="clientPhoneNumber" value="" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
