@@ -797,6 +797,12 @@
 		
 		var level1Manager = document.getElementById("level1Manager").value;
 		var level2Manager = document.getElementById("level2Manager").value;
+		var startDate     =     document.getElementById("StartDate").value;
+
+
+		if(level1Manager != null && startDate != null && level1Manager != '' && startDate != ''){
+			    $("#assignTeamModal").attr('data-target','#assignTeam');
+
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
@@ -908,6 +914,10 @@
 					error : function(e) {
 					}
 				});
+		}else{
+			$("#assignTeamModal").removeAttr('data-target');
+			
+		}
 		// $('#add_employee').attr('data-dismiss','modal');
 		$('#employeeFirstName').val('');
 		$('#employeeLastName').val('');

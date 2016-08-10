@@ -42,16 +42,41 @@
         
 	   <div class="timesheet_out">
 	   <c:if test="${empty projectsList}">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="content-area clearfix">
-						<div class="blank-pages">
-						        <p><i class="fa fa-5x fa-bar-chart"></i></p>
-						        <p>No Projects in our organisation... Add Projects</p>
-						 </div>
-					</div>
-				</div>
-			</div> 
+			<div class="project_wrap">
+        <div class="timesheet_head">
+        	<ul>
+				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+                	<div id="filter1ApprovedPop" class="approved_pop">
+                    	<ul>
+                    	  <c:forEach var="report" items="${add_client}">  
+                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
+						  </c:forEach>
+                        </ul>
+                    </div>                	
+                </li>
+                <li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
+                    	<ul>
+                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
+                        </ul>
+                    </div>                	
+                </li>
+				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+                <div class="clearfix"></div>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+			
+		    <div id="projectFilterList"></div>
+		    <div class="project_wrap_table">
+		    				<table id="example" class="display" cellspacing="0" width="100%">
+							</table>
+			</div>	   
+		</div>
 		</c:if>
 		<c:if test="${!empty projectsList}">
 		<div class="project_wrap">
@@ -89,59 +114,6 @@
 							</table>
 			</div>	   
 				
-		    <%-- <div id="projectList" class="project_wrap_table">
-		    	<table>
-		        	<tbody>
-					<thead>
-		            	<tr>
-		                	<th>Id</th>
-		                    <th>Name</th>
-		                    <th>Manager</th>
-		                    <th>Date</th>
-		                    <th>Client</th>
-		                    <th>Status</th>
-		                </tr>
-					</thead>	
-						<c:forEach var="report" items="${projectsList}" varStatus="raId">    
-	                        <tr>
-	                            <td data-title="Id"><div>${report.id}</div></td>
-	                            <td data-title="Name"><div class="proj_show" onclick="projectSideBar('${report.id}','${report.projectName}');" title="${report.projectName}"><span>${report.projectName}</span><i class="fa fa-binoculars"></i></div></td>
-	                            <td data-title="Manager">
-	                                <div>
-	                                <span>
-	                                    <c:forEach var="approver" items="${report.projectApprovers}" varStatus="raId" >
-	                                      <c:if test="${raId.index >0}">,</c:if>
-	                                        ${approver.approverUserId.firstName} ${approver.approverUserId.lastName}
-	                                    </c:forEach>
-	                               </span>
-	                               </div>
-	                            </td>
-	                            <td data-title="Date"><div>  &nbsp;<fmt:formatDate type="date"  value="${report.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.endDate}">  -  &nbsp;<fmt:formatDate type="date" value="${report.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
-	                             <c:if test="${report.client != null}">
-	                                 <td data-title="Client" title="${report.client}"><div><span>${report.client}</span></div></td>   
-	                              </c:if>
-	                              <c:if test="${empty report.client}">
-	                                 <td data-title="Client"><div>---</div></td>   
-	                              </c:if>
-	                            <td data-title="Status"><div>
-	                            <c:if test="${report.projectStatus == 'STARTED'}">
-	                            <b>${report.projectStatus}</b>
-	                            </c:if>
-	                            <c:if test="${report.projectStatus == 'INPROGRESS'}">
-	                            <b class="proj_process">${report.projectStatus}</b>
-	                            </c:if>
-	                            <c:if test="${report.projectStatus == 'COMPLETED'}">
-	                            <b class="proj_active">${report.projectStatus}</b>
-	                            </c:if>
-	                            <c:if test="${report.projectStatus == 'ONHOLD'}">
-	                            <b class="proj_deactivate">${report.projectStatus}</b>
-	                            </c:if>
-	                            </div></td>
-	                        </tr>
-	                    </c:forEach> 
-		           </tbody>
-		        </table>
-			</div> --%>
 		</div>
 		</c:if>
 		<div class="side_mask"><div class="proj_close"><i></i></div></div>
@@ -1457,8 +1429,40 @@ function getChildLevel1Approvers(currentApproverId,manager2){
 		    });
 	 }
 	 }else{
-		 getApproversLevel2();
+		 getApproversLevel2(currentApproverId,manager2);
 	 }
+} 
+</script>
+
+<script type="text/javascript">
+function getApproversLevel2(currentApproverId,manager2){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var currentApproverId = currentApproverId;
+	 var manager2 =manager2;
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-Select Manager-</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+
+	        		var opt = json[i];
+	        		 if(manager2 == opt.id){
+					   selected = 'selected'; 
+		        		output = output + "<option "+selected+" value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+				  }else{
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+   		 	      } 
+				
+				}
+	        	$("#level2Manager").empty();
+		        $("#level2Manager").append(output);
+	        },
+	    });
+	
 } 
 </script>
 

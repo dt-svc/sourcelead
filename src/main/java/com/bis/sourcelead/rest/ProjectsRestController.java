@@ -194,25 +194,33 @@ public class ProjectsRestController {
 	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 	    	pah1.setProjectId(updatedProjects);
 	    	User approverUserId1 = new User();
-	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
-	    	pah1.setApproverUserId(approverUserId1);
-	    	pah1.setLevel(1);
-	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-	    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
+	    	
+	        if(jsonObj.has("level1Manager")){
+			    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+			    		approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
+				    	pah1.setApproverUserId(approverUserId1);
+				    	pah1.setLevel(1);
+				    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+				    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
+				    	
+			    	}
+		    	}
 	    	//send mail to assigned Project Manager
 	    	String teamMembersList = "";
 			
 	    	User approverUserId2 = new User();
-		if(!jsonObj.getString("level2Manager").isEmpty()){
-			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
-			pah2.setProjectId(updatedProjects);
-			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-			pah2.setApproverUserId(approverUserId2);
-			pah2.setLevel(2);
-			ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
-			ids[1] = projectApproverHierarchy.getApproverUserId().getId();
-		}
-		
+			 if(jsonObj.has("level2Manager")){ 	
+				if(!jsonObj.getString("level2Manager").isEmpty()){
+					ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+					pah2.setProjectId(updatedProjects);
+					approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+					pah2.setApproverUserId(approverUserId2);
+					pah2.setLevel(2);
+					ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+					ids[1] = projectApproverHierarchy.getApproverUserId().getId();
+				}
+			 }
+		 
 		//admin as approver hierarchy ..
 		Collection<User> uLsit = userService.getUsersByUserRoles();
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
