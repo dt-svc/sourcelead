@@ -630,22 +630,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
-//		if(!fileName.toLowerCase().endsWith("csv"))
-		/*if (!"".equalsIgnoreCase(userImport.getDateString())) {
-			SimpleDateFormat sdf = null;
-			if(fileName.toLowerCase().endsWith("xls")){
-				sdf = new SimpleDateFormat("dd/MM/yyyy");
-			}else if(fileName.toLowerCase().endsWith("xlsx")){
-				sdf =  new SimpleDateFormat("dd/MM/yyyy");
-			}else{
-				sdf =  new SimpleDateFormat("dd/MM/yyyy");
-			}
-			Date date = sdf.parse(userImport.getDateString());
-//			sdf = new SimpleDateFormat("MM/dd/yyyy");
-			userImport.setDateOfJoin(date);
-		} else {
-			userImport.setDateOfJoin(null);
-		}*/
 		
 		employee.setHireDate(userImport.getDateOfJoin());
 
