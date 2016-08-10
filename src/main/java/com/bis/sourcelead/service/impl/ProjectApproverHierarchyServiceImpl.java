@@ -56,8 +56,12 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectIdsByLoginUserId(userId);
 	}
-
 	
 	
-
+	@Override
+	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy)
+			throws Exception {
+		return projectApproverHierarchyDao.getByProjectApproverHierarchyId(projectApproverHierarchy);
+	}
+	
 }

@@ -144,11 +144,13 @@ public class CommonUtil {
 					 * checking whether projectMemberEnddate is lesserthan next 4th week monday date then 
 					 * projectMemberEnddate is taken as enddate for the submission records
 					*/
+					System.out.println(projectMember.getProjectEndDate());
 					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
 					    endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						startCal.setLenient(false);
-						startCal.setTime(projectMember.getProjectEndDate());
-					    endMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
+					    endCal.setLenient(false);
+						endCal.setTime(projectMember.getProjectEndDate());
+					    endMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
+					    System.out.println(endMonday.getTime());
 					}
 					
 					int totalWeeks = 0; 

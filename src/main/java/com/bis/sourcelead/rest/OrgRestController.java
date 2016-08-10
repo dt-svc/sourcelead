@@ -1,7 +1,8 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 import java.util.Date;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.web.HomeController;
 /**
  * Handles requests for the Organization service.
  * 
@@ -22,7 +25,7 @@ import com.bis.sourcelead.service.OrgService;
 
 @RestController
 @RequestMapping(value = "/org")
-public class OrgController {
+public class OrgRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 

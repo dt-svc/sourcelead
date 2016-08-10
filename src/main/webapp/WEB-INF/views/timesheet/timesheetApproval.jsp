@@ -294,7 +294,10 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 
 	
 <!--   Timesheet approval popup   -->
-<div class="side_mask"></div>
+<div class="side_mask" onclick="removeTimesheetPopup();">
+	<!-- <div class="proj_close"></div> -->
+</div>
+
 <div class="time_appr_side_wrap">
 	   <div id="myId">
 	   </div>
@@ -310,10 +313,16 @@ function myTimesheet(local,startDate,endDate){
    	type: "POST",
     url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
-              $("#myId").empty();
-              $("#myId").append(data); 
-              maskme();   
-              $("html").trigger('click');
+    	 
+	    	if( data.indexOf('DOCTYPE') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	}else{
+	    		$("#myId").empty();
+	              $("#myId").append(data); 
+	              maskme();   
+	              $("html").trigger('click');
+	    	}
+              
     }
     });
     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -836,8 +845,13 @@ $(document).click(function(){
 		 if (hours < 10) {
 			hours = '0' + hours;
 		 }
-			 
-		total = hours +":"+ minutes;
+			
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +":"+ minutes;
+		 }else{
+			 total = "00:00"; 
+		 }
+		 
 	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
@@ -872,7 +886,12 @@ function grandTotal(){
 			hours = '0' + hours;
 		 }
 			 
-		 total = hours +":"+ minutes;
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +":"+ minutes;
+		 }else{
+			 total = "00:00"; 
+		 }
+		 
 		 $("#grandTotal").val(total);
 	     
 }

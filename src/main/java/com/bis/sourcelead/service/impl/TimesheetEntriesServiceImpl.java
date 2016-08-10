@@ -287,6 +287,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
+			Date assignEndDate = ts.getProjectMembers().getProjectEndDate();
 			//CommonUtil
 			//currentStartDate
 			
@@ -295,34 +296,34 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 currentCal.setLenient(false);
 			 currentCal.setTime(currentStartDate);
-			if(assignDate.after(currentStartDate) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			if(( assignDate.after(currentStartDate) || (assignEndDate != null && assignEndDate.before(currentStartDate)) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition1 = "disabled";
 			}
 			String disbleCondition2 = "";
-            if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime()) || (assignEndDate != null && assignEndDate.before(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime())) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition2 = "disabled";
 			}
 			String disbleCondition3 = "";
-            if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime()) || (assignEndDate != null && assignEndDate.before(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime())) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition3 = "disabled";
 			}
 			String disbleCondition4 = "";
-            if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime()) || (assignEndDate != null && assignEndDate.before(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime())) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition4 = "disabled";
 			} 
 			String disbleCondition5 = "";
-            if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime()) || (assignEndDate != null && assignEndDate.before(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime())) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition5 = "disabled";
 			}
 			String disbleCondition6 = "";
-            if(assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime()) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((assignDate.after(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime()) || (assignEndDate != null && assignEndDate.before(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition6 = "disabled";
 			}
 			String disbleCondition7 = "";
-            if(assignDate.after(currentEndDate) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((assignDate.after(currentEndDate) || (assignEndDate != null && assignEndDate.before(currentEndDate)) ) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition7 = "disabled";
 			} 
-			
+						
 			/*if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition = "disabled";
 			}*/
@@ -627,6 +628,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty() ){
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
 			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
 				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
@@ -654,7 +656,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
 				sb.append("</span>");
 			}
-			
+			}
 			sb.append("         <div class='clearfix'></div>");
 			sb.append("     </div>");
 			
@@ -662,6 +664,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()) && (isThereAnyApproverApproved != null && !isThereAnyApproverApproved.isEmpty() && isThereAnyApproverApproved.contains(new Boolean("false")))){
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");
+				   sb.append("  </div>");
+				   sb.append("	<div class='clearfix'></div>");
+				   sb.append("</div>");
+			}
+			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
@@ -1125,6 +1133,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 				   sb.append("    </div>");
+				   sb.append("	<div class='clearfix'></div>");
+				   sb.append("</div>");
+			}
+			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+				   sb.append("	<div class='timesheet_button'>");
+				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}

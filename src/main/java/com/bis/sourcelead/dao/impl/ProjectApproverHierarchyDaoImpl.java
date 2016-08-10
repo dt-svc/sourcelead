@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,8 @@ import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchyDao{
@@ -22,6 +26,16 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 	@Autowired
 	UserRoleDao userRoleDao;
 	
@@ -30,10 +44,17 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)	throws Exception {
-		// TODO Auto-generated method stub
 			logger.debug("In Projects Save method");
 			Session session = this.sessionFactory.getCurrentSession();
-			session.save(projectApproverHierarchy);
+			try{
+				if(projectApproverHierarchy != null){
+					session.save(projectApproverHierarchy);
+				}
+			}catch(Exception exception){
+				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_APPROVER_HIERARCHY"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			}
+			
 			return projectApproverHierarchy;
 	}
 	/**
@@ -44,8 +65,14 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception {
 		logger.debug("In ProjectApproverHierarchy Update method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.saveOrUpdate(projectApproverHierarchy);
-		logger.info("Record updated successfully..!");
+		if(projectApproverHierarchy != null){
+			session.saveOrUpdate(projectApproverHierarchy);
+			logger.info("Record updated successfully..!");
+		}
+		if(projectApproverHierarchy == null){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"PROJECT_APPROVER_HIERARCHY"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
 		return projectApproverHierarchy;
 		
 	}
@@ -71,10 +98,10 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy  where   projectHirachy.projectId =:projectId";
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId  where   projectHirachy.projectId =:projectId";
 	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
+	        																							.setCacheable(true)
 	        																							.list();
 	        return projectHirachyList;
 		
@@ -83,7 +110,6 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ProjectApproverHierarchy projectHirachy where (projectHirachy.approverUserId.id =:userId OR projectHirachy.projectId.id IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)))";
 		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("userId", userId)
@@ -96,23 +122,35 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Long> getProjectIdsByLoginUserId(Long userId) {
 		logger.debug("In ProjectsDaoImpl class getProjectIdsByLoginUserId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		
 		List<Long> projectsIdList = null;
-		
 		Boolean isadmin = userRoleDao.isUserAdmin(userId);
 		
-		if(isadmin){
-						 String query = "select ph.projectId.id from ProjectApproverHierarchy ph";
-						 projectsIdList =  session.createQuery(query.toString())
-												  .setCacheable(true).list();
-		}else{
+			if(isadmin){
+				 String query = "select ph.projectId.id from ProjectApproverHierarchy ph";
+				 projectsIdList =  session.createQuery(query.toString())
+										  .setCacheable(true).list();
+			}else{
 				String query = "select ph.projectId.id from ProjectApproverHierarchy ph where ph.approverUserId =:userId";
 			    projectsIdList =  session.createQuery(query.toString())
 											.setLong("userId", userId)
 											.setCacheable(true).list();
-		}
+			}
 		return projectsIdList;
+	}
+	
+	/**
+	 * This method for get ProjectApproverHierarchy by id
+	 */
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy) throws Exception {
+
+		logger.debug("In ProjectApproverHierarchy getByProjectApproverHierarchyId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		return (ProjectApproverHierarchy) session.get(ProjectApproverHierarchy.class, projectApproverHierarchy);
 	}
 
 	
