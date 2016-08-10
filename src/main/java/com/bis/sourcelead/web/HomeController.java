@@ -237,4 +237,12 @@ public class HomeController {
 			return model;
 
 		}
+	 
+	    @RequestMapping(value = "/errorPage",method = RequestMethod.GET)
+		public ModelAndView displayErrorPage(HttpServletRequest request) {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("errorPage");
+			return model;
+
+		}
 }
