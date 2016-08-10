@@ -679,46 +679,6 @@ function flushProject(){
 </script>
 
 
-<script type="text/javascript">
-	function validateWebsite() {
-		var website = document.getElementById("webSite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		if(website.match(/^[^\s-](.*)*$/) !== null){
-		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		if (website != null && website != '') {
-
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?${_csrf.parameterName}=${_csrf.token}&website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
-				success : function(data) {
-					var result = data;
-					if (result == 'Website Duplicated' || result == 'Invalid Website') {
-						//existed website
-						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " "+result+"</span>");
-						document.getElementById("webSite").setAttribute('record-exist', 'yes');
-						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
-						$('input#webSite').removeAttr( "record-exist record-exist-errorMsg");
-					} else {
-						//New WebSite class="form-control"
-						//$("#save_client").removeAttr("disabled");
-						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
-						$('input#webSite').attr('class','valid form-control');
-						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-						$("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						});
-					}
-				},
-
-			});
-		}
-	 }
-	}
-</script>
 
 <script type="text/javascript">
 function projectvalidation(){
@@ -833,3 +793,84 @@ function validateClientName(){
 	 }
  }
  </script>     
+
+ 
+ <!-- <script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?${_csrf.parameterName}=${_csrf.token}&website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == 'Website Duplicated' || result == 'Invalid Website') {
+						//existed website
+						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " "+result+"</span>");
+						document.getElementById("webSite").setAttribute('record-exist', 'yes');
+						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#webSite').removeAttr( "record-exist record-exist-errorMsg");
+					} else {
+						//New WebSite class="form-control"
+						//$("#save_client").removeAttr("disabled");
+						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+						$("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	 }
+	}
+</script> -->
+ 
+ <script type="text/javascript">
+function validateWebsite(){
+      var website = document.getElementById("webSite").value; 
+     var sourceleadUrl ='${sourceleadUrl}';
+     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
+	 $('input#webSite').removeAttr( "record-exist record-exist-errormsg");
+	 if(website != null && website != ''){
+		
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+			        success: function(data) {
+			        	 var result = data;
+			        		if (result == "Website Duplicated" || result == "Invalid Website") {
+		        			//existed website
+		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$("input#webSite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
+		    				$('input#webSite').attr('record-exist','yes');
+		    				$('input#webSite').attr('record-exist-errorMsg',website+' '+result+''); 
+			        	}
+			        	else{
+			        		//New WebSite
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#webSite').removeAttr( "class record-exist record-exist-errormsg");
+							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+							$( "#save_client" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+	}
+}
+</script>

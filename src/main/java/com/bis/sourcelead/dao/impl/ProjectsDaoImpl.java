@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -63,6 +67,17 @@ public class ProjectsDaoImpl implements ProjectsDao{
     @Autowired
     private UserService userService;
     
+    @Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+    
     @Autowired
     
     private ProjectsService projectsService;
@@ -77,7 +92,13 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	public Projects saveProject(Projects projects) throws Exception {
 		logger.debug("In Projects Save method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(projects);
+		try{
+			session.save(projects);
+		}catch(Exception exception){
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return projects;
 	}
 
@@ -89,8 +110,16 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	public Projects updateProject(Projects projects) throws Exception {
 		logger.debug("In Projects Update method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.saveOrUpdate(projects);
-		logger.info("Record updated successfully..!");
+		try{
+			if(projects != null){
+				session.saveOrUpdate(projects);
+				logger.info("Record updated successfully..!");
+			}
+					
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"PROJECTS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
 		return projects;
 	}
 
@@ -147,13 +176,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		 logger.debug("In Projects deleteProject method");
 		 Session session = this.sessionFactory.getCurrentSession();
 		 boolean isDeleted = false;
-		 if(id != null){
-			 Projects projects= (Projects)session.load(Projects.class,id);
-			 projects.setStatus("0");
-			 session.saveOrUpdate(projects);
-			 logger.info("Successfully deleted !!!");
-			 isDeleted = true;
+		 try{
+			 if(id != null){
+				 Projects projects= (Projects)session.load(Projects.class,id);
+				 projects.setStatus("0");
+				 session.saveOrUpdate(projects);
+				 logger.info("Successfully deleted !!!");
+				 isDeleted = true;
+			 }	 
+		 }catch(Exception e){
+			    StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"PROJECTS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());	
 		 }
+		
 		return isDeleted;
 	}
 	
@@ -439,7 +474,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			String query = "select pj from  Projects pj where pj.id IN (select pm.projects.id from ProjectMembers pm  "
-					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and pm.status <> IN-ACTIVE  and  emp.orgLocations.id = :orgLocationId ))" ;
+					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and pm.status <> 'IN-ACTIVE'  and  emp.orgLocations.id = :orgLocationId ))" ;
 			List<Projects> projectsList =session.createQuery(query.toString()).setLong("userId", userId)
 					.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
 			      
