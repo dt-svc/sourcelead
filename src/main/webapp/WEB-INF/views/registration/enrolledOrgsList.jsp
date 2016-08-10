@@ -85,6 +85,8 @@ window.onload = function () {
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
+		
+		
 	    $('#orgListBody').empty();
         $('#orgListEmptyBody').empty();
 		
