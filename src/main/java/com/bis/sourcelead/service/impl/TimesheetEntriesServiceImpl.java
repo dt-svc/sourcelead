@@ -972,10 +972,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <input type='text'  "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay1Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
 				              sb.append(" <div class='timesheet_comm'>"); 
 				              
+				              if(isNullOrEmpty(disbleCondition1))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>"); 
-				              if(isNullOrEmpty(disbleCondition1)){
-				            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>");
-				              }
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>");
 				              sb.append(" </div> </td>"); 
 				              
 							  sb.append(" <td> <div>"); 

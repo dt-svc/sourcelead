@@ -196,7 +196,7 @@ public class CommonUtil {
 							timesheetSubmissions.setUpdatedDate(new Date());
 							timesheetSubmissions.setUpdatedBy(user.getUserCode());
 							
-	                        List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
+	                        List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId());
 							HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
 	                        if(hierarchyList != null && !hierarchyList.isEmpty()){
 								for(ProjectApproverHierarchy hierarchy : hierarchyList){

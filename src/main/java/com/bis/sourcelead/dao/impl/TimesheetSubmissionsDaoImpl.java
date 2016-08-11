@@ -258,7 +258,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sDate = new java.sql.Date(startDate.getTime());
-		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.status = 'ACTIVE' and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 		List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																		  .setLong("empId", projectMemberId)	
 					                                                      .setLong("userId", userId)
@@ -295,7 +295,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				sqlStartDate = new java.sql.Date(startDate.getTime());
 			}
 			
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where (pm.projectEndDate IS NULL OR (pm.projectEndDate > :startDate)) and emp.user.id = :userId and ts.startDate = :startDate  order by pr.id ";  
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where ( pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate > :startDate) ) ) and emp.user.id = :userId and ts.status ='ACTIVE' and ts.startDate = :startDate  order by pr.id ";  
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).list();
 			return timesheetSubmissionsList;
 	}

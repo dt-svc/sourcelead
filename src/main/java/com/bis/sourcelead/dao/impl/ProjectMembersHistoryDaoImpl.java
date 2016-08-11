@@ -15,10 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
-import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
@@ -77,18 +76,47 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId and (( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR (pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate))");
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
 		HashSet<Date> dateList = new HashSet<Date>();
-		if(projectMembersHistoryList != null && projectMembersHistoryList.isEmpty()){
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			for(ProjectMembersHistory pmh :projectMembersHistoryList){
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				
+				
+					 if(pmh.getProjectAssignedDate().after(startDate)){
+						startDate = pmh.getProjectAssignedDate();	
+					 } 
+					 if(pmh.getProjectTerminationDate()!= null && pmh.getProjectTerminationDate().before(endDate)){
+						 endDate = pmh.getProjectTerminationDate();
+					 }
+					 
+					 
+					   Calendar calendar = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					    calendar.setLenient(false);
+					    calendar.setTime(startDate);
+
+					    while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate))
+					    {
+					        Date result = calendar.getTime();
+					        dateList.add(result);
+					        calendar.add(Calendar.DATE, 1);
+					    }
+					 
+					 
+	                 /*Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					 startCal.setLenient(false);
 					 startCal.setTime(pmh.getProjectAssignedDate());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime());
-					 dateList.add(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime());
+					 Calendar mondayCal = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON");
+					 try {
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 0).getTime());
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 1).getTime());
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 2).getTime());
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 3).getTime());
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 4).getTime());
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 5).getTime());
+						 dateList.add(CalendarUtil.getDateIncrementByincrement(mondayCal, 6).getTime());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}*/
+					
 					 
 			}
 		}

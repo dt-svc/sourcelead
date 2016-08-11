@@ -43,6 +43,12 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		return projectApproverHierarchyDao.getApproverUsersByProjectId(Id);
 		
 	}
+	
+	@Override
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId) throws Exception {
+		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectId(projectId);
+		
+	}
 
 
 	@Override
