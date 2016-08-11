@@ -1263,7 +1263,7 @@ background-repeat:no-repeat;
     }
 .uploadfile {
     opacity:0;
-    left: 10%;
+    left: 3%;
     position: absolute;
     transform: translateY(0px);
     transition: all ease-in-out 0.5s;
