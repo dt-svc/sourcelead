@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -244,10 +247,22 @@ public class UserServiceImpl implements UserService {
 		
 		pm.setEmployee(employee);
 		pm.setStatus(Constants.MEMBER_ACTIVE);
-		pm.setProjectAssignedDate(new Date());
+		
+		HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+		ProjectMembersHistory pmh = new ProjectMembersHistory();
+		pmh.setProjectMemberId(pm);
+		pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+		pmh.setProjectAssignedDate(new Date());
+        pmh.setCreatedDate(new Date());
+		pmh.setCreatedBy(userCode);
+		pmh.setUpdatedDate(new Date());
+		pmh.setUpdatedBy(userCode);
+		pmhList.add(pmh);
+		
 		pm.setCreatedBy(userCode);
 		pm.setCreatedDate(new Date());
 		pm.setUpdatedDate(new Date());
+		pm.setMemberHistoryList(pmhList);
 		return pm;
 	}
 	

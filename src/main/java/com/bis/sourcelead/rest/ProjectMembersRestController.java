@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.util.Constants;
 
 @RestController
 @RequestMapping(value = "/projectMembers")
@@ -67,14 +70,29 @@ public class ProjectMembersRestController {
 			projectMembers.setEmployee(employee);
 			
 			projectMembers.setTimesheetFrequency("weekly");
-			projectMembers.setProjectAssignedDate(new Date());
+			
+			
+			HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+			
+			ProjectMembersHistory pmh = new ProjectMembersHistory();
+			pmh.setProjectMemberId(projectMembers);
+			pmh.setProjectAssignedDate(new Date());
+			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+			pmh.setCreatedDate(new Date());
+			pmh.setCreatedBy("prasad");
+			pmh.setUpdatedDate(new Date());
+			pmh.setUpdatedBy("Raj");
+			pmhList.add(pmh);
+			
+			
 			projectMembers.setCurrentBillRate(100.0F);
 			projectMembers.setRateType("Monthly");
-			projectMembers.setStatus("1");
+			projectMembers.setStatus(Constants.MEMBER_ACTIVE);
 			projectMembers.setCreatedDate(new Date());
 			projectMembers.setCreatedBy("prasad");
 			projectMembers.setUpdatedDate(new Date());
 			projectMembers.setUpdatedBy("Raj");
+			projectMembers.setMemberHistoryList(pmhList);
 			
 			return projectMembersService.saveProjectMember(projectMembers);
 	  }
@@ -99,7 +117,17 @@ public class ProjectMembersRestController {
 			projectMembers.setEmployee(employee);
 			
 			projectMembers.setTimesheetFrequency("weekly");
-			projectMembers.setProjectAssignedDate(new Date());
+			//projectMembers.setProjectAssignedDate(new Date());
+            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+			ProjectMembersHistory pmh = new ProjectMembersHistory();
+			pmh.setProjectMemberId(projectMembers);
+			pmh.setProjectAssignedDate(new Date());
+			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+			pmh.setCreatedDate(new Date());
+			pmh.setCreatedBy("prasad");
+			pmh.setUpdatedDate(new Date());
+			pmh.setUpdatedBy("Raj");
+			pmhList.add(pmh);
 			projectMembers.setCurrentBillRate(500.0F);
 			projectMembers.setRateType("Monthly");
 			projectMembers.setStatus("1");

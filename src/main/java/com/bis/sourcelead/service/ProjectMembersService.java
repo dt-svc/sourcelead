@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 
 public interface ProjectMembersService {
 
@@ -16,13 +17,13 @@ public interface ProjectMembersService {
 	
 	public Boolean deleteProjectMemberById(Long id) throws Exception;
 	
-	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
+	public Collection<ProjectMembers> getAllProjectMembers() throws Exception;
 	
-	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
-	List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
-		
-    List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	public List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 	

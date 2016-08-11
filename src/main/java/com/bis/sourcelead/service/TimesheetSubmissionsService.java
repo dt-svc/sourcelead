@@ -18,6 +18,8 @@ public interface TimesheetSubmissionsService {
     
     public TimesheetSubmissions getTimesheetSubmissions(String id)throws Exception;
     
+    public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId,Date startDate)throws Exception;
+    
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
     public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate, Long  userId)throws Exception; 

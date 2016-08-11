@@ -50,4 +50,8 @@ public class Constants {
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
+	
+	/** projectMemberHistory constants**/
+	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
+	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
 }

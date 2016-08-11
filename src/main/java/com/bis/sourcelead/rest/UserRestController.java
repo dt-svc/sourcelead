@@ -3,10 +3,12 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,14 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -60,6 +64,9 @@ public class UserRestController {
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -390,9 +397,12 @@ public class UserRestController {
 				}
 				for (ProjectMembers projectMembers : allProjectsList) {
 					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
-					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
-					if (projectMembers.getProjectEndDate() != null) {
-						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
+				    ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
+					
+					
+					if (pmh.getProjectTerminationDate() != null) {
+						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
 					}
 					if (projectMembers.getProjects().getEndDate() != null) {
 						projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
@@ -460,9 +470,16 @@ public class UserRestController {
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
 				projectMembers.setTimesheetFrequency("weekly");
+				
+				User user = userService.getUserById(userId);
+				
+				HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+				ProjectMembersHistory pmh = new ProjectMembersHistory();
+				pmh.setProjectMemberId(projectMembers);
+				pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
 					try {
-						projectMembers.setProjectAssignedDate(sdf.parse(jsonObj.getString("StartDate")));
+						pmh.setProjectAssignedDate(sdf.parse(jsonObj.getString("StartDate")));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -470,12 +487,16 @@ public class UserRestController {
 
 				if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
 					try {
-						projectMembers.setProjectEndDate(sdf.parse(jsonObj.getString("EndDate")));
+						pmh.setProjectTerminationDate(sdf.parse(jsonObj.getString("EndDate")));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-				User user = userService.getUserById(userId);
+
+	            pmh.setCreatedDate(new Date());
+				pmh.setUpdatedDate(new Date());
+				pmhList.add(pmh);
+				
 				if (employee.getRate() != null && !"".equalsIgnoreCase(employee.getRate())) {
 					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
 				}
@@ -485,6 +506,10 @@ public class UserRestController {
 					projectMembers.setRateType(employee.getRatePer());
 				}
 				projectMembers.setStatus(Constants.MEMBER_ACTIVE);
+				projectMembers.setCreatedDate(new Date());
+				projectMembers.setUpdatedDate(new Date());
+				projectMembers.setMemberHistoryList(pmhList);
+				
 				projectMembersService.saveProjectMember(projectMembers);
 				commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
@@ -520,14 +545,16 @@ public class UserRestController {
 				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
 
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+					
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					if (endDate != null && !"".equals(endDate)) {
+						 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						Date endDate1=sdf.parse(endDate);
-						if(projectMembers.getProjectEndDate()== null){
+						if(pmh.getProjectTerminationDate()== null){
 							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
 
-						if (projectMembers.getProjectEndDate() != null && projectMembers.getProjectEndDate().compareTo(sdf.parse(endDate)) != 0) {
+						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
 							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
 					}
