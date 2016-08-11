@@ -1471,49 +1471,6 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return flag;
 	}
 
-	@Override
-	public void downloadFile(String fileName, HttpServletResponse response) throws IOException {
-		File file;
-		if("xlsx".equalsIgnoreCase(fileName)){
-			file = new File("FailureUsersForCheck.xlsx");
-		}else{
-			 file = new File("FailureUsersForCheck.xls");
-		}
-		
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
-	}
-
-	@Override
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
-		
-		String fn = "/templates/Create Users.xls";
-		URL url = getClass().getResource(fn);
-		File file = new File(url.toURI());
-
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
-	}
 	
 	private boolean isRateLengthValid(String Rate){
 		String regex = "\\d+";

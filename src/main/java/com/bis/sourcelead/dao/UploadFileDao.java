@@ -19,7 +19,4 @@ public interface UploadFileDao {
 
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception;
     
-	public void downloadFile(String fileName,HttpServletResponse response) throws IOException;
-	
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception;
 }

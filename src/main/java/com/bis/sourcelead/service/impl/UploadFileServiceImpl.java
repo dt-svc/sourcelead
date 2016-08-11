@@ -28,14 +28,4 @@ public class UploadFileServiceImpl implements UploadFileService {
 		return uploadFileDao.uploadFile(multipartFile, orgLocations,user, isMailChecked);
 	}
 
-	@Override
-	public void downloadFile(String fileName, HttpServletResponse response) throws Exception {
-		uploadFileDao.downloadFile(fileName, response);
-	}
-
-	@Override
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
-		uploadFileDao.downloadCreateUserTemplate(response);		
-	}
-
 }
