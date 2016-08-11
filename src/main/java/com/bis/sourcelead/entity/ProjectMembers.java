@@ -106,6 +106,7 @@ public class ProjectMembers {
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
     
+    @JsonIgnore
     @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);

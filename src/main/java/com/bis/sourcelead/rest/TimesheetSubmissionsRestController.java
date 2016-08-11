@@ -611,6 +611,8 @@ public class TimesheetSubmissionsRestController {
 			 globalVarsMap.put("employeeLastName",emp.getUser().getLastName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
 			 globalVarsMap.put("timeFrequency",startDate+" to "+endDate);
+			 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
+			 globalVarsMap.put("managerLastName", loginUser.getLastName());
 			 if(status.equalsIgnoreCase("REJECTED")){
 				 globalVarsMap.put("rejectedReason",rejectedReason);
 			 }
