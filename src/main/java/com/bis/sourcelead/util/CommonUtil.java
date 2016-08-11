@@ -68,6 +68,48 @@ public class CommonUtil {
 		projectTasksService.saveAll(tasksList);
 	}
 	
+	public void terminateProjectMemberByProjectMemberId(Long projectMemberId){
+		try {
+			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
+			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+			pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
+			
+			List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(projectMemberId, pmh.getProjectTerminationDate());
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				for(TimesheetSubmissions ts :timesheetSubmissionsList){
+					ts.setStatus(Constants.MEMBER_IN_ACTIVE);
+				}
+			}
+			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);	
+			
+			ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+			pm.setStatus(Constants.MEMBER_IN_ACTIVE);
+			projectMembersService.updateProjectMember(pm);
+			
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void terminateAllProjectMembersByUser(User user){
+		List<ProjectMembers> projectMembers;
+		try {
+			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
+			if(projectMembers != null && !projectMembers.isEmpty()){
+				for(ProjectMembers projectMember :projectMembers){
+					terminateProjectMemberByProjectMemberId(projectMember.getId());
+				}
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+	}
+	
 	/**
 	 * This method is used to storeTimesheetSubmissionRecords based on projectMemberAssignDate and projectMemberEndDate(optional)
 	 * @author: Naresh Bolisetty

@@ -132,6 +132,7 @@ public class LoginSessionController {
 		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
+		commonUtil.terminateAllProjectMembersByUser(user);
 		//model.addObject("notificationList", notificationList);
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);

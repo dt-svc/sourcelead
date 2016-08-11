@@ -117,6 +117,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getEmployeeAssignedProjectsCount(orgRelationId, orgLocationId);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
+	}
+
 
 	
 }

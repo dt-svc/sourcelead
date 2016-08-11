@@ -24,6 +24,8 @@ public interface ProjectMembersDao {
 	List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
 	
 	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	
+    List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 

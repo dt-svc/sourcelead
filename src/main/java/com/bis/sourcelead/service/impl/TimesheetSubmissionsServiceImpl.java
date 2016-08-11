@@ -278,7 +278,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId, Date startDate)
 				throws Exception {
 			// TODO Auto-generated method stub
-			return null;
+			return timesheetSubmissionsDao.getTimesheetSubmissionsByMemberIdAndStartDate(memberId, startDate);
+		}
+
+		@Override
+		public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(
+				Long memberId, Date terminatedDate) throws Exception {
+			// TODO Auto-generated method stub
+			return timesheetSubmissionsDao.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId, terminatedDate);
 		}
 		
 

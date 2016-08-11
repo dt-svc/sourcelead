@@ -29,4 +29,11 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMemberId, startDate, endDate);
 	}
 
+	@Override
+	public ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return projectMembersHistoryDao.updateProjectMembersHistory(projectMembersHistory);
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
@@ -55,6 +58,25 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		}
 		
 		return pmh;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory) throws Exception {
+		logger.debug("In ProjectMembersHistory Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(projectMembersHistory != null){
+				session.saveOrUpdate(projectMembersHistory);
+				logger.info("Record updated successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_MEMBERS_HISTORY"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+		return projectMembersHistory;
 	}
 
 	@Override

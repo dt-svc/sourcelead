@@ -73,7 +73,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		try {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
-					session.save(timesheetSubmissions);
+					session.saveOrUpdate(timesheetSubmissions);
 				}
 				
 			}
@@ -763,6 +763,22 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			ts = timesheetSubmissionsList.iterator().next();
 		}
 		return ts;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(Long memberId, Date terminatedDate)
+			throws Exception {
+        // TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlTerminatedDate = null;
+		if(terminatedDate != null){
+			sqlTerminatedDate = new java.sql.Date(terminatedDate.getTime());
+		}
+		
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and ts.startDate > :terminatedDate ";  
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("memberId", memberId).setParameter("terminatedDate", sqlTerminatedDate).list();
+		return timesheetSubmissionsList;
 	}
 
 
