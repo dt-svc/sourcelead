@@ -241,7 +241,8 @@ public class ClientRestController {
 		logger.info("Total number of projects for client " + orgRelation.getClientLocationId().getOrg().getOrgName()
 				+ "is : " + projectCount);
 		orgRelation.setProjectsCont(projectCount);
-		resultJson = toJSON(orgRelation);
+		//resultJson = toJSON(orgRelation);
+		resultJson = commonUtil.toJSON(orgRelation);
 		return resultJson;
 		  }
 		 
@@ -302,14 +303,7 @@ public class ClientRestController {
 		    }
 		
 		
-		private String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	    }
+		
 		
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
