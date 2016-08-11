@@ -234,7 +234,7 @@
 							<div class="col-md-9">
 								<div class="form-icon">
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="Select Team" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();flushEmployee();" readonly="readonly">
+										<input type="text" value="Select Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();flushEmployee();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushEmployee();"></i>
 									</span>
 								</div>
@@ -768,15 +768,14 @@
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#add_employee").attr("disabled", "disabled");
 
-			$
-					.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData,
-						success : function(data) {
-							$('#addTeam').modal('hide');
-						},
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl
+							+ "/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="
+							+ jsonData,
+					success : function(data) {
+						$('#addTeam').modal('hide');
+					},
 					});
 			return true;
 		} else {
@@ -798,6 +797,12 @@
 		
 		var level1Manager = document.getElementById("level1Manager").value;
 		var level2Manager = document.getElementById("level2Manager").value;
+		var startDate     =     document.getElementById("StartDate").value;
+
+
+		if(level1Manager != null && startDate != null && level1Manager != '' && startDate != ''){
+			    $("#assignTeamModal").attr('data-target','#assignTeam');
+
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
@@ -878,18 +883,21 @@
 								$('#startDate'+opt.id).datepicker({
 									dateFormat : 'yy-mm-dd',
 									minDate:projectStartDate,
+									maxDate:projectEndDate,
 									onSelect : function(selected) {
 										var dt = new Date(selected);
 										var id = $(this).attr('id');
 										var actualId = $(this).attr('id').split('startDate')[1];
 										dt.setDate(dt.getDate() + 1);
 										$("#endDate"+actualId).datepicker("option", "minDate", dt);
+										
 									}
 								});
 	
 								$('#endDate'+opt.id).datepicker({
 									dateFormat : 'yy-mm-dd',
 									maxDate:projectEndDate,
+									minDate:projectStartDate,
 									onSelect : function(selected) {
 										var dt = new Date(selected);
 										var id = $(this).attr('id');
@@ -906,6 +914,10 @@
 					error : function(e) {
 					}
 				});
+		}else{
+			$("#assignTeamModal").removeAttr('data-target');
+			
+		}
 		// $('#add_employee').attr('data-dismiss','modal');
 		$('#employeeFirstName').val('');
 		$('#employeeLastName').val('');

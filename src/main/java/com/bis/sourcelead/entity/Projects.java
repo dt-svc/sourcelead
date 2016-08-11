@@ -164,6 +164,11 @@ public class Projects {
     @Transient
     Collection<User> managersListwithoutManager1;
     
+    @Transient
+    private String employeeStartDateStr;
+    
+    @Transient
+    private String employeeEndDateStr;
     
     @Transient
 	private Integer assignedEmpCount;
@@ -488,5 +493,19 @@ public class Projects {
 		this.managersListwithoutManager1 = managersListwithoutManager1;
 	}
 
-	
+	public String getEmployeeStartDateStr() {
+		return employeeStartDateStr;
+	}
+
+	public void setEmployeeStartDateStr(String employeeStartDateStr) {
+		this.employeeStartDateStr = employeeStartDateStr;
+	}
+
+	public String getEmployeeEndDateStr() {
+		return employeeEndDateStr;
+	}
+
+	public void setEmployeeEndDateStr(String employeeEndDateStr) {
+		this.employeeEndDateStr = employeeEndDateStr;
+	}
 }
