@@ -342,7 +342,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status, Long orgLocationsId) throws Exception {
 
 		Collection<Projects> plist = null;
@@ -384,18 +384,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 
 					String subquery1 = "ps.orgRelationId =" + clnt;
 					String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subquery1 + " "
-							+ subQuery2 + "   and ps.orgLocationsId = :orgLocationsId ";
+							+ subQuery2 + "   and ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
 					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 					projectssList.addAll(plist);
 
 				}
 			} else if (subQuery2 != null && !"".equals(subQuery2)) {
 
-				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subQuery2 + " and  ps.orgLocationsId = :orgLocationsId ";
+				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subQuery2 + " and  ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
 				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 				projectssList.addAll(plist);
 			} else {
-				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where ps.orgLocationsId = :orgLocationsId";
+				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
 				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 				projectssList.addAll(plist);
 			}
@@ -408,7 +408,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 					String subquery1 = "and ps.orgRelationId =" + clnt;
 					String subquery3 = " (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
 					String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subquery3 + " and  ps.orgLocationsId = :orgLocationsId "
-							+ subquery1 + " " + subQuery2 + " ";
+							+ subquery1 + " " + subQuery2 + " ORDER BY ps.createdDate DESC";
 					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 					projectssList.addAll(plist);
 
@@ -417,21 +417,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				
 				String subquery3 = " and (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
 				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where " + subQuery2 + " "
-						+ subquery3 + " and ps.orgLocationsId = :orgLocationsId";
+						+ subquery3 + " and ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
 				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 				projectssList.addAll(plist);
 			}
 			else{
 				
 				String subquery3 = "(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
-				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where "+ subquery3 + " and ps.orgLocationsId = :orgLocationsId";
+				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where "+ subquery3 + " and ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
 				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 				projectssList.addAll(plist);
 			}
 		}
-
-		Collection<Projects> userCollection = new HashSet<Projects>(projectssList);
-		return userCollection;
+		return projectssList;
 
 	}
 
