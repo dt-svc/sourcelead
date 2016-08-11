@@ -36,13 +36,14 @@ public class RegistrationController {
 			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
 			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
 			if(authorities.contains(authority)){
-				model.setViewName("registration/enrolledOrgsList");
-				model.addObject("sourceleadUrl", sourceleadUrl);
+				
 				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
 				if(!isNullOrEmpty(msg)){
 					model.addObject("msg", msg);
 					SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
 				}
+				model.setViewName("registration/enrolledOrgsList");
+				model.addObject("sourceleadUrl", sourceleadUrl);
 			}else{
 				model.setViewName("registration/persmissionDenied");
 			}
