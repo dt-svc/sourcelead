@@ -54,5 +54,19 @@ public class EMailJobScheduler {
 		}
         
     }
-
+	
+	@Scheduled(cron = "*/5 * * * * *")
+	public void runNotificationJobScheduler() {
+		String notificationJobSchedulerStatus = "";
+		logger.info("******************  Notification Job Scheduler started..! **********");
+		Date date = new Date();
+		try {
+			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
+			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+       // 5 16 * * 5 Fire 4:5 on every Friday
+    }
 }
