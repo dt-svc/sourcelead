@@ -95,7 +95,7 @@ window.onload = function () {
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-		if(loginUserRole == 'ROLE_ADMIN'){
+		if(loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN'){
 			var userRole = document.getElementById("userRole").value;
 	   	}
 		var searchByName = document.getElementById("searchByName").value;

@@ -845,8 +845,13 @@ $(document).click(function(){
 		 if (hours < 10) {
 			hours = '0' + hours;
 		 }
-			 
-		total = hours +":"+ minutes;
+			
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +":"+ minutes;
+		 }else{
+			 total = "00:00"; 
+		 }
+		 
 	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
@@ -881,7 +886,12 @@ function grandTotal(){
 			hours = '0' + hours;
 		 }
 			 
-		 total = hours +":"+ minutes;
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +":"+ minutes;
+		 }else{
+			 total = "00:00"; 
+		 }
+		 
 		 $("#grandTotal").val(total);
 	     
 }

@@ -195,7 +195,7 @@ public class UserDaoImpl implements UserDao {
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '1' OR userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId ";
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId ";
 	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
       
 	    return userRoleList;
@@ -208,7 +208,7 @@ public class UserDaoImpl implements UserDao {
 		// TODO Auto-generated method stub
 		
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '1' OR userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
 	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
         return userRoleList;
         
