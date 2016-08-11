@@ -67,6 +67,7 @@ public class UploadController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
 			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
