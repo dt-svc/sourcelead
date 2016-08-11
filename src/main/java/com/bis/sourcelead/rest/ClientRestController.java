@@ -272,7 +272,7 @@ public class ClientRestController {
 				 
 				 // get team members count(assigned employees for projects)
 				 if(project.getOrgRelationId().getId() != null){
-					 Integer assignedEmpSize=projectMembersService.getEmployeeAssignedProjectsCount(project.getOrgRelationId().getId() , orgLocations.getId());
+					 Integer assignedEmpSize=projectMembersService.getEmployeeAssignedProjectsCount(project.getOrgRelationId().getId() , orgLocations.getId() ,project.getId());
 				     project.setAssignedEmpCount(assignedEmpSize);
 				 }
 				 if(project.getProjectStatus() !=null){

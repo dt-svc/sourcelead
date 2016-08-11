@@ -81,13 +81,13 @@ public class TimesheetSubmissionsRestController {
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
-	public @ResponseBody void withDrawTimesheet(@RequestParam(value="json", required=false) String json) throws Exception {
+	public @ResponseBody void withDrawTimesheet(@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 				
-		json = "{"+json+"}";
+	/*	json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
-    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();*/
     	
-		String result = "";
+		/*String result = "";
 		String resultJson = null;
 		
 		String localsubmissionId = jsonObj.getString("submissionId");
@@ -95,15 +95,14 @@ public class TimesheetSubmissionsRestController {
 	    String[] submissionIds = localsubmissionId.split(",");
     	
 		if(submissionIds != null && submissionIds.length>0){ 
-			for(String submissionId : submissionIds){
-				  	submissionId = submissionId.replace("\"", "");
+			for(String submissionId : submissionIds){*/
 				  	submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), Submission_Status.DRAFT.getValue());
 				  	/*TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 				  	timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
 				    timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
-				  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);*/
+				  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
 			}
-		}
+		}*/
 			
 	}
 		

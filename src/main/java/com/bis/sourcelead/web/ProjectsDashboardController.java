@@ -84,6 +84,7 @@ public class ProjectsDashboardController {
         }catch(Exception e){
         	e.printStackTrace();
         }*/
+        if(!projectIds.isEmpty()){
         Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
@@ -92,6 +93,7 @@ public class ProjectsDashboardController {
             }
         }
 		model.addObject(projectsList);
+        }
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "projectCreateMsg");
 		if(!isNullOrEmpty(msg)){

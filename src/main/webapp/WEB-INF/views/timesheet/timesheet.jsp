@@ -448,18 +448,17 @@ $('body').on('blur', '#timesheet_form', function() {
 });
 </script>
 <script type="text/javascript">
-function withdrawMyTimesheet(){ 
-	var frm = $('#timesheet_form').serializeFormJSON();
+function withdrawMyTimesheet(submissionId){ 
+	/* var frm = $('#timesheet_form').serializeFormJSON(); */
 	var sourceleadUrl ='${sourceleadUrl}';
 	var startdate;
 	var navigation;
 	   
-	var mydata = JSON.stringify(frm);
-	mydata = mydata.replace(/[{}]/g, "");
-	
+/* 	var mydata = JSON.stringify(frm);
+	mydata = mydata.replace(/[{}]/g, ""); */
 	$.ajax({
 	      type : "POST",
-     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
 	      success :function(result) {
 	    	  dynamicTimesheet(navigation,startdate); 
 	      }
