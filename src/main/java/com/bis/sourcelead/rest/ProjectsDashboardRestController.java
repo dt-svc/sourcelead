@@ -133,7 +133,7 @@ public class ProjectsDashboardRestController {
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 				String resultJson = "";
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    Collection<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
+			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
 			    for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){
@@ -195,8 +195,11 @@ public class ProjectsDashboardRestController {
 		    
 		    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
 		    projects.setManagersList(userList);
-		    List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
-		    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+
+            if(projects.getManager1() != null){
+            	  List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
+      		    projects.setManagersListwithoutManager1(userListwithoutmaneger1);;
+		    }
 		    
 		    
 		    String[] approvers = new String[projectApproverHierarchies.size()];
@@ -264,10 +267,12 @@ public class ProjectsDashboardRestController {
 					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 						 if(prHierarchy.getLevel() == 1){
 							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-							 Long fieldValuelong = Long.valueOf(fieldValue);
-							 User usr = userService.getUserById(fieldValuelong);
-							 pah.setApproverUserId(usr);
-							 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 if(!fieldValue.isEmpty() && fieldValue !=null){
+								 Long fieldValuelong = Long.valueOf(fieldValue);
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
 						 }
 					 }
 				 }
@@ -277,10 +282,12 @@ public class ProjectsDashboardRestController {
 					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 						 if(prHierarchy.getLevel() == 2){
 							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-							 Long fieldValuelong = Long.valueOf(fieldValue);
-							 User usr = userService.getUserById(fieldValuelong);
-							 pah.setApproverUserId(usr);
-							 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 if(!fieldValue.isEmpty() && fieldValue !=null){
+								 Long fieldValuelong = Long.valueOf(fieldValue);
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
 						 }
 					 }
 				 }

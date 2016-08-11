@@ -131,14 +131,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 
 	@Override
-	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status,Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
-    	Collection<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
+    	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
 		 for (Projects projects :projectList ){
-	    	 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(Constants.DF_YMD.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
 			    if(projects.getOrgRelationId()!=null) {
 	                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
