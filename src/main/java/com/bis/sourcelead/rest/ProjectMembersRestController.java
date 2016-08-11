@@ -135,6 +135,7 @@ public class ProjectMembersRestController {
 			projectMembers.setCreatedBy("yaswanth");
 			projectMembers.setUpdatedDate(new Date());
 			projectMembers.setUpdatedBy("Raj");
+			projectMembers.setMemberHistoryList(pmhList);
 
 		    return projectMembersService.updateProjectMember(projectMembers);
 	  }
