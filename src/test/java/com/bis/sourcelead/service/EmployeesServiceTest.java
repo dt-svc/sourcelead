@@ -1,42 +1,28 @@
 package com.bis.sourcelead.service;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.EmployeesDao;
-import com.bis.sourcelead.dao.impl.EmployeesDaoImpl;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.impl.EmployeesServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
 public class EmployeesServiceTest {
-
-	
-	@Configuration
-	static class EmployeeServiceConfigTest {
-		
-		@Bean
-		public EmployeesService employeesService() {
-			return new EmployeesServiceImpl();
-		}
-		
-
-	}
-	
-	
 	
 	@Autowired
 	EmployeesService employeesService;
@@ -44,34 +30,132 @@ public class EmployeesServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeesServiceTest.class);
 
-	@Test
+	//@Test
 	public void addEmployee() throws Exception{
 		
 		Employees employee = new Employees();
 		
 		User user2 = new User();
-		user2.setId(1L);
+		user2.setId(3L);
 		employee.setUser(user2);
+		employee.setEmployeeId("3e3ee");
+		employee.setHireDate(new Date());
+		employee.setDob(new Date());
 		employee.setCity("hyd");
 		employee.setCountry("Ind");
 		employee.setEmployeeState("active");
+		employee.setState("TG");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		employee.setOrgLocations(orgLocations);
+		employee.setInvoiceFrequency("Weekly");
+		employee.setStatus("Active");
+		employee.setCreatedDate(new Date());
+		employee.setCreatedBy("source");
+		employee.setUpdatedBy("Source");
+		employee.setUpdatedDate(new Date());
+		employee.setRate("1000000");
+		employee.setRatePer("Weekly");
+		employee.setDailyHours("8");
 		employeesService.addEmployee(employee);
 		System.out.println("Successfully Added!!!!");
 	}
 	
+	//@Test
+	public void updateEmployee() throws Exception{
+		
+		Employees employee = new Employees();
+		employee.setId(3L);
+		User user2 = new User();
+		user2.setId(3L);
+		employee.setUser(user2);
+		employee.setEmployeeId("fd5dfg");
+		employee.setHireDate(new Date());
+		employee.setDob(new Date());
+		employee.setCity("hyd");
+		employee.setCountry("Ind");
+		employee.setEmployeeState("Disabled");
+		employee.setState("TG");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		employee.setOrgLocations(orgLocations);
+		employee.setInvoiceFrequency("Weekly");
+		employee.setStatus("ACTIVE");
+		employee.setCreatedDate(new Date());
+		employee.setCreatedBy("SOURCE");
+		employee.setUpdatedBy("Source");
+		employee.setUpdatedDate(new Date());
+		employee.setRate("1000000");
+		employee.setRatePer("Weekly");
+		employee.setDailyHours("8");
+		employeesService.updateEmployee(employee);
+		System.out.println("Successfully updated!!!!");
+	}
 	
 	//@Test
 	public void getEmployee() throws Exception{
-		Employees employee =	employeesService.getEmployee("2");
-		User user = new User();
-		user.setId(1L);
-		System.out.println("get value of ind"+employee.getCountry());
+		Employees employee = employeesService.getEmployee("3");
+		System.out.println("the value is "+employee.getCountry());
 	}
 
 	//@Test
 	public void deleteEmployee() throws Exception{
-		Boolean flag =	employeesService.deleteEmployee("1");
+		Boolean flag =	employeesService.deleteEmployee("3");
+		System.out.println("Successfully deleted!!!!");
 	}
 	
+	//@Test
+	public void getEmployeeByUserId() throws Exception{
+		Employees employee = employeesService.getEmployeeByUserId(3L);
+		System.out.println("Successfully Retrieved..."+employee.getCreatedBy());
+	}
 	
+	//@Test
+	public void validateEmployeeId() throws Exception{
+		Employees employee = new Employees();
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		employee.setOrgLocations(orgLocations);
+		Boolean flag = employeesService.validateEmployeeId("fd5dfg", employee.getOrgLocations().getId());
+		System.out.println("Successfully Retrieved..."+flag);
+	}
+	
+	//@Test
+	public void getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId() throws Exception{
+		Employees employee = new Employees();
+		employee.setId(3L);
+		User user2 = new User();
+		user2.setId(3L);
+		employee.setUser(user2);
+		employee.setEmployeeId("fd5dfg");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		employee.setOrgLocations(orgLocations);
+		employee = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(employee.getEmployeeId(), employee.getUser().getId(), employee.getOrgLocations().getId());
+		System.out.println("Successfully Retrieved..."+employee.getCreatedBy());
+	}
+	
+	//@Test
+	public void getAllEmployees() throws Exception{
+		List<Employees> emplist= employeesService.getAllEmployees();
+		System.out.println("Successfully Retrieved..."+emplist.size());
+	}
+	
+	//@Test
+	public void getEmployeesExcludeTeamMembers() throws Exception{
+		List<Employees> emplist= employeesService.getEmployeesExcludeTeamMembers(1L, 2L);
+		System.out.println("Successfully Retrieved..."+emplist.size());
+	}
+	
+	//@Test
+	public void getAllEmployeesByOrgLocationId() throws Exception{
+		Collection<Employees> emplist= employeesService.getAllEmployeesByOrgLocationId(1L, 1L, 1L);
+		System.out.println("Successfully Retrieved..."+emplist.size());
+	}
+	
+	@Test
+	public void validateEmployeeEmailId() throws Exception{
+		Boolean flag =  employeesService.validateEmployeeEmailId(4L, "raj@gmail.com");
+		System.out.println("Successfully Retrieved..."+flag);
+	}
 }
