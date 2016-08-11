@@ -149,7 +149,7 @@ public class ProjectMembersServiceTest {
 	}
 	@Test
 	public void getEmployeeAssignedProjectsCount() throws Exception{
-		Integer getEmployeeAssignedCount = projectMembersService.getEmployeeAssignedProjectsCount(1l,1l);
+		Integer getEmployeeAssignedCount = projectMembersService.getEmployeeAssignedProjectsCount(1l,1l,1l);
 		logger.info("getEmployeeAssignedProjectsCount added successfully"+getEmployeeAssignedCount.intValue());
 	}
 }
