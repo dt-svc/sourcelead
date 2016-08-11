@@ -1,17 +1,23 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.EmailScenarioDao;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.exception.NoRecordsFoundException;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 /**
  * 
@@ -24,6 +30,17 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EmailScenarioDaoImpl.class);
 
 	/**
@@ -33,7 +50,7 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public EmailScenario getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(String uniqueScenarioName,String entityType,
 			String orgCode, String locationCode) throws Exception {
-		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode method");
+logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -59,7 +76,17 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 	public EmailScenario save(EmailScenario scenario) throws Exception {
 		logger.debug("In EmailScenarioDaoImpl class save method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(scenario);
+		try {
+			if(scenario != null){
+				session.save(scenario);
+				logger.debug("EmailScenario Added Successfully");
+			}
+		}catch(Exception exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"EmailScenario"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return scenario;	
 	}
 
@@ -68,7 +95,7 @@ public class EmailScenarioDaoImpl implements EmailScenarioDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) {
+	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception{
 		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueName method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from EmailScenario es where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType";

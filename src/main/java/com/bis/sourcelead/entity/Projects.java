@@ -146,10 +146,29 @@ public class Projects {
     
     
     @Transient
+    private Long manager1;
+    
+    @Transient
+    private Long manager2;
+    
+    @Transient
     Collection<ProjectApproverHierarchy>  projectApproverHierarchiesList;
     
     @Transient
     Collection<OrgRelations> clientList;
+    
+    @Transient
+    Collection<User> managersList;
+    
+    
+    @Transient
+    Collection<User> managersListwithoutManager1;
+    
+    @Transient
+    private String employeeStartDateStr;
+    
+    @Transient
+    private String employeeEndDateStr;
     
     @Transient
 	private Integer assignedEmpCount;
@@ -442,4 +461,51 @@ public class Projects {
 		this.assignedEmpCount = assignedEmpCount;
 	}
 
+	public Collection<User> getManagersList() {
+		return managersList;
+	}
+
+	public void setManagersList(Collection<User> managersList) {
+		this.managersList = managersList;
+	}
+
+	public Long getManager1() {
+		return manager1;
+	}
+
+	public void setManager1(Long manager1) {
+		this.manager1 = manager1;
+	}
+
+	public Long getManager2() {
+		return manager2;
+	}
+
+	public void setManager2(Long manager2) {
+		this.manager2 = manager2;
+	}
+
+	public Collection<User> getManagersListwithoutManager1() {
+		return managersListwithoutManager1;
+	}
+
+	public void setManagersListwithoutManager1(Collection<User> managersListwithoutManager1) {
+		this.managersListwithoutManager1 = managersListwithoutManager1;
+	}
+
+	public String getEmployeeStartDateStr() {
+		return employeeStartDateStr;
+	}
+
+	public void setEmployeeStartDateStr(String employeeStartDateStr) {
+		this.employeeStartDateStr = employeeStartDateStr;
+	}
+
+	public String getEmployeeEndDateStr() {
+		return employeeEndDateStr;
+	}
+
+	public void setEmployeeEndDateStr(String employeeEndDateStr) {
+		this.employeeEndDateStr = employeeEndDateStr;
+	}
 }

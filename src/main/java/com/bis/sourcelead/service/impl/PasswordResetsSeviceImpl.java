@@ -14,22 +14,22 @@ public class PasswordResetsSeviceImpl implements PasswordResetsSevice{
 	PasswordResetsDao passwordResetsDao;
 	
 	@Override
-	public PasswordResets savePasswordResets(PasswordResets passwordResets) {
+	public PasswordResets savePasswordResets(PasswordResets passwordResets) throws Exception {
 		return passwordResetsDao.savePasswordResets(passwordResets);
 	}
 
 	@Override
-	public PasswordResets getPasswordResetsByUserId(Long userId) {
+	public PasswordResets getPasswordResetsByUserId(Long userId) throws Exception {
 		return passwordResetsDao.getPasswordResetsByUserId(userId);
 	}
 
 	@Override
-	public PasswordResets getPasswordResetsByVerificationCode(String verificationCode) {
+	public PasswordResets getPasswordResetsByVerificationCode(String verificationCode) throws Exception {
 		return passwordResetsDao.getPasswordResetsByVerificationCode(verificationCode);
 	}
 
 	@Override
-	public PasswordResets deletePasswordResets(PasswordResets passwordResets) {
+	public PasswordResets deletePasswordResets(PasswordResets passwordResets) throws Exception {
 		return passwordResetsDao.deletePasswordResets(passwordResets);
 	}
 

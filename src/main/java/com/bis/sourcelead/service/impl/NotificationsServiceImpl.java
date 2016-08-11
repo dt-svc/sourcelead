@@ -17,7 +17,7 @@ public class NotificationsServiceImpl implements NotificationsService{
 	NotificationsDao  notificationDao;
 
 	@Override
-	public Notifications saveNotification(Notifications notification) {
+	public Notifications saveNotification(Notifications notification) throws Exception{
 		return notificationDao.saveNotification(notification);
 	}
 

@@ -89,68 +89,24 @@ public class UploadController {
  * Handles Errored file Download
  * @param fileName
  * @param response
- * @throws IOException
+ * @throws Exception 
  */
 	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
-	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
+	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws Exception {
 		
-		File file;
-		if("xlsx".equalsIgnoreCase(fileName)){
-			file = new File("FailureUsersForCheck.xlsx");
-		}else{
-			 file = new File("FailureUsersForCheck.xls");
-		}
-		
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
+		uploadFileService.downloadFile(fileName, response);
 	}
 /**
  * Handles Temaplate download
  * @param response
- * @throws IOException
- * @throws URISyntaxException
+ * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException {
-
-		String fn = "/templates/Create Users.xls";
-		URL url = getClass().getResource(fn);
-		File file = new File(url.toURI());
-
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
-	}
-	
-	/**
-	 * Handles cancel import
-	 * @return
-	 * @throws IOException
-	 */
-	
-	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
-	public ModelAndView cancelImport() throws IOException {
-		return  new ModelAndView("redirect:/timesheetexcel/excelDownload");
+	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
+		
+		uploadFileService.downloadCreateUserTemplate(response);
 		
 	}
+	
 	
 }

@@ -41,10 +41,11 @@ public class RolesDaoImpl implements RolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Roles> getRoles() throws Exception {
+	public Collection<Roles> getRoles(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from Roles")
-				.setCacheable(true).list();
+		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
+				+ "where actionRoles.orgLocations.id = :orgLocationId) ")
+				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
 	@Override

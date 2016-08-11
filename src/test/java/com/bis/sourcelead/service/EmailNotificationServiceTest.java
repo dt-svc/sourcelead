@@ -1,0 +1,48 @@
+package com.bis.sourcelead.service;
+
+import java.util.Date;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.EmailNotification;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
+public class EmailNotificationServiceTest {
+	
+	@Autowired
+	EmailNotificationService emailNotificationService;
+	
+	//@Test
+	public void save() throws Exception{
+		EmailNotification emailnotification = new EmailNotification();
+		//emailnotification.setId(2L);
+		emailnotification.setEmailTo("raj@gamail.com");
+		emailnotification.setEmailFrom("info@hangonn.com");
+		emailnotification.setSubject("This is test Message");
+		emailnotification.setBody("This is test Message");
+		emailnotification.setDeliveryStatus("Y");
+		emailnotification.setCreatedDate(new Date());
+		emailnotification.setCreatedBy("Source");
+		emailNotificationService.save(emailnotification);
+		System.out.println("Emailnotification Saved");
+	}
+	
+	@Test
+	public void getById() throws Exception{
+		
+		EmailNotification emailnotification = new EmailNotification();
+		emailnotification.setId(2L);
+		emailnotification = emailNotificationService.getById(emailnotification.getId());
+		System.out.println("Emailnotification by id is....>>"+emailnotification.getSubject());
+	}
+}

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +20,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -36,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -620,24 +627,9 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
+		employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
-//		if(!fileName.toLowerCase().endsWith("csv"))
-		/*if (!"".equalsIgnoreCase(userImport.getDateString())) {
-			SimpleDateFormat sdf = null;
-			if(fileName.toLowerCase().endsWith("xls")){
-				sdf = new SimpleDateFormat("dd/MM/yyyy");
-			}else if(fileName.toLowerCase().endsWith("xlsx")){
-				sdf =  new SimpleDateFormat("dd/MM/yyyy");
-			}else{
-				sdf =  new SimpleDateFormat("dd/MM/yyyy");
-			}
-			Date date = sdf.parse(userImport.getDateString());
-//			sdf = new SimpleDateFormat("MM/dd/yyyy");
-			userImport.setDateOfJoin(date);
-		} else {
-			userImport.setDateOfJoin(null);
-		}*/
 		
 		employee.setHireDate(userImport.getDateOfJoin());
 
@@ -1038,7 +1030,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 
 			
 			if (row.getCell(3) == null || "".equals(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
-				userImport.setReason("Invalid email");
+				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 			
@@ -1088,12 +1080,58 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			
 			}
 			}
+			/*code to check Rate validation*/
+			if (row.getCell(5) == null || "".equals(row.getCell(5).toString())) {
+			if (fileName.toLowerCase().endsWith("xlsx")) {
+			XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+			if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+			String Rate = myCell5.getStringCellValue();
+			userImport.setReason("Length must be greater then 2 and less then 8");
+			isValidated = isratelengthvalid(Rate);
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			return false;
+			}
+			} else {
+			isValidated = isratelengthvalid(row.getCell(5).toString());
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			}
+			} else {
+			{
+			HSSFCell myCell5 = (HSSFCell) row.getCell(5);
+			if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+			myCell5.setCellType(Cell.CELL_TYPE_STRING);
+			String Rate = myCell5.getStringCellValue();
+			if (Rate != null && !"".endsWith(Rate)) {
+			isValidated = isratelengthvalid(Rate);
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			}
+			} else {
+			isValidated = isratelengthvalid(row.getCell(5).toString());
+			if (isValidated) {
+			} else {
+			userImport.setReason("Invalid Rate");
+			return isValidated;
+			}
+			}
+
+			}
+			}
+			/*end of Rate Validation Code*/
 			
-			/*Cell cell = row.getCell(7);
-			Date s = cell.getDateCellValue();
-			logger.info("=========================================="+cell.getDateCellValue());
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			logger.info("======================================"+dateFormat.format(s));*/
+			
+			
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 				DataFormatter formatter = new DataFormatter();
 				 Cell cell =row.getCell(7);
@@ -1416,17 +1454,78 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		return flag;
 	}
 	
-	  private boolean isDayHourValid(String dayHours) {
-		  String regex = "\\d+";
-			boolean flag = false;
-			int hours = Integer.parseInt(dayHours);
-			if(hours <=24){
-				flag = dayHours.matches(regex);
-			}else{
-				flag=false;
+	private boolean isDayHourValid(String dayHours) {
+		String regex = "\\d+";
+		boolean flag = false;
+		int hours = 0;
+		if (dayHours.matches(regex)) {
+			hours = Integer.parseInt(dayHours);
+			if (hours <= 24) {
+				flag = true;
+			} else {
+				flag = false;
 			}
-			return flag;
-		  }
+		} else {
+			flag = false;
+		}
+		return flag;
+	}
+
+	@Override
+	public void downloadFile(String fileName, HttpServletResponse response) throws IOException {
+		File file;
+		if("xlsx".equalsIgnoreCase(fileName)){
+			file = new File("FailureUsersForCheck.xlsx");
+		}else{
+			 file = new File("FailureUsersForCheck.xls");
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	}
+
+	@Override
+	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
+		
+		String fn = "/templates/Create Users.xls";
+		URL url = getClass().getResource(fn);
+		File file = new File(url.toURI());
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	}
+	
+	private boolean isratelengthvalid(String Rate){
+		String regex = "\\d+";
+		boolean flag = false;
+		if (Rate.length() > 2 && Rate.length() <= 8) {
+			flag = Rate.matches(regex);
+		} else {
+			flag = false;
+		}
+		return flag;
+
+		}
 		
 
 }

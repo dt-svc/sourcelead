@@ -10,6 +10,8 @@ import org.springframework.cache.annotation.Cacheable;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 
 public interface ProjectsService {
 
@@ -43,7 +45,7 @@ public interface ProjectsService {
 	
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 	
-	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
+	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
@@ -51,6 +53,12 @@ public interface ProjectsService {
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
+	
+	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
+	
+	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
+	
+	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
 
 
 }

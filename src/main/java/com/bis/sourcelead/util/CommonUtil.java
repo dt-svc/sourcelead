@@ -73,7 +73,7 @@ public class CommonUtil {
 			
 			/**
 			 * Getting List Of all Projectmembers based on login user who is approver/employee to that particular project
-			 *  who did have 4 weeks prior/post submission records in DB
+			 *  who didn't have 4 weeks prior/post submission records in DB
 			 * 
 			 */
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
@@ -144,11 +144,13 @@ public class CommonUtil {
 					 * checking whether projectMemberEnddate is lesserthan next 4th week monday date then 
 					 * projectMemberEnddate is taken as enddate for the submission records
 					*/
+					System.out.println(projectMember.getProjectEndDate());
 					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
 					    endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						startCal.setLenient(false);
-						startCal.setTime(projectMember.getProjectEndDate());
-					    endMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
+					    endCal.setLenient(false);
+						endCal.setTime(projectMember.getProjectEndDate());
+					    endMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
+					    System.out.println(endMonday.getTime());
 					}
 					
 					int totalWeeks = 0; 

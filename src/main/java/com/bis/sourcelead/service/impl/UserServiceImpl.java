@@ -253,7 +253,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void sendEmail(User user, User loginUser, String password) throws Exception {
-		EmailMessage emailMessage = new EmailMessage();
+		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
@@ -378,6 +378,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId, Long orgLocationsId,Long userId) throws Exception {
 		// TODO Auto-generated method stub
 		return userDao.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roleId, orgLocationsId,userId);
+	}
+
+	@Override
+	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userID) throws Exception {
+		
+		return userDao.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(userID);
 	}
 
 }

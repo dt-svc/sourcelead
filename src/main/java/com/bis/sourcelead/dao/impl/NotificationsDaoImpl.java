@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -8,11 +9,13 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.NotificationsDao;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.Constants;
 
 @Repository
@@ -21,6 +24,17 @@ public class NotificationsDaoImpl implements NotificationsDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
 	private static final Logger logger = LoggerFactory.getLogger(NotificationsDaoImpl.class);
 	
 	/**
@@ -28,10 +42,18 @@ public class NotificationsDaoImpl implements NotificationsDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Notifications saveNotification(Notifications notification) {
+	public Notifications saveNotification(Notifications notification) throws Exception{
 		logger.debug("In NotificationsDaoImpl class save method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(notification);
+		try{
+			if(notification != null){
+				session.save(notification);
+			}
+		}catch(Exception exception){
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Notifications"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return notification;
 	}
 

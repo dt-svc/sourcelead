@@ -61,7 +61,8 @@
 			<div id="profile" class="tab-pane fade in active">
 		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
 			  
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
+			  <div class="col-xs-12 col-sm-3 col-md-3">
+			  <div class="well text-center">
 			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
 				  <div class="profile-img-container profile-image" style="position:relative;">
 				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
@@ -78,6 +79,9 @@
 				  
 				  </div>
 				  </div>
+				 </div> 
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png images are not allowed</p>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
@@ -87,13 +91,13 @@
 					<div class="form-group">
 					<label class="col-md-4">First Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphabet validate_length length1-100"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphabet validate_Space validate_length length2-100"  >
 					</div>
 					</div>
 				   <div class="form-group">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphabet validate_length length1-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphabet validate_Space validate_length length2-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -386,8 +390,6 @@ var validationSettings = {
             		
             		var sourceleadUrl ='${sourceleadUrl}';
             		
-            		$("#save_button").attr("disabled", "disabled");
-             		$( "#save_button").addClass('button').val('Processing..');
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
             		
                     $.ajax({
@@ -405,8 +407,7 @@ var validationSettings = {
                  				 document.getElementById("currentPassword").setAttribute('pass-exist','yes');
                  				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
                  				 $("input#currentPassword").removeAttr("style");
-                 				 $("#save_button" ).addClass('btn btn-primary mr').val('Save');
- 			    				 $("#save_button").removeAttr("disabled")
+                 				 $("#loading").removeAttr("style");
     			        	} 
     			        },  
                     });

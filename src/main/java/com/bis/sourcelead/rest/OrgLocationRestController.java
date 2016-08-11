@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +18,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 
 @RestController
 @RequestMapping(value = "/orgLocation")
-public class OrgLocationController {
+public class OrgLocationRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
@@ -41,10 +41,10 @@ public class OrgLocationController {
 	{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(2L);
+		org.setId(5L);
 		
 		User user = new User();
-		user.setId(2L);
+		user.setId(5L);
 		
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);

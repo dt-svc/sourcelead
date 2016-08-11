@@ -30,6 +30,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 /**
@@ -72,6 +73,10 @@ public class HomeController {
 	@Autowired
 	private DataSource dataSource;
 	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	
 	@PostConstruct
 	public void init() {
@@ -101,7 +106,7 @@ public class HomeController {
 	}
    
    
-   @RequestMapping(value = "/registration")
+   /*@RequestMapping(value = "/registration")
 	public ModelAndView registration() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("registration");
@@ -110,7 +115,7 @@ public class HomeController {
 		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 		return model;
 
-	}
+	}*/
    
    
    
@@ -124,10 +129,17 @@ public class HomeController {
    
    
    @RequestMapping(value = "/resetPassword")
-  	public ModelAndView resetPassword() {
+  	public ModelAndView resetPassword(HttpServletRequest request) {
   			ModelAndView model = new ModelAndView();
   			model.setViewName("resetPassword");
   			model.addObject("sourceleadUrl", sourceleadUrl);
+  			
+  			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPasswordMsg");
+  			if(!isNullOrEmpty(msg)){
+  				model.addObject("msg", msg);
+  				SourceLeadSessionManager.removeSessionAttribute(request, "resetPasswordMsg");
+  			}
+  			
   			return model;
   	}
     
@@ -146,7 +158,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/login",  method = { RequestMethod.GET, RequestMethod.POST })
-	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout) {
+	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -157,6 +169,12 @@ public class HomeController {
 			 if (logout != null) {
 					model.addObject("msg", "You've been logged out successfully.");
 			 }
+			 
+			 String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPasswordSucessfulMsg");
+	  			if(!isNullOrEmpty(msg)){
+	  				model.addObject("msg", msg);
+	  				SourceLeadSessionManager.removeSessionAttribute(request, "resetPasswordSucessfulMsg");
+	  			}
 			 model.setViewName("login");
 		    	 
 		 }
@@ -197,7 +215,11 @@ public class HomeController {
 		return name;
 	}
 
-	//fileUpload
+	/**
+	 * Returns File upload jsp
+	 * @param request
+	 * @return ModelAndView
+	 */
 	
 	 @RequestMapping(value = "/uploadForm")
 		public ModelAndView fileUploadForm(HttpServletRequest request) {
@@ -212,6 +234,14 @@ public class HomeController {
 			ModelAndView model = new ModelAndView();
 			model.setViewName("upload/uploadForm");
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	 
+	    @RequestMapping(value = "/errorPage",method = RequestMethod.GET)
+		public ModelAndView displayErrorPage(HttpServletRequest request) {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("errorPage");
 			return model;
 
 		}

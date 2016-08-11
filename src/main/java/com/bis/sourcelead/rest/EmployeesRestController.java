@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.rest;
 
 import java.util.Collection;
 import java.util.Date;
@@ -22,10 +22,10 @@ import com.bis.sourcelead.service.UserService;
 
 @RestController
 @RequestMapping("/EmployeesController")
-public class EmployeesController {
+public class EmployeesRestController {
 
 	
-	private static final Logger logger = LoggerFactory.getLogger(EmployeesController.class);
+	private static final Logger logger = LoggerFactory.getLogger(EmployeesRestController.class);
 	
 	@Autowired
 	public EmployeesService employeesService;

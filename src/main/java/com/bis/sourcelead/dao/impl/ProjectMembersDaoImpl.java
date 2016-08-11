@@ -1,23 +1,30 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.exception.NoRecordsFoundException;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.Constants;
@@ -27,6 +34,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectMembersDaoImpl.class);
 
@@ -38,7 +56,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception {
 		logger.debug("In ProjectMember Save method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(projectMembers);
+		try{
+			if(projectMembers != null){
+				session.save(projectMembers);
+				logger.debug("Project Member saved successfully..");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return projectMembers;
 	}
 
@@ -50,8 +78,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception {
 		logger.debug("In ProjectMember Update method");
 		Session session = this.sessionFactory.getCurrentSession();
-		session.saveOrUpdate(projectMembers);
-		logger.info("Record updated successfully..!");
+		try{
+			if(projectMembers != null){
+				session.saveOrUpdate(projectMembers);
+				logger.info("Record updated successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_MEMBERS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 		return projectMembers;
 	}
 
@@ -78,11 +115,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		  boolean isDeleted = false;
 		  if(id != null){
+			  try{
 			  ProjectMembers projectMembers= (ProjectMembers)session.load(ProjectMembers.class,id);
 			  projectMembers.setStatus("0");
 			  session.saveOrUpdate(projectMembers);
 			  logger.info("Successfully deleted !!!"); 
 			  isDeleted = true;
+			  }catch(Exception exception){
+				  StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"PROJECT_MEMBERS"));
+				 throw new SourceLeadObjectNotFoundException(message.toString());  
+			  }
 		  }
 		return isDeleted;
 	}
@@ -163,7 +205,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setCacheable(true) 
 			    .list();
 		return allProjectsList;
@@ -205,7 +247,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setString("status",status).setCacheable(true) 
 			    .list();
 		return allProjectsList;
@@ -224,14 +266,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) {
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from ProjectMembers pm where pm.projects.id IN (select p.id from Projects p  "
-				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId)" ;
+				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId) and pm.projects.id = :projectId" ;
 		List<ProjectMembers> projectMembersList =session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId)
-				.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+				.setLong("orgLocationId", orgLocationId).setLong("projectId", projectId).setCacheable(true).list(); 
 		      
 	    return projectMembersList.size();
 }

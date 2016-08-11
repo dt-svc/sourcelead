@@ -33,13 +33,7 @@ margin:10px 220px 0;
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
     <div id="loading"></div> 
-      <section class="action-btns clearfix">
-        <ul class="pull-right list-unstyled list-inline">
-          <li><a class="faclose" href="#"><i class="fa fa-close" aria-hidden="true"></i></a></li>
-          <li><a class="collpase-div" href="#"><i class="fa fa-angle-down" aria-hidden="true"></i></a></li>
-        </ul>
-      </section>
-      <div class="clearfix form-area form-horizontal toggle-div remove-div">
+      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
         <div class="row minHeight">
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->

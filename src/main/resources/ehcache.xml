@@ -123,6 +123,11 @@
         <persistence strategy="localTempSwap" />
     </cache>
     
+    <cache name="projectMembersHistory"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
     <cache name="projects"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
@@ -178,6 +183,11 @@
         maxEntriesLocalHeap="5000" eternal="true">
         <persistence strategy="localTempSwap" />
     </cache> 
+    
+    <cache name="modules"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
     
     
     

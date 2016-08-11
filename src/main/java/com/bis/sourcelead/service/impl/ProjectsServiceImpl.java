@@ -17,6 +17,8 @@ import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
 
 @Service
@@ -129,14 +131,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 
 	@Override
-	public Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
+	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status,Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
-    	Collection<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
+    	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
 		 for (Projects projects :projectList ){
-	    	 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(Constants.DF_YMD.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
 			    if(projects.getOrgRelationId()!=null) {
 	                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
@@ -175,6 +179,22 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Integer getUserAssignedProjectsCount(Long userId, Long orgLocationId) {
 		// TODO Auto-generated method stub
 		return projectsDao.getUserAssignedProjectsCount(userId, orgLocationId);
+	}
+
+	@Override
+	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+		
+		return projectsDao.getAllUesrTimeSheetSubmissionStatus();
+	}
+
+	@Override
+	public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
+		projectsDao.userEmailNotificationForTimeShhetSubmission(user);
+	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getApproveUserForTimeSheets(Long userId) throws Exception {
+		return projectsDao.getApproveUserForTimeSheets(userId);
 	}
 	
 	
