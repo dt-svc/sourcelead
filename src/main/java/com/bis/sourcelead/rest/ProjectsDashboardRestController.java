@@ -143,9 +143,8 @@ public class ProjectsDashboardRestController {
 				 resultJson = toJSON(projectsList);
 				 return resultJson;
 			}
-		/**
 
-		/**
+
 
 
 	

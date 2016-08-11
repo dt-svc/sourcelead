@@ -179,12 +179,12 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<User> getUsersByUserRoles() throws Exception {
+	public Collection<User> getUsersByUserRoles(Long orgLocations) throws Exception {
 		// TODO Auto-generated method stub
 		
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles = '1') ";
-	    List<User> userRoleList = session.createQuery(query.toString()).setCacheable(true).list();
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations =:orgLocations) ";
+	    List<User> userRoleList = session.createQuery(query.toString()).setLong("orgLocations", orgLocations).setCacheable(true).list();
         return userRoleList;
         
 	}

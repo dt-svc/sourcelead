@@ -606,7 +606,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
-  function pojectDetails(projectId){  
+  function pojectDetails(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
    	type: "POST",

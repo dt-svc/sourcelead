@@ -182,6 +182,11 @@
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					 <c:if test="${empty user_List}">
+					<p style="font-size: 11px; color: red;" class="text-muted small"><i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will have access to Edit/Approve/Reject TimeSheet</p>
+					</c:if>
+						
+					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
 								class="text-danger">*</span></label>
@@ -211,6 +216,7 @@
 								</select>
 							</div>
 						</div>
+					</c:if>
 						<div class="form-group">
 							<label class="col-md-3">Client</label>
 							<div class="col-md-9">
@@ -794,127 +800,138 @@
 <!-- this script is for Get the TeamMembers functionality Start -->
 <script type="text/javascript">
 	function getTeamMembers() {
-		
-		var level1Manager = document.getElementById("level1Manager").value;
-		var level2Manager = document.getElementById("level2Manager").value;
-		var startDate     =     document.getElementById("StartDate").value;
-
-
-		if(level1Manager != null && startDate != null && level1Manager != '' && startDate != ''){
-			    $("#assignTeamModal").attr('data-target','#assignTeam');
-
+         
+		var level1Manager = $("#level1Manager").val(); 
+		var level2Manager = $("#level2Manager").val();
+		var startDate     =    $("#StartDate").val();
 		
 		var sourceleadUrl = '${sourceleadUrl}';
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager,
-					success : function(data) {
-						var json = JSON.parse(data);
-						var output = "";
-
-						output = output + ' <table cols="0" class="table table-bordered table-striped  clearfix">';
-						output = output + ' <tbody>';
-						output = output + ' <tr>';
-						output = output + ' <th>&nbsp;&nbsp;</th>';
-						output = output + ' <th>Name</th>';
-						output = output + ' <th>Email</th>';
-						output = output + ' <th>Role</th>';
-						output = output + ' <th>Start Date</th>';
-						output = output + ' <th>End Date</th>';
-						output = output + ' </tr>';
-						for (var i = 0; i < json.length; i++) {
-							var projectStartDate = $('#StartDate').val();
-							// var projectEndDate = $('#EndDate').val();
-							var opt = json[i];
-							var role = '';
-							if (opt.user.userType != null
-									&& opt.user.userType != ''
-									&& opt.user.userType != 'undefined') {
-								role = opt.user.userType;
-							} else {
-								role = 'Employee';
-							}
-
-							var count = 1;
-							$(".myCheckbox").each(
-											function() {
-												var localId = this.id;
-												if ($(this).is(':checked')) {
-													var startDate = $("#startDate"+ localId).val();
-													var endDate = $("#endDate"+ localId).val();
-													result = result+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
-													result = result+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
-													result = result+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
-													count++;
-												}
-											});
-
-							if (opt.user.userType != 'Admin') {
-
-								output = output + "<tr>";
-								output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-								output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";
-								output = output + "<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
-								output = output + "<td><span class='tbldata-dotdot-vsm' title='"+role+"'>" + role + "</span></td>";
-								output = output+ "<td><span class='' title='"+projectStartDate+"'><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-
-								output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
-								output = output + "</div></span></td>";
-								output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-								output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
-								output = output + "</div></td>";
-								output = output + "</tr>";
-							}
-						}
-						output = output + ' </tbody>';
-						output = output + ' </table>';
-
-						$("#employeesList").empty();
-						$("#employeesList").append(output);
-						
-					  //StartDate And EndDate Pickers
-				       if(json.length > 0){
-					    	for (var i = 0; i < json.length; i++) {
-								var opt = json[i];
-								var projectStartDate = $("#StartDate").val();
-								var projectEndDate = $("#EndDate").val();
-								
-								$('#startDate'+opt.id).datepicker({
-									dateFormat : 'yy-mm-dd',
-									minDate:projectStartDate,
-									maxDate:projectEndDate,
-									onSelect : function(selected) {
-										var dt = new Date(selected);
-										var id = $(this).attr('id');
-										var actualId = $(this).attr('id').split('startDate')[1];
-										dt.setDate(dt.getDate() + 1);
-										$("#endDate"+actualId).datepicker("option", "minDate", dt);
-										
-									}
-								});
+		if(startDate != null  && startDate != ''){
+			
+			if(level2Manager != null){
+				level2Manager = level2Manager;
+			}else{
+				level2Manager = "";
+			}
+			if(level1Manager != null){
+				level1Manager = level1Manager;
+			}else{
+				level1Manager = "";
+			}
+			
+			
+			  $("#assignTeamModal").attr('data-target','#assignTeam');
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager,
+						success : function(data) {
+							var json = JSON.parse(data);
+							var output = "";
 	
-								$('#endDate'+opt.id).datepicker({
-									dateFormat : 'yy-mm-dd',
-									maxDate:projectEndDate,
-									minDate:projectStartDate,
-									onSelect : function(selected) {
-										var dt = new Date(selected);
-										var id = $(this).attr('id');
-										var actualId = $(this).attr('id').split('endDate')[1];
-										dt.setDate(dt.getDate() - 1);
-										$("#startDate"+actualId).datepicker("option", "maxDate", dt);
-									}
-								});
+							output = output + ' <table cols="0" class="table table-bordered table-striped  clearfix">';
+							output = output + ' <tbody>';
+							output = output + ' <tr>';
+							output = output + ' <th>&nbsp;&nbsp;</th>';
+							output = output + ' <th>Name</th>';
+							output = output + ' <th>Email</th>';
+							output = output + ' <th>Role</th>';
+							output = output + ' <th>Start Date</th>';
+							output = output + ' <th>End Date</th>';
+							output = output + ' </tr>';
+							for (var i = 0; i < json.length; i++) {
+								var projectStartDate = $('#StartDate').val();
+								// var projectEndDate = $('#EndDate').val();
+								var opt = json[i];
+								var role = '';
+								if (opt.user.userType != null
+										&& opt.user.userType != ''
+										&& opt.user.userType != 'undefined') {
+									role = opt.user.userType;
+								} else {
+									role = 'Employee';
+								}
+	
+								var count = 1;
+								$(".myCheckbox").each(
+												function() {
+													var localId = this.id;
+													if ($(this).is(':checked')) {
+														var startDate = $("#startDate"+ localId).val();
+														var endDate = $("#endDate"+ localId).val();
+														result = result+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+														result = result+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+														result = result+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+														count++;
+													}
+												});
+	
+								if (opt.user.userType != 'Admin') {
+	
+									output = output + "<tr>";
+									output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+									output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";
+									output = output + "<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
+									output = output + "<td><span class='tbldata-dotdot-vsm' title='"+role+"'>" + role + "</span></td>";
+									output = output+ "<td><span class='' title='"+projectStartDate+"'><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	
+									output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
+									output = output + "</div></span></td>";
+									output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+									output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+									output = output + "</div></td>";
+									output = output + "</tr>";
+								}
 							}
-				      }
-						
-						
-					},
-					error : function(e) {
-					}
-				});
+							output = output + ' </tbody>';
+							output = output + ' </table>';
+	
+							$("#employeesList").empty();
+							$("#employeesList").append(output);
+							
+						  //StartDate And EndDate Pickers
+					       if(json.length > 0){
+						    	for (var i = 0; i < json.length; i++) {
+									var opt = json[i];
+									var projectStartDate = $("#StartDate").val();
+									var projectEndDate = $("#EndDate").val();
+									
+									$('#startDate'+opt.id).datepicker({
+										dateFormat : 'yy-mm-dd',
+										minDate:projectStartDate,
+										maxDate:projectEndDate,
+										onSelect : function(selected) {
+											var dt = new Date(selected);
+											var id = $(this).attr('id');
+											var actualId = $(this).attr('id').split('startDate')[1];
+											dt.setDate(dt.getDate() + 1);
+											$("#endDate"+actualId).datepicker("option", "minDate", dt);
+											
+										}
+									});
+		
+									$('#endDate'+opt.id).datepicker({
+										dateFormat : 'yy-mm-dd',
+										maxDate:projectEndDate,
+										minDate:projectStartDate,
+										onSelect : function(selected) {
+											var dt = new Date(selected);
+											var id = $(this).attr('id');
+											var actualId = $(this).attr('id').split('endDate')[1];
+											dt.setDate(dt.getDate() - 1);
+											$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+										}
+									});
+								}
+					      }
+							
+							
+						},
+						error : function(e) {
+						}
+					});
 		}else{
+			
 			$("#assignTeamModal").removeAttr('data-target');
 			
 		}

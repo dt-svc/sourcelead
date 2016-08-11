@@ -222,7 +222,7 @@ public class ProjectsRestController {
 			 }
 		 
 		//admin as approver hierarchy ..
-		Collection<User> uLsit = userService.getUsersByUserRoles();
+		Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
 		if(userLsit != null && !userLsit.isEmpty()){
 		for(User userRole : userLsit){
