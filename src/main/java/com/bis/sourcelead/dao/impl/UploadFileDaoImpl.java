@@ -1087,7 +1087,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 			String Rate = myCell5.getStringCellValue();
 			userImport.setReason("Length must be greater then 2 and less then 8");
-			isValidated = isratelengthvalid(Rate);
+			isValidated = isRateLengthValid(Rate);
 			if (isValidated) {
 			} else {
 			userImport.setReason("Invalid Rate");
@@ -1096,7 +1096,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			return false;
 			}
 			} else {
-			isValidated = isratelengthvalid(row.getCell(5).toString());
+			isValidated = isRateLengthValid(row.getCell(5).toString());
 			if (isValidated) {
 			} else {
 			userImport.setReason("Invalid Rate");
@@ -1110,7 +1110,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			myCell5.setCellType(Cell.CELL_TYPE_STRING);
 			String Rate = myCell5.getStringCellValue();
 			if (Rate != null && !"".endsWith(Rate)) {
-			isValidated = isratelengthvalid(Rate);
+			isValidated = isRateLengthValid(Rate);
 			if (isValidated) {
 			} else {
 			userImport.setReason("Invalid Rate");
@@ -1118,7 +1118,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 			}
 			}
 			} else {
-			isValidated = isratelengthvalid(row.getCell(5).toString());
+			isValidated = isRateLengthValid(row.getCell(5).toString());
 			if (isValidated) {
 			} else {
 			userImport.setReason("Invalid Rate");
@@ -1515,7 +1515,7 @@ public class UploadFileDaoImpl implements UploadFileDao {
 		response.getOutputStream().flush();
 	}
 	
-	private boolean isratelengthvalid(String Rate){
+	private boolean isRateLengthValid(String Rate){
 		String regex = "\\d+";
 		boolean flag = false;
 		if (Rate.length() > 2 && Rate.length() <= 8) {
