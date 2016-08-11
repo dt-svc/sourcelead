@@ -113,9 +113,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) {
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId , Long projectId) {
 		// TODO Auto-generated method stub
-		return projectMembersDao.getEmployeeAssignedProjectsCount(orgRelationId, orgLocationId);
+		return projectMembersDao.getEmployeeAssignedProjectsCount(orgRelationId, orgLocationId ,projectId);
 	}
 	
 	

@@ -266,14 +266,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) {
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from ProjectMembers pm where pm.projects.id IN (select p.id from Projects p  "
-				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId)" ;
+				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId) and pm.projects.id = :projectId" ;
 		List<ProjectMembers> projectMembersList =session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId)
-				.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+				.setLong("orgLocationId", orgLocationId).setLong("projectId", projectId).setCacheable(true).list(); 
 		      
 	    return projectMembersList.size();
 }
