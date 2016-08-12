@@ -291,7 +291,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			
 			
-			
 			HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(ts.getProjectMembers().getId(), currentStartDate, currentEndDate);
 			//Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
 			//Date assignEndDate = ts.getProjectMembers().getProjectEndDate();

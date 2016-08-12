@@ -525,6 +525,8 @@ public class UserRestController {
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
 					@RequestParam(value = "reason", required = false) String reason) {
 				Integer updatedCount = projectMembersService.updateProjectMemberDeletedReason(projectMemberId, reason);
+				commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
+				
 				logger.info("updated records" + updatedCount);
 				return "success";
 			}
@@ -561,10 +563,9 @@ public class UserRestController {
 						
 						Date terminationDate = sdf.parse(endDate);
 						Date currentDate = new  Date();
-						if(terminationDate.after(currentDate)){
+						if(currentDate.after(terminationDate)){
 							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
-						}
-						
+						}						
 					}
 					return "updated";
 		       }
