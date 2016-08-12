@@ -202,9 +202,10 @@ public class ProjectsDashboardRestController {
 		    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
 		    projects.setManagersList(userList);
 		    if(projects.getManager1() != null){
-		    	  List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
-				    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+		    	List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
+			    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
 		    }
+		    
 		    
 		    String[] approvers = new String[projectApproverHierarchies.size()];
 		    int i = 0;
