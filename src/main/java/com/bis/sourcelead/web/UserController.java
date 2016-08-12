@@ -100,6 +100,11 @@ public class UserController {
 		return model;
 
 	}
+	/**
+	 * checks string is empty or null
+	 * @param str
+	 * @return
+	 */
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));

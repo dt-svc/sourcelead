@@ -45,7 +45,7 @@ public class ProjectsController {
 	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
-	 public UserService userService;
+	 private UserService userService;
 	
 	 
 	 /**
@@ -89,7 +89,11 @@ public class ProjectsController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
-	 
+/**	 
+ * checks if string is null or empty
+ * @param str
+ * @return boolean
+ */
    protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
