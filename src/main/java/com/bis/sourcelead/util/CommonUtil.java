@@ -222,17 +222,18 @@ public class CommonUtil {
 		}
 	}
 	
-	/**
+	
+	 /**
 	 * this method converts list to Json String
 	 * @param obj
 	 * @return
 	 */
-	public String toJSON(Object obj){
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
-    }
+		public String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
 }
