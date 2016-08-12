@@ -29,12 +29,12 @@
     
     var uploadedImage = document.getElementById('uploadedImage').value;
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
-    
+    document.getElementById("errorImage").style.display="none";
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png' ||
     		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'svg' || 
     		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'gif'){
-    	
+    	output.src = URL.createObjectURL(event.target.files[0]);
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
  		var msg = "."+extensionName+" extension not allowed";
  		alertMessage(msg);
@@ -156,6 +156,7 @@ function cancel(){
 				  </div>
 				  </div>
 				  </div>
+				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
@@ -267,8 +268,6 @@ var validationSettings = {
 	          		var form = $('#orgSettings_form')[0];
 	           		var formData = new FormData(form);
 	           		
-	           		$("#save_button").attr("disabled", "disabled");
-             		$( "#save_button").addClass('button').val('Processing..');
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	          		
 	                  $.ajax({
@@ -284,7 +283,10 @@ var validationSettings = {
 	                      	success: function(result) {
 	  			        	 if((result == 'home')){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
-	  			        	} 
+	  			        	}else if(result == 'Invalid Image'){
+    			        		$("#loading").removeAttr("style");
+    			        		document.getElementById("errorImage").style.display=""; 
+    			        	}  
 	  			        },  
 	                  });
                 

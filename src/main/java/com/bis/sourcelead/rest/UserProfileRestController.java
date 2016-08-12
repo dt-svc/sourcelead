@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -53,21 +55,36 @@ public class UserProfileRestController {
 	   @RequestMapping(value = "/saveUserProfile" , method = RequestMethod.POST)
 	   public String saveUserProfile(@RequestParam(value="json", required=false) String json ,MultipartHttpServletRequest request) throws Exception {
 			
-	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	    json = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json);
-		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
-		   try {
-			user = userService.saveUserProfile(userProfile, request, user);
-			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-			SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		   return "home";
+		   
+	   Iterator<String> itrator = request.getFileNames();
+       MultipartFile multiFile = request.getFile(itrator.next());
+       String fileExtension = null;
+       if(multiFile != null && !isNullOrEmpty(multiFile.getOriginalFilename())){
+    	   String fileName = multiFile.getOriginalFilename();
+    	   fileExtension = fileName.substring(fileName.length() - 3);
+       }
+	  
+		
+	   if(!isNullOrEmpty(fileExtension) && ("png".equalsIgnoreCase(fileExtension) || "svg".equalsIgnoreCase(fileExtension) || "gif".equalsIgnoreCase(fileExtension))){
+		    return "Invalid Image";
+	   }else{
+		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    json = "{"+json+"}";
+			JSONObject jsonObj = new JSONObject(json);
+			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
+			   try {
+				user = userService.saveUserProfile(userProfile, multiFile, user);
+				
+				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+				SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			   return "home";
 	   }
 	   
+	   }
 	   
 	   
 	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
@@ -163,6 +180,10 @@ public class UserProfileRestController {
          }
          return image;
      }
+     
+     protected boolean isNullOrEmpty(String str) {
+ 		return (str == null || "".equals(str.trim()));
+ 	}
     
 
 }
