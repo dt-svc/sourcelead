@@ -51,7 +51,12 @@ public class Constants {
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
 	
+
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
+
+	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
+	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+
 }

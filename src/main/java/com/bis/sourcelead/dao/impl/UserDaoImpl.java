@@ -205,7 +205,6 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";

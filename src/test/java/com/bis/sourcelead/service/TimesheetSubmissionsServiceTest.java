@@ -1,6 +1,11 @@
 package com.bis.sourcelead.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +20,10 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
-import com.bis.sourcelead.dao.impl.TimesheetSubmissionsDaoImpl;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,60 +45,267 @@ public class TimesheetSubmissionsServiceTest {
 	TimesheetSubmissionsService timesheetSubmissionsService;
 	
 
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsServiceTest.class);
 
-	@Test
+	//@Test
 	public void addTimesheetSubmissions() throws Exception{
 		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		timesheetSubmissions.setId((long) 1);
-		timesheetSubmissions.setStatus("agredd");
-		timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
-		System.out.println("Successfully Added!!!!");
+		ProjectMembers projectMemberId = new ProjectMembers();
+		User user = new User();
+		//timesheetSubmissions.setId((long) 1);
+		timesheetSubmissions.setStatus("APPROVED");
+		timesheetSubmissions.setStartDate(new Date());
+		timesheetSubmissions.setDocFile(new byte[4096]);
+		timesheetSubmissions.setEndDate(new Date());
+		timesheetSubmissions.setTotalHours("20");
+		projectMemberId.setId(2l);
+		timesheetSubmissions.setProjectMembers(projectMemberId);
+		timesheetSubmissions.setRejectedReason("not logedin");
+		user.setId(1l);
+		timesheetSubmissions.setUserId("1");
+		timesheetSubmissions.setApproverUserId(user);
+		timesheetSubmissions=timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
+		logger.info(" addTimesheetSubmissions successfully updated "+timesheetSubmissions);
 	}
 	
 	 
 	
-	@Test
+	//@Test
 	public void updateTimesheetSubmissions() throws Exception{
 		
 		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		timesheetSubmissions.setId((long) 1);
-		timesheetSubmissions.setStatus("updated");
-		timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-		System.out.println("Successfully Added!!!!");
+		ProjectMembers projectMemberId = new ProjectMembers();
+		User user = new User();
+		timesheetSubmissions.setId((long) 11);
+		timesheetSubmissions.setStatus("APPROVED");
+		timesheetSubmissions.setStartDate(new Date());
+		timesheetSubmissions.setDocFile(new byte[4096]);
+		timesheetSubmissions.setEndDate(new Date());
+		timesheetSubmissions.setTotalHours("20");
+		projectMemberId.setId(2l);
+		timesheetSubmissions.setProjectMembers(projectMemberId);
+		timesheetSubmissions.setRejectedReason("Registered");
+		user.setId(1l);
+		timesheetSubmissions.setUserId("1");
+		timesheetSubmissions.setApproverUserId(user);
+
+		timesheetSubmissions = timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+		logger.info(" updateTimesheetSubmissions successfully updated "+timesheetSubmissions.getRejectedReason());
 	}
 	
-	@Test
+	//@Test
 	public void getTimesheetSubmissions() throws Exception{
 		
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		
 		String id = "1";
-		TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
-		System.out.println("Successfully retrived!!!!"+timesheetSubmissions.getStatus());
+				
+		/*TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
+		System.out.println("Successfully retrived!!!!"+timesheetSubmissions.getStatus());*/
+		timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
+		logger.info(" getTimesheetSubmissions successfully updated "+timesheetSubmissions);
 	}
 	 
 	
-	/*@Test
+	//@Test
 	public void getAllTimesheetSubmissions() throws Exception{
 		
-		Collection<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getAllTimesheetSubmissions();
-		for(TimesheetSubmissions  ts : timesheetSubmissions ){
-			System.out.println("Successfully retrived!!!!"+ts.getStatus());
+		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		timesheetSubmissions.setId(1l);
+		timesheetSubmissions.setFullName("AJITH");
+		User approverUserId = new User();
+		approverUserId.setId(1l);
+		timesheetSubmissions.setApproverUserId(approverUserId);
+		ProjectMembers projectMembers =  new ProjectMembers();
+		projectMembers.setId(1l);
+		timesheetSubmissions.setProjectMembers(projectMembers);
+		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		logger.info(" saveAllTimesheetSubmissions successfully updated "+timesheetSubmissionsList.size());
+		
 		}
 		
-	}*/
+	
 	
 
-	@Test
+	//@Test
 	public void deleteTimesheetSubmissions() throws Exception{
 		String id = "1";  
 		timesheetSubmissionsService.deleteTimesheetSubmissions(id);
 	}
 	
+	//@Test
+	public void getAllEmployeeTimesheetSubmissions() throws Exception{
+		
+		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+		
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		Employees employees = new Employees();
+		timesheetSubmissions.setEmployeeId("1");
+		employees.setEmployeeId("1");
+		Date startDate = new Date();
+		Date endDate = new Date();  
+		Long  userId = 2l;
+		
+		timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(startDate,endDate,userId);
+		logger.info(" getAllEmployeeTimesheetSubmissions successfully updated "+timesheetSubmissionsList);
+		
+	}
+	
+	//@Test
+	public void getAllApprovalEmployeeTimesheetSubmissions() throws Exception{
+		
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		Date startDate = new Date();
+		Date endDate = new Date();
+		timesheetSubmissions.setStartDate(startDate);
+		timesheetSubmissions.setEndDate(endDate);
+		Long  userId = 2l;
+		timesheetSubmissions.setId(userId);
+		User user = new User();
+		user.setId(1l);
+		timesheetSubmissions.setApproverUserId(user);
+		ProjectMembers projectMembers = new ProjectMembers();
+		projectMembers.setId(1l);
+		timesheetSubmissions.setProjectMembers(projectMembers);
+		TimesheetSubmissions  timesheetSubmission = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissions(startDate,endDate,userId);
+		logger.info(" getAllApprovalEmployeeTimesheetSubmissions successfully updated "+timesheetSubmission);
+	}
 	
 	
+	//@Test
+	public void getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId() throws Exception{
+		
+		
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		ProjectMembers projectMembers = new ProjectMembers();
+		projectMembers.setId(1l);
+		Date startDate = new Date();
+		Date endDate = new Date();
+		Long  userId = 2l;
+		Long  memberId = (long) 1;
+		Long employeeId = (long) 2;
+		timesheetSubmissions.setProjectMembers(projectMembers);
+		
+		timesheetSubmissions = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(startDate,endDate,userId,memberId,employeeId);
+		logger.info(" getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId"+timesheetSubmissions);
+	}
 	
+	//@Test
+	public void getMinAndMaxTimesheetSubmissionDatesForEmployee() throws Exception{
+		
+		HashMap<String,Date> minAndMaxTimesheetSubmissionDatesForEmployee = new LinkedHashMap<>();
+		Long userId = (long) 4;
+		
+		minAndMaxTimesheetSubmissionDatesForEmployee = timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId);
+		logger.info(" getMinAndMaxTimesheetSubmissionDatesForEmployee  " +minAndMaxTimesheetSubmissionDatesForEmployee);
+	}
 	
+	@Test
+	public void getApprovalTimesheetSubmissions() throws Exception{
+		
 	
+		Long userId = 3l;
+		
+		Collection<TimesheetSubmissions> timesheetSubmissionslist = timesheetSubmissionsService.getApprovalTimesheetSubmissions(userId);
+		logger.info(" getApprovalTimesheetSubmissions"+timesheetSubmissionslist);
+		
+	}
+	
+	//@Test
+	public void getTimesheetSubmissionsByAproverId() throws Exception{
+		
+		Long projectMemberId = (long) 4;
+		Long userId = 3l;
+		Date startDate = new Date();
+		
+		Collection<TimesheetSubmissions> timesheetSubmissionslist=timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId,userId,startDate);
+		logger.info(" getTimesheetSubmissionsByAproverId "+timesheetSubmissionslist);
+	}
+	
+	//@Test
+	public void saveAllTimesheetSubmissions() throws Exception{
+		
+		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		timesheetSubmissions.setId(1l);
+		timesheetSubmissions.setFullName("AJITH");
+		User approverUserId = new User();
+		approverUserId.setId(1l);
+		timesheetSubmissions.setApproverUserId(approverUserId);
+		ProjectMembers projectMembers =  new ProjectMembers();
+		projectMembers.setId(1l);
+		timesheetSubmissions.setProjectMembers(projectMembers);
+		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		logger.info(" saveAllTimesheetSubmissions successfully updated "+timesheetSubmissionsList.size());
+	}
+	//@Test
+	public void getNextMondayByProjectMemberId() throws Exception{
+		 Date Date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
+		 logger.info(" getNextMondayByProjectMemberId successfully updated "+ Date);
+	}
+	//@Test
+	public void	getTimeSheetSubmissionsCountBasedOnStatus() throws Exception{
+		Integer getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(3l,"APPROVED");
+		 logger.info(" getTimeSheetSubmissionsCountBasedOnStatus successfully updated "+ getTimeSheetSubmissionsCount);
+	}
+	//@Test
+	public void getTotalApprovedOrRejectedHoursByuserId() throws Exception{
+		Float getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(4l, "Approved");
+	 logger.info(" getTotalApprovedOrRejectedHoursByuserId "+getTimeSheetSubmissionsCount);
+	}
+	
+	//@Test
+	public void getTimeSheetSubmissionsListByStatus() throws Exception{
+		User user = new User();
+		user.setId(3l);
+		Collection<TimesheetSubmissions> timesheetSubmissionslist = timesheetSubmissionsService.getTimeSheetSubmissionsListByStatus(user.getId(),"NEW");
+		logger.info(" getTimeSheetSubmissionsListByStatus"+timesheetSubmissionslist.size());
+	}
+	
+	//@Test
+	public void getTimeSheetSubmissionsCountByUserId() throws Exception{
+		TimesheetSubmissions timesheetSubmissioncount = new TimesheetSubmissions();
+		
+		 timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(3l);
+		 logger.info(" getTimeSheetSubmissionsCountByUserId "+timesheetSubmissioncount);
+	}
+	
+	//@Test
+	public void getTotalDraftAndSubmittedHoursByuserId() throws Exception{
+		Float getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(3l, "Approved");
+		 logger.info(" getTotalDraftAndSubmittedHoursByuserId "+getTimeSheetSubmissionsCount);
+	}
+	
+	@Test
+	public void getTimeSheetSubmissionsHoursCountByUserId() throws Exception{
+		
+		 timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(2l);
+		logger.info(" getTotalDraftAndSubmittedHoursByuserId ");
+		
+	}
+	
+	//@Test
+	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
+		User user = new User();
+		user.setId(1l);
+		ProjectMembers projectMembers = new ProjectMembers();
+		timesheetSubmissions.setProjectMembers(projectMembers );
+		Collection<TimesheetSubmissions> timesheetSubmission = timesheetSubmissionsService.getProjectsBasedOnUserIdAndStatusAndClientForFilters(2l,"1","1");
+		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timesheetSubmission);
+	}
+	
+	//@Test
+	public void getUsersTimeSheetSubmissionsCountBasedOnStatus() throws Exception{
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
+		User user = new User();
+		user.setId(1l);
+		timesheetSubmissions.setUserId("1");
+		Integer getTimeSheetSubmissionsCount = timesheetSubmissionsService. getUsersTimeSheetSubmissionsCountBasedOnStatus(1l,"Active",2l);
+		
+		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+getTimeSheetSubmissionsCount);
+	}
 }

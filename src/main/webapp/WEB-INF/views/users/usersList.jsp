@@ -30,7 +30,7 @@ window.onload = function () {
    <div id="loading"></div>
     <section class="content-header clearfix">
          <c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector">
+	        <div class="success_pop" id="selector"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -95,7 +95,7 @@ window.onload = function () {
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-		if(loginUserRole == 'ROLE_ADMIN'){
+		if(loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN'){
 			var userRole = document.getElementById("userRole").value;
 	   	}
 		var searchByName = document.getElementById("searchByName").value;

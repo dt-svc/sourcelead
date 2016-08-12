@@ -90,7 +90,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 		
-	if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_ADMIN")){
+	if(!isNullOrEmpty(loginUserRole) && (loginUserRole.equalsIgnoreCase("ROLE_ADMIN") || loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN"))){
 		try {
 			
 			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
@@ -120,7 +120,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		}
 	 }
 	
-	else if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+	/*else if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
 		List<Long> projectIdsList  = null;
 		try {
 			 projectIdsList = projectsService.getApprovarAssignedProjects(user.getId(), orgLocations.getId());
@@ -134,7 +134,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			e.printStackTrace();
 		}
 		
-	}
+	}*/
 		 resultJson = toJSON(userRolesList);
 		 return resultJson;
 

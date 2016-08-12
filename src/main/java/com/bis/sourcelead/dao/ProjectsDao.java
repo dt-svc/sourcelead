@@ -56,10 +56,8 @@ public interface ProjectsDao {
 	
 	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
 	
-	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
-	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
 	
-
+	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 
 }

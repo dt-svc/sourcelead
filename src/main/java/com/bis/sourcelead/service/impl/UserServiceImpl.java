@@ -371,19 +371,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Collection<User> getUsersByUserRoles(Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRoles(orgLocationsId);
+
 	}
 	
 	@Override
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(userId,orgLocationsId);
 	}
 	
 	@Override
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationId(orgLocationsId);
 	}
 	
@@ -393,7 +391,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId, Long orgLocationsId,Long userId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roleId, orgLocationsId,userId);
 	}
 
