@@ -150,7 +150,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
 		Session session =  this.sessionFactory.getCurrentSession();
-		Query query = session.createQuery("update ProjectMembersHistory pmh set pmh.projectTerminationDate =:endDate where pm.id = :projectMemberId");
+		Query query = session.createQuery("update ProjectMembersHistory pmh set pmh.projectTerminationDate =:endDate where pmh.projectMemberId = :projectMemberId");
 		query.setLong("projectMemberId", projectMemberId);
 		query.setDate("endDate", endDate);
 		int result = query.executeUpdate();

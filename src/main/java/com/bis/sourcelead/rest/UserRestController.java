@@ -558,6 +558,13 @@ public class UserRestController {
 						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
+						
+						Date terminationDate = sdf.parse(endDate);
+						Date currentDate = new  Date();
+						if(terminationDate.after(currentDate)){
+							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
+						}
+						
 					}
 					return "updated";
 		       }
