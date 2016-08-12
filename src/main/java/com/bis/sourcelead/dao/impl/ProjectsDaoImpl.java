@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
@@ -147,6 +148,23 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		return projectsList;
 	}
+	
+	/**
+	 * This method for get project by orgLocationsId And EndDate Graterthan CurrentDate
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long userId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		//String subQueryForUserIdChecking = "project.id IN ( select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) OR project.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.endDate < :currentDate";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("currentDate", currentDate).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
 	
 	/**
 	 * This method for get primary project by orgLocationsId

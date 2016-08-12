@@ -18,16 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -63,6 +66,13 @@ public class LoginSessionController {
 	
 	@Autowired 
 	private NotificationsService notificationsService;
+	
+	@Autowired 
+	private ProjectsService projectsService;
+	
+	@Autowired 
+	private ProjectMembersHistoryService projectMembersHistoryService;
+	
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
@@ -117,6 +127,7 @@ public class LoginSessionController {
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		ModelAndView model = new ModelAndView();
 		//get notification count
@@ -134,6 +145,27 @@ public class LoginSessionController {
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		commonUtil.terminateAllProjectMembersByUser(user);
 		//model.addObject("notificationList", notificationList);
+		
+		try {
+			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLoc.getId(), loginUser.getId());
+			for(Projects project : projectsList){
+				Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(project.getId());
+				for(ProjectMembers pojectMember : projectMembersList){
+					
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pojectMember.getId());
+					Date currentDate = new  Date();
+					Date terminationDate = pmh.getProjectTerminationDate();
+					if(currentDate.after(terminationDate)){
+						pmh.setProjectTerminationDate(project.getEndDate());
+						pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
+					}
+					commonUtil.terminateProjectMemberByProjectMemberId(pojectMember.getId());
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
