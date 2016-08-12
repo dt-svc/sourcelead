@@ -431,11 +431,19 @@ public class TimesheetSubmissionsRestController {
                  sb.append("<div id='rejectedPopup'></div>");
              }
              if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
-               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
+               /*  sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
                sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\'rejectedMessage"+ts.getId()+"\');'>");
                sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
                sb.append(" </i>");
                sb.append(" </div>");
+               */
+               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
+               sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
+               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
+               sb.append(" </i>");
+               sb.append(" </div>");
+                
+                
             }
             if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
           	  sb.append(" <div><h3>Approved</h3></div>");

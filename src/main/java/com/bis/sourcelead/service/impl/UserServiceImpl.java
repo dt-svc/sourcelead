@@ -234,14 +234,14 @@ public class UserServiceImpl implements UserService {
 	
 	private ProjectMembers getProjectMembersDetails(Employees employee, JSONObject jsonObj, String userCode, Long orgLocationsId) throws Exception {
 		ProjectMembers pm = new ProjectMembers();
-		
+		Projects project = null;
 		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
-			Projects project = new Projects();
+			project = new Projects();
 			project.setId(Long.parseLong(jsonObj.getString("projectId")));
 			pm.setProjects(project);
 		}else{
 			//To add default project
-			Projects project = projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
+			project = projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
 			pm.setProjects(project);
 		}
 		
@@ -250,6 +250,8 @@ public class UserServiceImpl implements UserService {
 		
 		HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
 		ProjectMembersHistory pmh = new ProjectMembersHistory();
+	    Projects  newproject	=  projectsService.getProjectById(project.getId());
+		pmh.setProjectTerminationDate(newproject.getEndDate());
 		pmh.setProjectMemberId(pm);
 		pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 		pmh.setProjectAssignedDate(new Date());

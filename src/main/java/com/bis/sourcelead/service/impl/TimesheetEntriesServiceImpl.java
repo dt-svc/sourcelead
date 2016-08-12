@@ -1367,7 +1367,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										
 										
 										//For sunday Hours
-										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay6Id")){
+										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay7Id")){
 											String sunHours = jsonObj.getString(c+"submission"+submissionId+"timeSheetDay7Id");
 											if(!isNullOrEmpty(sunHours)){
 												timesheetEntries.setSunHours(sunHours);
@@ -1379,7 +1379,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										}
 										
 										//For sunday Comments
-										if (jsonObj.has(c+"submission"+submissionId+"comment6Id")){
+										if (jsonObj.has(c+"submission"+submissionId+"comment7Id")){
 											timesheetEntries.setSuncomments(jsonObj.getString(c+"submission"+submissionId+"comment7Id"));
 										}
 										rowNum++;
