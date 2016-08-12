@@ -194,7 +194,7 @@
 	          <li><a href="<c:url value="/orgSettings" />" title="Org Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a></li>
           </c:if>
           
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}"></a></li>
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>
