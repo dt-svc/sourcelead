@@ -1253,7 +1253,7 @@ function inlineEditForEndDate(id,projectMemberId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
-   			   
+   			         
    		    }
 	 });  
 }

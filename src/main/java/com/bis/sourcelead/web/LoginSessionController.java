@@ -134,6 +134,8 @@ public class LoginSessionController {
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		commonUtil.terminateAllProjectMembersByUser(user);
 		//model.addObject("notificationList", notificationList);
+		
+		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 		model.addObject("sourceleadUrl", sourceleadUrl);

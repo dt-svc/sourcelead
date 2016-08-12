@@ -551,7 +551,8 @@ public class UserRestController {
 						 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						Date endDate1=sdf.parse(endDate);
 						if(pmh.getProjectTerminationDate()== null){
-							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+							/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
+							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
 
 						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
