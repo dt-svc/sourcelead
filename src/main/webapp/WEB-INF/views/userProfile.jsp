@@ -80,7 +80,7 @@
 				  </div>
 				  </div>
 				 </div> 
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png images are not allowed</p>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png and .svg images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			 <div id="popUp" ></div>  
@@ -244,8 +244,11 @@
     var uploadedImage = document.getElementById('uploadedImage').value;
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
- 		var msg = ".png extension not allowed";
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png' ||
+    		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'svg'){
+    	
+    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+ 		var msg = "."+extensionName+" extension not allowed";
  		alertMessage(msg);
     	
     }else if(sizeinbytes > 200000){
