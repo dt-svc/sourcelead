@@ -35,5 +35,10 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		// TODO Auto-generated method stub
 		return projectMembersHistoryDao.updateProjectMembersHistory(projectMembersHistory);
 	}
+	
+	@Override
+	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
+		return projectMembersHistoryDao.updateEndDateOfProjectMemberId(endDate,projectMemberId);
+	}
 
 }

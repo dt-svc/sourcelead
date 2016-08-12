@@ -13,5 +13,7 @@ public interface ProjectMembersHistoryDao {
 	HashSet<Date> getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(Long projectMemberId,Date startDate,Date endDate);
 	
     ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory) throws Exception ;
+    
+    Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
 
 }
