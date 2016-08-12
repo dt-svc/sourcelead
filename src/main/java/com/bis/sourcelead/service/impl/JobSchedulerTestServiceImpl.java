@@ -14,4 +14,10 @@ public class JobSchedulerTestServiceImpl implements JobSchedulerTestService {
 		return status;
 	}
 
+	@Override
+	public String notiFicationSchedularTest(String arg) {
+		String status = "Success";
+		return status;
+	}
+
 }

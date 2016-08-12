@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
@@ -45,10 +44,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
@@ -241,7 +236,7 @@ public class ClientRestController {
 		logger.info("Total number of projects for client " + orgRelation.getClientLocationId().getOrg().getOrgName()
 				+ "is : " + projectCount);
 		orgRelation.setProjectsCont(projectCount);
-		resultJson = toJSON(orgRelation);
+		resultJson = commonUtil.toJSON(orgRelation);
 		return resultJson;
 		  }
 		 
@@ -302,14 +297,7 @@ public class ClientRestController {
 		    }
 		
 		
-		private String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	    }
+		
 		
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
