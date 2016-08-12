@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +28,7 @@ import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 @WebAppConfiguration
 @ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
 public class ProjectsServiceTest {
-	
+	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceTest.class);
 	@Configuration
 	static class ProjectServiceTestContextConfiguration {
 		@Bean
@@ -125,11 +127,16 @@ public class ProjectsServiceTest {
 	 * test case Weekly base Emails and Notification
 	 * @throws Exception
 	 */
-	@Test
+//	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
 		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
 		for(User user : usrList){
 			projectsService.userEmailNotificationForTimeShhetSubmission(user);
 		}
+	}
+	@Test
+	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
+		List<User> usrList  = projectsService.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
+		logger.info("*************************************************"+usrList.size());
 	}
 }

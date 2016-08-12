@@ -1,13 +1,16 @@
 package com.bis.sourcelead.util;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.JobSchedulerTestService;
+import com.bis.sourcelead.service.ProjectsService;
 
 /**
 *
@@ -38,6 +41,9 @@ public class EMailJobScheduler {
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
+	@Autowired
+	ProjectsService projectsService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
 	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
@@ -55,7 +61,12 @@ public class EMailJobScheduler {
         
     }
 	
-	@Scheduled(cron = "*/5 * * * * *")
+	 // 5 16 * * 5 Fire 4:5 on every Friday
+	// Fire at every 5 Min */5 * * * * *
+	/**
+	 * Fires on Every Friday on every month
+	 */
+	@Scheduled(cron = "5 16 * * 5 *")
 	public void runNotificationJobScheduler() {
 		String notificationJobSchedulerStatus = "";
 		logger.info("******************  Notification Job Scheduler started..! **********");
@@ -63,10 +74,14 @@ public class EMailJobScheduler {
 		try {
 			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
+			List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
+			for(User user : usrList){
+				projectsService.userEmailNotificationForTimeShhetSubmission(user);
+			}
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
-       // 5 16 * * 5 Fire 4:5 on every Friday
+      
     }
 }
