@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public  class CalendarUtil {
@@ -417,8 +418,22 @@ public  class CalendarUtil {
         return null;
     }
 	 
+//    Calendar calendar = Calendar.getInstance();
+//	Date date = calendar.getTime();
+//	// 3 letter name form of the day
+//	System.out.println(new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase());
 	
-	
-	
+    public static String currentDay()
+    {
+       try{
+    	    Calendar calendar = Calendar.getInstance();
+    		Date date = calendar.getTime();
+    	return new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase();
+       }catch(Exception ex){
+    	   ex.printStackTrace();
+       }
+	return null;
+    }
+	 
 
 }

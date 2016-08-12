@@ -420,6 +420,8 @@ function saveMyTimesheet(status){
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
        		   var submissionIds = $("#submissionId").val();
+       		   $("#dynamic").empty();
+       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -446,18 +448,17 @@ $('body').on('blur', '#timesheet_form', function() {
 });
 </script>
 <script type="text/javascript">
-function withdrawMyTimesheet(){ 
-	var frm = $('#timesheet_form').serializeFormJSON();
+function withdrawMyTimesheet(submissionId){ 
+	/* var frm = $('#timesheet_form').serializeFormJSON(); */
 	var sourceleadUrl ='${sourceleadUrl}';
 	var startdate;
 	var navigation;
 	   
-	var mydata = JSON.stringify(frm);
-	mydata = mydata.replace(/[{}]/g, "");
-	
+/* 	var mydata = JSON.stringify(frm);
+	mydata = mydata.replace(/[{}]/g, ""); */
 	$.ajax({
 	      type : "POST",
-     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata,		
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
 	      success :function(result) {
 	    	  dynamicTimesheet(navigation,startdate); 
 	      }
@@ -561,8 +562,11 @@ $(document).click(function(){
 		if (hours < 10) {
 			hours = '0' + hours;
 		}
-		
-		total = hours +":"+ minutes;
+		if(!isNaN(hours) && !isNaN(minutes)){
+			total = hours +":"+ minutes;
+		}else{
+			total =  "00:00";
+		}
 	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
@@ -596,7 +600,12 @@ function grandTotal(){
 	 if (hours < 10) {
 		hours = '0' + hours;
 	 }
-	 total = hours +":"+ minutes;
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +":"+ minutes;
+	 }else{
+		 total = "00:00"; 
+	 }
+	
 	 $("#grandTotal").val(total);
     
 }
@@ -644,14 +653,14 @@ function clearTimesheet(){
 <script>
 function checkHours(){
 	 var result = "";		
-	 var total;
+	 var total; 
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 2; j++){
+		 for (var j = 1; j < 10; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -721,32 +730,3 @@ function checkHours(){
 	
 }
 </script>
-		
-		
-<!-- this script is for check file length -->		
-<script language="javascript" type="text/javascript">
- function checkFile()
-    {
-     var fsize = $('#uploadBtn')[0].files[0].size;
-     alert(fsize);
-     $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     /* $("#upload_button").removeAttr("disabled"); */
-     if (fsize>50000)
-     {
-         $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-            document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-            document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
-         return false;
-     }
-     $    //New WebSite class="form-control"
-        //$("#save_client").removeAttr("disabled");
-        $('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
-        $('input#uploadBtn').attr('class','valid form-control');
-        $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-        $("#upload_form").click(function() {
-            if ($(this).validate(false, validationSettings)) {
-            }
-        });
-       
-    }
-</script>		

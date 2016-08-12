@@ -25,13 +25,6 @@
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
-          <section class="action-btns clearfix">
-            <ul class="pull-right list-unstyled list-inline">
-              <li><a href="#" class="faclose"><i aria-hidden="true" class="fa fa-close"></i></a></li>
-              <li><a href="#" class="collpase-div"><i aria-hidden="true" class="fa fa-angle-down"></i></a></li>
-            </ul>
-          </section>
-          
           
       <!-- modal dialog box start -->    
         <div class="modal fade" id="addProject" role="dialog">
@@ -118,7 +111,7 @@
           
           
           
-        <div class="clearfix form-area form-horizontal toggle-div remove-div">
+        <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -257,7 +250,6 @@
                 <div class="form-group" id="RoleDiv">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
-                   <c:if test="${SourceLeadWeb_userType == 'Admin'}">
 	                    <label class="radio-inline">
 	                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);validateRole();">Admin
 	                    </label>
@@ -267,13 +259,7 @@
 	                    <label class="radio-inline">
 	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);validateRole();">Employee
 	                    </label>
-                    </c:if>
                     
-                    <c:if test="${SourceLeadWeb_userType == 'Approver'}">
-                         <label class="radio-inline">
-	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);validateRole();">Employee
-	                    </label>
-                    </c:if>
                     <span class="hidden">Select Role</span> 
                     <input type="hidden" name="roleType" id="roleValue" field-name="Role" data-validation="required" />
                     
@@ -480,6 +466,14 @@ function flushProject(){
 	 $('#level2Manager').val('');
 	 $(".error").removeClass("error");
 	 $('#newProject').find('p.jquery_form_error_message').remove();
+	 projectDates();
+	 $("#StartDate").datepicker("option", "maxDate", '');
+     $("#StartDate").datepicker("option", "minDate", '');
+     
+     $("#EndDate").datepicker("option", "maxDate", '');
+     $("#EndDate").datepicker("option", "minDate", '');
+	 
+	 
 }
 </script>
 
@@ -492,6 +486,10 @@ function flushProject(){
 	        var frm = $('#addProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
 	        $("#save_project").attr("disabled", "disabled");
@@ -500,7 +498,7 @@ function flushProject(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+con, 
+		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -604,7 +602,7 @@ function flushProject(){
 		        url: sourceleadUrl+"/getProjectManager?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$("#managerName").val(json.approverUserId.firstName+" "+json.approverUserId.lastName);
+		        	$("#managerName").val(json.fullName);
 			        
 		        },
 		    });
@@ -694,6 +692,7 @@ function flushProject(){
  <script type="text/javascript">
  function validateProjectSequeneNumber() {
 	 var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value; 
+	 if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
@@ -704,7 +703,8 @@ function flushProject(){
 		        	if(data == true){
 						  $("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");
 						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist','yes');
-						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+' is Already Existed'); 
+						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+' is Already Existed');
+						  $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
 		        	}
 		        	else{
 		        		 $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errormsg");
@@ -712,6 +712,7 @@ function flushProject(){
 		        	} 
 		        },
 		    });
+	    }
 	 }
  }
  </script> 
@@ -727,30 +728,35 @@ function flushProject(){
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
-	  $('#StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	            $("#EndDate").datepicker("option", "minDate", dt);
-	            addValidClass();
-	        }
-	  });
-	  
-	  $('#EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	        onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() - 1);
-	            $("#StartDate").datepicker("option", "maxDate", dt);
-	        }
-	  });
-	  
   } );
 </script>
 
 
 <!-- end script for datepicker -->
+
+
+<script type="text/javascript"> 
+	function projectDates(){
+		  $('#StartDate').datepicker({
+		      dateFormat: 'yy-mm-dd',
+		      onSelect: function (selected) {
+		            var dt = new Date(selected);
+		            dt.setDate(dt.getDate() + 1);
+		            $("#EndDate").datepicker("option", "minDate", dt);
+		            addValidClass();
+		        }
+		  });
+		  
+		  $('#EndDate').datepicker({
+		      dateFormat: 'yy-mm-dd',
+		        onSelect: function (selected) {
+		            var dt = new Date(selected);
+		            dt.setDate(dt.getDate() - 1);
+		            $("#StartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+}
+</script>
 
 <script type="text/javascript"> 
 	function addValidClass(){

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -37,6 +36,7 @@ import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -111,12 +111,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private ActionRolesService actionRolesService;
 	
+	@Autowired
+	private ModulesService modulesService;
+	
+	protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+	}
 	
 	@Override
-	public void addRegistration(Registration registration) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules) throws Exception {
+		
+		String[] registredModules =  modules.split(",");
 		
 		//For Saving of Org Details
-		Org org = getOrgDetails(registration);
+		Org org = getOrgDetails(registration,subModules,modules);
 		try {
 			orgService.addOrganization(org);
 		} catch (Exception e) {
@@ -124,7 +132,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		//For Saving of User Details
-		User user = getUserDetails(registration);
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		User user = getUserDetails(registration,password);
 		try {
 			userService.addUser(user);
 		} catch (Exception e1) {
@@ -163,35 +172,80 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		saveProject(registration, orgLocations, user, employee);
 		
-		saveActionRoles(org,orgLocations,user);
+		if(registredModules.length == 2){
+			if(registredModules[1].equalsIgnoreCase("TimeSheet")){
+				saveProject(registration, orgLocations, user, employee);
+			}
+		}else if(registredModules.length == 1){
+			if(registredModules[0].equalsIgnoreCase("TimeSheet")){
+				saveProject(registration, orgLocations, user, employee);
+			}
+		}
+		
+		
+		saveActionRoles(org,orgLocations,user,modules);
+		
+		
+		userService.sendEmail(user, loginUser, password);
+		
+		
 		
 	}
 	
-	private Org getOrgDetails(Registration registration){
+	private Org getOrgDetails(Registration registration,String subModules,String modules){
+		
 		Org org = new Org();
 		org.setOrgName(registration.getCompanyName());
 		org.setWebSite(convertWebsite(registration.getWebsite()));
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
+		
+		if(!isNullOrEmpty(modules)){
+			String[] registeredModules =  modules.split(",");
+			if(registeredModules.length == 2){
+				org.setTimeSheet(Status.Y);
+			}
+			else if(registeredModules[0].equalsIgnoreCase("TimeSheet")){
+					org.setTimeSheet(Status.Y);
+			}else{
+				org.setTimeSheet(Status.N);
+			}
+		}
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] recruitingModules =  subModules.split(",");
+			if(recruitingModules.length == 2){
+				org.setAts(Status.Y);
+				org.setVms(Status.Y);
+			}else{
+				if(recruitingModules[0].equalsIgnoreCase("ATS")){
+					org.setAts(Status.Y);
+					org.setVms(Status.N);
+				}else{
+					org.setVms(Status.Y);
+					org.setAts(Status.N);
+				}
+			}
+		}
 		org.setCreatedDate(new Date());
 		return org;
 	}
 	
-	private User getUserDetails(Registration registration){
+	private User getUserDetails(Registration registration,String password){
 		User user = new User();
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
 		user.setEmail(registration.getEmail());
 		user.setUserName(registration.getEmail());
-		user.setUserState(Status.ACTIVE);
+		user.setUserState(Status.NOT_LOGGEDIN);
 		user.setUserType("Admin");
-		user.setPassword(sourceleadPasswordEncoder.encode(registration.getPassword()));
+		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		user.setIsMailSent(Status.Y);
 		return user;
 	}
 	
@@ -238,7 +292,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	 
 	 
-	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ){
+	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ) throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setCountry(registration.getCountry());
@@ -281,9 +335,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user) throws Exception {
+	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user,String modules) throws Exception {
 		 
-		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L);
+		 List<Long> modulesId = modulesService.getModulesIdByModuleName(modules);
+		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId);
 		 if(actionRolesList != null){
 			 for(ActionRoles actionRoles : actionRolesList){
 				 ActionRoles userActionroles = new ActionRoles();

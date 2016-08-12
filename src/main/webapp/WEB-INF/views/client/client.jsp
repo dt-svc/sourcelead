@@ -6,7 +6,7 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
-
+<script src="resources/js/formvalidator.js"></script>
  
  
 <style>
@@ -40,7 +40,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
 							<div class="col-md-9" id="clientNameDiv">
-								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" value="">
+								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -88,6 +88,7 @@
 								<div class="modal fade" id="addTask" role="dialog">
 									<div class="modal-dialog modal-lg">
 										<!-- Modal content-->
+										
 										<div class="modal-content">
 											<div class="modal-header">
 												<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -120,19 +121,20 @@
 														</div>
 
 														<div class="form-group" id="ProjectNameDiv">
-															<label class="col-md-3">Project Name</label>
+															<label class="col-md-3">Project Name<span class="text-danger">*</span></label>
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
 																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control">
+																	class="form-control" field-name="Project Name" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+																	<span class="hidden">Enter Project Name</span>
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-md-3" for="Project Manager">Manager</label>
+															<label class="col-md-3" for="Project Manager">Manager<span class="text-danger">*</span></label>
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" data-validation="validate_Space" data-validation-optional="true">
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
 																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
@@ -155,13 +157,14 @@
 														</div>
 
 														<div class="form-group" id="ProjectStartDateDiv">
-															<label class="col-md-3">Date</label>
+															<label class="col-md-3">Date<span class="text-danger">*</span></label>
 															<div class="col-md-9">
 																<div class="row">
 																	<div class="col-lg-6 positionRelative">
 																		
-																     <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" readonly="readonly">
-																	 <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>																			
+																     <input type="text" class="form-control" value="" id="projectStartDate" name="StartDate" field-name="Start Date" readonly="readonly" >
+																	 <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+																	 <span class="hidden">Enter Start Date</span>																			
 																	</div>
 																	<div class="col-lg-6 positionRelative">
 																		
@@ -208,15 +211,14 @@
 									class="hidden">Website</span>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="col-md-3" for="Project Manager">Email</label>
+						<div class="form-group" id="EmailIdDiv">
+							<label class="col-md-3" for="Project Manager">Email<span class="text-danger">*</span></label>
 							<div class="col-md-9">
-								<input type="text" id="email" name="email" field-name="Email"
-									data-validation="validate_Space validate_length length2-100 validate_email"
-									data-validation-optional="true" value="" class="form-control">
-								<span class="hidden">Enter Email</span>
+								<input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
+                                <span class="hidden">Valid Email</span>
 							</div>
 						</div>
+						
 
 						<div class="form-group">
 							<label class="col-md-3">Mobile Number</label>
@@ -235,11 +237,8 @@
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_client"
-								onclick="saveClient();" class="btn btn-primary"> <input
-								type="button" value="Cancel"
-								onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'"
-								class="btn btn-default ml">
+							<input type="button" value="Save" id="save_client" onclick="saveClient();" class="btn btn-primary"> 
+							<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
 						</div>
 					</div>
 				</div>
@@ -273,6 +272,7 @@
 		};
 	})(jQuery);
 </script>
+
 <script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {
@@ -353,6 +353,7 @@
 <!-- =============================== AddTask Divs  ============================ -->
 
 <!--  Date picker starts here -->
+
 <script>
   $( function() {
 	  $('#projectStartDate').datepicker({
@@ -360,7 +361,7 @@
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
-	            $("#EndDate").datepicker("option", "minDate", dt);
+	            $("#projectEndDate").datepicker("option", "minDate", dt);
 	        },
 	        onClose: function() {
 	  		  $('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
@@ -677,54 +678,7 @@ function flushProject(){
 }
 </script>
 
-<script type="text/javascript">
-	function validateWebsite() {
-		var website = document.getElementById("webSite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		if (website != null && website != '') {
 
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="
-						+ website + "&sourceleadBLockedwebsites="
-						+ sourceleadBLockedwebsites,
-				success : function(data) {
-					var result = data;
-					if (result == 'Website Duplicated' || result == 'Invalid Website') {
-						//existed website
-						$("input#webSite").after(
-								"<p class='jquery_form_error_message'>"
-										+ website
-										+ " "+result+"</span>");
-						document.getElementById("webSite").setAttribute(
-								'record-exist', 'yes');
-						document.getElementById("webSite").setAttribute(
-								'record-exist-errorMsg',
-								website + ' is '+result);
-					} else {
-						//New WebSite class="form-control"
-						//$("#save_client").removeAttr("disabled");
-						$('input#webSite').removeAttr(
-								"class record-exist record-exist-errormsg");
-						$('input#webSite').attr('class',
-								'valid form-control');
-						$('#companyWebsiteDiv').find(
-								'p.jquery_form_error_message').remove();
-						$("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						});
-					}
-				},
-
-			});
-		}
-	}
-</script>
 
 <script type="text/javascript">
 function projectvalidation(){
@@ -776,7 +730,7 @@ function validateClientName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -809,3 +763,76 @@ function validateClientName(){
 </script>
 
 
+
+<script type="text/javascript">
+ function validateClientEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*  $("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_client" ).addClass('button').val('Save');
+                         $("#save_client").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+
+ 
+ 
+ <script type="text/javascript">
+function validateWebsite(){
+      var website = document.getElementById("webSite").value; 
+     var sourceleadUrl ='${sourceleadUrl}';
+     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
+	 $('input#webSite').removeAttr( "record-exist record-exist-errormsg");
+	 if(website != null && website != ''){
+		
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+			        success: function(data) {
+			        	 var result = data;
+			        		if (result == "Website Duplicated" || result == "Invalid Website") {
+		        			//existed website
+		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$("input#webSite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
+		    				$('input#webSite').attr('record-exist','yes');
+		    				$('input#webSite').attr('record-exist-errorMsg',website+' '+result+''); 
+		    				$('input#webSite').addClass('form-control');
+			        	}
+			        	else{
+			        		//New WebSite
+			        		$("#save_client").removeAttr("disabled");
+				    		$('input#webSite').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#webSite').addClass('form-control');
+				    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+							$( "#save_client" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+	}
+}
+</script>

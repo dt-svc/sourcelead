@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 
 @Service
@@ -23,6 +23,15 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		return projectApproverHierarchyDao.saveProjectApproverHierarchy(projectApproverHierarchy);
 	}
 	
+	
+
+	@Override
+	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
+			throws Exception {
+		return projectApproverHierarchyDao.updateProjectApproverHierarchy(projectApproverHierarchy);
+	}
+
+	
 	@Override
 	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception {
 		return projectApproverHierarchyDao.getLevelOneProjectApproverByProjectId(ProjectId);
@@ -30,14 +39,14 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 
 
 	@Override
-	public Collection<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception {
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception {
 		return projectApproverHierarchyDao.getApproverUsersByProjectId(Id);
 		
 	}
 
 
 	@Override
-	public Collection<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
+	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
 		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectHierarchyListByLoginUserId(userId);
 	}
@@ -47,7 +56,12 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectIdsByLoginUserId(userId);
 	}
-
 	
-
+	
+	@Override
+	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy)
+			throws Exception {
+		return projectApproverHierarchyDao.getByProjectApproverHierarchyId(projectApproverHierarchy);
+	}
+	
 }

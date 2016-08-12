@@ -67,6 +67,7 @@ public class UploadController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
 			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
@@ -89,11 +90,10 @@ public class UploadController {
  * Handles Errored file Download
  * @param fileName
  * @param response
- * @throws IOException
+ * @throws Exception 
  */
 	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
-	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
-		
+	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws Exception {
 		File file;
 		if("xlsx".equalsIgnoreCase(fileName)){
 			file = new File("FailureUsersForCheck.xlsx");
@@ -117,12 +117,11 @@ public class UploadController {
 /**
  * Handles Temaplate download
  * @param response
- * @throws IOException
- * @throws URISyntaxException
+ * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException {
-
+	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
+		
 		String fn = "/templates/Create Users.xls";
 		URL url = getClass().getResource(fn);
 		File file = new File(url.toURI());
@@ -139,18 +138,9 @@ public class UploadController {
 		inputStream.close();
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
-	}
-	
-	/**
-	 * Handles cancel import
-	 * @return
-	 * @throws IOException
-	 */
-	
-	@RequestMapping(value="/cancelImport", method = RequestMethod.GET)
-	public ModelAndView cancelImport() throws IOException {
-		return  new ModelAndView("redirect:/timesheetexcel/excelDownload");
+		
 		
 	}
+	
 	
 }

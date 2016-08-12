@@ -20,10 +20,17 @@ $(document).ready(function() {
 <script>
   function approvalList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	  $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
+	  var employeeId = [];
+		$('input:checkbox[name=employeeById]:checked').each(function() 
+		{
+			employeeId.push($(this).val());
+	   });
+		
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}",        
+            url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId,        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
                 	 $("#timesheetApprList").removeAttr("style");
@@ -151,9 +158,22 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 <div class="timesheet_out">
 	<div class="timesheet_appr_wrap" >
 		<div class="timesheet_appr_wrap">
-		<!-- <div class="timesheet_head">
+		<div class="timesheet_head">
         	<ul>
-                <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+        	<li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+                	<div id="filter3ApprovedPop" class="approved_pop">
+                    	<ul>
+                    	 <c:forEach var="report" items="${thslist}">  
+                        	<li><input  id="employee${report.employeeId}" name="employeeById" value ="${report.employeeId}"  onclick="approvalList();"  type="checkbox"><label for="employee${report.employeeId}">${report.fullName}</label></li>
+						  </c:forEach>
+                        	<!-- <li><input type="checkbox" value="None" id="c9"><label for="c9">employee1</label></li>
+							<li><input type="checkbox" id="c10"><label for="c10">employee2</label></li>
+							<li><input type="checkbox" id="c11"><label for="c11">employee3</label></li>
+							<li><input type="checkbox" id="c12"><label for="c12">employee4</label></li> -->
+                        </ul>
+                    </div>                	
+                </li>	
+                <!-- <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">  
                     	<ul>
                         	<li><input type="checkbox" value="None" id="c1"><label for="c1">client1</label></li>
@@ -193,10 +213,10 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
                         </ul>
                     </div>                	
                 </li>				
-                <div class="clearfix"></div>
+                <div class="clearfix"></div>-->
             </ul>
             <div class="clearfix"></div>
-        </div> -->
+        </div> 
 		
 		<div class="timesheet_appr_table">
 				<div id="timesheetApprList">   </div>
@@ -220,8 +240,8 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 			       </div>
 			       
 			  </div>
-             <div id="divadttTd2" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+             <div  id="divadttTd2" style="display:none;">
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
 	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
 	                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ></textarea></span>
@@ -229,43 +249,43 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	     	</div>
                   
              <div id="divadttTd3" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                       <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id"></textarea></span></div>
              </div>
              <div id="divadttTd4" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id"></textarea></span></div>
              </div>
              <div id="divadttTd5" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id"></textarea></span></div>           
              </div>
              <div id="divadttTd6" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id"></textarea></span></div>  
 	    	 </div>
              <div id="divadttTd7" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id"></textarea></span></div>
               </div>
              <div id="divadttTd8" style="display:none;">
-				  <input type="text" id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
 	    	 </div>
-             <div id="divadttTd9" style="display:none;">
-				  <input type="text"  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
+             <div  id="divadttTd9" style="display:none;">
+				  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment8Id');"></i>
                   <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id"></textarea></span></div>  
@@ -274,7 +294,10 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 
 	
 <!--   Timesheet approval popup   -->
-	
+<div class="side_mask" onclick="removeTimesheetPopup();">
+	<!-- <div class="proj_close"></div> -->
+</div>
+
 <div class="time_appr_side_wrap">
 	   <div id="myId">
 	   </div>
@@ -290,16 +313,27 @@ function myTimesheet(local,startDate,endDate){
    	type: "POST",
     url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
-              $("#myId").empty();
-              $("#myId").append(data); 
-              maskme();   
-              $("html").trigger('click');
+    	 
+	    	if( data.indexOf('DOCTYPE') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	}else{
+	    		$("#myId").empty();
+	              $("#myId").append(data); 
+	              maskme();   
+	              $("html").trigger('click');
+	    	}
+              
     }
     });
     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+    $(".side_mask").fadeIn(200); 
+    $("body").css('overflow-y', 'hidden');
+
 } 
 function removeTimesheetPopup(){
 	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	 $(".side_mask").fadeOut(200); 
+	 $("body").css('overflow-y', 'scrool');
 }
 </script>	
 
@@ -537,8 +571,18 @@ function maskme(){
 
 <!-- this script is for save timesheets -->	 
 <script type="text/javascript">
-function saveMyTimesheet(status){   
-               var frm = $('#timesheet_form').serializeFormJSON();
+function saveMyTimesheet(status){  
+	
+	 checkHours();
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	 }; 
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+               
+		       var frm = $('#timesheet_form').serializeFormJSON();
                
                var sourceleadUrl ='${sourceleadUrl}';
                var startdate;
@@ -566,6 +610,10 @@ function saveMyTimesheet(status){
         		      }
         	      	  
         	    }); 
+        	   return true;
+	 	}else{ 
+			return false;
+	   } 
 }    
 </script>
 
@@ -797,8 +845,13 @@ $(document).click(function(){
 		 if (hours < 10) {
 			hours = '0' + hours;
 		 }
-			 
-		total = hours +":"+ minutes;
+			
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +":"+ minutes;
+		 }else{
+			 total = "00:00"; 
+		 }
+		 
 	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
@@ -833,7 +886,12 @@ function grandTotal(){
 			hours = '0' + hours;
 		 }
 			 
-		 total = hours +":"+ minutes;
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +":"+ minutes;
+		 }else{
+			 total = "00:00"; 
+		 }
+		 
 		 $("#grandTotal").val(total);
 	     
 }
@@ -944,7 +1002,7 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
     
-    
+   /*  
     $("#filter3ApprovePop").click(function(){
 		$("#filter3ApprovedPop").slideToggle(200);
 	});
@@ -954,7 +1012,7 @@ $(document).ready(function() {
     $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
-    
+     */
     
      $("#filter4ApprovePop").click(function(){
 		$("#filter4ApprovedPop").slideToggle(200);
@@ -969,6 +1027,18 @@ $(document).ready(function() {
 });
 
 </script>
+
+<script>
+	$(document).on("mouseover", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".glyphicon-comment", function() { 
+		  var localId = $(this).attr('id');
+		  $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+	});	
+</script>
+
 
 <div class="time_pop time_pop_a" id="timeSheetErrorMsg">
 </div> 

@@ -68,7 +68,6 @@ public class LoginSessionController {
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
-		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -76,7 +75,6 @@ public class LoginSessionController {
 		}
 		sessionData.setNav(Constants.Dashboard);
 		request.getSession().setAttribute("sessionData",sessionData);
-		
 		
 		User user = userService.findByUserName(authentication.getName());
 		setSessionUserAttributes(user,request,sourceleadUrl);
@@ -93,6 +91,10 @@ public class LoginSessionController {
 			
 			if(user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId())){
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
+			}
+			
+			if(userRole.getRoles().getRoleName().equalsIgnoreCase("SOURCELEAD_ADMIN")){
+				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
 			}
 			
 			
@@ -112,20 +114,27 @@ public class LoginSessionController {
 			e.printStackTrace();
 		}
 		
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		ModelAndView model = new ModelAndView();
 		//get notification count
-		String orgCode = Constants.SOURCELEAD_ORGCODE;
-		String locationCode = Constants.SOURCELEAD_LOCATIONCODE_IN;
-		Long scenarioId = 8L;
-		Integer notificationCount = notificationsService.getNotificationsCountByUserId(scenarioId,orgCode,locationCode);
-		model.addObject("notificationCount", notificationCount);
+		String orgCode = loginOrgCode;
+		String locationCode = loginOrgLocation;
+		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+		//model.addObject("notificationCount", notificationCount);
 		
 		// get notification list by user id
-		Long notificationTo = 2L;
-		List<Notifications> notificationList = notificationsService.getNotificationsListByUserId(notificationTo,orgCode,locationCode);
+		Long notificationTo = loginUser.getId();
+		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
-		model.addObject("notificationList", notificationList);
+		//model.addObject("notificationList", notificationList);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 	    return model;
@@ -181,6 +190,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "vms", org.getVms());
+		SourceLeadSessionManager.setSessionAttribute(request, "ats", org.getAts());
+		SourceLeadSessionManager.setSessionAttribute(request, "timesheet", org.getTimeSheet());
+		
 	}
 	
 	

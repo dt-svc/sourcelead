@@ -65,7 +65,7 @@
 		</div>
 
 		<c:if test="${!empty clientsList}">
-			<div class="clients_wrap_table clients_wrapTable ">
+			<div class="clients_wrap_table ">
 				<table>
 					<tbody>
 					<thead>
@@ -81,7 +81,7 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm mt" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
+									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
@@ -93,7 +93,7 @@
 							</c:if>
 
 							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}">${report.clientLocationId.city}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.country}</span></div></td>
+								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.clientLocationId.country }">
 								<td><div>--</div></td>
@@ -126,12 +126,13 @@
 
 		</c:if>
 
-
+       <div class="side_mask"><div class="proj_close"></div></div>
+       
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
-					<i class="glyphicon glyphicon-share-alt"></i>
+					<i></i>
 				</div>
 				<div id="clientSideDiv"></div>
 			</div>
@@ -194,6 +195,7 @@
 						result = result + '<table>';
 						result = result + '<tbody>';
 						result = result + '<tr>';
+						result = result + '<th>Project Id</th>';
 						result = result + '<th>Projects name</th>';
 						result = result + '<th>Start Date</th>';
 						result = result + '<th>End Date</th>';
@@ -204,9 +206,17 @@
 						result = result + '<tr>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
+							var endDateStr ="";
+							if(opt.endDateStr != null && opt.endDateStr != '' & opt.endDateStr != 'undefined'){
+								endDateStr = opt.endDateStr;
+							}else{
+								endDateStr = "NO DATA";
+							}
+							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.id+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'id\');" id="id'+opt.id+'"  value="'+opt.id+'" class="project_inline_field"></div></td>';
 							result = result + '<td><div class="tbldata-dotdot-sm" title="'+opt.projectName+'"><input type="text"  onBlur="inlineEditClientProjects('+opt.id+',\'projectName\');" id="projectName'+opt.id+'"  value="'+opt.projectName+'" class="project_inline_field"></div></td>';
 							result = result + '<td>'+opt.startDateStr+'</td>';
-							result = result+ '<td><div><input type="text" value="'+opt.endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" ></div></td>';
+							
+							result = result+ '<td><div><input type="text" value="'+endDateStr+'"  id="endDate'+opt.id+'" class="project_inline_field" readonly="readonly"></div></td>';
 							result = result + ' <td><div><select id="clientId'+opt.id+'" onBlur="inlineEditClientProjects('+opt.id+',\'clientId\');">';
 									
 							for (var j = 0; j < opt.projectManagerName.length; j++) {
@@ -322,18 +332,40 @@
 		$
 				.ajax({
 					type : "POST",
-					url : "http://localhost:8080/sourcelead/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="
-							+ orgRelationID,
+					url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
+						var city = "";
+						var state = "";
+						var country = "";
+						if(json.city != null && json.city != '' && json.city != 'undefined'){
+							city = json.city;
+						}else{
+							city = "NO DATA";
+						}
+						
+						if(json.state != null && json.state != '' && json.state != 'undefined'){
+							state = json.state;
+						}else{
+							state = "NO DATA";
+						}
+						
+						if(json.country != null && json.country != '' && json.country != 'undefined'){
+							country = json.country;
+						}else{
+							country = "NO DATA";
+						}
+						
 						result = result
 								+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client name:</strong>';
 						
+						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientName\');" id="clientName" value="'+json.orgName+'" placeholder="Project name" class="project_detfield"></span>';
+						}
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
@@ -349,41 +381,41 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						if(json.city !=null && json.city !='' && json.city !='undefined'){
-							result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+json.city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
-	   		    		}
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+city+'" placeholder="Project city" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
-						if(json.state !=null && json.state !='' && json.state !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+json.state+'" placeholder="Project state" class="project_detfield"></span><div class="clearfix"></div>';
-						}
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+state+'" placeholder="Project state" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
-						if(json.country !=null && json.country !='' && json.country !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+json.country+'" placeholder="Project country" class="project_detfield"></span><div class="clearfix"></div>';
-						}
+						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+country+'" placeholder="Project country" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Email:</strong>';
 						if(json.email !=null && json.email !='' && json.email !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="Project email" class="project_detfield"></span><div class="clearfix"></div>';
+						}else{
+							
+							result = result + '<span><input type="text"  id="clientEmail" value="" placeholder="client email" class="project_detfield"></span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Phone number:</strong>';
 						if(json.phone !=null && json.phone !='' && json.phone !='undefined'){
 						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';
+						}else{
+							
+							result = result + '<span><input type="text"  id="clientPhoneNumber" value="" placeholder="Project phone" class="project_detfield"></span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Projects:</strong>';
 						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
-						result = result + '<span><input type="text" value="'+json.projectsCont+'" placeholder="Project count" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
 						}
 						result = result + '</div>	';
 						result = result + '<div class="clearfix"></div>';
@@ -457,9 +489,13 @@ function getEndDatePickerById(projectId,localFieldName){
 	$(document).ready(function() {
 		$(".proj_show").click(function() {
 			$(".clients_side_wrap").addClass("clients_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
 		});
-		$(".proj_close").click(function() {
+		$(".proj_close, .side_mask").click(function() {
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			$(".side_mask").fadeOut(200);
+			$("body").css('overflow-y', 'auto');
 		});
 	});
 

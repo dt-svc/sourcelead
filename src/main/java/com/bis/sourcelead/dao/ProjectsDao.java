@@ -8,6 +8,8 @@ import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 
 public interface ProjectsDao {
 
@@ -41,7 +43,7 @@ public interface ProjectsDao {
 	
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 
-	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
+	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
@@ -49,6 +51,11 @@ public interface ProjectsDao {
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
-
+	
+	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
+	
+	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
+	
+	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 
 }

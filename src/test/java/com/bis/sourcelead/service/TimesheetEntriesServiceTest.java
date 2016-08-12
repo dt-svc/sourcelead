@@ -32,18 +32,12 @@ public class TimesheetEntriesServiceTest {
 		public TimesheetEntriesService timesheetEntriesService() {
 			return new TimesheetEntriesServiceImpl();
 		}
-		@Bean
-		public TimesheetEntriesDao timesheetEntriesDao() {
-			return new TimesheetEntriesDaoImpl();
-		}	
 
 	}
 	
 	@Autowired
 	TimesheetEntriesService timesheetEntriesService;
 	
-	@Autowired
-	TimesheetEntriesDao timesheetEntriesDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 

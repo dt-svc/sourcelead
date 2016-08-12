@@ -55,6 +55,7 @@ public class ActionRoles {
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -118,6 +119,7 @@ public class ActionRoles {
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
 	}
+	
 
 	public Date getCreatedDate() {
 		return createdDate;

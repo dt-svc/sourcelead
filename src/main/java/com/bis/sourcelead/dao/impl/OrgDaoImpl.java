@@ -52,6 +52,11 @@ public class OrgDaoImpl implements OrgDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Org addOrganization(Org org) throws Exception
@@ -65,7 +70,7 @@ public class OrgDaoImpl implements OrgDao {
 			logger.debug("Organization Added Successfully");
 		}catch(ConstraintViolationException exception)
 			{
-				StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORG"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 			}
 		return org;
@@ -80,6 +85,12 @@ public class OrgDaoImpl implements OrgDao {
 		if (org != null) {
 			session.saveOrUpdate(org);
 		}
+		if(org == null){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+		}
+		
+		
 		return org;
 	}
 	
@@ -94,7 +105,7 @@ public class OrgDaoImpl implements OrgDao {
 		}
 		if(org == null)
 		{
-			StringBuffer message= new StringBuffer(MessageFormat.format(notFound,"ORG", id));
+			StringBuilder message= new StringBuilder(MessageFormat.format(notFound,"ORG", id));
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
 		return org;
@@ -112,6 +123,9 @@ public class OrgDaoImpl implements OrgDao {
 			session.saveOrUpdate(org);
 			isDeleted = true;
 			logger.info("Successfully deleted..!");
+		}if(id == null){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORG"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
 		}
 		return isDeleted;
 	}
@@ -132,8 +146,7 @@ public class OrgDaoImpl implements OrgDao {
                     try {
                         netUrl = new URL(webSite);
                     } catch (MalformedURLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        e.printStackTrace();;
                     }
                     String host = netUrl.getHost();
                     if(host.startsWith("www.")){
@@ -168,11 +181,6 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Org.class);
 		List<Org> orgList = crit.list();
-		if(orgList.isEmpty())
-		{
-			StringBuffer message= new StringBuffer(MessageFormat.format(noRecords," Orgs ","ORG"));
-			throw new NoRecordsFoundException(message.toString());
-		}
 		return orgList;
 	}
 
@@ -185,11 +193,13 @@ public class OrgDaoImpl implements OrgDao {
 		logger.debug("getOrgByOrgCode start");
 		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
 		logger.debug("getOrgByOrgCode end");
-		if (orgList.size() > 0) {
+		 return orgList.get(0);
+		 // Below code is Commented to written Exception
+		/*if (orgList.size() > 0) {
 			return orgList.get(0);
 		} else {
 			return null;
-		}
+		}*/
    	}
 	
 	private boolean isDuplicateWebsite(String host) {
@@ -215,6 +225,27 @@ public class OrgDaoImpl implements OrgDao {
 	            	isClientFound = true;
 	            }
 	            return isClientFound;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String userStateSubQuery = "";
+		if (!isNullOrEmpty(userState)) {
+			userStateSubQuery = "and org.user.userState = '" + userState + "'";
+		}
+		
+		String orgNameSubQuery = "";
+		if (!isNullOrEmpty(searchByName)) {
+			orgNameSubQuery = "and org.orgName LIKE '" + searchByName + "%' ";
+		}
+		
+	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
+        return orgsList;
 	}
 
 }
