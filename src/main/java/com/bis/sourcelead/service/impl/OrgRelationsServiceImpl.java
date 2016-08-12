@@ -18,14 +18,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
-		// TODO Auto-generated method stub
 		return orgRelationsDao.addOrgRelations(orgRelations);
 	}
 
 	@Override
 	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId, Long clientOrgLocationId)
 			throws Exception {
-		// TODO Auto-generated method stub
 		return orgRelationsDao.getOrgRelationIdByOrgLocationIdAndClientLocationId(orgLocationId, clientOrgLocationId);
 	}
 

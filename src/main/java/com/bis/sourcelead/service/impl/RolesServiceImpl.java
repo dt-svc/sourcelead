@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.RolesService;
