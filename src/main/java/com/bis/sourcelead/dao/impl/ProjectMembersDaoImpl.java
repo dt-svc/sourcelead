@@ -138,7 +138,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getAllProjectMembers method");
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(ProjectMembers.class);
-        List<ProjectMembers> projectsMembersList = crit.list();
+        List<ProjectMembers> projectsMembersList = crit.setCacheable(true).list();
         return projectsMembersList;
 	}
 	
@@ -164,7 +164,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
 		List<Long> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
-			    .list(); 
+			    .setCacheable(true).list(); 
 		return idsList;  
 		
         
@@ -197,7 +197,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :nextMondayDate and (pm.projectEndDate IS NULL OR pm.projectEndDate >= :previousMonday) ) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :nextMondayDate))" ;
 		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
-			    .list(); 
+			    .setCacheable(true).list(); 
 		return idsList;  
 	}
 
