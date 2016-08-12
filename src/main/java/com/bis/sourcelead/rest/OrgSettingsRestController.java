@@ -81,19 +81,6 @@ public class OrgSettingsRestController {
 					OutputStream out = response.getOutputStream();
 					ImageIO.write(bi, "jpg", out);
 					out.close();
-					
-				/*   try {
-					    InputStream in = new ByteArrayInputStream(org.getDocFile());
-			            BufferedImage img = colorImage(ImageIO.read(in));
-			            OutputStream out = response.getOutputStream();
-			            ImageIO.write(img, "png", out);
-			        } catch (IOException ex) {
-			            ex.printStackTrace();
-			        }*/
-					
-					
-				    
-					
 				}
 				
 			} catch (IOException e) {
@@ -103,11 +90,7 @@ public class OrgSettingsRestController {
 			catch (Exception e1) {
 				e1.printStackTrace();
 			}
-			
    }
-   
-   
-   
    @RequestMapping(value = "/deleteOrgImage" , method = RequestMethod.GET)
    public String deleteOrgImage(HttpServletRequest request) throws Exception {
 	   
