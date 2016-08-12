@@ -135,29 +135,28 @@ window.onload = function () {
  };
 </script>
 
-
+<form id="createUser_form" name="createUser_form"  method="post">
 <label for="CountryAutocomplete">Country</label> 
 <input id="CountryAutocomplete" type="hidden" name="country" value="" field-name="<fmt:message key="CandidateExperience.Country" />"
 	data-validation="required"/><br />
 	
 	
 <ul id="country" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
-
+ <input type="button" value="Save" id="create_user" onclick="testVal();" class="btn btn-primary">
+</form>
 
 <script>
 function getAllCountries(sourceleadUrl){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: sourceleadUrl+"/locationAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').tagit({
         		allowSpaces: false,
         		availableTags: json,
-        		 afterTagAdded: function(event, ui){
-        			   $('#CountryAutocomplete').val("test");
-        	     },
+        		
 	       	 	});
         },
         error: function(e){
@@ -166,7 +165,40 @@ function getAllCountries(sourceleadUrl){
 }
 </script> 
 
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
 
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+ function testVal() {
+		    var frm = $('#createUser_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        alert(con);
+	 
+    }
+ 
+</script>  
 
 
 

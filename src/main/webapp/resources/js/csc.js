@@ -4,11 +4,20 @@ function cscInit(){
 	       singleFieldNode: $('#CountryAutocomplete')
 	       ,tagLimit:1
 	       ,placeholderText:""
+           ,afterTagRemoved: function(evt, ui){
+                   $('#location').tagit('removeAll');
+                   return false;
+           }
+	   });
+	 
+	 $('#location').tagit({
+	       singleField: true,
+	       singleFieldNode: $('#locationAutoComplete')
+	       ,tagLimit:1
+	       ,placeholderText:""
 	   });
 };
 
- 
- 
  
 /* function getAllCountries(sourceleadUrl){
 	 alert("kii"+sourceleadUrl);

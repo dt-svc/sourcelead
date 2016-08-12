@@ -13,9 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -52,6 +54,9 @@ public class ClientController {
 	@Autowired
 	ProjectMembersService projectMembersService;
 	
+	@Autowired
+	CountriesService countriesService;
+	
 	
 	/**
 	 * Handles to display client jsp
@@ -74,6 +79,9 @@ public class ClientController {
 				model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			model.addObject("loginCountryName", countries.getName());
 			return model;
 	    }
 	 

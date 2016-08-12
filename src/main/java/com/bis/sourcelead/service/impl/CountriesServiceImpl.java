@@ -21,14 +21,24 @@ public class CountriesServiceImpl implements CountriesService{
 
 	@Override
 	public Countries getCountriesByCountryName(String name) throws Exception{
-		logger.debug("In Countries class...");
+		logger.debug("In CountriesServiceImpl class...");
 		return countriesDao.getCountriesByCountryName(name);
 	}
 
 	@Override
 	public List<Countries> getAllCountries() throws Exception {
-		logger.debug("In ProjectsServiceImpl class getAllProjects method...");
+		logger.debug("In CountriesServiceImpl class getAllCountries method...");
 		List<Countries> countriesList = countriesDao.getAllCountries();
+		return countriesList;
+	}
+
+	@Override
+	public List<String> getAllStatesAndCitiesByCountryName(String countryName) throws Exception {
+		logger.debug("In CountriesServiceImpl class getAllLocations method...");
+		
+		Countries countries = countriesDao.getCountriesByCountryName(countryName);
+		
+		List<String> countriesList = countriesDao.getAllStatesAndCitiesByCountryCode(countries.getCode2());
 		return countriesList;
 	}
 
