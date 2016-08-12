@@ -1078,20 +1078,20 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 			/*code to check Rate validation*/
 			if (row.getCell(5) == null || "".equals(row.getCell(5).toString())) {
-			if (fileName.toLowerCase().endsWith("xlsx")) {
-			XSSFCell myCell5 = (XSSFCell) row.getCell(5);
-			if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-			String Rate = myCell5.getStringCellValue();
-			userImport.setReason("Length must be greater then 2 and less then 8");
-			isValidated = isRateLengthValid(Rate);
-			if (isValidated) {
-			} else {
-			userImport.setReason("Invalid Rate");
-			return isValidated;
-			}
-			return false;
-			}
-			} else {
+				if (fileName.toLowerCase().endsWith("xlsx")) {
+					XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+					if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+						String Rate = myCell5.getStringCellValue();
+						userImport.setReason("Length must be greater then 2 and less then 8");
+						isValidated = isRateLengthValid(Rate);
+						if (isValidated) {
+						} else {
+							userImport.setReason("Invalid Rate");
+							return isValidated;
+						}
+						return false;
+					}
+				} else {
 			isValidated = isRateLengthValid(row.getCell(5).toString());
 			if (isValidated) {
 			} else {
@@ -1100,29 +1100,29 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 			}
 			} else {
-			{
-			HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-			if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-			myCell5.setCellType(Cell.CELL_TYPE_STRING);
-			String Rate = myCell5.getStringCellValue();
-			if (Rate != null && !"".endsWith(Rate)) {
-			isValidated = isRateLengthValid(Rate);
-			if (isValidated) {
-			} else {
-			userImport.setReason("Invalid Rate");
-			return isValidated;
-			}
-			}
-			} else {
-			isValidated = isRateLengthValid(row.getCell(5).toString());
-			if (isValidated) {
-			} else {
-			userImport.setReason("Invalid Rate");
-			return isValidated;
-			}
-			}
+				{
+					HSSFCell myCell5 = (HSSFCell) row.getCell(5);
+					if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						myCell5.setCellType(Cell.CELL_TYPE_STRING);
+						String Rate = myCell5.getStringCellValue();
+						if (Rate != null && !"".endsWith(Rate)) {
+							isValidated = isRateLengthValid(Rate);
+							if (isValidated) {
+							} else {
+								userImport.setReason("Invalid Rate");
+								return isValidated;
+							}
+						}
+					} else {
+						isValidated = isRateLengthValid(row.getCell(5).toString());
+						if (isValidated) {
+						} else {
+							userImport.setReason("Invalid Rate");
+							return isValidated;
+						}
+					}
 
-			}
+				}
 			}
 			/*end of Rate Validation Code*/
 			
