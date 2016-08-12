@@ -57,8 +57,7 @@ public class DashboardRestController {
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
 		
-		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
