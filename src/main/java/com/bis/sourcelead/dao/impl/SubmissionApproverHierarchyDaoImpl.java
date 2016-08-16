@@ -580,6 +580,21 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		return tslist;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyBySubmissionId(Long submissionId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah  where sah.submissionId.id = :submissionId");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setCacheable(true).list();
+		SubmissionApproverHierarchy sah = null;
+		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+			sah = submissionApproverHierarchyList.iterator().next();
+		}
+		return sah;
+	}
 	
 
 	

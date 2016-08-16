@@ -112,6 +112,11 @@ function dynamicTimesheet(navigation , startDate){
 		   	type: "POST",
 		    url: sourceleadUrl+"/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
 				    success: function(data) {
+				    	
+				    	
+				    	if( data.indexOf('DOCTYPE') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	}else{
 				    	       if(data != '' && data != 'undefined' && data != null){
 				    	    	   $("#dynamic").removeAttr("style");
 				    	    	   $("#dynamic").empty();
@@ -135,6 +140,7 @@ function dynamicTimesheet(navigation , startDate){
 								    $("#dynamic").append(result); 
 				    	       }
 				    }
+					}	
 		    });
 }
 </script>	
