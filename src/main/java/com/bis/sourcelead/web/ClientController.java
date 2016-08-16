@@ -75,8 +75,6 @@ public class ClientController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			
-			commonUtil.highLightMenu(Constants.Clients, request);
-
 			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -106,13 +104,7 @@ public class ClientController {
 			}
 			model.addObject("clientsList", clientsList);
 		
-			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.Clients);
-			request.getSession().setAttribute("sessionData",sessionData);
+			commonUtil.highLightMenu(Constants.Clients, request);
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
 			if(!isNullOrEmpty(msg)){
