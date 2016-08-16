@@ -1,9 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.sql.DataSource;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,13 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CountriesDao;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.Projects;
 
 @Repository
 public class CountriesDaoImpl implements CountriesDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	DataSource dataSource;
+	
+	Connection con = null;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 
@@ -43,10 +52,46 @@ public class CountriesDaoImpl implements CountriesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Countries> getAllCountries() {
-		logger.debug("In Projects getAllProjects method");
+		logger.debug("In Countries getAllCountries method");
         Session session = this.sessionFactory.getCurrentSession();
-        List<Countries> countriesList= session.createQuery("from Countries " ).list();
+        List<Countries> countriesList= session.createQuery("from Countries " ).setCacheable(true).list();
         return countriesList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllStatesAndCitiesByCountryCode(String countryCode) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		ArrayList<String> cityStatesList = new ArrayList<String>();
+		try{
+			     con = dataSource.getConnection();
+				 Statement stm = con.createStatement();
+		         String query = "select s.stateName as state, c.cityName as city from states s, webgeocities c where c.stateCode = s.stateCode and c.countryCode = '"+countryCode+"' and s.countryCode = '"+countryCode+"' ";
+		         ResultSet re = stm.executeQuery(query);
+				 while (re.next()) {
+						cityStatesList.add(re.getString("city")+","+re.getString("state"));
+				 }
+				
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException sqlE) {
+				sqlE.printStackTrace();
+			}
+		}
+		
+		/*String query = "select s.stateName, c.cityName from States s, Webgeocities c where c.stateCode = s.stateCode and c.countryCode = '"+countryCode+"' and s.countryCode = '"+countryCode+"' ";
+		List<String> modulesIdList =  session.createQuery(query.toString())
+									.setCacheable(true).list();*/
+		
+		
+		return cityStatesList;
+		
+	}
+
+	
 }

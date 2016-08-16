@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Countries;
@@ -85,6 +86,29 @@ public class AutoCompleteRestController {
     	{
     		for(Countries countries: countryList){
     			countriesList.add(countries.getName());
+    		}
+    	}
+		
+		String[] temp = (String[]) countriesList.toArray(new String[] {});
+		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+		
+		String result = mJSONArray.toString();
+		
+        return result;
+	}
+    
+    
+    @RequestMapping(value = "/locationAutoComplete")
+    public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName, HttpServletRequest request) throws Exception {
+    	
+    	ArrayList<String> countriesList = new ArrayList<String>();
+    	
+    	List<String> countryList = countriesService.getAllStatesAndCitiesByCountryName(countryName);
+    	 
+    	if(countryList != null && !countryList.isEmpty())
+    	{
+    		for(String countries: countryList){
+    			countriesList.add(countries);
     		}
     	}
 		

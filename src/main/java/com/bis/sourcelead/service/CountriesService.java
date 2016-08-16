@@ -10,4 +10,6 @@ public interface CountriesService {
 	
 	List<Countries> getAllCountries() throws Exception;
 	
+	List<String>  getAllStatesAndCitiesByCountryName(String countryName) throws Exception;
+	
 }

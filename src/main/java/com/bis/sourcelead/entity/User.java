@@ -110,6 +110,20 @@ public class User {
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
 	
+	@Column(name = "PREVIOUS_USER_STATE")
+	@Enumerated(EnumType.STRING)
+	private Status previousUserState;
+	
+	
+	
+
+	public Status getPreviousUserState() {
+		return previousUserState;
+	}
+
+	public void setPreviousUserState(Status previousUserState) {
+		this.previousUserState = previousUserState;
+	}
 
 	public Long getId() {
 		return id;
