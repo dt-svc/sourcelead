@@ -201,8 +201,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setCacheable(true) 
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
 	}

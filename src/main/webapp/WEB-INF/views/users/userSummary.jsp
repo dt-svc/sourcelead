@@ -340,12 +340,19 @@ function firstname(name)
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
 						   result = result + '<td><div id="startDate'+json.id+'">'+startDate+'</div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
+						   result = result + ' <td>';
+						   if(json.status != null && json.status != "" && json.status !='undefined' && json.status != "INACTIVE" && json.userState != "INACTIVE"){
+							   result = result + '<div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div>';
+						   }
+						   else{
+							   result = result + '<div>'+endDate+'</div>';
+						   }
+						   result = result + ' </td>';
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
-						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "INACTIVE"){
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "INACTIVE" && json.userState != "INACTIVE"){
                                result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
                             }
                             else{

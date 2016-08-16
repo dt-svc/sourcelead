@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -96,12 +99,28 @@ public class ProjectMembers {
     private String projectName;
     @Transient
     private String userId;
+    @Transient
+    @Enumerated(EnumType.STRING)
+	private Status userState;
+    
     
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
     
     
     
+    
+    
+	
+
+	public Status getUserState() {
+		return userState;
+	}
+
+	public void setUserState(Status userState) {
+		this.userState = userState;
+	}
+
 	public String getProjectName() {
 		return projectName;
 	}

@@ -392,6 +392,7 @@ public class UserRestController {
 				if(allProjectsList != null && !allProjectsList.isEmpty()){
 				for (ProjectMembers projectMembers : allProjectsList) {
 					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
+					projectMembers.setUserState(projectMembers.getEmployee().getUser().getUserState());
 					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
 					if (projectMembers.getProjectEndDate() != null) {
 						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
