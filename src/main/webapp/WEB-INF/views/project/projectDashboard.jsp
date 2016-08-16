@@ -346,13 +346,13 @@ $(document).ready(function() {
 </script> 
 <!-- this script is for side navigation functionality at Projects screen -->
  <script>
- function projectSideBar(projectId,projectName,startDateStr,endDateStr){ 
+ function projectSideBar(projectId,projectName,startDateStr,endDateStr, status){ 
 	  	    var result = "";
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');" >Employees</a></li>';
-		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+');">Tasks</a></li>';
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\');" >Employees</a></li>';
+		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
 		  	result = result + ' <li><a href="#tab-3" onClick="pojectDetails('+projectId+');" >Details</a></li>';
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
@@ -377,14 +377,15 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId,startDateStr,endDateStr);
+		    projectEmployee(projectId,startDateStr,endDateStr,status);
  }
  </script> 
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
-function projectEmployee(projectId,startDateStr,endDateStr){
+function projectEmployee(projectId,startDateStr,endDateStr,status){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var status  = status;
     $.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
@@ -393,8 +394,10 @@ function projectEmployee(projectId,startDateStr,endDateStr){
         	var json = JSON.parse(data);
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
+    		if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+        	}
     		result = result + '		</div>';
     		  result = result + '        <div class="project_tabs_inn_table">';
     		if(json.length!=null && json.length!=''){
@@ -423,11 +426,15 @@ function projectEmployee(projectId,startDateStr,endDateStr){
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+json[i].empName+' </a></div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
-	                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
-	                }
-	                else{
-	                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
+	                if(status == 'COMPLETED'){
+	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
+	                }else{
+	                	if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
+		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+		                }
+		                else{
+		                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
+		                }
 	                }
 	                
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
@@ -435,7 +442,11 @@ function projectEmployee(projectId,startDateStr,endDateStr){
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
-	                	result = result + '	<td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></div></td>';
+	                	result = result + '	<td><div>';
+	                	if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+	                	}
+	                	result = result +'</div></td>';
                      }
                      else{
                           result = result + '<td><div><font color="red">Terminated</font></div></td>';
@@ -561,7 +572,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			 	projectEmployee(projectId,startDateStr,endDateStr);
+   			 	projectEmployee(projectId,startDateStr,endDateStr,status);
    		    }
 	     }); 
 		}
@@ -575,9 +586,10 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
-  function projectTask(projectId){
+  function projectTask(projectId,status){
 	  var result = ""; 
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var status = status;
 	  $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 	   
@@ -587,8 +599,10 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 		    				
 		    				  var result = ""; 
 		    				  result = result + '<div class="project_tabs_inn_head">';
-		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
-		    				  result = result + '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		    				  if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+		    					  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
+		    				  }
+		    				  result = result + '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 		    				  result = result + '<table>';
 		    				  result = result + '<tbody>';
 		    				  result = result + '<tr id="projectTaskTableId">';
@@ -919,7 +933,7 @@ function filter(){
    		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
@@ -1368,7 +1382,7 @@ function assignEmployee(){
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
 		            success: function(data) {
-		            	projectEmployee(projectId,startDateStr,endDateStr);
+		            	projectEmployee(projectId,startDateStr,endDateStr,status);
 		            }
 				})
 	        }
