@@ -8,6 +8,11 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
  
+ <script>
+	$(document).ready(function() {
+		document.getElementById("client_form").reset();
+	});
+</script>
  
 <style>
 .clsDatePicker {
@@ -116,7 +121,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectId"
 																	name="projectId" placeholder="Enter Project Id"
-																	class="form-control" onblur="validateProjectId();">
+																	class="form-control" onblur="validateProjectId();" field-name="Project Id"  data-validation="validate_Space validate_length length2-100" data-validation-optional="true">
 															</div>
 														</div>
 
@@ -125,7 +130,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
 																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control" field-name="Project Name" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+																	class="form-control">
 																	<span class="hidden">Enter Project Name</span>
 															</div>
 														</div>
@@ -134,7 +139,7 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" data-validation="validate_Space" data-validation-optional="true">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" >
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
 																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
@@ -237,7 +242,7 @@
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_client" onclick="saveClient();" class="btn btn-primary"> 
+							<input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
 							<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
 						</div>
 					</div>
@@ -539,6 +544,12 @@
 
 <script type="text/javascript">
 	function validateProjectId() {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
 		var ProjectSequeneNumber = document.getElementById("projectId").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
@@ -836,3 +847,10 @@ function validateWebsite(){
 	}
 }
 </script>
+
+<script type="text/javascript">
+	function flushSaveClient() {
+		$("#save_client").removeAttr("disabled");
+	}
+</script>
+
