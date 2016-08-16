@@ -345,7 +345,7 @@ function firstname(name)
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
-						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "INACTIVE"){
                                result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
                             }
                             else{
