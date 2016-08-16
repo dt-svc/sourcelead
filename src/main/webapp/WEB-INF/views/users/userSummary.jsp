@@ -82,7 +82,7 @@ $(document).ready(function(){
 	     result = result + '                 </ul>';
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
-	     result = result + '				<li id="assign_project_id"><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>'; 
+	     result = result + '				<li id="assign_project_id"><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();getUnAssignedProjects('+userId+');" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>'; 
 	     		
 	     result = result + '              <div class="clearfix"></div>';
 	     result = result + '            </ul>';
@@ -283,7 +283,7 @@ function firstname(name)
 				if(json.user.userState != null && json.user.userState != "" && json.user.userState == 'INACTIVE'){
 				  $("#assign_project_id").empty();
 				}else{
-					$("#assign_project_id").empty().append("<a href='javascript:void(0)' data-target='#assignProject' onClick='flushProject();' data-toggle='modal'><i class='fa fa-plus'></i>Assign Project</a>") ;
+					$("#assign_project_id").empty().append("<a href='javascript:void(0)' data-target='#assignProject' onClick='flushProject();getUnAssignedProjects("+userId+");' data-toggle='modal'><i class='fa fa-plus'></i>Assign Project</a>") ;
 				}
 	      }
 	 });
