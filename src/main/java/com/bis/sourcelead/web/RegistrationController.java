@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -27,10 +30,14 @@ public class RegistrationController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 	 
-	 
+	 @Autowired
+	 CommonUtil commonUtil;
 	 
 	 @RequestMapping(value = "/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
+		 
+		    commonUtil.highLightMenu(Constants.OrgSettings, request);
+		    
 			ModelAndView model = new ModelAndView();
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();

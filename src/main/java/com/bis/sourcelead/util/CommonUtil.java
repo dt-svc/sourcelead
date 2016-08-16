@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -220,6 +222,17 @@ public class CommonUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void highLightMenu(String menuName,HttpServletRequest request){
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(menuName);
+		request.getSession().setAttribute("sessionData",sessionData);
 	}
 	
 	

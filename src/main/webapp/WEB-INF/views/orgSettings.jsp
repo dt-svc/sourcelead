@@ -17,10 +17,17 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 
+
 <script>
 	function predefineOrgImage(imageId){
 		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
+</script>
+
+<script>
+	$(document).ready(function() {
+		document.getElementById("orgSettings_form").reset();
+	});
 </script>
 
 <script type="text/javascript">

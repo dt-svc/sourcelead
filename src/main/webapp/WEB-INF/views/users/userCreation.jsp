@@ -15,6 +15,12 @@
 	});
 </script>  -->
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("createUser_form").reset();
+	});
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
