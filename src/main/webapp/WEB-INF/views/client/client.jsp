@@ -188,7 +188,7 @@
 											<div class="modal-footer">
 											<div class="col-xs-8 col-lg-11">
 											 <a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();flushProject();"
+															id="save_task" onclick="addTasks();"
 															data-target="addTask"> <i class="fa fa-plus"></i><span
 															id="addTaskText"> Add Project</span></a>
 											</div>
@@ -405,7 +405,7 @@
 		var projectManager = $('#projectManager').val();
 		var projectStartDate = $('#projectStartDate').val();
 		var projectEndDate = $('#projectEndDate').val();
-
+		
 		var cell0 = row.insertCell(0);
 		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
 		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -442,15 +442,9 @@
 		var divTsTd3Str = document.getElementById("divTaskTd6").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell2.innerHTML = divTsTd3Str;
-
-	
 		
-		$("#projectId").val('');
-		$("#projectName").val('');
-		$("#projectManager").val('');
-		$("#projectStartDate").val('');
-		$("#projectEndDate").val('');
 		addtasksCountafterAddingTask();
+		flushProject();
 	}
 </script>
 <script type="text/javascript">
@@ -695,16 +689,14 @@ function flushProject(){
 function projectvalidation(){
 	
 	/*  validation for projectId start */
-		var namelength = document.getElementById("projectId").value.length;
+	     var projectId = $('#projectId').val();
+		 var namelength = document.getElementById("projectId").value.length;
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		if ($('#projectId').val() == '' || $('#projectId').val() == 0 || $('#projectId').val() == null) {
-			$("input#projectId").after("<p class='jquery_form_error_message'> <span>Enter Project Id </span> ");
-			return false;
-		}
-		 else if ((namelength < 2) || (namelength >= 100)) {
+		
+		if ((projectId != '' || projectId != 0) && ((namelength < 2) || (namelength >= 100))) {
 			$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
 			return false;
-		}
+		} 
 		/* validation for projectId end */
 
 		/*  validation for project name start */
