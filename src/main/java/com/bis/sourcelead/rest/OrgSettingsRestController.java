@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -22,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -43,25 +47,42 @@ public class OrgSettingsRestController {
 	@Autowired
 	OrgService orgService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
 	
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
    public String saveOrgSettings(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 		
-    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-   
-    json = "{"+json+"}";
-	JSONObject jsonObj = new JSONObject(json);
-	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-	OrgSettings orgSettings =  gson.fromJson(json,OrgSettings.class);
 	
-	   try {
-		org = orgService.saveOrgSettings(orgSettings, request, org);
-		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+    Iterator<String> itrator = request.getFileNames();
+    MultipartFile multiFile = request.getFile(itrator.next());
+    String fileExtension = null;
+    if(multiFile != null && !isNullOrEmpty(multiFile.getOriginalFilename())){
+	   String fileName = multiFile.getOriginalFilename();
+	   fileExtension = fileName.substring(fileName.length() - 3);
+    }
+	  
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    
+	    json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		OrgSettings orgSettings =  gson.fromJson(json,OrgSettings.class);
 		
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	   return "home";
+		   try {
+			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
+			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+		    SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		   return "home";
+    
    }
    
    
@@ -119,6 +140,10 @@ public class OrgSettingsRestController {
        }
        return image;
    }
+   
+   protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
    
   
 	   

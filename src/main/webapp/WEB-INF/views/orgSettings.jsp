@@ -29,21 +29,28 @@
     
     var uploadedImage = document.getElementById('uploadedImage').value;
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
-    
+    document.getElementById("errorImage").style.display="none";
     
     if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png' ||
-    		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'svg'){
-    	
+    		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'svg' || 
+    		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'gif'){
+    	output.src = URL.createObjectURL(event.target.files[0]);
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
  		var msg = "."+extensionName+" extension not allowed";
  		alertMessage(msg);
+ 		document.getElementById("errorImage").style.display=""; 
+ 		$("#save_button").attr("disabled", "disabled");
     	
     }else if(sizeinbytes > 200000){
+    	output.src = URL.createObjectURL(event.target.files[0]);
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
+ 		document.getElementById("errorImage").style.display=""; 
+ 		$("#save_button").attr("disabled", "disabled");
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
+    	$("#save_button").removeAttr("disabled")
     }
     
   };
@@ -155,7 +162,8 @@ function cancel(){
 				  </div>
 				  </div>
 				  </div>
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png and .svg images are not allowed</p>
+				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			  <div id="popUp" ></div>
@@ -265,9 +273,12 @@ var validationSettings = {
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		var form = $('#orgSettings_form')[0];
 	           		var formData = new FormData(form);
+	           		var uploadedImage = document.getElementById('uploadedImage').value;
+             		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
 	           		
-	           		$("#save_button").attr("disabled", "disabled");
-             		$( "#save_button").addClass('button').val('Processing..');
+             		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
+		        		document.getElementById("errorImage").style.display=""; 
+             		}else{
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	          		
 	                  $.ajax({
@@ -283,9 +294,10 @@ var validationSettings = {
 	                      	success: function(result) {
 	  			        	 if((result == 'home')){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
-	  			        	} 
+	  			        	}
 	  			        },  
 	                  });
+             		}
                 
             	    return true;
             }

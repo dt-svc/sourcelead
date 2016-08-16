@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class OrgLocationsServiceImpl implements OrgLocationService {
@@ -62,6 +64,19 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public OrgLocations findByEmail(String email) throws Exception {
 		logger.debug("In OrgLocationService class...");
 		return orgLocationsDao.findByEmail(email);
+	}
+
+	@Override
+	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception {
+		
+		orgLocations.setState(orgSettings.getState());
+		orgLocations.setCity(orgSettings.getCity());
+		orgLocations.setZipCode(orgSettings.getZipcode());
+		orgLocations.setPhone(orgSettings.getPhone());
+		orgLocations.setFax(orgSettings.getFax());
+		orgLocationsDao.updateOrgLocations(orgLocations);
+		
+		return orgLocations;
 	}
 	
 }

@@ -322,22 +322,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveUserProfile(UserProfile userProfile, MultipartHttpServletRequest request,User user) throws Exception {
+	public User saveUserProfile(UserProfile userProfile, MultipartFile multiFile,User user) throws Exception {
 		
-		user = getUserProfileDetails(userProfile,request,user);
+		user = getUserProfileDetails(userProfile,multiFile,user);
 		userDao.addUser(user);
 		return user;
 	}
 	
 	
-	private User getUserProfileDetails(UserProfile userProfile, MultipartHttpServletRequest request,User user){
+	private User getUserProfileDetails(UserProfile userProfile, MultipartFile multiFile,User user){
 		user.setFirstName(userProfile.getFirstName());
 		user.setLastName(userProfile.getLastName());
 		user.setMobilePhone(userProfile.getMobilePhone());
 		user.setJobTitle(userProfile.getJobTitle());
 		user.setLocation(userProfile.getLocation());
-		Iterator<String> itrator = request.getFileNames();
-        MultipartFile multiFile = request.getFile(itrator.next());
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
