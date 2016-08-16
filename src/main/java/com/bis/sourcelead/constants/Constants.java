@@ -78,6 +78,7 @@ public class Constants {
 	public static  String Clients = "Clients";
 	public static  String TimeSheet = "TimeSheet";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
+	public static  String OrgSettings = "OrgSettings";
 	
 	public static  String Jobs = "Jobs";
 	public static  String Vendors = "Vendors";

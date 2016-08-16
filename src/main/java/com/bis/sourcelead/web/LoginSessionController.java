@@ -65,13 +65,7 @@ public class LoginSessionController {
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Dashboard);
-		request.getSession().setAttribute("sessionData",sessionData);
+		commonUtil.highLightMenu(Constants.Dashboard, request);
 		
 		User user = userService.findByUserName(authentication.getName());
 		setSessionUserAttributes(user,request,sourceleadUrl);
