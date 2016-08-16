@@ -217,7 +217,7 @@ public class ProjectsServiceTest {
 	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
 		List<User> usrList  = projectsService.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
-		logger.info("*************************************************"+usrList.size());
+		
 	}
 
 
