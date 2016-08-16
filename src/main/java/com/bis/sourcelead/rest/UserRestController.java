@@ -543,7 +543,8 @@ public class UserRestController {
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID) throws Exception {
                     User user = userService.getUserById(Long.parseLong(userID));
                     logger.info("The user state is "+user.getUserState());
-                    user.setUserState(Status.ACTIVE);
+                    user.setUserState(user.getPreviousUserState());
+                    user.setPreviousUserState(user.getUserState());
                     userService.addUser(user);
                     return "updated";
                }

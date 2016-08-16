@@ -32,8 +32,6 @@ public class NotificationRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	
-	
 	/*
 	 * To change the notification mode as read
 	 */
@@ -41,8 +39,6 @@ public class NotificationRestController {
 
 	@Autowired
 	private NotificationsService notificationsService;
-
-	
 	/**
 	 * when user click on the notifications, we are updating those notifications mode as read 
 	 * @param userId

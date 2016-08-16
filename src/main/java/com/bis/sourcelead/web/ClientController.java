@@ -65,7 +65,8 @@ public class ClientController {
 	 */
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
-			ModelAndView model = new ModelAndView();
+		 
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -74,9 +75,9 @@ public class ClientController {
 			sessionData.setNav(Constants.Clients);
 			
 			request.getSession().setAttribute("sessionData",sessionData);
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-				model.addObject("user_List", userList);
+			ModelAndView model = new ModelAndView();
+			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
@@ -93,13 +94,11 @@ public class ClientController {
 	  */
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
+		 
 		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
-			
-	        
-			
 			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			for(OrgRelations orgRelation : clientsList){
 				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
@@ -124,9 +123,10 @@ public class ClientController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
-	 
-		
-		protected static boolean isNullOrEmpty(String str) {
+	    
+	    private static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
+		
+		
 }

@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -187,8 +188,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason) throws Exception{
 				User user = userService.getUserById(userId);
 				if(user != null){
-					user.setTerminateReason(reason);
+					user.setPreviousUserState(user.getUserState());
 					user.setUserState(Status.INACTIVE);
+					user.setTerminateReason(reason);
 					userService.addUser(user);
 				}
 			
