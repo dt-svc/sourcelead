@@ -142,7 +142,7 @@ body {
 .timesheet_table table tr td b.proj_closed { background-color:#d94747;}
 .timesheet_table table tr td b.proj_process { background-color:#ff9800;}
 .timesheet_table table tr td b.proj_draft { background-color:#656565;}  
-.timesheet_table table tr td b.proj_withdraw { background-color:#656565;}  
+.timesheet_table table tr td b.proj_withdraw { background-color:#8c1fde;}
  
 .pname {
     border-top:1px solid #ededed; padding:0px 5px !important;
