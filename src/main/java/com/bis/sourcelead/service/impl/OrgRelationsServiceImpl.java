@@ -18,14 +18,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
-		// TODO Auto-generated method stub
 		return orgRelationsDao.addOrgRelations(orgRelations);
 	}
 
 	@Override
 	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId, Long clientOrgLocationId)
 			throws Exception {
-		// TODO Auto-generated method stub
 		return orgRelationsDao.getOrgRelationIdByOrgLocationIdAndClientLocationId(orgLocationId, clientOrgLocationId);
 	}
 
@@ -39,7 +37,15 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
 		
-		return orgRelationsDao.getClientByOrgLocationId(orgLocationId);
+		OrgRelations orgRelation =  orgRelationsDao.getClientByOrgLocationId(orgLocationId);
+		orgRelation.setOrgName(orgRelation.getClientLocationId().getOrg().getOrgName());
+		orgRelation.setWebSite(orgRelation.getClientLocationId().getOrg().getWebSite());
+		orgRelation.setCountry(orgRelation.getClientLocationId().getCountry());
+		orgRelation.setCity(orgRelation.getClientLocationId().getCity());
+		orgRelation.setState(orgRelation.getClientLocationId().getState());
+		orgRelation.setPhone(orgRelation.getClientLocationId().getPhone());
+		orgRelation.setEmail(orgRelation.getClientLocationId().getEmail());
+		return orgRelation;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package com.bis.sourcelead.rest;
 
 import java.util.Collection;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
 
 @RestController
@@ -57,25 +54,6 @@ public class ProjectMembersRestController {
 	 @RequestMapping(value = "/save", method = RequestMethod.GET,headers="Accept=application/json")
 	 public ProjectMembers save() throws Exception { 
 		 ProjectMembers projectMembers = new ProjectMembers();
-			
-			Projects projects = new Projects();
-			projects.setId(13L);
-			projectMembers.setProjects(projects);
-			
-			Employees employee = new Employees();
-			employee.setId(1L);
-			projectMembers.setEmployee(employee);
-			
-			projectMembers.setTimesheetFrequency("weekly");
-			projectMembers.setProjectAssignedDate(new Date());
-			projectMembers.setCurrentBillRate(100.0F);
-			projectMembers.setRateType("Monthly");
-			projectMembers.setStatus("1");
-			projectMembers.setCreatedDate(new Date());
-			projectMembers.setCreatedBy("prasad");
-			projectMembers.setUpdatedDate(new Date());
-			projectMembers.setUpdatedBy("Raj");
-			
 			return projectMembersService.saveProjectMember(projectMembers);
 	  }
 	 
@@ -88,26 +66,6 @@ public class ProjectMembersRestController {
 	 @RequestMapping(value = "/update/{id}", method = RequestMethod.GET,headers="Accept=application/json")
 	 public ProjectMembers update(@PathVariable Long id) throws Exception { 
 		 ProjectMembers projectMembers = new ProjectMembers();
-			projectMembers.setId(id);
-			
-			Projects projects = new Projects();
-			projects.setId(13L);
-			projectMembers.setProjects(projects);
-			
-			Employees employee = new Employees();
-			employee.setId(1L);
-			projectMembers.setEmployee(employee);
-			
-			projectMembers.setTimesheetFrequency("weekly");
-			projectMembers.setProjectAssignedDate(new Date());
-			projectMembers.setCurrentBillRate(500.0F);
-			projectMembers.setRateType("Monthly");
-			projectMembers.setStatus("1");
-			projectMembers.setCreatedDate(new Date());
-			projectMembers.setCreatedBy("yaswanth");
-			projectMembers.setUpdatedDate(new Date());
-			projectMembers.setUpdatedBy("Raj");
-
 		    return projectMembersService.updateProjectMember(projectMembers);
 	  }
 	 

@@ -34,40 +34,31 @@ import com.bis.sourcelead.service.UserService;
 public class DisplayImageRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DisplayImageRestController.class);
-
-	
 	@Autowired
 	private ApplicationContext applicationContext;
-	
 	
 	@Autowired
 	public UserService userService;
 	
-	
-	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** HomeController init with: " + applicationContext);
+		logger.debug(" *** HomeController init with: " + applicationContext);
 	}
 
     @RequestMapping(value = "/userImage", method = RequestMethod.GET)
 	public @ResponseBody  void addTimesheetEntries(HttpServletRequest request, HttpServletResponse response) throws Exception
-			 
 	{
     	User user = userService.findByUserName("SourceLeadAdmin");
 		if(user.getDocFile() !=null)
 		{
 			response.setContentType("image/jpeg");
-			
 			try {
-				
 				InputStream in = new ByteArrayInputStream(user.getDocFile());
 				BufferedImage bi = ImageIO.read(in);
 				OutputStream out = response.getOutputStream();
 				if(bi != null){
 					ImageIO.write(bi, "jpg", out);
 				}
-				
 				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
