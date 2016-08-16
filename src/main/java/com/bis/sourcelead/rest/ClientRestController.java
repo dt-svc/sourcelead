@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -381,23 +382,36 @@ public class ClientRestController {
 
 	}
 
-	private String convertWebsite(String website) {
-		if (!website.startsWith("http") && !website.startsWith("https")) {
+	private String convertWebsite(String website){
+		
+		String flag = null;
+		if(!website.startsWith("http") && !website.startsWith("https")){
 			website = "http://" + website;
-		}
-		URL netUrl = null;
-		try {
-			netUrl = new URL(website);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-
-		String host = netUrl.getHost();
-		if (host.startsWith("www")) {
-			host = host.substring("www".length() + 1);
-		}
-		return host;
+        }    
+        String status = null;
+        URL netUrl = null;
+        try {
+            netUrl = new URL(website);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();;
+        }
+        String host = netUrl.getHost();
+        if(host.startsWith("www.")){
+            if(host.length()>3){
+                host = host.substring("www".length()+1);
+            }else{
+                flag="Website Duplicated";
+                return flag;
+            }
+        }else{
+            flag ="Invalid Website";
+            return flag;
+        }
+        
+        return host;
 	}
+      
+	
 
 	/**
 	 * Handles ClientName duplicate or not
