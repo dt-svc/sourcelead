@@ -15,8 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller

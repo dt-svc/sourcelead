@@ -20,8 +20,6 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
