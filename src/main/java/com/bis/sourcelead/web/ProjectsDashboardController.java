@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
@@ -66,7 +67,7 @@ public class ProjectsDashboardController {
         {
             sessionData = new SessionMaintainanceData();
         }
-        sessionData.setNav(com.bis.sourcelead.util.Constants.Projects);
+        sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
         Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 

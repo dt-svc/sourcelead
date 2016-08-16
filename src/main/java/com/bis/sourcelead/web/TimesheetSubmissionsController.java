@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -41,7 +42,7 @@ public class TimesheetSubmissionsController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(com.bis.sourcelead.util.Constants.TimeSheetApproval);
+			sessionData.setNav(Constants.TimeSheetApproval);
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 			
