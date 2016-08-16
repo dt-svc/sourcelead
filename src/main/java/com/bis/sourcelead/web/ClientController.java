@@ -23,6 +23,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
@@ -55,7 +56,11 @@ public class ClientController {
 	ProjectMembersService projectMembersService;
 	
 	@Autowired
+	CommonUtil commonUtil;
+
+	@Autowired
 	CountriesService countriesService;
+
 	
 	
 	/**
@@ -65,18 +70,13 @@ public class ClientController {
 	 */
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
-		 
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.Clients);
-			
-			request.getSession().setAttribute("sessionData",sessionData);
+
 			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+			
+			commonUtil.highLightMenu(Constants.Clients, request);
+
 			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);

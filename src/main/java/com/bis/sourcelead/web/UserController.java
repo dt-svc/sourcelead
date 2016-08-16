@@ -19,7 +19,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
-import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
@@ -37,6 +37,9 @@ public class UserController {
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
 	
 	/**
@@ -53,14 +56,7 @@ public class UserController {
 		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Users);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
+	    commonUtil.highLightMenu(Constants.Users, request);
 	    
 		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
