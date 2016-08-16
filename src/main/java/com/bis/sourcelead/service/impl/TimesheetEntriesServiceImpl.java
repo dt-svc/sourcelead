@@ -483,7 +483,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						     }
 						        sb.append(" </table>"); 
 						        sb.append("</td> "); 
-						        sb.append("<td class='pname'> <div>");
+						        sb.append("<td class='pname last_td'> <div>");
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 							        	sb.append("<b>"+submissionStatus+"</b>");
 							        }
@@ -491,22 +491,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b></br></br>");
-							        	sb.append("<b class='proj_process'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
-							        	sb.append("</div> </td>");
+							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
+							        	sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-							        	sb.append("<b class='proj_active'>"+submissionStatus+"</b></div> </td>");
+							        	sb.append("<b class='proj_active'>"+submissionStatus+"</b>");
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b></div> </td>");
+							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 							        	
 							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
-							        	/*sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
-						                sb.append(" <i class='glyphicon glyphicon-comment' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
+						                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 						                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 						                sb.append(" </i>");
-						                sb.append(" </div>");*/
 							        }
 						        sb.append("</div> </td>");
 				  }
@@ -601,7 +598,30 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" </table>"); 
 						              sb.append(" </td>   "); 
 						              sb.append("</td> "); 
-								      sb.append("<td class='pname'> <div> <b>"+submissionStatus+"</b></div> </td>");
+								      sb.append("<td class='pname last_td'> <div>");
+								      
+								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+								        	sb.append("<b>"+submissionStatus+"</b>");
+								        }
+								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+								        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
+								        }
+								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
+								        	sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
+								        }
+								        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+								        	sb.append("<b class='proj_active'>"+submissionStatus+"</b>");
+								        }
+								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
+								        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
+								        	
+								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+							                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
+							                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
+							                sb.append(" </i>");
+								        }
+								        sb.append("</div> </td>");
 								      
 			       }
 			}

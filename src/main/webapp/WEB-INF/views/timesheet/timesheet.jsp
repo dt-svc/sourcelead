@@ -736,3 +736,15 @@ function checkHours(){
 	
 }
 </script>
+
+<script>
+	$(document).on("mouseover", ".rejectedHover", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".rejectedHover", function() { 
+		  var localId = $(this).attr('id');
+		  $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+	});	
+</script>
+
