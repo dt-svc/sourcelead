@@ -134,14 +134,16 @@ public class UserServiceImpl implements UserService {
 		
 		
 		//For saving Employee details (Every User is an Employee)
-		ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,loginUser.getUserCode(),orgLocationsId);
-		try {
-			projectMembersService.saveProjectMember(pm);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
+			ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,loginUser.getUserCode(),orgLocationsId);
+			try {
+				projectMembersService.saveProjectMember(pm);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
-		commonUtil.storeTimesheetSubmissionRecords(user);
 		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
@@ -229,7 +231,7 @@ public class UserServiceImpl implements UserService {
 	private ProjectMembers getProjectMembersDetails(Employees employee, JSONObject jsonObj, String userCode, Long orgLocationsId) throws Exception {
 		ProjectMembers pm = new ProjectMembers();
 		
-		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
+		/*if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
 			Projects project = new Projects();
 			project.setId(Long.parseLong(jsonObj.getString("projectId")));
 			pm.setProjects(project);
@@ -237,8 +239,10 @@ public class UserServiceImpl implements UserService {
 			//To add default project
 			Projects project = projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
 			pm.setProjects(project);
-		}
-		
+		}*/
+		Projects project = new Projects();
+		project.setId(Long.parseLong(jsonObj.getString("projectId")));
+		pm.setProjects(project);
 		pm.setEmployee(employee);
 		pm.setStatus(Constants.MEMBER_ACTIVE);
 		pm.setProjectAssignedDate(new Date());

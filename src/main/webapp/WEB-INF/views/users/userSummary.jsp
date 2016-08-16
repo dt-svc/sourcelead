@@ -55,6 +55,7 @@ $(document).ready(function(){
  function getUserSummaryDetails(userId){
 	 
 	 var result = "";
+	 var userState = '${userState}';
 	 
 	 result = result + ' <div class="user_summ_wrap">';
 	 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -81,7 +82,8 @@ $(document).ready(function(){
 	     result = result + '                 </ul>';
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
-	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+	     result = result + '				<li id="assign_project_id"><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>'; 
+	     		
 	     result = result + '              <div class="clearfix"></div>';
 	     result = result + '            </ul>';
 	     result = result + '          <div class="clearfix"></div>';
@@ -272,6 +274,21 @@ function firstname(name)
 <script>
  function userProjectDetails(userId,filterValue){    
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        success: function(data) {
+			    var json = JSON.parse(data);
+				if(json.user.userState != null && json.user.userState != "" && json.user.userState == 'INACTIVE'){
+				  $("#assign_project_id").empty();
+				}else{
+					$("#assign_project_id").empty().append("<a href='javascript:void(0)' data-target='#assignProject' onClick='flushProject();' data-toggle='modal'><i class='fa fa-plus'></i>Assign Project</a>") ;
+				}
+	      }
+	 });
+	 
+	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&filterValue="+filterValue, 
