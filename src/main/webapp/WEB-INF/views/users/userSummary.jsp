@@ -55,6 +55,7 @@ $(document).ready(function(){
  function getUserSummaryDetails(userId){
 	 
 	 var result = "";
+	 var userState = '${userState}';
 	 
 	 result = result + ' <div class="user_summ_wrap">';
 	 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -81,7 +82,8 @@ $(document).ready(function(){
 	     result = result + '                 </ul>';
 	     result = result + '                    </div>                	';
 	     result = result + '                </li>';
-	     result = result + '				<li><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';		
+	     result = result + '				<li id="assign_project_id"><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();getUnAssignedProjects('+userId+');" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>'; 
+	     		
 	     result = result + '              <div class="clearfix"></div>';
 	     result = result + '            </ul>';
 	     result = result + '          <div class="clearfix"></div>';
@@ -272,6 +274,21 @@ function firstname(name)
 <script>
  function userProjectDetails(userId,filterValue){    
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        success: function(data) {
+			    var json = JSON.parse(data);
+				if(json.user.userState != null && json.user.userState != "" && json.user.userState == 'INACTIVE'){
+				  $("#assign_project_id").empty();
+				}else{
+					$("#assign_project_id").empty().append("<a href='javascript:void(0)' data-target='#assignProject' onClick='flushProject();getUnAssignedProjects("+userId+");' data-toggle='modal'><i class='fa fa-plus'></i>Assign Project</a>") ;
+				}
+	      }
+	 });
+	 
+	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&filterValue="+filterValue, 
@@ -328,8 +345,8 @@ function firstname(name)
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
-						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
-                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "INACTIVE"){
+                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
                             }
                             else{
                                  result = result + '<td><div><font color="red">Terminated</font></div></td>';
@@ -1197,10 +1214,11 @@ function date() {
 	  
   } );
   
-  function deleteProject(local,userId){ 
+  function deleteProject(local,userId,projectName){ 
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Project : <strong>"+projectName+"</strong></p>";
 		result = result +"		<p>User delete message here</p>";
 		result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
 		result = result + ' <div id="reasonForProjectDiv"/>';
@@ -1241,7 +1259,7 @@ function saveReason(projectMemberId,userId){
 		}
 	}
 	else{
-		$("#reasonForProjectDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
+		$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 }
 </script>

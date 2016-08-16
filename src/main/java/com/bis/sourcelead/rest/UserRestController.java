@@ -378,6 +378,7 @@ public class UserRestController {
 					@RequestParam(value = "userId", required = false) Long userId,
 					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
 				String resultJson = null;
+				
 				List<ProjectMembers> allProjectsList = null;
 				if(filterValue.equals("All")){
 					 allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
@@ -388,6 +389,7 @@ public class UserRestController {
 				if(filterValue.equals("In-Active")){
 					allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
 				}
+				if(allProjectsList != null && !allProjectsList.isEmpty()){
 				for (ProjectMembers projectMembers : allProjectsList) {
 					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
 					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -418,7 +420,7 @@ public class UserRestController {
 				    projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
 
 				}
-
+				}
 				resultJson = toJSON(allProjectsList);
 				return resultJson;
 			}
