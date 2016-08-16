@@ -150,19 +150,7 @@ public class LoginSessionController {
 		try {
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLoc.getId(), loginUser.getId());
 			for(Projects project : projectsList){
-				Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(project.getId());
-				for(ProjectMembers pojectMember : projectMembersList){
-					
-					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pojectMember.getId());
-					Date currentDate = new  Date();
-					Date terminationDate = pmh.getProjectTerminationDate();
-					if(currentDate.after(terminationDate)){
-						pmh.setProjectTerminationDate(project.getEndDate());
-						pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
-					}
-					commonUtil.terminateProjectMemberByProjectMemberId(pojectMember.getId());
-				}
-				project.setStatus(Project_Status.COMPLETED.getValue());
+				project = commonUtil.terminateProject(project);
 			}
 			projectsService.saveAllProjects(projectsList);
 		} catch (Exception e) {

@@ -22,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.enums.Primary;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -66,6 +67,9 @@ public class ProjectMembers {
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "IS_MANUALLY_TERMINATED")
+	private Primary isManuallyTerminated;
 	
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -341,6 +345,12 @@ public class ProjectMembers {
 		this.memberHistoryList = memberHistoryList;
 	}
 
-	  
+	public Primary getIsManuallyTerminated() {
+		return isManuallyTerminated;
+	}
+
+	public void setIsManuallyTerminated(Primary isManuallyTerminated) {
+		this.isManuallyTerminated = isManuallyTerminated;
+	}
 
 }

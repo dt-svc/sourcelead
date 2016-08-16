@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -47,6 +48,7 @@ public class CommonUtil {
 	
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
+	
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
@@ -113,6 +115,24 @@ public class CommonUtil {
 			e.printStackTrace();
 		}
 				
+	}
+	
+	public Projects terminateProject(Projects project) throws Exception{
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(project.getId());
+		if(projectMembersList != null && !projectMembersList.isEmpty()){
+			 for(ProjectMembers pojectMember : projectMembersList){
+				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pojectMember.getId());
+				Date currentDate = new  Date();
+				Date terminationDate = pmh.getProjectTerminationDate();
+				if(currentDate.after(terminationDate)){
+					pmh.setProjectTerminationDate(project.getEndDate());
+					pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
+				}
+				terminateProjectMemberByProjectMemberId(pojectMember.getId());
+			}
+		}
+		project.setProjectStatus(Project_Status.COMPLETED);
+		return project;
 	}
 	
 	/**

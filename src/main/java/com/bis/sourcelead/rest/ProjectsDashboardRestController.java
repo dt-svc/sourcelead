@@ -242,6 +242,7 @@ public class ProjectsDashboardRestController {
 
 		 json = "{"+json+"}";	
 		 JSONObject jsonObj = new JSONObject(json);
+		 Date currentDate = new Date();
 		 
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 Projects projects = projectsService.getProjectById(projectId);
@@ -294,8 +295,19 @@ public class ProjectsDashboardRestController {
 						 }
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
-			    projects.setUpdatedDate(new Date());
-			    projectsService.updateProject(projects);
+			    projects.setUpdatedDate(currentDate);
+			    if(projects.getProjectStatus().equals(Project_Status.COMPLETED)){
+			    	projects.setEndDate(currentDate);
+			    	projects = commonUtil.terminateProject(projects);
+			    	 projectsService.updateProject(projects);
+			    }
+			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
+			    	projects = commonUtil.terminateProject(projects);
+			    	projectsService.updateProject(projects);
+			    }
+			    else{
+			    	projectsService.updateProject(projects);
+			    }
 		 
 		 return null;
 	 }

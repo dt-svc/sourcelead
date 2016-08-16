@@ -653,12 +653,7 @@
 
 <script type="text/javascript">
 	function addclient() {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
+		
 		if ($('#addClient_form').validate(false, validationSettings)) {
 			var frm = $('#addClient_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
