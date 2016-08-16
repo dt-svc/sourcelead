@@ -63,9 +63,6 @@ public class OrgSettingsRestController {
 	   fileExtension = fileName.substring(fileName.length() - 3);
     }
 	  
-    if(!isNullOrEmpty(fileExtension) && ("png".equalsIgnoreCase(fileExtension) || "svg".equalsIgnoreCase(fileExtension) || "gif".equalsIgnoreCase(fileExtension))){
-	    return "Invalid Image";
-   }else{
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
@@ -85,7 +82,6 @@ public class OrgSettingsRestController {
 			e.printStackTrace();
 		}
 		   return "home";
-   }
     
    }
    
