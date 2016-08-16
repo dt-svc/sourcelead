@@ -80,7 +80,11 @@ public class RegistrationController {
 			return model;
 
 		}
-	 
+	 /**	 
+	  * checks if string is null or empty
+	  * @param str
+	  * @return boolean
+	  */
 	   protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}

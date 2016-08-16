@@ -23,46 +23,39 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.addOrgLocations(orgLocations);
 	}
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.updateOrgLocations(orgLocations);
 	}
 
 	@Override
 	public OrgLocations getOrgLocations(Long id) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getOrgLocations(id);
 	}
 
 	@Override
 	public Boolean deleteOrgLocations(Long id) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.deleteOrgLocations(id);
 		
 	}
 
 	@Override
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getAllOrgLocations();
 	}
 	
 	
 	@Override
 	public OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getOrgLocationsByLocationCode(locationCode);
 	}
 	
 
 	@Override
 	public OrgLocations getOrgLocationsByOrgCode(String  locationCode) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getOrgLocationsByOrgCode(locationCode);
 	}
 	

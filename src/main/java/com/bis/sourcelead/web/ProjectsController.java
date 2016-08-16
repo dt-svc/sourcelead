@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -21,7 +22,6 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -45,7 +45,7 @@ public class ProjectsController {
 	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
-	 public UserService userService;
+	 private UserService userService;
 	
 	 
 	 /**
@@ -89,7 +89,11 @@ public class ProjectsController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
-	 
+/**	 
+ * checks if string is null or empty
+ * @param str
+ * @return boolean
+ */
    protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}

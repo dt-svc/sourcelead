@@ -45,14 +45,12 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	@Override
 	public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
-		// TODO Auto-generated method stub
 		Collection<ProjectTasks> list = tasksDao.getAllTasksByProjectId(projectId);
 		return list;
 	}
 
 	@Override
 	public Collection<ProjectTasks> getAllSourceleadTasks() throws Exception {
-		// TODO Auto-generated method stub
 		
 		Collection<ProjectTasks> list = tasksDao.getAllSourceleadTasks();
 		return list;
@@ -61,7 +59,6 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	@Override
 	public void saveAll(Collection<ProjectTasks> taskList) throws Exception {
-		// TODO Auto-generated method stub
 		tasksDao.saveAll(taskList);
 	}
 	

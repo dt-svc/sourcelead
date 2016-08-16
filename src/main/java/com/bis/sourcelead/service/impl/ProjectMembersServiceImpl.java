@@ -67,7 +67,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
-		// TODO Auto-generated method stub
 		
 		List<Long> projectMembersList = projectMembersDao.getAllProjectMembersIdsByemployeeId(userId);
 		return projectMembersList;
@@ -77,7 +76,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	@Override
 	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
-		// TODO Auto-generated method stub
 		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
 		return projectMembersList;
 		
@@ -114,7 +112,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId , Long projectId) {
-		// TODO Auto-generated method stub
 		return projectMembersDao.getEmployeeAssignedProjectsCount(orgRelationId, orgLocationId ,projectId);
 	}
 	

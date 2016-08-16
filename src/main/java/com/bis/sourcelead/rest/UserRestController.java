@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -35,7 +36,6 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -543,7 +543,8 @@ public class UserRestController {
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID) throws Exception {
                     User user = userService.getUserById(Long.parseLong(userID));
                     logger.info("The user state is "+user.getUserState());
-                    user.setUserState(Status.ACTIVE);
+                    user.setUserState(user.getPreviousUserState());
+                    user.setPreviousUserState(user.getUserState());
                     userService.addUser(user);
                     return "updated";
                }
