@@ -485,18 +485,18 @@ public class UploadFileServiceImpl implements UploadFileService {
 							}*/
 
 							if (row.getCell(5) != null) {
-								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-								if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									myCell5.setCellType(Cell.CELL_TYPE_STRING);
-									String rate = myCell5.getStringCellValue();
-									if (rate == null || "".endsWith(rate)) {
-										userImport.setRate("");
-									} else {
-										userImport.setRate(rate);
-									}
-								}else{
+//								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
+//								if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+//									myCell5.setCellType(Cell.CELL_TYPE_STRING);
+//									String rate = myCell5.getStringCellValue();
+//									if (rate == null || "".endsWith(rate)) {
+//										userImport.setRate("");
+//									} else {
+//										userImport.setRate(rate);
+//									}
+//								}else{
 									userImport.setRate(row.getCell(5).toString());
-								}
+//								}
 							} else {
 								userImport.setRate("");
 							}
@@ -1076,55 +1076,53 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 			}
 			/*code to check Rate validation*/
-			if (row.getCell(5) == null || "".equals(row.getCell(5).toString())) {
+			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())) {
 				if (fileName.toLowerCase().endsWith("xlsx")) {
-					XSSFCell myCell5 = (XSSFCell) row.getCell(5);
-					if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-						String Rate = myCell5.getStringCellValue();
-						userImport.setReason("Length must be greater then 2 and less then 8");
-						isValidated = isRateLengthValid(Rate);
-						if (isValidated) {
-						} else {
-							userImport.setReason("Invalid Rate");
-							return isValidated;
-						}
-						return false;
-					}
-				} else {
-			isValidated = isRateLengthValid(row.getCell(5).toString());
-			if (isValidated) {
-			} else {
-			userImport.setReason("Invalid Rate");
-			return isValidated;
-			}
-			}
-			} else {
-				{
-					HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-					if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						myCell5.setCellType(Cell.CELL_TYPE_STRING);
-						String Rate = myCell5.getStringCellValue();
-						if (Rate != null && !"".endsWith(Rate)) {
-							isValidated = isRateLengthValid(Rate);
-							if (isValidated) {
-							} else {
-								userImport.setReason("Invalid Rate");
+					  XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+					     if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					    	 myCell5.setCellType(Cell.CELL_TYPE_STRING);
+						String rate = myCell5.getStringCellValue();
+						if (rate != null && !"".endsWith(rate)) {
+							isValidated = isRateLengthValid(rate);
+							if(isValidated){
+							}else{
+								userImport.setReason("rate should be >2 and <=8");
 								return isValidated;
 							}
 						}
-					} else {
+					}else{
 						isValidated = isRateLengthValid(row.getCell(5).toString());
-						if (isValidated) {
-						} else {
-							userImport.setReason("Invalid Rate");
+						if(isValidated){
+						}else{
+							userImport.setReason("rate should be >2 and <=8");
 							return isValidated;
 						}
 					}
-
+				
+			    }else{
+					HSSFCell myCell5 = (HSSFCell) row.getCell(5);
+					if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						myCell5.setCellType(Cell.CELL_TYPE_STRING);
+						String rate = myCell5.getStringCellValue();
+						if (rate != null && !"".endsWith(rate)) {
+							isValidated = isRateLengthValid(rate);
+							if(isValidated){
+							}else{
+								userImport.setReason("rate should be >2 and <=8");
+								return isValidated;
+							}
+					}
+				}else{
+					isValidated = isRateLengthValid(row.getCell(5).toString());
+					if(isValidated){
+					}else{
+						userImport.setReason("rate should be >2 and <=8");
+						return isValidated;
+					}
 				}
 			}
+			}
 			/*end of Rate Validation Code*/
-			
 			
 			
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
@@ -1397,7 +1395,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 	 * @return
 	 */
 	private  boolean isThisDateValid(String dateToValidate, String dateFromat){
-
 		if(dateToValidate == null){
 		return false;
 		}
@@ -1419,8 +1416,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	
 	private  Date getDateFormat(String dateToValidate, String dateFromat){
-
-
+		
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
 		Date date = null;
 		try {
@@ -1439,7 +1435,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  * @return
  */
 	private boolean isMobileNumberValid(String mobileNmber){
-		String regex = "\\d+";
+		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag = false;
 		if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
 			flag = mobileNmber.matches(regex);
@@ -1467,11 +1463,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 	}
 
 	
-	private boolean isRateLengthValid(String Rate){
-		String regex = "\\d+";
+	private boolean isRateLengthValid(String rate){
+	//	String regex = "\\d+";
 		boolean flag = false;
-		if (Rate.length() > 2 && Rate.length() <= 8) {
-			flag = Rate.matches(regex);
+		if (rate.length() > 1 && rate.length() <= 8) {
+//			flag = Rate.matches(regex);
+			flag = true;
 		} else {
 			flag = false;
 		}
