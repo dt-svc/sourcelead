@@ -320,18 +320,18 @@ public class UploadFileServiceImpl implements UploadFileService {
 								}
 
 								if (row.getCell(5) != null) {
-									XSSFCell myCell5 = (XSSFCell) row.getCell(5);
- 									if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-  										myCell5.setCellType(Cell.CELL_TYPE_STRING);
-  										String rate = myCell5.getStringCellValue();
-  										if (rate == null || "".endsWith(rate)) {
-											userImport.setRate("");
-										} else {
-											userImport.setRate(rate);
-										}
-									}else{
+//									XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+// 									if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+//  										myCell5.setCellType(Cell.CELL_TYPE_STRING);
+//  										String rate = myCell5.getStringCellValue();
+//  										if (rate == null || "".endsWith(rate)) {
+//											userImport.setRate("");
+//										} else {
+//											userImport.setRate(rate);
+//										}
+//									}else{
 										userImport.setEmailId(row.getCell(5).toString());
-									}
+//									}
 								} else {
 									userImport.setRate("");
 								}
