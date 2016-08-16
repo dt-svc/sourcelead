@@ -353,7 +353,7 @@ $(document).ready(function() {
 		  	result = result + '<ul class="project-tabs-menu">';
 		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\');" >Employees</a></li>';
 		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
-		  	result = result + ' <li><a href="#tab-3" onClick="pojectDetails('+projectId+');" >Details</a></li>';
+		  	result = result + ' <li><a href="#tab-3" onClick="projectDetails('+projectId+');" >Details</a></li>';
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
 		  	 
@@ -635,7 +635,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
-  function pojectDetails(projectId){
+  function projectDetails(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
    	type: "POST",
@@ -664,120 +664,69 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
     result = result + '      <div class="project_tabs_inn_table">';
     result = result + '			<div class="project_details">';
     result = result + '<div class="useredit useredit_a">';
-	//result = result + '<a id="edit-user" href="javascript:editProjectDetails('+projectId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+	result = result + '<a id="edit-user" href="javascript:editProjectDetails('+projectId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 	result = result + '</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Status:</strong><span>';
-	result = result +'<select id="projectStatusId" onBlur="inlineEditForProjects('+projectId+',\'projectStatusId\');">';
-				if(json.projectStatus == 'STARTED'){
-					result = result+'<option selected>Started</option>';
-				}else{
-					result = result+'<option>Started</option>';
-				}
-				
-				if(json.projectStatus == 'INPROGRESS'){
-					result = result+'<option selected>In-Progress</option>';
-				}else{
-					result = result+'<option>In-Progress</option>';
-				}
-				
-				if(json.projectStatus == 'COMPLETED'){
-					result = result+'<option selected>Completed</option>';
-				}else{
-					result = result+'<option>Completed</option>';
-				}
-			
-				if(json.projectStatus == 'ONHOLD'){
-					result = result+'<option selected>On-Hold</option>';
-				}else{
-					result = result+'<option>On-Hold</option>';
-				}
-	
-	result = result + '</select>';
+	result = result + json.projectStatus;
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
 	
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta" id="ProjectIdDiv">';
 	result = result + '					<strong>Project Id:</strong>';
-	result = result + '					<span><input type="text" onBlur="projectIdValidate('+projectId+',\'projectSequeneNumber\');"  id="projectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '					<span>'+projectSequeneNumber+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
 	
 	result = result + '				<div class="project_details_cta" id="projectNameId">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onBlur="projectNameValidate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '					<span>'+json.projectName+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
-	
-	
-	
 	result = result + '<div class="project_details_cta">';
-	result = result + '<strong>Project manager1:</strong><span>';
-					result = result + '<select onchange="getLevel2Approvers('+json.manager2+');" id="level1Manager" onBlur="inlineEditForProjects('+projectId+',\'level1Manager\');">';
+	result = result + '<strong>Manager 1:</strong><span>';
 				
 					for (var j = 0; j < json.managersList.length; j++) {
 							  var manager = json.managersList[j];
 							  if(json.manager1 == manager.id){
-								   selected = 'selected';
-								   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
-							  }else{
-									  result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
-			   		 	    	 }
+								  result = result+manager.firstName+" "+manager.lastName;
+							  }
 						}
-                result = result + '</select>';
 	result = result + '			</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
 	if(json.manager2  != null && json.manager2  != "" && json.manager2  !="undefined"){
 		result = result + '				<div class="project_details_cta">';
-		result = result + '					<strong>Project manager2:</strong><span>';
+		result = result + '					<strong>Manager 2:</strong><span>';
 		
-						result = result + '<select id="level2Manager" onBlur="inlineEditForProjects('+projectId+',\'level2Manager\');">';
 						for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 							  var manager = json.managersListwithoutManager1[j];
 							  if(json.manager2 == manager.id){
-								   selected = 'selected';
-								   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
-							  }else{
-								  
-			   		 	    		result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
-			   		 	    	 }
+								  result = result+manager.firstName+" "+manager.lastName;
+							  }
 						}
-	                result = result + '</select>';
 		result = result + '			</span><div class="clearfix"></div>';
 		result = result + '				</div>';
 	}
 	
 	
-	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Client:</strong>';
-	 if(json.relationId != null){
-	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');" disabled="disabled">';
-	 }else{
-		 result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
-	 }
-	 result = result+"<option value=''>Select</option>";
-				for (var i = 0; i < json.clientName.length; i++) {
-					
-					var managers = json.clientName[i];
-					var projrctmanager = managers.split('&');
-			    	var name = projrctmanager[0];
-			    	var id = projrctmanager[1];
-			    	 var selected = '';
-   		 	    	 if(json.relationId==id){
-   		 	    		 selected = 'selected';
-   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
-   		 	    	 }else{
-   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
-   		 	    	 }
-   		 	    	 
-   		 	    	 
-				}
-	result = result + '</select>';
-	
-	result = result + '			  <div class="clearfix"></div>';
-	result = result + '				</div>';
+	result = result + '<div class="project_details_cta">';
+	result = result + '<strong>Client:</strong>';
+			for (var i = 0; i < json.clientName.length; i++) {
+				
+				var managers = json.clientName[i];
+				var projrctmanager = managers.split('&');
+		    	var name = projrctmanager[0];
+		    	var id = projrctmanager[1];
+		    	 if(json.relationId != null){
+		    	 result = result+  name;
+		    	 }else{
+		    		 result = result+  "---";
+		    	 }
+			}
+	result = result + '<div class="clearfix"></div>';
+	result = result + '</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Team members:</strong><span>'+json.projectMembersCount+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -788,7 +737,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" class="project_detfield" id="endDateStr" name="endDateStr" ></span><div class="clearfix"></div>';
+	result = result + '					<span> '+endDateStr+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	
@@ -805,11 +754,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	result = result + '				</div>';
 	}
 	result = result + '				<div class="clearfix"></div>';
-	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
-	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
-	result = result + description;
-	result = result + '				</textarea>';
-	result = result + '				<div class="clearfix"></div>';
+	result = result + '				<p><strong>Description:</strong></p>'+description+'<div class="clearfix"></div>';
 	result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
 	result = result + '			</div>';
 	result = result + '      </div>';
@@ -820,28 +765,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	$("#tab-2").empty();  
 	$("#tab-3").empty();  
 	$("#tab-3").append(result);
-	
-	
-	//Assign date of project member
-	 var selected = json.startDateStr;
-	 var dt = new Date(selected);
-     dt.setDate(dt.getDate());
-     
-	 //Main project end date
-     var projectEndDate = json.endDateStr;
-	
-		 $('#endDateStr').datepicker({
-			  dateFormat: 'yy-mm-dd',
-			  minDate: dt,
-		      onClose: function() {
-			   inlineEditForProjects(projectId,'endDateStr');
-	          }
-		  });
 		 
   }
    });
   }
-</script>     
+</script>   
 
 
 <script>
@@ -1591,12 +1519,12 @@ function getApproversLevel2(currentApproverId,manager2){
        	result = result + ' <form id="editProject_form"  name="editProject_form" method="post">';
        	result = result + '<div class="user_summary_edit_cta" id="ProjectIdDiv">';
 		result = result + '	<label>Project Id</label>';
-        result = result + '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
+        result = result + '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
 		result = result + '</div>	';
 		
        	result = result + '<div class="user_summary_edit_cta">';
 		result = result + '	<label>Status</label>';
-		result = result +'<select>';
+		result = result +'<select id="projectStatusId" name="projectStatusId">';
 				if(json.projectStatus == 'STARTED'){
 					result = result+'<option selected>Started</option>';
 				}else{
@@ -1624,13 +1552,12 @@ function getApproversLevel2(currentApproverId,manager2){
 		result = result + '</select>';
 		result = result + '</div>';
 		result = result + '<div class="user_summary_edit_cta">';
-		result = result + '<label>Project name</label>';
-		result = result + '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+		result = result + '<label>Project name<span	class="text-danger">*</span></label>';
+		result = result + '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 		result = result + '</div>';
-		
 		result = result + '<div class="user_summary_edit_cta">';
-		result = result + '	<label>Project Manager</label>';
-		result = result + '<select onchange="getLevel2Approvers('+json.manager2+');" id="level1Manager">';
+		result = result + '	<label>Manager 1</label>';
+		result = result + '<select onchange="getLevel2Approvers('+json.manager2+');" id="level1Manager" name="level1Manager" >';
 		for (var j = 0; j < json.managersList.length; j++) {
 				  var manager = json.managersList[j];
 				  if(json.manager1 == manager.id){
@@ -1643,31 +1570,11 @@ function getApproversLevel2(currentApproverId,manager2){
         result = result + '</select>';
 		result = result + '</div>';
 		
-		
 		if(json.manager2  != null && json.manager2  != "" && json.manager2  !="undefined"){
-			result = result + '				<div class="project_details_cta">';
-			result = result + '					<strong>Project manager2:</strong><span>';
 			
-							result = result + '<select id="level2Manager" onBlur="inlineEditForProjects('+projectId+',\'level2Manager\');">';
-							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
-								  var manager = json.managersListwithoutManager1[j];
-								  if(json.manager2 == manager.id){
-									   selected = 'selected';
-									   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
-								  }else{
-									  
-				   		 	    		result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
-				   		 	    	 }
-							}
-		                result = result + '</select>';
-			result = result + '			</span><div class="clearfix"></div>';
-			result = result + '				</div>';
-		}
-		
-		if(json.manager2  != null && json.manager2  != "" && json.manager2  !="undefined"){
 		result = result + '<div class="user_summary_edit_cta">';
-		result = result + '	<label>Level 2 Manager</label>';
-		result = result + '	<select id="level2Manager">';
+		result = result + '<label> Manager 2: </label>';
+		result = result + '<select id="level2Manager" name="level2Manager">';
 		for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 			  var manager = json.managersListwithoutManager1[j];
 			  if(json.manager2 == manager.id){
@@ -1678,22 +1585,22 @@ function getApproversLevel2(currentApproverId,manager2){
 		 	    		result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
 		 	    	 }
 		}
-		result = result + '</select>';
-		result = result + '</div> ';
-		}
+       result = result + '</select>';
+	   result = result + '</div>';
 		
-				
+        }
+		
+		
 		result = result + '<div class="user_summary_edit_cta">';
 		result = result + '	<label>Client</label>';
 		
 		 if(json.relationId != null){
 			result = result + '<select id="clientId" disabled="disabled">';
 			 }else{
-				 result = result + '<select id="clientId">';
+				 result = result + '<select id="clientId" name="clientId">';
 			 }
 			 result = result+"<option value=''>Select</option>";
 						for (var i = 0; i < json.clientName.length; i++) {
-							
 							var managers = json.clientName[i];
 							var projrctmanager = managers.split('&');
 					    	var name = projrctmanager[0];
@@ -1728,11 +1635,11 @@ function getApproversLevel2(currentApproverId,manager2){
 		
 		result = result + '<div class="user_summary_edit_cta">';
 		result = result + '<label>Description </label>';
-		result = result + '<textarea class="edit_desc" placeholder="Enter Description ">'+description+'</textarea>';
+		result = result + '<textarea class="edit_desc" placeholder="Enter Description" id="description" name="description">'+description+'</textarea>';
 		result = result + '</div>       ';                 
 		result = result + '<div class="clearfix"></div>';
 		result = result + '<div class="user_summary_edit_cta">';
-		result = result + '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+projectId+');" type="button">';
+		result = result + '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+');"type="button" id="description"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+projectId+');" type="button">';
 		result = result + '</div>		';
 		result = result + '<div class="clearfix"></div>';
 		result = result + ' </form>';
@@ -1769,45 +1676,42 @@ function getApproversLevel2(currentApproverId,manager2){
        
  <script type="text/javascript">
 	function updateProjectDetails(projectId) {
-		alert("projectId"+projectId);
-		
-		 var frm = $('#editProject_form').serializeFormJSON();
-         var con = JSON.stringify(frm);
-         con = con.replace(/[{}]/g, "");
-         alert("con"+con);
-         //It will escape all the special characters
-         var jsonData = encodeURIComponent(con);
-         var sourceleadUrl ='${sourceleadUrl}';
-         /* $("#update_user").attr("disabled", "disabled");
-         $( "#update_user" ).addClass('button').val('Processing..'); */
+         if ($('#editProject_form').validate(false, validationSettings)){
+    		 var frm = $('#editProject_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/updateProjectById?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&ProjectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+			    url: sourceleadUrl+"/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&ProjectId="+projectId, 	   
 	   		    success: function(data) {
-	   			   
+	   		    	projectDetails(projectId);
 	   		    }
 		 }); 
-		  
+	     	return true;
+         }else{
+             return false;
+           }
 		
     }
-	 
+	$('body').on('blur', '#editProject_form', function() {
+        $("#editProject_form").showHelpOnFocus();;
+        $("#editProject_form").validateOnBlur(false, validationSettings);  
+    });
 </script>
        
        
        
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		 $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errormsg");
-		 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		 
 		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
 		 //space value  consider this condition 
-		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) == ''){
-			
+		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadUrl = '${sourceleadUrl}';
+		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
-			$("#us-btn").attr("disabled", "disabled");
-            $( "#us-btn" ).addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
@@ -1816,8 +1720,6 @@ function getApproversLevel2(currentApproverId,manager2){
 								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
 								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist', 'yes');
 								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
-								$('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
-								
 							} else {
 								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
 								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();

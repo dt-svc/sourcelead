@@ -237,9 +237,75 @@ public class ProjectsDashboardRestController {
 			 return resultJson;
 	  }
 	 
+	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
+	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+
+		 json = "{"+json+"}";	
+		 JSONObject jsonObj = new JSONObject(json);
+		 
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
+		 Projects projects = projectsService.getProjectById(projectId);
+		 
+		 String pattern = "yyyy-MM-dd";
+	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+	     
+			    if(jsonObj.getString("ProjectSequeneNumber") != null){
+			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
+			    }
+		    	projects.setProjectName(jsonObj.getString("projectName"));
+		    	if(jsonObj.getString("description") != null){
+		    		projects.setDescription(jsonObj.getString("description"));
+		    	}
+		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
+		    	if(jsonObj.getString("endDateStr1") != null){
+		    		Date endtDate = format.parse(jsonObj.getString("endDateStr1"));
+					projects.setEndDate(endtDate);
+		    	}
+		    	if(jsonObj.has("clientId")){
+		    		OrgRelations orgRelations = new OrgRelations();
+		    		if(jsonObj.getString("clientId") != null && jsonObj.getString("clientId") != ""){
+		    			orgRelations.setId(Long.valueOf(jsonObj.getString("clientId")));
+				    	projects.setOrgRelationId(orgRelations);
+		    		}
+		    	}
+				
+		    	if(jsonObj.has("level1Manager")){
+			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+							 if(prHierarchy.getLevel() == 1){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
+			    	}
+		    	}
+		    	if(jsonObj.has("level2Manager")){
+			    		 Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+							 if(prHierarchy.getLevel() == 2){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
+						 }
+		    	}
+			    projects.setUpdatedBy(user.getUserCode());
+			    projects.setUpdatedDate(new Date());
+			    projectsService.updateProject(projects);
+		 
+		 return null;
+	 }
+	 
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
-	 public String updateProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
-		
+	 public String updateProjectById(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
+
+		 json = "{"+json+"}";	
+		 JSONObject jsonObj = new JSONObject(json);
+		    
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 Projects projects = projectsService.getProjectById(projectId);
 		    if(fieldName.equalsIgnoreCase("projectName")){

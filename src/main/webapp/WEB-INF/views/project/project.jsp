@@ -398,17 +398,17 @@
 				<div class="modal-body clearfix">
 					<div class="form-horizontal custom-form clearfix">
 						<div class="col-xs-12 col-md-12 col-lg-12">
-							<div class="form-group">
+							<div class="form-group" id="clientNameDiv">
 								<label class="col-lg-3">Client Name <span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" id="orgName" name="orgName" value="" class="form-control" field-name="Client Name" data-validation="required validate_Space validate_length length2-100">
+									<input type="text" id="orgName" name="orgName" value=""  class="form-control" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" onblur="validateClientName();">
 								</div>
 							</div>
 							<div class="form-group" id="companyWebsiteDiv">
 								<label class="col-lg-3">Client Website </label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space">
+									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 								</div>
 							</div>
 						</div>
@@ -1030,6 +1030,7 @@
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
+						$("#save_client").attr("disabled", "disabled");
 						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
 						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
@@ -1037,7 +1038,7 @@
 						
 					} else {
 						//New WebSite class="form-control"
-						//$("#save_client").removeAttr("disabled");
+					    $("#save_client").removeAttr("disabled");
 						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
 						$('input#companyWebsite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
@@ -1176,3 +1177,38 @@ function getChildLevel1Approvers(currentApproverId){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
+
+<script type="text/javascript">
+function validateClientName(){
+	var clientName = document.getElementById("orgName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (clientName != null && clientName != '') {
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("input#orgName").after("<p class='jquery_form_error_message'>"+ clientName+ " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute('record-exist', 'yes');
+					document.getElementById("orgName").setAttribute('record-exist-errorMsg',clientName +"  already existed");
+					$('input#orgName').removeAttr( "record-exist record-exist-errormsg");
+					
+				} else {
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						if ($(this).validate(false, validationSettings)) {
+						}
+					});
+				}
+			},
+
+		});
+	}
+}
+</script>
