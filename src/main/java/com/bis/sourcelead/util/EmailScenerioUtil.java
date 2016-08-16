@@ -2,13 +2,13 @@ package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -20,7 +20,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
-import com.bis.sourcelead.util.Constants;
 
 /**
  * This class is for covert subject,body,signature
