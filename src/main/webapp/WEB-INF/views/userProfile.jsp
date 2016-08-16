@@ -29,6 +29,13 @@
 	}
 </script>
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("profileSettings_form").reset();
+		document.getElementById("passwordSettings_form").reset();
+	});
+</script>
+
 <body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->

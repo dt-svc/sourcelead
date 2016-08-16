@@ -1,12 +1,19 @@
 package com.bis.sourcelead.web;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Constants;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -17,10 +24,16 @@ public class OrgSettingsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
 	@RequestMapping(value = "/orgSettings")
- 	public ModelAndView orgSettings() {
+ 	public ModelAndView orgSettings(HttpServletRequest request) {
  			ModelAndView model = new ModelAndView();
+ 			
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+			
  			model.setViewName("orgSettings");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
