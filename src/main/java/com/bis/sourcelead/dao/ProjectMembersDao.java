@@ -35,5 +35,5 @@ public interface ProjectMembersDao {
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
 	
-	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) ;
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) ;
 }

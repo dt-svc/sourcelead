@@ -2,9 +2,10 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.form.OrgSettings;
 
 public interface OrgService {
@@ -21,7 +22,7 @@ public interface OrgService {
 	
 	public String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
-	public Org saveOrgSettings(OrgSettings orgSettings,MultipartHttpServletRequest request,Org org) throws Exception;
+	public Org saveOrgSettings(OrgSettings orgSettings,MultipartFile multiFile,Org org) throws Exception;
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
 	

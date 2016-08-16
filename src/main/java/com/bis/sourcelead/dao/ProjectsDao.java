@@ -43,7 +43,7 @@ public interface ProjectsDao {
 	
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 
-	Collection<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
+	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
@@ -54,10 +54,8 @@ public interface ProjectsDao {
 	
 	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
 	
-	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
-	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
 	
-
+	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 
 }

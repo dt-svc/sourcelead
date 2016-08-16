@@ -194,25 +194,33 @@ public class ProjectsRestController {
 	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 	    	pah1.setProjectId(updatedProjects);
 	    	User approverUserId1 = new User();
-	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
-	    	pah1.setApproverUserId(approverUserId1);
-	    	pah1.setLevel(1);
-	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-	    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
+	    	
+	        if(jsonObj.has("level1Manager")){
+			    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+			    		approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
+				    	pah1.setApproverUserId(approverUserId1);
+				    	pah1.setLevel(1);
+				    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+				    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
+				    	
+			    	}
+		    	}
 	    	//send mail to assigned Project Manager
 	    	String teamMembersList = "";
 			
 	    	User approverUserId2 = new User();
-		if(!jsonObj.getString("level2Manager").isEmpty()){
-			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
-			pah2.setProjectId(updatedProjects);
-			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-			pah2.setApproverUserId(approverUserId2);
-			pah2.setLevel(2);
-			ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
-			ids[1] = projectApproverHierarchy.getApproverUserId().getId();
-		}
-		
+			 if(jsonObj.has("level2Manager")){ 	
+				if(!jsonObj.getString("level2Manager").isEmpty()){
+					ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+					pah2.setProjectId(updatedProjects);
+					approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+					pah2.setApproverUserId(approverUserId2);
+					pah2.setLevel(2);
+					ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+					ids[1] = projectApproverHierarchy.getApproverUserId().getId();
+				}
+			 }
+		 
 		//admin as approver hierarchy ..
 		Collection<User> uLsit = userService.getUsersByUserRoles();
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
@@ -361,36 +369,6 @@ public class ProjectsRestController {
 		    return projects;
 	  }
 	 
-	 
-	 /**
-	  * This method for update project
-	  * @param id
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/update/{id}", method = RequestMethod.GET,headers="Accept=application/json")
-	 public Projects update(@PathVariable Long id) throws Exception { 
-		    Projects projects = new Projects();
-		    projects.setId(id);
-		    
-			User superiorUser = new User();
-			superiorUser.setId(1L);
-			projects.setSuperiorUser(superiorUser);
-			
-			projects.setProjectName("SOURCELEAD");
-			projects.setProjectStatus(Project_Status.getNameByValue("Started"));
-			projects.setDescription("sourcelead desc");
-			projects.setStatus("1");
-			projects.setStartDate(new Date());
-			projects.setEndDate(new Date());
-			projects.setTimesheetFrequency("Monthly");
-			projects.setCreatedDate(new Date());
-			projects.setCreatedBy("Prasad");
-			projects.setUpdatedDate(new Date());
-			projects.setUpdatedBy("Yaswanth");
-
-		    return projectsService.updateProject(projects);
-	  }
 	 
 	 /**
 	  * This method for delete project by id
