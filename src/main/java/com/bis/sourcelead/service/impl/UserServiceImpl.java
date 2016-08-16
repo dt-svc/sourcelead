@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -40,11 +39,9 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -323,22 +320,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveUserProfile(UserProfile userProfile, MultipartHttpServletRequest request,User user) throws Exception {
+	public User saveUserProfile(UserProfile userProfile, MultipartFile multiFile,User user) throws Exception {
 		
-		user = getUserProfileDetails(userProfile,request,user);
+		user = getUserProfileDetails(userProfile,multiFile,user);
 		userDao.addUser(user);
 		return user;
 	}
 	
 	
-	private User getUserProfileDetails(UserProfile userProfile, MultipartHttpServletRequest request,User user){
+	private User getUserProfileDetails(UserProfile userProfile, MultipartFile multiFile,User user){
 		user.setFirstName(userProfile.getFirstName());
 		user.setLastName(userProfile.getLastName());
 		user.setMobilePhone(userProfile.getMobilePhone());
 		user.setJobTitle(userProfile.getJobTitle());
 		user.setLocation(userProfile.getLocation());
-		Iterator<String> itrator = request.getFileNames();
-        MultipartFile multiFile = request.getFile(itrator.next());
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
@@ -354,19 +349,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Collection<User> getUsersByUserRoles() throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRoles();
 	}
 	
 	@Override
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(userId,orgLocationsId);
 	}
 	
 	@Override
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationId(orgLocationsId);
 	}
 	
@@ -376,7 +368,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId, Long orgLocationsId,Long userId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roleId, orgLocationsId,userId);
 	}
 

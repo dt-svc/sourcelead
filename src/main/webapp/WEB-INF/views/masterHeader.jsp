@@ -81,7 +81,7 @@
         <!-- login User details -->
         <ul class="list-inline list-unstyled pull-left custom-navbar-inner">
           <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
-           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
+           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'SOURCELEAD_ADMIN'}">
 	          <li> <a href="javascript:void(0)" title="Quick Links" id="qlinks"> <i class="fa fa-link"></i> </a>
 	              <div class="qlinks-area ">
 	              <ul class="list-unstyled">
@@ -93,7 +93,7 @@
 	            </div>
 	          </li>
             </c:if>
-          <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
+          <!-- <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
             <div class="header-widget note-area">
               <ul class="list-unstyled">
                 <li>
@@ -149,7 +149,7 @@
               </ul>
               <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
             </div>
-          </li>
+          </li> -->
           <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
@@ -177,22 +177,24 @@
               <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
             </div>
           </li>
-          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
-            <div class="setting-area">
-              <ul class="list-unstyled">
-                 <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y'}">
-                     <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
-                 </c:if>
-                 
-                 <c:if test="${SourceLeadWeb_enrollOrgVisible == 'Y'}">
-                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
-                 </c:if>
-                 
-                 <li><a href="javascript:logoutFormSubmit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.png" title="${SourceLeadWeb_country}"></a></li>
+          
+          <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible == 'Y'}">
+	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
+	            <div class="setting-area">
+	              <ul class="list-unstyled">
+	                     <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	                 
+	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
+	              </ul>
+	            </div>
+	          </li>
+          </c:if>
+          
+          <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
+	          <li><a href="<c:url value="/orgSettings" />" title="Org Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a></li>
+          </c:if>
+          
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>

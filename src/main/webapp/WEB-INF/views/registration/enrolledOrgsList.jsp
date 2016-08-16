@@ -19,9 +19,6 @@ window.onload = function () {
 	}
 </script>
 
-<div class="success_pop" id="mailMsg" style="display: none;">
-	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
-</div>
 
   <!-- Content Area -->
   
@@ -30,7 +27,7 @@ window.onload = function () {
    <div id="loading"></div>
     <section class="content-header clearfix">
          <c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector">
+	        <div class="success_pop" id="selector" style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>

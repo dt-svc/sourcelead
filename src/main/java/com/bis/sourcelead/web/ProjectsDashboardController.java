@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
@@ -66,7 +67,7 @@ public class ProjectsDashboardController {
         {
             sessionData = new SessionMaintainanceData();
         }
-        sessionData.setNav(com.bis.sourcelead.util.Constants.Projects);
+        sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
         Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
@@ -78,12 +79,6 @@ public class ProjectsDashboardController {
         
         List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
-        /*Collection<Projects> projectsList = null;
-        try{
-        	Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
-        }catch(Exception e){
-        	e.printStackTrace();
-        }*/
         if(!projectIds.isEmpty()){
         Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
@@ -106,7 +101,11 @@ public class ProjectsDashboardController {
 		return model;
 		
     }
-	
+	/**	 
+	 * checks if string is null or empty
+	 * @param str
+	 * @return boolean
+	 */	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}

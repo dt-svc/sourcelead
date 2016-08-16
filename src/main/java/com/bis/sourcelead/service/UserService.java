@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Employees;
@@ -29,7 +30,7 @@ public interface UserService  {
 	
 	public User findByEmail(String email)  throws Exception;
 	
-	public User saveUserProfile(UserProfile userProfile,MultipartHttpServletRequest request,User user) throws Exception;
+	public User saveUserProfile(UserProfile userProfile,MultipartFile multiFile,User user) throws Exception;
 	
 	public Collection<User> getUsersByUserRoles() throws Exception;
 	

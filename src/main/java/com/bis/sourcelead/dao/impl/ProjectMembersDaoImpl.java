@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,15 +18,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.exception.NoRecordsFoundException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectMembersDaoImpl implements ProjectMembersDao{
@@ -138,7 +134,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getAllProjectMembers method");
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(ProjectMembers.class);
-        List<ProjectMembers> projectsMembersList = crit.list();
+        List<ProjectMembers> projectsMembersList = crit.setCacheable(true).list();
         return projectsMembersList;
 	}
 	
@@ -164,7 +160,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
 		List<Long> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()) 
-			    .list(); 
+			    .setCacheable(true).list(); 
 		return idsList;  
 		
         
@@ -197,7 +193,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :nextMondayDate and (pm.projectEndDate IS NULL OR pm.projectEndDate >= :previousMonday) ) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :nextMondayDate))" ;
 		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
-			    .list(); 
+			    .setCacheable(true).list(); 
 		return idsList;  
 	}
 
@@ -247,7 +243,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)" ;
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setString("status",status).setCacheable(true) 
 			    .list();
 		return allProjectsList;
@@ -266,14 +262,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId) {
+	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from ProjectMembers pm where pm.projects.id IN (select p.id from Projects p  "
-				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId)" ;
+				+ "where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId) and pm.projects.id = :projectId" ;
 		List<ProjectMembers> projectMembersList =session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId)
-				.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+				.setLong("orgLocationId", orgLocationId).setLong("projectId", projectId).setCacheable(true).list(); 
 		      
 	    return projectMembersList.size();
 }
