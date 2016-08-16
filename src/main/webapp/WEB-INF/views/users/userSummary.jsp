@@ -346,7 +346,7 @@ function firstname(name)
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
 						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
 						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
-                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\')"; ></i>';
+                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
                             }
                             else{
                                  result = result + '<td><div><font color="red">Terminated</font></div></td>';
@@ -1214,10 +1214,11 @@ function date() {
 	  
   } );
   
-  function deleteProject(local,userId){ 
+  function deleteProject(local,userId,projectName){ 
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Project : <strong>"+projectName+"</strong></p>";
 		result = result +"		<p>User delete message here</p>";
 		result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here'></textarea>";
 		result = result + ' <div id="reasonForProjectDiv"/>';
@@ -1258,7 +1259,7 @@ function saveReason(projectMemberId,userId){
 		}
 	}
 	else{
-		$("#reasonForProjectDiv").empty().append("<font class='tr_color'>Reason is required</font>") ;
+		$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 }
 </script>
