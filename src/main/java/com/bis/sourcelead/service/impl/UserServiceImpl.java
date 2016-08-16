@@ -323,22 +323,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveUserProfile(UserProfile userProfile, MultipartHttpServletRequest request,User user) throws Exception {
+	public User saveUserProfile(UserProfile userProfile, MultipartFile multiFile,User user) throws Exception {
 		
-		user = getUserProfileDetails(userProfile,request,user);
+		user = getUserProfileDetails(userProfile,multiFile,user);
 		userDao.addUser(user);
 		return user;
 	}
 	
 	
-	private User getUserProfileDetails(UserProfile userProfile, MultipartHttpServletRequest request,User user){
+	private User getUserProfileDetails(UserProfile userProfile, MultipartFile multiFile,User user){
 		user.setFirstName(userProfile.getFirstName());
 		user.setLastName(userProfile.getLastName());
 		user.setMobilePhone(userProfile.getMobilePhone());
 		user.setJobTitle(userProfile.getJobTitle());
 		user.setLocation(userProfile.getLocation());
-		Iterator<String> itrator = request.getFileNames();
-        MultipartFile multiFile = request.getFile(itrator.next());
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
@@ -354,19 +352,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Collection<User> getUsersByUserRoles() throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRoles();
 	}
 	
 	@Override
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(userId,orgLocationsId);
 	}
 	
 	@Override
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersByUserRolesAndOrgLocationId(orgLocationsId);
 	}
 	
@@ -376,7 +371,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId, Long orgLocationsId,Long userId) throws Exception {
-		// TODO Auto-generated method stub
 		return userDao.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(roleId, orgLocationsId,userId);
 	}
 
