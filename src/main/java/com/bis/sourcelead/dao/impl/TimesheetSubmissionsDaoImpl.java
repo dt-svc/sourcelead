@@ -782,4 +782,21 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	}
 
 
+	@Override
+	public List<TimesheetSubmissions> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			String status, Long orgLocationId) throws Exception {
+		
+
+
+        Session session = this.sessionFactory.getCurrentSession();
+       
+        String subquery =   "ts.id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = :status)";
+		String query = "from  TimesheetSubmissions   ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where  emp.orgLocations.id = :orgLocationId and  emp.user.id = :userId and  sah.submissionStatus = :status order by pm.projects.id ASC)" ;
+		@SuppressWarnings("unchecked")
+		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("status", status).setCacheable(true).list(); 
+		
+		return tslist;
+	}
+
+
 }

@@ -226,14 +226,16 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
 		timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
 		
-		Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL");
+		
+		Collection<TimesheetSubmissions> submittedForApprovalindividualEmployeeList   = timesheetSubmissionsDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "SUBMITTEDFORAPPROVAL", orgLocationId);
 		timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
 		
-		Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"NEW");
 		
-		Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"DRAFT");
-		Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() +draftindividualEmployeeList.size();
+		Collection<TimesheetSubmissions> newindividualEmployeeList   = timesheetSubmissionsDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "NEW", orgLocationId);
 		
+		Collection<TimesheetSubmissions> draftindividualEmployeeList   = timesheetSubmissionsDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "DRAFT", orgLocationId);
+
+		Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() + draftindividualEmployeeList.size();
 		timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 		
 		return timeSheetSubmissionCount;
@@ -288,6 +290,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			// TODO Auto-generated method stub
 			return timesheetSubmissionsDao.getTimesheetSubmissionsByMemberIdAndStartDate(memberId, startDate);
 		}
+
+		
+	
 
 		@Override
 		public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimesheetSubmissionsDao {
@@ -53,5 +54,8 @@ public interface TimesheetSubmissionsDao {
 	
 	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,String employeeId) throws Exception ;
 
+	public List<TimesheetSubmissions>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,String status,Long orgLocationId) throws Exception ;
+ 
+	
 
 }
