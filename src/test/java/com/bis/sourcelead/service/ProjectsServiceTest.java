@@ -31,7 +31,6 @@ public class ProjectsServiceTest {
 
 	
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceTest.class);
 	
 
 	@Configuration

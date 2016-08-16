@@ -56,19 +56,10 @@ public class UserProfileRestController {
 	   public String saveUserProfile(@RequestParam(value="json", required=false) String json ,MultipartHttpServletRequest request) throws Exception {
 			
 		   
-	   Iterator<String> itrator = request.getFileNames();
-       MultipartFile multiFile = request.getFile(itrator.next());
-       String fileExtension = null;
-       if(multiFile != null && !isNullOrEmpty(multiFile.getOriginalFilename())){
-    	   String fileName = multiFile.getOriginalFilename();
-    	   fileExtension = fileName.substring(fileName.length() - 3);
-       }
-	  
+		    Iterator<String> itrator = request.getFileNames();
+	        MultipartFile multiFile = request.getFile(itrator.next());
 		
-	   if(!isNullOrEmpty(fileExtension) && ("png".equalsIgnoreCase(fileExtension) || "svg".equalsIgnoreCase(fileExtension) || "gif".equalsIgnoreCase(fileExtension))){
-		    return "Invalid Image";
-	   }else{
-		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -82,7 +73,7 @@ public class UserProfileRestController {
 				e.printStackTrace();
 			}
 			   return "home";
-	   }
+	  
 	   
 	   }
 	   
