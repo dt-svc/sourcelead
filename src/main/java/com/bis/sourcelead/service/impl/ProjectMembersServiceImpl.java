@@ -15,6 +15,7 @@ import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 
@@ -26,6 +27,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	@Autowired
 	private ProjectMembersDao projectMembersDao;
+	
+	@Autowired
+	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
@@ -106,7 +110,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String filterValue) {
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String filterValue) throws Exception {
 		List<ProjectMembers> allProjectsList = null;
 		if(filterValue.equals("All")){
 			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId);
@@ -119,10 +123,21 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		}
 		for (ProjectMembers projectMembers : allProjectsList) {
 			projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
-			projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
+			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+			 }
+			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
+				 projectMembers.setStartDate(Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
+             }
+        	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
+        		 projectMembers.setEndDate(Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
+        	 }
+        	 
+        	 /*projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
 			if (projectMembers.getProjectEndDate() != null) {
 				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
-			}
+			}*/
 			if (projectMembers.getProjects().getEndDate() != null) {
 				projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
 			}

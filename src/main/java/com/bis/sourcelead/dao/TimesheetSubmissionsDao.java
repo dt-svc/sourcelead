@@ -26,6 +26,8 @@ public interface TimesheetSubmissionsDao {
     
     public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
     
+    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long  approverUserId,Long empUserId) throws Exception;
+    
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
     public Date getNextMondayByProjectMemberId(Long pojectMemberId); 
