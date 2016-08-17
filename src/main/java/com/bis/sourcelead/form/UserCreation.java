@@ -157,7 +157,7 @@ public class UserCreation {
 	}
 
 	public void setDayHours(String dayHours) {
-		this.dayHours = dayHours;
+		this.dayHours = dayHours; 
 	}
 
 	public String getInvoiceFrequency() {

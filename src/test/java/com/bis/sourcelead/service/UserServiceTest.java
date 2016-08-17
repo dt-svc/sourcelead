@@ -295,12 +295,12 @@ public class UserServiceTest {
 		return multipartFile;
 	}
 	
-	//@Test
+	/*//@Test
 	public void getUsersByUserRoles() throws Exception{
 		
 		Collection<User> user = userService.getUsersByUserRoles();
 		logger.info("getUsersByUserRoles " + user.size());
-	}
+	}*/
 	//@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
 		

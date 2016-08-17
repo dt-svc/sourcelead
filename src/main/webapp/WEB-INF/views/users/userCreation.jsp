@@ -307,7 +307,7 @@
                         <option>Semi-Monthly</option>
                         <option>Monthly</option>
                       </select>
-                      <span class="hidden">Invoice Frequency</span> 
+                      <span class="hidden">Invoice Frequency</span>  
               </div>
             </div>
                   <div class="form-group" id="DayHoursDiv">
