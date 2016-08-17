@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
@@ -21,7 +20,6 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsService {
@@ -330,8 +328,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
 	        
 	        StringBuilder sb = new StringBuilder();
-			/*sb.append(" <table>");
-			sb.append(" <tbody>");
+			sb.append(" <table id='example' class='display' cellspacing='0' width='100%' >");
 			sb.append(" <thead>");
 			sb.append("     <tr>");
 			sb.append("         <th>Employee</th>");
@@ -340,11 +337,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			sb.append("         <th>Stage</th>");
 			sb.append("         <th>Action</th>");
 			sb.append("     </tr>");
-			sb.append(" </thead>");*/
-			
+			sb.append(" </thead>");
+			sb.append(" <tbody>");
+			 
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				
-	        sb.append("	<div>");
+	       /* sb.append("	<div>");
 			sb.append("	<ul class='table_head'>");
 			sb.append("    <li>Employee</li> ");
 			sb.append("    <li>Frequency</li>            ");
@@ -353,8 +351,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			sb.append("    <li>Action</li>               ");
 			sb.append("    <div class='clearfix'></div> ");
 			sb.append("</ul>");
-	       	sb.append(" <ul class='table_details'> ");
-			 
+	       	sb.append(" <ul class='table_details'> ");*/
+	       	
 	        String pattern = "dd-MM-yyyy";
 	        SimpleDateFormat format = new SimpleDateFormat(pattern);
 	        Date currentStartDate = null;
@@ -405,7 +403,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
 	        	   }
 	        	   
-	               				sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
+	               				/*sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
 			                    sb.append("  <li><div class='time_appr_user'>");
 			                    sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 			                    sb.append("    <span><b>"+ts.getFullName()+"</b></span></div>");
@@ -448,23 +446,23 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			                    sb.append("    </div>");
 			                    sb.append("    </li>");
 			                    sb.append(" <div class='clearfix'></div>");
-			                    sb.append("</div>");
+			                    sb.append("</div>");*/
 	       	
-	        	   /*sb.append("  <tr id='row"+ts.getId()+"'>");
+	        	   sb.append("  <tr id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"' >");
 	               sb.append("  <td><div class='time_appr_user'>");
 	               sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 	               sb.append("    <span><b>"+ts.getFullName()+"</b></span></div></div>");
 	               sb.append("    </td>");
 	               
 	               sb.append("<td><div>");
-			       if(employeeStartDate.before(currentStartDate)){
-			       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getId()+"\");'></i>");
-		       	   }
-		       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
-		       		
-		       	   if(currentEndDate.before(employeeEndDate)){
-		       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getId()+"\");'></i><abbr></abbr> ");	
-		       	   }
+     		       if(employeeStartDate.before(currentStartDate)){
+     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+     	       	   }
+     	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
+     	       		
+     	       	   if(currentEndDate.before(employeeEndDate)){
+     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+     	       	   }
 		       	   sb.append("    </div>");
 		       	   sb.append("    </td>");
 		       	   
@@ -492,165 +490,198 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		              }  
 	               sb.append("    </div>");
 	               sb.append("    </td>");
-	               sb.append("</tr>");*/
-	             
+	               sb.append("</tr>");
 	         }
-	         sb.append("	<div>");
+	        /* sb.append("	<div>");*/
 			}
-	        /* sb.append(" </tbody>");
-	         sb.append(" </table>");
-	          */
+			sb.append(" </tbody>");
+		    sb.append(" </table>");
+	          
 	       return sb.toString();
 			
 		}
 
 		@Override
-		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception {
-			 
-			HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForEmployee(projectMemberUserId);
-			Date employeeStartDate = submissionDateRange.get("STARTDATE");
-			Date employeeEndDate = submissionDateRange.get("ENDDATE");
-			TimesheetSubmissions  ts = null;
-			
-			StringBuilder sb = new StringBuilder();	
-			if(employeeStartDate != null && employeeStartDate != null){
-			
-			  StringBuilder sb1 = new StringBuilder();
-			 
-			  StringBuilder startDateBuilder = new StringBuilder();
-			  StringBuilder endDateBuilder = new StringBuilder();
-			 
-			  String pattern = "dd-MM-yyyy";
-	          SimpleDateFormat format = new SimpleDateFormat(pattern);
-	          Date currentStartDate = null;
-	          Date currentEndDate = null;
-			 if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
-				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
-				      Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					   startCal.setLenient(false);
-						
-				      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
-				    	  startCal.setTime(currentWeekStartDate);
-				      }
-				      else if(employeeEndDate.before(currentWeekStartDate)){
-				    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-				    	  endCal.setLenient(false);
-				    	  endCal.setTime(employeeEndDate);
-				    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
-				      }
-				      else if(employeeStartDate.after(currentWeekStartDate)){
-				    	  startCal.setTime(employeeStartDate);
-				      }
-				      
-		        	  
-			         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
-			         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
-			         ts = getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),memberId,employeeId);
-	                 
-	                 currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-	                 currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
-	        }
-	        else{
+		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception {HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForEmployee(projectMemberUserId);
+		Date employeeStartDate = submissionDateRange.get("STARTDATE");
+		Date employeeEndDate = submissionDateRange.get("ENDDATE");
+		TimesheetSubmissions  ts = null;
+		
+		StringBuilder sb = new StringBuilder();	
+		if(employeeStartDate != null && employeeStartDate != null){
+		
+		  StringBuilder sb1 = new StringBuilder();
+		 
+		  StringBuilder startDateBuilder = new StringBuilder();
+		  StringBuilder endDateBuilder = new StringBuilder();
+		 
+		  String pattern = "dd-MM-yyyy";
+          SimpleDateFormat format = new SimpleDateFormat(pattern);
+          Date currentStartDate = null;
+          Date currentEndDate = null;
+		 if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
+			      Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				   startCal.setLenient(false);
+					
+			      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
+			    	  startCal.setTime(currentWeekStartDate);
+			      }
+			      else if(employeeEndDate.before(currentWeekStartDate)){
+			    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			    	  endCal.setLenient(false);
+			    	  endCal.setTime(employeeEndDate);
+			    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
+			      }
+			      else if(employeeStartDate.after(currentWeekStartDate)){
+			    	  startCal.setTime(employeeStartDate);
+			      }
+			      
+	        	  
+		         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
+		         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
+		         ts = getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),memberId,employeeId);
+                 
+                 currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
+                 currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
+        }
+        else{
+                
+                 if(navigation.equalsIgnoreCase("left")){
+                     
+                     
+                     Date sDate  =  Constants.DMY.parse(startDate);
+	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					 startCal.setLenient(false);
+					 startCal.setTime(sDate);
+					 
+						                
+	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
+			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
 	                
-	                 if(navigation.equalsIgnoreCase("left")){
-	                     
-	                     
-	                     Date sDate  =  Constants.DMY.parse(startDate);
-		                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						 startCal.setLenient(false);
-						 startCal.setTime(sDate);
-						 
-							                
-		                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
-				        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
-		                
-				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId(),memberId,employeeId);
-		                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
-		                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
-	                 }
-	                 else{ 
-	                 
-		                 Date sDate  =  Constants.DMY.parse(startDate);
-		                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						 startCal.setLenient(false);
-						 startCal.setTime(sDate);
-						 
-							                
-		                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
-				        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
-		                
-				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId(),memberId,employeeId);
-		                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-		                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
-	                 }
-	        }
-	        
-			if(currentStartDate !=null){
-	      	   	ts.setStartDateStr(Constants.DF_DMY.format(currentStartDate));
-	        }
-	  	    if(currentEndDate !=null){
-	  		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
-	  	    }
-	  	    
-	  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
-	       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
-		   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
-			   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
-		   }
-		   		
-	         sb.append("  <li><div class='time_appr_user'>");
-	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
-	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
-	         sb.append(" <div></li>");
-	         
-	         sb.append("<li><div>");
-		       if(employeeStartDate.before(currentStartDate)){
-		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
-	     	   }
-	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
-	     		
-	     	   if(currentEndDate.before(employeeEndDate)){
-	     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
-	     	   }
-	     	   sb.append("    </div>");
-	     	   sb.append("    </li>");
-	     	   
-	     	 
-	         sb.append("    <li><div> " );
-	         sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
-	         sb.append("    </div>");
-	         sb.append("    </li>");
-	         
-	         sb.append("  <li><div>"+ts.getCombinedStatus()+"</div></li>");
-	         
-	         sb.append("    <li><div> " );
-	             if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
-	                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
-	                 sb.append("<div id='rejectedPopup'></div>");
-	             }
-	             if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
-	               /*  sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\'rejectedMessage"+ts.getId()+"\');'>");
-	               sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
-	               sb.append(" </i>");
-	               sb.append(" </div>");
-	               */
-	               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
-	               sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
-	               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
-	               sb.append(" </i>");
-	               sb.append(" </div>");
+			        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId(),memberId,employeeId);
+	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
+	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
+                 }
+                 else{ 
+                 
+	                 Date sDate  =  Constants.DMY.parse(startDate);
+	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					 startCal.setLenient(false);
+					 startCal.setTime(sDate);
+					 
+						                
+	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
+			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
 	                
-	                
-	            }
-	            if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
-	          	  sb.append(" <div><h3>Approved</h3></div>");
-	            }  
-	            sb.append(" </div>");
-	            sb.append("    </li>");
-	            sb.append("<div class='clearfix'></div>");
-			}
-	        
-	        return sb.toString();
+			        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId(),memberId,employeeId);
+	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
+	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
+                 }
+        }
+        
+		if(currentStartDate !=null){
+      	   	ts.setStartDateStr(Constants.DF_DMY.format(currentStartDate));
+        }
+  	    if(currentEndDate !=null){
+  		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
+  	    }
+  	    
+  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
+       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
+	   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
+		   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+	   }
+	   		
+         sb.append("  <td><div class='time_appr_user'>");
+         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
+         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
+         sb.append(" <div></td>");
+         
+         sb.append("<td><div>");
+	       if(employeeStartDate.before(currentStartDate)){
+	       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+     	   }
+     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
+     		
+     	   if(currentEndDate.before(employeeEndDate)){
+     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+     	   }
+     	   sb.append("    </div>");
+     	   sb.append("    </td>");
+     	   
+     	 
+         sb.append("    <td><div> " );
+         sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
+         sb.append("    </div>");
+         sb.append("    </td>");
+         
+         sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
+         
+         sb.append("    <td><div> " );
+             if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
+                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
+                 sb.append("<div id='rejectedPopup'></div>");
+             }
+             if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
+               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
+               sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
+               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
+               sb.append(" </i>");
+               sb.append(" </div>");
+            }
+            if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
+          	  sb.append(" <div><h3>Approved</h3></div>");
+            }  
+            sb.append(" </div>");
+            sb.append("    </td>");
+            sb.append("<div class='clearfix'></div>");
+	   
+	   
+      /* sb.append("  <td><div class='time_appr_user'>");
+       sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
+       sb.append("    <span><b>"+ts.getFullName()+"</b></span></div></div>");
+       sb.append("    </td>");
+       
+       sb.append("<td><div>");
+	       if(employeeStartDate.before(currentStartDate)){
+	       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+       	   }
+       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+startDate+"</span>");
+       		
+       	   if(currentEndDate.before(employeeEndDate)){
+       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+       	   }
+   	   sb.append("    </div>");
+   	   sb.append("    </td>");
+   	   
+       sb.append("    <td><div> " );
+       sb.append(" <a onclick='myTimesheet(\'"+ts.getEmployeeId()+"\',\'"+ts.getStartDateStr()+"\',\'"+ts.getEndDateStr()+"\');'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a></div></td>");
+       sb.append("    </div>");
+       sb.append("    </td>");
+       
+       sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
+       
+       sb.append("    <td><div> " );
+           if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
+               sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\'"+ts.getEmployeeId()+"\',\'"+ts.getStartDateStr()+"\',\'"+ts.getEndDateStr()+"\');'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\'"+ts.getId()+"\',\'"+ts.getEmployeeId()+"\',\'"+ts.getStartDateStr()+"\',\'"+ts.getEndDateStr()+"\');'></i></div>");
+               sb.append("<div id='rejectedPopup'></div>");
+           }
+           if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
+             sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
+             sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\'rejectedMessage"+ts.getId()+"\');'>");
+             sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
+             sb.append(" </i>");
+             sb.append(" </div>");
+          }
+          if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
+        	  sb.append(" <div><h3>Approved</h3></div>");
+          }  
+       sb.append("    </div>");
+       sb.append("    </td>");*/
+       
 		}
+        
+        return sb.toString();
+   }
 }
