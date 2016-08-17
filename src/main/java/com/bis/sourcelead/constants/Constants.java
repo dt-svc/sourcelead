@@ -105,5 +105,11 @@ public class Constants {
 	
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
 	
+	/** for user roles**/
+	public static String ROLE_ADMIN = "ROLE_ADMIN";
+	public static String ROLE_APPROVER = "ROLE_APPROVER";
+	public static String ROLE_USER = "ROLE_USER";
+	public static String SOURCELEAD_ADMIN = "SOURCELEAD_ADMIN";
+	
 	
 }
