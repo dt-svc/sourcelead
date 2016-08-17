@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -243,6 +244,7 @@ public class ProjectsDashboardRestController {
 		 json = "{"+json+"}";	
 		 JSONObject jsonObj = new JSONObject(json);
 		 Date currentDate = new Date();
+		 Date previousEndDate = null;
 		 
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 Projects projects = projectsService.getProjectById(projectId);
@@ -259,8 +261,9 @@ public class ProjectsDashboardRestController {
 		    	}
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	if(jsonObj.getString("endDateStr1") != null){
-		    		Date endtDate = format.parse(jsonObj.getString("endDateStr1"));
-					projects.setEndDate(endtDate);
+		    		previousEndDate = projects.getEndDate();
+		    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+					projects.setEndDate(endDate);
 		    	}
 		    	if(jsonObj.has("clientId")){
 		    		OrgRelations orgRelations = new OrgRelations();
@@ -306,7 +309,34 @@ public class ProjectsDashboardRestController {
 			    	projectsService.updateProject(projects);
 			    }
 			    else{
-			    	projectsService.updateProject(projects);
+			    	projects = projectsService.updateProject(projects);
+			    	if((projects.getEndDate() == null) || (previousEndDate == null) || (previousEndDate!= null && projects.getEndDate() != null && !projects.getEndDate().equals(previousEndDate) && projects.getEndDate().after(previousEndDate))){
+			    		 List<ProjectMembers> pmList = projectMembersService.getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(projects.getId(), Primary.NO);
+			    	     if(pmList != null && !pmList.isEmpty()){
+			    	    	 for(ProjectMembers projectMember :pmList){
+			    	    		 projectMember.setStatus(Constants.MEMBER_ACTIVE);
+			    	    		 projectMember.setIsManuallyTerminated(null);
+			    	    		 projectMember.setTerminateReason(null);
+			    	    		 projectMember.setUpdatedDate(new Date());
+			    	    		 projectMember.setUpdatedBy(user.getUserCode());
+			    	    		 HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+							  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+								  if(pmh != null){
+									  pmh.setProjectTerminationDate(projects.getEndDate());
+									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  memberHistoryList.add(pmh);
+									  projectMember.setMemberHistoryList(memberHistoryList);
+								  }
+								  projectMembersService.saveProjectMember(projectMember);
+			    	    		 if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
+			    	    		 }
+			    	    	 }
+			    	     }
+			    	}
+			    	
 			    }
 		 
 		 return null;

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.ProjectMembersService;
 
 public interface ProjectMembersDao {
@@ -12,6 +13,8 @@ public interface ProjectMembersDao {
     public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception;
  	
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception;
+	
+	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
 	public ProjectMembers getProjectMemberById(Long id) throws Exception;
 	

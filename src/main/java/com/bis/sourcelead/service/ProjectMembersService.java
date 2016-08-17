@@ -6,12 +6,15 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.enums.Primary;
 
 public interface ProjectMembersService {
 
     public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception;
  	
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception;
+	
+	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
 	public ProjectMembers getProjectMemberById(Long id) throws Exception;
 	

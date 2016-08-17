@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
@@ -533,24 +534,21 @@ public class UserRestController {
 				  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 				  	  if(projectMembers != null){
 				  		  String status = Constants.MEMBER_IN_ACTIVE;
-					  	  projectMembers.setStatus(status);
 					  	  projectMembers.setTerminateReason(reason);
-					  	  projectMembers.setStatus(Constants.MEMBER_ACTIVE);
-						  projectMembers.setCreatedDate(new Date());
 						  projectMembers.setUpdatedDate(new Date());
 						  projectMembers.setUpdatedBy(user.getUserCode());
 					  	  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
 					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						  if(pmh != null){
 							  pmh.setProjectTerminationDate(new Date());
-							  pmh.setCreatedDate(new Date());
 							  pmh.setUpdatedDate(new Date());
 							  pmh.setUpdatedBy(user.getUserCode());
 							  memberHistoryList.add(pmh);
 							  projectMembers.setMemberHistoryList(memberHistoryList);
 						  }
+						  projectMembers.setStatus(status);
 						  projectMembersService.saveProjectMember(projectMembers);
-						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
+						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
 					      updatedCount = 1;
 				  	   }
 					
@@ -597,7 +595,7 @@ public class UserRestController {
 						Date terminationDate = sdf.parse(endDate);
 						Date currentDate = new  Date();
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
-							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
+							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
 						}						
 					}
 					return "updated";

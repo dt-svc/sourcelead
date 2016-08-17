@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -75,7 +76,7 @@ public class CommonUtil {
 		projectTasksService.saveAll(tasksList);
 	}
 	
-	public void terminateProjectMemberByProjectMemberId(Long projectMemberId){
+	public void terminateProjectMemberByProjectMemberId(Long projectMemberId,Primary isManuallyTerminated){
 		try {
 			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
 			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
@@ -91,6 +92,7 @@ public class CommonUtil {
 			
 			ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			pm.setStatus(Constants.MEMBER_IN_ACTIVE);
+			pm.setIsManuallyTerminated(isManuallyTerminated);
 			projectMembersService.updateProjectMember(pm);
 			
 		
@@ -100,13 +102,19 @@ public class CommonUtil {
 		}
 	}
 	
+	public void reopenProjectMemberByProjectMemberId(Long projectMemberId,Projects projects){
+		
+	}
+	
+	
+	
 	public void terminateAllProjectMembersByUser(User user){
 		List<ProjectMembers> projectMembers;
 		try {
 			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
 			if(projectMembers != null && !projectMembers.isEmpty()){
 				for(ProjectMembers projectMember :projectMembers){
-					terminateProjectMemberByProjectMemberId(projectMember.getId());
+					terminateProjectMemberByProjectMemberId(projectMember.getId(),Primary.NO);
 				}
 				
 			}
@@ -128,7 +136,7 @@ public class CommonUtil {
 					pmh.setProjectTerminationDate(project.getEndDate());
 					pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
 				}
-				terminateProjectMemberByProjectMemberId(pojectMember.getId());
+				terminateProjectMemberByProjectMemberId(pojectMember.getId(),Primary.NO);
 			}
 		}
 		project.setProjectStatus(Project_Status.COMPLETED);

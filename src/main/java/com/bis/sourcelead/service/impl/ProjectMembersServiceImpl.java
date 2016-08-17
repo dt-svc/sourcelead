@@ -13,6 +13,7 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.ProjectMembersService;
 
 @Service
@@ -122,6 +123,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			throws Exception {
 		// TODO Auto-generated method stub
 		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
+		return projectMembersDao.getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(projectId,isManuallyTerminated);
 	}
 
 
