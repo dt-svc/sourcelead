@@ -55,11 +55,11 @@ public class ProjectMembers {
 	@Column(name = "TIMESHEET_FREQUENCY")
 	private String timesheetFrequency;
 	
-	/*@Column(name = "PROJECT_ASSIGNED_DATE")
+	@Column(name = "PROJECT_ASSIGNED_DATE")
     private Date projectAssignedDate;
 	
 	@Column(name = "PROJECT_END_DATE")
-    private Date projectEndDate;*/
+    private Date projectEndDate;
 	
 	@Column(name = "ROLE")
 	private String role;
@@ -132,6 +132,22 @@ public class ProjectMembers {
     
     
 	
+
+	public Date getProjectAssignedDate() {
+		return projectAssignedDate;
+	}
+
+	public void setProjectAssignedDate(Date projectAssignedDate) {
+		this.projectAssignedDate = projectAssignedDate;
+	}
+
+	public Date getProjectEndDate() {
+		return projectEndDate;
+	}
+
+	public void setProjectEndDate(Date projectEndDate) {
+		this.projectEndDate = projectEndDate;
+	}
 
 	public Status getUserState() {
 		return userState;
