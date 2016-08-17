@@ -20,7 +20,7 @@ public interface UserDao {
 	
 	User findByEmail(String email);
 	
-	public Collection<User> getUsersByUserRoles() throws Exception;
+	public Collection<User> getUsersByUserRoles(Long orgLocationsId) throws Exception;
 	
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	

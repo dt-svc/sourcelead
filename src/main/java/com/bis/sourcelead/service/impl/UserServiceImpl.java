@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+
+import java.util.HashSet;
+import java.util.Iterator;
+
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,6 +33,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -185,11 +191,11 @@ public class UserServiceImpl implements UserService {
 		String roleName = "";
 		try {
 			if(user != null && user.getUserType() != null && "Admin".equals(user.getUserType())){
-				roleName = "ROLE_ADMIN";
+				roleName = Constants.ROLE_ADMIN;
 			}else if(user != null && user.getUserType() != null && "Approver".equals(user.getUserType())){
-				roleName = "ROLE_APPROVER";
+				roleName = Constants.ROLE_APPROVER;
 			}else if(user != null && user.getUserType() != null && "Employee".equals(user.getUserType())){
-				roleName = "ROLE_USER";
+				roleName = Constants.ROLE_USER;
 			}
 			roles = rolesService.getRolesByRoleName(roleName);
 		} catch (Exception e) {
@@ -230,14 +236,16 @@ public class UserServiceImpl implements UserService {
 	
 	private ProjectMembers getProjectMembersDetails(Employees employee, JSONObject jsonObj, String userCode, Long orgLocationsId) throws Exception {
 		ProjectMembers pm = new ProjectMembers();
+
 		
 		/*if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
 			Projects project = new Projects();
+
 			project.setId(Long.parseLong(jsonObj.getString("projectId")));
 			pm.setProjects(project);
 		}else{
 			//To add default project
-			Projects project = projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
+			project = projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
 			pm.setProjects(project);
 		}*/
 		Projects project = new Projects();
@@ -245,10 +253,24 @@ public class UserServiceImpl implements UserService {
 		pm.setProjects(project);
 		pm.setEmployee(employee);
 		pm.setStatus(Constants.MEMBER_ACTIVE);
-		pm.setProjectAssignedDate(new Date());
+		
+		HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+		ProjectMembersHistory pmh = new ProjectMembersHistory();
+	    Projects  newproject	=  projectsService.getProjectById(project.getId());
+		pmh.setProjectTerminationDate(newproject.getEndDate());
+		pmh.setProjectMemberId(pm);
+		pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+		pmh.setProjectAssignedDate(new Date());
+        pmh.setCreatedDate(new Date());
+		pmh.setCreatedBy(userCode);
+		pmh.setUpdatedDate(new Date());
+		pmh.setUpdatedBy(userCode);
+		pmhList.add(pmh);
+		
 		pm.setCreatedBy(userCode);
 		pm.setCreatedDate(new Date());
 		pm.setUpdatedDate(new Date());
+		pm.setMemberHistoryList(pmhList);
 		return pm;
 	}
 	
@@ -352,8 +374,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Collection<User> getUsersByUserRoles() throws Exception {
-		return userDao.getUsersByUserRoles();
+	public Collection<User> getUsersByUserRoles(Long orgLocationsId) throws Exception {
+		return userDao.getUsersByUserRoles(orgLocationsId);
+
 	}
 	
 	@Override

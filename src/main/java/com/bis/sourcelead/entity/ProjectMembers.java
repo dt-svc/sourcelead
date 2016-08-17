@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,13 +15,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.bis.sourcelead.enums.Primary;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import com.bis.sourcelead.enums.Status;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -45,11 +55,11 @@ public class ProjectMembers {
 	@Column(name = "TIMESHEET_FREQUENCY")
 	private String timesheetFrequency;
 	
-	@Column(name = "PROJECT_ASSIGNED_DATE")
+	/*@Column(name = "PROJECT_ASSIGNED_DATE")
     private Date projectAssignedDate;
 	
 	@Column(name = "PROJECT_END_DATE")
-    private Date projectEndDate;
+    private Date projectEndDate;*/
 	
 	@Column(name = "ROLE")
 	private String role;
@@ -62,6 +72,10 @@ public class ProjectMembers {
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "IS_MANUALLY_TERMINATED")
+	private Primary isManuallyTerminated;
 	
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -106,6 +120,12 @@ public class ProjectMembers {
     
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL)
+    @JsonBackReference
+	@Fetch(FetchMode.SELECT)
+	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
     
     
     
@@ -195,21 +215,6 @@ public class ProjectMembers {
 		this.timesheetFrequency = timesheetFrequency;
 	}
 
-	public Date getProjectAssignedDate() {
-		return projectAssignedDate;
-	}
-
-	public void setProjectAssignedDate(Date projectAssignedDate) {
-		this.projectAssignedDate = projectAssignedDate;
-	}
-
-	public Date getProjectEndDate() {
-		return projectEndDate;
-	}
-
-	public void setProjectEndDate(Date projectEndDate) {
-		this.projectEndDate = projectEndDate;
-	}
 
 	public String getRole() {
 		return role;
@@ -337,6 +342,22 @@ public class ProjectMembers {
 
 	public void setProjectEndDateStr(String projectEndDateStr) {
 		this.projectEndDateStr = projectEndDateStr;
+	}
+
+	public Set<ProjectMembersHistory> getMemberHistoryList() {
+		return memberHistoryList;
+	}
+
+	public void setMemberHistoryList(Set<ProjectMembersHistory> memberHistoryList) {
+		this.memberHistoryList = memberHistoryList;
+	}
+
+	public Primary getIsManuallyTerminated() {
+		return isManuallyTerminated;
+	}
+
+	public void setIsManuallyTerminated(Primary isManuallyTerminated) {
+		this.isManuallyTerminated = isManuallyTerminated;
 	}
 
 }

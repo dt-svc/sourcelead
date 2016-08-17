@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimesheetSubmissionsDao {
@@ -33,6 +34,7 @@ public interface TimesheetSubmissionsDao {
     
     public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
 
+    public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId,Date startDate)throws Exception;
      
     public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId ,String approvalStatus)throws Exception;
 
@@ -48,7 +50,12 @@ public interface TimesheetSubmissionsDao {
 	
 	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId);
 	
+	public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(Long memberId, Date terminatedDate) throws Exception;
+	
 	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,String employeeId) throws Exception ;
 
+	public List<TimesheetSubmissions>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,String status,Long orgLocationId) throws Exception ;
+ 
+	
 
 }

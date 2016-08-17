@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
@@ -222,7 +224,7 @@ public class ProjectsRestController {
 			 }
 		 
 		//admin as approver hierarchy ..
-		Collection<User> uLsit = userService.getUsersByUserRoles();
+		Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
 		if(userLsit != null && !userLsit.isEmpty()){
 		for(User userRole : userLsit){
@@ -271,26 +273,40 @@ public class ProjectsRestController {
 								Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
 							    if(emp != null){
 							    	pm.setEmployee(emp);
-						    	    
 							    	
+							        HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+										
+									ProjectMembersHistory pmh = new ProjectMembersHistory();
+									pmh.setProjectMemberId(pm);
+									pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
 						            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
-						            	  pm.setProjectAssignedDate(currentStartDate);
+						            	 pmh.setProjectAssignedDate(currentStartDate);
 						            }else{
-						            	 pm.setProjectAssignedDate(projects.getStartDate());
+						            	  pmh.setProjectAssignedDate(projects.getStartDate());
 						            }
 						            
 						            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
 						            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
-						            	pm.setProjectEndDate(currentEndDate);
+						            	pmh.setProjectTerminationDate(currentEndDate);
 						            }
 						            else{
-							    		pm.setProjectEndDate(projects.getEndDate());
+						            	 pmh.setProjectTerminationDate(projects.getEndDate());
 							    	}
+
+						            pmh.setCreatedDate(new Date());
+									pmh.setCreatedBy(user.getUserCode());
+									pmh.setUpdatedDate(new Date());
+									pmh.setUpdatedBy(user.getUserCode());
+									pmhList.add(pmh);
+									
 									pm.setProjects(projects);
 									pm.setStatus(Constants.MEMBER_ACTIVE);
 									pm.setCreatedDate(new Date());
 									pm.setUpdatedDate(new Date());
+									pm.setCreatedBy(user.getUserCode());
+									pm.setUpdatedBy(user.getUserCode());
+									pm.setMemberHistoryList(pmhList);
 									projectMembersService.saveProjectMember(pm);
 									
 									//send mail to assigned team members
@@ -557,7 +573,7 @@ public class ProjectsRestController {
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = null;
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -612,7 +628,7 @@ public class ProjectsRestController {
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;;
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -679,7 +695,7 @@ public class ProjectsRestController {
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;;
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
