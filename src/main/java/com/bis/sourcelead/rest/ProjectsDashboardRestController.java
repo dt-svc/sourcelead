@@ -587,7 +587,7 @@ public class ProjectsDashboardRestController {
      		userRoleService.addUserRole(userRole);
 			//send mail to user
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,users,password);
+				userService.sendEmail(user,users,password);
 			}
 			
 			return null;
@@ -754,58 +754,6 @@ public class ProjectsDashboardRestController {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
 		}
 	  
-	  /**
-	  * This method for send Email to user creation
-	  * @return
-	  * @throws Exception
-	  * @author  venkatKesav
-	  * @since   2016-07-25
-	  */
-	  private void sendEmail(User user, User loginUser ,String password) throws Exception {
-		  
-		     EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(user.getFirstName());
-			 emailMessage.setLastName(user.getLastName());
-			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
-
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
-			 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-			 globalVarsMap.put("administratorLastName",loginUser.getLastName());
-			 globalVarsMap.put("role",user.getUserType());
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-			 globalVarsMap.put("userEmailId",user.getEmail());
-			 globalVarsMap.put("password",password);
-			 
-			//setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
-			 emailRecipientList.add(emailRecipient);
-			 
-			//getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = null;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
-		}
-	 
 	/**
 	 * Checks String empty or null
 	 * @param string
@@ -873,7 +821,7 @@ public class ProjectsDashboardRestController {
  * @throws Exception
  */
 	private UserRole populateUserRole(User usr, OrgLocations loginOrgLocation, User users) throws Exception {
-		String roleName = "ROLE_USER";
+		String roleName = Constants.ROLE_USER;
 		Roles roles = rolesService.getRolesByRoleName(roleName);
 		UserRole userRole = new UserRole();
 		userRole.setRoles(roles);

@@ -156,7 +156,7 @@ public class CommonUtil {
 			
 			/**
 			 * Getting List Of all Projectmembers based on login user who is approver/employee to that particular project
-			 *  who didn't have 4 weeks prior/post submission records in DB
+			 *  who didn't have 12 weeks prior/post submission records in DB
 			 * 
 			 */
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
@@ -188,17 +188,17 @@ public class CommonUtil {
 						startMondayDate = pmh.getProjectAssignedDate();
 						
 						/**
-						 * Calculating last 4th week monday date 
+						 * Calculating last 12th week monday date 
 						*/
 						Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						currentCal.setLenient(false);
 						currentCal.setTime(new Date());
 						Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
-						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-28);
+						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-84);
 						Date previousMondayDate = previousMonday.getTime();
 						/**
-						 * Checking whether projectAssignDate lesserthan last 4th week Monday date,
-						 * then last 4th week Monday date is taken as startdate
+						 * Checking whether projectAssignDate lesserthan last 12th week Monday date,
+						 * then last 12th week Monday date is taken as startdate
 						*/
 				        if(startMondayDate.before(previousMondayDate)){
 				    	   startMondayDate = previousMondayDate;
@@ -220,13 +220,13 @@ public class CommonUtil {
 					startCal.setTime(new Date());
 					
 					/**
-					 * Calculating next 4th week mondayDate from the current week monday
+					 * Calculating next 12th week mondayDate from the current week monday
 					*/
-					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(endCal,35);
+					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(endCal,91);
 					
 
 					/**
-					 * checking whether projectMemberEnddate is lesserthan next 4th week monday date then 
+					 * checking whether projectMemberEnddate is lesserthan next 12th week monday date then 
 					 * projectMemberEnddate is taken as enddate for the submission records
 					*/
 					if(pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().before(endMonday.getTime())){
