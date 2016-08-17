@@ -46,20 +46,20 @@ public class EMailJobScheduler {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
-	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
-	public void runEMailJobScheduler() {
-		String emailJobSchedulerStatus = "";
-		logger.info("##########  E-Mail Job Scheduler started..! ##########");
-		Date date = new Date();
-		try {
-			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
-			logger.info("########## COMPLETED the E-Mail Job Scheduler with status as : "+emailJobSchedulerStatus+" ##########");
-			
-		} catch (Exception e) {
-			logger.error("ERROR in " + e.getMessage());
-		}
-        
-    }
+//	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
+//	public void runEMailJobScheduler() {
+//		String emailJobSchedulerStatus = "";
+//		logger.info("##########  E-Mail Job Scheduler started..! ##########");
+//		Date date = new Date();
+//		try {
+//			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
+//			logger.info("########## COMPLETED the E-Mail Job Scheduler with status as : "+emailJobSchedulerStatus+" ##########");
+//			
+//		} catch (Exception e) {
+//			logger.error("ERROR in " + e.getMessage());
+//		}
+//        
+//    }
 	
 	 // 5 16 * * 5 Fire 4:5 on every Friday
 	// Fire at every 5 Min */5 * * * * *
