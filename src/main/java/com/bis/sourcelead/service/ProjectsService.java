@@ -1,16 +1,12 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
-
 import java.util.Date;
-
 import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
+import org.json.JSONObject;
 
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 
 public interface ProjectsService {
@@ -63,6 +59,10 @@ public interface ProjectsService {
 	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
 	
 	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
+	
+	public String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 
+	public String getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
+	
 
 }

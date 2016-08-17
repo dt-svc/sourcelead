@@ -1,14 +1,20 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class ProjectTasksServiceImpl implements ProjectTasksService {
@@ -60,6 +66,40 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	@Override
 	public void saveAll(Collection<ProjectTasks> taskList) throws Exception {
 		tasksDao.saveAll(taskList);
+	}
+	
+	@Autowired
+	 private CommonUtil commonUtil;
+	
+	@Autowired
+	 private ProjectsService projectsService;
+	
+
+	@Override
+	public String saveProjectTasksByProjectId(Long projectId, JSONObject jsonObj) throws Exception {
+		String resultJson = null;
+	 	String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+		
+		for (int c = 1; c < maxCount; c++) {
+			ProjectTasks  tasks  = new ProjectTasks();
+			if(jsonObj.has(c+"taskName")){
+				tasks.setTaskName(jsonObj.getString(c+"taskName"));
+				if(jsonObj.has(c+"taskDescription")){
+				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+				}
+			tasks.setCreatedDate(new Date());
+			tasks.setUpdatedDate(new Date());
+			Projects projects = projectsService.getProjectById(projectId);
+			tasks.setProjectId(projects);	
+			
+			ProjectTasks savedtasks = addTasks(tasks);
+			}
+		}
+		Collection<ProjectTasks> taskList=getAllTasksByProjectId(projectId);
+	 	
+		 resultJson = commonUtil.toJSON(taskList);
+		 return resultJson;
 	}
 	
 	
