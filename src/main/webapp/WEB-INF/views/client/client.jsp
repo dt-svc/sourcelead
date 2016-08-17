@@ -514,12 +514,23 @@
 
 		$("#" + rowId + "projectEndDateValue").html($("#projectEndDate").val());
 		
+		
+		$("#" + rowId + "projectId").val($("#projectId").val());
+		$("#" + rowId + "projectName").val($("#projectName").val());
+		$("#" + rowId + "projectManager").val(mgr[0]);
+		$("#" + rowId + "projectStartDate").val($("#projectStartDate").val());
+		if($("#projectEndDate").val() != ''){
+			$("#" + rowId + "projectEndDate").val($("#projectEndDate").val());
+		}
+		
+		
 		$("#projectId").val('');
 		$("#projectName").val('');
 		$("#projectManager").val('');
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
-		$("#addTaskText").html('Add Project');
+		
+		$("#save_task").val('Add Project');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
 
