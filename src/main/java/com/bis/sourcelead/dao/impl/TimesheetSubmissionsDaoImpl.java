@@ -158,39 +158,18 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 		    // TODO Auto-generated method stub
 			Session session = this.sessionFactory.getCurrentSession();  
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user user where user.userState != 'INACTIVE' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  GROUP BY emp.id";   
-			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).list();
-			
-			
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user user where user.userState != 'INACTIVE'  and  ts.status != 'INACTIVE' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId))  GROUP BY emp.id";   
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("approverUserId", userId).list();
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			
-			  String query1 = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
-			  List results1 = session.createQuery(query1).setLong("approverUserId", userId).setLong("userId", ts.getProjectMembers().getEmployee().getUser().getId()).list();
-														
-			  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
-			  if(results1 != null && !results1.isEmpty()){
-				  for(Object result :results1){
-					  Object[] list = (Object[])result;
-					  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)list[0];
-					  java.sql.Timestamp endDateTimeStamp = (java.sql.Timestamp)list[1];
-					  
-					  Date utilStartDate = null ;
-					  Date utilEndDate = null ;
-					  if(startDateTimeStamp != null){
-						   utilStartDate = new Date(startDateTimeStamp.getTime());
-					  }
-					  if(endDateTimeStamp != null){
-						   utilEndDate = new Date(endDateTimeStamp.getTime());
-					  }
-					 
-					  dateList.put("STARTDATE",utilStartDate);
-					  dateList.put("ENDDATE",utilEndDate);
-				  }
-			  }
-			  ts.setDateList(dateList);
+				HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForApprover(userId,ts.getProjectMembers().getEmployee().getUser().getId());
+				Date employeeStartDate = submissionDateRange.get("STARTDATE");
+				Date employeeEndDate = submissionDateRange.get("ENDDATE");
+				HashMap<String,Date> dateList =  new HashMap<String,Date>(); 
+				dateList.put("STARTDATE",employeeStartDate);
+				dateList.put("ENDDATE",employeeEndDate);
+			    ts.setDateList(dateList);
 			}
-			
-			
 			for(TimesheetSubmissions ts : timesheetSubmissionsList){
 				Float combinedTotalHours = 0f ; 
 				
@@ -666,35 +645,17 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 			String subquery  = "and ts.projectMembers.employee.id  =:emp";
 		
-		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  "+subquery+" GROUP BY emp.id";   
-		timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).setString("emp", emp).list();
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.status ='ACTIVE' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  "+subquery+" GROUP BY emp.id";   
+		timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setString("emp", emp).list();
 		
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
-		
-		  String query1 = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
-		  List results1 = session.createQuery(query1).setLong("userId", ts.getProjectMembers().getEmployee().getUser().getId()).list();
-													
-		  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
-		  if(results1 != null && !results1.isEmpty()){
-			  for(Object result :results1){
-				  Object[] list = (Object[])result;
-				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)list[0];
-				  java.sql.Timestamp endDateTimeStamp = (java.sql.Timestamp)list[1];
-				  
-				  Date utilStartDate = null ;
-				  Date utilEndDate = null ;
-				  if(startDateTimeStamp != null){
-					   utilStartDate = new Date(startDateTimeStamp.getTime());
-				  }
-				  if(endDateTimeStamp != null){
-					   utilEndDate = new Date(endDateTimeStamp.getTime());
-				  }
-				 
-				  dateList.put("STARTDATE",utilStartDate);
-				  dateList.put("ENDDATE",utilEndDate);
-			  }
-		  }
-		  ts.setDateList(dateList);
+			HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForApprover(userId,ts.getProjectMembers().getEmployee().getUser().getId());
+			Date employeeStartDate = submissionDateRange.get("STARTDATE");
+			Date employeeEndDate = submissionDateRange.get("ENDDATE");
+			HashMap<String,Date> dateList =  new HashMap<String,Date>(); 
+			dateList.put("STARTDATE",employeeStartDate);
+			dateList.put("ENDDATE",employeeEndDate);
+		    ts.setDateList(dateList);
 		}
 		
 		
