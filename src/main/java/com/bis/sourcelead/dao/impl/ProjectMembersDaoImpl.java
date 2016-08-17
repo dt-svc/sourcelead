@@ -255,7 +255,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)  OR pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setLong("userId", userId).setString("status",status).setCacheable(true) 
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setLong("userId", userId).setString("status",status).setCacheable(true).list(); 
 		return allProjectsList;
 	}
 
