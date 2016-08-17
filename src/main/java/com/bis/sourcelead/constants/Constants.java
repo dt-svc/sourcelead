@@ -110,12 +110,6 @@ public class Constants {
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
 	
 
-	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
-	
-	public static String[] ROLE_LIST = {"Admin","Employee","Approver"};
-	
-	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
-	
 
 	/** for user roles**/
 	public static String ROLE_ADMIN = "ROLE_ADMIN";
@@ -123,5 +117,11 @@ public class Constants {
 	public static String ROLE_USER = "ROLE_USER";
 	public static String SOURCELEAD_ADMIN = "SOURCELEAD_ADMIN";
 
+
+	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
+	
+	public static String[] ROLE_LIST = {"Admin","Employee","Approver"};
+	
+	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
 }
