@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -54,7 +55,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
 			if(projectMembers != null){
-				session.save(projectMembers);
+				session.saveOrUpdate(projectMembers);
 				logger.debug("Project Member saved successfully..");
 			}
 		}catch(ConstraintViolationException exception)
@@ -154,6 +155,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId and pm.isManuallyTerminated = :isManuallyTerminated " ;
+		List<ProjectMembers> pmList =session.createQuery(query.toString()).setLong("projectId", projectId).setParameter("isManuallyTerminated", isManuallyTerminated).setCacheable(true).list(); 
+		return pmList;  
+	}
+
+	
+	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
 		// TODO Auto-generated method stub
@@ -191,7 +202,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		java.sql.Date  nextMondaySqlDate = new java.sql.Date(nextMondayDate.getTime());
 		
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.projectAssignedDate <= :nextMondayDate and (pm.projectEndDate IS NULL OR pm.projectEndDate >= :previousMonday) ) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.startDate = :nextMondayDate))" ;
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectAssignedDate <= :nextMondayDate and (pmh.projectTerminationDate IS NULL OR pmh.projectTerminationDate >= :previousMonday))) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.status ='ACTIVE' and ts.startDate = :nextMondayDate))" ;
 		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
 			    .setCacheable(true).list(); 
 		return idsList;  
@@ -231,7 +242,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId,String reason) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String status = Constants.MEMBER_IN_ACTIVE;
-		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason where pm.id = :projectMemberId ");
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason  where pm.id = :projectMemberId and ");
 		query.setLong("projectMemberId", projectMemberId);
 		query.setString("status", status);
 		query.setString("terminateReason",reason);
@@ -243,9 +254,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setString("status",status).setCacheable(true) 
-			    .list();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)  OR pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setLong("userId", userId).setString("status",status).setCacheable(true) 
 		return allProjectsList;
 	}
 
@@ -273,5 +283,20 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		      
 	    return projectMembersList.size();
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		
+		
+		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and (pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectTerminationDate < :currentDate))" ;
+		List<ProjectMembers> idsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setParameter("currentDate", currentDate)
+			    .list(); 
+		return idsList;  
+	}
 
 }

@@ -16,12 +16,16 @@ import com.bis.sourcelead.entity.User;
 public interface ProjectsService {
 
     public Projects saveProject(Projects projects) throws Exception;
+    
+    public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
 	public Projects updateProject(Projects projects) throws Exception;
 	
 	public Projects getProjectById(Long id) throws Exception;
 	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+
+	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 	
     Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	

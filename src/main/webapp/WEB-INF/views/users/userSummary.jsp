@@ -348,6 +348,7 @@ function firstname(name)
 							   result = result + '<div>'+endDate+'</div>';
 						   }
 						   result = result + ' </td>';
+
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
@@ -402,7 +403,8 @@ function firstname(name)
 		   		{
 	    			 for(var i=0; i<jsonData.length; i++){
 						   var json = jsonData[i];
-	    			 
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status == "IN-ACTIVE")
+							   continue;
 			    			var selected = json.startDate;
 							 var dt = new Date(selected);
 				             dt.setDate(dt.getDate());
@@ -1278,7 +1280,7 @@ function inlineEditForEndDate(id,projectMemberId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
-   			   
+   			         
    		    }
 	 });  
 }

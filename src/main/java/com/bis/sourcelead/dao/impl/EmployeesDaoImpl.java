@@ -185,22 +185,29 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		return addItemsList;
 	}
 
+	
+	/***
+	 *  This Method is to get  All Employees in the Org  based on OrgLocation
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager) throws Exception {
 		logger.debug("In Employees getAllClientsByOrgLocationId method");
         Session session = this.sessionFactory.getCurrentSession();
         
-        Long raj = level1Manager;
         List<Employees> employeeList = null;
-        if(level2Manager!=null && level1Manager!=null){
+        if(level1Manager!=null && level2Manager!=null){
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
-        }else{
+        }else if(level1Manager!=null){
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
+        }else{
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
         }
 		return employeeList;
 	}

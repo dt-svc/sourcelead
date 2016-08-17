@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -125,6 +126,9 @@ public class User {
 		this.previousUserState = previousUserState;
 	}
 
+	@Transient
+    private String fullName;
+	
 	public Long getId() {
 		return id;
 	}
@@ -317,6 +321,12 @@ public class User {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	
 
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 }

@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.aop.ThrowsAdvice;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 
 public interface TimesheetSubmissionsService {
 	
@@ -17,6 +19,8 @@ public interface TimesheetSubmissionsService {
     public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetEntries)throws Exception;
     
     public TimesheetSubmissions getTimesheetSubmissions(String id)throws Exception;
+    
+    public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId,Date startDate)throws Exception;
     
     public Boolean deleteTimesheetSubmissions(String id)throws Exception;
     
@@ -59,4 +63,11 @@ public interface TimesheetSubmissionsService {
 	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,String employeeId) throws Exception ;
 	
 	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)throws Exception ;
+	
+	public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(Long memberId, Date terminatedDate) throws Exception;
+	
+	public String getArrovalSubmissions(String employeeId,User user)throws Exception;
+	
+	public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception ;
+	
 }

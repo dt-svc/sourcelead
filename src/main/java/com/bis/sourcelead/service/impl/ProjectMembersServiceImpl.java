@@ -4,18 +4,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 
@@ -27,6 +26,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	@Autowired
 	private ProjectMembersDao projectMembersDao;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -158,6 +158,19 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId , Long projectId) {
 		return projectMembersDao.getEmployeeAssignedProjectsCount(orgRelationId, orgLocationId ,projectId);
 	}
-	
+
+	@Override
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
+		return projectMembersDao.getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(projectId,isManuallyTerminated);
+	}
+
+
 	
 }
