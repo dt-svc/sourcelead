@@ -109,11 +109,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId());
 			}
-			
-			for(UserRole role : rolesList){
-				role.setUserRoleName(role.getRoles().getDisplayName());
-				userRolesList.add(role);
+		
+			if(null != rolesList){
+				for(UserRole role : rolesList){
+					role.setUserRoleName(role.getRoles().getDisplayName());
+					userRolesList.add(role);
+				}
 			}
+			
 			 
 			
 		} catch (Exception e) {

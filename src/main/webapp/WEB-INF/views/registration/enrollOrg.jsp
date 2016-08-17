@@ -6,6 +6,13 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
+
+<script>
+	$(document).ready(function() {
+		document.getElementById("createOrg_form").reset();
+	});
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper">
   <section class="content-header clearfix">

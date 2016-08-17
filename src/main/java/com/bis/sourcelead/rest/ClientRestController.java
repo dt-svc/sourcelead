@@ -379,35 +379,24 @@ public class ClientRestController {
 
 	}
 
+
 	private String convertWebsite(String website){
-		
-		String flag = null;
 		if(!website.startsWith("http") && !website.startsWith("https")){
-			website = "http://" + website;
-        }    
-        String status = null;
-        URL netUrl = null;
-        try {
-            netUrl = new URL(website);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();;
-        }
-        String host = netUrl.getHost();
-        if(host.startsWith("www.")){
-            if(host.length()>3){
-                host = host.substring("www".length()+1);
-            }else{
-                flag="Website Duplicated";
-                return flag;
-            }
-        }else{
-            flag ="Invalid Website";
-            return flag;
-        }
-        
-        return host;
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+	    return host;
 	}
-      
 	
 
 	/**
