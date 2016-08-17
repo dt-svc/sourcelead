@@ -134,11 +134,10 @@
 																	<span class="hidden">Enter Project Name</span>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group" >
 															<label class="col-md-3" for="Project Manager">Manager<span class="text-danger">*</span></label>
 															<div class="col-md-9">
-																<div class="form-icon-min">
-																	<!-- <input id="projectManager" name="projectManager"/>  -->
+																<div class="form-icon-min" id="projectManagerDiv">
 																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" >
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
@@ -146,14 +145,13 @@
 																		</c:forEach>
 																	</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();"">Add Level-II</span>
 																</div>
-																<span class="hidden">Select Project Manager</span>
 															</div>
 														</div>
 														<div class="form-group level-second">
 															<label class="col-md-3" for="Level-II">Level-II</label>
 															<div class="col-md-9">
 																<select class="form-control select-bg" name="level2Manager" id="level2Manager">
-																	<option value=''>-- Select Manager --</option>id="companyWebsiteDiv"
+																	<option value=''>-- Select Manager --</option>
 																	<c:forEach var="option" items="${user_List}">
 																		<option value="${option.id}">${option.firstName} ${option.lastName}</option>
 																	</c:forEach>
@@ -690,27 +688,51 @@ function projectvalidation(){
 	
 	/*  validation for projectId start */
 	     var projectId = $('#projectId').val();
-		 var namelength = document.getElementById("projectId").value.length;
-		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		
-		if ((projectId != '' || projectId != 0) && ((namelength < 2) || (namelength >= 100))) {
-			$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+	     var namelength = document.getElementById("projectId").value.length;
+		if(namelength > 0 && projectId.charAt(0) == " "){
+			$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+			$("input#projectId").after("<p class='jquery_form_error_message'><span>Must not start with space</span>");
 			return false;
-		} 
+		}else{
+				$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+				if ((projectId != '' || projectId != 0) && ((namelength < 2) || (namelength >= 100))) {
+					$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
+					return false;
+				} 
+		}
+	
 		/* validation for projectId end */
 
 		/*  validation for project name start */
+		var namelength = document.getElementById("projectName").value.length;
+        var projectName = $('#projectName').val();
 		$('#ProjectNameDiv').find('p.jquery_form_error_message').remove();
+		
+        if(namelength > 0 && projectName.charAt(0) == " "){
+			$("input#projectName").after("<p class='jquery_form_error_message'><span>Must not start with space</span>");
+			return false;
+		}
+        
 		if ($('#projectName').val() == '' || $('#projectName').val() == 0|| $('#projectName').val() == null) {
 			$("input#projectName").after("<p class='jquery_form_error_message'><span>Enter Project Name</span>");
 			return false;
 		}
-		var namelength = document.getElementById("projectName").value.length;
+		
+		
 		if ((namelength < 2) || (namelength >= 100)) {
 			$("input#projectName").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
 			return false;
 		}
 		/*validation for project name end */
+		
+		
+		var projectManager = $('#projectManager').val();
+		$('#projectManagerDiv').find('p.jquery_form_error_message').remove();
+		if (projectManager == '' ||  projectManager == null) {
+			$("input#projectManager").after("<p class='jquery_form_error_message'><span>Select Project Manager</span>");
+			return false;
+		}
+		
 
 		/*validation for project Start Date */
 		$('#ProjectStartDateDiv').find('p.jquery_form_error_message').remove();
