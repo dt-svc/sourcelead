@@ -154,11 +154,11 @@ public class UserServiceImpl implements UserService {
 	
 	private User getUserDetails(JSONObject jsonObj,String userCode) throws JSONException {
 		User user = new User();
-		user.setFirstName(jsonObj.getString("FirstName"));
-		user.setLastName(jsonObj.getString("LastName"));
-		user.setEmail(jsonObj.getString("EmailId"));
-		user.setMobilePhone(jsonObj.getString("PhoneNumber"));
-		user.setUserName(jsonObj.getString("EmailId"));
+		user.setFirstName(jsonObj.getString("firstName"));
+		user.setLastName(jsonObj.getString("lastName"));
+		user.setEmail(jsonObj.getString("email"));
+		user.setMobilePhone(jsonObj.getString("phoneNumber"));
+		user.setUserName(jsonObj.getString("email"));
 		user.setUserState(Status.NOT_LOGGEDIN);
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 			user.setIsMailSent(Status.Y);
@@ -208,16 +208,16 @@ public class UserServiceImpl implements UserService {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationsId);
 		employees.setOrgLocations(orgLocations);
-		employees.setEmployeeId(jsonObj.getString("EmployeeId"));
-		employees.setRate(jsonObj.getString("Rate"));
-		employees.setRatePer(jsonObj.getString("RatePer"));
-		employees.setDailyHours(jsonObj.getString("DayHours"));
+		employees.setEmployeeId(jsonObj.getString("employeeId"));
+		employees.setRate(jsonObj.getString("rate"));
+		employees.setRatePer(jsonObj.getString("ratePer"));
+		employees.setDailyHours(jsonObj.getString("dayHours"));
 		
-		employees.setInvoiceFrequency(jsonObj.getString("InvoiceFrequency"));
-		if(jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))){
+		employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
 				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				   employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
+				   employees.setHireDate(sdf.parse(jsonObj.getString("dateofJoin")));
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}

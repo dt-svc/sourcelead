@@ -124,14 +124,14 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="FirstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20">
                     <span class="hidden">First Name</span>
                   </div>
                 </div>
@@ -139,7 +139,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="LastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" name="lastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
                     <span class="hidden">Last Name</span>
                   </div>
                 </div>
@@ -147,7 +147,7 @@
                 <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();">
                     <span class="hidden">Valid Email</span>
                   </div>
                   </div>
@@ -155,7 +155,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
-                    <input type="text" class="form-control" id="phone" name="PhoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" class="form-control" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                   </div>
@@ -166,11 +166,11 @@
                      <div class="col-md-9">
                          <div class="row">
 		                        <div class="col-md-6">
-				                    <input type="text" class="form-control" id="Rate"  name="Rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+				                    <input type="text" class="form-control" id="Rate"  name="rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        </div>
 		                        <div class="col-md-6">
-				                     <select class="form-control select-bg" id="RatePer" name="RatePer" field-name="Rate Per">
+				                     <select class="form-control select-bg" id="RatePer" name="ratePer" field-name="Rate Per">
 				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
 				                        <option>Daily</option>
@@ -202,7 +202,7 @@
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="DateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
+                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
                               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                            </div>
                         </div>
@@ -300,7 +300,7 @@
                   <div class="form-group">
                   <label class="col-md-3">Invoice Frequency</label>
                   <div class="col-md-9">
-                      <select class="form-control" name="InvoiceFrequency" field-name="Invoice Frequency">
+                      <select class="form-control" name="invoiceFrequency" field-name="Invoice Frequency">
                         <option value="">-Select Frequency-</option>
                         <option>Weekly</option>
                         <option>Bi-Weekly</option>
@@ -314,7 +314,7 @@
                   <label class="col-md-3">Day Hours</label>
                   <div class="col-md-9 positionRelative">
                       
-                          <input type="text" value="" name="DayHours" class="form-control" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
+                          <input type="text" value="" name="dayHours" class="form-control" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
                           <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span>
                       
                        

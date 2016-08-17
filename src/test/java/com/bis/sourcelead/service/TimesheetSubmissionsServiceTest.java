@@ -22,6 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
@@ -44,7 +45,9 @@ public class TimesheetSubmissionsServiceTest {
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
 	
-
+	@Autowired
+	//TimeSheetSubmissionCount timeSheetSubmissionsCount;
+	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsServiceTest.class);
 
 	//@Test
@@ -203,7 +206,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getMinAndMaxTimesheetSubmissionDatesForEmployee  " +minAndMaxTimesheetSubmissionDatesForEmployee);
 	}
 	
-	@Test
+	//@Test
 	public void getApprovalTimesheetSubmissions() throws Exception{
 		
 	
@@ -246,46 +249,52 @@ public class TimesheetSubmissionsServiceTest {
 		 Date Date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
 		 logger.info(" getNextMondayByProjectMemberId successfully updated "+ Date);
 	}
-	//@Test
+	/*@Test
 	public void	getTimeSheetSubmissionsCountBasedOnStatus() throws Exception{
 		Integer getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(3l,"APPROVED");
 		 logger.info(" getTimeSheetSubmissionsCountBasedOnStatus successfully updated "+ getTimeSheetSubmissionsCount);
-	}
-	//@Test
+	}*/
+	/*@Test
 	public void getTotalApprovedOrRejectedHoursByuserId() throws Exception{
 		Float getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTotalApprovedOrRejectedHoursByuserId(4l, "Approved");
 	 logger.info(" getTotalApprovedOrRejectedHoursByuserId "+getTimeSheetSubmissionsCount);
-	}
+	}*/
 	
-	//@Test
+	/*@Test
 	public void getTimeSheetSubmissionsListByStatus() throws Exception{
 		User user = new User();
 		user.setId(3l);
 		Collection<TimesheetSubmissions> timesheetSubmissionslist = timesheetSubmissionsService.getTimeSheetSubmissionsListByStatus(user.getId(),"NEW");
 		logger.info(" getTimeSheetSubmissionsListByStatus"+timesheetSubmissionslist.size());
-	}
+	}*/
 	
 	//@Test
 	public void getTimeSheetSubmissionsCountByUserId() throws Exception{
 		TimesheetSubmissions timesheetSubmissioncount = new TimesheetSubmissions();
 		
 		 timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(3l);
-		 logger.info(" getTimeSheetSubmissionsCountByUserId "+timesheetSubmissioncount);
+		 logger.info(" getTimeSheetSubmissionsCountByUserId "+timesheetSubmissioncount.getStatus());
 	}
 	
-	//@Test
+	/*@Test
 	public void getTotalDraftAndSubmittedHoursByuserId() throws Exception{
-		Float getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(3l, "Approved");
-		 logger.info(" getTotalDraftAndSubmittedHoursByuserId "+getTimeSheetSubmissionsCount);
-	}
+		
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		timesheetSubmissions.setStatus("APPROVED");
+		Float timeSheetSubmissionsCount = timesheetSubmissionsService.getTotalDraftAndSubmittedHoursByuserId(3l, "Approved");
+		 logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timeSheetSubmissionsCount);
+	}*/
 	
-	@Test
+	/*@Test
 	public void getTimeSheetSubmissionsHoursCountByUserId() throws Exception{
 		
-		 timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(2l);
-		logger.info(" getTotalDraftAndSubmittedHoursByuserId ");
+		TimeSheetSubmissionCount timeSheetSubmissionsCount = new TimeSheetSubmissionCount();
 		
-	}
+		//timeSheetSubmissionsCount.setSubmittedTimesheetsSubmissionsHoursCount("10");
+		timeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsHoursCountByUserId(2l);
+		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timeSheetSubmissionsCount.getApprovalTimesheetsSubmissionsHoursCount());
+		
+	}*/
 	
 	//@Test
 	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
@@ -293,19 +302,47 @@ public class TimesheetSubmissionsServiceTest {
 		User user = new User();
 		user.setId(1l);
 		ProjectMembers projectMembers = new ProjectMembers();
+		projectMembers.setId(2l);
 		timesheetSubmissions.setProjectMembers(projectMembers );
-		Collection<TimesheetSubmissions> timesheetSubmission = timesheetSubmissionsService.getProjectsBasedOnUserIdAndStatusAndClientForFilters(2l,"1","1");
+		timesheetSubmissions.setApproverUserId(user);
+		Collection<TimesheetSubmissions> timesheetSubmission = timesheetSubmissionsService.getProjectsBasedOnUserIdAndStatusAndClientForFilters(2l,"1","All");
 		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timesheetSubmission);
 	}
 	
-	//@Test
+	/*@Test
 	public void getUsersTimeSheetSubmissionsCountBasedOnStatus() throws Exception{
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
-		User user = new User();
-		user.setId(1l);
-		timesheetSubmissions.setUserId("1");
-		Integer getTimeSheetSubmissionsCount = timesheetSubmissionsService. getUsersTimeSheetSubmissionsCountBasedOnStatus(1l,"Active",2l);
 		
-		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+getTimeSheetSubmissionsCount);
+		Integer timeSheetSubmissionsCount = timesheetSubmissionsService.getUsersTimeSheetSubmissionsCountBasedOnStatus(5l,"NEW",3l);
+		
+		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timeSheetSubmissionsCount);
+	}*/
+	
+	//@Test
+	public void getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId() throws Exception{
+		
+		//TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
+		Collection<TimesheetSubmissions>timesheetSubmissions = timesheetSubmissionsService.getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(3l, "2");
+		logger.info(" getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId "+timesheetSubmissions.size());
 	}
+	
+	//@Test
+	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
+		
+		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = new TimeSheetSubmissionCount(); 
+		
+		getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l);
+		logger.info(" getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover "+getTimeSheetSubmissionsCount.getSubmittedTimesheetsSubmissionsHoursCount());
+		
+	}
+	
+	//@Test
+	public void getSubmissionApproverHierarchyForEmployeeList() throws Exception{
+		
+		List<TimesheetSubmissions> timesheetSubmissions = new ArrayList<>();
+		timesheetSubmissions = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(3l);
+		logger.info(" getSubmissionApproverHierarchyForEmployeeList "+timesheetSubmissions.size());
+		
+	}
+	
 }

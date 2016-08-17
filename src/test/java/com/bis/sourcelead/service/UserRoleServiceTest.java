@@ -102,6 +102,14 @@ public class UserRoleServiceTest {
 			
 			
 		}
+		@Test
+		public void getUsersListByRoleAndLocationId() throws Exception{
+			
+			List<UserRole> userRole = new ArrayList<>();
+			userRole = userRoleService.getUsersListByRoleAndLocationId(1l,2l,"EMPLOYEE",2l);
+			logger.info("getUsersListByRoleAndLocationId "+userRole.size());
+		}
+
 		
 		//@Test
 		public void getUsersListByUserNameAndLocationId() throws Exception{
