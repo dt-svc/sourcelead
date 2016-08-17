@@ -403,21 +403,23 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-						              }else{
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>");
+					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-						              }
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>"); 
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>");
+					            	  }
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append(" <td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay2Id' class='inline_field' value='"+timesheetEntries.getTueHours()+"' placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>");
-							              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
-							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-							              }else{
-							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-							              }
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>"); 
+						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
+						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>");
+						              }else{
+						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'></textarea></span></div>");
+						              }
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append(" <td> <div>"); 
@@ -425,11 +427,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						                  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");  
+						                  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>");
 						              }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'></textarea></span></div>");
 						              }
-						               
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> "); 
 						              sb.append(" </td>"); 
 					
@@ -438,11 +440,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
-						              }
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>");
+					            	  }
 						              else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'></textarea></span></div>");
 						              }
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 						              sb.append(" <td> <div>"); 
@@ -450,21 +453,23 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
-						              }else{
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'>"+timesheetEntries.getFricomments()+"</textarea></span></div>");
+					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
-						              }
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'>"+timesheetEntries.getFricomments()+"</textarea></span></div>"); 
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'></textarea></span></div>");
+					            	  }
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append("<td> <div>"); 
 						              sb.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay6Id' class='inline_field' value='"+timesheetEntries.getSatHours()+"'  placeholder='HH:MM' />	"); 
 						              sb.append(" <div class='timesheet_comm'>"); 
-						            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
-							            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-							              }else{
-							            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-							              }
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>"); 
+					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
+						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>");
+					            	  }else{
+						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'></textarea></span></div>");
+					            	  }
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append("						<td> <div>"); 
@@ -472,10 +477,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>");
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-						              }else{
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>");
+					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-						              }
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>"); 
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' ></textarea></span></div>");
+					            	  }
 						              sb.append(" </div> </td>"); 
 									                                         
 						              sb.append(" </tr> ");      
@@ -492,7 +498,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
-							        	sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
+							        	if(isSah == null ){
+							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
+							        	}
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
 							        	sb.append("<b class='proj_active'>"+submissionStatus+"</b>");
@@ -608,7 +616,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
+								        	if(isSah == null ){
 								        	sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
+								        	}
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
 								        	sb.append("<b class='proj_active'>"+submissionStatus+"</b>");
