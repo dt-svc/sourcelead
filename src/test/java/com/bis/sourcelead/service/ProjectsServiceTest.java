@@ -28,11 +28,6 @@ import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 public class ProjectsServiceTest {
 
 
-	
-	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceTest.class);
-	
-
 	@Configuration
 	static class ProjectServiceTestContextConfiguration {
 		@Bean
@@ -221,7 +216,7 @@ public class ProjectsServiceTest {
 	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
 		List<User> usrList  = projectsService.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
-		logger.info("*************************************************"+usrList.size());
+		
 	}
 
 

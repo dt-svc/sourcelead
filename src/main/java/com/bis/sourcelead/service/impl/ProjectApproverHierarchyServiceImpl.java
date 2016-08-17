@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 
 @Service
@@ -22,7 +21,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			throws Exception {
 		return projectApproverHierarchyDao.saveProjectApproverHierarchy(projectApproverHierarchy);
 	}
-	
 	
 
 	@Override
@@ -53,13 +51,11 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 
 	@Override
 	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId) {
-		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectHierarchyListByLoginUserId(userId);
 	}
 
 	@Override
 	public List<Long> getProjectIdsByLoginUserId(Long userId) {
-		// TODO Auto-generated method stub
 		return projectApproverHierarchyDao.getProjectIdsByLoginUserId(userId);
 	}
 	

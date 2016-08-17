@@ -64,21 +64,11 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public Org saveOrgSettings(OrgSettings orgSettings, MultipartHttpServletRequest request, Org org) throws Exception {
+	public Org saveOrgSettings(OrgSettings orgSettings, MultipartFile multiFile, Org org) throws Exception {
 		
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
 		System.out.println(multiFile.getContentType());
 		org.setOrgName(orgSettings.getCompanyName());
 		org.setOrgDescription(orgSettings.getAboutCompany());
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgLocations.setState(orgSettings.getState());
-		orgLocations.setCity(orgSettings.getCity());
-		orgLocations.setZipCode(orgSettings.getZipcode());
-		orgLocations.setPhone(orgSettings.getPhone());
-		orgLocations.setFax(orgSettings.getFax());
-		
 		
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
@@ -90,9 +80,6 @@ public class OrgServiceImpl implements OrgService {
 			    }
         }
         orgDao.updateOrg(org);
-        orgLocationsDao.updateOrgLocations(orgLocations);
-        SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-        SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
         
         return org;
 	}

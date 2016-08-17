@@ -18,13 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.Constants;
 
 @Repository
 public class ProjectMembersDaoImpl implements ProjectMembersDao{
@@ -212,8 +212,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setInteger("userId", userId.intValue()).setCacheable(true) 
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
 	}
@@ -256,7 +256,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)  OR pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query.toString()).setLong("userId", userId).setString("status",status).setCacheable(true) 
-			    .list();
 		return allProjectsList;
 	}
 

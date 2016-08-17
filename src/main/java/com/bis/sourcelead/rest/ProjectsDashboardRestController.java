@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,11 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
-
+/**
+ * 
+ * @author David Sammeta
+ *
+ */
 
 @RestController
 public class ProjectsDashboardRestController {
@@ -130,9 +135,15 @@ public class ProjectsDashboardRestController {
 	 @Autowired
 	 private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
-
-	// Sammeta David: this controller method is for getting ProjectsCount
-			// Counts based on Status.
+/**
+ * to filter the projects based on client and project status
+ * @author David Sammeta
+ * @param values
+ * @param request
+ * @param clients
+ * @return String
+ * @throws Exception
+ */
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
 			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
@@ -147,19 +158,14 @@ public class ProjectsDashboardRestController {
 			    		ps.setManagerLevel2(ps.getManagerLevel2());	
 			    	}
 			    }
-				 resultJson = toJSON(projectsList);
+				 resultJson = commonUtil.toJSON(projectsList);
 				 return resultJson;
 			}
-		/**
-
-		/**
-
-
 	
 	/**
-	 * get project details by Id
+	 * get project details by project Id
 	 * @param id
-	 * @return
+	 * @return Json
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
@@ -234,7 +240,7 @@ public class ProjectsDashboardRestController {
 			Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
 			projects.setProjectMembersCount(projectMembersCount.toString());
 			
-			resultJson = toJSON(projects);
+			resultJson = commonUtil.toJSON(projects);
 			 return resultJson;
 	  }
 	 
@@ -342,6 +348,18 @@ public class ProjectsDashboardRestController {
 		 return null;
 	 }
 	 
+
+	 /**
+	  * update the project by project ID
+	  * @author David Sammeta
+	  * @param projectId
+	  * @param fieldName
+	  * @param fieldValue
+	  * @param request
+	  * @return String
+	  * @throws Exception
+	  */
+
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
 	 public String updateProjectById(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
 
@@ -350,23 +368,23 @@ public class ProjectsDashboardRestController {
 		    
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 Projects projects = projectsService.getProjectById(projectId);
-		    if(fieldName.equalsIgnoreCase("projectName")){
+		    if("projectName".equalsIgnoreCase(fieldName)){
 		    	projects.setProjectName(fieldValue);
 		    }
-		    else if (fieldName.equalsIgnoreCase("description")) {
+		    else if ("description".equalsIgnoreCase(fieldName)) {
 		    	projects.setDescription(fieldValue);
-			}else if(fieldName.equalsIgnoreCase("projectSequeneNumber")){
+			}else if("projectSequeneNumber".equalsIgnoreCase(fieldName)){
 				if(fieldValue != null && fieldValue != ""){
 	        	  projects.setProjectSequeneNumber(fieldValue);
 				}
-	        }else if(fieldName.equalsIgnoreCase("endDateStr"))  {
+	        }else if("endDateStr".equalsIgnoreCase(fieldName))  {
 			 String pattern = "yyyy-MM-dd";
 		     SimpleDateFormat format = new SimpleDateFormat(pattern);
 	          if(fieldValue != null && fieldValue != ""){
 	        	  Date endtDate = format.parse(fieldValue);
 					projects.setEndDate(endtDate);
 	         }
-			}else if (fieldName.equalsIgnoreCase("projectStatusId")) {
+			}else if ("projectStatusId".equalsIgnoreCase(fieldName)) {
 		    	projects.setProjectStatus(Project_Status.getNameByValue(fieldValue));
 			}else if (fieldName.equalsIgnoreCase("clientId")) {
 				OrgRelations orgRelations = new OrgRelations();
@@ -374,7 +392,7 @@ public class ProjectsDashboardRestController {
 				orgRelations.setId(Long.valueOf(fieldValue));
 		    	projects.setOrgRelationId(orgRelations);
 				 }
-			}else if (fieldName.equalsIgnoreCase("level1Manager")) {
+			}else if ("level1Manager".equalsIgnoreCase(fieldName)) {
 				if(fieldValue != null && fieldValue != ""){
 					Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
@@ -387,7 +405,7 @@ public class ProjectsDashboardRestController {
 						 }
 					 }
 				 }
-			}else if (fieldName.equalsIgnoreCase("level2Manager")) {
+			}else if ("level2Manager".equalsIgnoreCase(fieldName)) {
 				if(fieldValue != null && fieldValue != ""){
 					Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
@@ -407,7 +425,15 @@ public class ProjectsDashboardRestController {
 			    return null;
 		  }
 	 
-	 
+/**
+ * update project task by task id	 
+ * @author David Sammeta
+ * @param taskId
+ * @param fieldName
+ * @param fieldValue
+ * @return String
+ * @throws Exception
+ */
 	 
 	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
 	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
@@ -423,7 +449,13 @@ public class ProjectsDashboardRestController {
 		    return null;
 	  }
 	 
-	 
+	 /**
+	  * save the projects task
+	  * @param json
+	  * @param projectId
+	  * @return JSON
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
@@ -452,23 +484,33 @@ public class ProjectsDashboardRestController {
 			}
 			Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
 		 	
-			 resultJson = toJSON(taskList);
+			 resultJson = commonUtil.toJSON(taskList);
 			 return resultJson;
 		 	
 	 }
 	 
-	 
+	/** 
+	 * get projects tasks based on project id
+	 * @param projectId
+	 * @return JSON
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
 		 	
 		 	 String resultJson = null;
 			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
-			 resultJson = toJSON(taskList);
+			 resultJson = commonUtil.toJSON(taskList);
 			 return resultJson;
 		 	
 	 }
-	  
+/**
+ * Get Employees list based on project id
+ * @param projectId
+ * @return JSON
+ * @throws Exception
+ */
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
 		 
@@ -518,66 +560,31 @@ public class ProjectsDashboardRestController {
 		 }
 		 ObjectMapper mapper = new ObjectMapper();
 		 String jsonInString = mapper.writeValueAsString(projectMembersArrList);
-		 
 		 return jsonInString;
 	  }
-	 
+	 /**
+	  * Save Employee from project summary
+	  * @param json
+	  * @param request
+	  * @return JSON
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
 		public @ResponseBody  String addEmployeeForProjectDashboard(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		    json = "{"+json+"}";
 		    JSONObject jsonObj = new JSONObject(json);
-			
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Employees employee  = new Employees();
-			
 			// User saving
-			User user= new User();
-			user.setFirstName(jsonObj.getString("employeeFirstName"));
-			user.setLastName(jsonObj.getString("employeeLastName"));
-			user.setEmail(jsonObj.getString("EmailId"));
-			user.setUserType("Employee");
-			user.setCreatedDate(new Date());
-			user.setCreatedBy(users.getUserCode());
-			user.setUserState(Status.NOT_LOGGEDIN);
-			user.setUserName(jsonObj.getString("EmailId"));
-			String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-			user.setPassword(sourceleadPasswordEncoder.encode(password));
-			
-			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-				user.setIsMailSent(Status.Y);
-			}else{
-				user.setIsMailSent(Status.N);
-			}
-			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
-			
-			
+		 	String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			User user = populateUser(jsonObj,users,password);
 			User  usr=	userService.addUser(user);
-			
 			//Employee Saving
-			employee.setUser(user);
-			if(!jsonObj.getString("invoiceFrequency").isEmpty()){
-				employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-			}
-			employee.setOrgLocations(loginOrgLocation);
-			employee.setCreatedBy(users.getUserCode());
-			employee.setStatus("ACTIVE");
-			employee.setCreatedDate(new Date());
+			Employees employee = populateEMployee(user,loginOrgLocation,jsonObj,users);
 			Employees  emp=	employeesService.addEmployee(employee);
-			
-			
 			// UserRoles saving
-			String roleName = "ROLE_USER";
-			Roles roles = rolesService.getRolesByRoleName(roleName);
-			UserRole userRole = new UserRole();
-			userRole.setRoles(roles);
-			userRole.setUser(usr);
-			userRole.setOrgLocations(loginOrgLocation);
-			userRole.setIsPrimary(1);
-			userRole.setCreatedBy(users.getUserCode());
-			userRole.setCreatedDate(new Date());
-			UserRole userRolesSaving = userRoleService.addUserRole(userRole);
-			
+			UserRole userRole = populateUserRole(usr,loginOrgLocation,users);
+     		userRoleService.addUserRole(userRole);
 			//send mail to user
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 			sendEmail(user,users,password);
@@ -585,17 +592,34 @@ public class ProjectsDashboardRestController {
 			
 			return null;
 		}
-	 
-	 @RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
+/**
+ * Get Teammembers list by project id	
+ * @param projectId
+ * @param request
+ * @return
+ * @throws Exception
+ */
+
+	@RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
 		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
 		 	String resultJson = null;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
-			resultJson = toJSON(employeeList);
+			resultJson = commonUtil.toJSON(employeeList);
 			return resultJson;
 		}
-	 
+/**
+ * Assign Employee to project by  project id	 
+ * @param projectId
+ * @param employeeId
+ * @param startDate
+ * @param endDate
+ * @param mailtoMembers
+ * @param request
+ * @return Json
+ * @throws Exception
+ */
 	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
 		 public @ResponseBody  String storeAssignEmployee(
 				@RequestParam(value="ProjectId", required=false) Long projectId,
@@ -782,15 +806,82 @@ public class ProjectsDashboardRestController {
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 		}
 	 
-	private String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	    }
+	/**
+	 * Checks String empty or null
+	 * @param string
+	 * @return boolean
+	 */
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+	/**
+	 * populate User Data
+	 * @param jsonObj
+	 * @param users
+	 * @param password
+	 * @return User
+	 * @throws JSONException
+	 */
+	private User populateUser(JSONObject jsonObj, User users, String password) throws JSONException {
+		User user= new User();
+		user.setFirstName(jsonObj.getString("employeeFirstName"));
+		user.setLastName(jsonObj.getString("employeeLastName"));
+		user.setEmail(jsonObj.getString("EmailId"));
+		user.setUserType("Employee");
+		user.setCreatedDate(new Date());
+		user.setCreatedBy(users.getUserCode());
+		user.setUserState(Status.NOT_LOGGEDIN);
+		user.setUserName(jsonObj.getString("EmailId"));
+		user.setPassword(sourceleadPasswordEncoder.encode(password));
+		
+		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+			user.setIsMailSent(Status.Y);
+		}else{
+			user.setIsMailSent(Status.N);
+		}
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		return user;
+		
+	}
+/**
+ * populate Employees Data	
+ * @param user
+ * @param loginOrgLocation
+ * @param jsonObj
+ * @param users
+ * @return Employees
+ * @throws JSONException
+ */
+	private Employees populateEMployee(User user, OrgLocations loginOrgLocation, JSONObject jsonObj, User users) throws JSONException {
+		Employees employee  = new Employees();
+		employee.setUser(user);
+		if(!jsonObj.getString("invoiceFrequency").isEmpty()){
+			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		}
+		employee.setOrgLocations(loginOrgLocation);
+		employee.setCreatedBy(users.getUserCode());
+		employee.setStatus("ACTIVE");
+		employee.setCreatedDate(new Date());
+		return employee;
+	}
+/**
+ * 	populate UserRole Data
+ * @param usr
+ * @param loginOrgLocation
+ * @param users
+ * @return
+ * @throws Exception
+ */
+	private UserRole populateUserRole(User usr, OrgLocations loginOrgLocation, User users) throws Exception {
+		String roleName = "ROLE_USER";
+		Roles roles = rolesService.getRolesByRoleName(roleName);
+		UserRole userRole = new UserRole();
+		userRole.setRoles(roles);
+		userRole.setUser(usr);
+		userRole.setOrgLocations(loginOrgLocation);
+		userRole.setIsPrimary(1);
+		userRole.setCreatedBy(users.getUserCode());
+		userRole.setCreatedDate(new Date());
+		return userRole;	
 	}
 }

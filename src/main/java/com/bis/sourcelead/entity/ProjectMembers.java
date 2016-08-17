@@ -26,6 +26,9 @@ import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.Primary;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import com.bis.sourcelead.enums.Status;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -110,6 +113,10 @@ public class ProjectMembers {
     private String projectName;
     @Transient
     private String userId;
+    @Transient
+    @Enumerated(EnumType.STRING)
+	private Status userState;
+    
     
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
@@ -122,6 +129,18 @@ public class ProjectMembers {
     
     
     
+    
+    
+	
+
+	public Status getUserState() {
+		return userState;
+	}
+
+	public void setUserState(Status userState) {
+		this.userState = userState;
+	}
+
 	public String getProjectName() {
 		return projectName;
 	}
@@ -196,22 +215,7 @@ public class ProjectMembers {
 		this.timesheetFrequency = timesheetFrequency;
 	}
 
-	/*	public Date getProjectAssignedDate() {
-	return projectAssignedDate;
-	}
 
-	public void setProjectAssignedDate(Date projectAssignedDate) {
-		this.projectAssignedDate = projectAssignedDate;
-	}
-
-	public Date getProjectEndDate() {
-		return projectEndDate;
-	}
-
-	public void setProjectEndDate(Date projectEndDate) {
-		this.projectEndDate = projectEndDate;
-	}
-   */
 	public String getRole() {
 		return role;
 	}

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -39,7 +40,6 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -381,60 +381,13 @@ public class UserRestController {
 
 	 	 */
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
-			public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
+		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
 					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
-				String resultJson = null;
-				List<ProjectMembers> allProjectsList = null;
-				if(filterValue.equals("All")){
-					 allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
-				}
-				if(filterValue.equals("Active")){
-					 allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
-				}
-				if(filterValue.equals("In-Active")){
-					allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
-				}
-				for (ProjectMembers projectMembers : allProjectsList) {
-					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
-				    ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
-					if(pmh == null){
-						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
-					}
-					if(pmh != null){
-						 projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
-							if (pmh.getProjectTerminationDate() != null) {
-								projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
-							}
-					}
-				    
-					if (projectMembers.getProjects().getEndDate() != null) {
-						projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
-					}
-			        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
-			        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
-			        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
-			        projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
-			        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
-					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
-					
-				    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "APPROVED");
-				    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "APPROVED");
-			        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
-					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-					
-					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
-				    projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				return toJSON(allProjectsList);
 
-				}
-
-				resultJson = toJSON(allProjectsList);
-				return resultJson;
 			}
 		 
 		 /**
@@ -446,7 +399,7 @@ public class UserRestController {
 			 * @throws Exception
 			 */
 			@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
-			public @ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
+			@ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
 							throws Exception {
 				json = "{" + json + "}";
@@ -454,22 +407,6 @@ public class UserRestController {
 				Employees employee = employeesService.getEmployeeByUserId(userId);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Projects projects = projectsService.getProjectById(jsonObj.getLong("projectId"));
-				/*Date projectStartdate = projects.getStartDate();
-				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
-					if (projectStartdate.compareTo(sdf.parse(jsonObj.getString("StartDate"))) != 0) {
-						projectsService.updateStartDateOfProjectId(sdf.parse(jsonObj.getString("StartDate")),
-								jsonObj.getLong("projectId"));
-					}
-				}
-				if (projects.getEndDate() != null) {
-					Date projectEndDate = projects.getEndDate();
-					if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
-						if (projectEndDate.compareTo(sdf.parse(jsonObj.getString("EndDate"))) != 0) {
-							projectsService.updateEndDateOfProjectId(sdf.parse(jsonObj.getString("EndDate")),
-									jsonObj.getLong("projectId"));
-						}
-					}
-				}*/
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
@@ -525,7 +462,7 @@ public class UserRestController {
 			 * @return
 			 */
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
-			public @ResponseBody String saveReason(
+			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
 					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
 				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -610,7 +547,8 @@ public class UserRestController {
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID) throws Exception {
                     User user = userService.getUserById(Long.parseLong(userID));
                     logger.info("The user state is "+user.getUserState());
-                    user.setUserState(Status.ACTIVE);
+                    user.setUserState(user.getPreviousUserState());
+                    user.setPreviousUserState(user.getUserState());
                     userService.addUser(user);
                     return "updated";
                }
