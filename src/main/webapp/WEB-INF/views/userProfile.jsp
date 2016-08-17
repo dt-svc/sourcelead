@@ -265,7 +265,7 @@
  		$("#profile_submit").attr("disabled", "disabled");
     	
     }else if(sizeinbytes > 200000){
-    	output.src = URL.createObjectURL(event.target.files[0]);s
+    	output.src = URL.createObjectURL(event.target.files[0]);
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
  		document.getElementById("errorImage").style.display=""; 
