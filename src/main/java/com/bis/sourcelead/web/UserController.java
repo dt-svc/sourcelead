@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
-import com.bis.sourcelead.util.Constants;
-import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
@@ -37,6 +37,9 @@ public class UserController {
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
 	
 	/**
@@ -53,14 +56,7 @@ public class UserController {
 		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 	    model.addObject("org_projectsList", projectsList);
 	    
-	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Users);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
+	    commonUtil.highLightMenu(Constants.Users, request);
 	    
 		model.setViewName("users/userCreation");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -100,6 +96,11 @@ public class UserController {
 		return model;
 
 	}
+	/**
+	 * checks string is empty or null
+	 * @param str
+	 * @return
+	 */
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));

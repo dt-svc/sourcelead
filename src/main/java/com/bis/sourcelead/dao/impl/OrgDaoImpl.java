@@ -154,9 +154,11 @@ public class OrgDaoImpl implements OrgDao {
                             host = host.substring("www".length()+1);
                         }else{
                             flag="Website Duplicated";
+                            return flag;
                         }
                     }else{
                         flag ="Invalid Website";
+                        return flag;
                     }
                    
                     //for Blocked Websites Domains
@@ -167,9 +169,12 @@ public class OrgDaoImpl implements OrgDao {
                     boolean isFuond = isDuplicateWebsite(host);
                     if(isFuond){
                          flag ="Website Duplicated";
+                         return flag;
+                    }else{
+                    	flag = "Valid Website";
+                    	return flag;
                     }
-                   
-        return flag;
+        
     }   
 
 	

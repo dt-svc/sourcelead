@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -7,9 +8,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -23,6 +27,10 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -216,4 +224,30 @@ public class CommonUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public void highLightMenu(String menuName,HttpServletRequest request){
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(menuName);
+		request.getSession().setAttribute("sessionData",sessionData);
+	}
+	
+	
+	 /**
+	 * this method converts list to Json String
+	 * @param obj
+	 * @return
+	 */
+		public String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
 }

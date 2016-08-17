@@ -8,6 +8,11 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
  
+ <script>
+	$(document).ready(function() {
+		document.getElementById("client_form").reset();
+	});
+</script>
  
 <style>
 .clsDatePicker {
@@ -116,7 +121,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectId"
 																	name="projectId" placeholder="Enter Project Id"
-																	class="form-control" onblur="validateProjectId();">
+																	class="form-control" onblur="validateProjectId();" field-name="Project Id"  data-validation="validate_Space validate_length length2-100" data-validation-optional="true">
 															</div>
 														</div>
 
@@ -125,7 +130,7 @@
 															<div class="col-md-9">
 																<input type="text" value="" id="projectName"
 																	name="projectName" placeholder="Enter Project Name"
-																	class="form-control" field-name="Project Name" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+																	class="form-control">
 																	<span class="hidden">Enter Project Name</span>
 															</div>
 														</div>
@@ -134,7 +139,7 @@
 															<div class="col-md-9">
 																<div class="form-icon-min">
 																	<!-- <input id="projectManager" name="projectManager"/>  -->
-																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" data-validation="validate_Space" data-validation-optional="true">
+																	<select class="form-control select-bg" name="projectManager" id="projectManager" onchange="getLevel2Approvers();" >
 																		<option value="">-Select Manager-</option>
 																		<c:forEach var="option" items="${user_List}">
 																			<option value="${option.id}&${option.firstName}${option.lastName}">${option.firstName} ${option.lastName}</option>
@@ -183,7 +188,7 @@
 											<div class="modal-footer">
 											<div class="col-xs-8 col-lg-11">
 											 <a href="javascript:void(0)" class="btn btn-primary"
-															id="save_task" onclick="addTasks();flushProject();"
+															id="save_task" onclick="addTasks();"
 															data-target="addTask"> <i class="fa fa-plus"></i><span
 															id="addTaskText"> Add Project</span></a>
 											</div>
@@ -237,7 +242,7 @@
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_client" onclick="saveClient();" class="btn btn-primary"> 
+							<input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
 							<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
 						</div>
 					</div>
@@ -400,7 +405,7 @@
 		var projectManager = $('#projectManager').val();
 		var projectStartDate = $('#projectStartDate').val();
 		var projectEndDate = $('#projectEndDate').val();
-
+		
 		var cell0 = row.insertCell(0);
 		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
 		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -437,15 +442,9 @@
 		var divTsTd3Str = document.getElementById("divTaskTd6").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell2.innerHTML = divTsTd3Str;
-
-	
 		
-		$("#projectId").val('');
-		$("#projectName").val('');
-		$("#projectManager").val('');
-		$("#projectStartDate").val('');
-		$("#projectEndDate").val('');
 		addtasksCountafterAddingTask();
+		flushProject();
 	}
 </script>
 <script type="text/javascript">
@@ -539,6 +538,12 @@
 
 <script type="text/javascript">
 	function validateProjectId() {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
 		var ProjectSequeneNumber = document.getElementById("projectId").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
@@ -684,16 +689,14 @@ function flushProject(){
 function projectvalidation(){
 	
 	/*  validation for projectId start */
-		var namelength = document.getElementById("projectId").value.length;
+	     var projectId = $('#projectId').val();
+		 var namelength = document.getElementById("projectId").value.length;
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		if ($('#projectId').val() == '' || $('#projectId').val() == 0 || $('#projectId').val() == null) {
-			$("input#projectId").after("<p class='jquery_form_error_message'> <span>Enter Project Id </span> ");
-			return false;
-		}
-		 else if ((namelength < 2) || (namelength >= 100)) {
+		
+		if ((projectId != '' || projectId != 0) && ((namelength < 2) || (namelength >= 100))) {
 			$("input#projectId").after("<p class='jquery_form_error_message'><span>The values Entered must be between2-100 characters</span>");
 			return false;
-		}
+		} 
 		/* validation for projectId end */
 
 		/*  validation for project name start */
@@ -836,3 +839,10 @@ function validateWebsite(){
 	}
 }
 </script>
+
+<script type="text/javascript">
+	function flushSaveClient() {
+		$("#save_client").removeAttr("disabled");
+	}
+</script>
+

@@ -4,9 +4,7 @@ package com.bis.sourcelead.web;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
@@ -67,6 +64,7 @@ public class UploadController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
 			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
@@ -93,8 +91,25 @@ public class UploadController {
  */
 	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
 	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws Exception {
+		File file;
+		if("xlsx".equalsIgnoreCase(fileName)){
+			file = new File("FailureUsersForCheck.xlsx");
+		}else{
+			 file = new File("FailureUsersForCheck.xls");
+		}
 		
-		uploadFileService.downloadFile(fileName, response);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
 	}
 /**
  * Handles Temaplate download
@@ -104,7 +119,23 @@ public class UploadController {
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
 	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
 		
-		uploadFileService.downloadCreateUserTemplate(response);
+		String fn = "/templates/Create Users.xls";
+		URL url = getClass().getResource(fn);
+		File file = new File(url.toURI());
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		
 		
 	}
 	

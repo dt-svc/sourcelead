@@ -2,7 +2,6 @@ package com.bis.sourcelead.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -18,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.ActionRoles;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TabsService;
@@ -33,7 +31,6 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,13 +65,7 @@ public class LoginSessionController {
 	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws ParseException {
 		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Dashboard);
-		request.getSession().setAttribute("sessionData",sessionData);
+		commonUtil.highLightMenu(Constants.Dashboard, request);
 		
 		User user = userService.findByUserName(authentication.getName());
 		setSessionUserAttributes(user,request,sourceleadUrl);

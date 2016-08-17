@@ -9,4 +9,6 @@ public interface CountriesDao {
 	public Countries getCountriesByCountryName(String name) throws Exception;
 
 	public List<Countries> getAllCountries() throws Exception;
+
+	public List<String> getAllStatesAndCitiesByCountryCode(String countryCode) throws Exception;
 }

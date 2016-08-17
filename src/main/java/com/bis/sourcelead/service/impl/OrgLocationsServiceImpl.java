@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class OrgLocationsServiceImpl implements OrgLocationService {
@@ -21,46 +23,39 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.addOrgLocations(orgLocations);
 	}
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.updateOrgLocations(orgLocations);
 	}
 
 	@Override
 	public OrgLocations getOrgLocations(Long id) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getOrgLocations(id);
 	}
 
 	@Override
 	public Boolean deleteOrgLocations(Long id) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.deleteOrgLocations(id);
 		
 	}
 
 	@Override
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getAllOrgLocations();
 	}
 	
 	
 	@Override
 	public OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getOrgLocationsByLocationCode(locationCode);
 	}
 	
 
 	@Override
 	public OrgLocations getOrgLocationsByOrgCode(String  locationCode) throws Exception {
-		// TODO Auto-generated method stub
 		return orgLocationsDao.getOrgLocationsByOrgCode(locationCode);
 	}
 	
@@ -69,6 +64,19 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public OrgLocations findByEmail(String email) throws Exception {
 		logger.debug("In OrgLocationService class...");
 		return orgLocationsDao.findByEmail(email);
+	}
+
+	@Override
+	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception {
+		
+		orgLocations.setState(orgSettings.getState());
+		orgLocations.setCity(orgSettings.getCity());
+		orgLocations.setZipCode(orgSettings.getZipcode());
+		orgLocations.setPhone(orgSettings.getPhone());
+		orgLocations.setFax(orgSettings.getFax());
+		orgLocationsDao.updateOrgLocations(orgLocations);
+		
+		return orgLocations;
 	}
 	
 }

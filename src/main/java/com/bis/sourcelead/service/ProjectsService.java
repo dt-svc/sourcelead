@@ -58,7 +58,7 @@ public interface ProjectsService {
 	
 	public void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
 	
-	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
+	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 
 
 }

@@ -29,6 +29,13 @@
 	}
 </script>
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("profileSettings_form").reset();
+		document.getElementById("passwordSettings_form").reset();
+	});
+</script>
+
 <body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->
@@ -80,7 +87,8 @@
 				  </div>
 				  </div>
 				 </div> 
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;.png images are not allowed</p>
+				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
+				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			 <div id="popUp" ></div>  
@@ -243,17 +251,29 @@
     
     var uploadedImage = document.getElementById('uploadedImage').value;
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+    document.getElementById("errorImage").style.display="none"; 
     
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png'){
- 		var msg = ".png extension not allowed";
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png' ||
+   		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'svg' || 
+   		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'gif'){
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	
+    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+ 		var msg = "."+extensionName+" extension not allowed";
  		alertMessage(msg);
+ 		document.getElementById("errorImage").style.display=""; 
+ 		$("#profile_submit").attr("disabled", "disabled");
     	
     }else if(sizeinbytes > 200000){
+    	output.src = URL.createObjectURL(event.target.files[0]);s
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
+ 		document.getElementById("errorImage").style.display=""; 
+ 		$("#profile_submit").attr("disabled", "disabled");
     	
     }else{
     	output.src = URL.createObjectURL(event.target.files[0]);
+    	$("#profile_submit").removeAttr("disabled")
     }
     
   };
@@ -338,8 +358,6 @@ var validationSettings = {
             		var form = $('#profileSettings_form')[0];
              		var formData = new FormData(form);
              		
-             		$("#profile_submit").attr("disabled", "disabled");
-             		$( "#profile_submit").addClass('button').val('Processing..');
              		
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
              		
@@ -355,9 +373,9 @@ var validationSettings = {
                 	      
                       	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}&json="+con,
                         	success: function(result) {
-    			        	 if((result == 'home')){
+    			        	 if(result == 'home'){
     			        		location.replace(sourceleadUrl+"/userProfile");  
-    			        	} 
+    			        	}
     			        },  
                     });
                 
