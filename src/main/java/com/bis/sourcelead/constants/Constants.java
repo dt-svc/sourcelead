@@ -39,8 +39,8 @@ public class Constants {
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
-	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved";
-	public static String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected";
+	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
+	public static String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
@@ -51,10 +51,14 @@ public class Constants {
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
 	
+
+	/** projectMemberHistory constants**/
+	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
+	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
+
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
-	
-	
+
 	public static String YES = "Y";
 	public static String NO  = "N";
 	public static String WAIT  = "W";
@@ -105,11 +109,19 @@ public class Constants {
 	
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
 	
+
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
 	public static String[] ROLE_LIST = {"Admin","Employee","Approver"};
 	
 	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
+
+	/** for user roles**/
+	public static String ROLE_ADMIN = "ROLE_ADMIN";
+	public static String ROLE_APPROVER = "ROLE_APPROVER";
+	public static String ROLE_USER = "ROLE_USER";
+	public static String SOURCELEAD_ADMIN = "SOURCELEAD_ADMIN";
+
 	
 }

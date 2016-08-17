@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +25,15 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -60,6 +64,9 @@ public class UserRestController {
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -374,55 +381,13 @@ public class UserRestController {
 
 	 	 */
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
-			public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
+		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
 					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
-				String resultJson = null;
-				
-				List<ProjectMembers> allProjectsList = null;
-				if(filterValue.equals("All")){
-					 allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
-				}
-				if(filterValue.equals("Active")){
-					 allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
-				}
-				if(filterValue.equals("In-Active")){
-					allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
-				}
-				if(allProjectsList != null && !allProjectsList.isEmpty()){
-				for (ProjectMembers projectMembers : allProjectsList) {
-					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
-					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
-					if (projectMembers.getProjectEndDate() != null) {
-						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
-					}
-					if (projectMembers.getProjects().getEndDate() != null) {
-						projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
-					}
-			        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
-			        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
-			        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
-			        projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
-			        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
-					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
-					
-				    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "APPROVED");
-				    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "APPROVED");
-			        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
-					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-					
-					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
-				    projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				return toJSON(allProjectsList);
 
-				}
-				}
-				resultJson = toJSON(allProjectsList);
-				return resultJson;
 			}
 		 
 		 /**
@@ -434,7 +399,7 @@ public class UserRestController {
 			 * @throws Exception
 			 */
 			@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
-			public @ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
+			@ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
 							throws Exception {
 				json = "{" + json + "}";
@@ -442,29 +407,20 @@ public class UserRestController {
 				Employees employee = employeesService.getEmployeeByUserId(userId);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Projects projects = projectsService.getProjectById(jsonObj.getLong("projectId"));
-				/*Date projectStartdate = projects.getStartDate();
-				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
-					if (projectStartdate.compareTo(sdf.parse(jsonObj.getString("StartDate"))) != 0) {
-						projectsService.updateStartDateOfProjectId(sdf.parse(jsonObj.getString("StartDate")),
-								jsonObj.getLong("projectId"));
-					}
-				}
-				if (projects.getEndDate() != null) {
-					Date projectEndDate = projects.getEndDate();
-					if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
-						if (projectEndDate.compareTo(sdf.parse(jsonObj.getString("EndDate"))) != 0) {
-							projectsService.updateEndDateOfProjectId(sdf.parse(jsonObj.getString("EndDate")),
-									jsonObj.getLong("projectId"));
-						}
-					}
-				}*/
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
 				projectMembers.setTimesheetFrequency("weekly");
+				
+				User user = userService.getUserById(userId);
+				
+				HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+				ProjectMembersHistory pmh = new ProjectMembersHistory();
+				pmh.setProjectMemberId(projectMembers);
+				pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
 					try {
-						projectMembers.setProjectAssignedDate(sdf.parse(jsonObj.getString("StartDate")));
+						pmh.setProjectAssignedDate(sdf.parse(jsonObj.getString("StartDate")));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -472,12 +428,16 @@ public class UserRestController {
 
 				if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
 					try {
-						projectMembers.setProjectEndDate(sdf.parse(jsonObj.getString("EndDate")));
+						pmh.setProjectTerminationDate(sdf.parse(jsonObj.getString("EndDate")));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-				User user = userService.getUserById(userId);
+
+	            pmh.setCreatedDate(new Date());
+				pmh.setUpdatedDate(new Date());
+				pmhList.add(pmh);
+				
 				if (employee.getRate() != null && !"".equalsIgnoreCase(employee.getRate())) {
 					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
 				}
@@ -487,6 +447,10 @@ public class UserRestController {
 					projectMembers.setRateType(employee.getRatePer());
 				}
 				projectMembers.setStatus(Constants.MEMBER_ACTIVE);
+				projectMembers.setCreatedDate(new Date());
+				projectMembers.setUpdatedDate(new Date());
+				projectMembers.setMemberHistoryList(pmhList);
+				
 				projectMembersService.saveProjectMember(projectMembers);
 				commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
@@ -498,10 +462,36 @@ public class UserRestController {
 			 * @return
 			 */
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
-			public @ResponseBody String saveReason(
+			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
-					@RequestParam(value = "reason", required = false) String reason) {
-				Integer updatedCount = projectMembersService.updateProjectMemberDeletedReason(projectMemberId, reason);
+					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
+				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				   Integer updatedCount =  0;
+				   try {
+				  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				  	  if(projectMembers != null){
+				  		  String status = Constants.MEMBER_IN_ACTIVE;
+					  	  projectMembers.setTerminateReason(reason);
+						  projectMembers.setUpdatedDate(new Date());
+						  projectMembers.setUpdatedBy(user.getUserCode());
+					  	  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+						  if(pmh != null){
+							  pmh.setProjectTerminationDate(new Date());
+							  pmh.setUpdatedDate(new Date());
+							  pmh.setUpdatedBy(user.getUserCode());
+							  memberHistoryList.add(pmh);
+							  projectMembers.setMemberHistoryList(memberHistoryList);
+						  }
+						  projectMembers.setStatus(status);
+						  projectMembersService.saveProjectMember(projectMembers);
+						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+					      updatedCount = 1;
+				  	   }
+					
+				    } catch (Exception e) {
+				   }
+				
 				logger.info("updated records" + updatedCount);
 				return "success";
 			}
@@ -522,16 +512,28 @@ public class UserRestController {
 				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
 
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+					
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					if (endDate != null && !"".equals(endDate)) {
+						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+						if(pmh == null){
+							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+						}
 						Date endDate1=sdf.parse(endDate);
-						if(projectMembers.getProjectEndDate()== null){
-							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						if(pmh.getProjectTerminationDate()== null){
+							/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
+							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
 
-						if (projectMembers.getProjectEndDate() != null && projectMembers.getProjectEndDate().compareTo(sdf.parse(endDate)) != 0) {
-							projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
+							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
+						
+						Date terminationDate = sdf.parse(endDate);
+						Date currentDate = new  Date();
+						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
+							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+						}						
 					}
 					return "updated";
 		       }

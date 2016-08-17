@@ -140,7 +140,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 	public List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String notificationStatus = Constants.NOTIFICATION_NOT_DELETED;
-		String query = "from Notifications nf where nf.notificationTo = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.notificationStatus =:notificationStatus";
+		String query = "from Notifications nf where nf.notificationTo = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.notificationStatus =:notificationStatus ORDER BY nf.createdDate DESC";
 		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("userId", userId)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)

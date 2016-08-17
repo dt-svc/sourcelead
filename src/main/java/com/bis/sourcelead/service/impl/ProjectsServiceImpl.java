@@ -77,6 +77,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	@Override
+	public List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate method...");
+		return projectsDao.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLocationsId, loginUserId);
+	}
+	
+	@Override
 	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getPrimaryProjectByOrgLocationsId method...");
 		return projectsDao.getPrimaryProjectByOrgLocationsId(orgLocationsId);
@@ -284,6 +290,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
 		
 		return projectsDao.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
+	}
+
+	@Override
+	public void saveAllProjects(List<Projects> projectsList) throws Exception {
+		// TODO Auto-generated method stub
+		 projectsDao.saveAllProjects(projectsList);
 	}
 
 }
