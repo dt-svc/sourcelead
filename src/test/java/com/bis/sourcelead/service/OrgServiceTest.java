@@ -141,7 +141,7 @@ public class OrgServiceTest {
 		MultipartFile multipartFile = getMultiPartFile();
 		orgSettings.setFile(multipartFile);
 		
-		logger.info(" saveOrgSettings"+multipartFile.getOriginalFilename());
+		logger.info(" saveOrgSettings"+multipartFile.getOriginalFilename()); 
 	}
 	private MultipartFile getMultiPartFile() throws IOException {
 		File file = new File("src/test/resources/input.txt");

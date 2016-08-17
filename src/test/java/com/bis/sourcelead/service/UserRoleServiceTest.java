@@ -77,7 +77,7 @@ public class UserRoleServiceTest {
 			userRoleService.addUserRole(userRole);
 			
 			userRoleService.addUserRole(userRole);
-			logger.info("addUserRole successfully updated"+userRole.getRoles());
+			logger.info("addUserRole successfully updated"+userRole.getRoles()); 
 		}
 		
 		

@@ -64,7 +64,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setTotalHours("20");
 		projectMemberId.setId(2l);
 		timesheetSubmissions.setProjectMembers(projectMemberId);
-		timesheetSubmissions.setRejectedReason("not logedin");
+		timesheetSubmissions.setRejectedReason("not logedin"); 
 		user.setId(1l);
 		timesheetSubmissions.setUserId("1");
 		timesheetSubmissions.setApproverUserId(user);
