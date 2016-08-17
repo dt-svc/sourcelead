@@ -625,6 +625,7 @@ public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Excep
 }
 
 @Override
+@Transactional(rollbackFor = { Exception.class })
 public void saveAllProjects(List<Projects> projectsList) throws Exception {
 	logger.debug("In Save All Projects  method");
 	Session session = this.sessionFactory.getCurrentSession();
