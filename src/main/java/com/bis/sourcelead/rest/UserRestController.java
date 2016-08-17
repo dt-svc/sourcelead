@@ -374,56 +374,11 @@ public class UserRestController {
 
 	 	 */
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
-			public @ResponseBody String getProjectDetailsById(HttpServletRequest request,
+		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
 					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
-				String resultJson = null;
-				
-				List<ProjectMembers> allProjectsList = null;
-				if(filterValue.equals("All")){
-					 allProjectsList = projectMembersService.getAllProjectsByUserId(userId);
-				}
-				if(filterValue.equals("Active")){
-					 allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
-				}
-				if(filterValue.equals("In-Active")){
-					allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
-				}
-				if(allProjectsList != null && !allProjectsList.isEmpty()){
-				for (ProjectMembers projectMembers : allProjectsList) {
-					projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
-					projectMembers.setUserState(projectMembers.getEmployee().getUser().getUserState());
-					projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
-					if (projectMembers.getProjectEndDate() != null) {
-						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
-					}
-					if (projectMembers.getProjects().getEndDate() != null) {
-						projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
-					}
-			        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
-			        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
-			        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
-			        projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
-
-			        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
-					projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
-					
-				    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "APPROVED");
-				    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "APPROVED");
-			        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
-					projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-					
-					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
-				    projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
-
-				}
-				}
-				resultJson = toJSON(allProjectsList);
-				return resultJson;
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				return toJSON(allProjectsList);
 			}
 		 
 		 /**
@@ -435,7 +390,7 @@ public class UserRestController {
 			 * @throws Exception
 			 */
 			@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
-			public @ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
+			@ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
 							throws Exception {
 				json = "{" + json + "}";
@@ -443,22 +398,6 @@ public class UserRestController {
 				Employees employee = employeesService.getEmployeeByUserId(userId);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Projects projects = projectsService.getProjectById(jsonObj.getLong("projectId"));
-				/*Date projectStartdate = projects.getStartDate();
-				if (jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))) {
-					if (projectStartdate.compareTo(sdf.parse(jsonObj.getString("StartDate"))) != 0) {
-						projectsService.updateStartDateOfProjectId(sdf.parse(jsonObj.getString("StartDate")),
-								jsonObj.getLong("projectId"));
-					}
-				}
-				if (projects.getEndDate() != null) {
-					Date projectEndDate = projects.getEndDate();
-					if (jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))) {
-						if (projectEndDate.compareTo(sdf.parse(jsonObj.getString("EndDate"))) != 0) {
-							projectsService.updateEndDateOfProjectId(sdf.parse(jsonObj.getString("EndDate")),
-									jsonObj.getLong("projectId"));
-						}
-					}
-				}*/
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
@@ -499,7 +438,7 @@ public class UserRestController {
 			 * @return
 			 */
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
-			public @ResponseBody String saveReason(
+			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
 					@RequestParam(value = "reason", required = false) String reason) {
 				Integer updatedCount = projectMembersService.updateProjectMemberDeletedReason(projectMemberId, reason);
