@@ -139,11 +139,41 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
+		
+		/**
+		  *calculating prior 6th week mondaydate and post 6th week sunday day for employee
+		  *
+	      *
+	      */
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Date previousMondayDate = previousMonday.getTime();
+		
+		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+		Date nextSundayDate = nextSunday.getTime();
+		
+		
 		Collection<TimesheetSubmissions>  timesheetSubmissionsList = null;
-		
-		
 		if(employeeStartDate != null && employeeStartDate != null){
-		
+		  /**
+		   * checking whether prior 6th week monday date is greaterthan employee startdate or not
+	       */
+		   if(employeeStartDate.before(previousMondayDate)){
+			   employeeStartDate = previousMondayDate;
+		   }
+		   
+		  /**
+		   * checking whether post 6th week sunday date is lesserthan employee enddate or not
+	       */
+		   if(employeeEndDate.after(nextSundayDate)){
+			   employeeEndDate = nextSundayDate;
+		   }
+			
 		  StringBuilder sb1 = new StringBuilder();
 		 
 		  StringBuilder startDateBuilder = new StringBuilder();
