@@ -185,11 +185,11 @@ public class UserServiceImpl implements UserService {
 		String roleName = "";
 		try {
 			if(user != null && user.getUserType() != null && "Admin".equals(user.getUserType())){
-				roleName = "ROLE_ADMIN";
+				roleName = Constants.ROLE_ADMIN;
 			}else if(user != null && user.getUserType() != null && "Approver".equals(user.getUserType())){
-				roleName = "ROLE_APPROVER";
+				roleName = Constants.ROLE_APPROVER;
 			}else if(user != null && user.getUserType() != null && "Employee".equals(user.getUserType())){
-				roleName = "ROLE_USER";
+				roleName = Constants.ROLE_USER;
 			}
 			roles = rolesService.getRolesByRoleName(roleName);
 		} catch (Exception e) {
