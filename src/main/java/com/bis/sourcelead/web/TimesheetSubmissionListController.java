@@ -56,6 +56,7 @@ public class TimesheetSubmissionListController {
 	public ModelAndView timesheetListByStatus(HttpServletRequest request,
 			@RequestParam(value = "status", required = false) String status) throws Exception {
 		ModelAndView model = new ModelAndView();
+		
 		request.setAttribute("status", status);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -64,49 +65,21 @@ public class TimesheetSubmissionListController {
 		
 		Collection<SubmissionApproverHierarchy> list = null  ;
 		
-		if(status != null){
-			
-			if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
-				
-				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
-					 list = submissionApproverHierarchyService.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(user.getId(), loginOrgLocations.getId(), status);
-				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED")  ||  status.equalsIgnoreCase("NEW") ){
-					 list = submissionApproverHierarchyService.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(user.getId(), loginOrgLocations.getId(),  status);
-				}
-				
-			}else if( userRole.equalsIgnoreCase("ROLE_USER") ){
-				
-				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
-					list = submissionApproverHierarchyService.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(user.getId(), loginOrgLocations.getId(), status);
-				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED") ||  status.equalsIgnoreCase("NEW")){
-					list = submissionApproverHierarchyService.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(user.getId(), loginOrgLocations.getId(),  status);
-				}
-				
-			}else if( userRole.equalsIgnoreCase("ROLE_APPROVER") ){
-				
-				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
-					list = submissionApproverHierarchyService.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(user.getId(), loginOrgLocations.getId(), status);
-				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED") ||  status.equalsIgnoreCase("NEW")){
-					list = submissionApproverHierarchyService.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(user.getId(), loginOrgLocations.getId(),  status);
-				}
-
-			}
-			
-		}
+		list =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
+		
 		if(list!=null && !list.isEmpty()){
-			
-		for(SubmissionApproverHierarchy submissionApproverHierarchy:list){
-	
-			Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId());
-			for(ProjectApproverHierarchy pah : projectApproverHierarchies){
-				if(pah.getLevel() == 1){
-					submissionApproverHierarchy.setManagerLevel1(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
-				}else if(pah.getLevel() == 2){
-					submissionApproverHierarchy.setManagerLevel2(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
+			for(SubmissionApproverHierarchy submissionApproverHierarchy:list){
+		
+				Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId());
+				for(ProjectApproverHierarchy pah : projectApproverHierarchies){
+					if(pah.getLevel() == 1){
+						submissionApproverHierarchy.setManagerLevel1(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
+					}else if(pah.getLevel() == 2){
+						submissionApproverHierarchy.setManagerLevel2(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
+					}
 				}
 			}
 		}
-	 }
         model.addObject("Timesheet_Submissions", list);
 		model.setViewName("timesheet/timesheetStatusList");
 		model.addObject("sourceleadUrl", sourceleadUrl);

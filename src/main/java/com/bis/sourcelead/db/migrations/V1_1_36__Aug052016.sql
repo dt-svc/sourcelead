@@ -15,27 +15,27 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 
 
 #Email to employee when timesheet approved
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetApproved', 'Email');
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetApprovedByApprover', 'Email');
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Approved', 'Email', 'Timesheet Approved', 'Used for Timesheet Approved Email', 'Timesheet Approved', 'org', 'Best Regards,\n{{MailToTeamMembers.LoginUserFirstName}} {{MailToTeamMembers.LoginUserLastName}},\n{{MailToTeamMembers.OrgName}}.', 'Hi {{MailToTeamMembers.EmployeeFirstName}} {{MailToTeamMembers.EmployeeLastName}},\nYour timesheet have been approved by {{MailToTeamMembers.ManagerFirstName}} {{MailToTeamMembers.ManagerLastName}} for the {{MailToManagerAtTimesheetSubmission.TimeFrequency}}.','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Approved By Approver', 'Email', 'Timesheet Approved By Approver', 'Used for Timesheet Approved Email', 'Timesheet Approved', 'org', 'Best Regards,\n{{MailToTeamMembers.LoginUserFirstName}} {{MailToTeamMembers.LoginUserLastName}},\n{{MailToTeamMembers.OrgName}}.', 'Hi {{MailToTeamMembers.EmployeeFirstName}} {{MailToTeamMembers.EmployeeLastName}},\nYour timesheet have been approved by {{MailToTeamMembers.ManagerFirstName}} {{MailToTeamMembers.ManagerLastName}} for the {{MailToManagerAtTimesheetSubmission.TimeFrequency}}.','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
 
 #Notification to employee when timesheet approved
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetApproved', 'Notification');
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetApprovedByApprover', 'Notification');
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Approved', 'Notification', 'Timesheet Approved', 'Used for Timesheet Approved Notification', 'Timesheet approved of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}', 'sourcelead', '', 'Timesheet approved of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Approved By Approver', 'Notification', 'Timesheet Approved By Approver', 'Used for Timesheet Approved Notification', 'Timesheet approved of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}', 'sourcelead', '', 'Timesheet approved of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
 
 
 #Email to employee when timesheet rejected
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetRejected', 'Email');
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetRejectedByApprover', 'Email');
 
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'rejectedReason', '{{TimesheetRejected.RejectedReason}}');
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Rejected', 'Email', 'Timesheet Rejected', 'Used for Timesheet Rejected Email', 'Timesheet Rejected', 'org', 'Best Regards,\n{{MailToTeamMembers.LoginUserFirstName}} {{MailToTeamMembers.LoginUserLastName}},\n{{MailToTeamMembers.OrgName}}.', 'Hi {{MailToTeamMembers.EmployeeFirstName}} {{MailToTeamMembers.EmployeeLastName}},\nYour timesheet has been rejected by {{MailToTeamMembers.ManagerFirstName}} {{MailToTeamMembers.ManagerLastName}} for the {{MailToManagerAtTimesheetSubmission.TimeFrequency}}.\nReason : {{TimesheetRejected.RejectedReason}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Rejected By Approver', 'Email', 'Timesheet Rejected By Approver', 'Used for Timesheet Rejected Email', 'Timesheet Rejected', 'org', 'Best Regards,\n{{MailToTeamMembers.LoginUserFirstName}} {{MailToTeamMembers.LoginUserLastName}},\n{{MailToTeamMembers.OrgName}}.', 'Hi {{MailToTeamMembers.EmployeeFirstName}} {{MailToTeamMembers.EmployeeLastName}},\nYour timesheet has been rejected by {{MailToTeamMembers.ManagerFirstName}} {{MailToTeamMembers.ManagerLastName}} for the {{MailToManagerAtTimesheetSubmission.TimeFrequency}}.\nReason : {{TimesheetRejected.RejectedReason}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
 
 #Notification to employee when timesheet rejected
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetRejected', 'Notification');
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TimesheetRejectedByApprover', 'Notification');
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Rejected', 'Notification', 'Timesheet Rejected', 'Used for Timesheet Rejected Notification', 'Timesheet Rejected of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}', 'sourcelead', '', 'Timesheet Rejected of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Timesheet Rejected By Approver', 'Notification', 'Timesheet Rejected By Approver', 'Used for Timesheet Rejected Notification', 'Timesheet Rejected of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}', 'sourcelead', '', 'Timesheet Rejected of {{MailToManagerAtTimesheetSubmission.TimeFrequency}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +37,13 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -48,6 +51,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -85,6 +89,9 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
+	 
+	 @Autowired
+	 private ProjectMembersHistoryService projectMembersHistoryService;
 	 
 	 @Autowired
 	 public UserService userService;
@@ -201,10 +208,9 @@ public class ProjectsDashboardRestController {
 		    
 		    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
 		    projects.setManagersList(userList);
-
-            if(projects.getManager1() != null){
-            	  List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
-      		    projects.setManagersListwithoutManager1(userListwithoutmaneger1);;
+		    if(projects.getManager1() != null){
+		    	List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
+			    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
 		    }
 		    
 		    
@@ -237,6 +243,112 @@ public class ProjectsDashboardRestController {
 			resultJson = commonUtil.toJSON(projects);
 			 return resultJson;
 	  }
+	 
+	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
+	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+
+		 json = "{"+json+"}";	
+		 JSONObject jsonObj = new JSONObject(json);
+		 Date currentDate = new Date();
+		 Date previousEndDate = null;
+		 
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
+		 Projects projects = projectsService.getProjectById(projectId);
+		 
+		 String pattern = "yyyy-MM-dd";
+	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+	     
+			    if(jsonObj.getString("ProjectSequeneNumber") != null){
+			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
+			    }
+		    	projects.setProjectName(jsonObj.getString("projectName"));
+		    	if(jsonObj.getString("description") != null){
+		    		projects.setDescription(jsonObj.getString("description"));
+		    	}
+		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
+		    	if(jsonObj.getString("endDateStr1") != null){
+		    		previousEndDate = projects.getEndDate();
+		    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+					projects.setEndDate(endDate);
+		    	}
+		    	if(jsonObj.has("clientId")){
+		    		OrgRelations orgRelations = new OrgRelations();
+		    		if(jsonObj.getString("clientId") != null && jsonObj.getString("clientId") != ""){
+		    			orgRelations.setId(Long.valueOf(jsonObj.getString("clientId")));
+				    	projects.setOrgRelationId(orgRelations);
+		    		}
+		    	}
+				
+		    	if(jsonObj.has("level1Manager")){
+			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+							 if(prHierarchy.getLevel() == 1){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
+			    	}
+		    	}
+		    	if(jsonObj.has("level2Manager")){
+			    		 Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+							 if(prHierarchy.getLevel() == 2){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
+						 }
+		    	}
+			    projects.setUpdatedBy(user.getUserCode());
+			    projects.setUpdatedDate(currentDate);
+			    if(projects.getProjectStatus().equals(Project_Status.COMPLETED)){
+			    	projects.setEndDate(currentDate);
+			    	projects = commonUtil.terminateProject(projects);
+			    	 projectsService.updateProject(projects);
+			    }
+			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
+			    	projects = commonUtil.terminateProject(projects);
+			    	projectsService.updateProject(projects);
+			    }
+			    else{
+			    	projects = projectsService.updateProject(projects);
+			    	if((projects.getEndDate() == null) || (previousEndDate == null) || (previousEndDate!= null && projects.getEndDate() != null && !projects.getEndDate().equals(previousEndDate) && projects.getEndDate().after(previousEndDate))){
+			    		 List<ProjectMembers> pmList = projectMembersService.getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(projects.getId(), Primary.NO);
+			    	     if(pmList != null && !pmList.isEmpty()){
+			    	    	 for(ProjectMembers projectMember :pmList){
+			    	    		 projectMember.setStatus(Constants.MEMBER_ACTIVE);
+			    	    		 projectMember.setIsManuallyTerminated(null);
+			    	    		 projectMember.setTerminateReason(null);
+			    	    		 projectMember.setUpdatedDate(new Date());
+			    	    		 projectMember.setUpdatedBy(user.getUserCode());
+			    	    		 HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+							  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+								  if(pmh != null){
+									  pmh.setProjectTerminationDate(projects.getEndDate());
+									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  memberHistoryList.add(pmh);
+									  projectMember.setMemberHistoryList(memberHistoryList);
+								  }
+								  projectMembersService.saveProjectMember(projectMember);
+			    	    		 if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
+			    	    		 }
+			    	    	 }
+			    	     }
+			    	}
+			    	
+			    }
+		 
+		 return null;
+	 }
+	 
+
 	 /**
 	  * update the project by project ID
 	  * @author David Sammeta
@@ -247,9 +359,13 @@ public class ProjectsDashboardRestController {
 	  * @return String
 	  * @throws Exception
 	  */
+
 	 @RequestMapping(value = "/updateProjectById", method = RequestMethod.POST)
-	 public String updateProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
-		
+	 public String updateProjectById(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue,HttpServletRequest request) throws Exception{ 
+
+		 json = "{"+json+"}";	
+		 JSONObject jsonObj = new JSONObject(json);
+		    
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 Projects projects = projectsService.getProjectById(projectId);
 		    if("projectName".equalsIgnoreCase(fieldName)){
@@ -282,12 +398,10 @@ public class ProjectsDashboardRestController {
 					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 						 if(prHierarchy.getLevel() == 1){
 							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-							 if(!fieldValue.isEmpty() && fieldValue !=null){
-								 Long fieldValuelong = Long.valueOf(fieldValue);
-								 User usr = userService.getUserById(fieldValuelong);
-								 pah.setApproverUserId(usr);
-								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
-							 }
+							 Long fieldValuelong = Long.valueOf(fieldValue);
+							 User usr = userService.getUserById(fieldValuelong);
+							 pah.setApproverUserId(usr);
+							 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 						 }
 					 }
 				 }
@@ -297,12 +411,10 @@ public class ProjectsDashboardRestController {
 					 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 						 if(prHierarchy.getLevel() == 2){
 							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-							 if(!fieldValue.isEmpty() && fieldValue !=null){
-								 Long fieldValuelong = Long.valueOf(fieldValue);
-								 User usr = userService.getUserById(fieldValuelong);
-								 pah.setApproverUserId(usr);
-								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
-							 }
+							 Long fieldValuelong = Long.valueOf(fieldValue);
+							 User usr = userService.getUserById(fieldValuelong);
+							 pah.setApproverUserId(usr);
+							 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 						 }
 					 }
 				 }
@@ -406,12 +518,12 @@ public class ProjectsDashboardRestController {
 		 ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
-			 
-			 if(pm.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pm.getProjectAssignedDate()));
+			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
+				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
              }
-        	 if(pm.getProjectEndDate()!=null){
-        		pm.setProjectEndDateStr(Constants.DF_YMD.format(pm.getProjectEndDate()));
+        	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
+        		pm.setProjectEndDateStr(Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
         	 }
         	 //to set actual project end date
         	 if(pm.getProjects().getEndDate() != null){
@@ -475,7 +587,7 @@ public class ProjectsDashboardRestController {
      		userRoleService.addUserRole(userRole);
 			//send mail to user
 			if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,users,password);
+				userService.sendEmail(user,users,password);
 			}
 			
 			return null;
@@ -529,26 +641,40 @@ public class ProjectsDashboardRestController {
 					pm.setProjects(projects);
 					String pattern = "yyyy-MM-dd";
 		            SimpleDateFormat format = new SimpleDateFormat(pattern);
+		            
+		            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+					
+					ProjectMembersHistory pmh = new ProjectMembersHistory();
+					pmh.setProjectMemberId(pm);
+					pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 		            if(StringUtils.isNotEmpty(startDate)){
-		            	Date currentStartDate = format.parse(startDate);
-		            	  pm.setProjectAssignedDate(currentStartDate);
+		            	 Date currentStartDate = format.parse(startDate);
+		            	 pmh.setProjectAssignedDate(currentStartDate);
 		            }
 		            else{
-		            	 pm.setProjectAssignedDate(projects.getStartDate());
+		            	pmh.setProjectAssignedDate(projects.getStartDate());
 		            }
 		            if(StringUtils.isNotEmpty(endDate)){
 		            	if(endDate != null && endDate != "--"){
 		            		Date currentEndDate = format.parse(endDate);
-			            	pm.setProjectEndDate(currentEndDate);
+		            		pmh.setProjectTerminationDate(currentEndDate);
 		            	}
 		            	
 		            }else{
-		            	 pm.setProjectEndDate(projects.getEndDate());
+		            	 pmh.setProjectTerminationDate(projects.getEndDate());
 		            }
+		            pmh.setCreatedDate(new Date());
+					pmh.setCreatedBy(user.getUserCode());
+					pmh.setUpdatedDate(new Date());
+					pmh.setUpdatedBy(user.getUserCode());
+					pmhList.add(pmh);
 		            
 		            pm.setStatus(Constants.MEMBER_ACTIVE);
 					pm.setCreatedDate(new Date());
 					pm.setUpdatedDate(new Date());
+					pm.setCreatedBy(user.getUserCode());
+					pm.setUpdatedBy(user.getUserCode());
+					pm.setMemberHistoryList(pmhList);
 					projectMembersService.saveProjectMember(pm);
 					commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 					
@@ -628,58 +754,6 @@ public class ProjectsDashboardRestController {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
 		}
 	  
-	  /**
-	  * This method for send Email to user creation
-	  * @return
-	  * @throws Exception
-	  * @author  venkatKesav
-	  * @since   2016-07-25
-	  */
-	  private void sendEmail(User user, User loginUser ,String password) throws Exception {
-		  
-		     EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(user.getFirstName());
-			 emailMessage.setLastName(user.getLastName());
-			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
-
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
-			 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-			 globalVarsMap.put("administratorLastName",loginUser.getLastName());
-			 globalVarsMap.put("role",user.getUserType());
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-			 globalVarsMap.put("userEmailId",user.getEmail());
-			 globalVarsMap.put("password",password);
-			 
-			//setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
-			 emailRecipientList.add(emailRecipient);
-			 
-			//getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = null;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
-		}
-	 
 	/**
 	 * Checks String empty or null
 	 * @param string
@@ -747,7 +821,7 @@ public class ProjectsDashboardRestController {
  * @throws Exception
  */
 	private UserRole populateUserRole(User usr, OrgLocations loginOrgLocation, User users) throws Exception {
-		String roleName = "ROLE_USER";
+		String roleName = Constants.ROLE_USER;
 		Roles roles = rolesService.getRolesByRoleName(roleName);
 		UserRole userRole = new UserRole();
 		userRole.setRoles(roles);

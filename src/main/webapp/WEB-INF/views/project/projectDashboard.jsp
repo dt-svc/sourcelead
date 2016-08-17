@@ -346,14 +346,14 @@ $(document).ready(function() {
 </script> 
 <!-- this script is for side navigation functionality at Projects screen -->
  <script>
- function projectSideBar(projectId,projectName,startDateStr,endDateStr){ 
+ function projectSideBar(projectId,projectName,startDateStr,endDateStr, status){ 
 	  	    var result = "";
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');" >Employees</a></li>';
-		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+');">Tasks</a></li>';
-		  	result = result + ' <li><a href="#tab-3" onClick="pojectDetails('+projectId+');" >Details</a></li>';
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\');" >Employees</a></li>';
+		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+		  	result = result + ' <li><a href="#tab-3" onClick="projectDetails('+projectId+');" >Details</a></li>';
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
 		  	 
@@ -377,14 +377,15 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId,startDateStr,endDateStr);
+		    projectEmployee(projectId,startDateStr,endDateStr,status);
  }
  </script> 
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
-function projectEmployee(projectId,startDateStr,endDateStr){
+function projectEmployee(projectId,startDateStr,endDateStr,status){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var status  = status;
     $.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
@@ -393,8 +394,10 @@ function projectEmployee(projectId,startDateStr,endDateStr){
         	var json = JSON.parse(data);
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
+    		if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+        	}
     		result = result + '		</div>';
     		  result = result + '        <div class="project_tabs_inn_table">';
     		if(json.length!=null && json.length!=''){
@@ -423,12 +426,34 @@ function projectEmployee(projectId,startDateStr,endDateStr){
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+json[i].empName+' </a></div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+	                if(status == 'COMPLETED'){
+	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
+	                }else{
+	                	if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
+		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+		                }
+		                else{
+		                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
+		                }
+	                }
+	                
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\',\''+projectId+',\''+startDateStr+'\',\''+endDateStr+'\')";></i></div></td>';
+	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
+	                	result = result + '	<td><div>';
+	                	if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+	                	}
+	                	result = result +'</div></td>';
+                     }
+                     else{
+                          result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                     }
+	                
+	                
+	                
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -464,7 +489,8 @@ function projectEmployee(projectId,startDateStr,endDateStr){
 	   		{
     			 for(var i=0; i<json.length; i++){
 					 var jsonData = json[i];
-					 
+					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == "IN-ACTIVE")
+						   continue;
 					 //Assign date of project member
 					 var selected = jsonData.projectAssignedDateStr;
 					 var dt = new Date(selected);
@@ -546,7 +572,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			 	projectEmployee(projectId,startDateStr,endDateStr);
+   			 	projectEmployee(projectId,startDateStr,endDateStr,status);
    		    }
 	     }); 
 		}
@@ -560,9 +586,10 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
-  function projectTask(projectId){
+  function projectTask(projectId,status){
 	  var result = ""; 
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var status = status;
 	  $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 	   
@@ -572,8 +599,10 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 		    				
 		    				  var result = ""; 
 		    				  result = result + '<div class="project_tabs_inn_head">';
-		    				  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
-		    				  result = result + '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		    				  if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+		    					  result = result + '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
+		    				  }
+		    				  result = result + '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 		    				  result = result + '<table>';
 		    				  result = result + '<tbody>';
 		    				  result = result + '<tr id="projectTaskTableId">';
@@ -606,7 +635,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
-  function pojectDetails(projectId){  
+  function projectDetails(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
    	type: "POST",
@@ -633,119 +662,71 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
-	result = result + '			<div class="project_details">';
+    result = result + '			<div class="project_details">';
+    result = result + '<div class="useredit useredit_a">';
+	result = result + '<a id="edit-user" href="javascript:editProjectDetails('+projectId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+	result = result + '</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Status:</strong><span>';
-	result = result +'<select id="projectStatusId" onBlur="inlineEditForProjects('+projectId+',\'projectStatusId\');">';
-				if(json.projectStatus == 'STARTED'){
-					result = result+'<option selected>Started</option>';
-				}else{
-					result = result+'<option>Started</option>';
-				}
-				
-				if(json.projectStatus == 'INPROGRESS'){
-					result = result+'<option selected>In-Progress</option>';
-				}else{
-					result = result+'<option>In-Progress</option>';
-				}
-				
-				if(json.projectStatus == 'COMPLETED'){
-					result = result+'<option selected>Completed</option>';
-				}else{
-					result = result+'<option>Completed</option>';
-				}
-			
-				if(json.projectStatus == 'ONHOLD'){
-					result = result+'<option selected>On-Hold</option>';
-				}else{
-					result = result+'<option>On-Hold</option>';
-				}
-	
-	result = result + '</select>';
+	result = result + json.projectStatus;
 	result = result + '					</i></span>';
 	result = result + '				</div></span><div class="clearfix"></div>';
 	
 	result = result + '				<div class="clearfix"></div>';
 	result = result + '				<div class="project_details_cta" id="ProjectIdDiv">';
 	result = result + '					<strong>Project Id:</strong>';
-	result = result + '					<span><input type="text" onBlur="projectIdValidate('+projectId+',\'projectSequeneNumber\');"  id="projectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '					<span>'+projectSequeneNumber+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
 	
 	result = result + '				<div class="project_details_cta" id="projectNameId">';
 	result = result + '					<strong>Project name:</strong>';
-	result = result + '					<span><input type="text" onBlur="projectNameValidate('+projectId+',\'projectName\');"  id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield"></span><span id=fname_msg></span><div class="clearfix"></div>';
+	result = result + '					<span>'+json.projectName+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
-	
-	
-	
 	result = result + '<div class="project_details_cta">';
-	result = result + '<strong>Project manager1:</strong><span>';
-					result = result + '<select onchange="getLevel2Approvers('+json.manager2+');" id="level1Manager" onBlur="inlineEditForProjects('+projectId+',\'level1Manager\');">';
+	result = result + '<strong>Manager 1:</strong><span>';
 				
 					for (var j = 0; j < json.managersList.length; j++) {
 							  var manager = json.managersList[j];
 							  if(json.manager1 == manager.id){
-								   selected = 'selected';
-								   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
-							  }else{
-									  result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
-			   		 	    	 }
+								  result = result+manager.firstName+" "+manager.lastName;
+							  }
 						}
-                result = result + '</select>';
 	result = result + '			</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	
 	if(json.manager2  != null && json.manager2  != "" && json.manager2  !="undefined"){
 		result = result + '				<div class="project_details_cta">';
-		result = result + '					<strong>Project manager2:</strong><span>';
+		result = result + '					<strong>Manager 2:</strong><span>';
 		
-						result = result + '<select id="level2Manager" onBlur="inlineEditForProjects('+projectId+',\'level2Manager\');">';
 						for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 							  var manager = json.managersListwithoutManager1[j];
 							  if(json.manager2 == manager.id){
-								   selected = 'selected';
-								   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
-							  }else{
-								  
-			   		 	    		result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
-			   		 	    	 }
+								  result = result+manager.firstName+" "+manager.lastName;
+							  }
 						}
-	                result = result + '</select>';
 		result = result + '			</span><div class="clearfix"></div>';
 		result = result + '				</div>';
 	}
 	
 	
-	result = result + '				<div class="project_details_cta">';
-	result = result + '					<strong>Client:</strong>';
-	 if(json.relationId != null){
-	result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');" disabled="disabled">';
-	 }else{
-		 result = result + '<select id="clientId" onBlur="inlineEditForProjects('+projectId+',\'clientId\');">';
-	 }
-	 result = result+"<option value=''>Select</option>";
-				for (var i = 0; i < json.clientName.length; i++) {
-					
-					var managers = json.clientName[i];
-					var projrctmanager = managers.split('&');
-			    	var name = projrctmanager[0];
-			    	var id = projrctmanager[1];
-			    	 var selected = '';
-   		 	    	 if(json.relationId==id){
-   		 	    		 selected = 'selected';
-   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
-   		 	    	 }else{
-   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
-   		 	    	 }
-   		 	    	 
-   		 	    	 
-				}
-	result = result + '</select>';
-	
-	result = result + '			  <div class="clearfix"></div>';
-	result = result + '				</div>';
+	result = result + '<div class="project_details_cta">';
+	result = result + '<strong>Client:</strong>';
+			for (var i = 0; i < json.clientName.length; i++) {
+				
+				var managers = json.clientName[i];
+				var projrctmanager = managers.split('&');
+		    	var name = projrctmanager[0];
+		    	var id = projrctmanager[1];
+		    	 if(json.relationId != null){
+		    	 result = result+  name;
+		    	 }else{
+		    		 result = result+  "---";
+		    	 }
+			}
+	result = result + '<div class="clearfix"></div>';
+	result = result + '</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>Team members:</strong><span>'+json.projectMembersCount+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
@@ -756,7 +737,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	result = result + '				</div>';
 	result = result + '				<div class="project_details_cta">';
 	result = result + '					<strong>End date:</strong>';
-	result = result + '					<span><input type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" class="project_detfield" id="endDateStr" name="endDateStr" ></span><div class="clearfix"></div>';
+	result = result + '					<span> '+endDateStr+'</span><div class="clearfix"></div>';
 	result = result + '				</div>';
 	result = result + '				<div class="clearfix"></div>';
 	
@@ -773,12 +754,8 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	result = result + '				</div>';
 	}
 	result = result + '				<div class="clearfix"></div>';
-	result = result + '				<p>Description<i class="fa fa-edit"></i> :</p>';
-	result = result + '				<textarea placeholder="Description" onBlur="inlineEditForProjects('+projectId+',\'description\');"  id="description">';
-	result = result + description;
-	result = result + '				</textarea>';
-	result = result + '				<div class="clearfix"></div>';
-	
+	result = result + '				<p><strong>Description:</strong></p>'+description+'<div class="clearfix"></div>';
+	result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
 	result = result + '			</div>';
 	result = result + '      </div>';
 	result = result + '  </div>   ';     
@@ -788,28 +765,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	$("#tab-2").empty();  
 	$("#tab-3").empty();  
 	$("#tab-3").append(result);
-	
-	
-	//Assign date of project member
-	 var selected = json.startDateStr;
-	 var dt = new Date(selected);
-     dt.setDate(dt.getDate());
-     
-	 //Main project end date
-     var projectEndDate = json.endDateStr;
-	
-		 $('#endDateStr').datepicker({
-			  dateFormat: 'yy-mm-dd',
-			  minDate: dt,
-		      onClose: function() {
-			   inlineEditForProjects(projectId,'endDateStr');
-	          }
-		  });
 		 
   }
    });
   }
-</script>     
+</script>   
 
 
 <script>
@@ -901,7 +861,7 @@ function filter(){
    		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
@@ -1350,7 +1310,7 @@ function assignEmployee(){
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
 		            success: function(data) {
-		            	projectEmployee(projectId,startDateStr,endDateStr);
+		            	projectEmployee(projectId,startDateStr,endDateStr,status);
 		            }
 				})
 	        }
@@ -1525,5 +1485,261 @@ function getApproversLevel2(currentApproverId,manager2){
 	          }
         
     </script>
+    
+    <script type="text/javascript">
+    function editProjectDetails(projectId) {
+    	
+    	var sourceleadUrl ='${sourceleadUrl}';
+        $.ajax({
+       	type: "POST",
+        url: sourceleadUrl+"/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 	   
+        success: function(data) {
+       	var json = JSON.parse(data);
+       	
+       	var endDateStr = "";
+       	var description = "";
+       	var projectSequeneNumber ="";
+       	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
+       		endDateStr =  json.endDateStr;
+       	}else{
+       		endDateStr = "--";
+       	}
+       	if(json.description != null && json.description != '' && json.description != 'undefined'){
+       		description  = json.description;
+       	}else{
+       		description = "NO DATA";
+       	}
+       	if(json.projectSequeneNumber != null && json.projectSequeneNumber != '' && json.projectSequeneNumber != 'undefiend'){
+       		projectSequeneNumber = json.projectSequeneNumber;
+       	}else{
+       		projectSequeneNumber = "--";
+       	}
+       	
+       	var result = "";
+       	result = result + ' <form id="editProject_form"  name="editProject_form" method="post">';
+       	result = result + '<div class="user_summary_edit_cta" id="ProjectIdDiv">';
+		result = result + '	<label>Project Id</label>';
+        result = result + '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
+		result = result + '</div>	';
+		
+       	result = result + '<div class="user_summary_edit_cta">';
+		result = result + '	<label>Status</label>';
+		result = result +'<select id="projectStatusId" name="projectStatusId">';
+				if(json.projectStatus == 'STARTED'){
+					result = result+'<option selected>Started</option>';
+				}else{
+					result = result+'<option>Started</option>';
+				}
+				
+				if(json.projectStatus == 'INPROGRESS'){
+					result = result+'<option selected>In-Progress</option>';
+				}else{
+					result = result+'<option>In-Progress</option>';
+				}
+				
+				if(json.projectStatus == 'COMPLETED'){
+					result = result+'<option selected>Completed</option>';
+				}else{
+					result = result+'<option>Completed</option>';
+				}
+			
+				if(json.projectStatus == 'ONHOLD'){
+					result = result+'<option selected>On-Hold</option>';
+				}else{
+					result = result+'<option>On-Hold</option>';
+				}
+		
+		result = result + '</select>';
+		result = result + '</div>';
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '<label>Project name<span	class="text-danger">*</span></label>';
+		result = result + '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
+		result = result + '</div>';
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '	<label>Manager 1</label>';
+		result = result + '<select onchange="getLevel2Approvers('+json.manager2+');" id="level1Manager" name="level1Manager" >';
+		for (var j = 0; j < json.managersList.length; j++) {
+				  var manager = json.managersList[j];
+				  if(json.manager1 == manager.id){
+					   selected = 'selected';
+					   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
+				  }else{
+						  result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
+   		 	    	 }
+			}
+        result = result + '</select>';
+		result = result + '</div>';
+		
+		if(json.manager2  != null && json.manager2  != "" && json.manager2  !="undefined"){
+			
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '<label> Manager 2: </label>';
+		result = result + '<select id="level2Manager" name="level2Manager">';
+		for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
+			  var manager = json.managersListwithoutManager1[j];
+			  if(json.manager2 == manager.id){
+				   selected = 'selected';
+				   result = result+"<option value="+manager.id+" "+selected+" >"+manager.firstName+" "+manager.lastName+"</option>";
+			  }else{
+				  
+		 	    		result = result+"<option value="+manager.id+" >"+manager.firstName+" "+manager.lastName+"</option>";
+		 	    	 }
+		}
+       result = result + '</select>';
+	   result = result + '</div>';
+		
+        }
+		
+		
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '	<label>Client</label>';
+		
+		 if(json.relationId != null){
+			result = result + '<select id="clientId" disabled="disabled">';
+			 }else{
+				 result = result + '<select id="clientId" name="clientId">';
+			 }
+			 result = result+"<option value=''>Select</option>";
+						for (var i = 0; i < json.clientName.length; i++) {
+							var managers = json.clientName[i];
+							var projrctmanager = managers.split('&');
+					    	var name = projrctmanager[0];
+					    	var id = projrctmanager[1];
+					    	 var selected = '';
+		   		 	    	 if(json.relationId==id){
+		   		 	    		 selected = 'selected';
+		   		 	    		result = result+"<option value="+id+" "+selected+" >"+name+"</option>";
+		   		 	    	 }else{
+		   		 	    		result = result+"<option value="+id+" >"+name+"</option>";
+		   		 	    	 }
+		   		 	    	 
+		   		 	    	 
+			}
+		result = result + '</select>';
+		result = result + '</div>';                                 
+		
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '<label>Team members</label>';
+		result = result + '<input type="text" value='+json.projectMembersCount+' disabled="disabled">';
+		result = result + '</div>';
+		
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '	<label>Start date</label>';
+        result = result + '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled">';
+		result = result + '</div>	';
+		
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '<label>End date</label>';
+		result = result + '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" >';
+		result = result + '</div>';
+		
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '<label>Description </label>';
+		result = result + '<textarea class="edit_desc" placeholder="Enter Description" id="description" name="description">'+description+'</textarea>';
+		result = result + '</div>       ';                 
+		result = result + '<div class="clearfix"></div>';
+		result = result + '<div class="user_summary_edit_cta">';
+		result = result + '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+');"type="button" id="description"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+projectId+');" type="button">';
+		result = result + '</div>		';
+		result = result + '<div class="clearfix"></div>';
+		result = result + ' </form>';
+		
+		
+		$(".user_summary_edit").slideToggle(100);
+		$("#editProjectDetailsDiv").empty();
+        $("#editProjectDetailsDiv").append(result);
+        
+        
+        
+      //Assign date of project member
+   	 var selected = json.startDateStr;
+   	 var dt = new Date(selected);
+        dt.setDate(dt.getDate());
+
+   	 //Main project end date
+        var projectEndDate = json.endDateStr;
+       	 $('#endDateStr1').datepicker({
+   			  dateFormat: 'yy-mm-dd',
+   			  minDate: dt,
+   		      onClose: function() {
+   	          }
+   		  });
+   		 
+   		 
+       
+          },
+        });       
+	        
+    }
+    </script>
+       
+       
+ <script type="text/javascript">
+	function updateProjectDetails(projectId) {
+         if ($('#editProject_form').validate(false, validationSettings)){
+    		 var frm = $('#editProject_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&ProjectId="+projectId, 	   
+	   		    success: function(data) {
+	   		    	projectDetails(projectId);
+	   		    }
+		 }); 
+	     	return true;
+         }else{
+             return false;
+           }
+		
+    }
+	$('body').on('blur', '#editProject_form', function() {
+        $("#editProject_form").showHelpOnFocus();;
+        $("#editProject_form").validateOnBlur(false, validationSettings);  
+    });
+</script>
+       
+       
+       
+<script type="text/javascript">
+	function validateProjectSequeneNumber() {
+		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		 //space value  consider this condition 
+		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) != null){
+		var sourceleadUrl = '${sourceleadUrl}';
+		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
+						success : function(data) {
+							if (data == true) {
+								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
+								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist', 'yes');
+								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
+							} else {
+								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+							}
+						},
+					});
+	     	}
+		}
+	}
+</script>
+
+ <script>
+// Edit pop
+$(document).ready(function() {	
+	
+    $("#edit-user, #btnClose").click(function() {
+        $(".user_summary_edit").slideUp(100);
+    });
+		
+});
+</script> 
     
 </html>
