@@ -22,7 +22,7 @@ public class Constants {
 	public static final String PHONE_NUMBER = "Phone Number";
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
-	public static final String DATEOFJOIN = "Date of Join (dd/mm/yyyy)";
+	public static final String DATEOFJOIN = "Date of Join (mm/dd/yyyy)";
 	public static final String ROLE = "Role";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
@@ -104,6 +104,12 @@ public class Constants {
 	
 	
 	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
+	
+	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
+	
+	public static String[] ROLE_LIST = {"Admin","Employee","Approver"};
+	
+	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
 	
 }

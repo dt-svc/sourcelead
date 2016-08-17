@@ -119,7 +119,7 @@ public class UploadController {
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
 	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
 		
-		String fn = "/templates/Create Users.xls";
+		String fn = "/templates/Create users.xls";
 		URL url = getClass().getResource(fn);
 		File file = new File(url.toURI());
 

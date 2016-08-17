@@ -31,9 +31,11 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -255,10 +257,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 			Workbook workbook = null;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			if (fileName.toLowerCase().endsWith("xlsx")) {
-				workbook = new XSSFWorkbook(fis);
+//				workbook = new XSSFWorkbook(fis);
 				 boolean isUserFound = false;
 				 boolean isValidated = false;
-//				workbook = WorkbookFactory.create(fis);
+				workbook = WorkbookFactory.create(fis);
 				int numberOfSheets = workbook.getNumberOfSheets();
 				for (int i = 0; i < numberOfSheets; i++) {
 					Sheet sheet = workbook.getSheetAt(i);
@@ -341,11 +343,12 @@ public class UploadFileServiceImpl implements UploadFileService {
  								if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
 									userImport.setDateString("");
 								} else {
-									DataFormatter formatter = new DataFormatter();
-									 Cell cell =row.getCell(7);
-									 String dateString = formatter.formatCellValue(cell);
-									Date date= getDateFormat(dateString, "dd/MM/yyyy");
-									userImport.setDateOfJoin(date);
+									XSSFCell myCell7 = (XSSFCell) row.getCell(7);
+									if (myCell7.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+										if(DateUtil.isCellDateFormatted((Cell) myCell7)){
+											userImport.setDateOfJoin(myCell7.getDateCellValue());
+										}
+									}
 								}
  								userImport.setRole(row.getCell(8).toString());
 								if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
@@ -405,10 +408,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 					}
 				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
-				workbook = (Workbook) new HSSFWorkbook(fis);
+//				workbook = (Workbook) new HSSFWorkbook(fis);
 				boolean isValidated = false;
 				boolean isUserFound = false;
-//				workbook = WorkbookFactory.create(fis);
+				workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
@@ -490,12 +493,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 							if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
 								userImport.setDateString("");
 							} else {
-								DataFormatter formatter = new DataFormatter();
-								 Cell cell =row.getCell(7);
-								 String dateString = formatter.formatCellValue(cell);
-								Date date= getDateFormat(dateString, "dd/MM/yyyy");
-								userImport.setDateOfJoin(date);
-
+								HSSFCell myCell7 = (HSSFCell) row.getCell(7);
+								if (myCell7.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+									if(DateUtil.isCellDateFormatted((Cell) myCell7)){
+										userImport.setDateOfJoin(myCell7.getDateCellValue());
+									}
+								}
 							}
 							userImport.setRole(row.getCell(8).toString());
 							if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
@@ -718,9 +721,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 		}
 		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue(row.getCell(6).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue("");
 		}
@@ -735,16 +741,23 @@ public class UploadFileServiceImpl implements UploadFileService {
 			cell7.setCellValue("");
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
+			
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue(row.getCell(8).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
 		}
 		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue(row.getCell(9).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
@@ -777,6 +790,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 		} 
 	}
 	
+
+
 	/**
 	 * write data to excel format
 	 * @param row
@@ -873,9 +888,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 		}
 		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue(row.getCell(6).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue("");
 		}
@@ -889,16 +907,20 @@ public class UploadFileServiceImpl implements UploadFileService {
 			cell7.setCellValue("");
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue(row.getCell(8).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
 		}
 		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue(row.getCell(9).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
@@ -939,7 +961,6 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
 
-		logger.info("Reading Row :" + row.getRowNum() + " records");
 		boolean isValidated=false; 
 		if (row.getRowNum() > 0) { // Excluding column names
 
@@ -1055,14 +1076,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 				 Cell cell =row.getCell(7);
 				 String date = formatter.formatCellValue(cell);
 				if(fileName.endsWith("xls")){
-					isValidated = isThisDateValid(date, "dd/MM/yyyy");
+					isValidated = isThisDateValid(date, "MM/dd/yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
 						return isValidated;
 					}
 				}else{
-					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
+					isValidated = isThisDateValid(row.getCell(7).toString(), "MM/dd/yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
@@ -1400,4 +1421,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 		return flag;
 
 		}
+	
+	private DataValidation getDropDownListForCell(String[] ratePerList, int column) {
+		@SuppressWarnings("deprecation")
+		  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
+		  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(ratePerList);
+		  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
+		  dataValidation.setSuppressDropDownArrow(false);
+		  return dataValidation;
+	
+}
 }
