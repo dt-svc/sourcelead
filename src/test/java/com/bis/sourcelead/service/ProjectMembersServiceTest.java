@@ -2,31 +2,25 @@ package com.bis.sourcelead.service;
 
 import java.util.Collection;
 import java.util.Date;
-
 import java.util.HashSet;
-
 import java.util.List;
-
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.service.impl.ProjectMembersServiceImpl;
-import com.bis.sourcelead.util.Constants;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
