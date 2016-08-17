@@ -64,9 +64,9 @@ public class EMailJobScheduler {
 	 // 5 16 * * 5 Fire 4:5 on every Friday
 	// Fire at every 5 Min */5 * * * * *
 	/**
-	 * Fires on Every Friday on every month
+	 * Fires on first Friday on every month
 	 */
-	@Scheduled(cron = "5 16 * * 5 *")
+	@Scheduled(cron = "0 30 18 ? * FRI")
 	public void runNotificationJobScheduler() {
 		String notificationJobSchedulerStatus = "";
 		logger.info("******************  Notification Job Scheduler started..! **********");
