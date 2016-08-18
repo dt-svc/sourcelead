@@ -56,7 +56,7 @@ public class OrgServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgServiceTest.class);
 
-	//@Test
+	@Test
 	public void addOrganiztion() throws Exception {
 		Org organization = new Org();
 	//	organization.setId(3l);
@@ -77,7 +77,7 @@ public class OrgServiceTest {
 		logger.info("addOrganiztion" + organization.getWebSite());
 	}
 
-	//@Test
+	@Test
 	public void updateOrg() throws Exception {
 		Org organization = new Org();
 		User user = new User();
@@ -98,7 +98,7 @@ public class OrgServiceTest {
 		logger.info("updateOrg " +organization.getId());
 	}
 
-	// @Test
+	@Test
 	public void findOrgById() throws Exception {
 		
 		 Org organization = new Org();
@@ -107,21 +107,21 @@ public class OrgServiceTest {
 		logger.debug("findOrgById" + organization.getOrgName());
 	}
 
-	//@Test
+	@Test
 	public void deletOrg() throws Exception {
-		Long l = 3L;
-		orgService.deleteOrg(l);
-		logger.info("deletOrg "+ l);
+		//Long l = 3L;
+		Boolean b=orgService.deleteOrg(2l);
+		logger.info("deletOrg "+ b);
 	}
 
-	// @Test
+	@Test
 	public void getOrgs() throws Exception {
 		 List<Org> organization = new ArrayList<Org>();
 		 organization = orgService.getOrgs();
 		logger.info("getOrgs "+ organization.size());
 	}
 	
-	//@Test
+	@Test
 	public void websiteValidation() throws Exception{
 		
 		
@@ -141,7 +141,7 @@ public class OrgServiceTest {
 		MultipartFile multipartFile = getMultiPartFile();
 		orgSettings.setFile(multipartFile);
 		
-		logger.info(" saveOrgSettings"+multipartFile.getOriginalFilename()); 
+		logger.info(" saveOrgSettings"+multipartFile.getSize()); 
 	}
 	private MultipartFile getMultiPartFile() throws IOException {
 		File file = new File("src/test/resources/input.txt");
@@ -150,7 +150,7 @@ public class OrgServiceTest {
 		return multipartFile;
 	}
 	
-	//@Test
+	@Test
 	public void getOrgByOrgCode() throws Exception{
 		
 		Org organization = new Org();
@@ -160,7 +160,7 @@ public class OrgServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void isClientNameValid() throws Exception{
 		
 		Boolean b =orgService.isClientNameValid("tcs");
@@ -168,7 +168,7 @@ public class OrgServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void getEnrolledOrgs() throws Exception{
 		List<Org> organization = new ArrayList<>();
 		organization = orgService.getEnrolledOrgs(2l, "Active", "srinivas");

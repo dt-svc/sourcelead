@@ -1,34 +1,12 @@
 package com.bis.sourcelead.service;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -40,29 +18,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.form.UserCreation;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 /**
  * This is a JUnit Test class for testing UserService methods
@@ -100,7 +68,7 @@ public class UserServiceTest {
 		
 	}
 	
-//	@Test
+	//@Test
 	public void addUser() throws Exception{
 		User user = new User();
         user.setId(25L);
@@ -110,7 +78,7 @@ public class UserServiceTest {
 		user.setEmail("ajith@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("matta");
-		user.setIsMailSent(Status.Y);
+		user.setIsMailSent(Status.N);
 		user.setJobTitle("developer");
 		user.setLastName("reddy");
 		user.setLocation("hyderabad");
@@ -132,34 +100,24 @@ public class UserServiceTest {
 	
 	@Test
 	public void createUser() throws Exception{
-		
-		UserCreation userCreation = new UserCreation();
-		//user.setId(1011l);
-		userCreation.setEmail("prasad_test123@gmail.com");
-		userCreation.setFirstName("Test");
-		userCreation.setLastName("User");
-		userCreation.setIsMailSent(Status.Y);
-		userCreation.setPhoneNumber("890876590");
-		userCreation.setPassword("bis@123");
-		userCreation.setUserCode("132425");
-		userCreation.setUserName("pavan");
-		userCreation.setUserState(Status.ACTIVE);
-		userCreation.setRoleType("Admin");
-		
-		userCreation.setEmployeeId("1001");
-		userCreation.setRate("12345");
-		userCreation.setRatePer("Hourly");
-		userCreation.setDayHours("8");
-		userCreation.setInvoiceFrequency("Monthly");
-		userCreation.setDateofJoin("2016-08-17");
-		userCreation.setProjectId("");
 	
-		 JSONObject jsonObj = new JSONObject(userCreation);
-	        System.out.println( jsonObj );
+		 JSONObject jsonObj = new JSONObject();
+		 jsonObj.put("firstName", "Demo_final13");
+		 jsonObj.put("lastName", "User");
+		 jsonObj.put("email", "demomail123@gmail.com");
+		 jsonObj.put("phoneNumber", "890876590");
+		 jsonObj.put("roleType", "Admin");
+		 
+		 jsonObj.put("employeeId", "123");
+		 jsonObj.put("rate", "12345");
+		 jsonObj.put("ratePer", "Hourly");
+		 jsonObj.put("dayHours", "8");
+		 jsonObj.put("invoiceFrequency", "Monthly");
+		 jsonObj.put("dateofJoin", "2016-08-17");
+		 jsonObj.put("projectId", "");
 		
-		Long orgLocationsId = 5l;
-		
-		User user = new User();
+		 Long orgLocationsId = 5l;
+		 User user = new User();
 		
 		userService.createUser(jsonObj,user,orgLocationsId);
 		logger.info(" success fully inserted");
@@ -211,7 +169,7 @@ public class UserServiceTest {
 		logger.info(" success fully validate email "+email);
 	}
 	
-	//@Test
+//	@Test
 	public void  getUserById() throws Exception{
 		
 		Long Id=3l;
@@ -222,7 +180,7 @@ public class UserServiceTest {
 		
 	}
 	//@Test
-	public void findByEmail() throws Exception{
+   public void findByEmail() throws Exception{
 		
 		User user = new User();
 		String email = "ramu@tcs.com";
@@ -283,7 +241,7 @@ public class UserServiceTest {
 		userProfile.setPassword("Bis@123");
 		
 	//	userService.saveUserProfile(userProfile,request,user);
-		logger.info("saveUserProfile"+multipartFile.getOriginalFilename());
+		logger.info("saveUserProfile"+multipartFile.getSize());
 		
 			
 	}
@@ -295,12 +253,12 @@ public class UserServiceTest {
 		return multipartFile;
 	}
 	
-	/*//@Test
+	//@Test
 	public void getUsersByUserRoles() throws Exception{
 		
-		Collection<User> user = userService.getUsersByUserRoles();
+		Collection<User> user = userService.getUsersByUserRoles(2l);
 		logger.info("getUsersByUserRoles " + user.size());
-	}*/
+	}
 	//@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
 		
