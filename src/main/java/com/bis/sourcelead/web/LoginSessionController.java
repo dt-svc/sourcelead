@@ -2,12 +2,16 @@ package com.bis.sourcelead.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -44,6 +48,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
 public class LoginSessionController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LoginSessionController.class);
+	
 	@Autowired
 	UserRoleService userRoleService;
 	
@@ -76,8 +83,7 @@ public class LoginSessionController {
 	
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
-	   public ModelAndView loginSession(HttpServletRequest request, HttpServletResponse response,
-				Authentication authentication) throws ParseException {
+	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws ParseException {
 		
 		commonUtil.highLightMenu(Constants.Dashboard, request);
 		
@@ -98,17 +104,16 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			
-			if(userRole.getRoles().getRoleName().equalsIgnoreCase("SOURCELEAD_ADMIN")){
+			if("SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
 				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
 			}
 			
 			
-			List<Tabs> tabsList = null;
-			
+			List<Tabs> tabsList;
 			if("slead".equalsIgnoreCase(org.getOrgCode())){
 				tabsList = tabsService.getSourceLeadTabsListByOrgId(userRole.getRoles().getId(), org.getId());
 			}else{
-				tabsList = tabsService.getTabsListByLoginUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
+				 tabsList = tabsService.getTabsListByLoginUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
@@ -116,7 +121,7 @@ public class LoginSessionController {
 			
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -131,7 +136,6 @@ public class LoginSessionController {
 		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
-		//model.addObject("notificationCount", notificationCount);
 		
 		// get notification list by user id
 		Long notificationTo = loginUser.getId();
@@ -139,17 +143,15 @@ public class LoginSessionController {
 		calculateDays(notificationList);
 		commonUtil.storeTimesheetSubmissionRecords(user);
 		commonUtil.terminateAllProjectMembersByUser(user);
-		//model.addObject("notificationList", notificationList);
 		
 		try {
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLoc.getId(), loginUser.getId());
 			for(Projects project : projectsList){
-				project = commonUtil.terminateProject(project);
+				commonUtil.terminateProject(project);
 			}
 			projectsService.saveAllProjects(projectsList);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		
 		

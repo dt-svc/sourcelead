@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.service.OrgRelationsService;
 
 @Service

@@ -666,7 +666,7 @@
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/saveOrgRelations?json=" + jsonData,
+				url : sourceleadUrl + "/saveClientFromProject?json=" + jsonData,
 				success : function(data) {
 					var json = JSON.parse(data);
 					var output = "";
@@ -722,9 +722,7 @@
 
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/saveProject?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData,
+						url : sourceleadUrl+ "/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							if (result == 'projectDashboard') {
 								location.replace(sourceleadUrl
