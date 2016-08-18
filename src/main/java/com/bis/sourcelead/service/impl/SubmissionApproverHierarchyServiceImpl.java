@@ -15,6 +15,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Autowired
 	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
 
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
@@ -154,6 +155,42 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		
 		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,submissionStatus);
 
+	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
+			Long userId, Long orgLocationId, String status,String userRole) {
+	
+		
+		List<SubmissionApproverHierarchy> list = null  ;
+		
+         if(status != null){
+ 			if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
+ 				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
+ 					 list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
+ 				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED")  ||  status.equalsIgnoreCase("NEW") ){
+ 					 list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
+ 				}
+ 				
+ 			}else if( userRole.equalsIgnoreCase("ROLE_USER") ){
+ 				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
+ 					list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId, status);
+ 				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED") ||  status.equalsIgnoreCase("NEW")){
+ 					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  status);
+ 				}
+ 				
+ 			}else if( userRole.equalsIgnoreCase("ROLE_APPROVER") ){
+ 				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
+ 					list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
+ 				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED") ||  status.equalsIgnoreCase("NEW")){
+ 					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
+ 				}
+
+ 			}
+ 			
+ 		}
+         
+         return list;
 	}
 	
 	

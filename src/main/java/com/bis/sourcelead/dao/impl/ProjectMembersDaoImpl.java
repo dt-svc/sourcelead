@@ -193,11 +193,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		currentCal.setTime(new Date());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
 		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-28);
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-84);
 		Date previousMondayDate = previousMonday.getTime();
 		java.sql.Date  previousMondaySqlDate = new java.sql.Date(previousMondayDate.getTime());
 		
-		Calendar nextMonday = CalendarUtil.getDateIncrementByincrement(startMonday,28);
+		Calendar nextMonday = CalendarUtil.getDateIncrementByincrement(startMonday,84);
 		Date nextMondayDate = nextMonday.getTime();
 		java.sql.Date  nextMondaySqlDate = new java.sql.Date(nextMondayDate.getTime());
 		

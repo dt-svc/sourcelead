@@ -137,15 +137,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 
 	
+		/****
+		 * 
+		 * @author: Sammeta David
+		 * This  controller method is for getting TimesheetSubmission Counts based on Status
+		 */
 	
-	// Sammeta David: this  controller method is for getting TimesheetSubmission Counts based on Status.
 		@Override
 		public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception {
 			
-			
-			
-				
-
 				 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 				 
 				            Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, new Long(3), "DRAFT");
@@ -170,11 +170,18 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				
 				        return timeSheetSubmissionCount;
 			}
+	
+		
+		
+		
+		/****
+		 * 
+		 * @author: Sammeta David
+		 * This  controller method is for getting TimesheetSubmission Hours Counts based on login User Id
+		 */
 
-			// Sammeta David: this  controller method is for getting TimesheetSubmission Hours Counts based on login User Id.
 			@Override
 			public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId) {
-				// TODO Auto-generated method stub
 				
 				    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 				    
@@ -214,6 +221,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		return approvalStatusCount;
 	}
 
+	
+	/****
+	 * 
+	 * @author: Sammeta David
+	 * This  controller method is for getting TimeSheetSubmissionsCount By UserId And OrgLocationId
+	 */
 	@Override
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
 			throws Exception {
@@ -227,14 +240,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
 		
 		
-		Collection<TimesheetSubmissions> submittedForApprovalindividualEmployeeList   = timesheetSubmissionsDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "SUBMITTEDFORAPPROVAL", orgLocationId);
+		Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"SUBMITTED");
 		timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
 		
+		Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"NEW");
 		
-		Collection<TimesheetSubmissions> newindividualEmployeeList   = timesheetSubmissionsDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "NEW", orgLocationId);
+		Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"DRAFT");
 		
-		Collection<TimesheetSubmissions> draftindividualEmployeeList   = timesheetSubmissionsDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "DRAFT", orgLocationId);
-
 		Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() + draftindividualEmployeeList.size();
 		timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 		
@@ -255,7 +267,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, "REJECTED");
 			timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
 			
-			Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL");
+			Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTED");
 			timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
 			
 			Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"NEW");
@@ -495,7 +507,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		@Override
 		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception {
 			 
-			HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForEmployee(projectMemberUserId);
+			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
 			TimesheetSubmissions  ts = null;
@@ -563,13 +575,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 						 startCal.setLenient(false);
 						 startCal.setTime(sDate);
 						 
+						 currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
+			             currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
 							                
-		                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
-				        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
+		                startDateBuilder.append(format.format(currentStartDate));
+				        endDateBuilder.append(format.format(currentEndDate));
 		                
-				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId(),memberId,employeeId);
-		                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-		                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
+				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(currentStartDate,currentEndDate, user.getId(),memberId,employeeId);
+		                
 	                 }
 	        }
 	        
