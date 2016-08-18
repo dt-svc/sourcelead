@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
@@ -89,7 +90,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 	@Override
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
 
-		String isFileCreated = null;
+		String isFileCreated;
 		String fileName = multipartFile.getOriginalFilename();
 
 		if (!fileName.toLowerCase().endsWith("csv")) {
@@ -119,7 +120,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
 		
-		String fileName = multipartFile.getOriginalFilename();
 		CSVParser csvFileParser = null;
 		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(Constants.FILE_HEADER_MAPPING);
 		try {
@@ -177,10 +177,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 					
 					  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 					 if(isUserFound){
-							
 								createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
 					 }else{
-						 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
+						 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 					 }
 				}else{
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
@@ -196,7 +195,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		return isFileCreated;
 
@@ -254,10 +253,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
-			Workbook workbook = null;
+			Workbook workbook;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			if (fileName.toLowerCase().endsWith("xlsx")) {
-//				workbook = new XSSFWorkbook(fis);
 				 boolean isUserFound = false;
 				 boolean isValidated = false;
 				workbook = WorkbookFactory.create(fis);
@@ -344,10 +342,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 									userImport.setDateString("");
 								} else {
 									XSSFCell myCell7 = (XSSFCell) row.getCell(7);
-									if (myCell7.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-										if(DateUtil.isCellDateFormatted((Cell) myCell7)){
+									if (myCell7.getCellType() == XSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) myCell7) ) {
 											userImport.setDateOfJoin(myCell7.getDateCellValue());
-										}
 									}
 								}
  								userImport.setRole(row.getCell(8).toString());
@@ -385,7 +381,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 									 }else{
 										 userImport.setIsMailChecked(Status.N);
 									 }
-									 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
+									 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 								 }
 							}
 						} else {
@@ -408,7 +404,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 					}
 				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
-//				workbook = (Workbook) new HSSFWorkbook(fis);
 				boolean isValidated = false;
 				boolean isUserFound = false;
 				workbook = WorkbookFactory.create(fis);
@@ -494,10 +489,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setDateString("");
 							} else {
 								HSSFCell myCell7 = (HSSFCell) row.getCell(7);
-								if (myCell7.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									if(DateUtil.isCellDateFormatted((Cell) myCell7)){
+								if (myCell7.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) myCell7)) {
 										userImport.setDateOfJoin(myCell7.getDateCellValue());
-									}
 								}
 							}
 							userImport.setRole(row.getCell(8).toString());
@@ -535,7 +528,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 								 }else{
 									 userImport.setIsMailChecked(Status.N);
 								 }
-								 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
+								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 							 }
 						}
 					} else {
@@ -561,7 +554,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		}
 			fis.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		return isFileCreated;
 
@@ -576,7 +569,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  * @param fileName 
  * @throws Exception
  */
-	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked, String fileName) throws Exception {
+	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
 		User user = new User();
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
@@ -961,7 +954,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
 
-		boolean isValidated=false; 
+		boolean isValidated; 
 		if (row.getRowNum() > 0) { // Excluding column names
 
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
@@ -983,16 +976,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 						String mobileNumber = myCell4.getStringCellValue();
 						if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 							isValidated = isMobileNumberValid(mobileNumber);
-							if(isValidated){
-							}else{
+							if(isValidated == false){
 								userImport.setReason("Invalid MobileNumber");
 								return isValidated;
 							}
 						}
 					}else{
 						isValidated = isMobileNumberValid(row.getCell(4).toString());
-						if(isValidated){
-						}else{
+						if(isValidated == false){
 							userImport.setReason("Invalid MobileNumber");
 							return isValidated;
 						}
@@ -1004,21 +995,18 @@ public class UploadFileServiceImpl implements UploadFileService {
 						String mobileNumber = myCell4.getStringCellValue();
 						if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 							isValidated = isMobileNumberValid(mobileNumber);
-							if(isValidated){
-							}else{
+							if(isValidated == false){
 								userImport.setReason("Invalid MobileNumber");
 								return isValidated;
 							}
 					}
 				}else{
 					isValidated = isMobileNumberValid(row.getCell(4).toString());
-					if(isValidated){
-					}else{
+					if(isValidated == false){
 						userImport.setReason("Invalid MobileNumber");
 						return isValidated;
 					}
 				}
-			
 			}
 			}
 			/*code to check Rate validation*/
@@ -1030,16 +1018,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 						String rate = myCell5.getStringCellValue();
 						if (rate != null && !"".equalsIgnoreCase(rate)) {
 							isValidated = isRateLengthValid(rate);
-							if(isValidated){
-							}else{
+							if(isValidated == false){
 								userImport.setReason("rate should be >2 and <=8");
 								return isValidated;
 							}
 						}
 					}else{
 						isValidated = isRateLengthValid(row.getCell(5).toString());
-						if(isValidated){
-						}else{
+						if(isValidated == false){
 							userImport.setReason("rate should be >2 and <=8");
 							return isValidated;
 						}
@@ -1052,16 +1038,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 						String rate = myCell5.getStringCellValue();
 						if (rate != null && !"".equalsIgnoreCase(rate)) {
 							isValidated = isRateLengthValid(rate);
-							if(isValidated){
-							}else{
+							if(isValidated == false){
 								userImport.setReason("rate should be >2 and <=8");
 								return isValidated;
 							}
 					}
 				}else{
 					isValidated = isRateLengthValid(row.getCell(5).toString());
-					if(isValidated){
-					}else{
+					if(isValidated == false){
 						userImport.setReason("rate should be >2 and <=8");
 						return isValidated;
 					}
@@ -1077,15 +1061,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 				 String date = formatter.formatCellValue(cell);
 				if(fileName.endsWith("xls")){
 					isValidated = isThisDateValid(date, "MM/dd/yyyy");
-					if(isValidated){
-					}else{
+					if(isValidated == false){
 						userImport.setReason("Invalid Date");
 						return isValidated;
 					}
 				}else{
 					isValidated = isThisDateValid(row.getCell(7).toString(), "MM/dd/yyyy");
-					if(isValidated){
-					}else{
+					if(isValidated == false){
 						userImport.setReason("Invalid Date");
 						return isValidated;
 					}
@@ -1107,16 +1089,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 						String dayHours = myCell10.getStringCellValue();
 						if (dayHours != null && !"".endsWith(dayHours)) {
 							isValidated = isDayHourValid(dayHours);
-							if(isValidated){
-							}else{
+							if(isValidated == false){
 								userImport.setReason("Invalid Day Hours");
 								return isValidated;
 							}
 						}
 					}else{
 						isValidated = isDayHourValid(row.getCell(10).toString());
-						if(isValidated){
-						}else{
+						if(isValidated == false){
 							userImport.setReason("Invalid Day Hours");
 							return isValidated;
 						}
@@ -1129,16 +1109,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 						String dayHours = myCell10.getStringCellValue();
 						if (dayHours != null && !"".equalsIgnoreCase(dayHours)) {
 							isValidated = isDayHourValid(dayHours);
-							if(isValidated){
-							}else{
+							if(isValidated == false){
 								userImport.setReason("Invalid Day Hours");
 								return isValidated;
 							}
 					}
 				}else{
 					isValidated = isDayHourValid(row.getCell(10).toString());
-					if(isValidated){
-					}else{
+					if(isValidated == false){
 						userImport.setReason("Invalid Day Hours");
 						return isValidated;
 					}
@@ -1161,32 +1139,25 @@ public class UploadFileServiceImpl implements UploadFileService {
 	 */
 	private boolean validateCsvData(CSVRecord record, UsersImport userImport) {
 
-		boolean isValidated = false;
+		boolean isValidated;
 			if (record.get(Constants.FIRST_NAME) == null || "".equalsIgnoreCase(record.get(Constants.FIRST_NAME))) {
 				userImport.setReason("Required field mandatory");
 				return false;
 			}
-			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
-				return false;
-			}*/
 			if (record.get(Constants.EMAIL_ID) == null || !validateEmail(record.get(Constants.EMAIL_ID))) {
 				userImport.setReason("Required field is mandatory");
 				return false;
 			}
 			if (record.get(Constants.PHONE_NUMBER) !=null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER))) {
 				isValidated = isMobileNumberValid(record.get(Constants.PHONE_NUMBER));
-				if(isValidated){
-				}
-				else{
+				if(isValidated == false){
 					userImport.setReason("Invalid MobileNumber");
 					return isValidated;
 				}
 			}
 			if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
 				isValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
-				if(isValidated){
-					
-				}else{
+				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
 				}
@@ -1198,9 +1169,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 			
 			if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
 				isValidated = isDayHourValid(record.get(Constants.DAY_HOURS));
-				if(isValidated){
-					
-				}else{
+				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
 				}
@@ -1349,6 +1318,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		sdf.setLenient(false);
 		try {
 		Date date = sdf.parse(dateToValidate);
+		logger.debug("The Date is "+date);
 		} catch (ParseException e) {
 
 		logger.error(""+e.getMessage());
@@ -1382,7 +1352,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean isMobileNumberValid(String mobileNmber){
 		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
-		boolean flag = false;
+		boolean flag;
 		if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
 			flag = mobileNmber.matches(regex);
 		}else{
@@ -1393,8 +1363,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	private boolean isDayHourValid(String dayHours) {
 		String regex = "\\d+";
-		boolean flag = false;
-		int hours = 0;
+		boolean flag;
+		int hours;
 		if (dayHours.matches(regex)) {
 			hours = Integer.parseInt(dayHours);
 			if (hours <= 24) {
@@ -1410,10 +1380,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 	
 	private boolean isRateLengthValid(String rate){
-	//	String regex = "\\d+";
-		boolean flag = false;
+		boolean flag;
 		if (rate.length() > 1 && rate.length() <= 8) {
-//			flag = Rate.matches(regex);
 			flag = true;
 		} else {
 			flag = false;

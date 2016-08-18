@@ -118,7 +118,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 
 	@Override
 	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
-		// TODO Auto-generated method stub
 		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
 		return list;
 	}

@@ -3,8 +3,11 @@ package com.bis.sourcelead.service;
 import java.util.Date;
 import java.util.List;
 
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,6 +29,10 @@ public class ActionRolesServiceTest {
 	
 	@Autowired
 	ActionRolesService actionRolesService;
+	
+	@Autowired
+	ModulesService modulesService;
+	private static final Logger logger = LoggerFactory.getLogger(ActionRolesServiceTest.class);
 	
 	@Test
 	public void addActionRoles() throws Exception{
@@ -50,24 +57,27 @@ public class ActionRolesServiceTest {
 		actionRoles.setUpdatedBy("Sourcelead");
 		
 		actionRolesService.addActionRoles(actionRoles);
+		logger.info("addActionRoles"+actionRoles.getId());
 	}
 	
 	@Test
 	public void getSourceLeadActionRolesListByOrgId() throws Exception{
 		Org org = new Org();
 		org.setId(2L);
-		List<Long> modulesid = null;
+		List<Long> modulesid = modulesService.getModulesIdByModuleName("SOURCELEAD_DEFAULT_MODULE");
 		List<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(org.getId(), modulesid);
 		System.out.println("Action Roles List is...> "+actionRolesList.size());
 	}
 	
 	@Test
 	public void getOrgActionRolesByRoleAndOrgLocationId() throws Exception{
-		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(3L);
+		/*OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
 		Roles roles = new Roles();
-		roles.setId(2L);
-		List<ActionRoles> actionRolesList = actionRolesService.getOrgActionRolesByRoleAndOrgLocationId(roles.getId(),orgLocations.getId());
+		roles.setId(2L);*/
+		List<ActionRoles> actionRolesList = actionRolesService.getOrgActionRolesByRoleAndOrgLocationId(2l,3l);
+		if(actionRolesList != null){
 		System.out.println("Action Roles List is...> "+actionRolesList.size());
+		}
 	}
 }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.rest.ClientRestController;
+
 /**
  * Prasad Salina
  * @author bis113
@@ -21,9 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class AutoCompleteController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteController.class);
-
-	
-	
 	@Autowired
 	private ApplicationContext applicationContext;
 	
@@ -34,7 +33,7 @@ public class AutoCompleteController {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** AutoCompleteController init with: " + applicationContext);
+		logger.debug(" *** AutoCompleteController init with: " + applicationContext);
 	}
 
     @RequestMapping(value = "/testAutoComplete")
