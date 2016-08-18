@@ -3,6 +3,8 @@ package com.bis.sourcelead.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -69,4 +71,6 @@ public interface ProjectsService {
 		String getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
+        
+		String  storeProject(JSONObject jsonObj , HttpServletRequest request) throws Exception ;
 }

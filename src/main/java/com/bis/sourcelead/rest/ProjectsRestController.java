@@ -131,6 +131,17 @@ public class ProjectsRestController {
 	  * @return value is Project pojo
 	  * @throws Exception
 	  */
+	 
+	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
+	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+		   
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
+		    String outPut =  projectsService.storeProject(jsonObj, request);
+		    return outPut;		
+			 
+	   }
+	 
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   

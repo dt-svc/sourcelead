@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -59,6 +62,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -119,6 +123,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
+	 
+	 @Autowired
+	 private ProjectTasksService projectTasksService;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -221,7 +228,93 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	
+	@Override
+	public String storeProject(JSONObject jsonObj , HttpServletRequest request) throws Exception {
+		    
+		  
+		String resultJson = null;
+	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+	 	String pattern = "yyyy-MM-dd";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	 	
+    	Projects projects = new Projects();
+    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
+    	projects.setProjectName(jsonObj.getString("ProjectName"));
+    	projects.setDescription(jsonObj.getString("ProjectDescription"));
+    	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
+    		Date startDate = format.parse(jsonObj.getString("StartDate"));
+	    	projects.setStartDate(startDate);
+    	}
+    	if(!jsonObj.getString("EndDate").isEmpty()){
+    		Date endDate = format.parse(jsonObj.getString("EndDate"));
+	    	projects.setEndDate(endDate);
+    	}
+    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
+    	projects.setCreatedDate(new Date());
+    	projects.setUpdatedDate(new Date());
+    	if(user.getUserCode() != null){
+    		projects.setCreatedBy(user.getUserCode());	
+    	}
+    	projects.setOrgLocationsId(loginOrgLocation);
+    	
+    	// Saving of Client by bringing OrgRelation id based on Client OrgId
+	    String clientOrgCode = jsonObj.getString("selectClient");	
+	    if(!clientOrgCode.isEmpty() && clientOrgCode!=null){
+	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocationsByOrgCode(clientOrgCode);
+	    	  if(clientOrgLocations!=null){
+	    		  OrgRelations  orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(loginOrgLocation.getId(), clientOrgLocations.getId());
+		    		  if(orgRelations!=null){
+		    			  projects.setOrgRelationId(orgRelations);
+		    		  }
+	    	  }
+	    	  
+	    }
+	    
+	    if((jsonObj.has("isMailToTeamMembers") && StringUtils.isNotEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+			projects.setIsMailToTeamMembers(Status.Y);
+		}else{
+			projects.setIsMailToTeamMembers(Status.N);
+		}
+	    
+	    if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+		  projects.setIsMailToProjectManager(Status.Y);
+		}else{
+			projects.setIsMailToProjectManager(Status.N);
+		}
+    	
 
+    	//prepare ProjectApproverHierarchy
+    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj, request, projects);
+    	projects.setProjectApprovers(projectApproverHierarchyList);
+		
+		//prepare project task set...
+		/*tasksService.*/
+		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
+		projects.setProjectTasks(projectTasksList);
+		//prepare projectmembers list...
+		
+		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj, request, projects);
+		projects.setProjectMembers(projectMemberList);
+		
+		Projects updatedProjects = saveProject(projects);
+		
+		/*if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+			if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
+				sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList, loginOrgCode);
+			}
+			if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
+				sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, teamMembersList, loginOrgCode);
+			}
+		}*/
+		 
+	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
+	  return "projectDashboard";
+		 
+		
+	}
+	
 	@Override
 	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status,Long orgLocationsId) throws Exception {
