@@ -185,10 +185,11 @@
 											
 											<div class="modal-footer">
 											<div class="col-xs-8 col-lg-11">
-											 <a href="javascript:void(0)" class="btn btn-primary"
+											 <!-- <a href="javascript:void(0)" class="btn btn-primary"
 															id="save_task" onclick="addTasks();"
 															data-target="addTask"> <i class="fa fa-plus"></i><span
-															id="addTaskText"> Add Project</span></a>
+															id="addTaskText"> Add Project</span></a> -->
+															<input type="button" class="btn btn-primary"  onclick="addTasks();" id="save_task" value="Add Project">
 											</div>
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Close</button>
@@ -484,7 +485,7 @@
 		/* $("#projectManager").val(''); */
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
-		$("#addTaskText").html('Update Task');
+		$("#save_task").val('Update Project');
 		$("#projectId").val(updateProjectId);
 		$("#projectName").val(updateTaskName);
 		/* $("#projectManager").val(updateprojectManager); */
@@ -499,11 +500,9 @@
 <script type="text/javascript">
 	function updateTask(rowId) {
 		
-		var mgr = projectManager.val();
-		var mgr = projectManager.split("&");
-
+		var mgr = $("#projectManager").val();
+		var mgr = $("#projectManager").val().split("&");
 		
-		//$("#"+rowId+"projectManager").val(); 
 		$("#" + rowId + "projectIdValue").html($("#projectId").val());
 
 		$("#" + rowId + "projectNameValue").html($("#projectName").val());
@@ -514,12 +513,24 @@
 				$("#projectStartDate").val());
 
 		$("#" + rowId + "projectEndDateValue").html($("#projectEndDate").val());
+		
+		
+		$("#" + rowId + "projectId").val($("#projectId").val());
+		$("#" + rowId + "projectName").val($("#projectName").val());
+		$("#" + rowId + "projectManager").val(mgr[0]);
+		$("#" + rowId + "projectStartDate").val($("#projectStartDate").val());
+		if($("#projectEndDate").val() != ''){
+			$("#" + rowId + "projectEndDate").val($("#projectEndDate").val());
+		}
+		
+		
 		$("#projectId").val('');
 		$("#projectName").val('');
 		$("#projectManager").val('');
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
-		$("#addTaskText").html('Add Task');
+		
+		$("#save_task").val('Add Project');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
 
@@ -542,9 +553,11 @@
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
+		var tasksCount =  $("#maxTsRowNum").val();
 		var ProjectSequeneNumber = document.getElementById("projectId").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+		$("#save_task").removeAttr("disabled")
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 			$
 					.ajax({
@@ -566,11 +579,45 @@
 												'record-exist-errorMsg',
 												projectId
 														+ ' is Already Existed');
-							} else {
-								$('input#projectId').removeAttr(
+								$("#save_task").attr("disabled", "disabled");
+							} else if(tasksCount > 1) {
+								
+								for (i = 1; i < tasksCount; i++) { 
+									var id = document.getElementById(i+"projectId").value;
+									if(id == ProjectSequeneNumber || data == true){
+										$('input#projectId').removeAttr(
 										"record-exist record-exist-errormsg");
-								$('#ProjectIdDiv').find(
+										$('#ProjectIdDiv').find(
 										'p.jquery_form_error_message').remove();
+										$("input#projectId").after(
+												"<p class='jquery_form_error_message'>"
+														+ ProjectSequeneNumber
+														+ " is Already Existed</span>");
+										document.getElementById("projectId")
+												.setAttribute('record-exist', 'yes');
+										document
+												.getElementById("projectId")
+												.setAttribute(
+														'record-exist-errorMsg',
+														projectId
+																+ ' is Already Existed');
+										$("#save_task").attr("disabled", "disabled");
+										return false;
+									}else{
+										$('input#projectId').removeAttr(
+										"record-exist record-exist-errormsg");
+										$('#ProjectIdDiv').find(
+										'p.jquery_form_error_message').remove();
+										$("#save_task").removeAttr("disabled")
+									}
+								}
+								
+							}else{
+								$('input#projectId').removeAttr(
+								"record-exist record-exist-errormsg");
+								$('#ProjectIdDiv').find(
+								'p.jquery_form_error_message').remove();
+								$("#save_task").removeAttr("disabled")
 							}
 						},
 					});

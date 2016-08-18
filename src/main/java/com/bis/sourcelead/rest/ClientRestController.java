@@ -121,9 +121,12 @@ public class ClientRestController {
 			String startDateString = jsonObj.getString(c + "projectStartDate");
 			String endDateString = jsonObj.getString(c + "projectEndDate");// projectEndDate
 			Date startDate = getDateFormat(startDateString);
-			Date endDate = getDateFormat(endDateString);
+			if(!isNullOrEmpty(endDateString)){
+				Date endDate = getDateFormat(endDateString);
+				project.setEndDate(endDate);
+			}
+			
 			project.setStartDate(startDate);
-			project.setEndDate(endDate);
 			project.setProjectStatus(Project_Status.STARTED);
 			project.setCreatedDate(new Date());
 			projectApproverHierarchy.setProjectId(project);

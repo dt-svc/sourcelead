@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimesheetSubmissionsDao {
@@ -25,6 +24,8 @@ public interface TimesheetSubmissionsDao {
     public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate,Long userId,Long memberId,Long employeeId)throws Exception;
     
     public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
+    
+    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long  approverUserId,Long empUserId) throws Exception;
     
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
