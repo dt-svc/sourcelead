@@ -20,7 +20,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 public class OrgSettingsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsController.class);
-	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -30,10 +29,9 @@ public class OrgSettingsController {
 	
 	@RequestMapping(value = "/orgSettings")
  	public ModelAndView orgSettings(HttpServletRequest request) {
- 			ModelAndView model = new ModelAndView();
- 			
+		logger.debug("Org settings");
+		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
-			
  			model.setViewName("orgSettings");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;

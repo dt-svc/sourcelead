@@ -39,7 +39,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
-	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -70,7 +69,7 @@ public class ClientController {
 	 */
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
-
+		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
@@ -93,7 +92,6 @@ public class ClientController {
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
-		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
@@ -107,7 +105,7 @@ public class ClientController {
 			commonUtil.highLightMenu(Constants.Clients, request);
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
-			if(!isNullOrEmpty(msg)){
+			if(msg != null && !"".equals(msg)){
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "clientCreateMsg");
 			}
@@ -116,9 +114,7 @@ public class ClientController {
 			return model;
 	    }
 	    
-	    private static boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
-		}
+	 
 		
 		
 }

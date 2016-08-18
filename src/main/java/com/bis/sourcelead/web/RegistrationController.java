@@ -86,7 +86,7 @@ public class RegistrationController {
 	  * @return boolean
 	  */
 	   protected boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
+			return str == null || "".equals(str.trim());
 		}
 	
 	

@@ -63,7 +63,7 @@ public class TimesheetSubmissionsController {
 	}
 	
 	 public static boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
+			return str == null || "".equals(str.trim());
 		}
  
 }

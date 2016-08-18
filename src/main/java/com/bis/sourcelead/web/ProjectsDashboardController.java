@@ -31,7 +31,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
-	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 	
@@ -56,7 +55,7 @@ public class ProjectsDashboardController {
 	 */
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
-
+           logger.debug("projectDashboard");
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
@@ -107,6 +106,6 @@ public class ProjectsDashboardController {
 	 * @return boolean
 	 */	
 	protected static boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
+		return str == null || "".equals(str.trim());
 	}
 }

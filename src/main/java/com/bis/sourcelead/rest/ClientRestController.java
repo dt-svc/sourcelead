@@ -104,6 +104,8 @@ public class ClientRestController {
 		return "clientDashboard";
 	}
 
+	
+	
 
 	/**
 	 * Returns Date
@@ -229,6 +231,59 @@ public class ClientRestController {
 
 	/**
 	 * Handles project inline editing
+	 * @param orgRelationId
+	 * @param fieldName
+	 * @param fieldValue
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/clientDetailsUpdateUsingId", method = RequestMethod.POST)
+	public String clientDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, 
+			HttpServletRequest request) throws Exception {
+		
+	       json = "{" + json + "}";
+	       JSONObject jsonObj = new JSONObject(json);
+	
+		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+		Org org = orgRelation.getClientLocationId().getOrg();
+		OrgLocations orgLocations = orgRelation.getClientLocationId();
+		
+		//org.setOrgName(jsonObj.getString("clientName"));
+		if(jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
+			org.setWebSite(jsonObj.getString("companyWebsite"));
+		}
+		orgService.updateOrg(org);
+		
+		if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
+			orgLocations.setCity(jsonObj.getString("clientCity"));
+		}
+		if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
+			orgLocations.setState(jsonObj.getString("clientState"));
+		}
+		if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
+			orgLocations.setCountry(jsonObj.getString("clientCountry"));
+	     }
+		if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+			orgLocations.setEmail(jsonObj.getString("EmailId"));
+		}
+		if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+			orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
+		}
+		orgLocationService.updateOrgLocations(orgLocations);
+
+		return "success";
+	}
+
+	
+	
+	
+	
+	
+
+	/**
+	 * Handles project inline editing
 	 * 
 	 * @param orgRelationId
 	 * @param fieldName
@@ -274,6 +329,7 @@ public class ClientRestController {
 
 		return "success";
 	}
+
 
 	/**
 	 * Handles Inline edit for client projects
