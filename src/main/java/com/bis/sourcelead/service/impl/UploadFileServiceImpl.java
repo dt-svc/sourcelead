@@ -21,14 +21,23 @@ import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -64,17 +73,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UploadFileServiceImpl.class);
 	
-	@Autowired
-	private UploadFileDao uploadFileDao;
-
-	@Autowired
-	private SessionFactory sessionFactory;
 	
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private UserRoleService userRoleService;
 
 	@Autowired
 	private EmployeesService employeesService;
@@ -97,7 +98,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 			isFileCreated = parseCSVData(multipartFile,orgLocations,user,isMailChecked);
 		}
 		return isFileCreated;
-		//return uploadFileDao.uploadFile(multipartFile, orgLocations,user, isMailChecked);
 	}
 
 	/**
@@ -257,10 +257,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 			Workbook workbook = null;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			if (fileName.toLowerCase().endsWith("xlsx")) {
-				workbook = new XSSFWorkbook(fis);
+//				workbook = new XSSFWorkbook(fis);
 				 boolean isUserFound = false;
 				 boolean isValidated = false;
-//				workbook = WorkbookFactory.create(fis);
+				workbook = WorkbookFactory.create(fis);
 				int numberOfSheets = workbook.getNumberOfSheets();
 				for (int i = 0; i < numberOfSheets; i++) {
 					Sheet sheet = workbook.getSheetAt(i);
@@ -281,7 +281,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 									if (myCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 										myCell.setCellType(Cell.CELL_TYPE_STRING);
 										String empId = myCell.getStringCellValue();
-										if (empId == null || "".endsWith(empId)) {
+										if (empId == null || "".equalsIgnoreCase(empId)) {
 											userImport.setEmployeeId("");
 										} else {
 											userImport.setEmployeeId(empId);
@@ -293,9 +293,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 									userImport.setMobileNumber("");
 								}
 								userImport.setFirstName(row.getCell(1).toString());
-								//userImport.setLastName(row.getCell(2).toString());// LastName
 								
-								if (row.getCell(2) == null || "".endsWith(row.getCell(2).toString())) {
+								if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
 									userImport.setLastName("");
 								} else {
 									userImport.setLastName(row.getCell(2).toString());
@@ -307,7 +306,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 									if (myCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 										myCell.setCellType(Cell.CELL_TYPE_STRING);
 										String mobileNumber = myCell.getStringCellValue();
-										if (mobileNumber == null || "".endsWith(mobileNumber)) {
+										if (mobileNumber == null || "".equalsIgnoreCase(mobileNumber)) {
 											userImport.setMobileNumber("");
 										} else {
 											userImport.setMobileNumber(mobileNumber);
@@ -320,38 +319,39 @@ public class UploadFileServiceImpl implements UploadFileService {
 								}
 
 								if (row.getCell(5) != null) {
-//									XSSFCell myCell5 = (XSSFCell) row.getCell(5);
-// 									if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-//  										myCell5.setCellType(Cell.CELL_TYPE_STRING);
-//  										String rate = myCell5.getStringCellValue();
-//  										if (rate == null || "".endsWith(rate)) {
-//											userImport.setRate("");
-//										} else {
-//											userImport.setRate(rate);
-//										}
-//									}else{
+									XSSFCell myCell5 = (XSSFCell) row.getCell(5);
+ 									if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+  										myCell5.setCellType(Cell.CELL_TYPE_STRING);
+  										String rate = myCell5.getStringCellValue();
+  										if (rate == null || "".equalsIgnoreCase(rate)) {
+											userImport.setRate("");
+										} else {
+											userImport.setRate(rate);
+										}
+									}else{
 										userImport.setEmailId(row.getCell(5).toString());
-//									}
+									}
 								} else {
 									userImport.setRate("");
 								}
-								if (row.getCell(6) == null || "".endsWith(row.getCell(6).toString())) {
+								if (row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString())) {
 									userImport.setRatePer("");
 								} else {
 									userImport.setRatePer(row.getCell(6).toString());
 								}
 								
- 								if (row.getCell(7) == null || "".endsWith(row.getCell(7).toString())) {
+ 								if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
 									userImport.setDateString("");
 								} else {
-									DataFormatter formatter = new DataFormatter();
-									 Cell cell =row.getCell(7);
-									 String dateString = formatter.formatCellValue(cell);
-									Date date= getDateFormat(dateString, "dd/MM/yyyy");
-									userImport.setDateOfJoin(date);
+									XSSFCell myCell7 = (XSSFCell) row.getCell(7);
+									if (myCell7.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+										if(DateUtil.isCellDateFormatted((Cell) myCell7)){
+											userImport.setDateOfJoin(myCell7.getDateCellValue());
+										}
+									}
 								}
  								userImport.setRole(row.getCell(8).toString());
-								if (row.getCell(9) == null || "".endsWith(row.getCell(9).toString())) {
+								if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 									userImport.setInvoiceFrequency("");
 								} else {
 									userImport.setInvoiceFrequency(row.getCell(9).toString());
@@ -361,7 +361,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 									if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 										myCell10.setCellType(Cell.CELL_TYPE_STRING);
 										String dayHours = myCell10.getStringCellValue();
-										if (dayHours == null || "".endsWith(dayHours)) {
+										if (dayHours == null || "".equalsIgnoreCase(dayHours)) {
 											userImport.setDayHours("");
 										} else {
 											userImport.setDayHours(dayHours);
@@ -387,7 +387,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 									 }
 									 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
 								 }
-//								saveBulkUser(userImport, orgLocations);
 							}
 						} else {
 							if (row.getRowNum() > 0) {
@@ -409,10 +408,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 					}
 				}
 			} else if (fileName.toLowerCase().endsWith("xls")) {
-				workbook = (Workbook) new HSSFWorkbook(fis);
+//				workbook = (Workbook) new HSSFWorkbook(fis);
 				boolean isValidated = false;
 				boolean isUserFound = false;
-//				workbook = WorkbookFactory.create(fis);
+				workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
@@ -427,17 +426,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 					if (isValidated) {
 						if (row.getRowNum() > 0) { // Excluding column names
 							logger.info("Reading Row :" + row.getRowNum() + " records");
-//							if (row.getCell(0) == null || "".endsWith(row.getCell(0).toString())) {
-//								userImport.setEmployeeId("");
-//							} else {
-//								userImport.setEmployeeId(row.getCell(0).toString());
-//							}
 							if (row.getCell(0) != null) {
 								HSSFCell myCell = (HSSFCell) row.getCell(0);
 								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 									myCell.setCellType(Cell.CELL_TYPE_STRING);
 									String EmployeeId = myCell.getStringCellValue();
-									if (EmployeeId == null || "".endsWith(EmployeeId)) {
+									if (EmployeeId == null || "".equalsIgnoreCase(EmployeeId)) {
 										userImport.setEmployeeId("");
 									} else {
 										userImport.setEmployeeId(EmployeeId);
@@ -449,25 +443,19 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setEmployeeId("");
 							}
 							userImport.setFirstName(row.getCell(1).toString());
-						//	userImport.setLastName(row.getCell(2).toString()); // LastName
-							if (row.getCell(2) == null || "".endsWith(row.getCell(2).toString())) {
+							if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
 								userImport.setLastName("");
 							} else {
 								userImport.setLastName(row.getCell(2).toString());
 							}
 							userImport.setEmailId(row.getCell(3).toString());
 
-//							if (row.getCell(4) == null || "".endsWith(row.getCell(4).toString())) {
-//								userImport.setMobileNumber("");
-//							} else {
-//								userImport.setMobileNumber(row.getCell(4).toString());
-//							}
 							if (row.getCell(4) != null) {
 								HSSFCell myCell = (HSSFCell) row.getCell(4);
 								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 									myCell.setCellType(Cell.CELL_TYPE_STRING);
 									String mobileNumber = myCell.getStringCellValue();
-									if (mobileNumber == null || "".endsWith(mobileNumber)) {
+									if (mobileNumber == null || "".equalsIgnoreCase(mobileNumber)) {
 										userImport.setMobileNumber("");
 									} else {
 										userImport.setMobileNumber(mobileNumber);
@@ -478,63 +466,52 @@ public class UploadFileServiceImpl implements UploadFileService {
 							} else {
 								userImport.setMobileNumber("");
 							}
-							/*if (row.getCell(5) == null || "".endsWith(row.getCell(5).toString())) {
-								userImport.setRate("");
-							} else {
-								userImport.setRate(row.getCell(5).toString());
-							}*/
 
 							if (row.getCell(5) != null) {
-//								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-//								if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-//									myCell5.setCellType(Cell.CELL_TYPE_STRING);
-//									String rate = myCell5.getStringCellValue();
-//									if (rate == null || "".endsWith(rate)) {
-//										userImport.setRate("");
-//									} else {
-//										userImport.setRate(rate);
-//									}
-//								}else{
+								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
+								if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+									myCell5.setCellType(Cell.CELL_TYPE_STRING);
+									String rate = myCell5.getStringCellValue();
+									if (rate == null || "".equalsIgnoreCase(rate)) {
+										userImport.setRate("");
+									} else {
+										userImport.setRate(rate);
+									}
+								}else{
 									userImport.setRate(row.getCell(5).toString());
-//								}
+								}
 							} else {
 								userImport.setRate("");
 							}
-							if (row.getCell(6) == null || "".endsWith(row.getCell(6).toString())) {
+							if (row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString())) {
 								userImport.setRatePer("");
 							} else {
 								
 								userImport.setRatePer(row.getCell(6).toString());
 							}
 							
-							if (row.getCell(7) == null || "".endsWith(row.getCell(7).toString())) {
+							if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
 								userImport.setDateString("");
 							} else {
-								DataFormatter formatter = new DataFormatter();
-								 Cell cell =row.getCell(7);
-								 String dateString = formatter.formatCellValue(cell);
-								Date date= getDateFormat(dateString, "dd/MM/yyyy");
-								userImport.setDateOfJoin(date);
-
+								HSSFCell myCell7 = (HSSFCell) row.getCell(7);
+								if (myCell7.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+									if(DateUtil.isCellDateFormatted((Cell) myCell7)){
+										userImport.setDateOfJoin(myCell7.getDateCellValue());
+									}
+								}
 							}
 							userImport.setRole(row.getCell(8).toString());
-							if (row.getCell(9) == null || "".endsWith(row.getCell(9).toString())) {
+							if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 								userImport.setInvoiceFrequency("");
 							} else {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
 							}
-							
-							/*if (row.getCell(10) == null || "".endsWith(row.getCell(10).toString())) {
-								userImport.setDayHours("");
-							} else {
-								userImport.setDayHours(row.getCell(9).toString());
-							}*/
 							if (row.getCell(10) != null) {
 								HSSFCell myCell10 = (HSSFCell) row.getCell(10);
 								if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 									myCell10.setCellType(Cell.CELL_TYPE_STRING);
 									String dayHours = myCell10.getStringCellValue();
-									if (dayHours == null || "".endsWith(dayHours)) {
+									if (dayHours == null || "".equalsIgnoreCase(dayHours)) {
 										userImport.setDayHours("");
 									} else {
 										userImport.setDayHours(dayHours);
@@ -560,7 +537,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 								 }
 								 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
 							 }
-//							saveBulkUser(userImport, orgLocations);
 						}
 					} else {
 						if (row.getRowNum() > 0) {
@@ -658,12 +634,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
-		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
+		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			HSSFCell myCell0 = (HSSFCell) row.getCell(0);
 			if (myCell0.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 				myCell0.setCellType(Cell.CELL_TYPE_STRING);
 				String empId = myCell0.getStringCellValue();
-				if (empId != null && !"".endsWith(empId)) {
+				if (empId != null && !"".equalsIgnoreCase(empId)) {
 					Cell cell0 = writeRow.createCell(0);
 					cell0.setCellValue(empId);
 				}
@@ -676,21 +652,21 @@ public class UploadFileServiceImpl implements UploadFileService {
 			cell0.setCellValue("");
 		}
 		
-		if (row.getCell(1) != null && !"".endsWith(row.getCell(1).toString())) {
+		if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 			Cell cell1 = writeRow.createCell(1);
 			cell1.setCellValue(row.getCell(1).toString());
 		} else {
 			Cell cell1 = writeRow.createCell(1);
 			cell1.setCellValue("");
 		}
-		if (row.getCell(2) != null && !"".endsWith(row.getCell(2).toString())) {
+		if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 			Cell cell2 = writeRow.createCell(2);
 			cell2.setCellValue(row.getCell(2).toString());
 		} else {
 			Cell cell2 = writeRow.createCell(2);
 			cell2.setCellValue("");
 		}
-		if (row.getCell(3) != null && !"".endsWith(row.getCell(3).toString())) {
+		if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue(row.getCell(3).toString());
 		} else {
@@ -698,23 +674,16 @@ public class UploadFileServiceImpl implements UploadFileService {
 			cell3.setCellValue("");
 		}
 		
-//		if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
-//			Cell cell4 = writeRow.createCell(4);
-//			cell4.setCellValue(row.getCell(4).toString());
-//		} else {
-//			Cell cell4 = writeRow.createCell(4);
-//			cell4.setCellValue("");
-//		}
 		if (row.getRowNum() == 0) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(row.getCell(4).toString());
 		} else {
-			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
 				HSSFCell myCell4 = (HSSFCell) row.getCell(4);
 				if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 					myCell4.setCellType(Cell.CELL_TYPE_STRING);
 					String mobileNumber = myCell4.getStringCellValue();
-					if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 						Cell cell4 = writeRow.createCell(4);
 						cell4.setCellValue(mobileNumber);
 					}
@@ -732,13 +701,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue(row.getCell(5).toString());
 		} else {
-			if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
-
+			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+				
 				HSSFCell myCell5 = (HSSFCell) row.getCell(5);
 				if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 					myCell5.setCellType(Cell.CELL_TYPE_STRING);
 					String rate = myCell5.getStringCellValue();
-					if (rate != null || !"".endsWith(rate)) {
+					if (rate != null || !"".equalsIgnoreCase(rate)) {
 						Cell cell5 = writeRow.createCell(5);
 						cell5.setCellValue(rate);
 					}
@@ -751,62 +720,59 @@ public class UploadFileServiceImpl implements UploadFileService {
 				cell5.setCellValue("");
 			}
 		}
-		if (row.getCell(6) != null && !"".endsWith(row.getCell(6).toString())) {
+		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue(row.getCell(6).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue("");
 		}
-		if (row.getCell(7) != null && !"".endsWith(row.getCell(7).toString())) {
+		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 			
 			 DataFormatter formatter = new DataFormatter();
 			 String dateString = formatter.formatCellValue(row.getCell(7));
 			 Cell cell7 = writeRow.createCell(7);
 			 cell7.setCellValue(dateString);
-//			Date date= getDateFormat(dateString, "dd/MM/yyyy");
-//			userImport.setDateOfJoin(date);
-//			Cell cell7 = writeRow.createCell(7);
-//			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//			Date date = row.getCell(7).getDateCellValue();
-//			
 		} else {
 			Cell cell7 = writeRow.createCell(7);
 			cell7.setCellValue("");
 		}
-		if (row.getCell(8) != null && !"".endsWith(row.getCell(8).toString())) {
+		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
+			
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue(row.getCell(8).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
 		}
-		if (row.getCell(9) != null && !"".endsWith(row.getCell(9).toString())) {
+		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue(row.getCell(9).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
 		
-		/*if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue(row.getCell(10).toString());
-		} else {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue("");
-		}*/
 		if (row.getRowNum() == 0) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue(row.getCell(10).toString());
 		} else {
-			if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 
 				HSSFCell myCell10 = (HSSFCell) row.getCell(10);
 				if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 					myCell10.setCellType(Cell.CELL_TYPE_STRING);
 					String dayHours = myCell10.getStringCellValue();
-					if (dayHours != null || !"".endsWith(dayHours)) {
+					if (dayHours != null || !"".equalsIgnoreCase(dayHours)) {
 						Cell cell10 = writeRow.createCell(10);
 						cell10.setCellValue(dayHours);
 					}
@@ -824,6 +790,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 		} 
 	}
 	
+
+
 	/**
 	 * write data to excel format
 	 * @param row
@@ -836,19 +804,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 
-//		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
-//			Cell cell0 = writeRow.createCell(0);
-//			cell0.setCellValue(row.getCell(0).toString());
-//		} else {
-//			Cell cell0 = writeRow.createCell(0);
-//			cell0.setCellValue("");
-//		}
-		if (row.getCell(0) != null && !"".endsWith(row.getCell(0).toString())) {
+		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			XSSFCell myCell0 = (XSSFCell) row.getCell(0);
 			if (myCell0.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 				myCell0.setCellType(Cell.CELL_TYPE_STRING);
 				String empId = myCell0.getStringCellValue();
-				if (empId != null && !"".endsWith(empId)) {
+				if (empId != null && !"".equalsIgnoreCase(empId)) {
 					Cell cell0 = writeRow.createCell(0);
 					cell0.setCellValue(empId);
 				}
@@ -860,44 +821,37 @@ public class UploadFileServiceImpl implements UploadFileService {
 			Cell cell0 = writeRow.createCell(0);
 			cell0.setCellValue("");
 		}
-		if (row.getCell(1) != null && !"".endsWith(row.getCell(1).toString())) {
+		if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 			Cell cell1 = writeRow.createCell(1);
 			cell1.setCellValue(row.getCell(1).toString());
 		} else {
 			Cell cell1 = writeRow.createCell(1);
 			cell1.setCellValue("");
 		}
-		if (row.getCell(2) != null && !"".endsWith(row.getCell(2).toString())) {
+		if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 			Cell cell2 = writeRow.createCell(2);
 			cell2.setCellValue(row.getCell(2).toString());
 		} else {
 			Cell cell2 = writeRow.createCell(2);
 			cell2.setCellValue("");
 		}
-		if (row.getCell(3) != null && !"".endsWith(row.getCell(3).toString())) {
+		if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue(row.getCell(3).toString());
 		} else {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue("");
 		}
-//		if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
-//			Cell cell4 = writeRow.createCell(4);
-//			cell4.setCellValue(row.getCell(4).toString());
-//		} else {
-//			Cell cell4 = writeRow.createCell(4);
-//			cell4.setCellValue("");
-//		}
 		if (row.getRowNum() == 0) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(row.getCell(4).toString());
 		} else {
-			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
 				XSSFCell myCell4 = (XSSFCell) row.getCell(4);
 				if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 					myCell4.setCellType(Cell.CELL_TYPE_STRING);
 					String mobileNumber = myCell4.getStringCellValue();
-					if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 						Cell cell4 = writeRow.createCell(4);
 						cell4.setCellValue(mobileNumber);
 					}
@@ -910,24 +864,17 @@ public class UploadFileServiceImpl implements UploadFileService {
 				cell4.setCellValue("");
 			}
 		}
-//		if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
-//			Cell cell5 = writeRow.createCell(5);
-//			cell5.setCellValue(row.getCell(5).toString());
-//		} else {
-//			Cell cell5 = writeRow.createCell(5);
-//			cell5.setCellValue("");
-//		}
 		if (row.getRowNum() == 0) {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue(row.getCell(5).toString());
 		} else {
-			if (row.getCell(5) != null && !"".endsWith(row.getCell(5).toString())) {
+			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
 
 				XSSFCell myCell5 = (XSSFCell) row.getCell(5);
 				if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 					myCell5.setCellType(Cell.CELL_TYPE_STRING);
 					String rate = myCell5.getStringCellValue();
-					if (rate != null || !"".endsWith(rate)) {
+					if (rate != null || !"".equalsIgnoreCase(rate)) {
 						Cell cell5 = writeRow.createCell(5);
 						cell5.setCellValue(rate);
 					}
@@ -940,14 +887,17 @@ public class UploadFileServiceImpl implements UploadFileService {
 				cell5.setCellValue("");
 			}
 		}
-		if (row.getCell(6) != null && !"".endsWith(row.getCell(6).toString())) {
+		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+			
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue(row.getCell(6).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue("");
 		}
-		if (row.getCell(7) != null && !"".endsWith(row.getCell(7).toString())) {
+		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 			 DataFormatter formatter = new DataFormatter();
 			 String dateString = formatter.formatCellValue(row.getCell(7));
 			 Cell cell7 = writeRow.createCell(7);
@@ -956,39 +906,36 @@ public class UploadFileServiceImpl implements UploadFileService {
 			Cell cell7 = writeRow.createCell(7);
 			cell7.setCellValue("");
 		}
-		if (row.getCell(8) != null && !"".endsWith(row.getCell(8).toString())) {
+		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue(row.getCell(8).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
 		}
-		if (row.getCell(9) != null && !"".endsWith(row.getCell(9).toString())) {
+		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue(row.getCell(9).toString());
 		} else {
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
 		}
 		
-//		if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
-//			Cell cell10 = writeRow.createCell(10);
-//			cell10.setCellValue(row.getCell(10).toString());
-//		} else {
-//			Cell cell10 = writeRow.createCell(10);
-//			cell10.setCellValue("");
-//		}
 		if (row.getRowNum() == 0) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue(row.getCell(10).toString());
 		} else {
-			if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 
 				XSSFCell myCell10 = (XSSFCell) row.getCell(10);
 				if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 					myCell10.setCellType(Cell.CELL_TYPE_STRING);
 					String dayHours = myCell10.getStringCellValue();
-					if (dayHours != null || !"".endsWith(dayHours)) {
+					if (dayHours != null || !"".equalsIgnoreCase(dayHours)) {
 						Cell cell10 = writeRow.createCell(10);
 						cell10.setCellValue(dayHours);
 					}
@@ -1014,28 +961,27 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
 
-		logger.info("Reading Row :" + row.getRowNum() + " records");
 		boolean isValidated=false; 
 		if (row.getRowNum() > 0) { // Excluding column names
 
-			if (row.getCell(1) == null || "".equals(row.getCell(1).toString())) {
+			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 
 			
-			if (row.getCell(3) == null || "".equals(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
+			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 			
-			if (row.getCell(4) != null && !"".endsWith(row.getCell(4).toString())) {
+			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
 			    if (fileName.toLowerCase().endsWith("xlsx")) {
 					  XSSFCell myCell4 = (XSSFCell) row.getCell(4);
 					     if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 						  myCell4.setCellType(Cell.CELL_TYPE_STRING);
 						String mobileNumber = myCell4.getStringCellValue();
-						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+						if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 							isValidated = isMobileNumberValid(mobileNumber);
 							if(isValidated){
 							}else{
@@ -1056,7 +1002,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 						myCell4.setCellType(Cell.CELL_TYPE_STRING);
 						String mobileNumber = myCell4.getStringCellValue();
-						if (mobileNumber != null && !"".endsWith(mobileNumber)) {
+						if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 							isValidated = isMobileNumberValid(mobileNumber);
 							if(isValidated){
 							}else{
@@ -1082,7 +1028,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					     if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 					    	 myCell5.setCellType(Cell.CELL_TYPE_STRING);
 						String rate = myCell5.getStringCellValue();
-						if (rate != null && !"".endsWith(rate)) {
+						if (rate != null && !"".equalsIgnoreCase(rate)) {
 							isValidated = isRateLengthValid(rate);
 							if(isValidated){
 							}else{
@@ -1104,7 +1050,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 						myCell5.setCellType(Cell.CELL_TYPE_STRING);
 						String rate = myCell5.getStringCellValue();
-						if (rate != null && !"".endsWith(rate)) {
+						if (rate != null && !"".equalsIgnoreCase(rate)) {
 							isValidated = isRateLengthValid(rate);
 							if(isValidated){
 							}else{
@@ -1130,14 +1076,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 				 Cell cell =row.getCell(7);
 				 String date = formatter.formatCellValue(cell);
 				if(fileName.endsWith("xls")){
-					isValidated = isThisDateValid(date, "dd/MM/yyyy");
+					isValidated = isThisDateValid(date, "MM/dd/yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
 						return isValidated;
 					}
 				}else{
-					isValidated = isThisDateValid(row.getCell(7).toString(), "dd/MM/yyyy");
+					isValidated = isThisDateValid(row.getCell(7).toString(), "MM/dd/yyyy");
 					if(isValidated){
 					}else{
 						userImport.setReason("Invalid Date");
@@ -1146,14 +1092,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 				}
 				
 			}
-			if (row.getCell(8) == null || "".endsWith(row.getCell(8).toString())) {
+			if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
 			
 			// Day Hours Validation
 			
-			if (row.getCell(10) != null && !"".endsWith(row.getCell(10).toString())) {
+			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 			    if (fileName.toLowerCase().endsWith("xlsx")) {
 					  XSSFCell myCell10 = (XSSFCell) row.getCell(10);
 					     if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
@@ -1181,7 +1127,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 						myCell10.setCellType(Cell.CELL_TYPE_STRING);
 						String dayHours = myCell10.getStringCellValue();
-						if (dayHours != null && !"".endsWith(dayHours)) {
+						if (dayHours != null && !"".equalsIgnoreCase(dayHours)) {
 							isValidated = isDayHourValid(dayHours);
 							if(isValidated){
 							}else{
@@ -1475,4 +1421,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 		return flag;
 
 		}
+	
+	private DataValidation getDropDownListForCell(String[] ratePerList, int column) {
+		@SuppressWarnings("deprecation")
+		  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
+		  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(ratePerList);
+		  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
+		  dataValidation.setSuppressDropDownArrow(false);
+		  return dataValidation;
+	
+}
 }

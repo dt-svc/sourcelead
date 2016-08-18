@@ -258,7 +258,6 @@ public class CommonUtil {
 							
 							timesheetSubmissions.setProjectMembers(projectMember);
 							timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
-							timesheetSubmissions.setEndDate(new Date());
 							
 							Calendar currentWeekEndDate = Calendar.getInstance();
 							currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
