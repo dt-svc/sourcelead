@@ -24,6 +24,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
@@ -138,6 +146,23 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		return projectsList;
 	}
+	
+	/**
+	 * This method for get project by orgLocationsId And EndDate Graterthan CurrentDate
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long userId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		//String subQueryForUserIdChecking = "project.id IN ( select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) OR project.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.endDate < :currentDate";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("currentDate", currentDate).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
 	
 	/**
 	 * This method for get primary project by orgLocationsId
@@ -487,84 +512,13 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
 			Date MondayDate = startMonday.getTime();
 			java.sql.Date  startMondayDate = new java.sql.Date(MondayDate.getTime());
-			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.status = 'ACTIVE' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
 			List<User> userList  = session.createQuery(query.toString()).setDate("startDate", startMondayDate).setCacheable(true).list(); 
 			logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
 			return userList;
 		}
 
-//	/**
-//	 * sends Weekly based Email Notification to Employees those who are not submitted the time sheets
-//	 */
-//		@Override
-//		public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
-//			EmailMessage emailMessage = new EmailMessage();
-//			 emailMessage.setFirstName(user.getFirstName());
-//			 emailMessage.setLastName(user.getLastName());
-//			 emailMessage.setToEmail(user.getEmail());
-//			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-//			 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
-//			 
-//			//setting the class filed values
-//			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-//			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-//			 globalVarsMap.put("lastName",emailMessage.getLastName());
-//			 globalVarsMap.put("administratorFirstName", user.getFirstName());
-//			 globalVarsMap.put("administratorLastName",user.getLastName());
-//			 globalVarsMap.put("role",user.getUserType());
-//			 globalVarsMap.put("userEmailId",user.getEmail());
-//			
-//			 //setting the Recipient information
-//			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-//			 EmailRecipient emailRecipient = new EmailRecipient();
-//			 emailRecipient.setEmail(emailMessage.getToEmail());
-//			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
-//			 emailRecipientList.add(emailRecipient);
-//			
-//			 //getting the current EmailScenario by EmailScenario unique name and entity type
-//			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-//			
-//			 //covert subject,body and signature
-//			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-//			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-//			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-//			 String url = "";
-//			 
-//			 //construct HTML template using required data
-//			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
-//			 emailMessage.setSubject(subject);
-//			 emailMessage.setMessageBody(emailTemplate);
-//			 
-//			 //calling the sendEmail method of emailScenerioUtil
-//			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
-//			 sendWeeklyBaseNotiFication(user);
-//		}
-//		/**
-//		 * Sends Weekly based Notification to the Employees those who are not submitted the Time sheets
-//		 * @param user
-//		 * @throws Exception
-//		 */
-//          private void sendWeeklyBaseNotiFication(User user) throws Exception{
-//        	    List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
-//        	    Employees emp = empList.get(0);
-//        	    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
-//    			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
-//        	    User toUser = emp.getUser();
-//        	    List<SubmissionApproverHierarchy> sah = projectsService.getApproveUserForTimeSheets(user.getId());
-//        	    User fromUser = sah.get(0).getHeirarchyId().getApproverUserId();
-//        	    logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
-//        	    EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WEEK_TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
-//     		    Map<String, String> globalVarsMap = new HashMap<String, String>();
-//     		    globalVarsMap.put("firstName", user.getFirstName());
-//     		    globalVarsMap.put("lastName",user.getLastName());
-//     			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
-//     			emailScenario.setBody(body);
-//     			emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
-//     			String actionLink = "";
-//     			OrgLocations loginOrgLocation = new OrgLocations();
-//    			loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
-//     			emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
-//     	}
+
 /**
  * Read the aprover for the individual Employee based on the projects assigned to them
  */
@@ -585,18 +539,34 @@ public class ProjectsDaoImpl implements ProjectsDao{
 public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
 	
 	Session session = this.sessionFactory.getCurrentSession();
-	Calendar previousCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-	previousCal.setLenient(false);
-	previousCal.setTime(new Date());
-	Calendar previousDates = CalendarUtil.getPreviousWeekDayByCalendar(previousCal, CalendarUtil.currentDay());
-	Date previousDate = previousDates.getTime();
+	Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+	cal.setLenient(false);
+	cal.setTime(new Date());
+	Date previousDate = CalendarUtil.getCurrentWeekDay("MON");
 	java.sql.Date  previousDayDate = new java.sql.Date(previousDate.getTime());
-	String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+	String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate < :startDate and ts.status = 'ACTIVE' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
 
 	List<User> userList  = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
 	logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
 	
 	return userList;
+}
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public void saveAllProjects(List<Projects> projectsList) throws Exception {
+	logger.debug("In Save All Projects  method");
+	Session session = this.sessionFactory.getCurrentSession();
+	if(projectsList != null && projectsList.isEmpty()){
+		for(Projects projects :projectsList){
+			try{
+				session.saveOrUpdate(projects);
+			}catch(Exception exception){
+				 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			}
+		}
+	}
 }
           }
 

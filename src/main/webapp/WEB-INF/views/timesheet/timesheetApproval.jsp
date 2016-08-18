@@ -295,7 +295,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	
 <!--   Timesheet approval popup   -->
 <div class="side_mask" onclick="removeTimesheetPopup();">
-	<!-- <div class="proj_close"></div> -->
+	 <div class="proj_close"></div> 
 </div>
 
 <div class="time_appr_side_wrap">
@@ -606,6 +606,8 @@ function saveMyTimesheet(status){
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
         		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+        		    		 $(".side_mask").fadeOut(200); 
+        	        		 $("body").css('overflow-y', 'scrool');
         		    	  approvalList();
         		      }
         	      	  
@@ -641,8 +643,9 @@ function saveMyTimesheet(status){
 <!-- this script is for save Reject Submission and approve submission reason -->
 <script>
 function saveRejectSubmission(local,employeeId,startDate,endDate){
-
-         var msg = $("#reject"+local+"message").val(); 
+	     $("#timesheetApprList").empty();
+	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	     var msg = $("#reject"+local+"message").val(); 
          var sourceleadUrl ='${sourceleadUrl}';
          
          $(".mask_time").fadeOut(200);
@@ -675,6 +678,8 @@ function rejecteSubmission(local,employeeId,startDate,endDate){
 		$("#reject"+local+"panel").slideToggle(200);
 }
 function approveSubmission(employeeId,startDate,endDate){
+		$("#timesheetApprList").empty();
+	    $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
         var rejectedReason;
         var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({

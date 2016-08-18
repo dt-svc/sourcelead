@@ -44,7 +44,7 @@
 				<i class="fa fa-clock-o" aria-hidden="true"></i>
 			</span>
             <div class="info-box-content text-center">
-              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/SUBMITTEDFORAPPROVAL" >Waiting</a></p>
+              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/SUBMITTED" >Waiting</a></p>
               <p class="info-box-number"><span  id="waitingTimesheetsSubmissionsCount"></span></p>
             </div>
           </div>

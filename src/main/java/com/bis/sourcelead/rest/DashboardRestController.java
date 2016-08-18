@@ -47,25 +47,29 @@ public class DashboardRestController {
 	public OrgLocationService orgLocationService;
 	
 	
-
-	// Sammeta David: this controller method is for getting TimesheetSubmission
-	// Counts based on Status.
+	/****
+	 * This  controller method is   for getting TimesheetSubmission Counts in dashboard Landing Page Based on User Login
+	 * @author: Sammeta David
+	 */
+	
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
-		
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		
 		if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
+			
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
-
 		}else if(userRole.equalsIgnoreCase("ROLE_USER")){
+			
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
 		}else if(userRole.equalsIgnoreCase("ROLE_APPROVER")){
+			
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
 		}
 		
@@ -83,7 +87,12 @@ public class DashboardRestController {
 	}
 
 	
-	/* Pavan Jampana : This method is to get Timesheet Submissions list based on status */
+	/****
+	 * 
+	 * @author: Pavan Jampana 
+	 * This  controller method is  to get Timesheet Submissions list based on status 
+	 */
+	
 	@RequestMapping(value = "/totalTimesheetList/{status}")
 	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

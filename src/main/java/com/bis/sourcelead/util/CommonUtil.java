@@ -16,14 +16,18 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -44,7 +48,11 @@ public class CommonUtil {
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
+	private ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
+	
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
@@ -71,6 +79,73 @@ public class CommonUtil {
 		projectTasksService.saveAll(tasksList);
 	}
 	
+	public void terminateProjectMemberByProjectMemberId(Long projectMemberId,Primary isManuallyTerminated){
+		try {
+			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
+			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+			pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
+			
+			List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(projectMemberId, pmh.getProjectTerminationDate());
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				for(TimesheetSubmissions ts :timesheetSubmissionsList){
+					ts.setStatus(Constants.MEMBER_IN_ACTIVE);
+				}
+			}
+			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);	
+			
+			ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+			pm.setStatus(Constants.MEMBER_IN_ACTIVE);
+			pm.setIsManuallyTerminated(isManuallyTerminated);
+			projectMembersService.updateProjectMember(pm);
+			
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void reopenProjectMemberByProjectMemberId(Long projectMemberId,Projects projects){
+		
+	}
+	
+	
+	
+	public void terminateAllProjectMembersByUser(User user){
+		List<ProjectMembers> projectMembers;
+		try {
+			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
+			if(projectMembers != null && !projectMembers.isEmpty()){
+				for(ProjectMembers projectMember :projectMembers){
+					terminateProjectMemberByProjectMemberId(projectMember.getId(),Primary.NO);
+				}
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+	}
+	
+	public Projects terminateProject(Projects project) throws Exception{
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(project.getId());
+		if(projectMembersList != null && !projectMembersList.isEmpty()){
+			 for(ProjectMembers pojectMember : projectMembersList){
+				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pojectMember.getId());
+				Date currentDate = new  Date();
+				Date terminationDate = pmh.getProjectTerminationDate();
+				if(currentDate.after(terminationDate)){
+					pmh.setProjectTerminationDate(project.getEndDate());
+					pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
+				}
+				terminateProjectMemberByProjectMemberId(pojectMember.getId(),Primary.NO);
+			}
+		}
+		project.setProjectStatus(Project_Status.COMPLETED);
+		return project;
+	}
+	
 	/**
 	 * This method is used to storeTimesheetSubmissionRecords based on projectMemberAssignDate and projectMemberEndDate(optional)
 	 * @author: Naresh Bolisetty
@@ -81,7 +156,7 @@ public class CommonUtil {
 			
 			/**
 			 * Getting List Of all Projectmembers based on login user who is approver/employee to that particular project
-			 *  who didn't have 4 weeks prior/post submission records in DB
+			 *  who didn't have 12 weeks prior/post submission records in DB
 			 * 
 			 */
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
@@ -89,6 +164,8 @@ public class CommonUtil {
 			if(projectMembers != null && !projectMembers.isEmpty()){
 				ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 				for(ProjectMembers projectMember :projectMembers){
+					
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
 					
 					/**
 					 * Getting startDate of coming week from the existing submission records
@@ -108,20 +185,20 @@ public class CommonUtil {
 						/**
 						 * If he didn't have submission records previous for this project,then ProjectAssignedDate is taken as startDate
 						*/
-						startMondayDate = projectMember.getProjectAssignedDate();
+						startMondayDate = pmh.getProjectAssignedDate();
 						
 						/**
-						 * Calculating last 4th week monday date 
+						 * Calculating last 12th week monday date 
 						*/
 						Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						currentCal.setLenient(false);
 						currentCal.setTime(new Date());
 						Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
-						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-28);
+						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-84);
 						Date previousMondayDate = previousMonday.getTime();
 						/**
-						 * Checking whether projectAssignDate lesserthan last 4th week Monday date,
-						 * then last 4th week Monday date is taken as startdate
+						 * Checking whether projectAssignDate lesserthan last 12th week Monday date,
+						 * then last 12th week Monday date is taken as startdate
 						*/
 				        if(startMondayDate.before(previousMondayDate)){
 				    	   startMondayDate = previousMondayDate;
@@ -143,22 +220,20 @@ public class CommonUtil {
 					startCal.setTime(new Date());
 					
 					/**
-					 * Calculating next 4th week mondayDate from the current week monday
+					 * Calculating next 12th week mondayDate from the current week monday
 					*/
-					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(endCal,35);
+					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(endCal,91);
 					
 
 					/**
-					 * checking whether projectMemberEnddate is lesserthan next 4th week monday date then 
+					 * checking whether projectMemberEnddate is lesserthan next 12th week monday date then 
 					 * projectMemberEnddate is taken as enddate for the submission records
 					*/
-					System.out.println(projectMember.getProjectEndDate());
-					if(projectMember.getProjectEndDate() != null && projectMember.getProjectEndDate().before(endMonday.getTime())){
+					if(pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().before(endMonday.getTime())){
 					    endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					    endCal.setLenient(false);
-						endCal.setTime(projectMember.getProjectEndDate());
+						endCal.setTime(pmh.getProjectTerminationDate());
 					    endMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
-					    System.out.println(endMonday.getTime());
 					}
 					
 					int totalWeeks = 0; 
@@ -173,44 +248,51 @@ public class CommonUtil {
 						long weekVal = 7l * 24l * 60l * 60l * week * 1000l; 
 						currentMondayOfTheWeek.setTimeInMillis(startMondayInMilliSeconds + weekVal);
 						
-						TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-						
-						timesheetSubmissions.setProjectMembers(projectMember);
-						timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
-						timesheetSubmissions.setEndDate(new Date());
-						
-						Calendar currentWeekEndDate = Calendar.getInstance();
-						currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
-						timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
-						
-						/*SubmissionApproverHierarchy 
-						timesheetSubmissions.setSubmissionStatus(Submission_Status.getNameByValue("new"));
-						timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));*/
-						
-						
-						timesheetSubmissions.setCreatedDate(new Date());
-						timesheetSubmissions.setCreatedBy(user.getUserCode());
-						timesheetSubmissions.setUpdatedDate(new Date());
-						timesheetSubmissions.setUpdatedBy(user.getUserCode());
-						
-                        List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
-						HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
-                        if(hierarchyList != null && !hierarchyList.isEmpty()){
-							for(ProjectApproverHierarchy hierarchy : hierarchyList){
-								SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
-								saHierarchy.setHeirarchyId(hierarchy);
-								saHierarchy.setSubmissionId(timesheetSubmissions);
-								saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
-								saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
-								saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-								saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
-								saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
-								saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-								saHierarchyList.add(saHierarchy);
-							}
-							timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+						TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(projectMember.getId(), currentMondayOfTheWeek.getTime());
+						if(timesheetSubmissions != null) {
+							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
+							timesheetSubmissionsList.add(timesheetSubmissions);
 						}
-						timesheetSubmissionsList.add(timesheetSubmissions);
+						else{
+							timesheetSubmissions = new TimesheetSubmissions();
+							
+							timesheetSubmissions.setProjectMembers(projectMember);
+							timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
+							
+							Calendar currentWeekEndDate = Calendar.getInstance();
+							currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
+							timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
+							
+							/*SubmissionApproverHierarchy 
+							timesheetSubmissions.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+							timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));*/
+							
+							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
+							timesheetSubmissions.setCreatedDate(new Date());
+							timesheetSubmissions.setCreatedBy(user.getUserCode());
+							timesheetSubmissions.setUpdatedDate(new Date());
+							timesheetSubmissions.setUpdatedBy(user.getUserCode());
+							
+	                        List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId());
+							HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
+	                        if(hierarchyList != null && !hierarchyList.isEmpty()){
+								for(ProjectApproverHierarchy hierarchy : hierarchyList){
+									SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+									saHierarchy.setHeirarchyId(hierarchy);
+									saHierarchy.setSubmissionId(timesheetSubmissions);
+									saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+									saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+									saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+									saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+									saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+									saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+									saHierarchyList.add(saHierarchy);
+								}
+								timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+							}
+							timesheetSubmissionsList.add(timesheetSubmissions);
+						}
+						
 					}
 				}
 			

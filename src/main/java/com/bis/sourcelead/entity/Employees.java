@@ -89,11 +89,14 @@ public class Employees {
 	@Column(name="DAILY_HOURS")
 	private String dailyHours;
 	
-	
-	
 	@Transient
     private String hireDateStr;
 	
+	@Transient
+    private String projectStartDate;
+	
+	@Transient
+    private String projectEndDate;
 
 	public Long getId() {
 		return id;
@@ -255,6 +258,21 @@ public class Employees {
 	public void setHireDateStr(String hireDateStr) {
 		this.hireDateStr = hireDateStr;
 	}
-	
+
+	public String getProjectStartDate() {
+		return projectStartDate;
+	}
+
+	public void setProjectStartDate(String projectStartDate) {
+		this.projectStartDate = projectStartDate;
+	}
+
+	public String getProjectEndDate() {
+		return projectEndDate;
+	}
+
+	public void setProjectEndDate(String projectEndDate) {
+		this.projectEndDate = projectEndDate;
+	}
 	
 }

@@ -253,9 +253,7 @@
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     document.getElementById("errorImage").style.display="none"; 
     
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'png' ||
-   		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'svg' || 
-   		uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) == 'gif'){
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
     	output.src = URL.createObjectURL(event.target.files[0]);
     	
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
@@ -265,7 +263,7 @@
  		$("#profile_submit").attr("disabled", "disabled");
     	
     }else if(sizeinbytes > 200000){
-    	output.src = URL.createObjectURL(event.target.files[0]);s
+    	output.src = URL.createObjectURL(event.target.files[0]);
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);
  		document.getElementById("errorImage").style.display=""; 

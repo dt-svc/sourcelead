@@ -272,7 +272,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 		    	pah1.setProjectId(updatedProjects);
 		    	pah1.setApproverUserId(approverUser);
-		    	pah1.setLevel(1);
+		    	pah1.setLevel(2);
 		    	try {
 					 projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 				} catch (Exception e) {
