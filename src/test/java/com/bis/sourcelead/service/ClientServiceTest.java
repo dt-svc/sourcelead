@@ -101,11 +101,11 @@ public class ClientServiceTest {
 		 
 		 User user = new User();
 		 user.setId(1L);
-		 user.setUserCode("ABCDE");
+		 user.setUserCode("sleadAdmin");
 		 
 		 OrgLocations orgLocations = new OrgLocations();
 		 orgLocations.setId(1L);
-		 orgLocations.setLocationCode("GHJKKL");
+		 orgLocations.setLocationCode("sleadIN");
 		 
 		 clientService.saveClient(jsonObj, user, orgLocations);
 		 
