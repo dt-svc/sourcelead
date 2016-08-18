@@ -412,13 +412,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			                    sb.append("    </li>");
 			                    
 			                    sb.append("<li><div>");
-			     		       if(employeeStartDate.before(currentStartDate)){
-			     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+			                    
+			                   Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			            	   if(leftNavStartDate != null){
+			     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 			     	       	   }
 			     	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
-			     	       		
-			     	       	   if(currentEndDate.before(employeeEndDate)){
-			     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+			     	       	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			     	       	   if(rightNavStartDate != null){
+			     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 			     	       	   }
 			     	       	   sb.append("    </div>");
 			     	       	   sb.append("    </li>");
@@ -653,5 +655,27 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			}
 	        
 	        return sb.toString();
+		}
+
+		@Override
+		public Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+			return timesheetSubmissionsDao.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
+		}
+
+		@Override
+		public Date getRightNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+			return timesheetSubmissionsDao.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
+		}
+
+		@Override
+		public Date getLeftNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+				Date currentStartDate) {
+			return timesheetSubmissionsDao.getLeftNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
+		}
+
+		@Override
+		public Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+				Date currentStartDate) {
+			return timesheetSubmissionsDao.getRightNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
 		}
 }
