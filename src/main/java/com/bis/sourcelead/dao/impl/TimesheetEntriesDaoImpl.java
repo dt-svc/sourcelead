@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -94,11 +96,9 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		List<TimesheetEntries> adItemsList = null;
-		Query citiesListQuery= session.createQuery("from TimesheetEntries");
-		adItemsList=citiesListQuery.list();;
+		Criteria crit = session.createCriteria(TimesheetEntries.class);
+		List<TimesheetEntries> adItemsList = crit.setCacheable(true).list();
 		return adItemsList;
 	}
 
