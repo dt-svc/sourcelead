@@ -1,7 +1,5 @@
 package com.bis.sourcelead.service;
 
-import java.util.Date;
-
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +13,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -39,39 +36,10 @@ public class ClientServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientServiceTest.class);
 
-	//@Test
-	public void addOrgRelations() throws Exception {
-		OrgRelations orgRelations = new OrgRelations();
-		logger.info("Client Service Test");
-		orgRelations.setId(7l);
-		orgRelations.setOrgName("cts");
-		orgRelations.setWebSite("www.cts.com");
-		orgRelations.setPhone("09866712679");
-		orgRelations.setEmail("korasikha.prasad@gmail.com");
-		orgRelations.setCountry("india");
-		orgRelations.setState("Ap");
-		orgRelations.setCity("Vizag");
-		OrgLocations clientLocation = new OrgLocations();
-		clientLocation.setId(1L);
-		orgRelations.setClientLocationId(clientLocation);
-		
-		OrgLocations location = new OrgLocations();
-		location.setId(3L);
-		
-		orgRelations.setLocationId(location);
-		orgRelations.setRelationType("Customer Relation");
-		orgRelations.setCreatedDate(new Date());
-		orgRelations.setCreatedBy("PrasadK");
-		orgRelations.setUpdatedDate(new Date());
-		orgRelations.setUpdatedBy("ABC");
-		orgRelationsService.addOrgRelations(orgRelations);
-		System.out.println("Successfully Added!!!!");
-	}
-	
-	
 	@Test
 	public void saveClient() throws Exception {
 		
+		 logger.info("Entered Into saveClient() method");
 		 JSONObject jsonObj = new JSONObject();
 		 jsonObj.put("orgName", "HCL");
 		 jsonObj.put("country", "India");
@@ -108,6 +76,8 @@ public class ClientServiceTest {
 		 orgLocations.setLocationCode("sleadIN");
 		 
 		 clientService.saveClient(jsonObj, user, orgLocations);
+		 
+		 logger.info("saveClient() method excecuted sucessfully...");
 		 
 		 
 	}
