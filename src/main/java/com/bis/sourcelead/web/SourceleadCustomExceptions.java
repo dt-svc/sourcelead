@@ -99,28 +99,5 @@ public class SourceleadCustomExceptions {
 			 return "redirect:/login";
 		 }
 	}
-	
-	
-	
-	
-	
-	
-	
-/**
- * Returns Error Page if JSONException is  occurred	
- * @param exception
- * @return error jsp page
- */
-	// As of now commented need handle rest exceptions because its returning json result not View Object
-    /*@ExceptionHandler(JSONException.class)
-	public String customErrorPageJsonException(JSONException exception){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if(auth != null && auth.getPrincipal() != null){
-			exception.printStackTrace();
-			return "redirect:/errorPage";
-		 }
-		 else{
-			 return "redirect:/login";
-		 }
-	}*/
+
 }

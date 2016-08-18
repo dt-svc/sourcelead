@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		try {
 			rolesList = rolesService.getRoles(orgLocations.getId());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		
 	
@@ -74,7 +75,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	}
 	
 	protected boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
+		return str == null || "".equals(str.trim());
 	}
 
 }
