@@ -30,6 +30,7 @@ import com.bis.sourcelead.service.impl.LoginServiceImpl;
 @ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
 public class LoginServiceTest {
 
+	
 	@Configuration
 	static class LoginServiceTestContextConfiguration {
 		@Bean
@@ -48,7 +49,8 @@ public class LoginServiceTest {
 	@Test
 	public void checkAuthentication() throws Exception {
 
-		loginService.checkAuthentication("admin", "admin");
+		Boolean check = loginService.checkAuthentication("admin", "admin");
+		logger.info("checkAuthentication "+check.FALSE);
 	}
 
 }

@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.impl.OrgLocationsServiceImpl;
 import com.mchange.util.AssertException;
 
@@ -61,7 +62,7 @@ public class OrgLocationsServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
 
-	@Test
+	//@Test
 	public void addOrgLocation() throws Exception {
 		
 		OrgLocations orgLocations = new OrgLocations();
@@ -139,7 +140,7 @@ public class OrgLocationsServiceTest {
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
 	}
 	
-	//@Test
+	@Test
 	public void getOrgLocationsByLocationCode() throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
@@ -152,10 +153,46 @@ public class OrgLocationsServiceTest {
 	public void getOrgLocationsByOrgCode() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(2L);
+		orgLocations.setId(1l);
+		orgLocations.setLocationCode("sleadIN");
+		org.setId(1L);
+		org.setOrgCode("slead");
 		orgLocations.setOrg(org);
-		orgLocations = orgLocationService.getOrgLocationsByOrgCode(orgLocations.getOrg().getId().toString());
-		System.out.println("locations are..."+orgLocations.getCountry());
+		orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+		logger.info("getOrgLocationsByOrgCode " + orgLocations.getCountry());
 	}
-
+	
+	//@Test
+	public void saveOrgLocations() throws Exception{
+		OrgLocations orgLocations = new OrgLocations();
+		OrgSettings orgsettings = new OrgSettings();
+		Org org = new Org();
+		org.setId(1l);
+		orgLocations.setOrg(org);
+		org.setOrgName("BIS");
+		orgsettings.setId(3);
+		orgsettings.setCity("hyd");
+		orgsettings.setZipcode("34567");
+		orgsettings.setFax("789");
+		orgsettings.setPhone("9087656789");
+		orgLocations.setId(3l);
+		orgLocations.setLocationCode("sleadIN");
+		orgLocations.setCity("hyd");
+		orgLocations.setZipCode("34567");
+		orgLocations.setFax("789");
+		orgLocations.setPhone("9087656789");
+		
+		orgLocations = orgLocationService.saveOrgLocations(orgsettings,orgLocations);
+		logger.info("saveOrgLocations " + orgLocations.getId());
+	}
+	
+	//@Test
+	public void findByEmail() throws Exception{
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations = orgLocationService.findByEmail("abc@gmail.com");
+		if(orgLocations != null)
+		{
+		logger.info("findByEmail " + orgLocations.getId());
+	}
+	}
 }

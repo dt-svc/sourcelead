@@ -23,7 +23,7 @@ public class EmailScenarioServiceTest {
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
-	//@Test
+	@Test
 	public void save() throws Exception{
 		EmailScenario emailScenario = new EmailScenario();
 		emailScenario.setScenarioName("Testing service");
@@ -44,16 +44,16 @@ public class EmailScenarioServiceTest {
 		emailScenario.setUseLogo("LOG");
 		emailScenario.setDisclaimerText("Disclaimer");
 		emailScenarioService.save(emailScenario);
-		System.out.println("EmailScenario Saved");
+		System.out.println("save " +emailScenario.getId());
 	}
 	
-	//@Test
+	@Test
 	public void getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode() throws Exception{
 		EmailScenario emailScenario = new EmailScenario();
-		emailScenario.setUniqueScenarioName("testService");
+		emailScenario.setUniqueScenarioName("Forgot Password");
 		emailScenario.setEntityType("Email");
-		emailScenario.setOrgCode("hangon.com");
-		emailScenario.setLocationCode("in.sourceLead.com");
+		emailScenario.setOrgCode("slead");
+		emailScenario.setLocationCode("sleadIN");
 		emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(emailScenario.getUniqueScenarioName(), emailScenario.getEntityType(), emailScenario.getOrgCode(), emailScenario.getLocationCode());
 		System.out.println("EmailScenario by given particulars is...>>"+emailScenario.getScenarioName());
 	}
@@ -61,9 +61,9 @@ public class EmailScenarioServiceTest {
 	@Test
 	public void getEmailScenarioByUniqueName() throws Exception{
 		EmailScenario emailScenario = new EmailScenario();
-		emailScenario.setUniqueScenarioName("testService");
+		emailScenario.setUniqueScenarioName("Forgot Password");
 		emailScenario.setEntityType("Email");
 		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(emailScenario.getUniqueScenarioName(), emailScenario.getEntityType());
-		System.out.println("EmailScenario by given particulars is...>>"+emailScenario.getScenarioName());
+		System.out.println("EmailScenario by given particulars is...>>"+emailScenario.getId());
 	}
 }

@@ -22,7 +22,7 @@ public class EmailNotificationServiceTest {
 	@Autowired
 	EmailNotificationService emailNotificationService;
 	
-	//@Test
+	@Test
 	public void save() throws Exception{
 		EmailNotification emailnotification = new EmailNotification();
 		//emailnotification.setId(2L);
