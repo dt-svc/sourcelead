@@ -234,7 +234,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<Projects> getAllProjects() throws Exception {
+	public List<Projects> getAllProjects() throws Exception {
 		logger.debug("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Projects.class);
@@ -244,7 +244,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception {
+	public List<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception {
 		logger.info("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
@@ -285,7 +285,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
      */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception {
+	public List<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception {
 		logger.debug("In ProjectsDaoImpl class getAllProjectsByOrgRelationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects projects  left join fetch projects.orgRelationId orgre  where  orgre.clientLocationId  IN(select orgrel.clientLocationId from OrgRelations  orgrel where orgrel.clientLocationId = :orgRelationId and orgrel.locationId = :locationId) and projects.orgLocationsId = :locationId";
