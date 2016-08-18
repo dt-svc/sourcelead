@@ -36,11 +36,11 @@ public class OrgLocations {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
-	@JoinColumn(name = "ORG_ID", nullable = false)
+	@JoinColumn(name = "ORG_ID")
     private Org org;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
+	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
 	
@@ -74,16 +74,16 @@ public class OrgLocations {
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
-	@Column(name = "CREATED_BY", nullable = false)
+	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
-    @Column(name = "CREATED_DATE", nullable = false)
+    @Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "UPDATED_BY", nullable = false)
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-    @Column(name = "UPDATED_DATE", nullable = false)
+    @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
 	public Long getId() {
