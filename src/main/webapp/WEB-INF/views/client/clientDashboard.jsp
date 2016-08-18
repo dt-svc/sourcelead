@@ -587,7 +587,6 @@ function getEndDatePickerById(projectId,localFieldName){
     		 var frm = $('#editClient_form').serializeFormJSON();
              var con = JSON.stringify(frm);
              con = con.replace(/[{}]/g, "");
-             alert("con"+con);
              //It will escape all the special characters
              var jsonData = encodeURIComponent(con);
              var sourceleadUrl ='${sourceleadUrl}';
