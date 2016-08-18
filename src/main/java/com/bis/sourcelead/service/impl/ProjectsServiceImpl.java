@@ -273,7 +273,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    List<SubmissionApproverHierarchy> sah = projectsDao.getApproveUserForTimeSheets(user.getId());
 	    User fromUser = sah.get(0).getHeirarchyId().getApproverUserId();
 	    logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
-	    EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WEEK_TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
+	        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WEEK_TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
 		    Map<String, String> globalVarsMap = new HashMap<String, String>();
 		    globalVarsMap.put("firstName", user.getFirstName());
 		    globalVarsMap.put("lastName",user.getLastName());

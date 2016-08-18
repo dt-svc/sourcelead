@@ -21,7 +21,6 @@ import com.bis.sourcelead.util.CommonUtil;
 public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
-
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -30,7 +29,8 @@ public class DashboardController {
 	
 
 	@RequestMapping(value = "/dashboard")
-	public ModelAndView projects() throws Exception {
+	public ModelAndView projects() {
+		logger.debug("display the dash board page");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/dashboard");
