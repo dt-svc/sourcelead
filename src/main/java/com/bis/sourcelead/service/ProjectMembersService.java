@@ -4,8 +4,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 
 public interface ProjectMembersService {
@@ -41,4 +45,6 @@ public interface ProjectMembersService {
 	public Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 	
 	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) ;
+	
+	public String storeAssignEmployeeByProjectIdEmployeeIdStartDateEndaDate(Long projectId,Long employeeId,String startDate,String endDate,String mailtoMembers,String loginOrgCode,User user,OrgLocations loginOrgLocation) throws Exception ;
 }

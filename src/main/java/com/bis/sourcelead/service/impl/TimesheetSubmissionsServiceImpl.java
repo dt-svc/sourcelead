@@ -507,7 +507,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		@Override
 		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception {
 			 
-			HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForEmployee(projectMemberUserId);
+			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
 			TimesheetSubmissions  ts = null;
@@ -575,13 +575,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 						 startCal.setLenient(false);
 						 startCal.setTime(sDate);
 						 
+						 currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
+			             currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
 							                
-		                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
-				        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
+		                startDateBuilder.append(format.format(currentStartDate));
+				        endDateBuilder.append(format.format(currentEndDate));
 		                
-				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId(),memberId,employeeId);
-		                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-		                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
+				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(currentStartDate,currentEndDate, user.getId(),memberId,employeeId);
+		                
 	                 }
 	        }
 	        
