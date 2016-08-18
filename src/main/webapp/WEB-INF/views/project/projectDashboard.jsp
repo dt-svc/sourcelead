@@ -1639,7 +1639,7 @@ function getApproversLevel2(currentApproverId,manager2){
 		result = result + '</div>       ';                 
 		result = result + '<div class="clearfix"></div>';
 		result = result + '<div class="user_summary_edit_cta">';
-		result = result + '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+');"type="button" id="description"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+projectId+');" type="button">';
+		result = result + '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+projectId+');" type="button">';
 		result = result + '</div>		';
 		result = result + '<div class="clearfix"></div>';
 		result = result + ' </form>';

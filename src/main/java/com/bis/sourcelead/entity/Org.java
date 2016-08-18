@@ -37,36 +37,36 @@ public class Org {
 	@Column(name="ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "ORG_NAME", nullable = false)
+	@Column(name = "ORG_NAME")
 	private String orgName;
 	
-	@Column(name = "WEBSITE", nullable = false)
+	@Column(name = "WEBSITE")
 	private String webSite;
 	
-	@Column(name = "ORG_TYPE", nullable = false)
+	@Column(name = "ORG_TYPE")
 	private String orgType;
 	
-	@Column(name = "ORG_CODE",nullable = false)
+	@Column(name = "ORG_CODE")
 	private String orgCode;
 	
-	@Column(name = "STATUS",nullable = false)
+	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
+	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	@Column(name = "CREATED_DATE",nullable = false)
+	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY",nullable = false)
+	@Column(name = "CREATED_BY")
     private String createdBy;
 	
-	@Column(name = "UPDATED_DATE",nullable = false)
+	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@Column(name = "UPDATED_BY",nullable = false)
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")

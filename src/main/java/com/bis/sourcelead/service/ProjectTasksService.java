@@ -3,7 +3,10 @@ package com.bis.sourcelead.service;
 import java.util.Collection;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.User;
 
 public interface ProjectTasksService {
 	
@@ -23,5 +26,5 @@ public interface ProjectTasksService {
     
     public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
     
-    
+    public String saveProjectTasksByProjectId(Long projectId,JSONObject jsonObj) throws Exception ;
 }
