@@ -133,11 +133,11 @@ public class ProjectsRestController {
 	  */
 	 
 	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json) throws Exception {
 		   
 		    json = "{"+json+"}";
 		    JSONObject jsonObj = new JSONObject(json);
-		    String outPut =  projectsService.storeProject(jsonObj, request);
+		    String outPut =  projectsService.storeProject(jsonObj);
 		    return outPut;		
 			 
 	   }

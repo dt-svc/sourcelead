@@ -70,8 +70,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceImpl.class);
 
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	HttpServletRequest request;
 	
 	@Autowired
 	private ProjectsDao projectsDao;
@@ -229,7 +233,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	
 	@Override
-	public String storeProject(JSONObject jsonObj , HttpServletRequest request) throws Exception {
+	public String storeProject(JSONObject jsonObj) throws Exception {
 		    
 		  
 		String resultJson = null;
@@ -242,7 +246,10 @@ public class ProjectsServiceImpl implements ProjectsService{
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
     	projects.setProjectName(jsonObj.getString("ProjectName"));
+    	
+    	if((jsonObj.has("ProjectDescription"))){
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
+    	}
     	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
     		Date startDate = format.parse(jsonObj.getString("StartDate"));
 	    	projects.setStartDate(startDate);
@@ -251,7 +258,9 @@ public class ProjectsServiceImpl implements ProjectsService{
     		Date endDate = format.parse(jsonObj.getString("EndDate"));
 	    	projects.setEndDate(endDate);
     	}
+    	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
+    	}
     	projects.setCreatedDate(new Date());
     	projects.setUpdatedDate(new Date());
     	if(user.getUserCode() != null){
@@ -260,6 +269,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     	projects.setOrgLocationsId(loginOrgLocation);
     	
     	// Saving of Client by bringing OrgRelation id based on Client OrgId
+    	if((jsonObj.has("selectClient"))){
 	    String clientOrgCode = jsonObj.getString("selectClient");	
 	    if(!clientOrgCode.isEmpty() && clientOrgCode!=null){
 	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocationsByOrgCode(clientOrgCode);
@@ -271,6 +281,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	  }
 	    	  
 	    }
+    	}
 	    
 	    if((jsonObj.has("isMailToTeamMembers") && StringUtils.isNotEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
 			projects.setIsMailToTeamMembers(Status.Y);

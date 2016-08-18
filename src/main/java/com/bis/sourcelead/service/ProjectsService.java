@@ -72,5 +72,5 @@ public interface ProjectsService {
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
-		String  storeProject(JSONObject jsonObj , HttpServletRequest request) throws Exception ;
+		String  storeProject(JSONObject jsonObj) throws Exception ;
 }
