@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +34,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	
 	@Autowired
 	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
+	@Autowired
+	HttpServletRequest request;
 	
 	
 	@Override
@@ -368,6 +374,45 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   Date employeeStartDate = submissionDateRange.get("STARTDATE");
 	        	   Date employeeEndDate = submissionDateRange.get("ENDDATE");
 	        	   
+	        	   
+	        	   String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	   
+	        	   if(StringUtils.isNotEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+	        		   /**
+	 	      		   *calculating prior 6th week mondaydate and post 6th week sunday day for employee
+	 	      		   *
+	 	      	       *
+	 	      	       */
+	 		      		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+	 		      		cal.setLenient(false);
+	 		      		cal.setTime(new Date());
+	 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+	 		      		
+	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+	 		      		Date previousMondayDate = previousMonday.getTime();
+	 		      		
+	 		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+	 		      		Date nextSundayDate = nextSunday.getTime();
+	 		      		
+	 		      	   /**
+	 		  		   * checking whether prior 6th week monday date is greaterthan employee startdate or not
+	 		  	       */
+	 		  		   if(employeeStartDate.before(previousMondayDate)){
+	 		  			   employeeStartDate = previousMondayDate;
+	 		  		   }
+	 		  		   
+	 		  		  /**
+	 		  		   * checking whether post 6th week sunday date is lesserthan employee enddate or not
+	 		  	       */
+	 		  		   if(employeeEndDate.after(nextSundayDate)){
+	 		  			   employeeEndDate = nextSundayDate;
+	 		  		   }
+	        	   }
+	        	   
+	        	  
+		      		
+	        	   
 	        	   Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 				   Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				   startCal.setLenient(false);
@@ -412,13 +457,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			                    sb.append("    </li>");
 			                    
 			                    sb.append("<li><div>");
-			     		       if(employeeStartDate.before(currentStartDate)){
-			     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+			                    
+			                   Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			            	   if(leftNavStartDate != null){
+			     		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 			     	       	   }
 			     	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
-			     	       		
-			     	       	   if(currentEndDate.before(employeeEndDate)){
-			     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+			     	       	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			     	       	   if(rightNavStartDate != null){
+			     	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 			     	       	   }
 			     	       	   sb.append("    </div>");
 			     	       	   sb.append("    </li>");
@@ -653,5 +700,27 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			}
 	        
 	        return sb.toString();
+		}
+
+		@Override
+		public Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+			return timesheetSubmissionsDao.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
+		}
+
+		@Override
+		public Date getRightNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+			return timesheetSubmissionsDao.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
+		}
+
+		@Override
+		public Date getLeftNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+				Date currentStartDate) {
+			return timesheetSubmissionsDao.getLeftNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
+		}
+
+		@Override
+		public Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+				Date currentStartDate) {
+			return timesheetSubmissionsDao.getRightNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
 		}
 }
