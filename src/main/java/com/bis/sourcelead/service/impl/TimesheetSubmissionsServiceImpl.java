@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +34,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	
 	@Autowired
 	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
+	@Autowired
+	HttpServletRequest request;
 	
 	
 	@Override
@@ -367,6 +373,45 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   HashMap<String, Date> submissionDateRange = ts.getDateList();
 	        	   Date employeeStartDate = submissionDateRange.get("STARTDATE");
 	        	   Date employeeEndDate = submissionDateRange.get("ENDDATE");
+	        	   
+	        	   
+	        	   String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	   
+	        	   if(StringUtils.isNotEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+	        		   /**
+	 	      		   *calculating prior 6th week mondaydate and post 6th week sunday day for employee
+	 	      		   *
+	 	      	       *
+	 	      	       */
+	 		      		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+	 		      		cal.setLenient(false);
+	 		      		cal.setTime(new Date());
+	 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+	 		      		
+	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+	 		      		Date previousMondayDate = previousMonday.getTime();
+	 		      		
+	 		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+	 		      		Date nextSundayDate = nextSunday.getTime();
+	 		      		
+	 		      	   /**
+	 		  		   * checking whether prior 6th week monday date is greaterthan employee startdate or not
+	 		  	       */
+	 		  		   if(employeeStartDate.before(previousMondayDate)){
+	 		  			   employeeStartDate = previousMondayDate;
+	 		  		   }
+	 		  		   
+	 		  		  /**
+	 		  		   * checking whether post 6th week sunday date is lesserthan employee enddate or not
+	 		  	       */
+	 		  		   if(employeeEndDate.after(nextSundayDate)){
+	 		  			   employeeEndDate = nextSundayDate;
+	 		  		   }
+	        	   }
+	        	   
+	        	  
+		      		
 	        	   
 	        	   Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 				   Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);

@@ -217,54 +217,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
          timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
          currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
          currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
-       /* else{
-                
-                 if(navigation.equalsIgnoreCase("left")){
-                     
-                     
-                     Date sDate  =  Constants.DMY.parse(startDate);
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 startCal.setLenient(false);
-					 startCal.setTime(sDate);
-					 
-						                
-	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
-			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
-	                sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-	                sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-6).getTime())+"</i></th>"); 
-	                sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-5).getTime())+"</i></th>"); 
-	                sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-4).getTime())+"</i></th>"); 
-	                sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-3).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-2).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>");
-	                
-	                timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId());
-	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
-	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
-                 }
-                 else{ 
-                 
-	                 Date sDate  =  Constants.DMY.parse(startDate);
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 startCal.setLenient(false);
-					 startCal.setTime(sDate);
-					 
-						                
-	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
-			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
-	                sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-	                sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,8).getTime())+"</i></th>"); 
-	                sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,9).getTime())+"</i></th>"); 
-	                sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,10).getTime())+"</i></th>"); 
-	                sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,11).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,12).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
-	                
-	                timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId());
-	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
-                 }
-        }*/
         
 		StringBuilder sb = new StringBuilder();	
 		sb.append("	<div class='timesheet_head'>");
