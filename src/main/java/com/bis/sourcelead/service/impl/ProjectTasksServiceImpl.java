@@ -110,7 +110,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			Projects projects) throws Exception {
 		 
 		    HashSet<ProjectTasks> projectTasksList = new HashSet<ProjectTasks>(); 
-		   
+		    if(jsonObj.has("maxTsRowNum")){
 			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 
@@ -127,7 +127,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 						projectTasksList.add(tasks);
 			  }
 			}
-		   
+		    }
 		   return projectTasksList;
 		    		  
 		
