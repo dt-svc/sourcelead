@@ -1,9 +1,14 @@
+<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
 
 <script>
 	function predefineProfileImage(imageId){
@@ -36,6 +41,7 @@ $(document).ready(function() {
                 	 $("#timesheetApprList").removeAttr("style");
                 	 $("#timesheetApprList").empty();
                      $("#timesheetApprList").append(data); 
+                     pagination();
                  }else{
                 	 $("#timesheetApprList").removeAttr("style");
   	    	         var result ="";
@@ -50,7 +56,7 @@ $(document).ready(function() {
 					 result = result+"	</div>"; 
 					 result = result+"  </div> "; 
 					$("#timesheetApprList").empty();
-				    $("#timesheetApprList").append(result); 
+				    $("#timesheetApprList").append(result);
                  }
                  /* var json = JSON.parse(data); */
                  /* if(json.length > 0){
@@ -129,6 +135,19 @@ $(document).ready(function() {
   } 
 </script>
 
+<script>
+function pagination(){     
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false
+    } );
+}
+</script>
+
+
 <script type="text/javascript">
 function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,employeeId){    
 			var sourceleadUrl ='${sourceleadUrl}';  
@@ -138,13 +157,17 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
 				       /*  $("row"+submissionId).empty();	  */ 
-				        $("#row"+projectMemberUserId).empty();	 
-				        $("#row"+projectMemberUserId).append(data);	
+				        $("#row"+projectMemberUserId).empty();
+				        $("#row"+projectMemberUserId).append(data);
+				        pagination();
+				        /* $("#row"+projectMemberUserId).empty();	 
+				        $("#row"+projectMemberUserId).append(data);	 */
 				        
 				    }
 		    });
 }
 </script>	
+
 
 <body onclick="bodyClick();">
       <section class="content-wraper">
