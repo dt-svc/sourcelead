@@ -1,13 +1,15 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +25,24 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
@@ -41,7 +54,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	private ProjectsDao projectsDao;
 	
 	@Autowired
-	private ProjectApproverHierarchyDao 	projectApproverHierarchyDao;
+	private ProjectApproverHierarchyDao projectApproverHierarchyDao;
 	  
 	@Autowired
 	private EmailScenarioService emailScenarioService;
@@ -51,6 +64,24 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	public ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	public ProjectMembersService projectMembersService;
+	
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
+
+	 @Autowired
+	 private OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 private CommonUtil commonUtil;
+	 
+	 @Autowired
+	 private  ProjectMembersHistoryService projectMembersHistoryService;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -296,6 +327,179 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public void saveAllProjects(List<Projects> projectsList) throws Exception {
 		// TODO Auto-generated method stub
 		 projectsDao.saveAllProjects(projectsList);
+	}
+
+	@Override
+	public String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId, User user, String loginOrgLocation)throws Exception {
+		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		Projects projects = getProjectByIdAndLoginOrgId(projectId, loginOrgLocations.getId());
+		
+		String resultJson =null;
+		
+		if(projects.getCreatedDate() != null){
+			projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
+		}
+	    projects.setStartDateStr(Constants.DF_YMD.format(projects.getStartDate()));
+	    if(projects.getEndDate() != null){
+	    	 projects.setEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
+	    }
+	    if(projects.getUpdatedDate() != null){
+	    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+	    }
+	    if(projects.getProjectSequeneNumber() != null){
+	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+	    }
+	    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
+	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+	   
+	    for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
+	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
+	    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+	    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+	    	}
+	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+	    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
+	    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+	    	}
+	    	
+	    }
+	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
+	    
+	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
+	    projects.setManagersList(userList);
+	    if(projects.getManager1() != null){
+	    	  List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
+			    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+	    }
+	    
+	    String[] approvers = new String[projectApproverHierarchies.size()];
+	    int i = 0;
+	    for(ProjectApproverHierarchy php : projectApproverHierarchies){
+	    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
+	    	i++;
+	    }
+	    projects.setProjectManagerName(approvers);
+	    
+	    Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+	    String[] clientList = new String[orgClientList.size()];
+	    int j = 0;
+		for(OrgRelations ocl :orgClientList){
+			if(projects.getOrgRelationId() !=null){
+				if(projects.getOrgRelationId().getId().equals(ocl.getId())){
+					projects.setRelationId(ocl.getId());
+				}
+			}
+			clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getId();
+			j++;
+		 }
+		projects.setClientName(clientList);
+		
+		
+		Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
+		projects.setProjectMembersCount(projectMembersCount.toString());
+		
+		 resultJson = commonUtil.toJSON(projects);
+		 return resultJson;
+	}
+
+	@Override
+	public String getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
+		
+		 Date currentDate = new Date();
+		 Date previousEndDate = null;
+         Projects projects = getProjectById(projectId);
+		 
+		 String pattern = "yyyy-MM-dd";
+	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+	     
+			    if(jsonObj.getString("ProjectSequeneNumber") != null){
+			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
+			    }
+		    	projects.setProjectName(jsonObj.getString("projectName"));
+		    	if(jsonObj.getString("description") != null){
+		    		projects.setDescription(jsonObj.getString("description"));
+		    	}
+		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
+		    	if(jsonObj.getString("endDateStr1") != null){
+		    		previousEndDate = projects.getEndDate();
+		    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+					projects.setEndDate(endDate);
+		    	}
+		    	if(jsonObj.has("clientId")){
+		    		OrgRelations orgRelations = new OrgRelations();
+		    		if(jsonObj.getString("clientId") != null && jsonObj.getString("clientId") != ""){
+		    			orgRelations.setId(Long.valueOf(jsonObj.getString("clientId")));
+				    	projects.setOrgRelationId(orgRelations);
+		    		}
+		    	}
+				
+		    	if(jsonObj.has("level1Manager")){
+			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+							 if(prHierarchy.getLevel() == 1){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
+			    	}
+		    	}
+		    	if(jsonObj.has("level2Manager")){
+			    		 Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+							 if(prHierarchy.getLevel() == 2){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								 User usr = userService.getUserById(fieldValuelong);
+								 pah.setApproverUserId(usr);
+								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							 }
+						 }
+		    	}
+			    projects.setUpdatedBy(user.getUserCode());
+			    projects.setUpdatedDate(currentDate);
+			    if(projects.getProjectStatus().equals(Project_Status.COMPLETED)){
+			    	projects.setEndDate(currentDate);
+			    	projects = commonUtil.terminateProject(projects);
+			    	 updateProject(projects);
+			    }
+			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
+			    	projects = commonUtil.terminateProject(projects);
+			    	updateProject(projects);
+			    }
+			    else{
+			    	projects = updateProject(projects);
+			    	if((projects.getEndDate() == null) || (previousEndDate == null) || (previousEndDate!= null && projects.getEndDate() != null && !projects.getEndDate().equals(previousEndDate) && projects.getEndDate().after(previousEndDate))){
+			    		 List<ProjectMembers> pmList = projectMembersService.getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(projects.getId(), Primary.NO);
+			    	     if(pmList != null && !pmList.isEmpty()){
+			    	    	 for(ProjectMembers projectMember :pmList){
+			    	    		 projectMember.setStatus(Constants.MEMBER_ACTIVE);
+			    	    		 projectMember.setIsManuallyTerminated(null);
+			    	    		 projectMember.setTerminateReason(null);
+			    	    		 projectMember.setUpdatedDate(new Date());
+			    	    		 projectMember.setUpdatedBy(user.getUserCode());
+			    	    		 HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+							  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+								  if(pmh != null){
+									  pmh.setProjectTerminationDate(projects.getEndDate());
+									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  memberHistoryList.add(pmh);
+									  projectMember.setMemberHistoryList(memberHistoryList);
+								  }
+								  projectMembersService.saveProjectMember(projectMember);
+			    	    		 if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
+			    	    		 }
+			    	    	 }
+			    	     }
+			    	}
+			    	
+			    }
+		 
+		 return null;
 	}
 
 }

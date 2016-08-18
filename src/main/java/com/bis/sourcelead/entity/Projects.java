@@ -57,7 +57,7 @@ public class Projects {
     private String timesheetFrequency;
     
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUPERIOR_USER_ID", nullable = false)
+	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
     
