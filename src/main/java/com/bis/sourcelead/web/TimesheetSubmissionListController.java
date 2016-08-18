@@ -56,14 +56,13 @@ public class TimesheetSubmissionListController {
 	public ModelAndView timesheetListByStatus(HttpServletRequest request,
 			@RequestParam(value = "status", required = false) String status) throws Exception {
 		ModelAndView model = new ModelAndView();
-		
 		request.setAttribute("status", status);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		
-		Collection<SubmissionApproverHierarchy> list = null  ;
+		Collection<SubmissionApproverHierarchy> list;
 		
 		list =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
 		

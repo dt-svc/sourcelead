@@ -666,7 +666,7 @@
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/saveOrgRelations?json=" + jsonData,
+				url : sourceleadUrl + "/saveClientFromProject?json=" + jsonData,
 				success : function(data) {
 					var json = JSON.parse(data);
 					var output = "";
