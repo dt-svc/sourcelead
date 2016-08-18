@@ -557,30 +557,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
 		 
-		 String pattern = "yyyy-MM-dd";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
 	     
-			    if(jsonObj.getString("ProjectSequeneNumber") != null){
+		        if(jsonObj.has("ProjectSequeneNumber")){
+	        	  if(jsonObj.getString("ProjectSequeneNumber") != null){
 			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
-			    }
+			     }
+		        }
 		    	projects.setProjectName(jsonObj.getString("projectName"));
 		    	if(jsonObj.getString("description") != null){
 		    		projects.setDescription(jsonObj.getString("description"));
 		    	}
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
-		    	if(jsonObj.getString("endDateStr1") != null){
-		    		previousEndDate = projects.getEndDate();
-		    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
-					projects.setEndDate(endDate);
-		    	}
-		    	if(jsonObj.has("clientId")){
-		    		OrgRelations orgRelations = new OrgRelations();
-		    		if(jsonObj.getString("clientId") != null && jsonObj.getString("clientId") != ""){
-		    			orgRelations.setId(Long.valueOf(jsonObj.getString("clientId")));
-				    	projects.setOrgRelationId(orgRelations);
-		    		}
-		    	}
-				
+		    	
+		    		if(jsonObj.has("endDateStr1")){
+			    		String pattern = "yyyy-MM-dd";
+			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
+					    		previousEndDate = projects.getEndDate();
+					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+								projects.setEndDate(endDate);
+					    	}
+			    	}
+		    	
+		    		if(jsonObj.has("clientId")){
+			    		OrgRelations orgRelations = new OrgRelations();
+			    		if(!jsonObj.getString("clientId").isEmpty()){
+			    			orgRelations.setId(Long.valueOf(jsonObj.getString("clientId")));
+					    	projects.setOrgRelationId(orgRelations);
+			    		}
+			    		
+			    	}
+		    	
+		    	
 		    	if(jsonObj.has("level1Manager")){
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
