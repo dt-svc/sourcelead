@@ -43,7 +43,7 @@ public class TimesheetEntriesServiceTest {
 		ProjectMembers projectMembers = new ProjectMembers();
 		projectMembers.setId(3l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
-		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions); 
 		timesheetEntries.setStatus("agree");
 		timesheetEntries.setCreatedBy("shivayogi");
 		timesheetEntries.setCreatedDate(new Date());
