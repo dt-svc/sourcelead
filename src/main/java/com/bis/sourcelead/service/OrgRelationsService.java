@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.bis.sourcelead.entity.OrgRelations;
 
@@ -10,7 +10,9 @@ public interface OrgRelationsService {
 	
 	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId,Long clientOrgLocationId)throws Exception;
    
-	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
+//	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
+	
+	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
 	

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -57,15 +60,12 @@ public class ClientServiceTest {
 		 jsonObj.put("1projectStartDate", "2016-08-22");
 		 jsonObj.put("1projectEndDate", "2016-08-30");
 		
-		 
 		 jsonObj.put("2projectId", "301");
 		 jsonObj.put("2projectName", "HCL Project2");
 		 jsonObj.put("2projectManager", "3");
 		 jsonObj.put("level2Manager", "");
 		 jsonObj.put("2projectStartDate", "2016-08-22");
 		 jsonObj.put("2projectEndDate", "2016-08-30");
-		 
-		 
 		 
 		 User user = new User();
 		 user.setId(1L);
@@ -79,8 +79,9 @@ public class ClientServiceTest {
 		 
 		 logger.info("saveClient() method excecuted sucessfully...");
 		 
-		 
 	}
+	
+	
 
 	
 }
