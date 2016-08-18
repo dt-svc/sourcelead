@@ -2,7 +2,11 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -101,6 +104,37 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 resultJson = commonUtil.toJSON(taskList);
 		 return resultJson;
 	}
+
+	@Override
+	public Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj, HttpServletRequest request,
+			Projects projects) throws Exception {
+		 
+		    HashSet<ProjectTasks> projectTasksList = new HashSet<ProjectTasks>(); 
+		   
+			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+
+			for (int c = 1; c < maxCount; c++) {
+				ProjectTasks  tasks  = new ProjectTasks();
+				if(jsonObj.has(c+"taskName")){
+					if(jsonObj.has(c+"taskDescription")){
+						tasks.setDescription(jsonObj.getString(c+"taskDescription"));
+					}
+						tasks.setTaskName(jsonObj.getString(c+"taskName"));
+						tasks.setCreatedDate(new Date());
+						tasks.setUpdatedDate(new Date());
+						tasks.setProjectId(projects);
+						projectTasksList.add(tasks);
+			  }
+			}
+		   
+		   return projectTasksList;
+		    		  
+		
+	}
+	
+	
+	//by sarath 
 	
 	
 	

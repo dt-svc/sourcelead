@@ -8,8 +8,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +46,7 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ProjectMembersServiceImpl implements ProjectMembersService{
@@ -375,6 +380,85 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+
+	@Override
+	public Set<ProjectMembers> prepareProjectMembersListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception {
+		 
+		HashSet<ProjectMembers> projectMemberList = new HashSet<ProjectMembers>();
+		String teamMembersList = "";
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String pattern = "yyyy-MM-dd";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		if (jsonObj.has("employeeMaxCount")){
+			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+			if(!jsonObj.getString("employeeMaxCount").isEmpty()){
+					int empMaxCount = Integer.parseInt(employeeMaxCount);
+					for (int c = 1; c < empMaxCount; c++) {
+						
+						ProjectMembers pm = new ProjectMembers();
+						if(StringUtils.isNotEmpty(jsonObj.getString("employeeId"+c))){
+							Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
+						    if(emp != null){
+						    	pm.setEmployee(emp);
+						    	
+						        HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+									
+								ProjectMembersHistory pmh = new ProjectMembersHistory();
+								pmh.setProjectMemberId(pm);
+								pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+					            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
+					            	 Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
+					            	 pmh.setProjectAssignedDate(currentStartDate);
+					            }else{
+					            	
+					            	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
+					            		Date startDate = format.parse(jsonObj.getString("StartDate"));
+					            		pmh.setProjectAssignedDate(startDate);
+					            	}
+					            }
+					            
+					            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
+					            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
+					            	pmh.setProjectTerminationDate(currentEndDate);
+					            }
+					            else{
+					            	 if(!jsonObj.getString("EndDate").isEmpty()){
+						            		Date endDate = format.parse(jsonObj.getString("EndDate"));
+						            		pmh.setProjectTerminationDate(endDate);
+						             }
+						    	}
+
+					            pmh.setCreatedDate(new Date());
+								pmh.setCreatedBy(user.getUserCode());
+								pmh.setUpdatedDate(new Date());
+								pmh.setUpdatedBy(user.getUserCode());
+								pmhList.add(pmh);
+								
+								pm.setProjects(projects);
+								pm.setStatus(Constants.MEMBER_ACTIVE);
+								pm.setCreatedDate(new Date());
+								pm.setUpdatedDate(new Date());
+								pm.setCreatedBy(user.getUserCode());
+								pm.setUpdatedBy(user.getUserCode());
+								pm.setMemberHistoryList(pmhList);
+								/*projectMembersService.saveProjectMember(pm);*/
+								projectMemberList.add(pm);
+								
+								commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+								
+								pm.setEmpName(emp.getUser().getFirstName()+" "+emp.getUser().getLastName());
+								/*String teamMember = "";
+								teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
+								teamMembersList = teamMembersList+teamMember+"<br/>";*/
+								
+						    }
+						}
+				    }
+			 }
+	    }
+		return projectMemberList;
 	}
 	
 }
