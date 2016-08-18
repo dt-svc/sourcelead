@@ -485,7 +485,7 @@
 		/* $("#projectManager").val(''); */
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
-		$("#addTaskText").html('Update Task');
+		$("#save_task").val('Update Project');
 		$("#projectId").val(updateProjectId);
 		$("#projectName").val(updateTaskName);
 		/* $("#projectManager").val(updateprojectManager); */
@@ -500,11 +500,9 @@
 <script type="text/javascript">
 	function updateTask(rowId) {
 		
-		var mgr = projectManager.val();
-		var mgr = projectManager.split("&");
-
+		var mgr = $("#projectManager").val();
+		var mgr = $("#projectManager").val().split("&");
 		
-		//$("#"+rowId+"projectManager").val(); 
 		$("#" + rowId + "projectIdValue").html($("#projectId").val());
 
 		$("#" + rowId + "projectNameValue").html($("#projectName").val());
@@ -515,12 +513,24 @@
 				$("#projectStartDate").val());
 
 		$("#" + rowId + "projectEndDateValue").html($("#projectEndDate").val());
+		
+		
+		$("#" + rowId + "projectId").val($("#projectId").val());
+		$("#" + rowId + "projectName").val($("#projectName").val());
+		$("#" + rowId + "projectManager").val(mgr[0]);
+		$("#" + rowId + "projectStartDate").val($("#projectStartDate").val());
+		if($("#projectEndDate").val() != ''){
+			$("#" + rowId + "projectEndDate").val($("#projectEndDate").val());
+		}
+		
+		
 		$("#projectId").val('');
 		$("#projectName").val('');
 		$("#projectManager").val('');
 		$("#projectStartDate").val('');
 		$("#projectEndDate").val('');
-		$("#addTaskText").html('Add Task');
+		
+		$("#save_task").val('Add Project');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
 

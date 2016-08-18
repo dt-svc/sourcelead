@@ -40,7 +40,7 @@ public interface ProjectMembersService {
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE);
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE) throws Exception;
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 	

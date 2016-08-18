@@ -1,7 +1,7 @@
 package com.bis.sourcelead.web;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.ObjectNotFoundException;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Handles Exception and displays Error page
@@ -36,9 +35,10 @@ public class SourceleadCustomExceptions {
 	@ExceptionHandler(NullPointerException.class)
 	public String customErrorPage(NullPointerException exception){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		exception.printStackTrace();
+		
 		if(auth != null && auth.getPrincipal() != null){
-			logger.error("Root cause for Exception is: "+exception.getMessage()); 
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+        	//logger.error("Root cause for Exception is: "+exception.getMessage()); 
 			return "redirect:/errorPage";
 		 }
 		 else{
