@@ -124,6 +124,14 @@ public class ClientServiceImpl implements ClientService{
 		
 	}
 	
+	@Override
+	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
+		
+		Org org = populateOrg(jsonObj, user.getUserCode());
+		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode());
+		org.setOrgLocationsList(orgLocationList);
+		orgService.addOrganization(org);
+	}
 	
 	/**
 	 * populating Org data
@@ -139,7 +147,7 @@ public class ClientServiceImpl implements ClientService{
 			org.setOrgType("Company");
 			
 			if(jsonObj.has("companyWebsite")){
-				org.setWebSite(jsonObj.getString("companyWebsite"));
+				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
 			}
 			if(jsonObj.has("webSite")){
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));

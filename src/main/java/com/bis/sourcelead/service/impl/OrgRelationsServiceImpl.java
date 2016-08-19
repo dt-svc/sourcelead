@@ -1,11 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.OrgRelationsService;
 
@@ -59,5 +64,19 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		return orgRelationsDao.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId);
 	}
 	
-	
+	@Override
+	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode) throws Exception {
+		
+		HashSet<OrgRelations> orgRelationsList = new HashSet<OrgRelations>();
+		
+		OrgRelations orgRelations = new OrgRelations();
+		orgRelations.setClientLocationId(clientOrgLocation);
+		orgRelations.setLocationId(orgLocations);
+		orgRelations.setStatus("ACTIVE");
+		orgRelations.setCreatedBy(loginUserCode);
+		orgRelations.setCreatedDate(new Date());
+		
+		orgRelationsList.add(orgRelations);
+		return orgRelationsList;
+	}
 }

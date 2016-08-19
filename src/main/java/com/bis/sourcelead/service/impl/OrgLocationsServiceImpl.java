@@ -1,17 +1,23 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.service.OrgRelationsService;
 
 @Service
 public class OrgLocationsServiceImpl implements OrgLocationService {
@@ -20,6 +26,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
@@ -77,6 +86,44 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
+	}
+	
+	@Override
+	public Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode) throws Exception {
+		String locationCode = orgLocations.getLocationCode();
+		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
+		
+		OrgLocations clientOrgLocations = new OrgLocations();
+		clientOrgLocations.setOrg(addOrg);
+		if(jsonObj.has("phone")){
+			clientOrgLocations.setPhone(jsonObj.getString("phone"));
+		}
+		if(jsonObj.has("emailId")){
+			clientOrgLocations.setEmail(jsonObj.getString("emailId"));
+		}
+		
+		if(jsonObj.has("country")){
+			clientOrgLocations.setCountry(jsonObj.getString("country"));
+		}
+		if(jsonObj.has("state")){
+			clientOrgLocations.setState(jsonObj.getString("state"));
+		}
+		
+		if(jsonObj.has("city")){
+			clientOrgLocations.setCity(jsonObj.getString("city"));
+		}
+		String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
+		clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
+		clientOrgLocations.setCreatedDate(new Date());
+		clientOrgLocations.setCreatedBy(loginUserCode);
+		clientOrgLocations.setUpdatedBy(loginUserCode);
+		clientOrgLocations.setUpdatedDate(new Date());
+		
+		Set<OrgRelations> orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, loginUserCode);
+		clientOrgLocations.setOrgRelationsList(orgRelationsList);
+		
+		orgLocationsList.add(clientOrgLocations);
+		return orgLocationsList;
 	}
 	
 }
