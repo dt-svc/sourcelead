@@ -722,7 +722,7 @@
 
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveProject?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							if (result == 'projectDashboard') {
 								location.replace(sourceleadUrl

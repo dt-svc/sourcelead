@@ -261,8 +261,8 @@ public class ProjectsServiceImpl implements ProjectsService{
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
     	}
-    	projects.setCreatedDate(new Date());
-    	projects.setUpdatedDate(new Date());
+    	projects.setCreatedDate(commonUtil.currentDate());
+    	projects.setUpdatedDate(commonUtil.currentDate());
     	if(user.getUserCode() != null){
     		projects.setCreatedBy(user.getUserCode());	
     	}
