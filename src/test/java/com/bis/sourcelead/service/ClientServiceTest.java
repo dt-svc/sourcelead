@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -39,7 +40,7 @@ public class ClientServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientServiceTest.class);
 
-	@Test
+  //	@Test
 	public void saveClient() throws Exception {
 		
 		 logger.info("Entered Into saveClient() method");
@@ -82,6 +83,10 @@ public class ClientServiceTest {
 	}
 	
 	
-
+	@Test
+	public void getAllClientsByOrgLocationId() throws Exception{
+		List<OrgRelations> clientsList= orgRelationsService.getAllClientsByOrgLocationId(1L);
+		System.out.println("Successfully Retrieved..."+clientsList.size());
+	} 
 	
 }
