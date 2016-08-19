@@ -336,21 +336,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        ArrayList<TimesheetSubmissions> timesheetSubmissionsArrList = new ArrayList<TimesheetSubmissions>();
 	        
 	        StringBuilder sb = new StringBuilder();
-			/*sb.append(" <table>");
-			sb.append(" <tbody>");
-			sb.append(" <thead>");
-			sb.append("     <tr>");
-			sb.append("         <th>Employee</th>");
-			sb.append("         <th>Frequency</th>");
-			sb.append("         <th>Total hours</th>");
-			sb.append("         <th>Stage</th>");
-			sb.append("         <th>Action</th>");
-			sb.append("     </tr>");
-			sb.append(" </thead>");*/
-			
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				
-	        sb.append("	<div>");
+	        /*sb.append("	<div>");
 			sb.append("	<ul class='table_head'>");
 			sb.append("    <li>Employee</li> ");
 			sb.append("    <li>Frequency</li>            ");
@@ -359,7 +347,19 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			sb.append("    <li>Action</li>               ");
 			sb.append("    <div class='clearfix'></div> ");
 			sb.append("</ul>");
-	       	sb.append(" <ul class='table_details'> ");
+	       	sb.append(" <ul class='table_details'> ");*/
+				
+			sb.append(" <table id='example' class='display' cellspacing='0' width='100%' >");
+			sb.append(" <thead>");
+			sb.append("     <tr>");
+			sb.append("         <th>Employee</th>");
+			sb.append("         <th>Frequency</th>");
+			sb.append("         <th>Total hours</th>");
+			sb.append("         <th>Stage</th>");
+			sb.append("         <th>Action</th>");
+			sb.append("     </tr>");
+			sb.append(" </thead>");
+			sb.append(" <tbody>");	
 			 
 	        String pattern = "dd-MM-yyyy";
 	        SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -450,7 +450,54 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
 	        	   }
 	        	   
-	               				sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
+			        	   sb.append("<tr id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
+		                   sb.append("  <td><div class='time_appr_user'>");
+		                   sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
+		                   sb.append("    <span><b>"+ts.getFullName()+"</b></span></div>");
+		                   sb.append("    </td>");
+		                   
+		                   sb.append("<td><div>");
+			                   
+			               Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			           	   if(leftNavStartDate != null){
+			    		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+			    	       	   }
+			    	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
+			    	       	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			    	       	   if(rightNavStartDate != null){
+			    	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+			    	       	   }
+			    	       	   sb.append("    </div>");
+			    	       	   sb.append("    </td>");
+			    	       	   
+			                   sb.append("    <td><div> " );
+			                   sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
+			                   sb.append("    </div>");
+			                   sb.append("    </td>");
+			                   
+			                   sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
+			                   
+			                   sb.append("    <td><div> " );
+			    	               if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
+			    	                   sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
+			    	                   sb.append("<div id='rejectedPopup'></div>");
+			    	               }
+			    	               if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
+			    	            	  sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
+			    	                  sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
+			    	                  sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
+			    	                  sb.append(" </i>");
+			    	                  sb.append(" </div>");
+			    	              }
+			    	              if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
+			    	            	  sb.append(" <div><h3>Approved</h3></div>");
+			    	              }  
+			                   sb.append("    </div>");
+			                   sb.append("    </td>");
+			                   sb.append(" <div class='clearfix'></div>");
+			                   sb.append("</div>");
+	        	   				
+	               				/*sb.append("<div id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
 			                    sb.append("  <li><div class='time_appr_user'>");
 			                    sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 			                    sb.append("    <span><b>"+ts.getFullName()+"</b></span></div>");
@@ -495,51 +542,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			                    sb.append("    </div>");
 			                    sb.append("    </li>");
 			                    sb.append(" <div class='clearfix'></div>");
-			                    sb.append("</div>");
-	       	
-	        	   /*sb.append("  <tr id='row"+ts.getId()+"'>");
-	               sb.append("  <td><div class='time_appr_user'>");
-	               sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
-	               sb.append("    <span><b>"+ts.getFullName()+"</b></span></div></div>");
-	               sb.append("    </td>");
-	               
-	               sb.append("<td><div>");
-			       if(employeeStartDate.before(currentStartDate)){
-			       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getId()+"\");'></i>");
-		       	   }
-		       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
-		       		
-		       	   if(currentEndDate.before(employeeEndDate)){
-		       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDate+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getId()+"\");'></i><abbr></abbr> ");	
-		       	   }
-		       	   sb.append("    </div>");
-		       	   sb.append("    </td>");
-		       	   
-	               sb.append("    <td><div> " );
-	               sb.append(" <a onclick='myTimesheet(\'"+ts.getEmployeeId()+"\',\'"+ts.getStartDateStr()+"\',\'"+ts.getEndDateStr()+"\');'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a></div></td>");
-	               sb.append("    </div>");
-	               sb.append("    </td>");
-	               
-	               sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
-	               
-	               sb.append("    <td><div> " );
-		               if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
-		                   sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\'"+ts.getEmployeeId()+"\',\'"+ts.getStartDateStr()+"\',\'"+ts.getEndDateStr()+"\');'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\'"+ts.getId()+"\',\'"+ts.getEmployeeId()+"\',\'"+ts.getStartDateStr()+"\',\'"+ts.getEndDateStr()+"\');'></i></div>");
-		                   sb.append("<div id='rejectedPopup'></div>");
-		               }
-		               if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
-		                 sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
-		                 sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\'rejectedMessage"+ts.getId()+"\');'>");
-		                 sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
-		                 sb.append(" </i>");
-		                 sb.append(" </div>");
-		              }
-		              if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
-		            	  sb.append(" <div><h3>Approved</h3></div>");
-		              }  
-	               sb.append("    </div>");
-	               sb.append("    </td>");
-	               sb.append("</tr>");*/
+			                    sb.append("</div>");*/
 	             
 	         }
 	         sb.append("	<div>");
@@ -646,12 +649,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
 		   }
 		   		
-	         sb.append("  <li><div class='time_appr_user'>");
+	         sb.append("  <td><div class='time_appr_user'>");
 	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='/displayUserImage/"+ts.getUserId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
-	         sb.append(" <div></li>");
+	         sb.append(" <div></td>");
 	         
-	         sb.append("<li><div>");
+	         sb.append("<td><div>");
 		       if(employeeStartDate.before(currentStartDate)){
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
@@ -661,17 +664,17 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 	     	   }
 	     	   sb.append("    </div>");
-	     	   sb.append("    </li>");
+	     	   sb.append("    </td>");
 	     	   
 	     	 
-	         sb.append("    <li><div> " );
+	         sb.append("    <td><div> " );
 	         sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
 	         sb.append("    </div>");
-	         sb.append("    </li>");
+	         sb.append("    </td>");
 	         
-	         sb.append("  <li><div>"+ts.getCombinedStatus()+"</div></li>");
+	         sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
 	         
-	         sb.append("    <li><div> " );
+	         sb.append("    <td><div> " );
 	             if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
 	                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
 	                 sb.append("<div id='rejectedPopup'></div>");
@@ -695,7 +698,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	          	  sb.append(" <div><h3>Approved</h3></div>");
 	            }  
 	            sb.append(" </div>");
-	            sb.append("    </li>");
+	            sb.append("    </td>");
 	            sb.append("<div class='clearfix'></div>");
 			}
 	        
