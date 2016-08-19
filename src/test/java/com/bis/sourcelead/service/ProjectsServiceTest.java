@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -9,8 +10,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
@@ -20,7 +19,6 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -28,15 +26,7 @@ import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 public class ProjectsServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceTest.class);
-	
-	@Configuration
-	static class ProjectServiceTestContextConfiguration {
-		@Bean
-		public ProjectsService projectsService() {
-			return new ProjectsServiceImpl();
-		}
-	}
-	
+
 	@Autowired
 	ProjectsService projectsService;
 	
@@ -44,7 +34,7 @@ public class ProjectsServiceTest {
 	 * this method for save project
 	 * @throws Exception
 	 */
-//	@Test
+	@Test
 	public void saveProject() throws Exception{
 		
 		Projects projects = new Projects();
@@ -52,7 +42,6 @@ public class ProjectsServiceTest {
 		User superiorUser = new User();
 		superiorUser.setId(1L);
 		projects.setSuperiorUser(superiorUser);
-		
 		projects.setProjectName("XYZ");
 		projects.setProjectStatus(Project_Status.getNameByValue("Started"));
 		projects.setDescription("sourcelead desc");
@@ -66,16 +55,17 @@ public class ProjectsServiceTest {
 		projects.setUpdatedBy("Raj");
 		
 		projectsService.saveProject(projects);
+		logger.info("saveProject project added successfully");
 	}
 
 	/**
 	 * this method for updateProject
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void updateProject() throws Exception{
 		Projects projects = new Projects();
-		projects.setId(9L);
+		projects.setId(1L);
 		User superiorUser = new User();
 		superiorUser.setId(1L);
 		projects.setSuperiorUser(superiorUser);
@@ -99,39 +89,29 @@ public class ProjectsServiceTest {
 	 * this method for get project by id
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void getProjectById() throws Exception{
 		Projects getProjectbyid = projectsService.getProjectById(1L);
 		logger.info("getProjectById added successfully"+getProjectbyid);
 	}
 	
-	/**
-	 * this method for delete project by id
-	 * @return
-	 * @throws Exception
-	 */
-	//@Test
-	public Boolean getDeleteProject() throws Exception{
-		Boolean isDeleted = projectsService.deleteProjectById(9L);
-		return isDeleted;
-	}
 	
 	/**
 	 * this method for get all projects
 	 * @throws Exception
 	 */
 	
-	//@Test
+	@Test
 	public void getallProjects() throws Exception{
 		Collection<Projects> allprojects = projectsService.getAllProjects();
 		logger.info("getProjects added successfully"+allprojects.size());
 	}
 	
-	//@Test
+	@Test
     public void getPrimaryProjectByOrgLocationsId() throws Exception{
         System.out.println("sadasdsadasdsadsadsa");
-        //Long orgLocationsId= 3l;
-        projectsService.getPrimaryProjectByOrgLocationsId(3L);
+        Long orgLocationsId= 3l;
+        projectsService.getPrimaryProjectByOrgLocationsId(orgLocationsId);
         logger.info("getPrimaryProjectByOrgLocationsId added successfully");
         
     }
@@ -143,15 +123,14 @@ public class ProjectsServiceTest {
         logger.info("project list in getProjectByOrgLocationsId"+projects.size());
     }
 	
-	@Test
-	@SuppressWarnings("null")
+    @Test
 	public void getAllLoginUserProjectsList() throws Exception{
-		List<Long> projectIds=  null;
+		List<Long> projectIds=  new ArrayList<Long>();
 		projectIds.add(1L);
-		projectIds.add(9L);
-		projectIds.add(10L);
+		projectIds.add(2l);
 		Long orgLocationId = 3L;
-		Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds,orgLocationId);
+		List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds,orgLocationId);
+		
 		logger.info("projects list in getAllLoginUserProjectsList"+projectsList.size());
 	}
 	@Test
@@ -177,13 +156,17 @@ public class ProjectsServiceTest {
 	}
 	@Test
 	public void getProjectByProjectSequenceNumber() throws Exception{
-		Projects updateEndDate = projectsService.getProjectByProjectSequenceNumber("1231");
+		Projects updateEndDate = projectsService.getProjectByProjectSequenceNumber("01");
 		logger.info("getProjectByProjectSequenceNumber addded successfully"+updateEndDate);
 	}
 	@Test
 	public void getProjectsBasedOnClientsAndStatusSelectionInFilters() throws Exception{
-		Collection<Projects> ProjectsBasedOnClients = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(1l,"TCS","ACTIVE",1l);
-		logger.info("getProjectsBasedOnClientsAndStatusSelectionInFilters addded successfully"+ProjectsBasedOnClients.size());
+		Long userId = 1l;
+		String clients ="1";
+		String status ="STARTED";
+		Long orgLocationId =3l;
+		List<Projects> ProjectsBasedOnClients = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationId);
+		logger.info("getProjectsBasedOnClientsAndStatusSelectionInFilters addded successfully"+ProjectsBasedOnClients);
 	}
 	@Test
 	public void getProjectByOrgLocationsIdAndUserId() throws Exception{
@@ -206,19 +189,32 @@ public class ProjectsServiceTest {
 	 * test case Weekly base Emails and Notification
 	 * @throws Exception
 	 */
-//	@Test
+	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
 		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
 		for(User user : usrList){
 			projectsService.userEmailNotificationForTimeShhetSubmission(user);
+			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
+			
 		}
 	}
 
 	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
 		List<User> usrList  = projectsService.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
+		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 		
 	}
-
+	/**
+	 * this method for delete project by id
+	 * @return
+	 * @throws Exception
+	 */
+	@Test
+	public void getDeleteProject() throws Exception{
+		Boolean isDeleted = projectsService.deleteProjectById(1L);
+		logger.info("getDeleteProject "+isDeleted.booleanValue());
+	}
+	
 
 }

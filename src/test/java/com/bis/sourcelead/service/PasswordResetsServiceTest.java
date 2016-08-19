@@ -26,56 +26,53 @@ public class PasswordResetsServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
 
-	//@Test
+	@Test
 	public void savePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
 		User user = new User();
-		user.setId(3L);
+		user.setId(1L);
 		passwordResets.setUser(user);
 		passwordResets.setEmail("info@hangonn.com");
 		passwordResets.setVerificationCode("VERF");
-		passwordResets.setStatus("Active");
+		passwordResets.setStatus("Open");
 		passwordResets.setCreatedDate(new Date());
 		passwordResets.setCreatedBy("SourceLead");
 		passwordResets.setUpdatedDate(new Date());
 		passwordResets.setUpdatedBy("Sourcelead");
 		passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
-		logger.info("Saved Successfully..."+passwordResets.getEmail());
-	}
-	
-	//@Test
-	public void getPasswordResetsByUserId() throws Exception {
-		PasswordResets passwordResets = new PasswordResets();
-		User user = new User();
-		user.setId(3L);
-		passwordResets.setUser(user);
-		passwordResets = passwordResetsSevice.getPasswordResetsByUserId(passwordResets.getUser().getId());
-		logger.info("Retrieved Successfully..."+passwordResets.getEmail());
-	}
-	
-	//@Test
-	public void getPasswordResetsByVerificationCode() throws Exception {
-		PasswordResets passwordResets = new PasswordResets();
-		passwordResets.setVerificationCode("VERF");
-		passwordResets = passwordResetsSevice.getPasswordResetsByVerificationCode(passwordResets.getVerificationCode());
-		logger.info("Retrieved Successfully..."+passwordResets.getEmail());
+		logger.info("Saved Successfully..."+passwordResets.getId());
 	}
 	
 	@Test
+	public void getPasswordResetsByUserId() throws Exception {
+		PasswordResets passwordResets = new PasswordResets();
+		Long UserId = 1l;
+		passwordResets = passwordResetsSevice.getPasswordResetsByUserId(UserId);
+		logger.info("Retrieved Successfully..."+passwordResets.getId());
+	}
+	
+	@Test
+	public void getPasswordResetsByVerificationCode() throws Exception {
+		String verificationCode = "VERF";
+		PasswordResets pwdReset = passwordResetsSevice.getPasswordResetsByVerificationCode(verificationCode);
+		logger.info("Retrieved Successfully..."+pwdReset.getId());
+	}
+	
+	//@Test
 	public void deletePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
 		passwordResets.setId(1L);
 		User user = new User();
-		user.setId(3L);
+		user.setId(1L);
 		passwordResets.setUser(user);
 		passwordResets.setEmail("info@hangonn.com");
 		passwordResets.setVerificationCode("VERF");
-		passwordResets.setStatus("Active");
+		passwordResets.setStatus("Open");
 		passwordResets.setCreatedDate(new Date());
 		passwordResets.setCreatedBy("SourceLead");
 		passwordResets.setUpdatedDate(new Date());
 		passwordResets.setUpdatedBy("Sourcelead");
 		passwordResets = passwordResetsSevice.deletePasswordResets(passwordResets);
-		logger.info("Deleted Successfully..."+passwordResets.getEmail());
+		logger.info("Deleted Successfully..."+passwordResets);
 	}
 }

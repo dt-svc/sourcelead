@@ -34,7 +34,7 @@ public class SubmissionApproverHierarchyServiceTest {
 	@Test
 	public void addSubmissionApproverHierarchy() throws Exception{
 		SubmissionApproverHierarchy submissionApproverHierarchy = new SubmissionApproverHierarchy();
-		submissionApproverHierarchy.setId(20l);
+		submissionApproverHierarchy.setId(1l);
 		submissionApproverHierarchy.setActionPerformedBy("emplpoyer");
 		submissionApproverHierarchy.setCreatedBy("shiv");
 		submissionApproverHierarchy.setCreatedDate(new Date());
@@ -63,7 +63,6 @@ public class SubmissionApproverHierarchyServiceTest {
 	@Test
 	public void updateSubmissionApproverHierarchy() throws Exception{
 		SubmissionApproverHierarchy submissionApproverHierarchy = new SubmissionApproverHierarchy();
-		submissionApproverHierarchy.setId(20l);
 		TimesheetSubmissions submissionId = new TimesheetSubmissions();
 		submissionId.setId(1l);
 		ProjectMembers projectMembers = new ProjectMembers();
@@ -78,30 +77,27 @@ public class SubmissionApproverHierarchyServiceTest {
 	}
 	@Test
 	public void getSubmissionApproverHierarchy() throws Exception{
-		SubmissionApproverHierarchy Hierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy("20");
+		String id = "29";
+		SubmissionApproverHierarchy Hierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
 		logger.info("getSubmissionApproverHierarchy added successfully"+ Hierarchy);
 	}
+	
 	@Test
-	public void deleteSubmissionApproverHierarchy() throws Exception{
-		Boolean deleteSubmission = submissionApproverHierarchyService.deleteSubmissionApproverHierarchy("20");
-		logger.info("deleteSubmissionApproverHierarchy added successfully"+deleteSubmission.booleanValue());
-	}
-	//@Test
 	public void getAllSubmissionApproverHierarchies() throws Exception{
 		List<SubmissionApproverHierarchy> getAllSubmissionApprover = submissionApproverHierarchyService.getAllSubmissionApproverHierarchies();
-		logger.info("deleteSubmissionApproverHierarchy added successfully"+getAllSubmissionApprover.size());
+		logger.info("getAllSubmissionApproverHierarchies added successfully"+getAllSubmissionApprover.size());
 	}
-	//@Test
+	@Test
 	public void getSubmissionApproverHierarchyForEmployee() throws Exception{
 		SubmissionApproverHierarchy SubmissionApprover= submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(15l);
 		logger.info("getSubmissionApproverHierarchyForEmployee added successfully"+SubmissionApprover);
 	}
-	//@Test
+	@Test
 	public void getSubmissionApproverHierarchyForApprover() throws Exception{
 		SubmissionApproverHierarchy SubmissionForApprover = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(1l,1l);
 		logger.info("getSubmissionApproverHierarchyForApprover added successfully"+SubmissionForApprover);
 	}
-	//@Test
+	@Test
 	public void getSubmissionApproverHierarchyForEmployeeIdAndStartDate() throws Exception{
 		List<SubmissionApproverHierarchy> SubmissionApproverHierarchyForEmployeeId = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(20l,1l,new Date());
 		logger.info("getSubmissionApproverHierarchyForEmployeeIdAndStartDate added successfully"+SubmissionApproverHierarchyForEmployeeId.size());
@@ -111,34 +107,40 @@ public class SubmissionApproverHierarchyServiceTest {
 		submissionApproverHierarchyService.updateSubmissionStatus(1l,"ACTIVE");
 		logger.info("updateSubmissionStatus added successfully");
 	}
-	//@Test
+	@Test
 	public void updateApprovalStatusForApprover() throws Exception{
 		submissionApproverHierarchyService.updateApprovalStatusForApprover(20l, 1l, new Date(), "ACTIVE","Rejected Reason");
 		logger.info("updateApprovalStatusForApprover added successfully");
 	}
-	//@Test
+	@Test
 	public void isThereAnyApproverChangesStatusForTheSubmission() throws Exception{
 		SubmissionApproverHierarchy isThereAnyApprover = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForTheSubmission(1l, "APPROVED");
 		logger.info("isThereAnyApproverChangesStatusForTheSubmission added successfully"+isThereAnyApprover);
 	}
-	//@Test
+	@Test
 	public void getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover() throws Exception{
 		Float TotalApprovedOrRejectedHours = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(20l, 1l, "REJECTED");
 		logger.info("getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover added successfully"+TotalApprovedOrRejectedHours.floatValue());
 	}
-	//@Test
+	@Test
 	public void getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover() throws Exception{
 		submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(20l, 1l, "ACTIVE");
 		logger.info("getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover added successfully");
 	}
-	//@Test
+	@Test
 	public void getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee() throws Exception{
 		Float TotalApprovedOrRejectedHours =  submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(20l, 1l, "ACTIVE");
 		logger.info("getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee added successfully"+TotalApprovedOrRejectedHours.floatValue());
 	}
-	//@Test
+	@Test
 	public void getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee() throws Exception{
 		Float TotalDraftAndSubmittedHours = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(20l, 1l, "ACTIVE");
 		logger.info("getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee added successfully"+TotalDraftAndSubmittedHours.floatValue());
+	}
+	//@Test
+	public void deleteSubmissionApproverHierarchy() throws Exception{
+		String id = "69";
+		Boolean deleteSubmission = submissionApproverHierarchyService.deleteSubmissionApproverHierarchy(id);
+		logger.info("deleteSubmissionApproverHierarchy added successfully");
 	}
 }
