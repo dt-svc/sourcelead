@@ -174,7 +174,7 @@ public class ClientRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
 	public @ResponseBody String getAllClientProjectsByOrgRelationId(
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "locationId", required = false) Long locationId, HttpServletRequest request)
@@ -206,9 +206,9 @@ public class ClientRestController {
 				project.setProjectStatus(project.getProjectStatus());
 			}
 
-			/*
+			
 			 * Add managers to project list(shows in select box) in client tab
-			 */
+			 
 			Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService
 					.getApproverUsersByProjectId(project.getId());
 			String[] approvers = new String[projectApproverHierarchies.size()];
@@ -227,7 +227,7 @@ public class ClientRestController {
 		String jsonInString = mapper.writeValueAsString(clientProjectsList);
 
 		return jsonInString;
-	}
+	}*/
 
 	/**
 	 * Handles project inline editing
@@ -246,32 +246,7 @@ public class ClientRestController {
 	       json = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json);
 	
-		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
-		Org org = orgRelation.getClientLocationId().getOrg();
-		OrgLocations orgLocations = orgRelation.getClientLocationId();
-		
-		//org.setOrgName(jsonObj.getString("clientName"));
-		if(jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
-			org.setWebSite(jsonObj.getString("companyWebsite"));
-		}
-		orgService.updateOrg(org);
-		
-		if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
-			orgLocations.setCity(jsonObj.getString("clientCity"));
-		}
-		if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
-			orgLocations.setState(jsonObj.getString("clientState"));
-		}
-		if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
-			orgLocations.setCountry(jsonObj.getString("clientCountry"));
-	     }
-		if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
-			orgLocations.setEmail(jsonObj.getString("EmailId"));
-		}
-		if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
-			orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
-		}
-		orgLocationService.updateOrgLocations(orgLocations);
+	       clientService.updateClientDetails(jsonObj, orgRelationId);
 
 		return "success";
 	}
@@ -292,7 +267,7 @@ public class ClientRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
 	public String updateClientProjectById(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "fieldName", required = false) String fieldName,
 			@RequestParam(value = "fieldValue", required = false) String fieldValue, HttpServletRequest request)
@@ -328,7 +303,7 @@ public class ClientRestController {
 		}
 
 		return "success";
-	}
+	}*/
 
 
 	/**
@@ -341,7 +316,7 @@ public class ClientRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
 	public String inlineEditClientProjects(@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "fieldName", required = false) String fieldName,
 			@RequestParam(value = "fieldValue", required = false) String fieldValue, HttpServletRequest request)
@@ -384,7 +359,7 @@ public class ClientRestController {
 		projectsService.updateProject(projects);
 		return fieldValue;
 
-	}
+	}*/
 
 	/**
 	 * Handles ClientName duplicate or not
