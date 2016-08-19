@@ -219,9 +219,11 @@ public class ProjectsRestController {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	
-		 	String addEmployeeProject = projectsService.storeEmployeeInProjectDashboard(loginOrgLocation, users, jsonObj); 
+		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS");
 		 	
-			return addEmployeeProject;
+		 	//String addEmployeeProject = projectsService.storeEmployeeInProjectDashboard(loginOrgLocation, users, jsonObj); 
+		 	
+			return "SUCCESS";
 		}
 	  
 	  /**

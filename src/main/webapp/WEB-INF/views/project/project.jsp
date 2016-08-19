@@ -333,20 +333,20 @@
 								<label class="col-lg-3">Frist Name<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName"
+									<input type="text" class="form-control" value="" name="firstName" id="firstName"
 										field-name="Frist Name" data-validation="required validate_Space validate_length length2-100">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-lg-3">Last Name</label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
+									<input type="text" class="form-control" value="" name="lastName" id="lastName">
 								</div>
 							</div>
 							<div class="form-group" id="EmailIdDiv">
 								<label class="col-lg-3">Email <span class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="EmailId" id="EmailId" field-name="Email"
+									<input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email"
 										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
@@ -929,8 +929,8 @@
 			
 		}
 		// $('#add_employee').attr('data-dismiss','modal');
-		$('#employeeFirstName').val('');
-		$('#employeeLastName').val('');
+		$('#firstName').val('');
+		$('#lastName').val('');
 		$('#employeeEmail').val('');
 	}
 </script>
@@ -1063,9 +1063,9 @@
 <script type="text/javascript">
 	function flushEmployee() {
 		$("#add_employee").removeAttr("disabled");
-		$('#employeeFirstName').val('');
+		$('#firstName').val('');
 		$('#EmailId').val('');
-		$('#employeeLastName').val('');
+		$('#lastName').val('');
 		$('#invoiceFrequency').val('');
 		$(".error").removeClass("error");
 		$('#newEmployee').find('p.jquery_form_error_message').remove();

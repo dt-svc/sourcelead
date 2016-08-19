@@ -40,153 +40,62 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	HttpServletRequest request;
 	
 	
-	@Override
-	public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
-		return timesheetSubmissionsDao.addTimesheetSubmissions(timesheetSubmissions);
-	}
-	
-	@Override
-	public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long userId) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId);
-	}
+	 /**
+	 * @author  Sammeta David
+	 * @since   aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This  controller method is for getting TimesheetSubmission Counts based on Status
+	 * 
+	 * @param user This is the first parameter TimesheetSubmission  Counts
+	 *  
+	 * @return TimeSheetSubmissionCount 
+	 * 
+	 * @throws NullPointer
+	 */
 
-	@Override
-	public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetSubmissionsDao.updateTimesheetSubmissions(timesheetSubmissions);
-	}
-
-	@Override
-	public TimesheetSubmissions getTimesheetSubmissions(String id) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetSubmissionsDao.getTimesheetSubmissions(id);
-	}
-
-	@Override
-	public Boolean deleteTimesheetSubmissions(String id) throws Exception {
-		Boolean status = timesheetSubmissionsDao.deleteTimesheetSubmissions(id);
-		return status;
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate ,Date endDate,Long userId) throws Exception {
-		List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissions(startDate,endDate,userId);
-		// TODO Auto-generated method stub
-		return list;
-	}
-	
-	@Override
-	public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate ,Date endDate,Long userId) throws Exception {
-		TimesheetSubmissions list = timesheetSubmissionsDao.getAllApprovalEmployeeTimesheetSubmissions(startDate,endDate,userId);
-		// TODO Auto-generated method stub
-		return list;
-	}
-	
-	
-	@Override
-	public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate ,Date endDate,Long userId,Long memberId,Long employeeId) throws Exception {
-		TimesheetSubmissions list = timesheetSubmissionsDao.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(startDate,endDate,userId,memberId,employeeId);
-		// TODO Auto-generated method stub
-		return list;
-	}
-	
-	
-	@Override
-	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
-		 timesheetSubmissionsDao.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-	}
-
-	@Override
-	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
-		// TODO Auto-generated method stub
-		return timesheetSubmissionsDao.getNextMondayByProjectMemberId(pojectMemberId);
-	}
-
-	@Override
-	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception {
-		// TODO Auto-generated method stub
-		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getApprovalTimesheetSubmissions(userId);
-		return list;
-	}
-
-	@Override
-	public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId,Date startDate)
-			throws Exception {
-		// TODO Auto-generated method stub
-		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(projectMemberId,userId,startDate);
-		return list;
-	}
-	
-	@Override
-	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
+	 @Override
+	 public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception {
 		
-		Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
-		return approvalStatusCount;
-	}
-
-	@Override
-	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
-		return timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId,approvalStatus);
-	}
-
-	@Override
-	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
-		return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId,submissionStatus);
-	}
+			 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+			 
+			            Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, new Long(3), "DRAFT");
+		        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "DRAFT");
+		        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+		        timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(draftTimesheetsSubmissionsCount);
 	
-	@Override
-	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId, String approvalStatus)
-			throws Exception {
-		Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsListByStatus(userId,approvalStatus);
-		return list;
-	}
-
-	
-/****
- * 
- * @author: Sammeta David
- * This  controller method is for getting TimesheetSubmission Counts based on Status
- */
-
-@Override
-public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception {
-	
-		 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-		 
-		            Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, new Long(3), "DRAFT");
-			        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "DRAFT");
-			        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
-			        timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(draftTimesheetsSubmissionsCount);
-
-			        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "SUBMITTED");
-			        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
-			        timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(submittedTimesheetsSubmissionsCount);
-					
-				    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "APPROVED");
-				    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "APPROVED");
-			        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
-			        timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(approvalTimesheetsSubmissionsCount);
-					
-					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "REJECTED");
-				    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "REJECTED");
+		        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "SUBMITTED");
+		        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "SUBMITTED");
+		        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
+		        timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(submittedTimesheetsSubmissionsCount);
+				
+			    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "APPROVED");
+			    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "APPROVED");
+		        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
+		        timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(approvalTimesheetsSubmissionsCount);
+				
+				Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId,new Long(3), "REJECTED");
+			    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId,new Long(3), "REJECTED");
 				    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
 				    timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(rejectedTimesheetsSubmissionsCount);
 		
 		        return timeSheetSubmissionCount;
-	}
+	 }
 
-
-
-
-/****
- * 
- * @author: Sammeta David
- * This  controller method is for getting TimesheetSubmission Hours Counts based on login User Id
- */
-
+	 
+	/**
+	 * @author  Sammeta David
+	 * @since   aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 *  This  controller method is for getting TimesheetSubmission Hours Counts based on login User Id
+	 * 
+	 * @param user This is the first parameter TimesheetSubmission  Counts
+	 *  
+	 * @return TimeSheetSubmissionCount 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId) {
 		
@@ -214,7 +123,23 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 	}
 	
 			
-
+	/**
+	 * @author  Sammeta David
+	 * @since   aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 *  This   method is for getting Projects Based On UserId And Status And Client For Filters
+	 * 
+	 * @param user This is the first parameter to get Projects  
+	 * 
+	 * @param user This is the first parameter to get Projects  
+	 * 
+	 * @param user This is the first parameter to get Projects 
+	 *  
+	 * @return Collection<TimesheetSubmissions> 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 		public Collection<TimesheetSubmissions> getProjectsBasedOnUserIdAndStatusAndClientForFilters(Long userId,
 				String clientId, String values) throws Exception {
@@ -222,6 +147,24 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 			return list;
 		}
 	
+	
+	/**
+	 * @author   naresh bolisetty and sarath kumar
+	 * @since   aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 *  This   method is for getting Users TimeSheetSubmissions Count Based On Status
+	 * 
+	 * @param userId This is the first parameter to get Count  
+	 * 
+	 * @param approvalStatus This is the second parameter to get Count  
+	 * 
+	 * @param orgLocationId This is the third parameter to get Count 
+	 *  
+	 * @return Integer
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId, String approvalStatus,Long orgLocationId) throws Exception {
 		Integer approvalStatusCount = timesheetSubmissionsDao.getUsersTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus,orgLocationId);
@@ -229,10 +172,20 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 	}
 
 	
-	/****
+	/**
+	 * @author   naresh bolisetty and sarath kumar
+	 * @since   aug 19 2016
+	 * @version 0.0.1
 	 * 
-	 * @author: Sammeta David
-	 * This  controller method is for getting TimeSheetSubmissionsCount By UserId And OrgLocationId
+	 * This Method is for  getting  TimeSheetSubmissions Count By UserId And OrgLocationId
+	 * 
+	 * @param user This is the first parameter TimesheetSubmission  Counts
+	 * 
+	 * @param orgLocationId This is the Second parameter TimesheetSubmission  Counts
+	 *  
+	 * @return TimeSheetSubmissionCount 
+	 * 
+	 * @throws NullPointer
 	 */
 	@Override
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
@@ -261,11 +214,26 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 		 
 	}
 
+	/**
+	 * @author   naresh bolisetty and sarath kumar
+	 * @since   aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 *  This Method is to get TimeSheet Submissions Count By UserId And OrgLocationId For Approver Login
+	 * 
+	 * @param user This is the first parameter TimesheetSubmission  Counts
+	 * 
+	 * @param orgLocationId This is the Second parameter TimesheetSubmission  Counts
+	 *  
+	 * @return TimeSheetSubmissionCount 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,
 			Long orgLocationId) throws Exception {
 		
-		 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		
 		 
 		    Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  "APPROVED");
@@ -284,9 +252,25 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 			
 			timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 			
-		return timeSheetSubmissionCount;
-	}
+		 return timeSheetSubmissionCount;
+	   }
 	
+	
+	/**
+	 * @author   naresh bolisetty and sarath kumar
+	 * @since   aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 *  This Method is to get ApprovalTimesheetSubmissions By UserId And EmplyeeId
+	 * 
+	 * @param user This is the first parameter TimesheetSubmission  Counts
+	 * 
+	 * @param employeeId This is the Second parameter TimesheetSubmission  Counts
+	 *  
+	 * @return Collection<TimesheetSubmissions> 
+	 * 
+	 * @throws NullPointer
+	 */
 	  @Override
 		public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,
 				String employeeId) throws Exception {
@@ -294,29 +278,64 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 			return thslist;
 		}
 		
-		
+	  /**
+		 * @author   naresh bolisetty and sarath kumar
+		 * @since   aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 *  This Method is get SubmissionApproverHierarchy For EmployeeList
+		 * 
+		 * @param approverUserId This is the first parameter TimesheetSubmission  Counts
+		 * 
+		 * @return List<TimesheetSubmissions>
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)
 				throws Exception {
-			// TODO Auto-generated method stubgetSubmissionApproverHierarchyForEmployeeList
 			List<TimesheetSubmissions> list = timesheetSubmissionsDao.getSubmissionApproverHierarchyForEmployeeList(approverUserId);
 			return list;
 		}
 
+		/**
+		 * @author   naresh bolisetty and sarath kumar
+		 * @since   aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 *  This Method is get TimesheetSubmissions By MemberId And StartDate 
+		 * 
+		 * @param memberId This is the first parameter TimesheetSubmissions  
+		 * 
+		 * @return TimesheetSubmissions
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId, Date startDate)
 				throws Exception {
-			// TODO Auto-generated method stub
 			return timesheetSubmissionsDao.getTimesheetSubmissionsByMemberIdAndStartDate(memberId, startDate);
 		}
 
 		
 	
-
+		/**
+		 * @author   naresh bolisetty and sarath kumar
+		 * @since   aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 *  This Method is get All TimesheetSubmissions GreaterThan ProjectMember Terminated Date And MemberId 
+		 * 
+		 *  @param memberId This is the first parameter TimesheetSubmissions 
+		 *  @param terminatedDate This is the Second parameter TimesheetSubmissions 
+		 * 
+		 * @return TimesheetSubmissions
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(
 				Long memberId, Date terminatedDate) throws Exception {
-			// TODO Auto-generated method stub
 			return timesheetSubmissionsDao.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId, terminatedDate);
 		}
 
@@ -729,26 +748,440 @@ public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId
 	        
 	        return sb.toString();
 		}
-
+		
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is get LeftNavStartDate For Employee Based On CurrentStartDate
+		 * 
+		 * @param userId This is the first parameter to getLeftNavStartDateForEmployeeBasedOnCurrentStartDate method
+		 * @param currentStartDate This is the second parameter to getLeftNavStartDateForEmployeeBasedOnCurrentStartDate method
+		 *  
+		 * @return Date 
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
 			return timesheetSubmissionsDao.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
 		}
 
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is get get RightNavStartDate For Employee Based On Current StartDate
+		 * 
+		 * @param userId This is the first parameter to getRightNavStartDateForEmployeeBasedOnCurrentStartDate method
+		 * @param currentStartDate This is the second parameter to getRightNavStartDateForEmployeeBasedOnCurrentStartDate method
+		 *  
+		 * @return Date 
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public Date getRightNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
 			return timesheetSubmissionsDao.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
 		}
 
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is get LeftNav StartDate For Approver Based On CurrentStartDate
+		 * 
+		 * @param approverUserId This is the first parameter to getLeftNavStartDateForApproverBasedOnCurrentStartDate method
+		 *
+		 * @param empUserId This is the second parameter to getLeftNavStartDateForApproverBasedOnCurrentStartDate method
+		 *  
+		 *  @param currentStartDate This is the third parameter to getLeftNavStartDateForApproverBasedOnCurrentStartDate method
+
+		 * @return Date 
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public Date getLeftNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
 				Date currentStartDate) {
 			return timesheetSubmissionsDao.getLeftNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
 		}
 
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is get RightNav StartDate For Approver Based On Current StartDate
+		 * 
+		 * @param approverUserId This is the first parameter to getRightNavStartDateForApproverBasedOnCurrentStartDate method
+		 *
+		 * @param empUserId This is the second parameter to getRightNavStartDateForApproverBasedOnCurrentStartDate method
+		 *  
+		 *  @param currentStartDate This is the third parameter to getRightNavStartDateForApproverBasedOnCurrentStartDate method
+
+		 * @return Date 
+		 * 
+		 * @throws NullPointer
+		 */
 		@Override
 		public Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
 				Date currentStartDate) {
 			return timesheetSubmissionsDao.getRightNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
 		}
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  add TimesheetSubmissions
+		 * 
+		 * @param timesheetSubmissions This is the first parameter to addTimesheetSubmissions method
+		 *
+
+		 * @return Date 
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
+			return timesheetSubmissionsDao.addTimesheetSubmissions(timesheetSubmissions);
+		}
+		
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get Min And Max TimesheetSubmission Dates For Employee
+		 * 
+		 * @param userId This is the first parameter to getMinAndMaxTimesheetSubmissionDatesForEmployee method
+		 *
+
+		 * @return  HashMap<String, Date>
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long userId) throws Exception {
+			return timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId);
+		}
+
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get update TimesheetSubmissions
+		 * 
+		 * @param timesheetSubmissions This is the first parameter to updateTimesheetSubmissions method
+		 *
+
+		 * @return  TimesheetSubmissions
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
+			return timesheetSubmissionsDao.updateTimesheetSubmissions(timesheetSubmissions);
+		}
+
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is   get TimesheetSubmissions
+		 * 
+		 * @param id This is the first parameter to getTimesheetSubmissions method
+		 *
+
+		 * @return  TimesheetSubmissions
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public TimesheetSubmissions getTimesheetSubmissions(String id) throws Exception {
+			return timesheetSubmissionsDao.getTimesheetSubmissions(id);
+		}
+
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is   delete TimesheetSubmissions
+		 * 
+		 * @param id This is the first parameter to deleteTimesheetSubmissions method
+		 *
+
+		 * @return  Boolean
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Boolean deleteTimesheetSubmissions(String id) throws Exception {
+			Boolean status = timesheetSubmissionsDao.deleteTimesheetSubmissions(id);
+			return status;
+		}
+
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is   get All Employee TimesheetSubmissions
+		 * 
+		 * @param startDate This is the first parameter to getAllEmployeeTimesheetSubmissions method
+		 * 
+		 * @param endDate This is the second parameter to getAllEmployeeTimesheetSubmissions method
+		 * 
+		 * @param userId This is the third parameter to getAllEmployeeTimesheetSubmissions method
+		 *
+		 * @return  List<TimesheetSubmissions>
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate ,Date endDate,Long userId) throws Exception {
+			List<TimesheetSubmissions> list = timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissions(startDate,endDate,userId);
+			return list;
+		}
+		
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is   get All Approval Employee TimesheetSubmissions
+		 * 
+		 * @param startDate This is the first parameter to getAllEmployeeTimesheetSubmissions method
+		 * 
+		 * @param endDate This is the second parameter to getAllEmployeeTimesheetSubmissions method
+		 * 
+		 * @param userId This is the third parameter to getAllEmployeeTimesheetSubmissions method
+		 *
+		 * @return  TimesheetSubmissions
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate ,Date endDate,Long userId) throws Exception {
+			TimesheetSubmissions list = timesheetSubmissionsDao.getAllApprovalEmployeeTimesheetSubmissions(startDate,endDate,userId);
+			return list;
+		}
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is   get All Approval Employee TimesheetSubmissions By Project MemberId
+		 * 
+		 * @param startDate This is the first parameter to getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId method
+		 * 
+		 * @param endDate This is the second parameter to getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId method
+		 * 
+		 * @param userId This is the third parameter to getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId method
+		 *
+		 * @param employeeId This is the third parameter to getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId method
+		 
+		 * @param memberId This is the fourth parameter to getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId method
+
+		 * @return  TimesheetSubmissions
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate ,Date endDate,Long userId,Long memberId,Long employeeId) throws Exception {
+			TimesheetSubmissions list = timesheetSubmissionsDao.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(startDate,endDate,userId,memberId,employeeId);
+			return list;
+		}
+		
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  save All TimesheetSubmissions
+		 * 
+		 * @param timesheetSubmissionsList This is the first parameter to saveAllTimesheetSubmissions method
+		 * 
+
+		 * @return  void
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+			 timesheetSubmissionsDao.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		}
+
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get NextMonday By ProjectMemberId
+		 * 
+		 * @param projectMemberId This is the first parameter to getNextMondayByProjectMemberId method
+		 * 
+
+		 * @return  Date
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Date getNextMondayByProjectMemberId(Long projectMemberId) {
+			return timesheetSubmissionsDao.getNextMondayByProjectMemberId(projectMemberId);
+		}
+
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get Approval TimesheetSubmissions
+		 * 
+		 * @param userId This is the first parameter to getApprovalTimesheetSubmissions method
+		 * 
+
+		 * @return  Collection<TimesheetSubmissions>
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception {
+			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getApprovalTimesheetSubmissions(userId);
+			return list;
+		}
+
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get TimesheetSubmissions By AproverId
+		 * 
+		 * @param projectMemberId This is the first parameter to getApprovalTimesheetSubmissions method
+		 * 
+		 * @param userId This is the second parameter to getApprovalTimesheetSubmissions method
+		 *  
+		 * @param startDate This is the third parameter to getApprovalTimesheetSubmissions method
+		 * 
+
+		 * @return  Collection<TimesheetSubmissions>
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId,Date startDate)
+				throws Exception {
+			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(projectMemberId,userId,startDate);
+			return list;
+		}
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get TimeSheetSubmissions Count Based On Status and User Id
+		 * 
+		 * @param userId This is the first parameter to getTimeSheetSubmissionsCountBasedOnStatus method
+		 * 
+		 * @param approvalStatus This is the second parameter to getTimeSheetSubmissionsCountBasedOnStatus method
+		 *  
+		 * 
+
+		 * @return Integer
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
+			
+			Integer approvalStatusCount = timesheetSubmissionsDao.getTimeSheetSubmissionsCountBasedOnStatus(userId,approvalStatus);
+			return approvalStatusCount;
+		}
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get Total Approved Or Rejected Hours By userId
+		 * 
+		 * @param userId This is the first parameter to getTimeSheetSubmissionsCountBasedOnStatus method
+		 * 
+		 * @param approvalStatus This is the second parameter to getTimeSheetSubmissionsCountBasedOnStatus method
+		 *  
+		 * 
+
+		 * @return Float
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
+			return timesheetSubmissionsDao.getTotalApprovedOrRejectedHoursByuserId(userId,approvalStatus);
+		}
+		
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get Total Draft And Submitted Hours By userId
+		 * 
+		 * @param userId This is the first parameter to getTotalDraftAndSubmittedHoursByuserId method
+		 * 
+		 * @param submissionStatus This is the second parameter to getTotalDraftAndSubmittedHoursByuserId method
+		 *  
+
+		 * @return Float
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
+			return timesheetSubmissionsDao.getTotalDraftAndSubmittedHoursByuserId(userId,submissionStatus);
+		}
+		
+		
+		/**
+		 * @author naresh bolisetty and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is  get TimeSheetSubmissions List By Status
+		 * 
+		 * @param userId This is the first parameter to getTimeSheetSubmissionsListByStatus method
+		 * 
+		 * @param approvalStatus This is the second parameter to getTimeSheetSubmissionsListByStatus method
+		 *  
+
+		 * @return Collection<TimesheetSubmissions>
+		 * 
+		 * @throws NullPointer
+		 */
+		@Override
+		public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId, String approvalStatus)
+				throws Exception {
+			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimeSheetSubmissionsListByStatus(userId,approvalStatus);
+			return list;
+		}
+		
 }

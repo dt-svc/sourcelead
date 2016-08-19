@@ -196,7 +196,11 @@ public class UserRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
 	 	 //For Saving of User Details
-		 userService.createUser(jsonObj,user,orgLocations.getId());
+	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+	 	
+	 	
+	 	 //For Saving of User Details
+		// userService.createUser(jsonObj,user,orgLocations.getId());
 		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
 		 return "usersList";
 	   }

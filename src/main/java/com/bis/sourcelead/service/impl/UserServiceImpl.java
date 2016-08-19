@@ -115,60 +115,64 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	 /**
-     *  This Method is for Common Storing Method For User Creation
-     *  @return 
-     */
+	  * @author Sammeta David Raju
+	  * 
+	  * @date: 19-Aug-2016
+	  * 
+      *  This Method is for Common Storing Method For User Creation
+      *  
+      *  @return 
+      */
 	@Override
-	public void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations) throws Exception {
+	public void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType) throws Exception {
 	
-		
 	 	User user = getUserDetails(jsonObj,users.getUserCode());
+	 	if(sourceType.equalsIgnoreCase("PROJECTS")){
+	 		user.setUserType("Employee");
+	 	}
+	 	
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
-			
+       //For saving the User Role 
+		UserRole userRole = getUserRoleDetails(user,user.getUserCode(),orgLocations.getId());
+		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
+		userRoleList.add(userRole);
+		user.setUserRole(userRoleList);
 		
-		       //For saving the User Role 
-				UserRole userRole = getUserRoleDetails(user,user.getUserCode(),orgLocations.getId());
-				HashSet<UserRole> userRoleList = new HashSet<UserRole>();
-				userRoleList.add(userRole);
-				user.setUserRole(userRoleList);
-				
-			   //For saving Employee details (Every User is an Employee)
-				Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),user.getUserCode());
-				HashSet<Employees> employeeList = new HashSet<Employees>();
-				employeeList.add(employee);
-				user.setEmployee(employeeList);
-				
-				try {
-					userDao.addUser(user);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				
-				//For saving Employee details (Every User is an Employee)
-				if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
-					ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,user.getUserCode(),orgLocations.getId());
-					try {
-						projectMembersService.saveProjectMember(pm);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					commonUtil.storeTimesheetSubmissionRecords(user);
-				}
-				
-				
-				//send mail to user
-				if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-					sendEmail(user,user,password);
-				}
-			
-				
-				
-				
+	   //For saving Employee details (Every User is an Employee)
+		Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),user.getUserCode());
+		HashSet<Employees> employeeList = new HashSet<Employees>();
+		employeeList.add(employee);
+		user.setEmployee(employeeList);
+		
+		 //For saving the User  
+		try {
+			userDao.addUser(user);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		//For saving Employee details (Every User is an Employee)
+		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
+			ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,user.getUserCode(),orgLocations.getId());
+			try {
+				projectMembersService.saveProjectMember(pm);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			commonUtil.storeTimesheetSubmissionRecords(user);
+		}
+		
+		
+		//send mail to user
+		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+			sendEmail(user,user,password);
+		}
 				
 		
 	}
+	
 	@Override
 	public void createUser(JSONObject jsonObj,User loginUser , Long orgLocationsId) throws Exception {
 		logger.debug("In UserService class createUser method...");
@@ -224,19 +228,22 @@ public class UserServiceImpl implements UserService {
 		user.setFirstName(jsonObj.getString("firstName"));
 		user.setLastName(jsonObj.getString("lastName"));
 		user.setEmail(jsonObj.getString("email"));
-		user.setMobilePhone(jsonObj.getString("phoneNumber"));
 		user.setUserName(jsonObj.getString("email"));
+		if(jsonObj.has("phoneNumber")){
+			user.setMobilePhone(jsonObj.getString("phoneNumber"));
+		}
 		user.setUserState(Status.NOT_LOGGEDIN);
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 			user.setIsMailSent(Status.Y);
 		}else{
 			user.setIsMailSent(Status.N);
 		}
-		
-		user.setUserType(jsonObj.getString("roleType"));
+		if(jsonObj.has("roleType")){
+			user.setUserType(jsonObj.getString("roleType"));
+		}
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
-		user.setCreatedDate(new Date());
+		user.setCreatedDate(commonUtil.currentDate());
 		return user;
 	}
 	
@@ -264,7 +271,7 @@ public class UserServiceImpl implements UserService {
 		}
 		userRole.setRoles(roles);
 		userRole.setIsPrimary(1);
-		userRole.setCreatedDate(new Date());
+		userRole.setCreatedDate(commonUtil.currentDate());
 		userRole.setCreatedBy(userCode);
 		return userRole;
 	}
@@ -275,12 +282,22 @@ public class UserServiceImpl implements UserService {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationsId);
 		employees.setOrgLocations(orgLocations);
-		employees.setEmployeeId(jsonObj.getString("employeeId"));
-		employees.setRate(jsonObj.getString("rate"));
-		employees.setRatePer(jsonObj.getString("ratePer"));
-		employees.setDailyHours(jsonObj.getString("dayHours"));
+		if(jsonObj.has("employeeId")){
+			employees.setEmployeeId(jsonObj.getString("employeeId"));
+		}
+		if(jsonObj.has("rate")){
+			employees.setRate(jsonObj.getString("rate"));
+		}
+		if(jsonObj.has("ratePer")){
+			employees.setRatePer(jsonObj.getString("ratePer"));
+		}
+		if(jsonObj.has("dayHours")){
+			employees.setDailyHours(jsonObj.getString("dayHours"));
+		}
+		if(jsonObj.has("invoiceFrequency")){
+			employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		}
 		
-		employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
 				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -290,7 +307,7 @@ public class UserServiceImpl implements UserService {
 				}
 		}
 		employees.setCreatedBy(userCode);
-		employees.setCreatedDate(new Date());
+		employees.setCreatedDate(commonUtil.currentDate());
 		return employees;
 	}
 
@@ -321,16 +338,16 @@ public class UserServiceImpl implements UserService {
 		pmh.setProjectTerminationDate(newproject.getEndDate());
 		pmh.setProjectMemberId(pm);
 		pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-		pmh.setProjectAssignedDate(new Date());
-        pmh.setCreatedDate(new Date());
+		pmh.setProjectAssignedDate(commonUtil.currentDate());
+        pmh.setCreatedDate(commonUtil.currentDate());
 		pmh.setCreatedBy(userCode);
-		pmh.setUpdatedDate(new Date());
+		pmh.setUpdatedDate(commonUtil.currentDate());
 		pmh.setUpdatedBy(userCode);
 		pmhList.add(pmh);
 		
 		pm.setCreatedBy(userCode);
-		pm.setCreatedDate(new Date());
-		pm.setUpdatedDate(new Date());
+		pm.setCreatedDate(commonUtil.currentDate());
+		pm.setUpdatedDate(commonUtil.currentDate());
 		pm.setMemberHistoryList(pmhList);
 		return pm;
 	}

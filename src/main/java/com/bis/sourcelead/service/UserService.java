@@ -43,7 +43,7 @@ public interface UserService  {
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 	
-	void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations)  throws Exception;
+	void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType)  throws Exception;
 
 	
 }	
