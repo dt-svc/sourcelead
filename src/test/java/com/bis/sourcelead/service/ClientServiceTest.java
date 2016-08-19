@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +14,9 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -35,8 +39,13 @@ public class ClientServiceTest {
 
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientServiceTest.class);
+	
+	/**
+	 * test case for client saving
+	 * @throws Exception
+	 */
 
-	@Test
+  //	@Test
 	public void saveClient() throws Exception {
 		
 		 logger.info("Entered Into saveClient() method");
@@ -57,15 +66,12 @@ public class ClientServiceTest {
 		 jsonObj.put("1projectStartDate", "2016-08-22");
 		 jsonObj.put("1projectEndDate", "2016-08-30");
 		
-		 
 		 jsonObj.put("2projectId", "301");
 		 jsonObj.put("2projectName", "HCL Project2");
 		 jsonObj.put("2projectManager", "3");
 		 jsonObj.put("level2Manager", "");
 		 jsonObj.put("2projectStartDate", "2016-08-22");
 		 jsonObj.put("2projectEndDate", "2016-08-30");
-		 
-		 
 		 
 		 User user = new User();
 		 user.setId(1L);
@@ -74,13 +80,21 @@ public class ClientServiceTest {
 		 OrgLocations orgLocations = new OrgLocations();
 		 orgLocations.setId(1L);
 		 orgLocations.setLocationCode("sleadIN");
-		 
 		 clientService.saveClient(jsonObj, user, orgLocations);
-		 
 		 logger.info("saveClient() method excecuted sucessfully...");
 		 
-		 
 	}
-
+	
+	
+	
+	/**
+	 * test case for client List
+	 * @throws Exception
+	 */
+	@Test
+	public void getAllClientsByOrgLocationId() throws Exception{
+		List<OrgRelations> clientsList= orgRelationsService.getAllClientsByOrgLocationId(1L);
+		System.out.println("Successfully Retrieved..."+clientsList.size());
+	} 
 	
 }
