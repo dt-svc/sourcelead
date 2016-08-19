@@ -50,10 +50,10 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/userCreation")
-	public ModelAndView userCreation(HttpServletRequest request) {
+	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		try{
+		
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
 		    
@@ -61,9 +61,7 @@ public class UserController {
 		    
 			model.setViewName("users/userCreation");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-		}catch(Exception e){
-			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		}
+		
 		return model;
 
 	}
@@ -77,9 +75,9 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
-			@RequestParam(value = "userId", required = false) Long userId) {
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
-		try{
+		
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			// to get a project list by userId
                 List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
@@ -98,9 +96,7 @@ public class UserController {
 				request.setAttribute("userId", userId);
 				model.setViewName("users/userSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-		}catch(Exception e){
-			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));	
-		}
+		
 		return model;
 
 	}

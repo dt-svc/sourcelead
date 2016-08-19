@@ -4,7 +4,9 @@ package com.bis.sourcelead.web;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -88,12 +90,12 @@ public class UploadController {
  * Handles Errored file Download
  * @param fileName
  * @param response
+ * @throws IOException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
-	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) {
+	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 		
-		try{
 			File file;
 			if("xlsx".equalsIgnoreCase(fileName)){
 				file = new File("FailureUsersForCheck.xlsx");
@@ -113,23 +115,18 @@ public class UploadController {
 			inputStream.close();
 			response.getOutputStream().close();
 			response.getOutputStream().flush();	
-		}catch(Exception e){
-			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));	
-		}
-		
-		
-	
 	}
 /**
  * Handles Temaplate download
  * @param response
+ * @throws IOException 
+ * @throws URISyntaxException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletResponse response){
+	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException{
 		
-		try{
-			String fn = "/templates/Create Users.xls";
+			String fn = "/templates/Create users.xls";
 			URL url = getClass().getResource(fn);
 			File file = new File(url.toURI());
 
@@ -145,10 +142,7 @@ public class UploadController {
 			inputStream.close();
 			response.getOutputStream().close();
 			response.getOutputStream().flush();
-		}catch(Exception e){
-			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));	
-		}
+		
 	}
-	
 	
 }
