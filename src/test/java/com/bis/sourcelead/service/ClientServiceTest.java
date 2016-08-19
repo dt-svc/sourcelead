@@ -39,6 +39,11 @@ public class ClientServiceTest {
 
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientServiceTest.class);
+	
+	/**
+	 * test case for client saving
+	 * @throws Exception
+	 */
 
   //	@Test
 	public void saveClient() throws Exception {
@@ -83,6 +88,10 @@ public class ClientServiceTest {
 	}
 	
 	
+	/**
+	 * test case for client List
+	 * @throws Exception
+	 */
 	@Test
 	public void getAllClientsByOrgLocationId() throws Exception{
 		List<OrgRelations> clientsList= orgRelationsService.getAllClientsByOrgLocationId(1L);
