@@ -437,7 +437,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						result = result + '<strong>Client name:</strong>';
 						
 						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientName\');" id="clientName" value="'+json.orgName+'" placeholder="client name" class="project_detfield"></span>';
+						result = result + '<span>'+json.orgName+'</span>';
 						}
 						
 						result = result + '<div class="clearfix"></div>';
@@ -446,7 +446,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<strong>Website:</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientWebsite\');" id="clientWebsite"  value="'+json.webSite+'" placeholder="client website" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span>'+json.webSite+'</span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 					
@@ -454,35 +454,47 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						result = result + '<span><input type="text"  id="clientCity" value="'+json.city+'" placeholder="client city" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
-						result = result + '<span><input type="text"  id="clientSate" value="'+json.state+'" placeholder="client state" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
-						result = result + '<span><input type="text"  id="clientCountry" value="'+json.country+'" placeholder="client country" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Email:</strong>';
-						if(json.email !=null && json.email !='' && json.email !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientEmail\');" id="clientEmail" value="'+json.email+'" placeholder="client email" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.email != null && json.email !='' && json.email !='undefined'){
+						result = result + '<span>'+json.email+'</span><div class="clearfix"></div>';
 						}else{
 							
-							result = result + '<span><input type="text"  id="clientEmail" value="" placeholder="client email" class="project_detfield"></span><div class="clearfix"></div>';	
+							result = result + '<span>No Data</span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Phone number:</strong>';
-						if(json.phone !=null && json.phone !='' && json.phone !='undefined'){
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientPhoneNumber\');" id="clientPhoneNumber" value="'+json.phone+'" placeholder="client phone" class="project_detfield"></span><div class="clearfix"></div>';
+						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
+						result = result + '<span>'+json.phone+'</span><div class="clearfix"></div>';
 						}else{
 							
-							result = result + '<span><input type="text"  id="clientPhoneNumber" value="" placeholder="client phone" class="project_detfield"></span><div class="clearfix"></div>';	
+							result = result + '<span>No Data</span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
 						/* result = result + '<div class="project_details_cta">';
@@ -543,27 +555,47 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>City</label>';
-						result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" ></div>';
+						}
 						result = result + '</div> ';
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>State</label>';
-						result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" placeholder="client state" ></div>';
+						}
 						result = result + '</div> ';
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Country</label>';
-						result = result + '<input type="text"  id="clientCountry" name="clientCountry" value="'+json.country+'" placeholder="client country" ></div>';
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							result = result + '<input type="text"  id="clientCountry" name="clientCountry" value="'+json.country+'" placeholder="client country" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientCountry" name="clientCountry"  placeholder="client country" ></div>';
+						}
 						result = result + '</div>  ';
 						
 						result = result + '<div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + '	<label>Email</label>';
-						result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  value="'+json.email+'" placeholder="client email" c></div>';
+						if(json.email != null && json.email !='' && json.email !='undefined'){
+							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  value="'+json.email+'" placeholder="client email" c></div>';
+						}else{
+							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  placeholder="client email" c></div>';
+						}
 						result = result + '</div> ';
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Phone</label>';
-						result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
+						if(json.email != null && json.email !='' && json.email !='undefined'){
+							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber"  data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
+						}
 						result = result + '</div> ';   
 						
 						result = result + '<div class="clearfix"></div>';
