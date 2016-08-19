@@ -540,6 +540,30 @@ public class UserRestController {
 					}
 					return "updated";
 		       }
+		
+		
+		
+		
+		/**
+		 * to assign the project to the particular user
+		 * @param json
+		 * @param userId
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
+		@ResponseBody String saveReAssignProject(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
+						throws Exception {
+			json = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json);
+			
+			return "success";
+		}
+		
+		
+		
 		/**
 		 * 
 		 * @param userID

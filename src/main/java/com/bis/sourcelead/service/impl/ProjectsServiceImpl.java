@@ -566,6 +566,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(projects.getOrgRelationId() !=null){
 				if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 					projects.setRelationId(ocl.getId());
+					projects.setClient(ocl.getClientLocationId().getOrg().getOrgName());
 				}
 			}
 			clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getId();
