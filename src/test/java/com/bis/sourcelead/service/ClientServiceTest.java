@@ -88,6 +88,7 @@ public class ClientServiceTest {
 	}
 	
 	
+	
 	/**
 	 * test case for client List
 	 * @throws Exception
