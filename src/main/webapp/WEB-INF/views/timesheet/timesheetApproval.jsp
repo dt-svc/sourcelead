@@ -38,10 +38,14 @@ $(document).ready(function() {
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId,        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
-                	 $("#timesheetApprList").removeAttr("style");
-                	 $("#timesheetApprList").empty();
-                     $("#timesheetApprList").append(data); 
-                     pagination();
+               		if( data.indexOf('DOCTYPE') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	}else{
+			    		 $("#timesheetApprList").removeAttr("style");
+	                	 $("#timesheetApprList").empty();
+	                     $("#timesheetApprList").append(data); 
+	                     pagination();
+			    	}
                  }else{
                 	 $("#timesheetApprList").removeAttr("style");
   	    	         var result ="";
@@ -156,12 +160,14 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 		   	type: "POST",
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
-				       /*  $("row"+submissionId).empty();	  */ 
-				        $("#row"+projectMemberUserId).empty();
-				        $("#row"+projectMemberUserId).append(data);
-				        pagination();
-				        /* $("#row"+projectMemberUserId).empty();	 
-				        $("#row"+projectMemberUserId).append(data);	 */
+				    	
+				    	if( data.indexOf('DOCTYPE') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	}else{
+				    		$("#row"+projectMemberUserId).empty();
+					        $("#row"+projectMemberUserId).append(data);
+					        pagination();
+				    	}
 				        
 				    }
 		    });
