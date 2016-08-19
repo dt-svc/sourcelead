@@ -91,46 +91,24 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to display employee Timesheet.
+	 * this method is called at onload when click on timesheet left menu
+	 * 
+	 * @param user This is the first paramter to newTimesheet method
+	 * @param navigation This is the second paramter to newTimesheet method
+	 * @param startDate This is the third paramter to newTimesheet method
+	 *  
+	 * @return string 
+	 * 
+	 * @throws NullPointer
+	 */
 	
-	@Override
-	public TimesheetEntries addTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		return timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
-	}
-
-	@Override
-	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
-	}
-
-	@Override
-	public TimesheetEntries getTimesheetEntries(String id) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetEntriesDao.getTimesheetEntries(id);
-	}
-
-	@Override
-	public Boolean deleteTimesheetEntries(String id) throws Exception {
-		Boolean status = timesheetEntriesDao.deleteTimesheetEntries(id);
-		return status;
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
-		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
-		return list;
-	}
-
-	@Override
-	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
-		// TODO Auto-generated method stub
-		 
-		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
-		return list;
-		
-	}
-
 	@Override
 	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
 		 
@@ -143,7 +121,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  *calculating prior 6th week mondaydate and post 6th week sunday day for employee
 		  *
 	      *
-	      */
+	    */
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
@@ -731,6 +709,22 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to display employee Timesheets at time sheet approver.
+	 * this method is called  when click on timesheet approval list count.
+	 * 
+	 * @param user This is the first paramter to dynamicTimesheetpopUp method
+	 * @param employeeId This is the second paramter to dynamicTimesheetpopUp method
+	 * @param endDate This is the third paramter to dynamicTimesheetpopUp method
+	 *  
+	 * @return string 
+	 * 
+	 * @throws NullPointer
+	 */
 
 	@Override
 	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate)
@@ -1202,6 +1196,25 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to save employee Timesheets at time sheet screen.
+	 * this method is called  when click on save button at timesheet screen.
+	 * 
+	 * @param timesheetEntriesForm This is the first paramter to dynamicTimesheetpopUp method
+	 * @param json This is the second paramter to dynamicTimesheetpopUp method
+	 * @param request This is the third paramter to dynamicTimesheetpopUp method
+	 * @param status This is the third paramter to dynamicTimesheetpopUp method
+	 *  
+	 *  
+	 * @return string 
+	 * 
+	 * @throws JSONException
+	 */
+	
 	@Override
 	public String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm, String json,
 			MultipartHttpServletRequest request, String status) throws Exception {
@@ -1437,6 +1450,45 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		result =  "success";
 		resultJson = toJSON(result);
 		return resultJson;
+		
+	}
+	
+	@Override
+	public TimesheetEntries addTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
+		return timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
+	}
+
+	@Override
+	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
+		// TODO Auto-generated method stub
+		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
+	}
+
+	@Override
+	public TimesheetEntries getTimesheetEntries(String id) throws Exception {
+		// TODO Auto-generated method stub
+		return timesheetEntriesDao.getTimesheetEntries(id);
+	}
+
+	@Override
+	public Boolean deleteTimesheetEntries(String id) throws Exception {
+		Boolean status = timesheetEntriesDao.deleteTimesheetEntries(id);
+		return status;
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
+		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
+		return list;
+	}
+
+	@Override
+	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
+		// TODO Auto-generated method stub
+		 
+		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
+		return list;
 		
 	}
 	
