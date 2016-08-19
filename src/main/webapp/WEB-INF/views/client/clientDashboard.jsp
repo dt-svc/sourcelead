@@ -75,7 +75,7 @@
 							<th>Location</th>
 							<th>Email</th>
 							<th>Phone</th>
-							<th>Projects</th>
+							<!-- <th>Projects</th> -->
 						</tr>
 					</thead>
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
@@ -112,12 +112,12 @@
 								<td><div>--</div></td>
 							</c:if>
 
-							<c:if test="${!empty report.projectsCont}">
+							<%-- <c:if test="${!empty report.projectsCont}">
 								<td><div><span class="tblminwidth-50">${report.projectsCont}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.projectsCont}">
 								<td><div>--</div></td>
-							</c:if>
+							</c:if> --%>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -147,10 +147,10 @@
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="clientProjectDetails('
-				+ clientId + ');">Projects</a></li>';
-		result = result + '<li><a href="#tab-2" onclick="clientDetails('
+				+ '<li class="current"><a href="#tab-1" onClick="clientDetails('
 				+ clientId + ');">Details</a></li>';
+		/* result = result + '<li><a href="#tab-2" onclick="clientProjectDetails('
+				+ clientId + ');">Projects</a></li>'; */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -158,8 +158,8 @@
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>';
+		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>'; */
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -170,7 +170,7 @@
 		$("#clientNameDiv").append(orgName);
 		
 
-		clientProjectDetails(clientId);
+		clientDetails(clientId);
 	}
 </script>
 
@@ -282,21 +282,9 @@
 			    			 result = result + '</div>';
 			    		 } 
 						result = result + '	     </div>';
-						$("#tab-1").empty();
-						$("#tab-1").append(result);
+						$("#tab-2").empty();
+						$("#tab-2").append(result);
 
-						$("#tab-1").show();
-						$(".project-tabs-menu a").click(
-								function(event) {
-									event.preventDefault();
-									$(this).parent().addClass("current");
-									$(this).parent().siblings().removeClass(
-											"current");
-									var tab = $(this).attr("href");
-									$(".project_tabs_inn").not(tab).css(
-											"display", "none");
-									$(tab).fadeIn();
-								});
 						
 						if(json.length > 0)
 				   		{
@@ -509,8 +497,20 @@ function getEndDatePickerById(projectId,localFieldName){
 						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
-						$("#tab-2").empty();
-						$("#tab-2").append(result);
+						$("#tab-1").empty();
+						$("#tab-1").append(result);
+						$("#tab-1").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
 
 					}
 				});
