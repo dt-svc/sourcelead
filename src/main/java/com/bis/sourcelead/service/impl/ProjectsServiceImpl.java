@@ -326,6 +326,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		Projects updatedProjects = saveProject(projects);
 		
+		/**
+		 * this block is for submissions for project member
+		*/
+		if (jsonObj.has("employeeMaxCount")){
+		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+		if(StringUtils.isNotEmpty(employeeMaxCount)){
+		int empMaxCount = Integer.parseInt(employeeMaxCount);
+			for (int c = 1; c < empMaxCount; c++) {
+			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
+			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+			}
+		}
+		}
+		
+		
 		/*if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
 				sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList, loginOrgCode);
