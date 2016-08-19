@@ -64,6 +64,19 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		return orgRelationsDao.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId);
 	}
 	
+	/**
+	 * @author VenkatKesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is for org Relatons saving..
+	 * 
+	 * @param jsonObj, clientOrgLocation, orgLocations, loginUserCode
+	 *  
+	 * @return Set<OrgRelations> 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode) throws Exception {
 		

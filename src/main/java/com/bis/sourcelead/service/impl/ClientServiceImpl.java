@@ -124,6 +124,19 @@ public class ClientServiceImpl implements ClientService{
 		
 	}
 	
+	/**
+	 * @author VenkatKesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is for client saving.
+	 * 
+	 * @param jsonObj,user, orgLocations
+	 *  
+	 * @return void 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
 		

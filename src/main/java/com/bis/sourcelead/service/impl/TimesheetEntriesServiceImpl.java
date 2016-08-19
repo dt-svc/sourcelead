@@ -1453,23 +1453,79 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to save timesheetEntries.
+	 * 
+	 * @param timesheetEntries This is the first paramter to addTimesheetEntries method
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
+	 */
+	
 	@Override
 	public TimesheetEntries addTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
 		return timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
 	}
-
+	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to update timesheetEntries.
+	 * 
+	 * @param timesheetEntries This is the first paramter to updateTimesheetEntries method
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
 		// TODO Auto-generated method stub
 		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
 	}
-
+	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to getTimesheetEntries by id.
+	 * 
+	 * @param id This is the first paramter to getTimesheetEntries method
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
+	 */
+	
 	@Override
 	public TimesheetEntries getTimesheetEntries(String id) throws Exception {
 		// TODO Auto-generated method stub
 		return timesheetEntriesDao.getTimesheetEntries(id);
 	}
+	
 
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to delete by id.
+	 * 
+	 * @param id This is the first paramter to deleteTimesheetEntries method
+	 *  
+	 * @return Boolean 
+	 * 
+	 * @throws NullPointer
+	 */
+	
 	@Override
 	public Boolean deleteTimesheetEntries(String id) throws Exception {
 		Boolean status = timesheetEntriesDao.deleteTimesheetEntries(id);
@@ -1477,12 +1533,37 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		// TODO Auto-generated method stub
 	}
 
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to getAllTimesheetEntries.
+	 * 
+	 *  
+	 * @return List<TimesheetEntries> 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
 		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
 		return list;
 	}
 
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get all timesheets by id.
+	 * 
+	 * @param submissionId This is the first paramter to getAllTimesheetEntriesBySubmissionId method
+	 *  
+	 * @return Collection<TimesheetEntries> 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
 		// TODO Auto-generated method stub
@@ -1504,6 +1585,26 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				return total;
 			
 	}
+	
+	
+
+	 /**
+	 * @author  venkata kesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to send email to project managers .
+	 * this method is called at saveTimesheet() method.
+	 * 
+	 * @param timesheetSubmissions This is the first paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 * @param loginUser This is the second paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 * @param loginOrgLocation This is the third paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 * @param loginOrgCode This is the third paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 *  
+	 * @return void 
+	 * 
+	 * @throws NullPointer
+	 */
 	
 	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());

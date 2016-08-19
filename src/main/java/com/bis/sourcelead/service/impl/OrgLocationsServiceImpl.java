@@ -88,6 +88,19 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		return orgLocations;
 	}
 	
+	/**
+	 * @author VenkatKesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is for org locations saving.
+	 * 
+	 * @param jsonObj, addOrg, orgLocations, loginUserCode
+	 *  
+	 * @return Set<OrgLocations> 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode) throws Exception {
 		String locationCode = orgLocations.getLocationCode();

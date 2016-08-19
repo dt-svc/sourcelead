@@ -96,7 +96,7 @@ public class ClientRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.saveClient(jsonObj, user, orgLocation);
+		clientService.storeClient(jsonObj, user, orgLocation);
 
 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
 				"Successfully you have created a client");
