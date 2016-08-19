@@ -135,6 +135,7 @@ margin:10px 220px 0;
   </section>  
  <script>
 $(document).ready(function(){
+	document.getElementById("uploadFile").value = '';
 	var errormsg = '${errorMessage}';
 	$("#fileAttached").hide();
 	if(errormsg){

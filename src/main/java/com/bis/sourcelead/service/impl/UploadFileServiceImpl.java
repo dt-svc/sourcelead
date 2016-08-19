@@ -1060,7 +1060,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			/*code to check Rate validation*/
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())) {
 				
-				String rate = getCellValueAsString(row.getCell(4), fileName);
+				String rate = getCellValueAsString(row.getCell(5), fileName);
 				if (rate != null && !"".equalsIgnoreCase(rate)) {
 					isValidated = isRateLengthValid(rate);
 					if(isValidated == false){
