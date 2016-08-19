@@ -66,7 +66,10 @@ public class ActionRolesServiceTest {
 		org.setId(2L);
 		List<Long> modulesid = modulesService.getModulesIdByModuleName("SOURCELEAD_DEFAULT_MODULE");
 		List<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(org.getId(), modulesid);
-		System.out.println("Action Roles List is...> "+actionRolesList.size());
+		if(actionRolesList != null)
+		{
+			logger.info("getSourceLeadActionRolesListByOrgId "+actionRolesList.size());
+	}
 	}
 	
 	@Test
@@ -77,7 +80,7 @@ public class ActionRolesServiceTest {
 		roles.setId(2L);*/
 		List<ActionRoles> actionRolesList = actionRolesService.getOrgActionRolesByRoleAndOrgLocationId(2l,3l);
 		if(actionRolesList != null){
-		System.out.println("Action Roles List is...> "+actionRolesList.size());
+			logger.info("getOrgActionRolesByRoleAndOrgLocationId "+actionRolesList.size());
 		}
 	}
 }
