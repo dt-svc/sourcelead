@@ -3,12 +3,15 @@ package com.bis.sourcelead.service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 
@@ -47,4 +50,7 @@ public interface ProjectMembersService {
 	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) ;
 	
 	public String storeAssignEmployeeByProjectIdEmployeeIdStartDateEndaDate(Long projectId,Long employeeId,String startDate,String endDate,String mailtoMembers,String loginOrgCode,User user,OrgLocations loginOrgLocation) throws Exception ;
+
+	/*by sarath*/
+    public Set<ProjectMembers> prepareProjectMembersListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
 }

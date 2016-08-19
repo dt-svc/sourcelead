@@ -533,7 +533,10 @@ public class UserRestController {
 						Date currentDate = new  Date();
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
 							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-						}						
+						}
+						else{
+							commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
+						}
 					}
 					return "updated";
 		       }

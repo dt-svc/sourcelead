@@ -263,4 +263,30 @@ public class ClientServiceImpl implements ClientService{
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
+
+
+		@Override
+		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId) throws Exception {
+			
+			OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			OrgLocations orgLocations = orgRelation.getClientLocationId();
+					
+			if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
+				orgLocations.setCity(jsonObj.getString("clientCity"));
+			}
+			if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
+				orgLocations.setState(jsonObj.getString("clientState"));
+			}
+			if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
+				orgLocations.setCountry(jsonObj.getString("clientCountry"));
+		     }
+			if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+				orgLocations.setEmail(jsonObj.getString("EmailId"));
+			}
+			if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+				orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
+			}
+			orgLocationService.updateOrgLocations(orgLocations);
+			
+		}
 }
