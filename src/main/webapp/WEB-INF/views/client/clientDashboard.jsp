@@ -454,17 +454,17 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+city+'" placeholder="client city" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span><input type="text"  id="clientCity" value="'+json.city+'" placeholder="client city" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+state+'" placeholder="client state" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span><input type="text"  id="clientSate" value="'+json.state+'" placeholder="client state" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+country+'" placeholder="client country" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span><input type="text"  id="clientCountry" value="'+json.country+'" placeholder="client country" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
@@ -485,11 +485,11 @@ function getEndDatePickerById(projectId,localFieldName){
 							result = result + '<span><input type="text"  id="clientPhoneNumber" value="" placeholder="client phone" class="project_detfield"></span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
-						result = result + '<div class="project_details_cta">';
+						/* result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Projects:</strong>';
 						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
 						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
-						}
+						} */
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
 						result = result + '</div>';
@@ -538,7 +538,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();" disabled="disabled" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
@@ -563,7 +563,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Phone</label>';
-						result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" placeholder="client phone" ></div>';
+						result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
 						result = result + '</div> ';   
 						
 						result = result + '<div class="clearfix"></div>';
