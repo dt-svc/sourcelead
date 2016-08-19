@@ -76,7 +76,7 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<%-- <div class="form-group">
 							<label class="col-md-3">Projects</label>
 							<div class="col-md-9">
 								<div class="input-group">
@@ -200,7 +200,7 @@
 								<!-- Modal contente Ends-->
 
 							</div>
-						</div>
+						</div> --%>
 
 
 					</div>
