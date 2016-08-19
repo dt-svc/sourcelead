@@ -72,12 +72,11 @@ public class ClientController {
 		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			
+			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			model.addObject("loginCountryName", countries.getName());
 			return model;
@@ -95,7 +94,6 @@ public class ClientController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
-			
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			/*for(OrgRelations orgRelation : clientsList){
 				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());

@@ -80,9 +80,7 @@ public class ClientServiceTest {
 		 OrgLocations orgLocations = new OrgLocations();
 		 orgLocations.setId(1L);
 		 orgLocations.setLocationCode("sleadIN");
-		 
 		 clientService.saveClient(jsonObj, user, orgLocations);
-		 
 		 logger.info("saveClient() method excecuted sucessfully...");
 		 
 	}
