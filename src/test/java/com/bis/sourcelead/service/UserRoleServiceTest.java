@@ -146,7 +146,7 @@ public class UserRoleServiceTest {
 			Long userId = 5l;
 			
 			List<UserRole> userslist = userRoleService.getUsersListByUserStateAndLocationId(userState,locationId,userId);
-			logger.info("getUsersListByUserStateAndLocationId"+userState);
+			logger.info("getUsersListByUserStateAndLocationId"+userslist.size());
 			
 		}
 		

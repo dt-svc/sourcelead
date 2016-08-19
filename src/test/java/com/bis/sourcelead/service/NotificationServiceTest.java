@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,15 +25,16 @@ public class NotificationServiceTest {
 	
 	@Autowired
 	NotificationsService notificationsService;
+	private static final Logger logger = LoggerFactory.getLogger(LoginServiceTest.class);
 	
-	//@Test
+	@Test
 	public void saveNotification() throws Exception{
 		Notifications notifications = new Notifications();
 		EmailScenario emailScenario = new EmailScenario();
-		emailScenario.setId(27L);
+		emailScenario.setId(1L);
 		notifications.setNotificationScenarioId(emailScenario);
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		notifications.setNotificationTo(user);
 		notifications.setNotificationFrom(user);
 		notifications.setBody("this is used for testing service");
@@ -42,65 +45,65 @@ public class NotificationServiceTest {
 		notifications.setCreatedDate(new Date());
 		notifications.setCreatedBy("Source");
 		notifications.setNotificationStatus("1");
-		notificationsService.saveNotification(notifications);
-		System.out.println("Notification Sucessfully Saved");
+		notifications = notificationsService.saveNotification(notifications);
+		logger.info("saveNotification " + notifications.getId());
 	}
 	
-	//@Test
+	@Test
 	public void getNotificationsCountByUserId() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("hangonn");
 		notifications.setLocationCode("in.sourcelead.com");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		Integer notificationscount = notificationsService.getNotificationsCountByUserId(user.getId(), notifications.getOrgCode(), notifications.getLocationCode());
-		System.out.println("Notifications count is...>>"+notificationscount);
+		logger.info("getNotificationsCountByUserId " + notificationscount);
 	}
 	
-	//@Test
+	@Test
 	public void getNotificationsListByUserId() throws Exception{
 		Notifications notifications = new Notifications();
-		notifications.setOrgCode("hangonn");
-		notifications.setLocationCode("in.sourcelead.com");
+		notifications.setOrgCode("QAeD");
+		notifications.setLocationCode("QAeDIN");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		notifications.setNotificationTo(user);
 		List<Notifications> list = notificationsService.getNotificationsListByUserId(notifications.getNotificationTo().getId(), notifications.getOrgCode(), notifications.getLocationCode());
-		System.out.println("Notification List size is...>>"+list.size());
+		logger.info("getNotificationsListByUserId " + list.size());
 	}
 	
-	//@Test
+	@Test
 	public void updateNotificationStatusAsRead() throws Exception{
 		Notifications notifications = new Notifications();
-		notifications.setOrgCode("hangonn");
-		notifications.setLocationCode("in.sourcelead.com");
+		notifications.setOrgCode("QAeD");
+		notifications.setLocationCode("QAeDIN");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		Integer notificationscount = notificationsService.updateNotificationStatusAsRead(user.getId(), notifications.getOrgCode(), notifications.getLocationCode());
-		System.out.println("Notifications count is...>>"+notificationscount);
+		logger.info("updateNotificationStatusAsRead " + notificationscount);
 	}
 	
-	//@Test
+	@Test
 	public void updateNotificationDeleteStatus() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("hangonn");
 		notifications.setId(1L);
 		notifications.setLocationCode("in.sourcelead.com");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		notifications.setNotificationTo(user);
 		Integer notificationscount = notificationsService.updateNotificationDeleteStatus(notifications.getId(), notifications.getOrgCode(), notifications.getLocationCode());
-		System.out.println("Notifications count is...>>"+notificationscount);
+		logger.info("updateNotificationDeleteStatus " + notificationscount);
 	}
 	
 	@Test
 	public void getAllNotificationsListByUserId() throws Exception{
 		Notifications notifications = new Notifications();
-		notifications.setOrgCode("hangonn");
-		notifications.setLocationCode("in.sourcelead.com");
+		notifications.setOrgCode("QAeD");
+		notifications.setLocationCode("QAeDIN");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		List<Notifications> list = notificationsService.getAllNotificationsListByUserId(user.getId(), notifications.getOrgCode(), notifications.getLocationCode());
-		System.out.println("Notification List size is...>>"+list.size());
+		logger.info("getAllNotificationsListByUserId " + list.size());
 	}
 }

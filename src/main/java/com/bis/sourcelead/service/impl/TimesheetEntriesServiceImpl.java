@@ -182,11 +182,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
           SimpleDateFormat format = new SimpleDateFormat(pattern);
           Date currentStartDate = null;
           Date currentEndDate = null;
-		 if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+          Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		   startCal.setLenient(false);
+		   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
 			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
-			      Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-				   startCal.setLenient(false);
-					
 			      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
 			    	  startCal.setTime(currentWeekStartDate);
 			      }
@@ -199,68 +198,24 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			      else if(employeeStartDate.after(currentWeekStartDate)){
 			    	  startCal.setTime(employeeStartDate);
 			      }
-			 
-		         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
-		         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
-                 sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-                 sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())+"</i></th>"); 
-                 sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())+"</i></th>"); 
-                 sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())+"</i></th>"); 
-                 sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())+"</i></th>"); 
-                 sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())+"</i></th>"); 
-                 sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
-                 timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
-                 currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-                 currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
-        }
-        else{
-                
-                 if(navigation.equalsIgnoreCase("left")){
-                     
-                     
-                     Date sDate  =  Constants.DMY.parse(startDate);
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 startCal.setLenient(false);
-					 startCal.setTime(sDate);
-					 
-						                
-	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
-			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
-	                sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-	                sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-6).getTime())+"</i></th>"); 
-	                sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-5).getTime())+"</i></th>"); 
-	                sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-4).getTime())+"</i></th>"); 
-	                sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-3).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-2).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>");
-	                
-	                timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId());
-	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
-	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
-                 }
-                 else{ 
-                 
-	                 Date sDate  =  Constants.DMY.parse(startDate);
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 startCal.setLenient(false);
-					 startCal.setTime(sDate);
-					 
-						                
-	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
-			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
-	                sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-	                sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,8).getTime())+"</i></th>"); 
-	                sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,9).getTime())+"</i></th>"); 
-	                sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,10).getTime())+"</i></th>"); 
-	                sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,11).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,12).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
-	                
-	                timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId());
-	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
-                 }
-        }
+          }
+		  else{
+               Date sDate  =  Constants.DMY.parse(startDate);
+			   startCal.setTime(sDate);
+		  }
+		 
+		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
+         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
+         sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
+         sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())+"</i></th>"); 
+         sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())+"</i></th>"); 
+         sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())+"</i></th>"); 
+         sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())+"</i></th>"); 
+         sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())+"</i></th>"); 
+         sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
+         timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
+         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
+         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
         
 		StringBuilder sb = new StringBuilder();	
 		sb.append("	<div class='timesheet_head'>");
@@ -275,13 +230,17 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("                   </ul>");
 		sb.append("               </div>");
 		sb.append("           </li><li>");
-		if(employeeStartDate.before(currentStartDate)){
-			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\");'></i>");
+		
+		
+		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
+		if(leftNavStartDate != null){
+			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
-		if(currentEndDate.before(employeeEndDate)){
-			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\");'></i><abbr>|</abbr> ");	
+		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
+		if(rightNavStartDate != null){
+			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
 		}
 		               
 		sb.append("           </li><div class='clearfix'></div>");
@@ -537,7 +496,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 							        	
-							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 						                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 						                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 						                sb.append(" </i>");
@@ -655,7 +614,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 								        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 								        	
-								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 							                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 							                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 							                sb.append(" </i>");

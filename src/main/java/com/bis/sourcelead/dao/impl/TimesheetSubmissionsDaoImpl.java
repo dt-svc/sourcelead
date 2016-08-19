@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -176,7 +177,8 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				Date startDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 				Long empId = ts.getProjectMembers().getEmployee().getId();
 				
-			    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, startDate);
+				 List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+			    /*List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, startDate);*/
 			/*	java.sql.Date startDate = new java.sql.Date(ts.getStartDate().getTime());
 				Integer empId = ts.getProjectMembers().getEmployee().getId().intValue();
 				String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
@@ -665,7 +667,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			Date startDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 			Long empId = ts.getProjectMembers().getEmployee().getId();
 			
-		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, startDate);
+		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
 
 		    Boolean isRejected = false; 
 		    Boolean isAPPROVED = false; 
@@ -765,7 +767,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long approverUserId, Long empUserId)
 			throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
+		  Session session = this.sessionFactory.getCurrentSession();
 		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
 		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).list();
 													
@@ -790,6 +792,100 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			  }
 		  }
 		 return dateList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+		java.sql.Date sqlCurrentStartDate = null;
+		if(currentStartDate != null){
+			sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		}  
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts   where ts.startDate < :currentStartDate and  ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		List results = session.createQuery(query).setLong("userId", userId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date leftNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp  = (Timestamp) result;
+				  if(startDateTimeStamp != null){
+					  leftNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return leftNavStartDate;
+    }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getRightNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+		  Session session = this.sessionFactory.getCurrentSession();
+		  java.sql.Date sqlCurrentStartDate = null;
+		  if(currentStartDate != null){
+			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		  } 
+		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions  ts where ts.startDate > :currentStartDate and ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		  List results = session.createQuery(query).setLong("userId", userId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date rightNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)result;
+				  if(startDateTimeStamp != null){
+					  rightNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return rightNavStartDate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getLeftNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+			Date currentStartDate) {
+		  Session session = this.sessionFactory.getCurrentSession();
+		  java.sql.Date sqlCurrentStartDate = null;
+		  if(currentStartDate != null){
+			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		  } 
+		  String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts  where   ts.startDate < :currentStartDate and ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date leftNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)result;
+				  if(startDateTimeStamp != null){
+					  leftNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return leftNavStartDate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+			Date currentStartDate) {
+		   Session session = this.sessionFactory.getCurrentSession();
+		  java.sql.Date sqlCurrentStartDate = null;
+		  if(currentStartDate != null){
+			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		  } 
+		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions ts  where  ts.startDate > :currentStartDate and ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date rightNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)result;
+				  if(startDateTimeStamp != null){
+					  rightNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return rightNavStartDate;
 	}
 
 

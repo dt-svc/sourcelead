@@ -75,7 +75,7 @@
 							<th>Location</th>
 							<th>Email</th>
 							<th>Phone</th>
-							<th>Projects</th>
+							<!-- <th>Projects</th> -->
 						</tr>
 					</thead>
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
@@ -112,12 +112,12 @@
 								<td><div>--</div></td>
 							</c:if>
 
-							<c:if test="${!empty report.projectsCont}">
+							<%-- <c:if test="${!empty report.projectsCont}">
 								<td><div><span class="tblminwidth-50">${report.projectsCont}</span></div></td>
 							</c:if>
 							<c:if test="${empty report.projectsCont}">
 								<td><div>--</div></td>
-							</c:if>
+							</c:if> --%>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -147,10 +147,10 @@
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="clientProjectDetails('
-				+ clientId + ');">Projects</a></li>';
-		result = result + '<li><a href="#tab-2" onclick="clientDetails('
+				+ '<li class="current"><a href="#tab-1" onClick="clientDetails('
 				+ clientId + ');">Details</a></li>';
+		/* result = result + '<li><a href="#tab-2" onclick="clientProjectDetails('
+				+ clientId + ');">Projects</a></li>'; */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -158,8 +158,8 @@
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>';
+		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>'; */
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -170,7 +170,7 @@
 		$("#clientNameDiv").append(orgName);
 		
 
-		clientProjectDetails(clientId);
+		clientDetails(clientId);
 	}
 </script>
 
@@ -282,21 +282,9 @@
 			    			 result = result + '</div>';
 			    		 } 
 						result = result + '	     </div>';
-						$("#tab-1").empty();
-						$("#tab-1").append(result);
+						$("#tab-2").empty();
+						$("#tab-2").append(result);
 
-						$("#tab-1").show();
-						$(".project-tabs-menu a").click(
-								function(event) {
-									event.preventDefault();
-									$(this).parent().addClass("current");
-									$(this).parent().siblings().removeClass(
-											"current");
-									var tab = $(this).attr("href");
-									$(".project_tabs_inn").not(tab).css(
-											"display", "none");
-									$(tab).fadeIn();
-								});
 						
 						if(json.length > 0)
 				   		{
@@ -466,17 +454,17 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client City:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCity\');" id="clientCity" value="'+city+'" placeholder="client city" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span><input type="text"  id="clientCity" value="'+json.city+'" placeholder="client city" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client State:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientSate\');" id="clientSate" value="'+state+'" placeholder="client state" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span><input type="text"  id="clientSate" value="'+json.state+'" placeholder="client state" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Country:</strong>';
-						result = result + '<span><input type="text" onBlur="inlineEditForProjects('+orgRelationID+',\'clientCountry\');" id="clientCountry" value="'+country+'" placeholder="client country" class="project_detfield"></span><div class="clearfix"></div>';
+						result = result + '<span><input type="text"  id="clientCountry" value="'+json.country+'" placeholder="client country" class="project_detfield"></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
@@ -497,11 +485,11 @@ function getEndDatePickerById(projectId,localFieldName){
 							result = result + '<span><input type="text"  id="clientPhoneNumber" value="" placeholder="client phone" class="project_detfield"></span><div class="clearfix"></div>';	
 						}
 						result = result + '</div>';
-						result = result + '<div class="project_details_cta">';
+						/* result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Projects:</strong>';
 						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
 						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
-						}
+						} */
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
 						result = result + '</div>';
@@ -509,8 +497,20 @@ function getEndDatePickerById(projectId,localFieldName){
 						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
-						$("#tab-2").empty();
-						$("#tab-2").append(result);
+						$("#tab-1").empty();
+						$("#tab-1").append(result);
+						$("#tab-1").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
 
 					}
 				});
@@ -538,7 +538,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();" disabled="disabled" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
@@ -563,7 +563,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Phone</label>';
-						result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" placeholder="client phone" ></div>';
+						result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
 						result = result + '</div> ';   
 						
 						result = result + '<div class="clearfix"></div>';

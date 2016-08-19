@@ -103,12 +103,19 @@ window.onload = function () {
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var org = json[i];
-	 				var mobilePhone = ""
-	 			    
-	 			    if(org.user.mobilePhone != null && org.user.mobilePhone != ''){
+	 				var mobilePhone = "";
+	 			    var email = "";
+	 				
+	 			    if(org.user != null && org.user.mobilePhone != null && org.user.mobilePhone != ''){
 	 			    	mobilePhone = org.user.mobilePhone;
 	 			    }else{
-	 			    	mobilePhone = "No Data"
+	 			    	mobilePhone = "&nbsp;No Data"
+	 			    }
+	 				
+	 				if(org.user != null && org.user.email != null && org.user.email != ''){
+	 			    	email = org.user.email;
+	 			    }else{
+	 			    	email = "No Data"
 	 			    }
 	 				
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
@@ -123,16 +130,18 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 	       	    	result = result +"<h4><a href='#'> "+org.orgName+"</a> </h4>";
-	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+org.user.email+" </lable></p>";
+	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	        
-	       	    	if((org.user.isMailSent != null && org.user.isMailSent != "" && org.user.isMailSent == 'Y') &&
+	       	    	if(org.user != null && (org.user.isMailSent != null && org.user.isMailSent != "" && org.user.isMailSent == 'Y') &&
 	 			    		(org.user.userState != null && org.user.userState != "" && org.user.userState == 'NOT_LOGGEDIN') ){
 	 			    	 result = result +"<p><label id='user"+org.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
-	 			    }else if(org.user.userState != null && org.user.userState != "" && org.user.userState == 'ACTIVE'){
+	 			    }else if(org.user != null && org.user.userState != null && org.user.userState != "" && org.user.userState == 'ACTIVE'){
 	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-	 			    }else if(org.user.userState != null && org.user.userState != "" && org.user.userState == 'INACTIVE'){
+	 			    }else if(org.user != null && org.user.userState != null && org.user.userState != "" && org.user.userState == 'INACTIVE'){
 	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+	 			    }else if(org.user == null){
+	 			    	result = result +"<p><label class='label label-info'><i class='fa fa-check'></i>&nbsp;&nbsp;Guest Org</label></p>";
 	 			    } 
 	       	    	
 	       	    	result = result +"</div>";

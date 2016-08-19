@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,8 +23,9 @@ public class EmailNotificationServiceTest {
 	
 	@Autowired
 	EmailNotificationService emailNotificationService;
+	private static final Logger logger = LoggerFactory.getLogger(EmailNotificationServiceTest.class); 
 	
-	//@Test
+	@Test
 	public void save() throws Exception{
 		EmailNotification emailnotification = new EmailNotification();
 		//emailnotification.setId(2L);
@@ -33,8 +36,8 @@ public class EmailNotificationServiceTest {
 		emailnotification.setDeliveryStatus("Y");
 		emailnotification.setCreatedDate(new Date());
 		emailnotification.setCreatedBy("Source");
-		emailNotificationService.save(emailnotification);
-		System.out.println("Emailnotification Saved");
+		emailnotification = emailNotificationService.save(emailnotification);
+		logger.info("save successfully " + emailnotification.getId());
 	}
 	
 	@Test
@@ -43,6 +46,9 @@ public class EmailNotificationServiceTest {
 		EmailNotification emailnotification = new EmailNotification();
 		emailnotification.setId(2L);
 		emailnotification = emailNotificationService.getById(emailnotification.getId());
-		System.out.println("Emailnotification by id is....>>"+emailnotification.getSubject());
+		if(emailnotification != null)
+		{
+		logger.info("getById" + emailnotification.getCreatedBy());
+	}
 	}
 }

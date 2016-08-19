@@ -644,6 +644,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    	var json = JSON.parse(data);
    	var endDateStr = "";
    	var description = "";
+   	var clientName = "";
    	var projectSequeneNumber ="";
    	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
    		endDateStr =  json.endDateStr;
@@ -659,6 +660,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    		projectSequeneNumber = json.projectSequeneNumber;
    	}else{
    		projectSequeneNumber = "--";
+   	}
+   	if(json.client != null && json.client != '' && json.client != 'undefined'){
+   		clientName = json.client
+   	}else{
+   		clientName = "--";
    	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
@@ -713,18 +719,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	
 	result = result + '<div class="project_details_cta">';
 	result = result + '<strong>Client:</strong>';
-			for (var i = 0; i < json.clientName.length; i++) {
-				
-				var managers = json.clientName[i];
-				var projrctmanager = managers.split('&');
-		    	var name = projrctmanager[0];
-		    	var id = projrctmanager[1];
-		    	 if(json.relationId != null){
-		    	 result = result+  name;
-		    	 }else{
-		    		 result = result+  "---";
-		    	 }
-			}
+	result = result + '	<span>'+clientName+'</span><div class="clearfix"></div>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	result = result + '				<div class="project_details_cta">';
@@ -1502,17 +1497,17 @@ function getApproversLevel2(currentApproverId,manager2){
        	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
        		endDateStr =  json.endDateStr;
        	}else{
-       		endDateStr = "--";
+       		endDateStr = "";
        	}
        	if(json.description != null && json.description != '' && json.description != 'undefined'){
        		description  = json.description;
        	}else{
-       		description = "NO DATA";
+       		description = "";
        	}
        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != '' && json.projectSequeneNumber != 'undefiend'){
        		projectSequeneNumber = json.projectSequeneNumber;
        	}else{
-       		projectSequeneNumber = "--";
+       		projectSequeneNumber = "";
        	}
        	
        	var result = "";
@@ -1595,7 +1590,7 @@ function getApproversLevel2(currentApproverId,manager2){
 		result = result + '	<label>Client</label>';
 		
 		 if(json.relationId != null){
-			result = result + '<select id="clientId" disabled="disabled">';
+			result = result + '<select id="clientId" disabled="disabled" name="clientId">';
 			 }else{
 				 result = result + '<select id="clientId" name="clientId">';
 			 }
