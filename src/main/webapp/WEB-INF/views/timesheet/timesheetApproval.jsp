@@ -666,11 +666,12 @@ function saveMyTimesheet(status){
 <!-- this script is for save Reject Submission and approve submission reason -->
 <script>
 function saveRejectSubmission(local,employeeId,startDate,endDate){
-	     $("#timesheetApprList").empty();
-	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
-	     var msg = $("#reject"+local+"message").val(); 
-         var sourceleadUrl ='${sourceleadUrl}';
-         
+	
+		 var msg = $("#reject"+local+"message").val(); 
+	     var sourceleadUrl ='${sourceleadUrl}';
+	     
+	     $("#timesheetApprList").empty(); 
+	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');  
          $(".mask_time").fadeOut(200);
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
