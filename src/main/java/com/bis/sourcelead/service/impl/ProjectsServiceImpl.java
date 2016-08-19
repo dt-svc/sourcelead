@@ -231,6 +231,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getProjectByProjectSequenceNumber(projectSequeneNumber);
 	}
 	
+	 /**
+	 * @author sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to save projects
+	 * 1.from general project saving
+	 * 2.from user saving
+	 * 
+	 * @param jsonObj This is the first paramter to storeProject method
+	 *  
+	 * @return string 
+	 * 
+	 * @throws JSONException
+	 */
 	
 	@Override
 	public String storeProject(JSONObject jsonObj) throws Exception {

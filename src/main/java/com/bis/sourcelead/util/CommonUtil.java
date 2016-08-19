@@ -66,7 +66,7 @@ public class CommonUtil {
 	 * 
 	 */
 	
-	public Date currentDate() {
+	public static Date currentDate() {
         return new Date();
     }
 	
