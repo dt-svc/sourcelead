@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +52,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * This Service Class is used to get User Object
@@ -96,6 +99,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	private HttpServletRequest request;
 
 	@Override
 	public User findByUserName(String username) {
@@ -109,6 +114,61 @@ public class UserServiceImpl implements UserService {
 		return userDao.addUser(user);
 	}
 	
+	 /**
+     *  This Method is for Common Storing Method For User Creation
+     *  @return 
+     */
+	@Override
+	public void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations) throws Exception {
+	
+
+	 	User user = getUserDetails(jsonObj,users.getUserCode());
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		user.setPassword(sourceleadPasswordEncoder.encode(password));
+		
+			
+		
+		       //For saving the User Role 
+				UserRole userRole = getUserRoleDetails(user,user.getUserCode(),orgLocations.getId());
+				HashSet<UserRole> userRoleList = new HashSet<UserRole>();
+				userRoleList.add(userRole);
+				user.setUserRole(userRoleList);
+				
+			   //For saving Employee details (Every User is an Employee)
+				Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),user.getUserCode());
+				HashSet<Employees> employeeList = new HashSet<Employees>();
+				employeeList.add(employee);
+				user.setEmployee(employeeList);
+				
+				try {
+					userDao.addUser(user);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+				//For saving Employee details (Every User is an Employee)
+				if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
+					ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,user.getUserCode(),orgLocations.getId());
+					try {
+						projectMembersService.saveProjectMember(pm);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					commonUtil.storeTimesheetSubmissionRecords(user);
+				}
+				
+				
+				//send mail to user
+				if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+					sendEmail(user,user,password);
+				}
+			
+				
+				
+				
+				
+		
+	}
 	@Override
 	public void createUser(JSONObject jsonObj,User loginUser , Long orgLocationsId) throws Exception {
 		logger.debug("In UserService class createUser method...");
@@ -160,6 +220,7 @@ public class UserServiceImpl implements UserService {
 	
 	private User getUserDetails(JSONObject jsonObj,String userCode) throws JSONException {
 		User user = new User();
+		
 		user.setFirstName(jsonObj.getString("firstName"));
 		user.setLastName(jsonObj.getString("lastName"));
 		user.setEmail(jsonObj.getString("email"));
@@ -403,5 +464,7 @@ public class UserServiceImpl implements UserService {
 		
 		return userDao.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(userID);
 	}
+
+	
 
 }

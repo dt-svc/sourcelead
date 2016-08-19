@@ -97,6 +97,10 @@ public class User {
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
 	
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<Employees> employee = new HashSet<Employees>(0);
+	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
@@ -296,6 +300,15 @@ public class User {
 
 	public void setUserRole(Set<UserRole> userRole) {
 		this.userRole = userRole;
+	}
+
+	
+	public Set<Employees> getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Set<Employees> employee) {
+		this.employee = employee;
 	}
 
 	public Set<PasswordResets> getPasswordResets() {
