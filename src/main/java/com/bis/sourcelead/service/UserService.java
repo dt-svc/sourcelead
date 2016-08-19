@@ -45,6 +45,7 @@ public interface UserService  {
 	
 	void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations)  throws Exception;
 
+	
 }	
 		
 	

@@ -96,7 +96,6 @@ public class User {
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);

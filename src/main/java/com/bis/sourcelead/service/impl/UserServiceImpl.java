@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations) throws Exception {
 	
-
+		
 	 	User user = getUserDetails(jsonObj,users.getUserCode());
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
