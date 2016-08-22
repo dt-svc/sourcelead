@@ -27,11 +27,11 @@ public class OrgRelationServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
 
-	//@Test
+	@Test
 	public void addOrgRelations() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(3L);
 		orgRelations.setClientLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
 		orgRelations.setRelationType("Client");
@@ -44,45 +44,58 @@ public class OrgRelationServiceTest {
 		logger.info("Added Successfully..."+orgRelations.getRelationType());
 	}
 	
-	//@Test
+	@Test
 	public void getOrgRelationIdByOrgLocationIdAndClientLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(1L);
 		orgRelations.setClientLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
-		orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(orgRelations.getLocationId().getId(), orgRelations.getClientLocationId().getId());
-		logger.info("Successfully retrieved..."+orgRelations.getRelationType());
+		orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(3l, orgRelations.getClientLocationId().getId());
+		if(orgRelations != null)
+		{
+		logger.info("getOrgRelationIdByOrgLocationIdAndClientLocationId "+orgRelations.getRelationType());
+	}
 	}
 	
-	//@Test
+	@Test
 	public void getAllClientsByOrgLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(3L);
 		orgRelations.setLocationId(orglocations);
 		Collection<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgRelations.getLocationId().getId());
-		logger.info("List Successfully retrieved..."+clientList.size());
+		if(orgRelations != null)
+		{
+		logger.info("getAllClientsByOrgLocationId "+clientList.size());
+		}
 	}
 	
-	//@Test
+	@Test
 	public void getClientByOrgLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(3L);
 		orgRelations.setLocationId(orglocations);
 		orgRelations = orgRelationsService.getClientByOrgLocationId(orgRelations.getLocationId().getId());
-		logger.info("client is..."+orgRelations.getClientLocationId().getOrg().getOrgName());
+		if(orgRelations != null)
+		{
+		logger.info("getClientByOrgLocationId "+ orgRelations.getStatus());
+		//logger.info("getClientByOrgLocationId "+orgRelations.getClientLocationId().getOrg().getOrgName());
+	}
 	}
 	
-	//@Test
+	@Test
 	public void getNumberOfProjectsPerClient() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(3L);
 		orgRelations.setLocationId(orglocations);
 		Long count = orgRelationsService.getNumberOfProjectsPerClient(orgRelations.getLocationId().getId());
-		logger.info("Number Of Projects Per Client..."+count);
+		if(count != null)
+		{
+		logger.info("getNumberOfProjectsPerClient "+count);
+	}
 	}
 	
 	@Test
@@ -93,6 +106,9 @@ public class OrgRelationServiceTest {
 		orglocations.setId(4L);
 		orgRelations.setLocationId(orglocations);
 		Long count = orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelations.getId(), orgRelations.getLocationId().getId());
-		logger.info("Number Of Projects Per Client..."+count);
+		if(count != null)
+		{
+		logger.info("getProjectsCountByOrgRelationIdAndOrgLocationId "+count);
+	}
 	}
 }

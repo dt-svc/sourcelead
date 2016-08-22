@@ -29,7 +29,7 @@ public class ProjectTasksServiceTest {
 	@Autowired
 	ProjectTasksService projectTasksService;
 	
-		//@Test
+		@Test
 		public void addTasks() throws Exception	{
 			ProjectTasks projectTask = new ProjectTasks();
 			projectTask.setId(1l);		
@@ -59,7 +59,7 @@ public class ProjectTasksServiceTest {
 		@Test
 		public void updateTasks() throws Exception{
 			ProjectTasks projecttask = new ProjectTasks();
-			projecttask.setId(35l);
+			projecttask.setId(1l);
 			
 			Projects projectId = new Projects();
 			projectId.setId(1l);
@@ -82,8 +82,8 @@ public class ProjectTasksServiceTest {
 		}
 		@Test
 		public void deleteTask() throws Exception{
-			boolean deletetask = projectTasksService.deleteTask("35");
-			logger.info("Deleted task successfully"+deletetask);
+			boolean deletetask = projectTasksService.deleteTask("1");
+			logger.info("Deleted task successfully"+ deletetask);
 		}
 		@Test
 		public void getAllTasks() throws Exception{

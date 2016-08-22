@@ -30,16 +30,7 @@
 			&raquo; Client</div>
 	</section>
 	<div class="content-area clearfix">
-		<section class="action-btns clearfix">
-			<ul class="pull-right list-unstyled list-inline">
-				<li><a href="#" class="faclose"><i aria-hidden="true"
-						class="fa fa-close"></i></a></li>
-				<li><a href="#" class="collpase-div"><i aria-hidden="true"
-						class="fa fa-angle-down"></i></a></li>
-			</ul>
-		</section>
-
-		<div class="clearfix form-area form-horizontal toggle-div remove-div">
+		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<form:form id="client_form" name="client_form" method="post">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">

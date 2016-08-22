@@ -50,7 +50,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsServiceTest.class);
 
-	//@Test
+	@Test
 	public void addTimesheetSubmissions() throws Exception{
 		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
@@ -62,11 +62,11 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setDocFile(new byte[4096]);
 		timesheetSubmissions.setEndDate(new Date());
 		timesheetSubmissions.setTotalHours("20");
-		projectMemberId.setId(2l);
+		projectMemberId.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMemberId);
 		timesheetSubmissions.setRejectedReason("not logedin"); 
-		user.setId(1l);
-		timesheetSubmissions.setUserId("1");
+		user.setId(3l);
+		timesheetSubmissions.setUserId("3");
 		timesheetSubmissions.setApproverUserId(user);
 		timesheetSubmissions=timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
 		logger.info(" addTimesheetSubmissions successfully updated "+timesheetSubmissions);
@@ -74,23 +74,23 @@ public class TimesheetSubmissionsServiceTest {
 	
 	 
 	
-	//@Test
+	@Test
 	public void updateTimesheetSubmissions() throws Exception{
 		
 		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
 		ProjectMembers projectMemberId = new ProjectMembers();
 		User user = new User();
-		timesheetSubmissions.setId((long) 11);
+		timesheetSubmissions.setId((long) 1);
 		timesheetSubmissions.setStatus("APPROVED");
 		timesheetSubmissions.setStartDate(new Date());
 		timesheetSubmissions.setDocFile(new byte[4096]);
 		timesheetSubmissions.setEndDate(new Date());
 		timesheetSubmissions.setTotalHours("20");
-		projectMemberId.setId(2l);
+		projectMemberId.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMemberId);
 		timesheetSubmissions.setRejectedReason("Registered");
-		user.setId(1l);
+		user.setId(3l);
 		timesheetSubmissions.setUserId("1");
 		timesheetSubmissions.setApproverUserId(user);
 
@@ -98,7 +98,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" updateTimesheetSubmissions successfully updated "+timesheetSubmissions.getRejectedReason());
 	}
 	
-	//@Test
+	@Test
 	public void getTimesheetSubmissions() throws Exception{
 		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
@@ -112,7 +112,7 @@ public class TimesheetSubmissionsServiceTest {
 	}
 	 
 	
-	//@Test
+	@Test
 	public void getAllTimesheetSubmissions() throws Exception{
 		
 		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
@@ -120,7 +120,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setId(1l);
 		timesheetSubmissions.setFullName("AJITH");
 		User approverUserId = new User();
-		approverUserId.setId(1l);
+		approverUserId.setId(3l);
 		timesheetSubmissions.setApproverUserId(approverUserId);
 		ProjectMembers projectMembers =  new ProjectMembers();
 		projectMembers.setId(1l);
@@ -133,13 +133,13 @@ public class TimesheetSubmissionsServiceTest {
 	
 	
 
-	//@Test
+	@Test
 	public void deleteTimesheetSubmissions() throws Exception{
 		String id = "1";  
 		timesheetSubmissionsService.deleteTimesheetSubmissions(id);
 	}
 	
-	//@Test
+	@Test
 	public void getAllEmployeeTimesheetSubmissions() throws Exception{
 		
 		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
@@ -157,7 +157,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void getAllApprovalEmployeeTimesheetSubmissions() throws Exception{
 		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
@@ -178,7 +178,7 @@ public class TimesheetSubmissionsServiceTest {
 	}
 	
 	
-	//@Test
+	@Test
 	public void getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId() throws Exception{
 		
 		
@@ -196,7 +196,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId"+timesheetSubmissions);
 	}
 	
-	//@Test
+	@Test
 	public void getMinAndMaxTimesheetSubmissionDatesForEmployee() throws Exception{
 		
 		HashMap<String,Date> minAndMaxTimesheetSubmissionDatesForEmployee = new LinkedHashMap<>();
@@ -206,7 +206,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getMinAndMaxTimesheetSubmissionDatesForEmployee  " +minAndMaxTimesheetSubmissionDatesForEmployee);
 	}
 	
-	//@Test
+	@Test
 	public void getApprovalTimesheetSubmissions() throws Exception{
 		
 	
@@ -217,7 +217,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void getTimesheetSubmissionsByAproverId() throws Exception{
 		
 		Long projectMemberId = (long) 4;
@@ -228,7 +228,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTimesheetSubmissionsByAproverId "+timesheetSubmissionslist);
 	}
 	
-	//@Test
+	@Test
 	public void saveAllTimesheetSubmissions() throws Exception{
 		
 		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
@@ -244,7 +244,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		logger.info(" saveAllTimesheetSubmissions successfully updated "+timesheetSubmissionsList.size());
 	}
-	//@Test
+	@Test
 	public void getNextMondayByProjectMemberId() throws Exception{
 		 Date Date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
 		 logger.info(" getNextMondayByProjectMemberId successfully updated "+ Date);
@@ -268,7 +268,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTimeSheetSubmissionsListByStatus"+timesheetSubmissionslist.size());
 	}*/
 	
-	//@Test
+	@Test
 	public void getTimeSheetSubmissionsCountByUserId() throws Exception{
 		TimesheetSubmissions timesheetSubmissioncount = new TimesheetSubmissions();
 		
@@ -318,7 +318,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timeSheetSubmissionsCount);
 	}*/
 	
-	//@Test
+	@Test
 	public void getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId() throws Exception{
 		
 		//TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
@@ -326,7 +326,7 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId "+timesheetSubmissions.size());
 	}
 	
-	//@Test
+	@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
 		
 		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = new TimeSheetSubmissionCount(); 
@@ -336,7 +336,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void getSubmissionApproverHierarchyForEmployeeList() throws Exception{
 		
 		List<TimesheetSubmissions> timesheetSubmissions = new ArrayList<>();

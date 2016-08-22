@@ -71,7 +71,7 @@ public class OrgServiceTest {
 		organization.setUpdatedDate(new Date());
 		organization.setUpdatedBy("YYY");
 		User user = new User();
-		user.setId(1l);
+		user.setId(3l);
 		organization.setUser(user );
 		organization = orgService.addOrganization(organization);
 		logger.info("addOrganiztion" + organization.getWebSite());
@@ -107,12 +107,7 @@ public class OrgServiceTest {
 		logger.debug("findOrgById" + organization.getOrgName());
 	}
 
-	@Test
-	public void deletOrg() throws Exception {
-		//Long l = 3L;
-		Boolean b=orgService.deleteOrg(2l);
-		logger.info("deletOrg "+ b);
-	}
+	
 
 	@Test
 	public void getOrgs() throws Exception {
@@ -175,4 +170,13 @@ public class OrgServiceTest {
 		logger.info("getEnrolledOrgs "+organization.size());
 		
 	}
+	@Test
+		public void deletOrg() throws Exception {
+			//Long l = 3L;
+			Boolean deletOrg=orgService.deleteOrg(2l);
+			if(deletOrg != null)
+			{
+			logger.info("deletOrg "+ deletOrg);
+			}
+		}
 }
