@@ -41,30 +41,26 @@ public class CitiesServiceTest {
 	@Autowired
 	CitiesService citiesService;
 
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(CitiesServiceTest.class);
 
-	//@Test
+	@Test
 	public void addCities() throws Exception{
 		
 		Cities city = new Cities();
 		city.setCountryCode("US");
 		city.setCityName("KMR");
 		city.setStateCode("TG");
+		
 		citiesService.addCity(city);
-		System.out.println("Successfully Added!!!!");
+		logger.info("Successfully Added!!!!");
 	}
 	
-	//@Test
+	@Test
 	public void getCity() throws Exception{
 		Cities cities =	citiesService.getCity("US");
-		System.out.println("get value of ind"+cities.getCountryCode());
+		logger.info("get value of ind"+cities.getCountryCode());
 	}
 
-	//@Test
-	public void deleteCity() throws Exception{
-		Boolean flag =	citiesService.deleteCity("US");
-	}
-	
 	@Test
 	public void updateCity() throws Exception{
 		Cities city = new Cities();
@@ -72,13 +68,19 @@ public class CitiesServiceTest {
 		city.setCityName("HYD");
 		city.setStateCode("TG");
 		citiesService.updateCity(city);
-		System.out.println("Successfully updated!!!!");
+		logger.info("Successfully updated!!!!");
 				
 	}
 			
-	//@Test
+	@Test
 	public void getAllCities() throws Exception{
 		List<Cities> cityList  = citiesService.getAllCities();
+		logger.info("getAllCities "+cityList.size());
 	}
+	//@Test
+		public void deleteCity() throws Exception{
+			Boolean flag =	citiesService.deleteCity("US");
+			logger.info("deleteCity successfully "+ flag);
+		}
 	
 }

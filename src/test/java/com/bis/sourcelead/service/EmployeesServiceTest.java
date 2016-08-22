@@ -159,7 +159,7 @@ public class EmployeesServiceTest {
 		Boolean flag =  employeesService.validateEmployeeEmailId(4L, "raj@gmail.com");
 		if(flag != null)
 		{
-		logger.info("validateEmployeeEmailId " + flag.TRUE);
+		logger.info("validateEmployeeEmailId " + flag);
 	}
 	}
 	@Test

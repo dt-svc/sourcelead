@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,6 +24,7 @@ public class EmailScenarioServiceTest {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServiceTest.class);
 	
 	@Test
 	public void save() throws Exception{
@@ -39,31 +42,31 @@ public class EmailScenarioServiceTest {
 		emailScenario.setIsTemplateModified("N");
 		emailScenario.setCreatedDate(new Date());
 		emailScenario.setCreatedBy("Source");
-		emailScenario.setOrgCode("hangon.com");
-		emailScenario.setLocationCode("in.sourceLead.com");
+		emailScenario.setOrgCode("hangon");
+		emailScenario.setLocationCode("sourceLead");
 		emailScenario.setUseLogo("LOG");
 		emailScenario.setDisclaimerText("Disclaimer");
 		emailScenarioService.save(emailScenario);
-		System.out.println("save " +emailScenario.getId());
+		logger.info("save " +emailScenario.getId());
 	}
 	
 	@Test
 	public void getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode() throws Exception{
 		EmailScenario emailScenario = new EmailScenario();
-		emailScenario.setUniqueScenarioName("Forgot Password");
+		emailScenario.setUniqueScenarioName("testService");
 		emailScenario.setEntityType("Email");
-		emailScenario.setOrgCode("slead");
-		emailScenario.setLocationCode("sleadIN");
+		emailScenario.setOrgCode("hangon");
+		emailScenario.setLocationCode("sourceLead");
 		emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(emailScenario.getUniqueScenarioName(), emailScenario.getEntityType(), emailScenario.getOrgCode(), emailScenario.getLocationCode());
-		System.out.println("EmailScenario by given particulars is...>>"+emailScenario.getScenarioName());
+		logger.info("EmailScenario by given particulars is...>>"+emailScenario.getScenarioName());
 	}
 	
 	@Test
 	public void getEmailScenarioByUniqueName() throws Exception{
 		EmailScenario emailScenario = new EmailScenario();
-		emailScenario.setUniqueScenarioName("Forgot Password");
+		emailScenario.setUniqueScenarioName("testService");
 		emailScenario.setEntityType("Email");
 		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(emailScenario.getUniqueScenarioName(), emailScenario.getEntityType());
-		System.out.println("EmailScenario by given particulars is...>>"+emailScenario.getId());
+		logger.info("EmailScenario by given particulars is...>>"+emailScenario.getId());
 	}
 }

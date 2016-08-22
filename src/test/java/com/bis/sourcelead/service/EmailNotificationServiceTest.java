@@ -28,7 +28,7 @@ public class EmailNotificationServiceTest {
 	@Test
 	public void save() throws Exception{
 		EmailNotification emailnotification = new EmailNotification();
-		//emailnotification.setId(2L);
+		emailnotification.setId(2L);
 		emailnotification.setEmailTo("raj@gamail.com");
 		emailnotification.setEmailFrom("info@hangonn.com");
 		emailnotification.setSubject("This is test Message");
