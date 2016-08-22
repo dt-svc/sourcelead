@@ -36,12 +36,12 @@ public class TimesheetEntriesServiceTest {
 
 		TimesheetEntries timesheetEntries = new TimesheetEntries();
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		timesheetSubmissions.setId(3l);
+		timesheetSubmissions.setId(1l);
 		User approverUserId = new User();
-		approverUserId.setId(2l);
+		approverUserId.setId(3l);
 		timesheetSubmissions.setApproverUserId(approverUserId);
 		ProjectMembers projectMembers = new ProjectMembers();
-		projectMembers.setId(3l);
+		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions); 
 		timesheetEntries.setStatus("agree");
@@ -55,9 +55,9 @@ public class TimesheetEntriesServiceTest {
 		timesheetEntries.setFricomments("hi");
 		timesheetEntries.setFriHours("21");
 		ProjectTasks projectTask = new ProjectTasks();
-		projectTask.setId(2l);
+		projectTask.setId(1l);
 		timesheetEntries.setProjectTask(projectTask);
-		timesheetEntries.setSubmittedHours(21);
+		timesheetEntries.setSubmittedHours(11);
 		timesheetEntries.setUpdatedBy("suhas");
 		timesheetEntries.setUpdatedDate(new Date());
 		timesheetEntriesService.addTimesheetEntries(timesheetEntries);
@@ -69,7 +69,7 @@ public class TimesheetEntriesServiceTest {
 	public void updateTimesheetEntries() throws Exception {
 
 		TimesheetEntries timesheetEntries = new TimesheetEntries();
-		timesheetEntries.setId((long) 1);
+		timesheetEntries.setId((long) 5);
 		timesheetEntries.setStatus("updated");
 		timesheetEntriesService.addTimesheetEntries(timesheetEntries);
 		logger.info("Successfully Added!!!!");
@@ -77,7 +77,7 @@ public class TimesheetEntriesServiceTest {
 
 	@Test
 	public void getTimesheetEntries() throws Exception {
-		TimesheetEntries timesheetEntries = timesheetEntriesService.getTimesheetEntries("1");
+		TimesheetEntries timesheetEntries = timesheetEntriesService.getTimesheetEntries("2");
 		logger.info("Successfully retrived!!!!" + timesheetEntries.getStatus());
 	}
 
@@ -101,7 +101,7 @@ public class TimesheetEntriesServiceTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void deleteTimesheetEntries() throws Exception {
 		String id = "1";
 		Boolean deleteTimesheet = timesheetEntriesService.deleteTimesheetEntries(id);

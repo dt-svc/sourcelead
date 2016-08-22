@@ -30,7 +30,7 @@ public class PasswordResetsServiceTest {
 	public void savePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
 		User user = new User();
-		user.setId(1L);
+		user.setId(3L);
 		passwordResets.setUser(user);
 		passwordResets.setEmail("info@hangonn.com");
 		passwordResets.setVerificationCode("VERF");
@@ -46,7 +46,7 @@ public class PasswordResetsServiceTest {
 	@Test
 	public void getPasswordResetsByUserId() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
-		Long UserId = 1l;
+		Long UserId = 3l;
 		passwordResets = passwordResetsSevice.getPasswordResetsByUserId(UserId);
 		logger.info("Retrieved Successfully..."+passwordResets.getId());
 	}
@@ -58,12 +58,12 @@ public class PasswordResetsServiceTest {
 		logger.info("Retrieved Successfully..."+pwdReset.getId());
 	}
 	
-	//@Test
+	@Test
 	public void deletePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
 		passwordResets.setId(1L);
 		User user = new User();
-		user.setId(1L);
+		user.setId(3L);
 		passwordResets.setUser(user);
 		passwordResets.setEmail("info@hangonn.com");
 		passwordResets.setVerificationCode("VERF");
