@@ -44,7 +44,7 @@ public class EmailNotificationServiceTest {
 	public void getById() throws Exception{
 		
 		EmailNotification emailnotification = new EmailNotification();
-		emailnotification.setId(2L);
+		emailnotification.setId(1L);
 		emailnotification = emailNotificationService.getById(emailnotification.getId());
 		if(emailnotification != null)
 		{

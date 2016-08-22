@@ -77,12 +77,12 @@ public class SubmissionApproverHierarchyServiceTest {
 	}
 	@Test
 	public void getSubmissionApproverHierarchy() throws Exception{
-		String id = "29";
+		String id = "16";
 		SubmissionApproverHierarchy Hierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
 		logger.info("getSubmissionApproverHierarchy added successfully"+ Hierarchy);
 	}
 	
-	@Test
+	//@Test
 	public void getAllSubmissionApproverHierarchies() throws Exception{
 		List<SubmissionApproverHierarchy> getAllSubmissionApprover = submissionApproverHierarchyService.getAllSubmissionApproverHierarchies();
 		logger.info("getAllSubmissionApproverHierarchies added successfully"+getAllSubmissionApprover.size());
@@ -137,9 +137,9 @@ public class SubmissionApproverHierarchyServiceTest {
 		Float TotalDraftAndSubmittedHours = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(20l, 1l, "ACTIVE");
 		logger.info("getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee added successfully"+TotalDraftAndSubmittedHours.floatValue());
 	}
-	//@Test
+	@Test
 	public void deleteSubmissionApproverHierarchy() throws Exception{
-		String id = "69";
+		String id = "16";
 		Boolean deleteSubmission = submissionApproverHierarchyService.deleteSubmissionApproverHierarchy(id);
 		logger.info("deleteSubmissionApproverHierarchy added successfully");
 	}

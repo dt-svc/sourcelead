@@ -64,7 +64,7 @@ public class UserServiceTest {
 	@Test
 	public void addUser() throws Exception{
 		User user = new User();
-        user.setId(25L);
+        user.setId(3L);
 		user.setCreatedBy("ajith");
 		user.setCreatedDate(new Date());
 		user.setDocFile(new byte[4096]);
@@ -109,7 +109,7 @@ public class UserServiceTest {
 		 jsonObj.put("dateofJoin", "2016-08-17");
 		 jsonObj.put("projectId", "");
 		
-		 Long orgLocationsId = 5l;
+		 Long orgLocationsId = 3l;
 		 User user = new User();
 		
 		userService.createUser(jsonObj,user,orgLocationsId);
@@ -185,7 +185,7 @@ public class UserServiceTest {
    public void findByEmail() throws Exception{
 		
 		User user = new User();
-		String email = "ramu@tcs.com";
+		String email = "demomail123@gmail.com";
 		
 		user = userService.findByEmail(email);
 		logger.info(" success fully findByEmail "+user.getFirstName());
