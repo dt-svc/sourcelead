@@ -29,7 +29,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="/sourcelead/dashboard">Home</a> &raquo;
           <c:if test="${status =='NEW'}">Saved</c:if>
-          <c:if test="${status =='SUBMITTEDFORAPPROVAL'}">Waiting</c:if>
+          <c:if test="${status =='SUBMITTED'}">Waiting</c:if>
           <c:if test="${status =='APPROVED'}">Approved</c:if>
           <c:if test="${status =='REJECTED'}">Rejected</c:if>
           </div>
@@ -77,8 +77,9 @@
             	<tr>
                 	<th>Project name</th>
                     <th>Frequency</th>
-                    <th>Total hours</th>
-                    <th>Approver</th>
+                    <th>Employee</th>
+                    <th>Appprovers</th>
+                    <th>Total Hours</th>
                     <th>Status</th>
                 </tr>
 			</thead>
@@ -86,7 +87,7 @@
                 <tr>
                 	<td><div>${report.submissionId.projectMembers.projects.projectName}</div></td>
                 	<td><div><fmt:formatDate type="date"  value="${report.submissionId.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.submissionId.endDate}">  - &nbsp;<fmt:formatDate type="date" value="${report.submissionId.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
-                    <td><div>${report.submissionId.totalHours}</div></td>
+                    <td><div>${report.submissionId.projectMembers.employee.user.firstName}</div></td>
                     <td><div>
                     	<c:if test="${!empty report.managerLevel1}">
                     	${report.managerLevel1}
@@ -95,7 +96,14 @@
                     	, ${report.managerLevel2}
                     	</c:if>
                     </div></td>
-                    <td><div><h3>${report.submissionApprovalStatus}</h3></div>
+                      <td><div>${report.submissionId.totalHours}</div></td>
+                         <c:if test="${status =='APPROVED' || status ==' REJECTED'}">
+                          <td><div><h3>${report.submissionApprovalStatus}</h3></div>
+                         </c:if>
+                         <c:if test="${status =='NEW'  || status =='SUBMITTED'}">
+                          <td><div><h3>${report.submissionStatus}</h3></div>
+                         </c:if>
+                   
 					</td>
                 </tr>
                 </c:forEach>
