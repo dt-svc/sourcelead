@@ -31,10 +31,10 @@ public class NotificationServiceTest {
 	public void saveNotification() throws Exception{
 		Notifications notifications = new Notifications();
 		EmailScenario emailScenario = new EmailScenario();
-		emailScenario.setId(27L);
+		emailScenario.setId(1L);
 		notifications.setNotificationScenarioId(emailScenario);
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		notifications.setNotificationTo(user);
 		notifications.setNotificationFrom(user);
 		notifications.setBody("this is used for testing service");
@@ -45,7 +45,7 @@ public class NotificationServiceTest {
 		notifications.setCreatedDate(new Date());
 		notifications.setCreatedBy("Source");
 		notifications.setNotificationStatus("1");
-		notificationsService.saveNotification(notifications);
+		notifications = notificationsService.saveNotification(notifications);
 		logger.info("saveNotification " + notifications.getId());
 	}
 	
@@ -55,7 +55,7 @@ public class NotificationServiceTest {
 		notifications.setOrgCode("hangonn");
 		notifications.setLocationCode("in.sourcelead.com");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		Integer notificationscount = notificationsService.getNotificationsCountByUserId(user.getId(), notifications.getOrgCode(), notifications.getLocationCode());
 		logger.info("getNotificationsCountByUserId " + notificationscount);
 	}
@@ -66,7 +66,7 @@ public class NotificationServiceTest {
 		notifications.setOrgCode("QAeD");
 		notifications.setLocationCode("QAeDIN");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		notifications.setNotificationTo(user);
 		List<Notifications> list = notificationsService.getNotificationsListByUserId(notifications.getNotificationTo().getId(), notifications.getOrgCode(), notifications.getLocationCode());
 		logger.info("getNotificationsListByUserId " + list.size());
@@ -78,7 +78,7 @@ public class NotificationServiceTest {
 		notifications.setOrgCode("QAeD");
 		notifications.setLocationCode("QAeDIN");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		Integer notificationscount = notificationsService.updateNotificationStatusAsRead(user.getId(), notifications.getOrgCode(), notifications.getLocationCode());
 		logger.info("updateNotificationStatusAsRead " + notificationscount);
 	}
@@ -90,7 +90,7 @@ public class NotificationServiceTest {
 		notifications.setId(1L);
 		notifications.setLocationCode("in.sourcelead.com");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		notifications.setNotificationTo(user);
 		Integer notificationscount = notificationsService.updateNotificationDeleteStatus(notifications.getId(), notifications.getOrgCode(), notifications.getLocationCode());
 		logger.info("updateNotificationDeleteStatus " + notificationscount);
@@ -102,7 +102,7 @@ public class NotificationServiceTest {
 		notifications.setOrgCode("QAeD");
 		notifications.setLocationCode("QAeDIN");
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		List<Notifications> list = notificationsService.getAllNotificationsListByUserId(user.getId(), notifications.getOrgCode(), notifications.getLocationCode());
 		logger.info("getAllNotificationsListByUserId " + list.size());
 	}

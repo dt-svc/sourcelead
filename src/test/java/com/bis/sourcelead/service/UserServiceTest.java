@@ -59,19 +59,12 @@ public class UserServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
-	//@Test
-	public void findByUserName() {
-		String username = "SourceLeadAdmin";
-		logger.debug("In UserServiceTest class...");
-		User user = userService.findByUserName(username);
-		Assert.assertEquals("SourceLeadAdmin",user.getUserName());
-		
-	}
 	
-	//@Test
+	
+	@Test
 	public void addUser() throws Exception{
 		User user = new User();
-        user.setId(25L);
+        user.setId(1L);
 		user.setCreatedBy("ajith");
 		user.setCreatedDate(new Date());
 		user.setDocFile(new byte[4096]);
@@ -108,7 +101,7 @@ public class UserServiceTest {
 		 jsonObj.put("phoneNumber", "890876590");
 		 jsonObj.put("roleType", "Admin");
 		 
-		 jsonObj.put("employeeId", "123");
+		 jsonObj.put("employeeId", "1");
 		 jsonObj.put("rate", "12345");
 		 jsonObj.put("ratePer", "Hourly");
 		 jsonObj.put("dayHours", "8");
@@ -125,10 +118,19 @@ public class UserServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
+	public void findByUserName() {
+		String username = "SourceLeadAdmin";
+		logger.debug("In UserServiceTest class...");
+		User user = userService.findByUserName(username);
+		Assert.assertEquals("SourceLeadAdmin",user.getUserName());
+		
+	}
+	
+	@Test
 	public void sendEmail() throws Exception{
 		User user = new User();
-//		user.setId(10l);
+		user.setId(1l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
 		user.setDocFile(new byte[4096]);
@@ -159,7 +161,7 @@ public class UserServiceTest {
 		logger.info(" success fully send email "+user.getStatus());
 	}
 
-	//@Test
+	@Test
 	public void validateEmailandCandidate() throws Exception{
 		String website = "www.bis.com";
 		String email = "info@businessintelli.com"; 
@@ -169,7 +171,7 @@ public class UserServiceTest {
 		logger.info(" success fully validate email "+email);
 	}
 	
-//	@Test
+	@Test
 	public void  getUserById() throws Exception{
 		
 		Long Id=3l;
@@ -179,7 +181,7 @@ public class UserServiceTest {
 		
 		
 	}
-	//@Test
+	@Test
    public void findByEmail() throws Exception{
 		
 		User user = new User();
@@ -189,7 +191,7 @@ public class UserServiceTest {
 		logger.info(" success fully findByEmail "+user.getFirstName());
 	}
 	
-	//@Test
+	@Test
 	public void getUsers() throws Exception{
 		
 		//User user = new User();
@@ -199,7 +201,7 @@ public class UserServiceTest {
 		
 	}
 	
-	//@Test
+	@Test
 	
 	public void saveUserProfile() throws Exception{
 		
@@ -253,13 +255,13 @@ public class UserServiceTest {
 		return multipartFile;
 	}
 	
-	//@Test
+	@Test
 	public void getUsersByUserRoles() throws Exception{
 		
 		Collection<User> user = userService.getUsersByUserRoles(2l);
 		logger.info("getUsersByUserRoles " + user.size());
 	}
-	//@Test
+	@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
 		
 		List<User> user = new ArrayList<User>();
@@ -267,7 +269,7 @@ public class UserServiceTest {
 		logger.info("getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser " + user.size());
 	}
 	
-	//@Test
+	@Test
 	public void getUsersByUserRolesAndOrgLocationId() throws Exception{
 		
 		List<User> user = new ArrayList<User>();
@@ -275,7 +277,7 @@ public class UserServiceTest {
 		logger.info("getUsersByUserRolesAndOrgLocationId " + user.size());
 	}
 	
-	//@Test
+	@Test
 	public void getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser() throws Exception{
 		
 		List<User> user = new ArrayList<User>();
@@ -283,7 +285,7 @@ public class UserServiceTest {
 		logger.info("getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser " + user.size());
 	}
 	
-	//@Test
+	@Test
 	public void getAllUserOrgCodeAndLocationCodeTimeSheetNotification() throws Exception{
 		
 		List<Employees> employee = new ArrayList<Employees>();

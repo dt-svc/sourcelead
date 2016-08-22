@@ -88,21 +88,22 @@ public class EmployeesServiceTest {
 		employee.setRate("1000000");
 		employee.setRatePer("Weekly");
 		employee.setDailyHours("8");
-		employeesService.updateEmployee(employee);
-		System.out.println("updateEmployee " + employee.getCreatedBy());
+		employee = employeesService.updateEmployee(employee);
+		logger.info("updateEmployee successfully " + employee.getId());
 	}
 	
 	@Test
 	public void getEmployee() throws Exception{
 		Employees employee = employeesService.getEmployee("3");
-		System.out.println("the value is "+employee.getCountry());
+		
+		logger.info("getEmployee" + employee.getStatus());
 	}
 
 		
 	@Test
 	public void getEmployeeByUserId() throws Exception{
 		Employees employee = employeesService.getEmployeeByUserId(3L);
-		System.out.println("Successfully Retrieved..."+employee.getCreatedBy());
+		logger.info("getEmployeeByUserId " + employee.getStatus());
 	}
 	
 	@Test
@@ -112,7 +113,7 @@ public class EmployeesServiceTest {
 		orgLocations.setId(1L);
 		employee.setOrgLocations(orgLocations);
 		Boolean flag = employeesService.validateEmployeeId("fd5dfg", employee.getOrgLocations().getId());
-		System.out.println("Successfully Retrieved..."+flag);
+		logger.info("validateEmployeeId " + flag);
 	}
 	
 	@Test
@@ -127,31 +128,39 @@ public class EmployeesServiceTest {
 		orgLocations.setId(1L);
 		employee.setOrgLocations(orgLocations);
 		employee = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(employee.getEmployeeId(), employee.getUser().getId(), employee.getOrgLocations().getId());
-		System.out.println("Successfully Retrieved..."+employee.getCreatedBy());
+		logger.info("getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId " + employee.getEmployeeId());
 	}
 	
 	@Test
 	public void getAllEmployees() throws Exception{
 		List<Employees> emplist= employeesService.getAllEmployees();
-		System.out.println("Successfully Retrieved..."+emplist.size());
+		logger.info("getAllEmployees" + emplist.size());
 	}
 	
 	@Test
 	public void getEmployeesExcludeTeamMembers() throws Exception{
 		List<Employees> emplist= employeesService.getEmployeesExcludeTeamMembers(1L, 2L);
-		System.out.println("Successfully Retrieved..."+emplist.size());
+		if(emplist != null)
+		{
+		logger.info("getEmployeesExcludeTeamMembers " + emplist.size());
 	}
-	
+	}
 	@Test
 	public void getAllEmployeesByOrgLocationId() throws Exception{
 		Collection<Employees> emplist= employeesService.getAllEmployeesByOrgLocationId(1L, 1L, 1L);
-		System.out.println("Successfully Retrieved..."+emplist.size());
+		if(emplist != null)
+		{
+		logger.info("getAllEmployeesByOrgLocationId " + emplist.size());
+	}
 	}
 	
 	@Test
 	public void validateEmployeeEmailId() throws Exception{
 		Boolean flag =  employeesService.validateEmployeeEmailId(4L, "raj@gmail.com");
-		System.out.println("Successfully Retrieved..."+flag);
+		if(flag != null)
+		{
+		logger.info("validateEmployeeEmailId " + flag.TRUE);
+	}
 	}
 	@Test
 		public void deleteEmployee() throws Exception{

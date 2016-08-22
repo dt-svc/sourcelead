@@ -115,7 +115,7 @@ public class UserRoleServiceTest {
 		public void getUsersListByUserNameAndLocationId() throws Exception{
 			
 			String userName = "ajith";
-			Long locationId = 4l;
+			Long locationId = 2l;
 			String userState = "INACTIVE";
 			Long userId = 1l;
 			
@@ -135,18 +135,18 @@ public class UserRoleServiceTest {
 			Long userId = 3l;
 			
 			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId);
-			logger.info("getUsersListByRoleAndNameAndLocationId"+userName);
+			logger.info("getUsersListByRoleAndNameAndLocationId"+userslist.size());
 		}
 		
 		@Test
 		public void getUsersListByUserStateAndLocationId() throws Exception{
 			
 			String userState = "ACTIVE"; 
-			Long locationId = 19l;
-			Long userId = 5l;
+			Long locationId = 1l;
+			Long userId = 1l;
 			
 			List<UserRole> userslist = userRoleService.getUsersListByUserStateAndLocationId(userState,locationId,userId);
-			logger.info("getUsersListByUserStateAndLocationId"+userState);
+			logger.info("getUsersListByUserStateAndLocationId"+userslist.size());
 			
 		}
 		
@@ -164,7 +164,7 @@ public class UserRoleServiceTest {
 			
 			String userState = "ACTIVE"; 
 			String searchByName = "ROLE_APPROVER";
-			List<Long> projectIds = projectsService.getApprovarAssignedProjects(3l, 3l);
+			List<Long> projectIds = projectsService.getApprovarAssignedProjects(1l, 1l);
 			
 			//List<UserRole> userrole  = userRoleService.getApproverAssignedUsers(projectIds, userState, searchByName);
 			
