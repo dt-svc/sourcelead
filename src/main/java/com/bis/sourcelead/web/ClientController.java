@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +25,6 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Client service.
@@ -72,12 +72,11 @@ public class ClientController {
 		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			
+			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			model.addObject("loginCountryName", countries.getName());
 			return model;
@@ -95,11 +94,11 @@ public class ClientController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
-			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			for(OrgRelations orgRelation : clientsList){
+			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			/*for(OrgRelations orgRelation : clientsList){
 				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
 				orgRelation.setProjectsCont(count);
-			}
+			}*/
 			model.addObject("clientsList", clientsList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);

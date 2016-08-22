@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.entity.Org;
@@ -20,6 +22,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -60,6 +63,17 @@ public class ClientServiceImpl implements ClientService{
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 	
 
 	@Override
@@ -283,5 +297,37 @@ public class ClientServiceImpl implements ClientService{
 		 */
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
+		}
+
+
+		@Override
+		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId) throws Exception {
+			
+			OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			
+			if(null != orgRelation){
+				OrgLocations orgLocations = orgRelation.getClientLocationId();
+						
+				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
+					orgLocations.setCity(jsonObj.getString("clientCity"));
+				}
+				if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
+					orgLocations.setState(jsonObj.getString("clientState"));
+				}
+				if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
+					orgLocations.setCountry(jsonObj.getString("clientCountry"));
+			     }
+				if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+					orgLocations.setEmail(jsonObj.getString("EmailId"));
+				}
+				if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
+				}
+				orgLocationService.updateOrgLocations(orgLocations);
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+			
 		}
 }

@@ -478,7 +478,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 							        	
-							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 						                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 						                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 						                sb.append(" </i>");
@@ -596,7 +596,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 								        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 								        	
-								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 							                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 							                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 							                sb.append(" </i>");

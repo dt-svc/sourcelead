@@ -28,14 +28,14 @@ public class ProjectApproverHierarchyServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
 
-	//@Test
+	@Test
 	public void saveProjectApproverHierarchy() throws Exception {
 		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 		Projects projects = new Projects();
-		projects.setId(3L);
+		projects.setId(1L);
 		pah.setProjectId(projects);
 		User user = new User();
-		user.setId(4L);
+		user.setId(1L);
 		pah.setApproverUserId(user);
 		pah.setLevel(1);
 		pah.setStatus("Active");
@@ -47,31 +47,31 @@ public class ProjectApproverHierarchyServiceTest {
 		logger.info("Saved Successfully..."+pah.getStatus());
 	}   
 	
-	//@Test
+	@Test
 	public void getLevelOneProjectApproverByProjectId() throws Exception {
 		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 		Projects projects = new Projects();
-		projects.setId(3L);
+		projects.setId(1L);
 		pah.setProjectId(projects);
 		pah = approverHierarchyService.getLevelOneProjectApproverByProjectId(pah.getProjectId().getId());
 		logger.info("Retrieved Successfully..."+pah.getApproverUserId().getFirstName());
 	}
 	
-	//@Test
+	@Test
 	public void getApproverUsersByProjectId() throws Exception {
 		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 		Projects projects = new Projects();
-		projects.setId(3L);
+		projects.setId(1L);
 		pah.setProjectId(projects);
 		List<ProjectApproverHierarchy> pahlist = approverHierarchyService.getApproverUsersByProjectId(pah.getProjectId().getId());
 		logger.info("Retrieved Successfully..."+pahlist.size());
 	}
 	
-	//@Test
+	@Test
 	public void getProjectHierarchyListByLoginUserId() throws Exception {
 		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 		User user = new User();
-		user.setId(3L);
+		user.setId(1L);
 		pah.setApproverUserId(user);
 		List<ProjectApproverHierarchy> pahlist = approverHierarchyService.getProjectHierarchyListByLoginUserId(pah.getApproverUserId().getId());
 		logger.info("Retrieved Successfully..."+pahlist.size());
@@ -81,7 +81,7 @@ public class ProjectApproverHierarchyServiceTest {
 	public void getProjectIdsByLoginUserId() throws Exception {
 		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 		User user = new User();
-		user.setId(3L);
+		user.setId(1L);
 		pah.setApproverUserId(user);
 		List<Long> pahlist = approverHierarchyService.getProjectIdsByLoginUserId(pah.getApproverUserId().getId());
 		logger.info("Retrieved Successfully..."+pahlist.size());

@@ -580,17 +580,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyBySubmissionId(Long submissionId) {
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyBySubmissionId(Long submissionId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah  where sah.submissionId.id = :submissionId");
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where sah.submissionId.id = :submissionId");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setCacheable(true).list();
-		SubmissionApproverHierarchy sah = null;
-		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
-			sah = submissionApproverHierarchyList.iterator().next();
-		}
-		return sah;
+		return submissionApproverHierarchyList;
 	}
 	
 

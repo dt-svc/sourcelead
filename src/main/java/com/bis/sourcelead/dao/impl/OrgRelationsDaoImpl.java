@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -16,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.exception.NoRecordsFoundException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 /**
  * 
@@ -85,16 +82,16 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception {
+	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception {
 		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
-        Session session = this.sessionFactory.getCurrentSession();
-        List<OrgRelations> clientsList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgRelations> clientsList = null;
 		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
 		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
-		
 		return clientsList;
 	}
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
