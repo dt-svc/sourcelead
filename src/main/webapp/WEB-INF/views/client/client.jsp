@@ -45,7 +45,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">*</span></label>
 							<div class="col-md-9" id="clientNameDiv">
-								<input type="text" class="form-control" id="orgName" name="orgName" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+								<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
 								<span class="hidden">Enter Client Name</span>
 							</div>
 						</div>
@@ -53,7 +53,7 @@
 							<label class="col-md-3">Client Country</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="country"
-									name="country" field-name="Client Country" value="" data-validation="validate_Space" data-validation-optional="true"> <span
+									name="country" field-name="Client Country" value="${country}" data-validation="validate_Space" data-validation-optional="true"> <span
 									class="hidden">Client Country</span>
 							</div>
 						</div>
@@ -61,7 +61,7 @@
 							<label class="col-md-3">Client State</label>
 							<div class="col-md-9">
 								<input type="text" id="state" name="state"
-									field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
+									field-name="Client State" class="form-control" value="${state}" data-validation="validate_Space" data-validation-optional="true">
 								<span class="hidden">Client State</span>
 							</div>
 						</div>
@@ -71,7 +71,7 @@
 							<label class="col-md-3">Client City</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="city" name="city"
-									field-name="Client City" value="" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
+									field-name="Client City" value="${city}" data-validation="validate_Space" data-validation-optional="true"> <span class="hidden">Client
 									City</span>
 							</div>
 						</div>
@@ -211,14 +211,14 @@
 								<input type="text" class="form-control" id="webSite"
 									name="webSite" onblur="validateWebsite();" field-name="Website"
 									data-validation="validate_Space validate_length length2-100 validate_domain"
-									data-validation-optional="true" value=""> <span
+									data-validation-optional="true" value="${webSite}"> <span
 									class="hidden">Website</span>
 							</div>
 						</div>
 						<div class="form-group" id="EmailIdDiv">
 							<label class="col-md-3" for="Project Manager">Email<span class="text-danger">*</span></label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" id="EmailId" name="EmailId" value="" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
+								<input type="text" class="form-control" id="EmailId" name="emailId" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
                                 <span class="hidden">Valid Email</span>
 							</div>
 						</div>
@@ -230,7 +230,7 @@
 								<input type="text" class="form-control" id="phone" name="phone"
 									data-validation="validate_Space validate_phone  validate_length length9-20"
 									data-validation-optional="true" field-name="Mobile Number"
-									value=""> <span class="hidden">Mobile Number</span>
+									value="${phone}"> <span class="hidden">Mobile Number</span>
 							</div>
 						</div>
 

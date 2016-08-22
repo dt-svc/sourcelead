@@ -196,7 +196,11 @@ public class UserRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
 	 	 //For Saving of User Details
-		 userService.createUser(jsonObj,user,orgLocations.getId());
+	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+	 	
+	 	
+	 	 //For Saving of User Details
+		// userService.createUser(jsonObj,user,orgLocations.getId());
 		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
 		 return "usersList";
 	   }
@@ -533,10 +537,37 @@ public class UserRestController {
 						Date currentDate = new  Date();
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
 							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-						}						
+						}
+						else{
+							commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
+						}
 					}
 					return "updated";
 		       }
+		
+		
+		
+		
+		/**
+		 * to assign the project to the particular user
+		 * @param json
+		 * @param userId
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
+		@ResponseBody String saveReAssignProject(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
+						throws Exception {
+			json = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json);
+			
+			return "success";
+		}
+		
+		
+		
 		/**
 		 * 
 		 * @param userID

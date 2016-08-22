@@ -25,20 +25,20 @@ public class RoleServicesTest {
 	@Autowired
 	RolesService roleservice;
 	
-	@Test
+	//@Test
 	public void getRolesByRoleName() throws Exception{
-		roleservice.getRolesByRoleName("developer");
-		logger.info("getRolesByRoleName added successfully");
+		Roles roles =roleservice.getRolesByRoleName("ROLE_USER");
+		logger.info("getRolesByRoleName " +roles.getDisplayName());
 	}
 	
-	@Test
+//	@Test
 	public void getRoles()throws Exception{
 		Collection<Roles> roles = roleservice.getRoles(2L);
 		logger.info("getRoles added successfully"+roles.size());
 	}
 	@Test
 	public void getRolesByDisplayName()throws Exception{
-		Roles RolesByDisplayName =  roleservice.getRolesByDisplayName("developer");
+		Roles RolesByDisplayName =  roleservice.getRolesByDisplayName("Admin");
 		logger.info("getRolesByDisplayName added successfully"+ RolesByDisplayName.getDisplayName());
 	}
 }

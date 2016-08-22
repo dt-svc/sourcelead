@@ -4,13 +4,16 @@ package com.bis.sourcelead.web;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +80,7 @@ public class UploadController {
 				return "upload/uploadForm";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));	
 		}
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
@@ -87,57 +90,59 @@ public class UploadController {
  * Handles Errored file Download
  * @param fileName
  * @param response
+ * @throws IOException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/download/{fileName}", method = RequestMethod.GET)
-	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws Exception {
-		File file;
-		if("xlsx".equalsIgnoreCase(fileName)){
-			file = new File("FailureUsersForCheck.xlsx");
-		}else{
-			 file = new File("FailureUsersForCheck.xls");
-		}
+	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 		
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
+			File file;
+			if("xlsx".equalsIgnoreCase(fileName)){
+				file = new File("FailureUsersForCheck.xlsx");
+			}else{
+				 file = new File("FailureUsersForCheck.xls");
+			}
+			
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
 	}
 /**
  * Handles Temaplate download
  * @param response
+ * @throws IOException 
+ * @throws URISyntaxException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws Exception {
+	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException{
 		
-		String fn = "/templates/Create Users.xls";
-		URL url = getClass().getResource(fn);
-		File file = new File(url.toURI());
+			String fn = "/templates/Create users.xls";
+			URL url = getClass().getResource(fn);
+			File file = new File(url.toURI());
 
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
-		
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
 		
 	}
-	
 	
 }

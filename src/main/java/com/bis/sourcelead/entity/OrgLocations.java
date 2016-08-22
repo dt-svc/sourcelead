@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -36,13 +39,17 @@ public class OrgLocations {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
-	@JoinColumn(name = "ORG_ID", nullable = false)
+	@JoinColumn(name = "ORG_ID")
     private Org org;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
+	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
+	@OneToMany(mappedBy="clientLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<OrgRelations> orgRelationsList;
+	 
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -74,16 +81,16 @@ public class OrgLocations {
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
-	@Column(name = "CREATED_BY", nullable = false)
+	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
-    @Column(name = "CREATED_DATE", nullable = false)
+    @Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "UPDATED_BY", nullable = false)
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-    @Column(name = "UPDATED_DATE", nullable = false)
+    @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
 	public Long getId() {
@@ -217,6 +224,16 @@ public class OrgLocations {
 	public void setFax(String fax) {
 		this.fax = fax;
 	}
+
+	public Set<OrgRelations> getOrgRelationsList() {
+		return orgRelationsList;
+	}
+
+	public void setOrgRelationsList(Set<OrgRelations> orgRelationsList) {
+		this.orgRelationsList = orgRelationsList;
+	}
+	
+	
 
 	
 }

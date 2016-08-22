@@ -30,7 +30,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -57,8 +56,7 @@ public class ProjectsController {
 	 
 	 @RequestMapping(value = "/project")
 		public ModelAndView projects(HttpServletRequest request) throws Exception {
-		    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		   
+		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		   
 				ModelAndView model = new ModelAndView();
@@ -89,12 +87,5 @@ public class ProjectsController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
-/**	 
- * checks if string is null or empty
- * @param str
- * @return boolean
- */
-   protected static boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
-	}
+
 }

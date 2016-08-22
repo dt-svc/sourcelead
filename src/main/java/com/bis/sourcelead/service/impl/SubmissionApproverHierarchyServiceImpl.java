@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -162,34 +163,63 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Long userId, Long orgLocationId, String status,String userRole) {
 	
 		
-		List<SubmissionApproverHierarchy> list = null  ;
+		
+		List<SubmissionApproverHierarchy> list = new ArrayList<SubmissionApproverHierarchy>();
 		
          if(status != null){
  			if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
+ 				
  				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
- 					 list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
- 				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED")  ||  status.equalsIgnoreCase("NEW") ){
- 					 list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
+ 					
+ 					  list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
+ 				}else if(status.equalsIgnoreCase("SUBMITTED")){
+ 					
+ 					  list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
+ 				}else if(status.equalsIgnoreCase("NEW")){
+ 					
+ 					   List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
+					   List<SubmissionApproverHierarchy> draft = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
+					
+					   list.addAll(newlist);
+					   list.addAll(draft);
  				}
  				
  			}else if( userRole.equalsIgnoreCase("ROLE_USER") ){
+ 				
  				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
+ 					
  					list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId, status);
- 				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED") ||  status.equalsIgnoreCase("NEW")){
+ 				}else if(status.equalsIgnoreCase("SUBMITTED")){
+ 					
  					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  status);
  				}
+ 			   else if(status.equalsIgnoreCase("NEW")){
+ 				        List<SubmissionApproverHierarchy> newlist   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  "NEW");
+					    List<SubmissionApproverHierarchy> draft  = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,   "DRAFT");
+					   
+					    list.addAll(newlist);
+					    list.addAll(draft);
+ 			  }
  				
  			}else if( userRole.equalsIgnoreCase("ROLE_APPROVER") ){
+ 				
  				if( status.equalsIgnoreCase("APPROVED") || status.equalsIgnoreCase("REJECTED") ){
+ 					
  					list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
- 				}else if( status.equalsIgnoreCase("DRAFT") || status.equalsIgnoreCase("SUBMITTED") ||  status.equalsIgnoreCase("NEW")){
+ 				}else if(status.equalsIgnoreCase("SUBMITTED")){
+ 					
  					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
+ 				}else if(status.equalsIgnoreCase("NEW")){
+ 					
+ 				    List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
+ 				    List<SubmissionApproverHierarchy> draft  =  submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
+ 				   
+ 				    list.addAll(list);
+				    list.addAll(draft);
  				}
-
  			}
  			
  		}
-         
          return list;
 	}
 	

@@ -2,10 +2,15 @@ package com.bis.sourcelead.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 
 public interface ProjectTasksService {
@@ -27,4 +32,7 @@ public interface ProjectTasksService {
     public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
     
     public String saveProjectTasksByProjectId(Long projectId,JSONObject jsonObj) throws Exception ;
+    
+    Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
+    
 }

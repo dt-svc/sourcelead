@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.enums.Primary;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -68,7 +69,7 @@ public class ProjectMembersServiceTest {
 		projectMembers.setMemberHistoryList(pmhList);
 		
 		projectMembersService.saveProjectMember(projectMembers);
-		logger.info("saveProjectMember added successfully");
+		logger.info("saveProjectMember"+projectMembers.getCreatedBy());
 	}
 	
 	@Test
@@ -107,8 +108,14 @@ public class ProjectMembersServiceTest {
 		projectMembers.setMemberHistoryList(pmhList);
 		
 		projectMembersService.updateProjectMember(projectMembers);
-		logger.info("updateProjectMember added successfully");
+		logger.info("updateProjectMember"+projectMembers.getId());
 
+	}
+	@Test
+	public void getAllTerminatedProjectMembersByProjectIdAndterminatedStatus() throws Exception{
+		List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus = projectMembersService.getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(1l,Primary.NO);
+	
+		logger.info("getAllTerminatedProjectMembersByProjectIdAndterminatedStatus"+getAllTerminatedProjectMembersByProjectIdAndterminatedStatus.size());
 	}
 	
 	@Test
@@ -118,10 +125,13 @@ public class ProjectMembersServiceTest {
 	}
 	
 	@Test
-	public Boolean deleteProjectMemberById() throws Exception{
+	public void deleteProjectMemberById() throws Exception{
 		Boolean isDeleted =  projectMembersService.deleteProjectMemberById(6L);
-		logger.info("getDeleteProjectMember added successfully");
-		return isDeleted;
+		if(isDeleted !=null){
+		logger.info("successfully deleted "+isDeleted);
+		}
+		//return isDeleted;
+		
 		
 	}
 	
@@ -147,6 +157,11 @@ public class ProjectMembersServiceTest {
 		logger.info("getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId added successfully"+getAllProjectMembersIdsByTimesheet.size());
 	}
 	@Test
+	public void getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId() throws Exception{
+		List<ProjectMembers> getAllTerminatedProjectmembesId = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(3l);
+		logger.info("getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId "+getAllTerminatedProjectmembesId.size());
+	}
+	@Test
 	public void getAllProjectsByUserId() throws Exception{
 		List<ProjectMembers> getAllProjectsByUserId = projectMembersService.getAllProjectsByUserId(1l);
 		  logger.info("getAllProjectsByUserId added successfully"+getAllProjectsByUserId.size());
@@ -154,26 +169,35 @@ public class ProjectMembersServiceTest {
 	@Test
 	public void getAllProjectMembersCountByProjectId() throws Exception{
 		Integer getAllProjectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(1l);
-		logger.info("getAllProjectMembersCountByProjectId added successfully"+getAllProjectMembersCount.intValue());
+		logger.info("getAllProjectMembersCountByProjectId added successfully"+getAllProjectMembersCount);
 	}
 	@Test
 	public void updateProjectMemberDeletedReason() throws Exception{
-		Integer updateProjectMemberDeleted = projectMembersService.updateProjectMemberDeletedReason(1l,"hi hello DeleteReason");
-		logger.info("updateProjectMemberDeletedReason added successfully"+updateProjectMemberDeleted.intValue());
+		ProjectMembers projectmemebers = new ProjectMembers();
+		projectmemebers.setId(3l);
+		projectmemebers.setStatus("MEMBER_IN_ACTIVE");
+		Employees employees = new Employees();
+		employees.setId(2l);
+		employees.setEmployeeId("3l");
+		projectmemebers.setEmployee(employees);
+		Integer updateProjectMemberDeleted = projectMembersService.updateProjectMemberDeletedReason(2l,"hi hello DeleteReason");
+		
+		logger.info("updateProjectMemberDeletedReason added successfully"+updateProjectMemberDeleted);
+		
 	}
 	@Test
 	public void getAllProjectsByUserIdAndStatus() throws Exception{
-		List<ProjectMembers> getAllProjectsByUserIdAndStatus = projectMembersService.getAllProjectsByUserIdAndStatus(1l,"INACTIVE");
+		List<ProjectMembers> getAllProjectsByUserIdAndStatus = projectMembersService.getAllProjectsByUserIdAndStatus(1l,"In-Active");
 		logger.info("getAllProjectsByUserIdAndStatus added successfully"+getAllProjectsByUserIdAndStatus.size());
 	}
 	@Test
 	public void updateEndDateOfProjectMemberId() throws Exception{
 		Integer updateEndDateOfProject = projectMembersService.updateEndDateOfProjectMemberId(new Date(),1l);
-		logger.info("updateEndDateOfProjectMemberId added successfully"+updateEndDateOfProject.intValue());
+		logger.info("updateEndDateOfProjectMemberId added successfully"+updateEndDateOfProject);
 	}
 	@Test
 	public void getEmployeeAssignedProjectsCount() throws Exception{
 		Integer getEmployeeAssignedCount = projectMembersService.getEmployeeAssignedProjectsCount(1l,1l,1l);
-		logger.info("getEmployeeAssignedProjectsCount added successfully"+getEmployeeAssignedCount.intValue());
+		logger.info("getEmployeeAssignedProjectsCount added successfully"+getEmployeeAssignedCount);
 	}
 }

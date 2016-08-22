@@ -54,7 +54,7 @@ public class UserRoleServiceTest {
 		/*@Autowired
 		OrgLocationService locationService;*/
 		
-		//@Test
+		@Test
 		public void addUserRole() throws Exception{
 			UserRole userRole = new UserRole();
 			User user = new User();
@@ -81,7 +81,7 @@ public class UserRoleServiceTest {
 		}
 		
 		
-		//@Test
+		@Test
 		public void getLoginUserPrimaryRole() throws Exception{
 			
 			UserRole userRole = userRoleService.getLoginUserPrimaryRole(1L);
@@ -89,7 +89,7 @@ public class UserRoleServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		
 		public void getUsersListByLocationId() throws Exception{
 			
@@ -111,7 +111,7 @@ public class UserRoleServiceTest {
 		}
 
 		
-		//@Test
+		@Test
 		public void getUsersListByUserNameAndLocationId() throws Exception{
 			
 			String userName = "ajith";
@@ -123,7 +123,7 @@ public class UserRoleServiceTest {
 			logger.info("getUsersListByUserNameAndLocationId successfully updated"+userslist);
 		}
 		
-		//@Test
+		@Test
 		public void getUsersListByRoleAndNameAndLocationId() throws Exception{
 			
 			UserRole userRole = new UserRole();
@@ -138,7 +138,7 @@ public class UserRoleServiceTest {
 			logger.info("getUsersListByRoleAndNameAndLocationId"+userName);
 		}
 		
-		//@Test
+		@Test
 		public void getUsersListByUserStateAndLocationId() throws Exception{
 			
 			String userState = "ACTIVE"; 
@@ -150,7 +150,7 @@ public class UserRoleServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getUsersBasedOnUserRoles() throws Exception{
 			
 			List<UserRole> userRole = userRoleService.getUsersBasedOnUserRoles( );
@@ -159,7 +159,7 @@ public class UserRoleServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getApproverAssignedUsers() throws Exception{
 			
 			String userState = "ACTIVE"; 

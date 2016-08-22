@@ -281,7 +281,7 @@
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Status</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg" name="Satatus">
+								<select class="form-control select-bg" name="Satatus" id="Satatus">
 									<option>Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
@@ -333,20 +333,20 @@
 								<label class="col-lg-3">Frist Name<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName"
+									<input type="text" class="form-control" value="" name="firstName" id="firstName"
 										field-name="Frist Name" data-validation="required validate_Space validate_length length2-100">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-lg-3">Last Name</label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
+									<input type="text" class="form-control" value="" name="lastName" id="lastName">
 								</div>
 							</div>
 							<div class="form-group" id="EmailIdDiv">
 								<label class="col-lg-3">Email <span class="text-danger">*</span></label>
 								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="EmailId" id="EmailId" field-name="Email"
+									<input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email"
 										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
@@ -666,7 +666,7 @@
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/saveOrgRelations?json=" + jsonData,
+				url : sourceleadUrl + "/saveClientFromProject?json=" + jsonData,
 				success : function(data) {
 					var json = JSON.parse(data);
 					var output = "";
@@ -722,9 +722,7 @@
 
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/saveProject?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData,
+						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							if (result == 'projectDashboard') {
 								location.replace(sourceleadUrl
@@ -931,8 +929,8 @@
 			
 		}
 		// $('#add_employee').attr('data-dismiss','modal');
-		$('#employeeFirstName').val('');
-		$('#employeeLastName').val('');
+		$('#firstName').val('');
+		$('#lastName').val('');
 		$('#employeeEmail').val('');
 	}
 </script>
@@ -1065,9 +1063,9 @@
 <script type="text/javascript">
 	function flushEmployee() {
 		$("#add_employee").removeAttr("disabled");
-		$('#employeeFirstName').val('');
+		$('#firstName').val('');
 		$('#EmailId').val('');
-		$('#employeeLastName').val('');
+		$('#lastName').val('');
 		$('#invoiceFrequency').val('');
 		$(".error").removeClass("error");
 		$('#newEmployee').find('p.jquery_form_error_message').remove();
@@ -1093,6 +1091,31 @@
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
+				
+				//this is section is for compare project end date with current date
+				//if project end date is less than current date, the project state should be COMPLETED
+				var dummyDate = $(this).val();
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+                if(dd<10){
+                    dd='0'+dd
+                } 
+                if(mm<10){
+                    mm='0'+mm
+                } 
+                var today = yyyy+'-'+mm+'-'+dd;
+				if(dummyDate < today){
+					$("#Satatus").empty();
+					$('#Satatus').append('<option >Completed</option>');
+				}else{
+					$("#Satatus").empty();
+					$('#Satatus').append('<option >Started</option>');
+					$('#Satatus').append('<option >In-Progress</option>');
+					$('#Satatus').append('<option >Completed</option>');
+					$('#Satatus').append('<option >On-Hold</option>');
+				}
 			}
 		});
 

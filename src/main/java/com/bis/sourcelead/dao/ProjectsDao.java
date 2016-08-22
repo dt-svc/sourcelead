@@ -31,11 +31,11 @@ public interface ProjectsDao {
 	
 	public Integer projectIdValidation(Long projectId) throws Exception;
 	
-	Collection<Projects> getAllProjects() throws Exception;
+	List<Projects> getAllProjects() throws Exception;
 	
-	Collection<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception;
+	List<Projects> getAllLoginUserProjectsList(List<Long> projectIds,Long orgLocationId) throws Exception;
 	
-	Collection<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception;
+	List<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception;
 
 	public Integer updateStartDateOfProjectId(Date startDate, Long projectId);
 	

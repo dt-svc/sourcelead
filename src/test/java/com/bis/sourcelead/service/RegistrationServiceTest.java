@@ -32,8 +32,10 @@ public class RegistrationServiceTest {
 	@Autowired
 	RegistrationService registrationService;
 	
+	@Autowired
+	PasswordResetsSevice passwordResetsSevice;
 	
-	@Test
+	/*//@Test
 	public void addRegistration() throws Exception{
 		Registration registration = new Registration();
 		registration.setCompanyName("tesla");
@@ -50,7 +52,7 @@ public class RegistrationServiceTest {
 		registrationService.addRegistration(registration, user, " ", " ");
 		logger.info("registration added successfully");
 		
-	}
+	}*/
 	//@Test
 	public void sendEmail() throws Exception{
 		Registration registration = new Registration();
@@ -132,11 +134,15 @@ public class RegistrationServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void deletePasswordResets() throws Exception{
-			PasswordResets passwordResets = new PasswordResets();
-			passwordResets.setId((long)1);
-			registrationService.deletePasswordResets(passwordResets);
-			logger.info("deletePasswordResets added successfully");
+			//PasswordResets passwordResets = new PasswordResets();
+			//passwordResets.setId((long)1l);
+			PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(3l);
+			if(passwordResets != null){
+				registrationService.deletePasswordResets(passwordResets);
+				logger.info("deletePasswordResets added successfully"+passwordResets.getStatus());
+			}
+			
 }
 }
