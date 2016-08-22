@@ -41,7 +41,7 @@ public class RolesDaoImpl implements RolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Roles> getRoles(Long orgLocationId) throws Exception {
+	public List<Roles> getRoles(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
 				+ "where actionRoles.orgLocations.id = :orgLocationId) ")
