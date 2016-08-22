@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.io.FileNotFoundException;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
@@ -89,6 +91,24 @@ public class SourceleadCustomExceptions {
 	 */
 	@ExceptionHandler(ClassCastException.class)
 	public String customErrorPageClassCast(ClassCastException exception){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		exception.printStackTrace();
+		if(auth != null && auth.getPrincipal() != null){
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
+			return "redirect:/errorPage";
+		 }
+		 else{
+			 return "redirect:/login";
+		 }
+	}
+	
+	/**
+	 * Returns Error Page when FileNotFoundException occurred
+	 * @param exception
+	 * @return error jsp page
+	 */
+	@ExceptionHandler(FileNotFoundException.class)
+	public String customErrorPageFileNotFound(FileNotFoundException exception){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		exception.printStackTrace();
 		if(auth != null && auth.getPrincipal() != null){
