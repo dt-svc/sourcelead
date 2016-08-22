@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.impl.OrgLocationsServiceImpl;
 import com.mchange.util.AssertException;
 
@@ -66,10 +67,10 @@ public class OrgLocationsServiceTest {
 		
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(1L);
+		org.setId(7L);
 
 		User user = new User();
-		user.setId(1L);
+		user.setId(7L);
 
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
@@ -84,23 +85,20 @@ public class OrgLocationsServiceTest {
 		orgLocations.setUpdatedBy("Prasanna");
 		orgLocations.setUpdatedDate(new Date());
 		orgLocationService.addOrgLocations(orgLocations);
-		System.out.println("Successfully Added!!!!");
+		logger.info("addOrgLocation successfully " + orgLocations.getState());
 	}
 
-	// @Test
+	 @Test
 	public void getOrgLocations() throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
-		System.out.println("get value of ind" + orgLocations.getOrg());
-	}
+		if(orgLocations != null)
+		{
+		logger.info("getOrgLocations " + orgLocations.getCity());
+	}}
 
-	// @Test
-	public void deleteOrgLocations() throws Exception {
-		long l = 4;
-		orgLocationService.deleteOrgLocations(l);
-		System.out.println("Successfully deleted!!!!");
-	}
+	 
 
-	// @Test
+	@Test
 	public void updateOrgLocations() throws Exception {
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
@@ -121,41 +119,83 @@ public class OrgLocationsServiceTest {
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setUpdatedBy("Prasanna");
 		orgLocations.setUpdatedDate(new Date());
-		orgLocationService.updateOrgLocations(orgLocations);
+		orgLocations = orgLocationService.updateOrgLocations(orgLocations);
+		logger.info("updateOrgLocations " + orgLocations.getId());
 	}
 
-	//@Test
+	@Test
 	public void getAllOrgLocations() throws Exception {
-		/*
-		OrgLocations orgLocations = new OrgLocations();
-		
-		List<String> messages = Arrays.asList("Hello", "World!", "How", "Are", "You");
-		
-		List<String> messageslist = Arrays.asList("Hello", "World!", "How", "Are", "You");
-		
-		when( orgLocationsDao.getAllOrgLocations()).thenReturn( messages );
-		Assert.assertEquals(messages, messageslist);*/
 		
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		logger.info("getAllOrgLocations " + orgLocationsList.size());
 	}
 	
-	//@Test
+	@Test
 	public void getOrgLocationsByLocationCode() throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setLocationCode("sleadUS");
 		orgLocations = orgLocationService.getOrgLocationsByLocationCode(orgLocations.getLocationCode());
-		System.out.println("locations are..."+orgLocations.getCountry());
-	}
+		if(orgLocations != null)
+		{
+		logger.info("getOrgLocationsByLocationCode " + orgLocations.getCountry());
+	}}
 	
-	//@Test
+	@Test
 	public void getOrgLocationsByOrgCode() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(2L);
+		orgLocations.setId(1l);
+		orgLocations.setLocationCode("sleadIN");
+		org.setId(1L);
+		org.setOrgCode("slead");
 		orgLocations.setOrg(org);
-		orgLocations = orgLocationService.getOrgLocationsByOrgCode(orgLocations.getOrg().getId().toString());
-		System.out.println("locations are..."+orgLocations.getCountry());
+		orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+		if(orgLocations != null)
+		{
+		logger.info("getOrgLocationsByOrgCode " + orgLocations.getCountry());
+	}}
+	
+	@Test
+	public void saveOrgLocations() throws Exception{
+		OrgLocations orgLocations = new OrgLocations();
+		OrgSettings orgsettings = new OrgSettings();
+		Org org = new Org();
+		org.setId(1l);
+		orgLocations.setOrg(org);
+		org.setOrgName("BIS");
+		orgsettings.setId(3);
+		orgsettings.setCity("hyd");
+		orgsettings.setZipcode("34567");
+		orgsettings.setFax("789");
+		orgsettings.setPhone("9087656789");
+		orgLocations.setId(3l);
+		orgLocations.setLocationCode("sleadIN");
+		orgLocations.setCity("hyd");
+		orgLocations.setZipCode("34567");
+		orgLocations.setFax("789");
+		orgLocations.setPhone("9087656789");
+		
+		orgLocations = orgLocationService.saveOrgLocations(orgsettings,orgLocations);
+		logger.info("saveOrgLocations " + orgLocations.getId());
 	}
-
+	
+	@Test
+	public void findByEmail() throws Exception{
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations = orgLocationService.findByEmail("abc@gmail.com");
+		if(orgLocations != null)
+		{
+		logger.info("findByEmail " + orgLocations.getId());
+	}
+	}
+	//@Test
+	public void deleteOrgLocations() throws Exception {
+		
+		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(2l);
+		if (deleteOrglocations != null)
+		{
+		logger.info("deleteOrgLocations successfully ") ;
+	}
+	}
 }

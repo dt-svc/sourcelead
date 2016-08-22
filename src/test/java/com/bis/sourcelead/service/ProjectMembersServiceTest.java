@@ -126,7 +126,7 @@ public class ProjectMembersServiceTest {
 	
 	@Test
 	public void deleteProjectMemberById() throws Exception{
-		Boolean isDeleted =  projectMembersService.deleteProjectMemberById(6L);
+		Boolean isDeleted =  projectMembersService.deleteProjectMemberById(1L);
 		if(isDeleted !=null){
 		logger.info("successfully deleted "+isDeleted);
 		}

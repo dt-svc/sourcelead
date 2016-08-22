@@ -30,7 +30,7 @@ public class EmployeesServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeesServiceTest.class);
 
-	//@Test
+	@Test
 	public void addEmployee() throws Exception{
 		
 		Employees employee = new Employees();
@@ -58,10 +58,10 @@ public class EmployeesServiceTest {
 		employee.setRatePer("Weekly");
 		employee.setDailyHours("8");
 		employeesService.addEmployee(employee);
-		System.out.println("Successfully Added!!!!");
+		System.out.println("addEmployee " +employee.getCountry());
 	}
 	
-	//@Test
+	@Test
 	public void updateEmployee() throws Exception{
 		
 		Employees employee = new Employees();
@@ -88,39 +88,35 @@ public class EmployeesServiceTest {
 		employee.setRate("1000000");
 		employee.setRatePer("Weekly");
 		employee.setDailyHours("8");
-		employeesService.updateEmployee(employee);
-		System.out.println("Successfully updated!!!!");
+		employee = employeesService.updateEmployee(employee);
+		logger.info("updateEmployee successfully " + employee.getId());
 	}
 	
-	//@Test
+	@Test
 	public void getEmployee() throws Exception{
 		Employees employee = employeesService.getEmployee("3");
-		System.out.println("the value is "+employee.getCountry());
+		
+		logger.info("getEmployee" + employee.getStatus());
 	}
 
-	//@Test
-	public void deleteEmployee() throws Exception{
-		Boolean flag =	employeesService.deleteEmployee("3");
-		System.out.println("Successfully deleted!!!!");
-	}
-	
-	//@Test
+		
+	@Test
 	public void getEmployeeByUserId() throws Exception{
 		Employees employee = employeesService.getEmployeeByUserId(3L);
-		System.out.println("Successfully Retrieved..."+employee.getCreatedBy());
+		logger.info("getEmployeeByUserId " + employee.getStatus());
 	}
 	
-	//@Test
+	@Test
 	public void validateEmployeeId() throws Exception{
 		Employees employee = new Employees();
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1L);
 		employee.setOrgLocations(orgLocations);
 		Boolean flag = employeesService.validateEmployeeId("fd5dfg", employee.getOrgLocations().getId());
-		System.out.println("Successfully Retrieved..."+flag);
+		logger.info("validateEmployeeId " + flag);
 	}
 	
-	//@Test
+	@Test
 	public void getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId() throws Exception{
 		Employees employee = new Employees();
 		employee.setId(3L);
@@ -132,30 +128,46 @@ public class EmployeesServiceTest {
 		orgLocations.setId(1L);
 		employee.setOrgLocations(orgLocations);
 		employee = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(employee.getEmployeeId(), employee.getUser().getId(), employee.getOrgLocations().getId());
-		System.out.println("Successfully Retrieved..."+employee.getCreatedBy());
+		logger.info("getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId " + employee.getEmployeeId());
 	}
 	
-	//@Test
+	@Test
 	public void getAllEmployees() throws Exception{
 		List<Employees> emplist= employeesService.getAllEmployees();
-		System.out.println("Successfully Retrieved..."+emplist.size());
+		logger.info("getAllEmployees" + emplist.size());
 	}
 	
-	//@Test
+	@Test
 	public void getEmployeesExcludeTeamMembers() throws Exception{
 		List<Employees> emplist= employeesService.getEmployeesExcludeTeamMembers(1L, 2L);
-		System.out.println("Successfully Retrieved..."+emplist.size());
+		if(emplist != null)
+		{
+		logger.info("getEmployeesExcludeTeamMembers " + emplist.size());
 	}
-	
-	//@Test
+	}
+	@Test
 	public void getAllEmployeesByOrgLocationId() throws Exception{
 		Collection<Employees> emplist= employeesService.getAllEmployeesByOrgLocationId(1L, 1L, 1L);
-		System.out.println("Successfully Retrieved..."+emplist.size());
+		if(emplist != null)
+		{
+		logger.info("getAllEmployeesByOrgLocationId " + emplist.size());
+	}
 	}
 	
 	@Test
 	public void validateEmployeeEmailId() throws Exception{
 		Boolean flag =  employeesService.validateEmployeeEmailId(4L, "raj@gmail.com");
-		System.out.println("Successfully Retrieved..."+flag);
+		if(flag != null)
+		{
+		logger.info("validateEmployeeEmailId " + flag.TRUE);
 	}
+	}
+	@Test
+		public void deleteEmployee() throws Exception{
+			Boolean flag =	employeesService.deleteEmployee("3");
+			if(flag != null)
+			{
+			System.out.println("Successfully deleted!!!!");
+			}
+		}
 }

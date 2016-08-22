@@ -53,8 +53,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
-		Collection<ProjectTasks> list = tasksDao.getAllTasksByProjectId(projectId);
+	public List<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
+		List<ProjectTasks> list = tasksDao.getAllTasksByProjectId(projectId);
 		return list;
 	}
 
