@@ -11,10 +11,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
@@ -618,7 +616,34 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	          SimpleDateFormat format = new SimpleDateFormat(pattern);
 	          Date currentStartDate = null;
 	          Date currentEndDate = null;
-			 if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+	          Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			   startCal.setLenient(false);
+			   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
+				      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
+				    	  startCal.setTime(currentWeekStartDate);
+				      }
+				      else if(employeeEndDate.before(currentWeekStartDate)){
+				    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				    	  endCal.setLenient(false);
+				    	  endCal.setTime(employeeEndDate);
+				    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
+				      }
+				      else if(employeeStartDate.after(currentWeekStartDate)){
+				    	  startCal.setTime(employeeStartDate);
+				      }
+	          }
+			  else{
+	               Date sDate  =  Constants.DMY.parse(startDate);
+				   startCal.setTime(sDate);
+			  }
+			   startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
+		       endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
+		         
+		         ts = getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),memberId,employeeId);
+		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
+		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
+			/* if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
 				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 				      Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					   startCal.setLenient(false);
@@ -678,7 +703,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(currentStartDate,currentEndDate, user.getId(),memberId,employeeId);
 		                
 	                 }
-	        }
+	        }*/
 	        
 			if(currentStartDate !=null){
 	      	   	ts.setStartDateStr(Constants.DF_DMY.format(currentStartDate));
@@ -698,14 +723,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
 	         sb.append(" <div></td>");
 	         
-	         sb.append("<td><div>");
-		       if(employeeStartDate.before(currentStartDate)){
-		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+	           sb.append("<td><div>");
+	        	Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			  if(leftNavStartDate != null){
+		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
 	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
-	     		
-	     	   if(currentEndDate.before(employeeEndDate)){
-	     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+	     		Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+	    		if(rightNavStartDate != null){
+	     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 	     	   }
 	     	   sb.append("    </div>");
 	     	   sb.append("    </td>");

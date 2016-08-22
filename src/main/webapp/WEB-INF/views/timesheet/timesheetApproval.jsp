@@ -160,7 +160,6 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 		   	type: "POST",
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
-				    	
 				    	if( data.indexOf('DOCTYPE') >= 0){
 				    		location.replace(sourceleadUrl);
 				    	}else{
