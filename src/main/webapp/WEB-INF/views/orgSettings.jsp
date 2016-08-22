@@ -179,7 +179,7 @@ function cancel(){
 							<div class="form-group">
 							<label class="col-md-3">Company</label>
 							<div class="col-md-9">
-							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Alphanumeric validate_Space validate_length length2-50"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-50"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							<div class="form-group">
@@ -191,7 +191,7 @@ function cancel(){
 							<div class="form-group comp-textarea">
 							<label class="col-md-3">About</label>
 							<div class="col-md-9">
-							<textarea rows="2" name="aboutCompany" field-name="About" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							<textarea rows="2" name="aboutCompany" field-name="About" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
 							</div>
 							</div>
 						</div>
@@ -205,7 +205,7 @@ function cancel(){
 						<div class="form-group mt">
 							<label class="col-md-3">State</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="state" field-name="State"  data-validation="validate_Space validate_length length2-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.state}" />
+							<input type="text"  class="form-control" name="state" field-name="State"  data-validation="validate_Space validate_Alphabet validate_length length2-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.state}" />
 							</div>
 						</div>
 						<div class="form-group mt">
@@ -274,6 +274,10 @@ var validationSettings = {
 	          		var frm = $('#orgSettings_form').serializeFormJSON();
 	            	var con = JSON.stringify(frm);
 				    con = con.replace(/[{}]/g, "");
+				    
+				  //It will escape all the special characters
+    		        var jsonData = encodeURIComponent(con);
+				    
 	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		var form = $('#orgSettings_form')[0];
@@ -295,7 +299,7 @@ var validationSettings = {
 	          	          contentType:false,
 	              	      dataType : 'json',
 	              	      
-	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
+	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 	                      	success: function(result) {
 	  			        	 if((result == 'home')){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
