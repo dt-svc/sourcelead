@@ -31,7 +31,7 @@ public interface OrgDao {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public boolean isClientNameValid(String clientName) throws Exception;
+	public boolean isClientNameValid(String clientName ,Long orgLocationId) throws Exception;
 	
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;
 	
