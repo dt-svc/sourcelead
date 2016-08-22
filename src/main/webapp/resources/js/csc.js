@@ -5,10 +5,49 @@ function cscInit(){
 	       ,tagLimit:1
 	       ,placeholderText:""
            ,afterTagRemoved: function(evt, ui){
-                   $('#location').tagit('removeAll');
+                   $('#multiState').tagit('removeAll');
+                   $('#multiCity').tagit('removeAll');
+                   $('#state').tagit('removeAll');
+                   $('#city').tagit('removeAll');
                    return false;
            }
 	   });
+	 
+	 
+	 $('#multiState').tagit({
+	       singleField: true,
+	       singleFieldNode: $('#multiStateAutoComplete')
+	       ,placeholderText:""
+	       ,afterTagRemoved: function(evt, ui){
+                   $('#multiCity').tagit('removeAll');
+                   return false;
+           }
+	   });
+	 
+	 $('#multiCity').tagit({
+	       singleField: true,
+	       singleFieldNode: $('#multiCityAutoComplete')
+	       ,placeholderText:""
+	 });
+	 
+	 
+	 $('#state').tagit({
+	       singleField: true,
+	       singleFieldNode: $('#stateAutoComplete')
+	       ,tagLimit:1
+	       ,placeholderText:""
+	       ,afterTagRemoved: function(evt, ui){
+                 $('#city').tagit('removeAll');
+                 return false;
+         }
+	   });
+	 
+	 $('#city').tagit({
+	       singleField: true,
+	       singleFieldNode: $('#cityAutoComplete')
+	       ,tagLimit:1
+	       ,placeholderText:""
+	 });
 	 
 	 $('#location').tagit({
 	       singleField: true,
@@ -17,37 +56,4 @@ function cscInit(){
 	       ,placeholderText:""
 	   });
 };
-
- 
-/* function getAllCountries(sourceleadUrl){
-	 alert("kii"+sourceleadUrl);
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#country').tagit({
-	        		availableTags: json
-		       	 	});
-	        },
-	        error: function(e){
-	        }
-	    });
-		
-}*/
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-
-
-
 
