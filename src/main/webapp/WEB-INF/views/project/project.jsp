@@ -281,7 +281,7 @@
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Status</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg" name="Satatus">
+								<select class="form-control select-bg" name="Satatus" id="Satatus">
 									<option>Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
@@ -1091,6 +1091,31 @@
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
+				
+				//this is section is for compare project end date with current date
+				//if project end date is less than current date, the project state should be COMPLETED
+				var dummyDate = $(this).val();
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+                if(dd<10){
+                    dd='0'+dd
+                } 
+                if(mm<10){
+                    mm='0'+mm
+                } 
+                var today = yyyy+'-'+mm+'-'+dd;
+				if(dummyDate < today){
+					$("#Satatus").empty();
+					$('#Satatus').append('<option >Completed</option>');
+				}else{
+					$("#Satatus").empty();
+					$('#Satatus').append('<option >Started</option>');
+					$('#Satatus').append('<option >In-Progress</option>');
+					$('#Satatus').append('<option >Completed</option>');
+					$('#Satatus').append('<option >On-Hold</option>');
+				}
 			}
 		});
 

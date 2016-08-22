@@ -394,7 +394,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	var json = JSON.parse(data);
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
-    		if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+    		if(status != 'COMPLETED'){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
         	}
@@ -442,7 +442,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
 	                	result = result + '	<td><div>';
-	                	if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+	                	if(status != 'COMPLETED'){
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
 	                	}
 	                	result = result +'</div></td>';

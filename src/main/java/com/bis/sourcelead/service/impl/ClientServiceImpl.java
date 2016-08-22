@@ -168,10 +168,10 @@ public class ClientServiceImpl implements ClientService{
 			
 			org.setOrgType("Guest");
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
-			org.setCreatedDate(new Date());
+			org.setCreatedDate(commonUtil.currentDate());
 			org.setUpdatedBy(loginUserCode);
 			org.setCreatedBy(loginUserCode);
-			org.setUpdatedDate(new Date());
+			org.setUpdatedDate(commonUtil.currentDate());
 			return org;
 
 		}

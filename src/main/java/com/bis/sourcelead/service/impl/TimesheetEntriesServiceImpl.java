@@ -46,6 +46,7 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -88,6 +89,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Autowired
 	EmployeesService employeesService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -124,7 +128,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	    */
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
-		cal.setTime(new Date());
+		cal.setTime(commonUtil.currentDate());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		
@@ -1293,10 +1297,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										
 										  
 										timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
-										timesheetEntries.setStartDate(new Date());
-										timesheetEntries.setEndDate(new Date());
-										timesheetEntries.setCreatedDate(new Date());
-										timesheetEntries.setUpdatedDate(new Date());
+										timesheetEntries.setStartDate(commonUtil.currentDate());
+										timesheetEntries.setEndDate(commonUtil.currentDate());
+										timesheetEntries.setCreatedDate(commonUtil.currentDate());
+										timesheetEntries.setUpdatedDate(commonUtil.currentDate());
 										
 										ProjectTasks projectTasks = new ProjectTasks();
 

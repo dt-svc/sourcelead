@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class OrgLocationsServiceImpl implements OrgLocationService {
@@ -29,6 +30,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
@@ -127,10 +131,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		}
 		String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 		clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
-		clientOrgLocations.setCreatedDate(new Date());
+		clientOrgLocations.setCreatedDate(commonUtil.currentDate());
 		clientOrgLocations.setCreatedBy(loginUserCode);
 		clientOrgLocations.setUpdatedBy(loginUserCode);
-		clientOrgLocations.setUpdatedDate(new Date());
+		clientOrgLocations.setUpdatedDate(commonUtil.currentDate());
 		
 		Set<OrgRelations> orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, loginUserCode);
 		clientOrgLocations.setOrgRelationsList(orgRelationsList);

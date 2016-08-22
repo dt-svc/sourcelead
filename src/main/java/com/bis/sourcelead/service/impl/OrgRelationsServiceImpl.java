@@ -13,12 +13,16 @@ import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Autowired
 	OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
@@ -87,7 +91,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setLocationId(orgLocations);
 		orgRelations.setStatus("ACTIVE");
 		orgRelations.setCreatedBy(loginUserCode);
-		orgRelations.setCreatedDate(new Date());
+		orgRelations.setCreatedDate(commonUtil.currentDate());
 		
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
