@@ -409,7 +409,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
             result = result + '	     <th>End Date</th>';
             result = result + '	     <th>Approved hrs</th>';
             result = result + '	     <th>Rejected hrs</th>';
-            result = result + '	     <th>Open hrs</th>';
+            result = result + '	     <th>Saved hrs</th>';
             result = result + '	     <th>Wait for approval</th>';
             result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';
@@ -436,11 +436,10 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 		                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
 		                }
 	                }
-	                
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
