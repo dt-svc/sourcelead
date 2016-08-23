@@ -25,7 +25,7 @@ public class OrgRelationServiceTest {
 	@Autowired
 	OrgRelationsService orgRelationsService;
 
-	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrgRelationServiceTest.class);
 
 	@Test
 	public void addOrgRelations() throws Exception {

@@ -60,7 +60,7 @@ public class OrgLocationsServiceTest {
         orgLocationService = new OrgLocationsServiceImpl();
     }*/
 
-	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrgLocationsServiceTest.class);
 
 	@Test
 	public void addOrgLocation() throws Exception {

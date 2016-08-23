@@ -120,10 +120,10 @@ public class UserServiceTest {
 	
 	@Test
 	public void findByUserName() {
-		String username = "SourceLeadAdmin";
-		logger.debug("In UserServiceTest class...");
+		String username = "demomail123@gmail.com";
+		
 		User user = userService.findByUserName(username);
-		Assert.assertEquals("SourceLeadAdmin",user.getUserName());
+		logger.debug("In UserServiceTest class... " +user.getEmail() );
 		
 	}
 	
@@ -185,7 +185,7 @@ public class UserServiceTest {
    public void findByEmail() throws Exception{
 		
 		User user = new User();
-		String email = "ramu@tcs.com";
+		String email = "demomail123@gmail.com";
 		
 		user = userService.findByEmail(email);
 		logger.info(" success fully findByEmail "+user.getFirstName());

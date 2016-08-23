@@ -24,23 +24,24 @@ public class PasswordResetsServiceTest {
 	@Autowired
 	PasswordResetsSevice passwordResetsSevice;
 
-	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(PasswordResetsServiceTest.class);
 
 	//@Test
 	public void savePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
 		User user = new User();
-		user.setId(3L);
+		user.setId(2L);
 		passwordResets.setUser(user);
 		passwordResets.setEmail("info@hangonn.com");
-		passwordResets.setVerificationCode("VERF");
-		passwordResets.setStatus("Active");
+		passwordResets.setVerificationCode("qwer");
+		passwordResets.setStatus("Open");
 		passwordResets.setCreatedDate(new Date());
 		passwordResets.setCreatedBy("SourceLead");
 		passwordResets.setUpdatedDate(new Date());
 		passwordResets.setUpdatedBy("Sourcelead");
+		//passwordResets.setVerificationCode("DZFnn");
 		passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
-		logger.info("Saved Successfully..."+passwordResets.getEmail());
+		logger.info("Saved Successfully..."+passwordResets.getStatus());
 	}
 	
 	//@Test
@@ -50,21 +51,24 @@ public class PasswordResetsServiceTest {
 		user.setId(3L);
 		passwordResets.setUser(user);
 		passwordResets = passwordResetsSevice.getPasswordResetsByUserId(passwordResets.getUser().getId());
-		logger.info("Retrieved Successfully..."+passwordResets.getEmail());
+		if(passwordResets != null)
+		{
+		logger.info("getPasswordResetsByUserId "+passwordResets.getEmail());
+	}}
+	
+	@Test
+	public void getPasswordResetsByVerificationCode() throws Exception {
+		PasswordResets passwordResets = new PasswordResets();
+		passwordResets.setVerificationCode("qwer");
+		passwordResets = passwordResetsSevice.getPasswordResetsByVerificationCode(passwordResets.getVerificationCode());
+		
+		logger.info("getPasswordResetsByVerificationCode "+passwordResets.getUser());
 	}
 	
 	//@Test
-	public void getPasswordResetsByVerificationCode() throws Exception {
-		PasswordResets passwordResets = new PasswordResets();
-		passwordResets.setVerificationCode("VERF");
-		passwordResets = passwordResetsSevice.getPasswordResetsByVerificationCode(passwordResets.getVerificationCode());
-		logger.info("Retrieved Successfully..."+passwordResets.getEmail());
-	}
-	
-	@Test
 	public void deletePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
-		passwordResets.setId(1L);
+		passwordResets.setId(2L);
 		User user = new User();
 		user.setId(3L);
 		passwordResets.setUser(user);
@@ -76,6 +80,6 @@ public class PasswordResetsServiceTest {
 		passwordResets.setUpdatedDate(new Date());
 		passwordResets.setUpdatedBy("Sourcelead");
 		passwordResets = passwordResetsSevice.deletePasswordResets(passwordResets);
-		logger.info("Deleted Successfully..."+passwordResets.getEmail());
-	}
+		
+		}
 }

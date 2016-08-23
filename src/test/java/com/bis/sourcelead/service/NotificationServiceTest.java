@@ -25,7 +25,7 @@ public class NotificationServiceTest {
 	
 	@Autowired
 	NotificationsService notificationsService;
-	private static final Logger logger = LoggerFactory.getLogger(LoginServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(NotificationServiceTest.class);
 	
 	@Test
 	public void saveNotification() throws Exception{

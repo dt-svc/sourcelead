@@ -58,18 +58,14 @@ public class UserRoleServiceTest {
 		public void addUserRole() throws Exception{
 			UserRole userRole = new UserRole();
 			User user = new User();
+			Roles roles = new Roles();
+			roles.setId(2l);
 			user.setId(2L);
 		//	userService.addUser(user);
 			userRole.setUser(user);
 			OrgLocations orgLocations = new OrgLocations();
 			orgLocations.setId(1L);
 			userRole.setOrgLocations(orgLocations);
-			Roles roles = null;
-			try {
-				roles = rolesService.getRolesByRoleName("ROLE_ADMIN");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			userRole.setRoles(roles);
 			userRole.setIsPrimary(1);
 			userRole.setCreatedDate(new Date());
