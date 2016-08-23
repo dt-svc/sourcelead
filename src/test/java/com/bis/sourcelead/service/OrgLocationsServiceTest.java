@@ -60,17 +60,19 @@ public class OrgLocationsServiceTest {
         orgLocationService = new OrgLocationsServiceImpl();
     }*/
 
-	private static final Logger logger = LoggerFactory.getLogger(OrgLocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrgLocationsServiceTest.class);
 
 	@Test
 	public void addOrgLocation() throws Exception {
 		
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
+
 		org.setId(2L);
 
 		User user = new User();
 		user.setId(3L);
+
 
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
@@ -145,9 +147,11 @@ public class OrgLocationsServiceTest {
 	public void getOrgLocationsByOrgCode() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		orgLocations.setId(3l);
-		orgLocations.setLocationCode("CWymIN");
-		org.setId(2L);
+
+		orgLocations.setId(1l);
+		orgLocations.setLocationCode("sleadIN");
+		org.setId(1L);
+
 		org.setOrgCode("slead");
 		orgLocations.setOrg(org);
 		orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
@@ -161,7 +165,9 @@ public class OrgLocationsServiceTest {
 		OrgLocations orgLocations = new OrgLocations();
 		OrgSettings orgsettings = new OrgSettings();
 		Org org = new Org();
-		org.setId(2l);
+
+		org.setId(1l);
+
 		orgLocations.setOrg(org);
 		org.setOrgName("BIS");
 		orgsettings.setId(3);
@@ -182,17 +188,21 @@ public class OrgLocationsServiceTest {
 	
 	@Test
 	public void findByEmail() throws Exception{
-		OrgLocations orgLocations = new OrgLocations();
+
 		orgLocations = orgLocationService.findByEmail("vishnu123@hcl.com");
 		logger.info("findByEmail " + orgLocations.getId());
 	}
 	@Test
 	public void deleteOrgLocations() throws Exception {
 		
-		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(3l);
-		if (deleteOrglocations != null)
+		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(2l);
+
+		orgLocations = orgLocationService.findByEmail("abc@gmail.com");
+		if(orgLocations != null)
 		{
-		logger.info("deleteOrgLocations successfully ") ;
+		logger.info("findByEmail " + orgLocations.getId());
 	}
 	}
+
+	
 }

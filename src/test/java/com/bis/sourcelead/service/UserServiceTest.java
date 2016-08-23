@@ -64,7 +64,9 @@ public class UserServiceTest {
 	@Test
 	public void addUser() throws Exception{
 		User user = new User();
-        user.setId(3L);
+
+        user.setId(1L);
+
 		user.setCreatedBy("ajith");
 		user.setCreatedDate(new Date());
 		user.setDocFile(new byte[4096]);
@@ -101,7 +103,7 @@ public class UserServiceTest {
 		 jsonObj.put("phoneNumber", "890876590");
 		 jsonObj.put("roleType", "Admin");
 		 
-		 jsonObj.put("employeeId", "123");
+		 jsonObj.put("employeeId", "1");
 		 jsonObj.put("rate", "12345");
 		 jsonObj.put("ratePer", "Hourly");
 		 jsonObj.put("dayHours", "8");
@@ -119,18 +121,20 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void findByUserName() {
-		String username = "SourceLeadAdmin";
-		logger.debug("In UserServiceTest class...");
+	public void findByUserName() {	
+
+		String username = "demomail123@gmail.com";
+		
 		User user = userService.findByUserName(username);
-		Assert.assertEquals("SourceLeadAdmin",user.getUserName());
+		logger.debug("In UserServiceTest class... " +user.getEmail() );
+
 		
 	}
 	
 	@Test
 	public void sendEmail() throws Exception{
 		User user = new User();
-//		user.setId(10l);
+		user.setId(1l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
 		user.setDocFile(new byte[4096]);
