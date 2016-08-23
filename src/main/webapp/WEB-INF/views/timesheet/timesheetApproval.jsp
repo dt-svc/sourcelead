@@ -38,10 +38,14 @@ $(document).ready(function() {
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId,        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
-                	 $("#timesheetApprList").removeAttr("style");
-                	 $("#timesheetApprList").empty();
-                     $("#timesheetApprList").append(data); 
-                     pagination();
+               		if( data.indexOf('DOCTYPE') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	}else{
+			    		 $("#timesheetApprList").removeAttr("style");
+	                	 $("#timesheetApprList").empty();
+	                     $("#timesheetApprList").append(data); 
+	                     pagination();
+			    	}
                  }else{
                 	 $("#timesheetApprList").removeAttr("style");
   	    	         var result ="";
@@ -156,12 +160,13 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 		   	type: "POST",
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
-				       /*  $("row"+submissionId).empty();	  */ 
-				        $("#row"+projectMemberUserId).empty();
-				        $("#row"+projectMemberUserId).append(data);
-				        pagination();
-				        /* $("#row"+projectMemberUserId).empty();	 
-				        $("#row"+projectMemberUserId).append(data);	 */
+				    	if( data.indexOf('DOCTYPE') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	}else{
+				    		$("#row"+projectMemberUserId).empty();
+					        $("#row"+projectMemberUserId).append(data);
+					        pagination();
+				    	}
 				        
 				    }
 		    });
@@ -666,11 +671,12 @@ function saveMyTimesheet(status){
 <!-- this script is for save Reject Submission and approve submission reason -->
 <script>
 function saveRejectSubmission(local,employeeId,startDate,endDate){
-	     $("#timesheetApprList").empty();
-	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
-	     var msg = $("#reject"+local+"message").val(); 
-         var sourceleadUrl ='${sourceleadUrl}';
-         
+	
+		 var msg = $("#reject"+local+"message").val(); 
+	     var sourceleadUrl ='${sourceleadUrl}';
+	     
+	     $("#timesheetApprList").empty(); 
+	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');  
          $(".mask_time").fadeOut(200);
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
@@ -826,10 +832,11 @@ $(document).ready(function() {
 function clearTimesheet(){ 
 	for (var i = 1; i < 8; i++){
 	 /* for (var p = 1; p < 200; p++){   */
-		 $('.timesheetrProject').each(function() {
+		 $('.NEW').each(function() {
 		 var p = this.id;
 		 for (var j = 1; j < 10; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"submission"+p+"textArea"+i+"Id").val(""); 
 		 }
 		 });  
 	}

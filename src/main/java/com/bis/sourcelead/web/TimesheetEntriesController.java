@@ -18,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
  
 
@@ -33,6 +34,9 @@ public class TimesheetEntriesController {
 	@Autowired
 	public TimeSheetExcelView timeSheetExcelView;
 	
+	@Autowired
+	public CommonUtil commonUtil;
+	
 	
 	/**
 	 * @author sarath kumar punnana 
@@ -44,14 +48,7 @@ public class TimesheetEntriesController {
 	public ModelAndView registration(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			
-			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.TimeSheet);
-			
-			request.getSession().setAttribute("sessionData",sessionData);
+			commonUtil.highLightMenu(Constants.TimeSheet, request);
 		 
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheet");

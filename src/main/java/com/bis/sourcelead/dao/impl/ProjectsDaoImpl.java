@@ -502,7 +502,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
  */
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+		public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
@@ -536,7 +536,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
  */
 @Override
 @Transactional(rollbackFor = { Exception.class })
-public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
+public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
 	
 	Session session = this.sessionFactory.getCurrentSession();
 	Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
