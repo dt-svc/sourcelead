@@ -357,7 +357,7 @@ function firstname(name)
                                result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
                             }
                             else{
-                                 result = result + '<td><div><a onclick="reActiveProject(\''+json.id+'\',\''+json.projectName+'\',\''+startDate+'\',\''+endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">&nbsp;Re-Active</a></div></td>';
+                                 result = result + '<td><div><a onclick="reActiveProject(\''+json.id+'\',\''+json.projectName+'\',\''+startDate+'\',\''+endDate+'\',\''+json.projectEndDateStr+'\',\''+userId+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">&nbsp;Re-Active</a></div></td>';
                             }
 							result = result + '</div></td> '; 
 						   
@@ -409,6 +409,8 @@ function firstname(name)
 							 var dt = new Date(selected);
 				             dt.setDate(dt.getDate());
 				             
+				             
+				             
 				             //Main project end date
 				             var projectEndDate = json.projectEndDateStr;
 				             var endDate = "";
@@ -416,7 +418,6 @@ function firstname(name)
 				            	 endDate = new Date(projectEndDate);
 			 		             endDate.setDate(endDate.getDate()); 
 				             }
-				             
 							 $('#endDate'+json.id).datepicker({
 					    		      dateFormat: 'yy-mm-dd',
 					    		      minDate: dt,
@@ -1356,10 +1357,11 @@ function reActiveUser(userId){
 </div>
 <!-- Add Team modal popup ends -->
 <script>
-function reActiveProject(projectMemberId,ProjectName,startDate,endDate){  
+function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEndDateStr,userId){  
   
    var result = "";
    result = result + '<input type="hidden" name="projectMemberId" id="projectMemberId" value="'+projectMemberId+'" >';
+   result = result + '<input type="hidden" name="projectMemberUserId" id="projectMemberUserId" value="'+userId+'" >';
    result = result +'<div class="modal-body clearfix">';
    result = result +'<div class="form-horizontal custom-form clearfix">';
    result = result +'<div class="col-xs-12 col-md-12 col-lg-12" >';
@@ -1396,32 +1398,60 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate){
    $("#ReAssignProjectId").empty();
    $("#ReAssignProjectId").append(result);
 	  
-	  if(startDate  != ""){
+   var reStatertDate = $('#Re-StartDate').val();
+   
 		  
-		  $('#Re-StartDate').datepicker({
-		      dateFormat: 'yy-mm-dd',
-			  minDate:endDate,
-		      onSelect: function (selected) {
-		            var dt = new Date(selected);
-		            dt.setDate(dt.getDate() + 1);
-		            $("#Re-EndDate").datepicker("option", "minDate", dt);
-		        }
-		  });
-	  }
    
-   
-   var reStatertDate = $('#Re-StartDate').val()
-  
-   $('#Re-EndDate').datepicker({
+  var reStatertDate = $('#Re-StartDate').val()
+  if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
+	
+	  $('#Re-StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
-	      minDate:reStatertDate,
+		  minDate:endDate,
+		  maxDate:projectEndDateStr,
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#Re-EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      minDate:endDate,
+	      maxDate:projectEndDateStr,
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
 	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
-   
+  }
+  else{
+	  
+	  $('#Re-StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+		  minDate:endDate,
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  
+	
+	  $('#Re-EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      minDate:endDate,
+	      maxDate:reStatertDate,
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  }	  
    
 }
 
@@ -1430,6 +1460,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate){
 <script type="text/javascript">
  function reAssignProject() {
 	 var projectMemberId = '${projectMemberId}';
+	 var projectMemberUserId = document.getElementById("projectMemberUserId").value; 
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1437,19 +1468,19 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate){
 				dateFormat : 'yyyy/mm/dd' 
 		   }; 
 	 if ($('#reAssignProject_form').validate(false, validationSettings)){ 
+		 var projectMemberId = $("#projectMemberId").val();
 	        var frm = $('#reAssignProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
 	        var sourceleadUrl ='${sourceleadUrl}';
-	        alert("con"+con);
 	        $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
-		        	 	$("#assignProject").modal('hide');
-		        		userProjectDetails(userId,"All");
-		        		getUnAssignedProjects(userId);
+		        	 	$("#Re-AssignProject").modal('hide');
+		        		userProjectDetails(projectMemberUserId,"All");
+		        		getUnAssignedProjects(projectMemberUserId);
 		        	}
 		        },
 		        error: function(e){

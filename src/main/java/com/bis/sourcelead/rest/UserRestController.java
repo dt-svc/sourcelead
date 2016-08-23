@@ -563,6 +563,48 @@ public class UserRestController {
 			json = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json);
 			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 try {
+			  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+			  	  if(projectMembers != null){
+			  		  String status = Constants.MEMBER_ACTIVE;
+					  projectMembers.setUpdatedDate(new Date());
+					  projectMembers.setUpdatedBy(user.getUserCode());
+					  
+					  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(); 
+					  ProjectMembersHistory pmh = new  ProjectMembersHistory(); 
+					  
+					  pmh.setProjectMemberId(projectMembers);
+			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+			  		  String pattern = "yyyy-MM-dd";
+		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    	      if(jsonObj.has("Re-StartDate")){
+		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));
+						  pmh.setProjectAssignedDate(startDate);
+		    	      }
+		    	      if(jsonObj.has("Re-EndDate")){
+		    	    	  Date endDate = format.parse(jsonObj.getString("Re-EndDate"));
+						  pmh.setProjectTerminationDate(endDate);
+		    	      }
+		    	      pmh.setCreatedDate(commonUtil.currentDate());
+		    	    	if(user.getUserCode() != null){
+		    	    		pmh.setCreatedBy(user.getUserCode());	
+		    	    	}
+		    	    	
+					  pmh.setUpdatedDate(commonUtil.currentDate());
+					  pmh.setUpdatedBy(user.getUserCode());
+					  memberHistoryList.add(pmh);
+					  projectMembers.setMemberHistoryList(memberHistoryList);
+					  
+					  projectMembers.setStatus(status);
+					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
+					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
+					  commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
+			  	   }
+				
+			    } catch (Exception e) {
+			   }
+			
 			return "success";
 		}
 		

@@ -674,7 +674,7 @@
 							+ "<option value=''>-- Select Client --</option>";
 					for (var i = 0; i < json.length; i++) {
 						var opt = json[i];
-						output = output + "<option value='" +opt.id+ "'>"
+						output = output + "<option value='" +opt.orgid+ "'>"
 								+ opt.orgName + "</option>";
 					}
 					$("#addClientId").empty();
