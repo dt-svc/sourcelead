@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class DisplayImageRestController {
 				}
 				out.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
 	}
