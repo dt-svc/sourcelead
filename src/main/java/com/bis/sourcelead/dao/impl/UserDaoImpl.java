@@ -176,6 +176,24 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
    	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserById start");
+		String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id =:orgLocationsId) and user.id =:id ";
+		users = session.createQuery(query).setCacheable(true).setLong( "id", Id ).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		logger.debug("getUserById end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

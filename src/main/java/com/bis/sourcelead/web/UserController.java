@@ -18,8 +18,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -41,7 +43,8 @@ public class UserController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	
+	@Autowired
+	UserService userService;
 	
 	/**
 	 * To forward user creation jsp page
@@ -79,10 +82,12 @@ public class UserController {
 		ModelAndView model = new ModelAndView();
 		
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			// to get a project list by userId
+			
+			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+			if(user != null){
+				// to get a project list by userId
                 List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 				model.addObject("org_projectsList", projectsList);
-				
 				
 				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
 				TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
@@ -95,7 +100,11 @@ public class UserController {
 				
 				request.setAttribute("userId", userId);
 				model.setViewName("users/userSummary");
-				model.addObject("sourceleadUrl", sourceleadUrl);
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
 		
 		return model;
 
