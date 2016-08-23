@@ -20,7 +20,7 @@ public interface ProjectTasksDao {
     
     public List<ProjectTasks> getAllTasks()throws Exception;
     
-    public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
+    public List<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
      
-    public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
+    public List<ProjectTasks> getAllSourceleadTasks()throws Exception;
 }

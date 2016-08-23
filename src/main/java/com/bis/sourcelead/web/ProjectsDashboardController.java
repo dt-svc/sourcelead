@@ -69,7 +69,7 @@ public class ProjectsDashboardController {
         sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
-        Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+        List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
         	orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
         }
@@ -79,7 +79,7 @@ public class ProjectsDashboardController {
         List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
         if(!projectIds.isEmpty()){
-        Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
+        List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
