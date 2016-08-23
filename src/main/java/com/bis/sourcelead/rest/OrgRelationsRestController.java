@@ -56,10 +56,10 @@ public class OrgRelationsRestController {
 			@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception
 			 
 	{
-		String resultJson = null;
+		String resultJson;
 		
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
