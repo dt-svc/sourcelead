@@ -121,7 +121,7 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation-optional="true" data-validation="validate_Alphabet validate_length length2-100" />
+							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
@@ -351,6 +351,9 @@ var validationSettings = {
             		var frm = $('#profileSettings_form').serializeFormJSON();
                 	var con = JSON.stringify(frm);
     			    con = con.replace(/[{}]/g, ""); 
+    			    
+    			    //It will escape all the special characters
+    		        var jsonData = encodeURIComponent(con);
             		
             		var sourceleadUrl ='${sourceleadUrl}';
             		var form = $('#profileSettings_form')[0];
@@ -369,7 +372,7 @@ var validationSettings = {
             	          contentType:false,
                 	      dataType : 'json',
                 	      
-                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                         	success: function(result) {
     			        	 if(result == 'home'){
     			        		location.replace(sourceleadUrl+"/userProfile");  

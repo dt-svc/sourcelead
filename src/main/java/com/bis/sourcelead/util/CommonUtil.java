@@ -65,6 +65,11 @@ public class CommonUtil {
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
+	
+	public static Date currentDate() {
+        return new Date();
+    }
+	
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
 		if(tasksList != null && !tasksList.isEmpty()){

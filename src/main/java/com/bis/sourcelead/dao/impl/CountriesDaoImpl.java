@@ -76,10 +76,10 @@ public class CountriesDaoImpl implements CountriesDao{
 			e.printStackTrace();
 		} finally {
 			try {
-				if (con != null) {
+				/*if (con != null) {
 					con.close();
-				}
-			} catch (SQLException sqlE) {
+				}*/
+			} catch (Exception sqlE) {
 				sqlE.printStackTrace();
 			}
 		}
