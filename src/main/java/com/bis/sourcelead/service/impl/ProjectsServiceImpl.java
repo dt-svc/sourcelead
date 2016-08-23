@@ -659,7 +659,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
 			    if(projects.getProjectStatus().equals(Project_Status.COMPLETED)){
-			    	projects.setEndDate(currentDate);
+			    	if(currentDate.before(projects.getStartDate())){
+			    		projects.setEndDate(projects.getStartDate());
+			    	}else{
+			    		projects.setEndDate(currentDate);
+			    	}
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
 			    }
