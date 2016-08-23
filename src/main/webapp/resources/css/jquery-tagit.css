@@ -8,6 +8,8 @@
 /* workarounds */
 html .ui-autocomplete {
 	width: 300px !important;
+	padding: 10px;
+	border-radius:3px !important;
 }
 
 /* without this, the menu expands to 100% in IE6 */
@@ -29,7 +31,9 @@ html .ui-autocomplete {
 	padding: 0;
 	float: left;
 	clear: left;
-	width: 91%;
+	width:100%;
+	line-height: 25px;
+    margin-bottom: 2px;
 }
 
 .ui-menu .ui-menu-item a {
@@ -141,9 +145,11 @@ html .ui-autocomplete {
 }
 
 .tagit.ui-widget.ui-widget-content.ui-corner-all {
-	height: 32px;
+	/* height: 32px; */
 	border-radius: 4px;
 	overflow: hidden;
+	height:auto;
+	margin-bottom: 0;
 }
 
 /* Optional scoped theme for tag-it which mimics the zendesk widget. */
@@ -165,7 +171,7 @@ ul.tagit li.tagit-choice { /* -moz-border-radius: 6px;*/
 	background: none;
 	background-color: #DEE7F8 !important;
 	font-weight: normal;
-	border-radius:0 !important;
+	border-radius:3px !important;
 }
 ul.tagit li.tagit-choice:hover, ul.tagit li.tagit-choice.remove {
     background-color: #bbcef1 !important;
@@ -247,6 +253,7 @@ ul.tagit li.tagit-choice-editable {
 ul.tagit li.tagit-new {
 	padding: .25em 4px .25em 0px;
 	width: 50%;
+	padding: 3px 0;
 }
 
 ul.tagit li.tagit-choice a.tagit-label {
