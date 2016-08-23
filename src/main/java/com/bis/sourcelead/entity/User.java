@@ -73,7 +73,7 @@ public class User {
 	private String status;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "REPORTING_MANAGER_ID", nullable = false)
+	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User user;
 	
 	@Column(name = "IS_MAIL_SENT")

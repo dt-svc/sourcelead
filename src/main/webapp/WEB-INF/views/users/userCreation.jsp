@@ -265,6 +265,19 @@
 	                    <label class="radio-inline">
 	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);validateRole();">Employee
 	                    </label>
+	                    
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Account Manager"  onclick="roleTypeValidation(this);validateRole();">Account Manager
+	                    </label>
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="HR Manager" onclick="roleTypeValidation(this);validateRole();">HR Manager
+	                    </label>
+	                    <label class="radio-inline">
+	                      <input type="radio" name="role" value="Sales Manager" onclick="roleTypeValidation(this);validateRole();">Sales Manager
+	                    </label>
+	                     <label class="radio-inline">
+	                      <input type="radio" name="role" value="Recruiter" onclick="roleTypeValidation(this);validateRole();">Recruiter
+	                    </label>
                     
                     <span class="hidden">Select Role</span> 
                     <input type="hidden" name="roleType" id="roleValue" field-name="Role" data-validation="required" />

@@ -98,6 +98,7 @@ window.onload = function () {
 		if(loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN'){
 			var userRole = document.getElementById("userRole").value;
 	   	}
+		
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
