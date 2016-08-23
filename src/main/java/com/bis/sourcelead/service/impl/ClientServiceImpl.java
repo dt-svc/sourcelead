@@ -312,6 +312,10 @@ public class ClientServiceImpl implements ClientService{
 				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
 					org.setOrgName(jsonObj.getString("clientName"));
 				}
+				
+				if(jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
+					org.setWebSite(jsonObj.getString("companyWebsite"));
+				}
 				orgService.updateOrg(org);
 				}	
 				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
