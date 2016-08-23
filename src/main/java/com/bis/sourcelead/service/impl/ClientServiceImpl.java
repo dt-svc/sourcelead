@@ -138,6 +138,27 @@ public class ClientServiceImpl implements ClientService{
 		
 	}
 	
+	/**
+	 * @author VenkatKesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is for client saving.
+	 * 
+	 * @param jsonObj,user, orgLocations
+	 *  
+	 * @return void 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
+		
+		Org org = populateOrg(jsonObj, user.getUserCode());
+		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode());
+		org.setOrgLocationsList(orgLocationList);
+		orgService.addOrganization(org);
+	}
 	
 	/**
 	 * populating Org data
@@ -153,7 +174,7 @@ public class ClientServiceImpl implements ClientService{
 			org.setOrgType("Company");
 			
 			if(jsonObj.has("companyWebsite")){
-				org.setWebSite(jsonObj.getString("companyWebsite"));
+				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
 			}
 			if(jsonObj.has("webSite")){
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
@@ -161,10 +182,10 @@ public class ClientServiceImpl implements ClientService{
 			
 			org.setOrgType("Guest");
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
-			org.setCreatedDate(new Date());
+			org.setCreatedDate(commonUtil.currentDate());
 			org.setUpdatedBy(loginUserCode);
 			org.setCreatedBy(loginUserCode);
-			org.setUpdatedDate(new Date());
+			org.setUpdatedDate(commonUtil.currentDate());
 			return org;
 
 		}

@@ -357,7 +357,7 @@ function firstname(name)
                                result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
                             }
                             else{
-                                 result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                                 result = result + '<td><div><a onclick="reActiveProject(\''+json.id+'\',\''+json.projectName+'\',\''+startDate+'\',\''+endDate+'\',\''+json.projectEndDateStr+'\',\''+userId+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">&nbsp;Re-Active</a></div></td>';
                             }
 							result = result + '</div></td> '; 
 						   
@@ -409,6 +409,8 @@ function firstname(name)
 							 var dt = new Date(selected);
 				             dt.setDate(dt.getDate());
 				             
+				             
+				             
 				             //Main project end date
 				             var projectEndDate = json.projectEndDateStr;
 				             var endDate = "";
@@ -416,7 +418,6 @@ function firstname(name)
 				            	 endDate = new Date(projectEndDate);
 			 		             endDate.setDate(endDate.getDate()); 
 				             }
-				             
 							 $('#endDate'+json.id).datepicker({
 					    		      dateFormat: 'yy-mm-dd',
 					    		      minDate: dt,
@@ -1331,5 +1332,181 @@ function reActiveUser(userId){
 
 </script>
 
-
 <!-- end project scripts -->
+
+
+<!-- Modal content Re-Asign Project-->
+<div role="dialog" id="Re-AssignProject" class="modal fade">
+	<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button data-dismiss="modal" class="close" type="button">X</button>
+					<h4 class="modal-title">Re-Assign Project</h4>
+				</div>
+				<form:form id="reAssignProject_form" name="reAssignProject_form" method="post">
+				<div class="modal-body clearfix">
+					<div id ="ReAssignProjectId"></div>
+				</div>
+				</form:form>
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button" id="saveReAssignProject" onclick="reAssignProject();">Select</button>
+					<button data-dismiss="modal" class="btn btn-default" onclick="flushProject();" type="button">Cancel</button>
+				</div>
+			</div>
+	</div>
+</div>
+<!-- Add Team modal popup ends -->
+<script>
+function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEndDateStr,userId){  
+  
+   var result = "";
+   result = result + '<input type="hidden" name="projectMemberId" id="projectMemberId" value="'+projectMemberId+'" >';
+   result = result + '<input type="hidden" name="projectMemberUserId" id="projectMemberUserId" value="'+userId+'" >';
+   result = result +'<div class="modal-body clearfix">';
+   result = result +'<div class="form-horizontal custom-form clearfix">';
+   result = result +'<div class="col-xs-12 col-md-12 col-lg-12" >';
+   result = result +'<div class="form-group">';
+   result = result +'	<label class="col-lg-3">Project Name </label>';
+   result = result +'	<div class="col-lg-9">';
+   result = result +'		<input id="reAssignProjectName" type="text" class="form-control" value="'+ProjectName+'"  name="reAssignProjectName" readonly="readonly" class="form-control"></span>';
+   result = result +'	</div>';
+   result = result +'	</div>';
+   
+   
+   result = result +'<div class="form-group">';
+   result = result +'<label class="col-lg-3">Start date</label>';
+   result = result +'<div class="col-lg-9">';
+   result = result +'<div class="input-group">';
+   result = result +'	<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date">';
+   result = result +'</div>';
+   result = result +'</div>';
+   result = result +'</div>';
+   
+   result = result +'<div class="form-group">';
+   result = result +'<label class="col-lg-3">End date</label>';
+   result = result +'<div class="col-lg-9">';
+   result = result +'<div class="input-group">';
+   result = result +'<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate" />';
+   result = result +'</div>';
+   result = result +'</div>';
+   result = result +'</div>';
+
+   result = result +'</div>';
+   result = result +'</div>';
+   result = result +'	</div>';
+   
+   $("#ReAssignProjectId").empty();
+   $("#ReAssignProjectId").append(result);
+	  
+   var reStatertDate = $('#Re-StartDate').val();
+   
+		  
+   
+  var reStatertDate = $('#Re-StartDate').val()
+  if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
+	
+	  $('#Re-StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+		  minDate:endDate,
+		  maxDate:projectEndDateStr,
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#Re-EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      minDate:endDate,
+	      maxDate:projectEndDateStr,
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  }
+  else{
+	  
+	  $('#Re-StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+		  minDate:endDate,
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  
+	
+	  $('#Re-EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      minDate:endDate,
+	      maxDate:reStatertDate,
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  }	  
+   
+}
+
+</script>
+
+<script type="text/javascript">
+ function reAssignProject() {
+	 var projectMemberId = '${projectMemberId}';
+	 var projectMemberUserId = document.getElementById("projectMemberUserId").value; 
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#reAssignProject_form').validate(false, validationSettings)){ 
+		 var projectMemberId = $("#projectMemberId").val();
+	        var frm = $('#reAssignProject_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
+		        success: function(data) {
+		        	if(data="success"){
+		        	 	$("#Re-AssignProject").modal('hide');
+		        		userProjectDetails(projectMemberUserId,"All");
+		        		getUnAssignedProjects(projectMemberUserId);
+		        	}
+		        },
+		        error: function(e){
+		            
+		        }
+		    }); 
+	       return true;
+	  }else{
+		 $("#saveReAssignProject").removeAttr('data-dismiss','modal');
+		return false;
+	  }
+    }
+
+    $('body').on('blur', '#reAssignProject_form', function() {
+		$("#reAssignProject_form").showHelpOnFocus();;
+		$("#reAssignProject_form").validateOnBlur(false, validationSettings);  
+	});
+ 
+</script>
+<script type="text/javascript">
+function flushReProject(){
+	$('#Re-StartDate').val('');
+	$('#Re-EndDate').val('');
+	$(".error").removeClass("error");
+	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<!-- () -->
