@@ -833,6 +833,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 for(ProjectMembers pm : projectMembersList){
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
+			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
 				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
             }
