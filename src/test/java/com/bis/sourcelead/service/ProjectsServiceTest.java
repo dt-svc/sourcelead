@@ -191,7 +191,7 @@ public class ProjectsServiceTest {
 	 */
 	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
-		List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
+		List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 		for(User user : usrList){
 			projectsService.userEmailNotificationForTimeShhetSubmission(user);
 			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
@@ -201,7 +201,7 @@ public class ProjectsServiceTest {
 
 	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		List<User> usrList  = projectsService.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
+		List<User> usrList  = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 		
 	}

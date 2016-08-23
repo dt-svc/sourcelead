@@ -239,13 +239,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
-		Workbook createExcelworkbook = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
 
-		if (fileName.endsWith("xlsx")) {
-			createExcelworkbook = new XSSFWorkbook();
-		} else if (fileName.endsWith("xls")) {
-			createExcelworkbook = (Workbook) new HSSFWorkbook();
-		}
+//		if (fileName.endsWith("xlsx")) {
+//			createExcelworkbook = new XSSFWorkbook();
+//		} else if (fileName.endsWith("xls")) {
+//			createExcelworkbook = (Workbook) new HSSFWorkbook();
+//		}
 
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
