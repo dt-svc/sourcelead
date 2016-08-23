@@ -40,7 +40,7 @@ public class ProjectsServiceTest {
 		Projects projects = new Projects();
 		
 		User superiorUser = new User();
-		superiorUser.setId(1L);
+		superiorUser.setId(3L);
 		projects.setSuperiorUser(superiorUser);
 		projects.setProjectName("XYZ");
 		projects.setProjectStatus(Project_Status.getNameByValue("Started"));
@@ -156,7 +156,7 @@ public class ProjectsServiceTest {
 	}
 	@Test
 	public void getProjectByProjectSequenceNumber() throws Exception{
-		Projects updateEndDate = projectsService.getProjectByProjectSequenceNumber("01");
+		Projects updateEndDate = projectsService.getProjectByProjectSequenceNumber("301");
 		logger.info("getProjectByProjectSequenceNumber addded successfully"+updateEndDate);
 	}
 	@Test

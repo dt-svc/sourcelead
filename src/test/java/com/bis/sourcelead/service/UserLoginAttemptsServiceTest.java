@@ -45,7 +45,7 @@ public class UserLoginAttemptsServiceTest {
 		UserLoginAttempts UserLoginAttemptsByUserId = userLoginAttemptsService.getUserLoginAttemptsByUserId(3l);
 		logger.info("UserLoginAttemptsByUserId added successfully"+UserLoginAttemptsByUserId.getId());
 	}
-	//@Test
+	@Test
 	public void deleteUserLoginAttempts() throws Exception{
 		UserLoginAttempts userLoginAttempts = new UserLoginAttempts();
 		userLoginAttempts.setId(1l);

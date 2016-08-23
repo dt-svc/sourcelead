@@ -35,7 +35,7 @@ public class RegistrationServiceTest {
 	@Autowired
 	PasswordResetsSevice passwordResetsSevice;
 	
-	/*//@Test
+	@Test
 	public void addRegistration() throws Exception{
 		Registration registration = new Registration();
 		registration.setCompanyName("tesla");
@@ -52,7 +52,7 @@ public class RegistrationServiceTest {
 		registrationService.addRegistration(registration, user, " ", " ");
 		logger.info("registration added successfully");
 		
-	}*/
+	}
 	//@Test
 	public void sendEmail() throws Exception{
 		Registration registration = new Registration();
@@ -60,7 +60,7 @@ public class RegistrationServiceTest {
 		registrationService.sendEmail(registration);
 		logger.info("email added successfully");
 	}
-	//@Test
+	@Test
 	public void sendResetPasswordEmail() throws Exception{
 		User user = new User();
 		user.setId(10l);
@@ -70,7 +70,7 @@ public class RegistrationServiceTest {
 		logger.info("sendResetPasswordEmail added successfully");
 	}
 	
-	//@Test
+	@Test
 	public void sendUpdatePasswordEmail() throws Exception
 	{
 		User user=new User();
@@ -134,11 +134,11 @@ public class RegistrationServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void deletePasswordResets() throws Exception{
 			//PasswordResets passwordResets = new PasswordResets();
 			//passwordResets.setId((long)1l);
-			PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(2l);
+			PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(3l);
 			if(passwordResets != null){
 				registrationService.deletePasswordResets(passwordResets);
 				logger.info("deletePasswordResets added successfully"+passwordResets.getStatus());

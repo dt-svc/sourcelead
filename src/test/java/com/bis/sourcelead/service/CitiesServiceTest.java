@@ -41,25 +41,25 @@ public class CitiesServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
-	 @Test
+	@Test
 	public void addCities() throws Exception {
 
 		Cities city = new Cities();
-		city.setCountryCode("AP");
-		city.setCityName("SBC");
-		city.setStateCode("HY");
+		city.setCountryCode("APfddfe");
+		city.setCityName("SBCerddr");
+		city.setStateCode("HYrdde");
 		Cities cityser= citiesService.addCity(city);
 		System.out.println("Successfully Added!!!!");
 		logger.info("Cities added..."+ cityser.getCityName());
 	}
 
-	 @Test
+	@Test
 	public void getCity() throws Exception {
-		Cities cities = citiesService.getCity("US");
+		Cities cities = citiesService.getCity("AP");
 		logger.info(" get City added..."+  cities.getCountryCode());
 	}
 
-	//@Test
+	@Test
 	public void updateCity() throws Exception {
 		Cities city = new Cities();
 		city.setCountryCode("IND");
@@ -70,15 +70,15 @@ public class CitiesServiceTest {
 
 	}
 
-	 @Test
+	@Test
 	public void getAllCities() throws Exception {
 		List<Cities> cityList = citiesService.getAllCities();
 		logger.info(" get All Cities..."+  cityList.get(0));
 	}
 
-	 //@Test
+	 @Test
 	public void deleteCity() throws Exception {
-		Boolean flag = citiesService.deleteCity("IND");
+		Boolean flag = citiesService.deleteCity("APe");
 		logger.info(" get All Cities..."+  flag.booleanValue());
 		
 	}

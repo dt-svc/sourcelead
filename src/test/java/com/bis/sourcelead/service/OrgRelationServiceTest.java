@@ -31,7 +31,7 @@ public class OrgRelationServiceTest {
 	public void addOrgRelations() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(2L);
+		orglocations.setId(3L);
 		orgRelations.setClientLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
 		orgRelations.setRelationType("Client");
@@ -48,7 +48,7 @@ public class OrgRelationServiceTest {
 	public void getOrgRelationIdByOrgLocationIdAndClientLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(1L);
 		orgRelations.setClientLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
 		orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(3l, orgRelations.getClientLocationId().getId());
@@ -75,7 +75,7 @@ public class OrgRelationServiceTest {
 	public void getClientByOrgLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(3L);
 		orgRelations.setLocationId(orglocations);
 		orgRelations = orgRelationsService.getClientByOrgLocationId(orgRelations.getLocationId().getId());
 		if(orgRelations != null)
@@ -89,7 +89,7 @@ public class OrgRelationServiceTest {
 	public void getNumberOfProjectsPerClient() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
-		orglocations.setId(4L);
+		orglocations.setId(3L);
 		orgRelations.setLocationId(orglocations);
 		Long count = orgRelationsService.getNumberOfProjectsPerClient(orgRelations.getLocationId().getId());
 		if(count != null)

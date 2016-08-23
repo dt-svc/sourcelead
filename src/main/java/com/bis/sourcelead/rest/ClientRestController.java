@@ -370,9 +370,9 @@ public class ClientRestController {
 	 */
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
 	public @ResponseBody boolean isClientNameValidated(
-			@RequestParam(value = "clientName", required = false) String clientName) throws Exception {
-
-		return orgService.isClientNameValid(clientName);
+			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return orgService.isClientNameValid(clientName,orgLocation.getId());
 	}
 /**
  * Verifies Client Email
