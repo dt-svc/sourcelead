@@ -16,7 +16,7 @@ body {
     height:auto;
     }
 .timesheet_head ul {
-    margin:0px 0px; padding: 2px 245px 2px 0px; float:right;
+    margin:0px 0px; padding: 2px 245px 2px 0px; float:right;height:40px;
     }
 .timesheet_head ul.no_search {
     padding: 2px 15px 2px 0px;
