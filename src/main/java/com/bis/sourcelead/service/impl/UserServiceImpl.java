@@ -124,9 +124,9 @@ public class UserServiceImpl implements UserService {
       *  @return 
       */
 	@Override
-	public void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType) throws Exception {
+	public void storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType) throws Exception {
 	
-	 	User user = getUserDetails(jsonObj,users.getUserCode());
+	 	User user = getUserDetails(jsonObj,loginuser.getUserCode());
 	 	if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
 	 	}
@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
 		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,user,password);
+			sendEmail(user,loginuser,password);
 		}
 				
 		

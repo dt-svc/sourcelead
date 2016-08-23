@@ -214,7 +214,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  				    List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
  				    List<SubmissionApproverHierarchy> draft  =  submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
  				   
- 				    list.addAll(list);
+ 				    list.addAll(newlist);
 				    list.addAll(draft);
  				}
  			}
