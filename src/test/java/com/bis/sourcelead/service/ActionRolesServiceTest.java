@@ -37,7 +37,7 @@ public class ActionRolesServiceTest {
 	@Test
 	public void addActionRoles() throws Exception{
 		ActionRoles actionRoles = new ActionRoles();
-		/*actionRoles.setId(35L);*/
+		actionRoles.setId(1L);
 		TabActions tabActions = new TabActions();
 		tabActions.setId(1L);
 		actionRoles.setTabActions(tabActions);
