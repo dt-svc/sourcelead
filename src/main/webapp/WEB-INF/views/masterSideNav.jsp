@@ -38,8 +38,8 @@
 		                 </c:if>
 	                </c:if> 
 	                
-	                <c:if test="${userTabs.tabName == 'Jobs'}">
-	                   <li class="${sessionData.nav == 'Jobs' ? 'side-nav-active' : ''}"><a href="<c:url value='/jobsList'/>" title="Jobs"><span><i class="fa fa-briefcase"></i></span>Jobs</a></li>
+	                <c:if test="${userTabs.tabName == 'Requirement'}">
+	                   <li class="${sessionData.nav == 'Jobs' ? 'side-nav-active' : ''}"><a href="<c:url value='/jobsList'/>" title="Jobs"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
 	                </c:if>
 	                
 	                <c:if test="${SourceLeadWeb_ats == 'Y'}">
