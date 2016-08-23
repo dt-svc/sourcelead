@@ -307,21 +307,44 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(null != orgRelation){
 				OrgLocations orgLocations = orgRelation.getClientLocationId();
-						
+				Org org = orgLocations.getOrg();
+				if(null != org){
+				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
+					org.setOrgName(jsonObj.getString("clientName"));
+				}
+				
+				if(jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
+					org.setWebSite(jsonObj.getString("companyWebsite"));
+				}
+				orgService.updateOrg(org);
+				}	
 				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
 					orgLocations.setCity(jsonObj.getString("clientCity"));
+				}else{
+					orgLocations.setCity("");
 				}
 				if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
 					orgLocations.setState(jsonObj.getString("clientState"));
+				}else{
+					
+					orgLocations.setState("");
 				}
 				if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
 					orgLocations.setCountry(jsonObj.getString("clientCountry"));
+			     }else{
+			    	 
+			    	 orgLocations.setCountry("");
 			     }
 				if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
+				}else{
+					
+					orgLocations.setEmail("");
 				}
 				if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
 					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
+				}else{
+					orgLocations.setPhone("");
 				}
 				orgLocationService.updateOrgLocations(orgLocations);
 			}else{
