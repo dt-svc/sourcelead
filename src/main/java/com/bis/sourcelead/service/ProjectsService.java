@@ -56,11 +56,11 @@ public interface ProjectsService {
 	
 		Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 		
-		List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
+		List<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
 		void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
 		
-		List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
+		List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 		
 		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	

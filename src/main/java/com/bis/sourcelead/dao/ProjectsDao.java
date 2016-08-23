@@ -54,12 +54,12 @@ public interface ProjectsDao {
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 	
-	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception;
+	public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 	
 	public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
 	
-	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
+	public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 
 }
