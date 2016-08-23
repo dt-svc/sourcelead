@@ -721,6 +721,7 @@ function checkHours(){
 	
 	if(result != "" && result != null && result != 'undefined'){   
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").attr('style','display:block;');
 		$("#timeSheetErrorMsg").empty();
 		$("#timeSheetErrorMsg").append(outPut);
 		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
@@ -732,6 +733,7 @@ function checkHours(){
 	} 
 	
 	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").attr('style','display:none;');
 	    $("#timeSheetErrorMsg").empty();
 	}); 
 	
