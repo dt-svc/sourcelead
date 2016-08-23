@@ -50,7 +50,11 @@ public class LoginServiceTest {
 	public void checkAuthentication() throws Exception {
 
 		Boolean check = loginService.checkAuthentication("admin", "admin");
+<<<<<<< HEAD
+		logger.info("checkAuthentication "+check.FALSE);
+=======
 		logger.info("checkAuthentication "+check);
+>>>>>>> remotes/origin/Ajith_JUnit_Testcases
 	}
 
 }

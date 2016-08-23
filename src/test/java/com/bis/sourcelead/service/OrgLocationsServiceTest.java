@@ -67,10 +67,12 @@ public class OrgLocationsServiceTest {
 		
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(7L);
+
+		org.setId(2L);
 
 		User user = new User();
-		user.setId(7L);
+		user.setId(3L);
+
 
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
@@ -102,10 +104,10 @@ public class OrgLocationsServiceTest {
 	public void updateOrgLocations() throws Exception {
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
-		org.setId(1L);
+		org.setId(2L);
 
 		User user = new User();
-		user.setId(1L);
+		user.setId(3L);
 
 		orgLocations.setId(3L);
 		orgLocations.setOrg(org);
@@ -134,7 +136,7 @@ public class OrgLocationsServiceTest {
 	public void getOrgLocationsByLocationCode() throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setLocationCode("sleadUS");
+		orgLocations.setLocationCode("CWymIN");
 		orgLocations = orgLocationService.getOrgLocationsByLocationCode(orgLocations.getLocationCode());
 		if(orgLocations != null)
 		{
@@ -145,9 +147,11 @@ public class OrgLocationsServiceTest {
 	public void getOrgLocationsByOrgCode() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
+
 		orgLocations.setId(1l);
 		orgLocations.setLocationCode("sleadIN");
 		org.setId(1L);
+
 		org.setOrgCode("slead");
 		orgLocations.setOrg(org);
 		orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
@@ -161,7 +165,9 @@ public class OrgLocationsServiceTest {
 		OrgLocations orgLocations = new OrgLocations();
 		OrgSettings orgsettings = new OrgSettings();
 		Org org = new Org();
+
 		org.setId(1l);
+
 		orgLocations.setOrg(org);
 		org.setOrgName("BIS");
 		orgsettings.setId(3);
@@ -182,20 +188,21 @@ public class OrgLocationsServiceTest {
 	
 	@Test
 	public void findByEmail() throws Exception{
-		OrgLocations orgLocations = new OrgLocations();
+
+		orgLocations = orgLocationService.findByEmail("vishnu123@hcl.com");
+		logger.info("findByEmail " + orgLocations.getId());
+	}
+	@Test
+	public void deleteOrgLocations() throws Exception {
+		
+		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(2l);
+
 		orgLocations = orgLocationService.findByEmail("abc@gmail.com");
 		if(orgLocations != null)
 		{
 		logger.info("findByEmail " + orgLocations.getId());
 	}
 	}
-	//@Test
-	public void deleteOrgLocations() throws Exception {
-		
-		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(2l);
-		if (deleteOrglocations != null)
-		{
-		logger.info("deleteOrgLocations successfully ") ;
-	}
-	}
+
+	
 }

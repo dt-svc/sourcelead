@@ -183,19 +183,19 @@
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <input type="text" class="form-control" value="" name="employeeFirstName" id="employeeFirstName" field-name="Frist Name" data-validation="required">
+	                              <input type="text" class="form-control" value="" name="firstName" id="firstName" field-name="Frist Name" data-validation="required">
 	                              </div>
 	                            </div>
 	                            <div class="form-group">
 	                            <label class="col-lg-3">Last Name</label>
 	                            <div class="col-lg-9">
-	                              <input type="text" class="form-control" value="" name="employeeLastName" id="employeeLastName">
+	                              <input type="text" class="form-control" value="" name="lastName" id="lastName">
 	                              </div>
 	                            </div>
 	                            <div class="form-group" id="EmailIdDiv">
 	                            <label class="col-lg-3">Email <span class="text-danger">*</span></label>
 	                            <div class="col-lg-9">
-	                              <input type="text" class="form-control" value="" name="EmailId" id="EmailId" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
+	                              <input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
 	                              </div>
 	                            </div>
 	                            <div class="form-group">
@@ -394,7 +394,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	var json = JSON.parse(data);
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
-    		if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+    		if(status != 'COMPLETED'){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
         	}
@@ -409,7 +409,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
             result = result + '	     <th>End Date</th>';
             result = result + '	     <th>Approved hrs</th>';
             result = result + '	     <th>Rejected hrs</th>';
-            result = result + '	     <th>Open hrs</th>';
+            result = result + '	     <th>Saved hrs</th>';
             result = result + '	     <th>Wait for approval</th>';
             result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';
@@ -436,14 +436,13 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 		                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
 		                }
 	                }
-	                
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
 	                	result = result + '	<td><div>';
-	                	if(status != 'COMPLETED' && status !='' && status !='undefined' && status !=null){
+	                	if(status != 'COMPLETED'){
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
 	                	}
 	                	result = result +'</div></td>';
@@ -644,6 +643,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    	var json = JSON.parse(data);
    	var endDateStr = "";
    	var description = "";
+   	var clientName = "";
    	var projectSequeneNumber ="";
    	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
    		endDateStr =  json.endDateStr;
@@ -659,6 +659,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    		projectSequeneNumber = json.projectSequeneNumber;
    	}else{
    		projectSequeneNumber = "--";
+   	}
+   	if(json.client != null && json.client != '' && json.client != 'undefined'){
+   		clientName = json.client
+   	}else{
+   		clientName = "--";
    	}
 	var result = ""; 
     result = result + '      <div class="project_tabs_inn_table">';
@@ -713,18 +718,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	
 	result = result + '<div class="project_details_cta">';
 	result = result + '<strong>Client:</strong>';
-			for (var i = 0; i < json.clientName.length; i++) {
-				
-				var managers = json.clientName[i];
-				var projrctmanager = managers.split('&');
-		    	var name = projrctmanager[0];
-		    	var id = projrctmanager[1];
-		    	 if(json.relationId != null){
-		    	 result = result+  name;
-		    	 }else{
-		    		 result = result+  "---";
-		    	 }
-			}
+	result = result + '	<span>'+clientName+'</span><div class="clearfix"></div>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	result = result + '				<div class="project_details_cta">';
@@ -1281,8 +1275,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
         error: function(e){
         }
     });
-	$('#employeeFirstName').val('');
-	$('#employeeLastName').val('');}
+	$('#firstName').val('');
+	$('#lastName').val('');}
 </script>
 	$('#employeeEmail').val('');
 }
@@ -1347,8 +1341,8 @@ function assignEmployee(){
 <script type="text/javascript">
 function flushEmployee(){
 	 $("#add_employee").removeAttr("disabled");
-     $('#employeeFirstName').val('');
-     $('#employeeLastName').val('');
+     $('#firstName').val('');
+     $('#lastName').val('');
 	 $('#EmailId').val('');
 	 $('#invoiceFrequency').val('');
 	 $(".error").removeClass("error");
@@ -1502,17 +1496,17 @@ function getApproversLevel2(currentApproverId,manager2){
        	if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
        		endDateStr =  json.endDateStr;
        	}else{
-       		endDateStr = "--";
+       		endDateStr = "";
        	}
        	if(json.description != null && json.description != '' && json.description != 'undefined'){
        		description  = json.description;
        	}else{
-       		description = "NO DATA";
+       		description = "";
        	}
        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != '' && json.projectSequeneNumber != 'undefiend'){
        		projectSequeneNumber = json.projectSequeneNumber;
        	}else{
-       		projectSequeneNumber = "--";
+       		projectSequeneNumber = "";
        	}
        	
        	var result = "";
@@ -1595,7 +1589,7 @@ function getApproversLevel2(currentApproverId,manager2){
 		result = result + '	<label>Client</label>';
 		
 		 if(json.relationId != null){
-			result = result + '<select id="clientId" disabled="disabled">';
+			result = result + '<select id="clientId" disabled="disabled" name="clientId">';
 			 }else{
 				 result = result + '<select id="clientId" name="clientId">';
 			 }

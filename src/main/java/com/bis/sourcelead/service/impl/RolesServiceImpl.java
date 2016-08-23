@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class RolesServiceImpl implements RolesService{
 
 
 	@Override
-	public Collection<Roles> getRoles(Long orgLocationId) throws Exception {
+	public List<Roles> getRoles(Long orgLocationId) throws Exception {
 		return rolesDao.getRoles(orgLocationId);
 	}
 

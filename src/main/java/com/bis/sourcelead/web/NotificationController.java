@@ -38,7 +38,6 @@ public class NotificationController {
 	 * To change the notification mode as read
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
-
 	@Autowired
 	private NotificationsService notificationsService;
 
@@ -52,6 +51,7 @@ public class NotificationController {
 	 */
 	@RequestMapping(value = "/notificationsList")
 	public ModelAndView notificationsList(HttpServletRequest request) throws ParseException {
+		logger.debug("notificationsList");
 		ModelAndView model = new ModelAndView();
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");

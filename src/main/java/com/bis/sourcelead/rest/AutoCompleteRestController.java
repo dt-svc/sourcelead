@@ -22,8 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.States;
+import com.bis.sourcelead.entity.Webgeocities;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.WebgeocitiesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -54,6 +58,12 @@ public class AutoCompleteRestController {
 	
 	@Autowired
 	private CountriesService countriesService;
+	
+	@Autowired
+	private StatesService statesService;
+	
+	@Autowired
+	private WebgeocitiesService webgeocitiesService;
 	
 	@PostConstruct
 	public void init() {
@@ -99,7 +109,7 @@ public class AutoCompleteRestController {
     
     
     @RequestMapping(value = "/locationAutoComplete")
-    public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName, HttpServletRequest request) throws Exception {
+    public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
     	
     	ArrayList<String> countriesList = new ArrayList<String>();
     	
@@ -119,6 +129,52 @@ public class AutoCompleteRestController {
 		
         return result;
 	}
+    
+    @RequestMapping(value = "/getStatesByCountry")
+    public String getStatesByCountry(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
+    	
+    	ArrayList<String> statesList = new ArrayList<String>();
+    	
+    	List<States> states = statesService.getAllStatesByCountry(countryName);
+    	 
+    	if(states != null && !states.isEmpty())
+    	{
+    		for(States state: states){
+    			statesList.add(state.getStateName());
+    		}
+    	}
+		
+		String[] temp = (String[]) statesList.toArray(new String[] {});
+		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+		
+		String result = mJSONArray.toString();
+		
+        return result;
+	}
+    
+    
+    @RequestMapping(value = "/getCitiesByStateAndCountry")
+    public String getCitiesByStateAndCountry(@RequestParam(value="countryName", required=false) String countryName, @RequestParam(value="stateName", required=false) String stateName) throws Exception {
+    	
+    	ArrayList<String> citiesList = new ArrayList<String>();
+    	
+    	List<Webgeocities> cities = webgeocitiesService.getAllCitiesByStateAndCountry(stateName,countryName);
+    	 
+    	if(cities != null && !cities.isEmpty())
+    	{
+    		for(Webgeocities city: cities){
+    			citiesList.add(city.getCityName());
+    		}
+    	}
+		
+		String[] temp = (String[]) citiesList.toArray(new String[] {});
+		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+		
+		String result = mJSONArray.toString();
+		
+        return result;
+	}
+    
     
    
     private String toJSON(Object obj){

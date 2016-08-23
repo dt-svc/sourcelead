@@ -45,24 +45,28 @@ public class EMailJobScheduler {
 	ProjectsService projectsService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
+/**
+ * Fires at 7:30 PM Every Day	
+ */
+	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
+	public void runEMailJobScheduler() {
+		String emailJobSchedulerStatus = "";
+		logger.info("##########  E-Mail Job Scheduler started..! ##########");
+		Date date = new Date();
+		try {
+			List<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
+			for(User user : usrList){
+				projectsService.userEmailNotificationForTimeShhetSubmission(user);
+			}
+			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
+			logger.info("########## COMPLETED the E-Mail Job Scheduler with status as : "+emailJobSchedulerStatus+" ##########");
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+        
+    }
 	
-//	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
-//	public void runEMailJobScheduler() {
-//		String emailJobSchedulerStatus = "";
-//		logger.info("##########  E-Mail Job Scheduler started..! ##########");
-//		Date date = new Date();
-//		try {
-//			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
-//			logger.info("########## COMPLETED the E-Mail Job Scheduler with status as : "+emailJobSchedulerStatus+" ##########");
-//			
-//		} catch (Exception e) {
-//			logger.error("ERROR in " + e.getMessage());
-//		}
-//        
-//    }
-	
-	 // 5 16 * * 5 Fire 4:5 on every Friday
-	// Fire at every 5 Min */5 * * * * *
 	/**
 	 * Fires on first Friday on every month
 	 */
@@ -74,7 +78,7 @@ public class EMailJobScheduler {
 		try {
 			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
-			List<User> usrList = projectsService.getAllUesrTimeSheetSubmissionStatus();
+			List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 			for(User user : usrList){
 				projectsService.userEmailNotificationForTimeShhetSubmission(user);
 			}

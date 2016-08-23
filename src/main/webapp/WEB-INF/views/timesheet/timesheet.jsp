@@ -644,10 +644,11 @@ function removeTimeSheetRow(rowId,submissionId) {
 function clearTimesheet(){ 
 	for (var i = 1; i < 8; i++){
 	 /* for (var p = 1; p < 200; p++){   */
-	 $('.timesheetrProject').each(function() {
+	 $('.NEW').each(function() {
 		 var p = this.id;
 		 for (var j = 1; j < 10; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
 		 }
     /*  } */
 	 });  

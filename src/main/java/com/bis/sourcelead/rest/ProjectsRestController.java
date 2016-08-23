@@ -131,6 +131,17 @@ public class ProjectsRestController {
 	  * @return value is Project pojo
 	  * @throws Exception
 	  */
+	 
+	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
+	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json) throws Exception {
+		   
+		    json = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json);
+		    String outPut =  projectsService.storeProject(jsonObj);
+		    return outPut;		
+			 
+	   }
+	 
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
@@ -208,9 +219,11 @@ public class ProjectsRestController {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	
-		 	String addEmployeeProject = projectsService.storeEmployeeInProjectDashboard(loginOrgLocation, users, jsonObj); 
+		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS");
 		 	
-			return addEmployeeProject;
+		 	//String addEmployeeProject = projectsService.storeEmployeeInProjectDashboard(loginOrgLocation, users, jsonObj); 
+		 	
+			return "SUCCESS";
 		}
 	  
 	  /**

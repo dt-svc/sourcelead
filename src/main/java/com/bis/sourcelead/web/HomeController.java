@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
 	@Autowired
 	public LoginService loginService;
 	
@@ -79,7 +79,7 @@ public class HomeController {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** HomeController init with: " + applicationContext);
+		logger.debug(" *** HomeController init with: " + applicationContext);
 	}
 
 	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
@@ -94,30 +94,16 @@ public class HomeController {
 	}
 	
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public String customExceptionPage(HttpRequestMethodNotSupportedException e){
+	public String customExceptionPage(HttpRequestMethodNotSupportedException exception){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		 if(auth != null && auth.getPrincipal() != null){
+		 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(exception));
+		if(auth != null && auth.getPrincipal() != null){
 				return "redirect:/dashboard";
 		 }
 		 else{
 				return "redirect:/login";
 		 }
 	}
-   
-   
-   /*@RequestMapping(value = "/registration")
-	public ModelAndView registration() {
-		ModelAndView model = new ModelAndView();
-		model.setViewName("registration");
-
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
-		return model;
-
-	}*/
-   
-   
-   
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
@@ -238,7 +224,7 @@ public class HomeController {
 		}
 	 
 	    @RequestMapping(value = "/errorPage",method = RequestMethod.GET)
-		public ModelAndView displayErrorPage(HttpServletRequest request) {
+		public ModelAndView displayErrorPage() {
 			ModelAndView model = new ModelAndView();
 			model.setViewName("errorPage");
 			return model;

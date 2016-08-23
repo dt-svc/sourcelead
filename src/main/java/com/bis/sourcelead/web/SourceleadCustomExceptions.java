@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.io.FileNotFoundException;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
@@ -38,7 +40,6 @@ public class SourceleadCustomExceptions {
 		
 		if(auth != null && auth.getPrincipal() != null){
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
-        	//logger.error("Root cause for Exception is: "+exception.getMessage()); 
 			return "redirect:/errorPage";
 		 }
 		 else{
@@ -57,31 +58,66 @@ public class SourceleadCustomExceptions {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		exception.printStackTrace();
 		if(auth != null && auth.getPrincipal() != null){
-			logger.error("Root cause for Exception is: "+exception.getMessage()); 
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
 			return "redirect:/errorPage";
 		 }
 		 else{
 			 return "redirect:/login";
 		 }
-		
-		
 	}
 	
-/**
- * Returns Error Page if JSONException is  occurred	
- * @param exception
- * @return error jsp page
- */
-	// As of now commented need handle rest exceptions because its returning json result not View Object
-    /*@ExceptionHandler(JSONException.class)
-	public String customErrorPageJsonException(JSONException exception){
+	/**
+	 * Returns Error Page when ArrayIndexOutOfBoundsException occurred
+	 * @param exception
+	 * @return error jsp page
+	 */
+	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
+	public String customErrorPageArrayIndexOutOfBound(ArrayIndexOutOfBoundsException exception){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		exception.printStackTrace();
 		if(auth != null && auth.getPrincipal() != null){
-			exception.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
 			return "redirect:/errorPage";
 		 }
 		 else{
 			 return "redirect:/login";
 		 }
-	}*/
+	}
+	
+	/**
+	 * Returns Error Page when ClassCastException occurred
+	 * @param exception
+	 * @return error jsp page
+	 */
+	@ExceptionHandler(ClassCastException.class)
+	public String customErrorPageClassCast(ClassCastException exception){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		exception.printStackTrace();
+		if(auth != null && auth.getPrincipal() != null){
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
+			return "redirect:/errorPage";
+		 }
+		 else{
+			 return "redirect:/login";
+		 }
+	}
+	
+	/**
+	 * Returns Error Page when FileNotFoundException occurred
+	 * @param exception
+	 * @return error jsp page
+	 */
+	@ExceptionHandler(FileNotFoundException.class)
+	public String customErrorPageFileNotFound(FileNotFoundException exception){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		exception.printStackTrace();
+		if(auth != null && auth.getPrincipal() != null){
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
+			return "redirect:/errorPage";
+		 }
+		 else{
+			 return "redirect:/login";
+		 }
+	}
+
 }

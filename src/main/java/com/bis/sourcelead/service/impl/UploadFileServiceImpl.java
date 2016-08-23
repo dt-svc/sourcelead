@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
@@ -89,7 +91,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 	@Override
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
 
-		String isFileCreated = null;
+		String isFileCreated;
 		String fileName = multipartFile.getOriginalFilename();
 
 		if (!fileName.toLowerCase().endsWith("csv")) {
@@ -119,7 +121,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
 		
-		String fileName = multipartFile.getOriginalFilename();
 		CSVParser csvFileParser = null;
 		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(Constants.FILE_HEADER_MAPPING);
 		try {
@@ -177,10 +178,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 					
 					  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 					 if(isUserFound){
-							
 								createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
 					 }else{
-						 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
+						 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 					 }
 				}else{
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
@@ -196,7 +196,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		return isFileCreated;
 
@@ -239,13 +239,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
-		Workbook createExcelworkbook = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
 
-		if (fileName.endsWith("xlsx")) {
-			createExcelworkbook = new XSSFWorkbook();
-		} else if (fileName.endsWith("xls")) {
-			createExcelworkbook = (Workbook) new HSSFWorkbook();
-		}
+//		if (fileName.endsWith("xlsx")) {
+//			createExcelworkbook = new XSSFWorkbook();
+//		} else if (fileName.endsWith("xls")) {
+//			createExcelworkbook = (Workbook) new HSSFWorkbook();
+//		}
 
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
@@ -254,161 +254,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
-			Workbook workbook = null;
+			Workbook workbook;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
-			if (fileName.toLowerCase().endsWith("xlsx")) {
-//				workbook = new XSSFWorkbook(fis);
-				 boolean isUserFound = false;
-				 boolean isValidated = false;
-				workbook = WorkbookFactory.create(fis);
-				int numberOfSheets = workbook.getNumberOfSheets();
-				for (int i = 0; i < numberOfSheets; i++) {
-					Sheet sheet = workbook.getSheetAt(i);
-					int count = 0;
-					Iterator<Row> rowIterator = sheet.iterator();
-					while (rowIterator.hasNext()) {
-						UsersImport userImport = new UsersImport();
-						Row row = rowIterator.next();
-						
-						if (row.getRowNum() > 0) {
-							isValidated = validateExeclData(row,userImport,fileName);
-						}
-						if (isValidated) {
-							if (row.getRowNum() > 0) { // Excluding column names
-								logger.info("Reading Row :" + row.getRowNum() + " records");
-								if (row.getCell(0) != null) {
-									XSSFCell myCell = (XSSFCell) row.getCell(0);
-									if (myCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-										myCell.setCellType(Cell.CELL_TYPE_STRING);
-										String empId = myCell.getStringCellValue();
-										if (empId == null || "".equalsIgnoreCase(empId)) {
-											userImport.setEmployeeId("");
-										} else {
-											userImport.setEmployeeId(empId);
-										}
-									}else{
-										userImport.setFirstName(row.getCell(0).toString());
-									}
-								} else {
-									userImport.setMobileNumber("");
-								}
-								userImport.setFirstName(row.getCell(1).toString());
-								
-								if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
-									userImport.setLastName("");
-								} else {
-									userImport.setLastName(row.getCell(2).toString());
-								}
-								userImport.setEmailId(row.getCell(3).toString());
-
-								if (row.getCell(4) != null) {
-									XSSFCell myCell = (XSSFCell) row.getCell(4);
-									if (myCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-										myCell.setCellType(Cell.CELL_TYPE_STRING);
-										String mobileNumber = myCell.getStringCellValue();
-										if (mobileNumber == null || "".equalsIgnoreCase(mobileNumber)) {
-											userImport.setMobileNumber("");
-										} else {
-											userImport.setMobileNumber(mobileNumber);
-										}
-									}else{
-										userImport.setEmailId(row.getCell(4).toString());
-									}
-								} else {
-									userImport.setMobileNumber("");
-								}
-
-								if (row.getCell(5) != null) {
-									XSSFCell myCell5 = (XSSFCell) row.getCell(5);
- 									if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-  										myCell5.setCellType(Cell.CELL_TYPE_STRING);
-  										String rate = myCell5.getStringCellValue();
-  										if (rate == null || "".equalsIgnoreCase(rate)) {
-											userImport.setRate("");
-										} else {
-											userImport.setRate(rate);
-										}
-									}else{
-										userImport.setEmailId(row.getCell(5).toString());
-									}
-								} else {
-									userImport.setRate("");
-								}
-								if (row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString())) {
-									userImport.setRatePer("");
-								} else {
-									userImport.setRatePer(row.getCell(6).toString());
-								}
-								
- 								if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
-									userImport.setDateString("");
-								} else {
-									XSSFCell myCell7 = (XSSFCell) row.getCell(7);
-									if (myCell7.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-										if(DateUtil.isCellDateFormatted((Cell) myCell7)){
-											userImport.setDateOfJoin(myCell7.getDateCellValue());
-										}
-									}
-								}
- 								userImport.setRole(row.getCell(8).toString());
-								if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
-									userImport.setInvoiceFrequency("");
-								} else {
-									userImport.setInvoiceFrequency(row.getCell(9).toString());
-								}
-								if (row.getCell(10) != null) {
-									XSSFCell myCell10 = (XSSFCell) row.getCell(10);
-									if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-										myCell10.setCellType(Cell.CELL_TYPE_STRING);
-										String dayHours = myCell10.getStringCellValue();
-										if (dayHours == null || "".equalsIgnoreCase(dayHours)) {
-											userImport.setDayHours("");
-										} else {
-											userImport.setDayHours(dayHours);
-										}
-									}else{
-										userImport.setEmailId(row.getCell(10).toString());
-									}
-								} else {
-									userImport.setDayHours("");
-								}
-								  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
-								 if(isUserFound){
-									 if (row.getRowNum() > 0) {
-											count++;
-											createXlsxSheet(row, createExcelsheet, count,userImport);
-										}
-										
-								 }else{
-									 if(isMailChecked != null){
-										 userImport.setIsMailChecked(Status.Y);
-									 }else{
-										 userImport.setIsMailChecked(Status.N);
-									 }
-									 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
-								 }
-							}
-						} else {
-							if (row.getRowNum() > 0) {
-								count++;
-								createXlsxSheet(row, createExcelsheet, count,userImport);
-							}
-							
-						}
-					}
-					if (!isValidated || isUserFound) {
-						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xlsx");
-						createExcelworkbook.write(fos);
-						fos.close();
-					}
-					if(count > 0){
-						isFileCreated = "FailureUsersForCheck.xlsx";
-					}else{
-						isFileCreated = "failed";
-					}
-				}
-			} else if (fileName.toLowerCase().endsWith("xls")) {
-//				workbook = (Workbook) new HSSFWorkbook(fis);
 				boolean isValidated = false;
 				boolean isUserFound = false;
 				workbook = WorkbookFactory.create(fis);
@@ -427,18 +274,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 						if (row.getRowNum() > 0) { // Excluding column names
 							logger.info("Reading Row :" + row.getRowNum() + " records");
 							if (row.getCell(0) != null) {
-								HSSFCell myCell = (HSSFCell) row.getCell(0);
-								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									myCell.setCellType(Cell.CELL_TYPE_STRING);
-									String EmployeeId = myCell.getStringCellValue();
-									if (EmployeeId == null || "".equalsIgnoreCase(EmployeeId)) {
-										userImport.setEmployeeId("");
-									} else {
-										userImport.setEmployeeId(EmployeeId);
-									}
-								}else{
-									userImport.setEmployeeId(row.getCell(0).toString());
-								}
+								String empId = getCellValueAsString(row.getCell(0),fileName);
+								userImport.setEmployeeId(empId);
 							} else {
 								userImport.setEmployeeId("");
 							}
@@ -451,35 +288,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 							userImport.setEmailId(row.getCell(3).toString());
 
 							if (row.getCell(4) != null) {
-								HSSFCell myCell = (HSSFCell) row.getCell(4);
-								if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									myCell.setCellType(Cell.CELL_TYPE_STRING);
-									String mobileNumber = myCell.getStringCellValue();
-									if (mobileNumber == null || "".equalsIgnoreCase(mobileNumber)) {
-										userImport.setMobileNumber("");
-									} else {
-										userImport.setMobileNumber(mobileNumber);
-									}
-								}else{
-									userImport.setMobileNumber(row.getCell(4).toString());
-								}
+								String mobileNumber = getCellValueAsString(row.getCell(4),fileName);
+								userImport.setMobileNumber(mobileNumber);
 							} else {
 								userImport.setMobileNumber("");
 							}
-
 							if (row.getCell(5) != null) {
-								HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-								if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									myCell5.setCellType(Cell.CELL_TYPE_STRING);
-									String rate = myCell5.getStringCellValue();
-									if (rate == null || "".equalsIgnoreCase(rate)) {
-										userImport.setRate("");
-									} else {
-										userImport.setRate(rate);
-									}
-								}else{
-									userImport.setRate(row.getCell(5).toString());
-								}
+								String rate = getCellValueAsString(row.getCell(5),fileName);
+								userImport.setRate(rate);
 							} else {
 								userImport.setRate("");
 							}
@@ -491,14 +307,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 							}
 							
 							if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
-								userImport.setDateString("");
+								userImport.setDateOfJoin(null);
 							} else {
-								HSSFCell myCell7 = (HSSFCell) row.getCell(7);
-								if (myCell7.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									if(DateUtil.isCellDateFormatted((Cell) myCell7)){
-										userImport.setDateOfJoin(myCell7.getDateCellValue());
-									}
-								}
+								Date hireDate = getCellDate(row.getCell(7),fileName);
+								userImport.setDateOfJoin(hireDate);
 							}
 							userImport.setRole(row.getCell(8).toString());
 							if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
@@ -507,18 +319,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
 							}
 							if (row.getCell(10) != null) {
-								HSSFCell myCell10 = (HSSFCell) row.getCell(10);
-								if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-									myCell10.setCellType(Cell.CELL_TYPE_STRING);
-									String dayHours = myCell10.getStringCellValue();
-									if (dayHours == null || "".equalsIgnoreCase(dayHours)) {
-										userImport.setDayHours("");
-									} else {
-										userImport.setDayHours(dayHours);
-									}
-								}else{
-									userImport.setDayHours(row.getCell(10).toString());
-								}
+								String dayHours = getCellValueAsString(row.getCell(10),fileName);
+								userImport.setDayHours(dayHours);
 							} else {
 								userImport.setDayHours("");
 							}
@@ -526,24 +328,22 @@ public class UploadFileServiceImpl implements UploadFileService {
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
 										count++;
-										 createXlsSheet(row, createExcelsheet, count,userImport);
+										 createXlsSheet(row, createExcelsheet, count,userImport,fileName);
 									}
-								
 							 }else{
 								 if(isMailChecked != null){
 									 userImport.setIsMailChecked(Status.Y);
 								 }else{
 									 userImport.setIsMailChecked(Status.N);
 								 }
-								 saveBulkUser(userImport,orgLocations,user,isMailChecked,fileName);
+								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
 							 }
 						}
 					} else {
 						if (row.getRowNum() > 0) {
 							count++;
-							createXlsSheet(row, createExcelsheet, count,userImport);
+							createXlsSheet(row, createExcelsheet, count,userImport,fileName);
 						}
-						
 					}
 				}
 				if (!isValidated || isUserFound) {
@@ -557,14 +357,55 @@ public class UploadFileServiceImpl implements UploadFileService {
 					isFileCreated = "failed";
 				}
 			}
-			
-		}
 			fis.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
 		return isFileCreated;
+	}
 
+private Date getCellDate(Cell cell, String fileName) {
+		Date date = null;
+	   if(fileName.toLowerCase().endsWith("xls")){
+		   HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) hssfCell)) {
+					date = hssfCell.getDateCellValue();
+			}
+		}else{
+			XSSFCell xssfFCell = (XSSFCell) cell;
+			if (xssfFCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) xssfFCell)) {
+					date = xssfFCell.getDateCellValue();
+			}
+		}
+		return date;
+	}
+
+private String getCellValueAsString(Cell cell, String fileName) {
+	String cellValue = "";
+	if(fileName.toLowerCase().endsWith("xls")){
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				hssfCell.setCellType(Cell.CELL_TYPE_STRING);
+				String hssfCellValue = hssfCell.getStringCellValue();
+				if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
+					cellValue = hssfCellValue;
+				} 
+			}else{
+				cellValue = cell.getStringCellValue();
+			}
+		}else{
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCell.setCellType(Cell.CELL_TYPE_STRING);
+				String xssfCellValue = xssfCell.getStringCellValue();
+				if (xssfCellValue != null || !"".equalsIgnoreCase(xssfCellValue)) {
+					cellValue = xssfCellValue;
+				} 
+			}else{
+				cellValue = cell.getStringCellValue();
+			}
+		}
+		return cellValue;
 	}
 
 /**
@@ -576,7 +417,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  * @param fileName 
  * @throws Exception
  */
-	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked, String fileName) throws Exception {
+	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
 		User user = new User();
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
@@ -629,330 +470,95 @@ public class UploadFileServiceImpl implements UploadFileService {
  * @param createExcelsheet
  * @param rowIndex
  * @param userImport 
+ * @param fileName 
  * @throws IOException
  */
-	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName) throws IOException {
 
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-			HSSFCell myCell0 = (HSSFCell) row.getCell(0);
-			if (myCell0.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-				myCell0.setCellType(Cell.CELL_TYPE_STRING);
-				String empId = myCell0.getStringCellValue();
-				if (empId != null && !"".equalsIgnoreCase(empId)) {
-					Cell cell0 = writeRow.createCell(0);
-					cell0.setCellValue(empId);
-				}
-			}else{
-				Cell cell0 = writeRow.createCell(0);
-				cell0.setCellValue(row.getCell(0).toString());
-			}
+			
+			String empId = getCellValueAsString(row.getCell(0), fileName);
+			writeRow.createCell(0).setCellValue(empId);
 		} else {
-			Cell cell0 = writeRow.createCell(0);
-			cell0.setCellValue("");
+			writeRow.createCell(0).setCellValue("");
 		}
 		
 		if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
-			Cell cell1 = writeRow.createCell(1);
-			cell1.setCellValue(row.getCell(1).toString());
+		        writeRow.createCell(1).setCellValue(row.getCell(1).toString());
 		} else {
-			Cell cell1 = writeRow.createCell(1);
-			cell1.setCellValue("");
+			writeRow.createCell(1).setCellValue("");
 		}
 		if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-			Cell cell2 = writeRow.createCell(2);
-			cell2.setCellValue(row.getCell(2).toString());
+		writeRow.createCell(2).setCellValue(row.getCell(2).toString());
 		} else {
-			Cell cell2 = writeRow.createCell(2);
-			cell2.setCellValue("");
+			 writeRow.createCell(2).setCellValue("");
 		}
 		if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
-			Cell cell3 = writeRow.createCell(3);
-			cell3.setCellValue(row.getCell(3).toString());
+			 writeRow.createCell(3).setCellValue(row.getCell(3).toString());
 		} else {
-			Cell cell3 = writeRow.createCell(3);
-			cell3.setCellValue("");
+			 writeRow.createCell(3).setCellValue("");
 		}
-		
-		if (row.getRowNum() == 0) {
-			Cell cell4 = writeRow.createCell(4);
-			cell4.setCellValue(row.getCell(4).toString());
-		} else {
 			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-				HSSFCell myCell4 = (HSSFCell) row.getCell(4);
-				if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					myCell4.setCellType(Cell.CELL_TYPE_STRING);
-					String mobileNumber = myCell4.getStringCellValue();
-					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
-						Cell cell4 = writeRow.createCell(4);
-						cell4.setCellValue(mobileNumber);
-					}
-				}else{
-					Cell cell4 = writeRow.createCell(4);
-					cell4.setCellValue(row.getCell(4).toString());
-				}
+				String mobileNumber = getCellValueAsString(row.getCell(4), fileName);
+			      writeRow.createCell(4).setCellValue(mobileNumber);
 			} else {
-				Cell cell4 = writeRow.createCell(4);
-				cell4.setCellValue("");
+			    writeRow.createCell(4).setCellValue("");
 			}
-		}
-		
-		if (row.getRowNum() == 0) {
-			Cell cell5 = writeRow.createCell(5);
-			cell5.setCellValue(row.getCell(5).toString());
-		} else {
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-				
-				HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-				if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					myCell5.setCellType(Cell.CELL_TYPE_STRING);
-					String rate = myCell5.getStringCellValue();
-					if (rate != null || !"".equalsIgnoreCase(rate)) {
-						Cell cell5 = writeRow.createCell(5);
-						cell5.setCellValue(rate);
-					}
-				}else{
-					Cell cell5 = writeRow.createCell(5);
-					cell5.setCellValue(row.getCell(5).toString());
-				}
+				String rate = getCellValueAsString(row.getCell(5), fileName);
+				 writeRow.createCell(5).setCellValue(rate);
 			} else {
-				Cell cell5 = writeRow.createCell(5);
-				cell5.setCellValue("");
+			  writeRow.createCell(5).setCellValue("");
 			}
-		}
 		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
 			
 			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
-			Cell cell6 = writeRow.createCell(6);
-			cell6.setCellValue(row.getCell(6).toString());
+		    writeRow.createCell(6).setCellValue(row.getCell(6).toString());
 		} else {
 			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
-			Cell cell6 = writeRow.createCell(6);
-			cell6.setCellValue("");
+			 writeRow.createCell(6).setCellValue("");
 		}
 		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 			
-			 DataFormatter formatter = new DataFormatter();
-			 String dateString = formatter.formatCellValue(row.getCell(7));
-			 Cell cell7 = writeRow.createCell(7);
-			 cell7.setCellValue(dateString);
+			boolean isValidate = isCellValueDate(row.getCell(7), fileName);
+			if(isValidate){
+				 Date date = getCellDate(row.getCell(7), fileName);
+				 writeRow.createCell(7).setCellValue(date);
+			}else{
+				 writeRow.createCell(7).setCellValue(row.getCell(7).toString());
+			}
 		} else {
-			Cell cell7 = writeRow.createCell(7);
-			cell7.setCellValue("");
+			writeRow.createCell(7).setCellValue("");
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 			
 			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
-			
-			Cell cell8 = writeRow.createCell(8);
-			cell8.setCellValue(row.getCell(8).toString());
+	        writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 		} else {
 			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
-			Cell cell8 = writeRow.createCell(8);
-			cell8.setCellValue("");
+			writeRow.createCell(8).setCellValue("");
 		}
 		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			
 			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
-			Cell cell9 = writeRow.createCell(9);
-			cell9.setCellValue(row.getCell(9).toString());
+			writeRow.createCell(9).setCellValue(row.getCell(9).toString());
 		} else {
 			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
-			Cell cell9 = writeRow.createCell(9);
-			cell9.setCellValue("");
+		     writeRow.createCell(9).setCellValue("");
 		}
-		
-		if (row.getRowNum() == 0) {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue(row.getCell(10).toString());
-		} else {
 			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 
-				HSSFCell myCell10 = (HSSFCell) row.getCell(10);
-				if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					myCell10.setCellType(Cell.CELL_TYPE_STRING);
-					String dayHours = myCell10.getStringCellValue();
-					if (dayHours != null || !"".equalsIgnoreCase(dayHours)) {
-						Cell cell10 = writeRow.createCell(10);
-						cell10.setCellValue(dayHours);
-					}
-				}else{
-					Cell cell10 = writeRow.createCell(10);
-					cell10.setCellValue(row.getCell(10).toString());
-				}
+                String dayHours = getCellValueAsString(row.getCell(10), fileName);
+                  writeRow.createCell(10).setCellValue(dayHours);
 			} else {
-				Cell cell10 = writeRow.createCell(10);
-				cell10.setCellValue("");
+				writeRow.createCell(10).setCellValue("");
 			}
-		}
 		if (userImport.getReason() !=null) {
 			writeRow.createCell(11).setCellValue(userImport.getReason());
 		} 
 	}
-	
-
-
 	/**
-	 * write data to excel format
-	 * @param row
-	 * @param createExcelsheet
-	 * @param rowIndex
-	 * @param userImport
-	 * @throws IOException
-	 */
-	private void createXlsxSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport) throws IOException {
-
-		Row writeRow = createExcelsheet.createRow(rowIndex);
-
-		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-			XSSFCell myCell0 = (XSSFCell) row.getCell(0);
-			if (myCell0.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-				myCell0.setCellType(Cell.CELL_TYPE_STRING);
-				String empId = myCell0.getStringCellValue();
-				if (empId != null && !"".equalsIgnoreCase(empId)) {
-					Cell cell0 = writeRow.createCell(0);
-					cell0.setCellValue(empId);
-				}
-			}else{
-				Cell cell0 = writeRow.createCell(0);
-				cell0.setCellValue(row.getCell(0).toString());
-			}
-		} else {
-			Cell cell0 = writeRow.createCell(0);
-			cell0.setCellValue("");
-		}
-		if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
-			Cell cell1 = writeRow.createCell(1);
-			cell1.setCellValue(row.getCell(1).toString());
-		} else {
-			Cell cell1 = writeRow.createCell(1);
-			cell1.setCellValue("");
-		}
-		if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-			Cell cell2 = writeRow.createCell(2);
-			cell2.setCellValue(row.getCell(2).toString());
-		} else {
-			Cell cell2 = writeRow.createCell(2);
-			cell2.setCellValue("");
-		}
-		if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
-			Cell cell3 = writeRow.createCell(3);
-			cell3.setCellValue(row.getCell(3).toString());
-		} else {
-			Cell cell3 = writeRow.createCell(3);
-			cell3.setCellValue("");
-		}
-		if (row.getRowNum() == 0) {
-			Cell cell4 = writeRow.createCell(4);
-			cell4.setCellValue(row.getCell(4).toString());
-		} else {
-			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-				XSSFCell myCell4 = (XSSFCell) row.getCell(4);
-				if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-					myCell4.setCellType(Cell.CELL_TYPE_STRING);
-					String mobileNumber = myCell4.getStringCellValue();
-					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
-						Cell cell4 = writeRow.createCell(4);
-						cell4.setCellValue(mobileNumber);
-					}
-				}else{
-					Cell cell4 = writeRow.createCell(4);
-					cell4.setCellValue(row.getCell(4).toString());
-				}
-			} else {
-				Cell cell4 = writeRow.createCell(4);
-				cell4.setCellValue("");
-			}
-		}
-		if (row.getRowNum() == 0) {
-			Cell cell5 = writeRow.createCell(5);
-			cell5.setCellValue(row.getCell(5).toString());
-		} else {
-			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-
-				XSSFCell myCell5 = (XSSFCell) row.getCell(5);
-				if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-					myCell5.setCellType(Cell.CELL_TYPE_STRING);
-					String rate = myCell5.getStringCellValue();
-					if (rate != null || !"".equalsIgnoreCase(rate)) {
-						Cell cell5 = writeRow.createCell(5);
-						cell5.setCellValue(rate);
-					}
-				}else{
-					Cell cell5 = writeRow.createCell(5);
-					cell5.setCellValue(row.getCell(5).toString());
-				}
-			} else {
-				Cell cell5 = writeRow.createCell(5);
-				cell5.setCellValue("");
-			}
-		}
-		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
-			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
-			Cell cell6 = writeRow.createCell(6);
-			cell6.setCellValue(row.getCell(6).toString());
-		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
-			Cell cell6 = writeRow.createCell(6);
-			cell6.setCellValue("");
-		}
-		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-			 DataFormatter formatter = new DataFormatter();
-			 String dateString = formatter.formatCellValue(row.getCell(7));
-			 Cell cell7 = writeRow.createCell(7);
-			 cell7.setCellValue(dateString);
-		} else {
-			Cell cell7 = writeRow.createCell(7);
-			cell7.setCellValue("");
-		}
-		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
-			Cell cell8 = writeRow.createCell(8);
-			cell8.setCellValue(row.getCell(8).toString());
-		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
-			Cell cell8 = writeRow.createCell(8);
-			cell8.setCellValue("");
-		}
-		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
-			Cell cell9 = writeRow.createCell(9);
-			cell9.setCellValue(row.getCell(9).toString());
-		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
-			Cell cell9 = writeRow.createCell(9);
-			cell9.setCellValue("");
-		}
-		
-		if (row.getRowNum() == 0) {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue(row.getCell(10).toString());
-		} else {
-			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-
-				XSSFCell myCell10 = (XSSFCell) row.getCell(10);
-				if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-					myCell10.setCellType(Cell.CELL_TYPE_STRING);
-					String dayHours = myCell10.getStringCellValue();
-					if (dayHours != null || !"".equalsIgnoreCase(dayHours)) {
-						Cell cell10 = writeRow.createCell(10);
-						cell10.setCellValue(dayHours);
-					}
-				}else{
-					Cell cell10 = writeRow.createCell(10);
-					cell10.setCellValue(row.getCell(10).toString());
-				}
-			} else {
-				Cell cell10 = writeRow.createCell(10);
-				cell10.setCellValue("");
-			}
-		}
-		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
-		} 
-	}
-/**
  * Validate Excel data while storing it into Database
  * @param row
  * @param userImport 
@@ -961,14 +567,13 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
 
-		boolean isValidated=false; 
+		boolean isValidated; 
 		if (row.getRowNum() > 0) { // Excluding column names
 
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
-
 			
 			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
 				userImport.setReason("Required fields is not filled");
@@ -976,182 +581,72 @@ public class UploadFileServiceImpl implements UploadFileService {
 			}
 			
 			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-			    if (fileName.toLowerCase().endsWith("xlsx")) {
-					  XSSFCell myCell4 = (XSSFCell) row.getCell(4);
-					     if (myCell4.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-						  myCell4.setCellType(Cell.CELL_TYPE_STRING);
-						String mobileNumber = myCell4.getStringCellValue();
-						if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
-							isValidated = isMobileNumberValid(mobileNumber);
-							if(isValidated){
-							}else{
-								userImport.setReason("Invalid MobileNumber");
-								return isValidated;
-							}
-						}
-					}else{
-						isValidated = isMobileNumberValid(row.getCell(4).toString());
-						if(isValidated){
-						}else{
-							userImport.setReason("Invalid MobileNumber");
-							return isValidated;
-						}
-					}
-				}else{
-					HSSFCell myCell4 = (HSSFCell) row.getCell(4);
-					if (myCell4.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						myCell4.setCellType(Cell.CELL_TYPE_STRING);
-						String mobileNumber = myCell4.getStringCellValue();
-						if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
-							isValidated = isMobileNumberValid(mobileNumber);
-							if(isValidated){
-							}else{
-								userImport.setReason("Invalid MobileNumber");
-								return isValidated;
-							}
-					}
-				}else{
-					isValidated = isMobileNumberValid(row.getCell(4).toString());
-					if(isValidated){
-					}else{
+				String mobileNumber = getCellValueAsString(row.getCell(4), fileName);
+				if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
+					isValidated = isMobileNumberValid(mobileNumber);
+					if (isValidated == false) {
 						userImport.setReason("Invalid MobileNumber");
 						return isValidated;
 					}
 				}
-			
-			}
 			}
 			/*code to check Rate validation*/
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())) {
-				if (fileName.toLowerCase().endsWith("xlsx")) {
-					  XSSFCell myCell5 = (XSSFCell) row.getCell(5);
-					     if (myCell5.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-					    	 myCell5.setCellType(Cell.CELL_TYPE_STRING);
-						String rate = myCell5.getStringCellValue();
-						if (rate != null && !"".equalsIgnoreCase(rate)) {
-							isValidated = isRateLengthValid(rate);
-							if(isValidated){
-							}else{
-								userImport.setReason("rate should be >2 and <=8");
-								return isValidated;
-							}
-						}
-					}else{
-						isValidated = isRateLengthValid(row.getCell(5).toString());
-						if(isValidated){
-						}else{
-							userImport.setReason("rate should be >2 and <=8");
-							return isValidated;
-						}
-					}
 				
-			    }else{
-					HSSFCell myCell5 = (HSSFCell) row.getCell(5);
-					if (myCell5.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						myCell5.setCellType(Cell.CELL_TYPE_STRING);
-						String rate = myCell5.getStringCellValue();
-						if (rate != null && !"".equalsIgnoreCase(rate)) {
-							isValidated = isRateLengthValid(rate);
-							if(isValidated){
-							}else{
-								userImport.setReason("rate should be >2 and <=8");
-								return isValidated;
-							}
-					}
-				}else{
-					isValidated = isRateLengthValid(row.getCell(5).toString());
-					if(isValidated){
-					}else{
+				String rate = getCellValueAsString(row.getCell(5), fileName);
+				if (rate != null && !"".equalsIgnoreCase(rate)) {
+					isValidated = isRateLengthValid(rate);
+					if(isValidated == false){
 						userImport.setReason("rate should be >2 and <=8");
 						return isValidated;
 					}
 				}
-			}
-			}
-			/*end of Rate Validation Code*/
-			
-			
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-				DataFormatter formatter = new DataFormatter();
-				 Cell cell =row.getCell(7);
-				 String date = formatter.formatCellValue(cell);
-				if(fileName.endsWith("xls")){
-					isValidated = isThisDateValid(date, "MM/dd/yyyy");
-					if(isValidated){
-					}else{
-						userImport.setReason("Invalid Date");
-						return isValidated;
-					}
-				}else{
-					isValidated = isThisDateValid(row.getCell(7).toString(), "MM/dd/yyyy");
-					if(isValidated){
-					}else{
-						userImport.setReason("Invalid Date");
-						return isValidated;
-					}
+				isValidated = isCellValueDate(row.getCell(7),fileName);
+				if(isValidated == false){
+					userImport.setReason("Invalid Date");
+					return isValidated;
 				}
-				
 			}
 			if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
-			
-			// Day Hours Validation
-			
-			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-			    if (fileName.toLowerCase().endsWith("xlsx")) {
-					  XSSFCell myCell10 = (XSSFCell) row.getCell(10);
-					     if (myCell10.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-					    	 myCell10.setCellType(Cell.CELL_TYPE_STRING);
-						String dayHours = myCell10.getStringCellValue();
-						if (dayHours != null && !"".endsWith(dayHours)) {
-							isValidated = isDayHourValid(dayHours);
-							if(isValidated){
-							}else{
-								userImport.setReason("Invalid Day Hours");
-								return isValidated;
-							}
-						}
-					}else{
-						isValidated = isDayHourValid(row.getCell(10).toString());
-						if(isValidated){
-						}else{
+				if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+					String dayHours = getCellValueAsString(row.getCell(10), fileName);
+					if (dayHours != null && !"".endsWith(dayHours)) {
+						isValidated = isDayHourValid(dayHours);
+						if (isValidated == false) {
 							userImport.setReason("Invalid Day Hours");
 							return isValidated;
 						}
 					}
-				
-			    }else{
-					HSSFCell myCell10 = (HSSFCell) row.getCell(10);
-					if (myCell10.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						myCell10.setCellType(Cell.CELL_TYPE_STRING);
-						String dayHours = myCell10.getStringCellValue();
-						if (dayHours != null && !"".equalsIgnoreCase(dayHours)) {
-							isValidated = isDayHourValid(dayHours);
-							if(isValidated){
-							}else{
-								userImport.setReason("Invalid Day Hours");
-								return isValidated;
-							}
-					}
-				}else{
-					isValidated = isDayHourValid(row.getCell(10).toString());
-					if(isValidated){
-					}else{
-						userImport.setReason("Invalid Day Hours");
-						return isValidated;
-					}
 				}
-			
 			}
-			}
-			
-			
-			
 		}
 		return true;
 	}
+
+	private boolean isCellValueDate(Cell cell, String fileName) {
+	
+		boolean isCellValueDate = false;
+		   if(fileName.toLowerCase().endsWith("xls")){
+			   HSSFCell hssfCell = (HSSFCell) cell;
+				if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) hssfCell)) {
+					isCellValueDate = true;
+				}else{
+					isCellValueDate = false;
+				}
+			}else{
+				XSSFCell xssfFCell = (XSSFCell) cell;
+				if (xssfFCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) xssfFCell)) {
+						isCellValueDate = true;
+				}else{
+					isCellValueDate = false;
+				}
+			}
+			return isCellValueDate;
+}
 
 	/**
 	 * Validate CSV data whle storing it into Database
@@ -1161,32 +656,25 @@ public class UploadFileServiceImpl implements UploadFileService {
 	 */
 	private boolean validateCsvData(CSVRecord record, UsersImport userImport) {
 
-		boolean isValidated = false;
+		boolean isValidated;
 			if (record.get(Constants.FIRST_NAME) == null || "".equalsIgnoreCase(record.get(Constants.FIRST_NAME))) {
 				userImport.setReason("Required field mandatory");
 				return false;
 			}
-			/*if (row.getCell(2) == null || "".equals(row.getCell(2).toString())) {
-				return false;
-			}*/
 			if (record.get(Constants.EMAIL_ID) == null || !validateEmail(record.get(Constants.EMAIL_ID))) {
 				userImport.setReason("Required field is mandatory");
 				return false;
 			}
 			if (record.get(Constants.PHONE_NUMBER) !=null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER))) {
 				isValidated = isMobileNumberValid(record.get(Constants.PHONE_NUMBER));
-				if(isValidated){
-				}
-				else{
+				if(isValidated == false){
 					userImport.setReason("Invalid MobileNumber");
 					return isValidated;
 				}
 			}
 			if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
 				isValidated = isThisDateValid(record.get(Constants.DATEOFJOIN), "dd/MM/yyyy");
-				if(isValidated){
-					
-				}else{
+				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
 				}
@@ -1198,9 +686,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 			
 			if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
 				isValidated = isDayHourValid(record.get(Constants.DAY_HOURS));
-				if(isValidated){
-					
-				}else{
+				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
 				}
@@ -1349,6 +835,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		sdf.setLenient(false);
 		try {
 		Date date = sdf.parse(dateToValidate);
+		logger.debug("The Date is "+date);
 		} catch (ParseException e) {
 
 		logger.error(""+e.getMessage());
@@ -1382,7 +869,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean isMobileNumberValid(String mobileNmber){
 		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
-		boolean flag = false;
+		boolean flag;
 		if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
 			flag = mobileNmber.matches(regex);
 		}else{
@@ -1393,8 +880,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	private boolean isDayHourValid(String dayHours) {
 		String regex = "\\d+";
-		boolean flag = false;
-		int hours = 0;
+		boolean flag;
+		int hours;
 		if (dayHours.matches(regex)) {
 			hours = Integer.parseInt(dayHours);
 			if (hours <= 24) {
@@ -1410,10 +897,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 	
 	private boolean isRateLengthValid(String rate){
-	//	String regex = "\\d+";
-		boolean flag = false;
+		boolean flag;
 		if (rate.length() > 1 && rate.length() <= 8) {
-//			flag = Rate.matches(regex);
 			flag = true;
 		} else {
 			flag = false;

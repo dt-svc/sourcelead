@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.service.CountriesService;
+
 /**
  * Prasad Salina
  * @author bis113
@@ -21,9 +26,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class AutoCompleteController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteController.class);
-
-	
-	
 	@Autowired
 	private ApplicationContext applicationContext;
 	
@@ -31,17 +33,23 @@ public class AutoCompleteController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	CountriesService countriesService;
+	
 	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** AutoCompleteController init with: " + applicationContext);
+		logger.debug(" *** AutoCompleteController init with: " + applicationContext);
 	}
 
     @RequestMapping(value = "/testAutoComplete")
-  	public ModelAndView testAutoComplete() {
+  	public ModelAndView testAutoComplete() throws Exception {
   		ModelAndView model = new ModelAndView();
   		model.setViewName("testAutoComplete");
   		model.addObject("sourceleadUrl", sourceleadUrl);
+  		
+  		List<Countries> countryList = countriesService.getAllCountries();
+  		model.addObject("countryList", countryList);
   		return model;
 
   	}

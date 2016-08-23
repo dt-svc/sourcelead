@@ -196,7 +196,11 @@ public class UserRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
 	 	 //For Saving of User Details
-		 userService.createUser(jsonObj,user,orgLocations.getId());
+	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+	 	
+	 	
+	 	 //For Saving of User Details
+		// userService.createUser(jsonObj,user,orgLocations.getId());
 		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
 		 return "usersList";
 	   }
@@ -533,10 +537,79 @@ public class UserRestController {
 						Date currentDate = new  Date();
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
 							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-						}						
+						}
+						else{
+							commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
+						}
 					}
 					return "updated";
 		       }
+		
+		
+		
+		
+		/**
+		 * to assign the project to the particular user
+		 * @param json
+		 * @param userId
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
+		@ResponseBody String saveReAssignProject(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
+						throws Exception {
+			json = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json);
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 try {
+			  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+			  	  if(projectMembers != null){
+			  		  String status = Constants.MEMBER_ACTIVE;
+					  projectMembers.setUpdatedDate(new Date());
+					  projectMembers.setUpdatedBy(user.getUserCode());
+					  
+					  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(); 
+					  ProjectMembersHistory pmh = new  ProjectMembersHistory(); 
+					  
+					  pmh.setProjectMemberId(projectMembers);
+			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+			  		  String pattern = "yyyy-MM-dd";
+		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    	      if(jsonObj.has("Re-StartDate")){
+		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));
+						  pmh.setProjectAssignedDate(startDate);
+		    	      }
+		    	      if(jsonObj.has("Re-EndDate")){
+		    	    	  Date endDate = format.parse(jsonObj.getString("Re-EndDate"));
+						  pmh.setProjectTerminationDate(endDate);
+		    	      }
+		    	      pmh.setCreatedDate(commonUtil.currentDate());
+		    	    	if(user.getUserCode() != null){
+		    	    		pmh.setCreatedBy(user.getUserCode());	
+		    	    	}
+		    	    	
+					  pmh.setUpdatedDate(commonUtil.currentDate());
+					  pmh.setUpdatedBy(user.getUserCode());
+					  memberHistoryList.add(pmh);
+					  projectMembers.setMemberHistoryList(memberHistoryList);
+					  
+					  projectMembers.setStatus(status);
+					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
+					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
+					  commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
+			  	   }
+				
+			    } catch (Exception e) {
+			   }
+			
+			return "success";
+		}
+		
+		
+		
 		/**
 		 * 
 		 * @param userID

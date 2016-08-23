@@ -135,6 +135,7 @@ margin:10px 220px 0;
   </section>  
  <script>
 $(document).ready(function(){
+	document.getElementById("uploadFile").value = '';
 	var errormsg = '${errorMessage}';
 	$("#fileAttached").hide();
 	if(errormsg){
@@ -209,14 +210,37 @@ function uploadSave() {
     {
      var fsize = $('#uploadBtn')[0].files[0].size;
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     /* $("#upload_button").removeAttr("disabled"); */
-     if (fsize>50000)
+     var res_field = document.upload_form.elements["uploadFile"].value;   
+     var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
+     var allowedExtensions = ['xls', 'xlsx', 'csv'];
+     if (res_field.length > 0)
+        {
+             if (allowedExtensions.indexOf(extension) === -1) 
+                {
+                  //alert('Invalid file Format. Only ' + allowedExtensions.join(', ') + ' are allowed.');
+                   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
+               	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
+               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " are allowed.");
+                    return false;
+                  return false;
+                }
+                	if (fsize>50000)
+                    {
+                   	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
+               			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
+               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
+                        return false;
+                    } 
+                
+       }
+     
+     /* if (fsize>50000)
      {
     	 $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
 			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
 			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
          return false;
-     }
+     } */
      $	//New WebSite class="form-control"
 		//$("#save_client").removeAttr("disabled");
 		$('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");

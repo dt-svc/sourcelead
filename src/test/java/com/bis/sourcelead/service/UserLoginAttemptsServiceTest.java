@@ -26,24 +26,23 @@ public class UserLoginAttemptsServiceTest {
 	@Autowired
 	UserLoginAttemptsService userLoginAttemptsService;
 	
-	//@Test
+	@Test
 	public void addUserLoginAttempts() throws Exception{
 		UserLoginAttempts userLoginAttempts = new UserLoginAttempts();
 		userLoginAttempts.setAttemptsCount(0);
 		userLoginAttempts.setCreatedBy("shiva");
 		userLoginAttempts.setCreatedDate(new Date());
-		userLoginAttempts.setId(1l);
 		userLoginAttempts.setStatus("ACTIVE");
 		userLoginAttempts.setUpdatedBy("yogi");
 		userLoginAttempts.setUpdatedDate(new Date());
 		User user = new User();
-		user.setId(5l);
+		user.setId(3l);
 		userLoginAttempts.setUser(user);
 		userLoginAttemptsService.addUserLoginAttempts(userLoginAttempts);
 	}
-	//@Test
+	@Test
 	public void getUserLoginAttemptsByUserId() throws Exception{
-		UserLoginAttempts UserLoginAttemptsByUserId = userLoginAttemptsService.getUserLoginAttemptsByUserId(1l);
+		UserLoginAttempts UserLoginAttemptsByUserId = userLoginAttemptsService.getUserLoginAttemptsByUserId(3l);
 		logger.info("UserLoginAttemptsByUserId added successfully"+UserLoginAttemptsByUserId.getId());
 	}
 	@Test
@@ -51,7 +50,7 @@ public class UserLoginAttemptsServiceTest {
 		UserLoginAttempts userLoginAttempts = new UserLoginAttempts();
 		userLoginAttempts.setId(1l);
 		User user = new User();
-		user.setId(1l);
+		user.setId(3l);
 		userLoginAttempts.setUser(user);
 		UserLoginAttempts deleteUserLogin = userLoginAttemptsService.deleteUserLoginAttempts(userLoginAttempts);
 		logger.info("deleteUserLoginAttempts added successfully"+deleteUserLogin.getId());

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +25,6 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Client service.
@@ -39,7 +39,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
-	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -70,15 +69,14 @@ public class ClientController {
 	 */
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
-
+		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			
+			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
 			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			model.addObject("loginCountryName", countries.getName());
 			return model;
@@ -93,21 +91,20 @@ public class ClientController {
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
-		    User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
-			Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			for(OrgRelations orgRelation : clientsList){
+			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			/*for(OrgRelations orgRelation : clientsList){
 				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
 				orgRelation.setProjectsCont(count);
-			}
+			}*/
 			model.addObject("clientsList", clientsList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
-			if(!isNullOrEmpty(msg)){
+			if(msg != null && !"".equals(msg)){
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "clientCreateMsg");
 			}
@@ -116,9 +113,7 @@ public class ClientController {
 			return model;
 	    }
 	    
-	    private static boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
-		}
+	 
 		
 		
 }

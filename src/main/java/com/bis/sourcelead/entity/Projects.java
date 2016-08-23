@@ -111,6 +111,10 @@ public class Projects {
     @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<ProjectTasks> projectTasks;
+    
     @Transient
     private String managerLevel1;
     
@@ -508,4 +512,13 @@ public class Projects {
 	public void setEmployeeEndDateStr(String employeeEndDateStr) {
 		this.employeeEndDateStr = employeeEndDateStr;
 	}
+
+	public Set<ProjectTasks> getProjectTasks() {
+		return projectTasks;
+	}
+
+	public void setProjectTasks(Set<ProjectTasks> projectTasks) {
+		this.projectTasks = projectTasks;
+	}
+	
 }

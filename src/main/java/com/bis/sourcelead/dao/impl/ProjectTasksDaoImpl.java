@@ -107,12 +107,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
+	public List<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
 		// TODO Auto-generated method stub
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId )" ;
-		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true) 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true) 
 			    .list(); 
 		return projectTasksList;  
 		
@@ -120,11 +120,11 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<ProjectTasks> getAllSourceleadTasks() throws Exception {
+	public List<ProjectTasks> getAllSourceleadTasks() throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks projectsTasks where projectsTasks.projectId IS NULL and  projectsTasks.createdBy = 'SLADMIN'";
-		Collection<ProjectTasks> projectTasksList =session.createQuery(query.toString()).list();
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).list();
 		return projectTasksList; 
 	}
 

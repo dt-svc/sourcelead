@@ -98,22 +98,20 @@ public class UploadFileServiceTest {
 //        orgLocation.setStatus(Status.ACTIVE);
 //        orgLocation.setCreatedBy("6eHaBeO6");
 //        
-//		userRole.setId(2L);
+//		userRole.setId(4L);
 //		userRole.setRoles(roles);
 //		userRole.setOrgLocations(orgLocation);
 //		userRole.setIsPrimary(1);
 //		userRole.setCreatedBy("6eHaBeO6");
 //		Set<UserRole> userRoleSet = new HashSet<UserRole>();
 //		user.setUserRole(userRoleSet);
-//		
-		//File file = new File("/root/Downloads/Create Users.xls");
-		File file = new File("src/test/resources/Create Users.xls");
+		
+		File file = new File("//root/Desktop/DF/Create users.xls");
 	    FileInputStream input = new FileInputStream(file);
 	    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
-
-	    String isMailChecked = null;
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    String isMailChecked = null;
 	  	uploadFileService.uploadFile(multipartFile, orgLocations, user, isMailChecked);
 	}
 	

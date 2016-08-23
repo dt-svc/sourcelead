@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.entity.Org;
@@ -20,6 +22,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -61,6 +64,17 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
 
 	@Override
 	public void saveClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
@@ -72,8 +86,9 @@ public class ClientServiceImpl implements ClientService{
 		OrgRelations orgRelations = populateOrgRelations(clientOrgLocation, orgLocations, user.getUserCode());
 		orgRelationsService.addOrgRelations(orgRelations);
 		
-		String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
-		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+		if(jsonObj.has("maxTsRowNum")){
+			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 		
 		for (int c = 1; c < maxCount; c++) {
 			Projects project = new Projects();
@@ -119,9 +134,31 @@ public class ClientServiceImpl implements ClientService{
 			commonUtil.storeSourceleadTasks(user, project);
 		}
 
+	}
 		
 	}
 	
+	/**
+	 * @author VenkatKesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is for client saving.
+	 * 
+	 * @param jsonObj,user, orgLocations
+	 *  
+	 * @return void 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
+		
+		Org org = populateOrg(jsonObj, user.getUserCode());
+		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode());
+		org.setOrgLocationsList(orgLocationList);
+		orgService.addOrganization(org);
+	}
 	
 	/**
 	 * populating Org data
@@ -132,14 +169,23 @@ public class ClientServiceImpl implements ClientService{
 	 */
 		private Org populateOrg(JSONObject jsonObj, String loginUserCode) throws JSONException {
 			Org org = new Org();
+		
 			org.setOrgName(jsonObj.getString("orgName"));
 			org.setOrgType("Company");
-			org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+			
+			if(jsonObj.has("companyWebsite")){
+				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+			}
+			if(jsonObj.has("webSite")){
+				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+			}
+			
+			org.setOrgType("Guest");
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
-			org.setCreatedDate(new Date());
+			org.setCreatedDate(commonUtil.currentDate());
 			org.setUpdatedBy(loginUserCode);
 			org.setCreatedBy(loginUserCode);
-			org.setUpdatedDate(new Date());
+			org.setUpdatedDate(commonUtil.currentDate());
 			return org;
 
 		}
@@ -158,11 +204,24 @@ public class ClientServiceImpl implements ClientService{
 					throws JSONException {
 				OrgLocations orgLocations = new OrgLocations();
 				orgLocations.setOrg(addOrg);
-				orgLocations.setPhone(jsonObj.getString("phone"));
-				orgLocations.setEmail(jsonObj.getString("emailId"));
-				orgLocations.setCountry(jsonObj.getString("country"));
-				orgLocations.setState(jsonObj.getString("state"));
-				orgLocations.setCity(jsonObj.getString("city"));
+				if(jsonObj.has("phone")){
+					orgLocations.setPhone(jsonObj.getString("phone"));
+				}
+				if(jsonObj.has("emailId")){
+					orgLocations.setEmail(jsonObj.getString("emailId"));
+				}
+				
+				if(jsonObj.has("country")){
+					orgLocations.setCountry(jsonObj.getString("country"));
+				}
+				if(jsonObj.has("state")){
+					orgLocations.setState(jsonObj.getString("state"));
+				}
+				
+				if(jsonObj.has("city")){
+					orgLocations.setCity(jsonObj.getString("city"));
+				}
+				
 				String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 				orgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
 				orgLocations.setCreatedDate(new Date());
@@ -186,6 +245,7 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setClientLocationId(clientOrgLocation);
 					orgRelations.setLocationId(orgLocations);
 					orgRelations.setStatus("ACTIVE");
+					orgRelations.setRelationType("Customer");
 					orgRelations.setCreatedBy(loginUserCode);
 					orgRelations.setCreatedDate(new Date());
 					return orgRelations;
@@ -237,5 +297,37 @@ public class ClientServiceImpl implements ClientService{
 		 */
 		protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
+		}
+
+
+		@Override
+		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId) throws Exception {
+			
+			OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			
+			if(null != orgRelation){
+				OrgLocations orgLocations = orgRelation.getClientLocationId();
+						
+				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
+					orgLocations.setCity(jsonObj.getString("clientCity"));
+				}
+				if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
+					orgLocations.setState(jsonObj.getString("clientState"));
+				}
+				if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
+					orgLocations.setCountry(jsonObj.getString("clientCountry"));
+			     }
+				if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+					orgLocations.setEmail(jsonObj.getString("EmailId"));
+				}
+				if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
+				}
+				orgLocationService.updateOrgLocations(orgLocations);
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+			
 		}
 }

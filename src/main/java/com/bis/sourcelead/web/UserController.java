@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -40,7 +43,8 @@ public class UserController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	
+	@Autowired
+	UserService userService;
 	
 	/**
 	 * To forward user creation jsp page
@@ -51,15 +55,16 @@ public class UserController {
 	@RequestMapping(value = "/userCreation")
 	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	   
 		ModelAndView model = new ModelAndView();
-		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-	    model.addObject("org_projectsList", projectsList);
-	    
-	    commonUtil.highLightMenu(Constants.Users, request);
-	    
-		model.setViewName("users/userCreation");
-		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		    model.addObject("org_projectsList", projectsList);
+		    
+		    commonUtil.highLightMenu(Constants.Users, request);
+		    
+			model.setViewName("users/userCreation");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+		
 		return model;
 
 	}
@@ -75,24 +80,32 @@ public class UserController {
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		ModelAndView model = new ModelAndView();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-					// to get a project list by userId
-		                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
-						model.addObject("org_projectsList", projectsList);
-						
-						
-						Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
-						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
-						
-						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
-						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
-						model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
-						model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
-						model.addObject("assignedProjectsCount", assignedProjectsCount);
-						
-						request.setAttribute("userId", userId);
-						model.setViewName("users/userSummary");
-						model.addObject("sourceleadUrl", sourceleadUrl);
+		
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+			if(user != null){
+				// to get a project list by userId
+                List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
+				model.addObject("org_projectsList", projectsList);
+				
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
+				TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
+				
+				model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
+				model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
+				model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
+				model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
+				model.addObject("assignedProjectsCount", assignedProjectsCount);
+				
+				request.setAttribute("userId", userId);
+				model.setViewName("users/userSummary");
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+		
 		return model;
 
 	}
@@ -103,6 +116,6 @@ public class UserController {
 	 */
 	 
 	 protected static boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
+			return str == null || "".equals(str.trim());
 		}
 }

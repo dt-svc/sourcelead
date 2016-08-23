@@ -31,7 +31,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
-	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 	
@@ -56,7 +55,7 @@ public class ProjectsDashboardController {
 	 */
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
-
+           logger.debug("projectDashboard");
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
@@ -70,7 +69,7 @@ public class ProjectsDashboardController {
         sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
-        Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+        List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
         	orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
         }
@@ -80,7 +79,7 @@ public class ProjectsDashboardController {
         List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
         if(!projectIds.isEmpty()){
-        Collection<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
+        List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
                 projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
@@ -107,6 +106,6 @@ public class ProjectsDashboardController {
 	 * @return boolean
 	 */	
 	protected static boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
+		return str == null || "".equals(str.trim());
 	}
 }

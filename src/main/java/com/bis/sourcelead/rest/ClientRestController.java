@@ -96,7 +96,7 @@ public class ClientRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.saveClient(jsonObj, user, orgLocation);
+		clientService.storeClient(jsonObj, user, orgLocation);
 
 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
 				"Successfully you have created a client");
@@ -104,6 +104,8 @@ public class ClientRestController {
 		return "clientDashboard";
 	}
 
+	
+	
 
 	/**
 	 * Returns Date
@@ -172,7 +174,7 @@ public class ClientRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/getAllClientProjectsByOrgRelationId", method = RequestMethod.POST)
 	public @ResponseBody String getAllClientProjectsByOrgRelationId(
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "locationId", required = false) Long locationId, HttpServletRequest request)
@@ -204,9 +206,9 @@ public class ClientRestController {
 				project.setProjectStatus(project.getProjectStatus());
 			}
 
-			/*
+			
 			 * Add managers to project list(shows in select box) in client tab
-			 */
+			 
 			Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService
 					.getApproverUsersByProjectId(project.getId());
 			String[] approvers = new String[projectApproverHierarchies.size()];
@@ -225,7 +227,35 @@ public class ClientRestController {
 		String jsonInString = mapper.writeValueAsString(clientProjectsList);
 
 		return jsonInString;
+	}*/
+
+	/**
+	 * Handles project inline editing
+	 * @param orgRelationId
+	 * @param fieldName
+	 * @param fieldValue
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/clientDetailsUpdateUsingId", method = RequestMethod.POST)
+	public String clientDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, 
+			HttpServletRequest request) throws Exception {
+		
+	       json = "{" + json + "}";
+	       JSONObject jsonObj = new JSONObject(json);
+	
+	       clientService.updateClientDetails(jsonObj, orgRelationId);
+
+		return "success";
 	}
+
+	
+	
+	
+	
+	
 
 	/**
 	 * Handles project inline editing
@@ -237,7 +267,7 @@ public class ClientRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/updateClientProjectById", method = RequestMethod.POST)
 	public String updateClientProjectById(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "fieldName", required = false) String fieldName,
 			@RequestParam(value = "fieldValue", required = false) String fieldValue, HttpServletRequest request)
@@ -273,7 +303,8 @@ public class ClientRestController {
 		}
 
 		return "success";
-	}
+	}*/
+
 
 	/**
 	 * Handles Inline edit for client projects
@@ -285,7 +316,7 @@ public class ClientRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/inlineEditClientProjects", method = RequestMethod.POST)
 	public String inlineEditClientProjects(@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "fieldName", required = false) String fieldName,
 			@RequestParam(value = "fieldValue", required = false) String fieldValue, HttpServletRequest request)
@@ -328,7 +359,7 @@ public class ClientRestController {
 		projectsService.updateProject(projects);
 		return fieldValue;
 
-	}
+	}*/
 
 	/**
 	 * Handles ClientName duplicate or not
@@ -339,9 +370,9 @@ public class ClientRestController {
 	 */
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
 	public @ResponseBody boolean isClientNameValidated(
-			@RequestParam(value = "clientName", required = false) String clientName) throws Exception {
-
-		return orgService.isClientNameValid(clientName);
+			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return orgService.isClientNameValid(clientName,orgLocation.getId());
 	}
 /**
  * Verifies Client Email

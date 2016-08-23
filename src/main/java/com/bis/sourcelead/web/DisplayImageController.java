@@ -28,7 +28,7 @@ public class DisplayImageController {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** HomeController init with: " + applicationContext);
+		logger.debug(" *** HomeController init with: " + applicationContext);
 	}
 
     @RequestMapping(value = "/userAutoComplete")

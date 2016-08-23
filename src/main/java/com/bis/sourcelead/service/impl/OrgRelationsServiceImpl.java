@@ -2,19 +2,35 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Collection;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import java.util.List;
+
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
+
+import com.bis.sourcelead.entity.OrgLocations;
+
+import com.bis.sourcelead.entity.Employees;
+
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Autowired
 	OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
@@ -28,10 +44,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	
+	
 	@Override
-	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception {
-		Collection<OrgRelations> clientssList = orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
-		return clientssList;
+	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception {
+		List<OrgRelations> emplist= orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
+		return emplist;
 	}
 
 	@Override
@@ -60,5 +77,32 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		return orgRelationsDao.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId);
 	}
 	
-	
+	/**
+	 * @author VenkatKesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is for org Relatons saving..
+	 * 
+	 * @param jsonObj, clientOrgLocation, orgLocations, loginUserCode
+	 *  
+	 * @return Set<OrgRelations> 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode) throws Exception {
+		
+		HashSet<OrgRelations> orgRelationsList = new HashSet<OrgRelations>();
+		
+		OrgRelations orgRelations = new OrgRelations();
+		orgRelations.setClientLocationId(clientOrgLocation);
+		orgRelations.setLocationId(orgLocations);
+		orgRelations.setStatus("ACTIVE");
+		orgRelations.setCreatedBy(loginUserCode);
+		orgRelations.setCreatedDate(commonUtil.currentDate());
+		
+		orgRelationsList.add(orgRelations);
+		return orgRelationsList;
+	}
 }

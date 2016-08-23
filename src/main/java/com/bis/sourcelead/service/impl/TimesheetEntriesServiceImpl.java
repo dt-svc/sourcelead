@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -88,50 +90,30 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Autowired
 	EmployeesService employeesService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to display employee Timesheet.
+	 * this method is called at onload when click on timesheet left menu
+	 * 
+	 * @param user This is the first paramter to newTimesheet method
+	 * @param navigation This is the second paramter to newTimesheet method
+	 * @param startDate This is the third paramter to newTimesheet method
+	 *  
+	 * @return string 
+	 * 
+	 * @throws NullPointer
+	 */
 	
-	@Override
-	public TimesheetEntries addTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		return timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
-	}
-
-	@Override
-	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
-	}
-
-	@Override
-	public TimesheetEntries getTimesheetEntries(String id) throws Exception {
-		// TODO Auto-generated method stub
-		return timesheetEntriesDao.getTimesheetEntries(id);
-	}
-
-	@Override
-	public Boolean deleteTimesheetEntries(String id) throws Exception {
-		Boolean status = timesheetEntriesDao.deleteTimesheetEntries(id);
-		return status;
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
-		// TODO Auto-generated method stub
-		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
-		return list;
-	}
-
-	@Override
-	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
-		// TODO Auto-generated method stub
-		 
-		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
-		return list;
-		
-	}
-
 	@Override
 	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
 		 
@@ -144,17 +126,17 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  *calculating prior 6th week mondaydate and post 6th week sunday day for employee
 		  *
 	      *
-	      */
+	    */
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
-		cal.setTime(new Date());
+		cal.setTime(commonUtil.currentDate());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
 		Date previousMondayDate = previousMonday.getTime();
 		
-		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
 		Date nextSundayDate = nextSunday.getTime();
 		
 		
@@ -183,11 +165,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
           SimpleDateFormat format = new SimpleDateFormat(pattern);
           Date currentStartDate = null;
           Date currentEndDate = null;
-		 if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+          Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		   startCal.setLenient(false);
+		   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
 			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
-			      Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-				   startCal.setLenient(false);
-					
 			      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
 			    	  startCal.setTime(currentWeekStartDate);
 			      }
@@ -200,68 +181,24 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			      else if(employeeStartDate.after(currentWeekStartDate)){
 			    	  startCal.setTime(employeeStartDate);
 			      }
-			 
-		         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
-		         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
-                 sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-                 sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())+"</i></th>"); 
-                 sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())+"</i></th>"); 
-                 sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())+"</i></th>"); 
-                 sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())+"</i></th>"); 
-                 sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())+"</i></th>"); 
-                 sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
-                 timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
-                 currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-                 currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
-        }
-        else{
-                
-                 if(navigation.equalsIgnoreCase("left")){
-                     
-                     
-                     Date sDate  =  Constants.DMY.parse(startDate);
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 startCal.setLenient(false);
-					 startCal.setTime(sDate);
-					 
-						                
-	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
-			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
-	                sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-	                sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-6).getTime())+"</i></th>"); 
-	                sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-5).getTime())+"</i></th>"); 
-	                sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-4).getTime())+"</i></th>"); 
-	                sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-3).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,-2).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>");
-	                
-	                timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId());
-	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
-	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
-                 }
-                 else{ 
-                 
-	                 Date sDate  =  Constants.DMY.parse(startDate);
-	                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 startCal.setLenient(false);
-					 startCal.setTime(sDate);
-					 
-						                
-	                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime()));
-			        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,13).getTime()));
-	                sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-	                sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,8).getTime())+"</i></th>"); 
-	                sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,9).getTime())+"</i></th>"); 
-	                sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,10).getTime())+"</i></th>"); 
-	                sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,11).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,12).getTime())+"</i></th>"); 
-	                sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
-	                
-	                timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getDateIncrementByincrement(startCal,7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,13).getTime(), user.getId());
-	                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-	                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
-                 }
-        }
+          }
+		  else{
+               Date sDate  =  Constants.DMY.parse(startDate);
+			   startCal.setTime(sDate);
+		  }
+		 
+		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
+         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
+         sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
+         sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())+"</i></th>"); 
+         sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())+"</i></th>"); 
+         sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())+"</i></th>"); 
+         sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())+"</i></th>"); 
+         sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())+"</i></th>"); 
+         sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
+         timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
+         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
+         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
         
 		StringBuilder sb = new StringBuilder();	
 		sb.append("	<div class='timesheet_head'>");
@@ -276,13 +213,21 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("                   </ul>");
 		sb.append("               </div>");
 		sb.append("           </li><li>");
-		if(employeeStartDate.before(currentStartDate)){
-			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+startDateBuilder+"\");'></i>");
+		
+		
+		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
+		if(leftNavStartDate != null && leftNavStartDate.after(employeeStartDate)){
+			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
-		if(currentEndDate.before(employeeEndDate)){
-			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+startDateBuilder+"\");'></i><abbr>|</abbr> ");	
+		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
+		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		rightCal.setLenient(false);
+		rightCal.setTime(rightNavStartDate);
+		Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
+		if(rightNavStartDate != null && rightNavEndDate.getTime().before(employeeEndDate)){
+			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
 		}
 		               
 		sb.append("           </li><div class='clearfix'></div>");
@@ -380,7 +325,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		   	
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='timesheetrProject pname' id='"+ts.getId()+"' > <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname "+submissionStatus+" ' id='"+ts.getId()+"' > <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
@@ -436,7 +381,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id'  id='"+rowCount+"submission"+ts.getId()+"textArea1Id' ></textarea></span></div>");
 					            	  }
 						              sb.append(" </div> </td>"); 
 						              
@@ -448,7 +393,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>");
 						              }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'></textarea></span></div>");
 						              }
 						              sb.append(" </div> </td>"); 
 						              
@@ -460,7 +405,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						                  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>");
 						              }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'></textarea></span></div>");
 						              }
 						              sb.append(" </div> "); 
 						              sb.append(" </td>"); 
@@ -474,7 +419,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					            	  }
 						              else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id' id='"+rowCount+"submission"+ts.getId()+"textArea4Id'></textarea></span></div>");
 						              }
 						              sb.append(" </div> </td>"); 
 						              
@@ -486,7 +431,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'>"+timesheetEntries.getFricomments()+"</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id'></textarea></span></div>");
 					            	  }
 						              sb.append(" </div> </td>"); 
 						              
@@ -498,7 +443,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id' id='"+rowCount+"submission"+ts.getId()+"textArea6Id'></textarea></span></div>");
 					            	  }
 						              sb.append(" </div> </td>"); 
 						              
@@ -510,7 +455,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' ></textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id'></textarea></span></div>");
 					            	  }
 						              sb.append(" </div> </td>"); 
 									                                         
@@ -538,7 +483,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 							        	
-							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 						                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 						                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 						                sb.append(" </i>");
@@ -580,7 +525,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>");
 						              if(isNullOrEmpty(disbleCondition1))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' id='"+rowCount+"submission"+ts.getId()+"textArea1Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append(" <td> <div>"); 
@@ -588,7 +533,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(isNullOrEmpty(disbleCondition2))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id'></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append(" <td> <div>");  
@@ -596,7 +541,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(isNullOrEmpty(disbleCondition3))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id'></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'></textarea></span></div>"); 
 						              sb.append(" </div> "); 
 						              sb.append(" </td>"); 
 					
@@ -605,7 +550,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(isNullOrEmpty(disbleCondition4))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id'></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id' id='"+rowCount+"submission"+ts.getId()+"textArea4Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 						              sb.append(" <td> <div>"); 
@@ -613,7 +558,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(isNullOrEmpty(disbleCondition5))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id'></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append("<td> <div>"); 
@@ -621,7 +566,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(isNullOrEmpty(disbleCondition6))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id'></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id' id='"+rowCount+"submission"+ts.getId()+"textArea6Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 									  sb.append("						<td> <div>"); 
@@ -629,7 +574,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(isNullOrEmpty(disbleCondition7))
 						              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>"); 
-						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' ></textarea></span></div>"); 
+						              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id'></textarea></span></div>"); 
 						              sb.append(" </div> </td>"); 
 						              
 						              sb.append(" </tr> ");      
@@ -656,7 +601,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 								        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
 								        	
-								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(ts.getId());
+								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 							                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
 							                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
 							                sb.append(" </i>");
@@ -773,6 +718,22 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to display employee Timesheets at time sheet approver.
+	 * this method is called  when click on timesheet approval list count.
+	 * 
+	 * @param user This is the first paramter to dynamicTimesheetpopUp method
+	 * @param employeeId This is the second paramter to dynamicTimesheetpopUp method
+	 * @param endDate This is the third paramter to dynamicTimesheetpopUp method
+	 *  
+	 * @return string 
+	 * 
+	 * @throws NullPointer
+	 */
 
 	@Override
 	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate)
@@ -874,7 +835,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='timesheetrProject pname' id='"+ts.getId()+"'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname "+submissionStatus+"' id='"+ts.getId()+"'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
@@ -936,7 +897,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' id='"+rowCount+"submission"+ts.getId()+"textArea1Id'>"+timesheetEntries.getMoncomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 								   sb.append(" <td> <div>"); 
@@ -947,7 +908,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 					 			   sb.append(" <td> <div>"); 
@@ -958,7 +919,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> "); 
 					               sb.append(" </td>"); 
 				
@@ -970,7 +931,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id' id='"+rowCount+"submission"+ts.getId()+"textArea4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 					               sb.append(" <td> <div>"); 
@@ -981,7 +942,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'>"+timesheetEntries.getFricomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id' >"+timesheetEntries.getFricomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 								   sb.append("<td> <div>"); 
@@ -992,7 +953,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id' id='"+rowCount+"submission"+ts.getId()+"textArea6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 								   sb.append("						<td> <div>"); 
@@ -1003,7 +964,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
 					               } 
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 					               sb.append(" </tr> ");      
@@ -1040,7 +1001,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              
 				              if(isNullOrEmpty(disbleCondition1))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' ></textarea></span></div>");
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment1Id' id='"+rowCount+"submission"+ts.getId()+"textArea1Id' ></textarea></span></div>");
 				              sb.append(" </div> </td>"); 
 				              
 							  sb.append(" <td> <div>"); 
@@ -1048,7 +1009,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <div class='timesheet_comm'>"); 
 				              if(isNullOrEmpty(disbleCondition2))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id'></textarea></span></div>"); 
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'></textarea></span></div>"); 
 				              sb.append(" </div> </td>"); 
 				              
 							  sb.append(" <td> <div>");  
@@ -1056,7 +1017,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <div class='timesheet_comm'>"); 
 				              if(isNullOrEmpty(disbleCondition3))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id'></textarea></span></div>"); 
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'></textarea></span></div>"); 
 				              sb.append(" </div> "); 
 				              sb.append(" </td>"); 
 			
@@ -1065,7 +1026,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <div class='timesheet_comm'>");
 				              if(isNullOrEmpty(disbleCondition4))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id'></textarea></span></div>"); 
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment4Id' id='"+rowCount+"submission"+ts.getId()+"textArea4Id'></textarea></span></div>"); 
 				              sb.append(" </div> </td>"); 
 				              
 				              sb.append(" <td> <div>"); 
@@ -1073,7 +1034,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <div class='timesheet_comm'>");
 				              if(isNullOrEmpty(disbleCondition5))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id'></textarea></span></div>"); 
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id' ></textarea></span></div>"); 
 				              sb.append(" </div> </td>"); 
 				              
 							  sb.append("<td> <div>"); 
@@ -1081,7 +1042,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <div class='timesheet_comm'>"); 
 				              if(isNullOrEmpty(disbleCondition6))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id'></textarea></span></div>"); 
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment6Id'  id='"+rowCount+"submission"+ts.getId()+"textArea6Id'></textarea></span></div>"); 
 				              sb.append(" </div> </td>"); 
 				              
 							  sb.append("						<td> <div>"); 
@@ -1089,7 +1050,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append(" <div class='timesheet_comm'>"); 
 				              if(isNullOrEmpty(disbleCondition7))
 				              sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>"); 
-				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' ></textarea></span></div>"); 
+				              sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id'></textarea></span></div>"); 
 				              sb.append(" </div> </td>"); 
 				              
 				              sb.append(" </tr> ");      
@@ -1244,6 +1205,25 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to save employee Timesheets at time sheet screen.
+	 * this method is called  when click on save button at timesheet screen.
+	 * 
+	 * @param timesheetEntriesForm This is the first paramter to dynamicTimesheetpopUp method
+	 * @param json This is the second paramter to dynamicTimesheetpopUp method
+	 * @param request This is the third paramter to dynamicTimesheetpopUp method
+	 * @param status This is the third paramter to dynamicTimesheetpopUp method
+	 *  
+	 *  
+	 * @return string 
+	 * 
+	 * @throws JSONException
+	 */
+	
 	@Override
 	public String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm, String json,
 			MultipartHttpServletRequest request, String status) throws Exception {
@@ -1322,10 +1302,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										
 										  
 										timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
-										timesheetEntries.setStartDate(new Date());
-										timesheetEntries.setEndDate(new Date());
-										timesheetEntries.setCreatedDate(new Date());
-										timesheetEntries.setUpdatedDate(new Date());
+										timesheetEntries.setStartDate(commonUtil.currentDate());
+										timesheetEntries.setEndDate(commonUtil.currentDate());
+										timesheetEntries.setCreatedDate(commonUtil.currentDate());
+										timesheetEntries.setUpdatedDate(commonUtil.currentDate());
 										
 										ProjectTasks projectTasks = new ProjectTasks();
 
@@ -1482,6 +1462,126 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 	}
 	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to save timesheetEntries.
+	 * 
+	 * @param timesheetEntries This is the first paramter to addTimesheetEntries method
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public TimesheetEntries addTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
+		return timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
+	}
+	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to update timesheetEntries.
+	 * 
+	 * @param timesheetEntries This is the first paramter to updateTimesheetEntries method
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
+		// TODO Auto-generated method stub
+		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
+	}
+	
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to getTimesheetEntries by id.
+	 * 
+	 * @param id This is the first paramter to getTimesheetEntries method
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public TimesheetEntries getTimesheetEntries(String id) throws Exception {
+		// TODO Auto-generated method stub
+		return timesheetEntriesDao.getTimesheetEntries(id);
+	}
+	
+
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to delete by id.
+	 * 
+	 * @param id This is the first paramter to deleteTimesheetEntries method
+	 *  
+	 * @return Boolean 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public Boolean deleteTimesheetEntries(String id) throws Exception {
+		Boolean status = timesheetEntriesDao.deleteTimesheetEntries(id);
+		return status;
+		// TODO Auto-generated method stub
+	}
+
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to getAllTimesheetEntries.
+	 * 
+	 *  
+	 * @return List<TimesheetEntries> 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
+		List<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntries();
+		return list;
+	}
+
+	 /**
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get all timesheets by id.
+	 * 
+	 * @param submissionId This is the first paramter to getAllTimesheetEntriesBySubmissionId method
+	 *  
+	 * @return Collection<TimesheetEntries> 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
+		// TODO Auto-generated method stub
+		 
+		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
+		return list;
+		
+	}
+	
 	private Long getTotalHoursFormDayHours(String dayHours,Long total){
 				String[] parts = dayHours.split(":");
 				String hours = parts[0]; 
@@ -1494,6 +1594,26 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				return total;
 			
 	}
+	
+	
+
+	 /**
+	 * @author  venkata kesav
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to send email to project managers .
+	 * this method is called at saveTimesheet() method.
+	 * 
+	 * @param timesheetSubmissions This is the first paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 * @param loginUser This is the second paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 * @param loginOrgLocation This is the third paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 * @param loginOrgCode This is the third paramter to sendEmailToManagerAtTimesheetSubmissions method
+	 *  
+	 * @return void 
+	 * 
+	 * @throws NullPointer
+	 */
 	
 	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());

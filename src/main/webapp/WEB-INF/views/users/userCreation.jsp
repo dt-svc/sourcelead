@@ -106,7 +106,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" id="save_project" class="btn btn-primary" data-dismiss="modal" onclick = "addProject();">Save</button>
+            <button type="button" id="save_project" class="btn btn-primary" data-dismiss="modal" onclick = "saveProject();">Save</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
         </div>
@@ -483,7 +483,46 @@ function flushProject(){
 }
 </script>
 
+<script type="text/javascript">
+function saveProject(){
+		
+		 if ($('#addProject_form').validate(false, validationSettings)){ 
+		        
+		        var frm = $('#addProject_form').serializeFormJSON();
+		        var con = JSON.stringify(frm);
+		        con = con.replace(/[{}]/g, "");
+		        
+		        //It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+		        
+		        var sourceleadUrl ='${sourceleadUrl}';
+		        
+		        $("#save_project").attr("disabled", "disabled");
+	     		$("#save_project" ).addClass('button').val('Processing..');
+	     		$("#modelLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		        
+		        $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/storeProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+			        success: function(data) {
+			        	addProject();
+			        },
+			        error: function(e){
+			            
+			        }
+			    });
+		       return true;
+		  }else{
+			 $("#save_project").removeAttr('data-dismiss','modal');
+			return false;
+		  }
+	    }
 
+	    $('body').on('blur', '#addProject_form', function() {
+			$("#addProject_form").showHelpOnFocus();;
+			$("#addProject_form").validateOnBlur(false, validationSettings);  
+		});
+</script>
 <script type="text/javascript">
  function addProject() {
 	

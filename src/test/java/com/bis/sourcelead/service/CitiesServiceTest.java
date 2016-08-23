@@ -27,60 +27,59 @@ import com.bis.sourcelead.service.impl.CitiesServiceImpl;
 @ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
 public class CitiesServiceTest {
 
-	
 	@Configuration
 	static class CitiesServiceConfigTest {
 		@Bean
 		public CitiesService citiesService() {
 			return new CitiesServiceImpl();
 		}
-				
 
 	}
-	
+
 	@Autowired
 	CitiesService citiesService;
 
-	private static final Logger logger = LoggerFactory.getLogger(CitiesServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
 	@Test
-	public void addCities() throws Exception{
-		
+	public void addCities() throws Exception {
+
 		Cities city = new Cities();
-		city.setCountryCode("US");
-		city.setCityName("KMR");
-		city.setStateCode("TG");
-		
-		citiesService.addCity(city);
-		logger.info("Successfully Added!!!!");
-	}
-	
-	@Test
-	public void getCity() throws Exception{
-		Cities cities =	citiesService.getCity("US");
-		logger.info("get value of ind"+cities.getCountryCode());
+		city.setCountryCode("APfddfe");
+		city.setCityName("SBCerddr");
+		city.setStateCode("HYrdde");
+		Cities cityser= citiesService.addCity(city);
+		System.out.println("Successfully Added!!!!");
+		logger.info("Cities added..."+ cityser.getCityName());
 	}
 
 	@Test
-	public void updateCity() throws Exception{
+	public void getCity() throws Exception {
+		Cities cities = citiesService.getCity("AP");
+		logger.info(" get City added..."+  cities.getCountryCode());
+	}
+
+	@Test
+	public void updateCity() throws Exception {
 		Cities city = new Cities();
 		city.setCountryCode("IND");
 		city.setCityName("HYD");
 		city.setStateCode("TG");
-		citiesService.updateCity(city);
-		logger.info("Successfully updated!!!!");
-				
+		Cities cities =citiesService.updateCity(city);
+		logger.info(" updated Cities..."+  cities.getCityName());
+
 	}
-			
+
 	@Test
-	public void getAllCities() throws Exception{
-		List<Cities> cityList  = citiesService.getAllCities();
-		logger.info("getAllCities "+cityList.size());
+	public void getAllCities() throws Exception {
+		List<Cities> cityList = citiesService.getAllCities();
+		logger.info(" get All Cities..."+  cityList.get(0));
 	}
-	//@Test
-		public void deleteCity() throws Exception{
-			Boolean flag =	citiesService.deleteCity("US");
-			logger.info("deleteCity successfully "+ flag);
-		}
-	
+
+	 @Test
+	public void deleteCity() throws Exception {
+		Boolean flag = citiesService.deleteCity("APe");
+		logger.info(" get All Cities..."+  flag.booleanValue());
+		
+	}
 }

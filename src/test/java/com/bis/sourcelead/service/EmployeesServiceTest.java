@@ -46,7 +46,7 @@ public class EmployeesServiceTest {
 		employee.setEmployeeState("active");
 		employee.setState("TG");
 		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1L);
+		orgLocations.setId(3L);
 		employee.setOrgLocations(orgLocations);
 		employee.setInvoiceFrequency("Weekly");
 		employee.setStatus("Active");
@@ -65,7 +65,7 @@ public class EmployeesServiceTest {
 	public void updateEmployee() throws Exception{
 		
 		Employees employee = new Employees();
-		employee.setId(3L);
+		employee.setId(1L);
 		User user2 = new User();
 		user2.setId(3L);
 		employee.setUser(user2);
@@ -77,7 +77,7 @@ public class EmployeesServiceTest {
 		employee.setEmployeeState("Disabled");
 		employee.setState("TG");
 		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1L);
+		orgLocations.setId(3L);
 		employee.setOrgLocations(orgLocations);
 		employee.setInvoiceFrequency("Weekly");
 		employee.setStatus("ACTIVE");
@@ -94,7 +94,9 @@ public class EmployeesServiceTest {
 	
 	@Test
 	public void getEmployee() throws Exception{
-		Employees employee = employeesService.getEmployee("3");
+
+		Employees employee = employeesService.getEmployee("1");
+
 		
 		logger.info("getEmployee" + employee.getStatus());
 	}
@@ -110,7 +112,7 @@ public class EmployeesServiceTest {
 	public void validateEmployeeId() throws Exception{
 		Employees employee = new Employees();
 		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1L);
+		orgLocations.setId(3L);
 		employee.setOrgLocations(orgLocations);
 		Boolean flag = employeesService.validateEmployeeId("fd5dfg", employee.getOrgLocations().getId());
 		logger.info("validateEmployeeId " + flag);
@@ -119,13 +121,13 @@ public class EmployeesServiceTest {
 	@Test
 	public void getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId() throws Exception{
 		Employees employee = new Employees();
-		employee.setId(3L);
+		employee.setId(1L);
 		User user2 = new User();
 		user2.setId(3L);
 		employee.setUser(user2);
 		employee.setEmployeeId("fd5dfg");
 		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1L);
+		orgLocations.setId(3L);
 		employee.setOrgLocations(orgLocations);
 		employee = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(employee.getEmployeeId(), employee.getUser().getId(), employee.getOrgLocations().getId());
 		logger.info("getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId " + employee.getEmployeeId());
@@ -139,7 +141,10 @@ public class EmployeesServiceTest {
 	
 	@Test
 	public void getEmployeesExcludeTeamMembers() throws Exception{
+
+
 		List<Employees> emplist= employeesService.getEmployeesExcludeTeamMembers(1L, 2L);
+
 		if(emplist != null)
 		{
 		logger.info("getEmployeesExcludeTeamMembers " + emplist.size());
@@ -147,7 +152,9 @@ public class EmployeesServiceTest {
 	}
 	@Test
 	public void getAllEmployeesByOrgLocationId() throws Exception{
+
 		Collection<Employees> emplist= employeesService.getAllEmployeesByOrgLocationId(1L, 1L, 1L);
+
 		if(emplist != null)
 		{
 		logger.info("getAllEmployeesByOrgLocationId " + emplist.size());
@@ -156,7 +163,9 @@ public class EmployeesServiceTest {
 	
 	@Test
 	public void validateEmployeeEmailId() throws Exception{
+
 		Boolean flag =  employeesService.validateEmployeeEmailId(4L, "raj@gmail.com");
+
 		if(flag != null)
 		{
 		logger.info("validateEmployeeEmailId " + flag);
@@ -164,7 +173,9 @@ public class EmployeesServiceTest {
 	}
 	@Test
 		public void deleteEmployee() throws Exception{
+
 			Boolean flag =	employeesService.deleteEmployee("3");
+
 			if(flag != null)
 			{
 			System.out.println("Successfully deleted!!!!");

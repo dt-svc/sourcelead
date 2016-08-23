@@ -71,7 +71,7 @@ public class OrgServiceTest {
 		organization.setUpdatedDate(new Date());
 		organization.setUpdatedBy("YYY");
 		User user = new User();
-		user.setId(1l);
+		user.setId(3l);
 		organization.setUser(user );
 		organization = orgService.addOrganization(organization);
 		logger.info("addOrganiztion" + organization.getWebSite());
@@ -158,7 +158,7 @@ public class OrgServiceTest {
 	@Test
 	public void isClientNameValid() throws Exception{
 		
-		Boolean b =orgService.isClientNameValid("tcs");
+		Boolean b =orgService.isClientNameValid("tcs",1L);
 		logger.info("isClientNameValid "+b);
 		
 	}
@@ -170,6 +170,7 @@ public class OrgServiceTest {
 		logger.info("getEnrolledOrgs "+organization.size());
 		
 	}
+
 	//@Test
 		public void deletOrg() throws Exception {
 			//Long l = 3L;

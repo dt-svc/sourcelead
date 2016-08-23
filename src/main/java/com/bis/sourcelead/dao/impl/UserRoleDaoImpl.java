@@ -123,7 +123,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("Select userRole from UserRole userRole where " + "((userRole.user.firstName LIKE '"
-				+ userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%')) "
+				+ userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
 				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " ")
 				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
@@ -142,7 +142,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId and "
 						+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"
-						+ userName + "%')) "
+						+ userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
 						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "")
 				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
