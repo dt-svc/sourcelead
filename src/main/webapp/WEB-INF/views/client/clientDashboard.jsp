@@ -545,7 +545,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Client Name </label>';
-						result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" placeholder="client name" disabled="disabled">';
+						result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" placeholder="client name" >';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
@@ -591,10 +591,10 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Phone</label>';
-						if(json.email != null && json.email !='' && json.email !='undefined'){
-							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
+						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
+							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
 						}else{
-							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber"  data-validation="validate_Space validate_length length10-20 validate_phone" placeholder="client phone" ></div>';
+							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber"  data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
 						}
 						result = result + '</div> ';   
 						

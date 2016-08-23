@@ -307,7 +307,13 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(null != orgRelation){
 				OrgLocations orgLocations = orgRelation.getClientLocationId();
-						
+				Org org = orgLocations.getOrg();
+				if(null != org){
+				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
+					org.setOrgName(jsonObj.getString("clientName"));
+				}
+				orgService.updateOrg(org);
+				}	
 				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
 					orgLocations.setCity(jsonObj.getString("clientCity"));
 				}
