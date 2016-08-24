@@ -29,7 +29,7 @@ public class TabsDaoImpl implements TabsDao{
 	     
 		 return session.createQuery("from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct tabActions.tabs.id from TabActions tabActions "
 		 		+ "where tabActions.id IN (select actionRoles.tabActions.id from ActionRoles actionRoles where "
-		 		+ "actionRoles.roles.id = :roleId and actionRoles.orgLocations.id = :orgLocationId and actionRoles.isNotify = 'Y' ))")
+		 		+ "actionRoles.roles.id = :roleId and actionRoles.orgLocations.id = :orgLocationId and actionRoles.isNotify = 'Y' )) order by tabs.tabOrder asc")
 					  .setLong("roleId", roleId)
 					  .setLong("orgLocationId", orgLocationId)
 					  .setCacheable(true).list();
@@ -46,7 +46,7 @@ public class TabsDaoImpl implements TabsDao{
 	     
 		 return session.createQuery("from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct tabActions.tabs.id from TabActions tabActions "
 		 		+ "where tabActions.id IN (select actionRoles.tabActions.id from ActionRoles actionRoles where "
-		 		+ "actionRoles.roles.id = :roleId and actionRoles.org.id = :orgId and actionRoles.isNotify = 'Y' ))")
+		 		+ "actionRoles.roles.id = :roleId and actionRoles.org.id = :orgId and actionRoles.isNotify = 'Y' )) order by tabs.tabOrder asc")
 					  .setLong("roleId", roleId)
 					  .setLong("orgId", orgId)
 					  .setCacheable(true).list();

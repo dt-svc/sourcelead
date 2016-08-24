@@ -239,13 +239,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
-		Workbook createExcelworkbook = new XSSFWorkbook();
+		Workbook createExcelworkbook = null ;
 
-//		if (fileName.endsWith("xlsx")) {
-//			createExcelworkbook = new XSSFWorkbook();
-//		} else if (fileName.endsWith("xls")) {
-//			createExcelworkbook = (Workbook) new HSSFWorkbook();
-//		}
+		if (fileName.endsWith("xlsx")) {
+			createExcelworkbook = new XSSFWorkbook();
+		} else if (fileName.endsWith("xls")) {
+			createExcelworkbook = (Workbook) new HSSFWorkbook();
+		}
 
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
@@ -513,10 +513,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
 			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
 		    writeRow.createCell(6).setCellValue(row.getCell(6).toString());
 		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6));
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
 			 writeRow.createCell(6).setCellValue("");
 		}
 		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
@@ -533,18 +533,18 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
 	        writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8));
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
 			writeRow.createCell(8).setCellValue("");
 		}
 		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
 			writeRow.createCell(9).setCellValue(row.getCell(9).toString());
 		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9));
+			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
 		     writeRow.createCell(9).setCellValue("");
 		}
 			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
@@ -907,13 +907,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 		}
 	
-	private DataValidation getDropDownListForCell(String[] ratePerList, int column) {
+	private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName) {
 		@SuppressWarnings("deprecation")
 		  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
 		  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(ratePerList);
 		  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
 		  dataValidation.setSuppressDropDownArrow(false);
 		  return dataValidation;
-	
+//		  XSSFDataValidation
 }
 }

@@ -264,6 +264,14 @@ public class UserServiceImpl implements UserService {
 				roleName = Constants.ROLE_APPROVER;
 			}else if(user != null && user.getUserType() != null && "Employee".equals(user.getUserType())){
 				roleName = Constants.ROLE_USER;
+			}else if(user != null && user.getUserType() != null && "Account Manager".equals(user.getUserType())){
+				roleName = Constants.ACCOUNT_MANAGER;
+			}else if(user != null && user.getUserType() != null && "Sales Manager".equals(user.getUserType())){
+				roleName = Constants.SALES_MANAGER;
+			}else if(user != null && user.getUserType() != null && "Recruiter".equals(user.getUserType())){
+				roleName = Constants.RECRUITER;
+			}else if(user != null && user.getUserType() != null && "HR Manager".equals(user.getUserType())){
+				roleName = Constants.HR_MANAGER;
 			}
 			roles = rolesService.getRolesByRoleName(roleName);
 		} catch (Exception e) {
