@@ -68,8 +68,8 @@ public class OrgRelationsRestController {
 		
 		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId()); 
 		for(OrgRelations ocl :orgClientList){
-			ocl.setOrgName(ocl.getClientLocationId().getOrg().getOrgName());
-			ocl.setOrgid(ocl.getClientLocationId().getOrg().getId());
+			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 		 }
 		
 		 resultJson = commonUtil.toJSON(orgClientList);

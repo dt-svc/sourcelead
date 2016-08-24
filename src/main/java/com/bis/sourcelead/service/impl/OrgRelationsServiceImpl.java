@@ -55,13 +55,13 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		OrgRelations orgRelation =  orgRelationsDao.getClientByOrgLocationId(orgLocationId);
-		orgRelation.setOrgName(orgRelation.getClientLocationId().getOrg().getOrgName());
-		orgRelation.setWebSite(orgRelation.getClientLocationId().getOrg().getWebSite());
-		orgRelation.setCountry(orgRelation.getClientLocationId().getCountry());
-		orgRelation.setCity(orgRelation.getClientLocationId().getCity());
-		orgRelation.setState(orgRelation.getClientLocationId().getState());
-		orgRelation.setPhone(orgRelation.getClientLocationId().getPhone());
-		orgRelation.setEmail(orgRelation.getClientLocationId().getEmail());
+		orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+		orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+		orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+		orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+		orgRelation.setState(orgRelation.getResponderLocationId().getState());
+		orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
+		orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 		return orgRelation;
 	}
 
@@ -96,7 +96,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		HashSet<OrgRelations> orgRelationsList = new HashSet<OrgRelations>();
 		
 		OrgRelations orgRelations = new OrgRelations();
-		orgRelations.setClientLocationId(clientOrgLocation);
+		orgRelations.setResponderLocationId(clientOrgLocation);
 		orgRelations.setLocationId(orgLocations);
 		orgRelations.setStatus("ACTIVE");
 		orgRelations.setCreatedBy(loginUserCode);

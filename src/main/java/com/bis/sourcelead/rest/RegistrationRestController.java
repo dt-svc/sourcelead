@@ -81,9 +81,9 @@ public class RegistrationRestController {
 	   			HttpServletRequest request) {
 		try {
 
-				json = "{"+json+"}";
+				String json1 = "{"+json+"}";
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-				Registration registration =  gson.fromJson(json,Registration.class);
+				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    String[] registredModules =  modules.split(",");
 			    if("Recruiting".equalsIgnoreCase(registredModules[0])){
@@ -104,8 +104,9 @@ public class RegistrationRestController {
 	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.GET)
 	public String resetPasswordWithUserName(@RequestParam(value = "json", required = false) String json,
 			HttpServletRequest request) throws Exception {
+		String json1 = "{"+json+"}";
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration = gson.fromJson(json, Registration.class);
+		Registration registration = gson.fromJson(json1, Registration.class);
 		User user = userService.findByUserName(registration.getEmail());
 		if (null != user) {
 			try {
@@ -136,8 +137,9 @@ public class RegistrationRestController {
 	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
 	   public String verifyResetPassword(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
 		
+		String json1 = "{"+json+"}";
 		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration =  gson.fromJson(json,Registration.class);
+		Registration registration =  gson.fromJson(json1,Registration.class);
 		
 		//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
 		PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());

@@ -74,9 +74,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	
 	@Override
-	public OrgLocations findByEmail(String email) throws Exception {
+	public OrgLocations findByEmail(String email, Long orgLocationId) throws Exception {
 		logger.debug("In OrgLocationService class...");
-		return orgLocationsDao.findByEmail(email);
+		return orgLocationsDao.findByEmail(email,orgLocationId);
 	}
 
 	@Override

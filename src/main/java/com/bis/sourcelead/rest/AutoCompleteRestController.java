@@ -28,6 +28,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.WebgeocitiesService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.AutoCompleteController;
 import com.thoughtworks.xstream.XStream;
@@ -64,6 +65,9 @@ public class AutoCompleteRestController {
 	@Autowired
 	private WebgeocitiesService webgeocitiesService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@PostConstruct
 	public void init() {
 		logger.debug(" *** AutoCompleteController init with: " + applicationContext);
@@ -73,9 +77,9 @@ public class AutoCompleteRestController {
     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
     	for(OrgRelations orgRelations : clientsList ){
-    		orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
+    		orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
     	}
-    	String resultJson = toJSON(clientsList);
+    	String resultJson = commonUtil.toJSON(clientsList);
     	return resultJson;
 	}
     
@@ -161,14 +165,4 @@ public class AutoCompleteRestController {
         return result;
 	}
     
-    private String toJSON(Object obj){
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
-    }
-    
-	
 }

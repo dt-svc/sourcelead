@@ -81,34 +81,34 @@
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
 							<td><div class="proj_show"
-									onclick="clientSideBar('${report.clientLocationId.id}','${report.clientLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.clientLocationId.org.orgName}">${report.clientLocationId.org.orgName}</span><i
+									onclick="clientSideBar('${report.responderLocationId.id}','${report.responderLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
 
-							<c:if test="${!empty report.clientLocationId.org.webSite}">
-								<td><div><span class="tbldata-dotdot-sm" title="${report.clientLocationId.org.webSite}">${report.clientLocationId.org.webSite}</span></div></td>
+							<c:if test="${!empty report.responderLocationId.org.webSite}">
+								<td><div><span class="tbldata-dotdot-sm" title="${report.responderLocationId.org.webSite}">${report.responderLocationId.org.webSite}</span></div></td>
 							</c:if>
-							<c:if test="${empty report.clientLocationId.org.webSite}">
+							<c:if test="${empty report.responderLocationId.org.webSite}">
 								<td><div>--</div></td>
 							</c:if>
 
-							<c:if test="${!empty report.clientLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}">${report.clientLocationId.country}&nbsp;&nbsp;,${report.clientLocationId.state}&nbsp;&nbsp;,${report.clientLocationId.city}</span></div></td>
+							<c:if test="${!empty report.responderLocationId.country}">
+								<td><div><span class="tbldata-dotdot-me" title="${report.responderLocationId.country}&nbsp;&nbsp;,${report.responderLocationId.state}&nbsp;&nbsp;,${report.responderLocationId.city}">${report.responderLocationId.country}&nbsp;&nbsp;,${report.responderLocationId.state}&nbsp;&nbsp;,${report.responderLocationId.city}</span></div></td>
 							</c:if>
-							<c:if test="${empty report.clientLocationId.country }">
+							<c:if test="${empty report.responderLocationId.country }">
 								<td><div>--</div></td>
 							</c:if>
-							<c:if test="${!empty report.clientLocationId.email}">
-								<td><div><span class="tbldata-dotdot-vsm" title="${report.clientLocationId.email}">${report.clientLocationId.email}</span></div></td>
+							<c:if test="${!empty report.responderLocationId.email}">
+								<td><div><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.email}">${report.responderLocationId.email}</span></div></td>
 							</c:if>
-							<c:if test="${empty report.clientLocationId.email}">
+							<c:if test="${empty report.responderLocationId.email}">
 								<td><div>--</div></td>
 							</c:if>
-							<c:if test="${!empty report.clientLocationId.phone}">
-								<td><div><span class="tblminwidth-125">${report.clientLocationId.phone}</span></div></td>
+							<c:if test="${!empty report.responderLocationId.phone}">
+								<td><div><span class="tblminwidth-125">${report.responderLocationId.phone}</span></div></td>
 							</c:if>
 
-							<c:if test="${empty report.clientLocationId.phone}">
+							<c:if test="${empty report.responderLocationId.phone}">
 								<td><div>--</div></td>
 							</c:if>
 
@@ -558,7 +558,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
 						}else{
-							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" ></div>';
+							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" value=""></div>';
 						}
 						result = result + '</div> ';
 						

@@ -62,9 +62,8 @@ public class OrgSettingsRestController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
 	   String  json1 = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json1);
 		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		OrgSettings orgSettings =  gson.fromJson(json,OrgSettings.class);
+		OrgSettings orgSettings =  gson.fromJson(json1,OrgSettings.class);
 		
 		   try {
 			org = orgService.saveOrgSettings(orgSettings, multiFile, org);

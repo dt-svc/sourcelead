@@ -64,7 +64,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			throws Exception {
 		
 		  Session session = this.sessionFactory.getCurrentSession();
-	      String query = ("from OrgRelations orgrelation   left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org   where  orgrelation.locationId =:orgLocationId and  orgrelation.clientLocationId =:clientOrgLocationId");
+	      String query = ("from OrgRelations orgrelation   left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org   where  orgrelation.locationId =:orgLocationId and  orgrelation.responderLocationId =:clientOrgLocationId");
 		  
 	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("clientOrgLocationId", clientOrgLocationId).setCacheable(true).list();
 	       
@@ -86,7 +86,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgRelations> clientsList = null;
-		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
+		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
 		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return clientsList;
 	}
@@ -97,7 +97,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.clientLocationId cl join fetch cl.org where orgrelation.clientLocationId = :orgLocationId");
+	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId cl join fetch cl.org where orgrelation.responderLocationId = :orgLocationId");
 		  
 	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	       

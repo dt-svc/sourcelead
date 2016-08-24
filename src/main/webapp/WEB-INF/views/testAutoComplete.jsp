@@ -48,7 +48,7 @@
           	    						temp = 
           	    		 			    {
           	    								
-          	    								value: client.clientLocationId.id,
+          	    								value: client.responderLocationId.id,
           	    								label: client.clientName,
           	    								 desc: "the official user interface library for jQuery",
           	    								 img : "resources/images/at.png", 

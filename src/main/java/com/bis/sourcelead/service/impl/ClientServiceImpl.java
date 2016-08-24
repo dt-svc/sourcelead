@@ -242,7 +242,7 @@ public class ClientServiceImpl implements ClientService{
 				private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
 
 					OrgRelations orgRelations = new OrgRelations();
-					orgRelations.setClientLocationId(clientOrgLocation);
+					orgRelations.setResponderLocationId(clientOrgLocation);
 					orgRelations.setLocationId(orgLocations);
 					orgRelations.setStatus("ACTIVE");
 					orgRelations.setRelationType("Customer");
@@ -306,7 +306,7 @@ public class ClientServiceImpl implements ClientService{
 			OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
 			
 			if(null != orgRelation){
-				OrgLocations orgLocations = orgRelation.getClientLocationId();
+				OrgLocations orgLocations = orgRelation.getResponderLocationId();
 				Org org = orgLocations.getOrg();
 				if(null != org){
 				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
