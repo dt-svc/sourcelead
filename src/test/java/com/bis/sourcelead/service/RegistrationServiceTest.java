@@ -63,7 +63,7 @@ public class RegistrationServiceTest {
 	@Test
 	public void sendResetPasswordEmail() throws Exception{
 		User user = new User();
-		user.setId(10l);
+		user.setId(1l);
 		user.setUserCode("pAw1ghoN");
 		user.setEmail("shivayog@gmail.com");
 		registrationService.sendResetPasswordEmail(user, "bis123");
@@ -134,11 +134,11 @@ public class RegistrationServiceTest {
 			
 		}
 		
-		@Test
+		//@Test
 		public void deletePasswordResets() throws Exception{
 			//PasswordResets passwordResets = new PasswordResets();
 			//passwordResets.setId((long)1l);
-			PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(3l);
+			PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(2l);
 			if(passwordResets != null){
 				registrationService.deletePasswordResets(passwordResets);
 				logger.info("deletePasswordResets added successfully"+passwordResets.getStatus());

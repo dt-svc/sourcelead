@@ -410,12 +410,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	 		      		cal.setLenient(false);
 	 		      		cal.setTime(new Date());
 	 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 	 		      		
-	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
 	 		      		Date previousMondayDate = previousMonday.getTime();
 	 		      		
-	 		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+	 		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
 	 		      		Date nextSundayDate = nextSunday.getTime();
 	 		      		
 	 		      	   /**
@@ -481,13 +481,18 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		                   
 		                   sb.append("<td><div>");
 			                   
-			               Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
-			           	   if(leftNavStartDate != null){
+			                  Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			                  if(leftNavStartDate != null && leftNavStartDate.after(employeeStartDate)){
 			    		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 			    	       	   }
-			    	       	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
-			    	       	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
-			    	       	   if(rightNavStartDate != null){
+			    	       	    sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDate+" To "+endDate+"</span>");
+			    	       	    Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(),ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+			    	       	  
+				    			Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				    			rightCal.setLenient(false);
+				    			rightCal.setTime(rightNavStartDate);
+				    			Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
+			    			    if(rightNavStartDate != null && rightNavEndDate.getTime().before(employeeEndDate)){
 			    	       			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 			    	       	   }
 			    	       	   sb.append("    </div>");
@@ -602,6 +607,41 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
+			
+			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+      	   
+      	    if(StringUtils.isNotEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+      		   /**
+	      		   *calculating prior 6th week mondaydate and post 6th week sunday day for employee
+	      		   *
+	      	       *
+	      	       */
+		      		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		      		cal.setLenient(false);
+		      		cal.setTime(new Date());
+		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
+		      		
+		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
+		      		Date previousMondayDate = previousMonday.getTime();
+		      		
+		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
+		      		Date nextSundayDate = nextSunday.getTime();
+		      		
+		      	   /**
+		  		   * checking whether prior 6th week monday date is greaterthan employee startdate or not
+		  	       */
+		  		   if(employeeStartDate.before(previousMondayDate)){
+		  			   employeeStartDate = previousMondayDate;
+		  		   }
+		  		   
+		  		  /**
+		  		   * checking whether post 6th week sunday date is lesserthan employee enddate or not
+		  	       */
+		  		   if(employeeEndDate.after(nextSundayDate)){
+		  			   employeeEndDate = nextSundayDate;
+		  		   }
+      	    }
 			TimesheetSubmissions  ts = null;
 			
 			StringBuilder sb = new StringBuilder();	
@@ -643,67 +683,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		         ts = getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),memberId,employeeId);
 		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
 		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
-			/* if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
-				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
-				      Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					   startCal.setLenient(false);
-						
-				      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
-				    	  startCal.setTime(currentWeekStartDate);
-				      }
-				      else if(employeeEndDate.before(currentWeekStartDate)){
-				    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-				    	  endCal.setLenient(false);
-				    	  endCal.setTime(employeeEndDate);
-				    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
-				      }
-				      else if(employeeStartDate.after(currentWeekStartDate)){
-				    	  startCal.setTime(employeeStartDate);
-				      }
-				      
-		        	  
-			         startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
-			         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
-			         ts = getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),memberId,employeeId);
-	                 
-	                 currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-	                 currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
-	        }
-	        else{
-	                
-	                 if(navigation.equalsIgnoreCase("left")){
-	                     
-	                     
-	                     Date sDate  =  Constants.DMY.parse(startDate);
-		                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						 startCal.setLenient(false);
-						 startCal.setTime(sDate);
-						 
-							                
-		                startDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime()));
-				        endDateBuilder.append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime()));
-		                
-				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime(),CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime(), user.getId(),memberId,employeeId);
-		                currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,-7).getTime();
-		                currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,-1).getTime();
-	                 }
-	                 else{ 
-	                 
-		                 Date sDate  =  Constants.DMY.parse(startDate);
-		                 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						 startCal.setLenient(false);
-						 startCal.setTime(sDate);
-						 
-						 currentStartDate = CalendarUtil.getDateIncrementByincrement(startCal,7).getTime();
-			             currentEndDate = CalendarUtil.getDateIncrementByincrement(startCal,13).getTime();
-							                
-		                startDateBuilder.append(format.format(currentStartDate));
-				        endDateBuilder.append(format.format(currentEndDate));
-		                
-				        ts =  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(currentStartDate,currentEndDate, user.getId(),memberId,employeeId);
-		                
-	                 }
-	        }*/
+			
 	        
 			if(currentStartDate !=null){
 	      	   	ts.setStartDateStr(Constants.DF_DMY.format(currentStartDate));
@@ -724,13 +704,17 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	         sb.append(" <div></td>");
 	         
 	           sb.append("<td><div>");
-	        	Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
-			  if(leftNavStartDate != null){
+	           Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
+	           if(leftNavStartDate != null && leftNavStartDate.after(employeeStartDate)){
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
 	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 	     		Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
-	    		if(rightNavStartDate != null){
+	     		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+    			rightCal.setLenient(false);
+    			rightCal.setTime(rightNavStartDate);
+    			Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
+			    if(rightNavStartDate != null && rightNavEndDate.getTime().before(employeeEndDate)){
 	     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 	     	   }
 	     	   sb.append("    </div>");
