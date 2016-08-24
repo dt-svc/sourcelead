@@ -1239,13 +1239,15 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		String localsubmissionId = jsonObj.getString("submissionId");
 	    localsubmissionId = localsubmissionId.replaceAll("\\[", "").replaceAll("\\]","");
 	    String[] submissionIds = localsubmissionId.split(",");
+	    Date startDate = new Date() ;
     	
 		if(submissionIds != null && submissionIds.length>0){ 
 			for(String submissionId : submissionIds){
 				  				submissionId = submissionId.replace("\"", "");
 				                Long total = 0l;
 				                TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
-					             submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);
+				                startDate = timesheetSubmissions.getStartDate();
+				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);
 					    		/*if(status.equalsIgnoreCase("Draft")){
 					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
 					    		}
@@ -1451,9 +1453,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					    	}
 		} 
     	
-		result =  "success";
-		resultJson = toJSON(result);
-		return resultJson;
+		/*result =  "success";*/
+		/*resultJson = toJSON(startDateResult);*/
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        String startDateStr = format.format(startDate);
+		return startDateStr;
 		
 	}
 	

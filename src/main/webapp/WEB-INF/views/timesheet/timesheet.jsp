@@ -438,7 +438,8 @@ function saveMyTimesheet(status){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
-        		    	   dynamicTimesheet();
+        		    	   dynamicTimesheet("left",result); 
+        		    	  /* dynamicTimesheet(); */
         		      }
         	      	  
         	    }); 
