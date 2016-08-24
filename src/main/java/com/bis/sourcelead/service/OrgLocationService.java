@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -28,7 +27,7 @@ public interface OrgLocationService {
 
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception;
 
-	public OrgLocations findByEmail(String email) throws Exception;
+	public OrgLocations findByEmail(String email,Long orgLocationId) throws Exception;
 
 	Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations,
 			String loginUserCode) throws Exception;

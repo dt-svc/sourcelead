@@ -172,9 +172,9 @@ public class ClientRestController {
 	@RequestMapping(value = "/getClientEmailVerification", method = RequestMethod.POST)
 	public @ResponseBody String validateClientEmail(@RequestParam(value = "EmailId", required = false) String EmailId)
 			throws Exception {
-
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String result;
-		OrgLocations orgLocations = orgLocationService.findByEmail(EmailId);
+		OrgLocations orgLocations = orgLocationService.findByEmail(EmailId,orgLocation.getId());
 
 		if (orgLocations != null) {
 			result = "true";

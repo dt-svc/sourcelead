@@ -558,7 +558,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
 						}else{
-							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" ></div>';
+							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" value=""></div>';
 						}
 						result = result + '</div> ';
 						
