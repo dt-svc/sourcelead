@@ -80,6 +80,8 @@ public class RegistrationRestController {
 				@RequestParam(value="subModules", required=false) String subModules ,
 	   			HttpServletRequest request) {
 		try {
+
+				json = "{"+json+"}";
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
