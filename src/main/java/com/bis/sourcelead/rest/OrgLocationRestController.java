@@ -33,7 +33,7 @@ public class OrgLocationRestController {
 	}
 
 	@RequestMapping(value = "/addOrg", method = RequestMethod.GET,headers="Accept=application/json")
-	public OrgLocations addOrgLocations(@PathVariable Long id) throws Exception
+	public OrgLocations addOrgLocations() throws Exception
 	{
 		OrgLocations orgLocations = new OrgLocations();
 		OrgLocations orgLocations1 = orgLocationService.addOrgLocations(orgLocations);

@@ -8,20 +8,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-import org.json.JSONObject;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,16 +43,14 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.bis.sourcelead.web.SourceleadCustomExceptions;
 
 @RestController 
 public class TimesheetSubmissionsRestController {
 	
-	 
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -65,13 +61,7 @@ public class TimesheetSubmissionsRestController {
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
-	private ApplicationContext applicationContext;
-	
-	@Autowired
 	private EmployeesService employeesService;
-	
-	@Autowired
-	private DataSource dataSource;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -117,30 +107,11 @@ public class TimesheetSubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date sDate  =  Constants.DMY.parse(startDate);
-        
-        
+		Date sDate  =  Constants.DMY.parse(startDate);
         submissionApproverHierarchyService.updateApprovalStatusForApprover(employeeId, user.getId(), sDate, approvalStatus, rejectedReason);
         
         sendEmailToEmployeeTimesheetApprovalStatus(employeeId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
         
-      /*  Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(), sDate);
-        if(timesheetSubmissionsList!=null){
-        	for(TimesheetSubmissions timesheetSubmissions :timesheetSubmissionsList){
-	             if(approvalStatus.equalsIgnoreCase("REJECTED") && approvalStatus!=null){
-	            	 	timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-	            	 	timesheetSubmissions.setSubmissionStatus(Submission_Status.REJECTED);
-	            	 	timesheetSubmissions.setRejectedReason(rejectedReason);
-	             }else if(approvalStatus.equalsIgnoreCase("APPROVED") && approvalStatus!=null){
-	            	 timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
-	            	 timesheetSubmissions.setSubmissionStatus(Submission_Status.APPROVED);
-	             }
-	             
-	             timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-        	}  
-        }*/
         return "success";
     }
 	
@@ -169,10 +140,8 @@ public class TimesheetSubmissionsRestController {
 				outStream.close();
 
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
 
 		}  
 		 
@@ -183,21 +152,7 @@ public class TimesheetSubmissionsRestController {
 			 
 	{
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		
-		ProjectMembers projectMembers = new ProjectMembers();
-		projectMembers.setId(1l);
-		timesheetSubmissions.setProjectMembers(projectMembers);
-		timesheetSubmissions.setStartDate(new Date());
-		timesheetSubmissions.setEndDate(new Date());
-		/*timesheetSubmissions.setSubmissionStatus("ok");*/
-		timesheetSubmissions.setStatus("Active");
-		timesheetSubmissions.setCreatedDate(new Date());
-		timesheetSubmissions.setCreatedBy("prasad");
-		timesheetSubmissions.setUpdatedDate(new Date());
-		timesheetSubmissions.setUpdatedBy("venket");
-		
-		TimesheetSubmissions savedTimesheetSubmissionss = timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
-		return savedTimesheetSubmissionss; 
+		return timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
 	}
 	
 	
@@ -206,21 +161,7 @@ public class TimesheetSubmissionsRestController {
 			 
 	{
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		timesheetSubmissions.setId((long) 1);
-		ProjectMembers projectMembers = new ProjectMembers();
-		projectMembers.setId(1l);
-		timesheetSubmissions.setProjectMembers(projectMembers);
-		timesheetSubmissions.setStartDate(new Date());
-		timesheetSubmissions.setEndDate(new Date());
-		/*timesheetSubmissions.setSubmissionStatus("False");*/
-		timesheetSubmissions.setStatus("Reject");
-		timesheetSubmissions.setCreatedDate(new Date());
-		timesheetSubmissions.setCreatedBy("Sri");
-		timesheetSubmissions.setUpdatedDate(new Date());
-		timesheetSubmissions.setUpdatedBy("Sai");
-		
-		TimesheetSubmissions updtaeTimesheetSubmissionss = timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-		return updtaeTimesheetSubmissionss; 
+		return  timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 	}
 	
 	
@@ -228,8 +169,7 @@ public class TimesheetSubmissionsRestController {
 	public @ResponseBody  Boolean deleteTimesheetSubmissions(@PathVariable String id) throws Exception
 			 
 	{
-		Boolean status = timesheetSubmissionsService.deleteTimesheetSubmissions(id);
-		return status; 
+		return timesheetSubmissionsService.deleteTimesheetSubmissions(id);
 	}
 	
 	@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
@@ -255,7 +195,7 @@ public class TimesheetSubmissionsRestController {
 		 	 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 	
 			 //setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 Map<String, String> globalVarsMap = new HashMap<>();
 			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
 			 globalVarsMap.put("employeeFirstName",emp.getUser().getFirstName());
@@ -264,13 +204,13 @@ public class TimesheetSubmissionsRestController {
 			 globalVarsMap.put("timeFrequency",startDate+" to "+endDate);
 			 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
 			 globalVarsMap.put("managerLastName", loginUser.getLastName());
-			 if(status.equalsIgnoreCase("REJECTED")){
+			 if("REJECTED".equalsIgnoreCase(status)){
 				 globalVarsMap.put("rejectedReason",rejectedReason);
 			 }
 			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 			 
 			 //setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
@@ -278,67 +218,40 @@ public class TimesheetSubmissionsRestController {
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
-			 if(status.equalsIgnoreCase("REJECTED")){
+			 if("REJECTED".equalsIgnoreCase(status)){
 				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 			 }
-			 if(status.equalsIgnoreCase("APPROVED")){
+			 if("APPROVED".equalsIgnoreCase(status)){
 				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 			 }
 			 
 			
-			 //covert subject,body and signature
+			 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 			 String url = sourceleadUrl;;
-			 
-			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
-			 
-			 
-			 //calling the sendNotification method of emailScenerioUtil
 			 EmailScenario  notificationScenario = null;
-			 if(status.equalsIgnoreCase("REJECTED")){
+			 if("REJECTED".equalsIgnoreCase(status)){
 				 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }
-			 if(status.equalsIgnoreCase("APPROVED")){
+			 if("APPROVED".equalsIgnoreCase(status)){
 				 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }
+			 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
 			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgCode);
-			//String url = null;
 			String actionLink = "";
 			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
 	}
 	
 	public static boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
+			return str == null || "".equals(str.trim());
     }
  
-	/*	json = "{"+json+"}";
-	JSONObject jsonObj = new JSONObject(json);
-	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();*/
-	
-	/*String result = "";
-	String resultJson = null;
-	
-	String localsubmissionId = jsonObj.getString("submissionId");
-    localsubmissionId = localsubmissionId.replaceAll("\\[", "").replaceAll("\\]","");
-    String[] submissionIds = localsubmissionId.split(",");
-	
-	if(submissionIds != null && submissionIds.length>0){ 
-		for(String submissionId : submissionIds){*/
-			  	
-			  	/*TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
-			  	timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
-			    timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
-			  	timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
-		}
-	}*/
 }
