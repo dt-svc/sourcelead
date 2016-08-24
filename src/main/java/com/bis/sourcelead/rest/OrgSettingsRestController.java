@@ -1,7 +1,6 @@
 package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,17 +57,12 @@ public class OrgSettingsRestController {
 	
     Iterator<String> itrator = request.getFileNames();
     MultipartFile multiFile = request.getFile(itrator.next());
-    String fileExtension = null;
-    if(multiFile != null && !isNullOrEmpty(multiFile.getOriginalFilename())){
-	   String fileName = multiFile.getOriginalFilename();
-	   fileExtension = fileName.substring(fileName.length() - 3);
-    }
 	  
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
-	    json = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json);
+	   String  json1 = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json1);
 		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		OrgSettings orgSettings =  gson.fromJson(json,OrgSettings.class);
 		
@@ -79,7 +74,7 @@ public class OrgSettingsRestController {
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e)); 
 		}
 		   return "home";
     
@@ -88,7 +83,7 @@ public class OrgSettingsRestController {
    
    
    @RequestMapping(value = "/displayOrgImage/{orgCode}" , method = RequestMethod.GET)
-   public void displayUserImage(@PathVariable String orgCode,HttpServletRequest request,HttpServletResponse response) {
+   public void displayUserImage(@PathVariable String orgCode,HttpServletResponse response) {
   	 
   	 Org org = null;
 			try {
@@ -105,11 +100,11 @@ public class OrgSettingsRestController {
 				}
 				
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
 			} 
 			
 			catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e1)); 
 			}
    }
    @RequestMapping(value = "/deleteOrgImage" , method = RequestMethod.GET)
@@ -124,25 +119,8 @@ public class OrgSettingsRestController {
    }
    
    
-   private static BufferedImage colorImage(BufferedImage image) {
-       int width = image.getWidth();
-       int height = image.getHeight();
-       WritableRaster raster = image.getRaster();
-
-       for (int xx = 0; xx < width; xx++) {
-           for (int yy = 0; yy < height; yy++) {
-               int[] pixels = raster.getPixel(xx, yy, (int[]) null);
-               pixels[0] = 0;
-               pixels[1] = 0;
-               pixels[2] = 255;
-               raster.setPixel(xx, yy, pixels);
-           }
-       }
-       return image;
-   }
-   
    protected boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
+		return str == null || "".equals(str.trim());
 	}
    
   

@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,14 +15,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 
@@ -92,7 +98,10 @@ public class Org {
 	@Column(name = "TIMESHEET")
 	@Enumerated(EnumType.STRING)
 	private Status timeSheet;
-
+	
+	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<OrgLocations> orgLocationsList;
 	
 	
 	public Long getId() {
@@ -231,6 +240,13 @@ public class Org {
 	public void setTimeSheet(Status timeSheet) {
 		this.timeSheet = timeSheet;
 	}
-	
+
+	public Set<OrgLocations> getOrgLocationsList() {
+		return orgLocationsList;
+	}
+
+	public void setOrgLocationsList(Set<OrgLocations> orgLocationsList) {
+		this.orgLocationsList = orgLocationsList;
+	}
 
 }

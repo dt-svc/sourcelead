@@ -1,18 +1,10 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,31 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -61,7 +38,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -91,9 +67,6 @@ public class ProjectsRestController {
 	 private OrgService orgService;
 	 
 	 @Autowired
-	 private OrgRelationsService orgRelationsService;
-	 
-	 @Autowired
 	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
@@ -120,10 +93,6 @@ public class ProjectsRestController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
-	 @Autowired
-	 private SourceleadPasswordEncoder sourceleadPasswordEncoder;
-	 
-	 
 	 /**
 	  * This method for save the  project by json
 	  * @param json
@@ -135,8 +104,8 @@ public class ProjectsRestController {
 	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json) throws Exception {
 		   
-		    json = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json);
+		    String json1 = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json1);
 		    String outPut =  projectsService.storeProject(jsonObj);
 		    return outPut;		
 			 
@@ -145,25 +114,25 @@ public class ProjectsRestController {
 	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
-		    json = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json);
-		 	
-		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		 	
-		 	String saveProject = projectsService.saveProjectByUserOrgLocationsJson(user, loginOrgLocation, loginOrgCode, jsonObj);
-		 	
-			 SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
-			 return "projectDashboard";
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		projectsService.saveProjectByUserOrgLocationsJson(user, loginOrgLocation, loginOrgCode, jsonObj);
+		SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg",
+				"Successfully you have created a project");
+		return "projectDashboard";
 			 
 	   }
 	 
 	 
     @RequestMapping(value = "/validateProjectId",  method = RequestMethod.POST)
     public @ResponseBody String validateJobSequenceNumber(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
-	    	String result = "";
-			String resultJson = "";
+	    	String result;
+			String resultJson;
 			Integer projectIdCount = projectsService.projectIdValidation(projectId);
 			if(projectIdCount>0){
 				result = "duplicate";
@@ -171,7 +140,7 @@ public class ProjectsRestController {
 			else{
 				result = "unique";
 			}
-			resultJson = toJSON(result);
+			resultJson = commonUtil.toJSON(result);
 			return resultJson;
 	    }
 		
@@ -179,16 +148,10 @@ public class ProjectsRestController {
 
 	@RequestMapping(value = "/sourceLeadTasks")
 	public String sourceLeadTasks() throws Exception {
-	
 			ModelAndView model = new ModelAndView();
-			String result = "";
-			String resultJson = "";
-			
 			Collection<ProjectTasks>  sourceleadProjectTasks = tasksService.getAllSourceleadTasks();
 			model.addObject("Tasks_List", sourceleadProjectTasks);
-			
-			resultJson = toJSON(sourceleadProjectTasks);
-			return resultJson;
+			return commonUtil.toJSON(sourceleadProjectTasks);
 		}
 	 
 	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
@@ -213,15 +176,12 @@ public class ProjectsRestController {
 	@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
 	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		    
-		    json = "{"+json+"}";	
-		    JSONObject jsonObj = new JSONObject(json);
-			
+		    String json1 = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json1);
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	
-		 	String addEmployeeProject = projectsService.storeEmployeeInProjectDashboard(loginOrgLocation, users, jsonObj); 
-		 	
-			return addEmployeeProject;
+		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS");
+			return "SUCCESS";
 		}
 	  
 	  /**
@@ -232,27 +192,22 @@ public class ProjectsRestController {
 		  */
 	  @RequestMapping(value = "/getEmployeesListByExcludingManagers",  method = RequestMethod.POST)
 		public @ResponseBody  String getEmployeesListByExcludingManagers(HttpServletRequest request,@RequestParam(value="level1Manager", required=false) Long level1Manager,@RequestParam(value="level2Manager", required=false) Long level2Manager) throws Exception {
-		 	String resultJson = null;
-		 	
-		 	
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    
 		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId(),level1Manager,level2Manager);
-			resultJson = toJSON(employeList);
-			return resultJson;
+		    return  commonUtil.toJSON(employeList);
+			
 	  }
 	 
  
 	 @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
 	 public void getNotification() throws Exception{
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 Map<String, String> globalVarsMap = new HashMap<>();
 		    globalVarsMap.put("firstName", "Vinesh");
 		    globalVarsMap.put("lastName","Kammari");
 			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
 			emailScenario.setBody(body);
-			String url = null;
 			String actionLink = "";
 			User user = new User();
 			OrgLocations loginOrgLocation = new OrgLocations();
@@ -263,7 +218,7 @@ public class ProjectsRestController {
 	 @RequestMapping(value = "/getEmailVerification" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
 		 	
-		 	String result = null;
+		 	String result;
 		 	User user = userService.findByEmail(EmailId);
 		 	
 		 	if (user != null) {
@@ -278,9 +233,7 @@ public class ProjectsRestController {
 		 @RequestMapping(value = "/validateProjectSequeneNumberById" , method = RequestMethod.POST)
 		 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
-			 	
-				return flag;
+			    return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
 		   }
 
 	//Validate for Cilent Website
@@ -288,28 +241,18 @@ public class ProjectsRestController {
 	   public @ResponseBody String validateOrgWebsite(
 	   		@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
-		
 			String status = "success";
             String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
             if(orgInfo !=null && !"".equalsIgnoreCase(orgInfo)){
-            	 if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
+            	 if ("Website Duplicated".equalsIgnoreCase(orgInfo)) {
                      status = "Website Duplicated";
-                 }else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+                 }else if("Invalid Website".equalsIgnoreCase(orgInfo)){
                      status = "Invalid Website";
                  }
             }
 	    return status;
 	   }
-		 
-	 private String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	    }
 	   protected static boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
+			return str == null || "".equals(str.trim());
 		}
 }

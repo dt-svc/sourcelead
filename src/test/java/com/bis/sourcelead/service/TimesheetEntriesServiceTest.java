@@ -15,11 +15,17 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+
 import com.bis.sourcelead.entity.ProjectMembers;
+
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+
+import com.bis.sourcelead.service.impl.TimesheetEntriesServiceImpl;
+import com.bis.sourcelead.util.CommonUtil;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -29,6 +35,12 @@ public class TimesheetEntriesServiceTest {
 	@Autowired
 	TimesheetEntriesService timesheetEntriesService;
 
+	
+	
+	@Autowired
+	CommonUtil commonUtil;
+
+
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceTest.class);
 
 	@Test
@@ -36,6 +48,7 @@ public class TimesheetEntriesServiceTest {
 
 		TimesheetEntries timesheetEntries = new TimesheetEntries();
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+
 		timesheetSubmissions.setId(1l);
 		User approverUserId = new User();
 		approverUserId.setId(3l);
@@ -60,18 +73,41 @@ public class TimesheetEntriesServiceTest {
 		timesheetEntries.setSubmittedHours(11);
 		timesheetEntries.setUpdatedBy("suhas");
 		timesheetEntries.setUpdatedDate(new Date());
+
+		
+		//timesheetEntries.setId((long) 1);
+		timesheetEntries.setStatus("agredd");
+		timesheetEntries.setCreatedBy("akhil");
+	
+		timesheetEntries.setCreatedDate(new Date());
+		timesheetEntries.setDocFile(new byte[123]);
+		timesheetSubmissions.setId(2l);
+		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+		//timesheetEntries.setEntryStatus("");
+
 		timesheetEntriesService.addTimesheetEntries(timesheetEntries);
-		System.out.println("Successfully Added!!!!");
+		
 		logger.info("registration added successfully");
 	}
 
+	
 	@Test
-	public void updateTimesheetEntries() throws Exception {
-
+	public void updateTimesheetEntries() throws Exception{
+		
+		
 		TimesheetEntries timesheetEntries = new TimesheetEntries();
-		timesheetEntries.setId((long) 5);
-		timesheetEntries.setStatus("updated");
-		timesheetEntriesService.addTimesheetEntries(timesheetEntries);
+		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+		ProjectTasks projectTask = new ProjectTasks();
+		timesheetEntries.setId(1l);
+		timesheetEntries.setStatus("abcd");
+		timesheetEntries.setCreatedBy("akhil_kumar");
+		projectTask.setId(1l);
+		timesheetEntries.setProjectTask(projectTask);
+		timesheetEntries.setDocFile(new byte[123]);
+		timesheetSubmissions.setId(2l);
+		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+		timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
+
 		logger.info("Successfully Added!!!!");
 	}
 
@@ -92,6 +128,7 @@ public class TimesheetEntriesServiceTest {
 
 	}
 
+
 	@Test
 	public void getAllTimesheetEntriesBySubmissionId() throws Exception {
 		Collection<TimesheetEntries> AllTimesheetEntries = timesheetEntriesService
@@ -101,11 +138,12 @@ public class TimesheetEntriesServiceTest {
 		}
 	}
 
+
 	//@Test
-	public void deleteTimesheetEntries() throws Exception {
-		String id = "1";
+	public void deleteTimesheetEntries() throws Exception{
+		String id = "1";  
 		Boolean deleteTimesheet = timesheetEntriesService.deleteTimesheetEntries(id);
-		logger.info("Deleted Successfully!!!!" + deleteTimesheet);
+		logger.info("Deleted Successfully!!!!"+deleteTimesheet);
 	}
 
 }

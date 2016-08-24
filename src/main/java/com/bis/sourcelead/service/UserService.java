@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.UserProfile;
@@ -25,6 +26,8 @@ public interface UserService  {
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
+	
+	User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception;
 
 	public Collection<User> getUsers() throws Exception;
 	
@@ -41,6 +44,10 @@ public interface UserService  {
 	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
+	
+	void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType)  throws Exception;
+
+	
 }	
 		
 	

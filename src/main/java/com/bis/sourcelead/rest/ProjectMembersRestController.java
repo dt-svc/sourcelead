@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.web.AutoCompleteController;
 
 @RestController
 @RequestMapping(value = "/projectMembers")
@@ -60,7 +61,7 @@ public class ProjectMembersRestController {
 	 @RequestMapping(value = "/save", method = RequestMethod.GET,headers="Accept=application/json")
 	 public ProjectMembers save() throws Exception { 
 		 ProjectMembers projectMembers = new ProjectMembers();
-
+		 logger.debug("save for projects members");
 			Projects projects = new Projects();
 			projects.setId(13L);
 			projectMembers.setProjects(projects);
@@ -72,7 +73,7 @@ public class ProjectMembersRestController {
 			projectMembers.setTimesheetFrequency("weekly");
 			
 			
-			HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+			HashSet<ProjectMembersHistory> pmhList = new HashSet<>();
 			
 			ProjectMembersHistory pmh = new ProjectMembersHistory();
 			pmh.setProjectMemberId(projectMembers);
@@ -116,8 +117,7 @@ public class ProjectMembersRestController {
 			projectMembers.setEmployee(employee);
 			
 			projectMembers.setTimesheetFrequency("weekly");
-			//projectMembers.setProjectAssignedDate(new Date());
-            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+            HashSet<ProjectMembersHistory> pmhList = new HashSet<>();
 			ProjectMembersHistory pmh = new ProjectMembersHistory();
 			pmh.setProjectMemberId(projectMembers);
 			pmh.setProjectAssignedDate(new Date());

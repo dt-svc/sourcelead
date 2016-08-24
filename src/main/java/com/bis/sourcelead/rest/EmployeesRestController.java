@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.web.AutoCompleteController;
 
 @RestController
 @RequestMapping("/EmployeesController")
 public class EmployeesRestController {
-
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeesRestController.class);
 	
@@ -35,8 +35,6 @@ public class EmployeesRestController {
 		Employees  emp=	employeesService.addEmployee(employee);
 		return emp;
 	}
-	
-	
 	@RequestMapping(value = "/updateEmployee", method = RequestMethod.GET)
     public @ResponseBody  Employees updateEmployee() throws Exception
                     
@@ -45,8 +43,6 @@ public class EmployeesRestController {
 			Employees updateEmployee = employeesService.updateEmployee(employee);
             return updateEmployee;
     }
-	
-	
 	@RequestMapping(value = "/deleteEmployee/{id}", method = RequestMethod.GET)
     public @ResponseBody  Boolean deleteEmployee(@PathVariable String id) throws Exception
                     
@@ -54,18 +50,10 @@ public class EmployeesRestController {
 		    Boolean flag = employeesService.deleteEmployee(id);
             return flag;
     }
-
-
 	@RequestMapping(value = "/getAllEmployees", method = RequestMethod.GET)
     public @ResponseBody Collection<Employees> getAllEmployees() throws Exception
-                    
     {
               Collection<Employees> employeesList = employeesService.getAllEmployees();
               return employeesList;
     }
-
-
-	
-	
-	
 }

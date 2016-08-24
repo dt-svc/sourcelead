@@ -231,6 +231,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getProjectByProjectSequenceNumber(projectSequeneNumber);
 	}
 	
+	 /**
+	 * @author sarath kumar
+	 * @since  aug 19 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to save projects
+	 * 1.from general project saving
+	 * 2.from user saving
+	 * 
+	 * @param jsonObj This is the first paramter to storeProject method
+	 *  
+	 * @return string 
+	 * 
+	 * @throws JSONException
+	 */
 	
 	@Override
 	public String storeProject(JSONObject jsonObj) throws Exception {
@@ -261,8 +276,8 @@ public class ProjectsServiceImpl implements ProjectsService{
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
     	}
-    	projects.setCreatedDate(new Date());
-    	projects.setUpdatedDate(new Date());
+    	projects.setCreatedDate(commonUtil.currentDate());
+    	projects.setUpdatedDate(commonUtil.currentDate());
     	if(user.getUserCode() != null){
     		projects.setCreatedBy(user.getUserCode());	
     	}
@@ -310,6 +325,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);
+		
+		/**
+		 * this block is for submissions for project member
+		*/
+		if (jsonObj.has("employeeMaxCount")){
+		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+		if(StringUtils.isNotEmpty(employeeMaxCount)){
+		int empMaxCount = Integer.parseInt(employeeMaxCount);
+			for (int c = 1; c < empMaxCount; c++) {
+			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
+			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+			}
+		}
+		}
+		
 		
 		/*if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
@@ -378,9 +408,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+	public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 		
-		return projectsDao.getAllUesrTimeSheetSubmissionStatus();
+		return projectsDao.getAllUserTimeSheetSubmissionStatus();
 	}
 
 	@Override
@@ -459,9 +489,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
+	public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
 		
-		return projectsDao.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
+		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 	}
 
 	@Override
@@ -536,6 +566,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(projects.getOrgRelationId() !=null){
 				if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 					projects.setRelationId(ocl.getId());
+					projects.setClient(ocl.getClientLocationId().getOrg().getOrgName());
 				}
 			}
 			clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getId();
@@ -628,7 +659,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
 			    if(projects.getProjectStatus().equals(Project_Status.COMPLETED)){
-			    	projects.setEndDate(currentDate);
+			    	if(currentDate.before(projects.getStartDate())){
+			    		projects.setEndDate(projects.getStartDate());
+			    	}else{
+			    		projects.setEndDate(currentDate);
+			    	}
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
 			    }

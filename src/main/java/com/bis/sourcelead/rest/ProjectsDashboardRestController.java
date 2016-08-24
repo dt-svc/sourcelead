@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -117,7 +116,7 @@ public class ProjectsDashboardRestController {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-				String resultJson = "";
+				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
 			    for(Projects ps : projectsList){
@@ -160,8 +159,8 @@ public class ProjectsDashboardRestController {
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 
-		 json = "{"+json+"}";	
-		 JSONObject jsonObj = new JSONObject(json);
+		 String json1 = "{"+json+"}";	
+		 JSONObject jsonObj = new JSONObject(json1);
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 String ProjectDetailsUpdating = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
 	
@@ -183,10 +182,10 @@ public class ProjectsDashboardRestController {
 	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
 		    
 		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		    if(fieldName.equalsIgnoreCase("taskName")){  
+		    if("taskName".equalsIgnoreCase(fieldName)){  
 		    	projectTasks.setTaskName(fieldValue);
 		    }
-		    else if (fieldName.equalsIgnoreCase("description")) {
+		    else if ("description".equalsIgnoreCase(fieldName)) {
 		    	projectTasks.setDescription(fieldValue);
 			}     
 		    tasksService.updateTasks(projectTasks);
@@ -204,8 +203,8 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
 		 	
-		    json = "{"+json+"}";	
-		    JSONObject jsonObj = new JSONObject(json);
+		   String  json1 = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json1);
 		 	String saveProjectTasks = tasksService.saveProjectTasksByProjectId(projectId, jsonObj);
 		 	
 			 return saveProjectTasks;
@@ -221,7 +220,7 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
 		 	
-		 	 String resultJson = null;
+		 	 String resultJson;
 			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
 			 resultJson = commonUtil.toJSON(taskList);
 			 return resultJson;
@@ -250,14 +249,13 @@ public class ProjectsDashboardRestController {
 	  */
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
 		public @ResponseBody  String addEmployeeForProjectDashboard(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		    json = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json);
+		   String  json1 = "{"+json+"}";
+		    JSONObject jsonObj = new JSONObject(json1);
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-		 	String addEmployeeProjectDashBoard = projectsService.storeEmployeeInProjectDashboard(loginOrgLocation, users, jsonObj); 
-		 			 		
-			return addEmployeeProjectDashBoard;
+		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS");
+			return "SUCCESS";
 		}
 		 
 	/**
@@ -270,7 +268,7 @@ public class ProjectsDashboardRestController {
 
 	@RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
 		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
-		 	String resultJson = null;
+		 	String resultJson;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());

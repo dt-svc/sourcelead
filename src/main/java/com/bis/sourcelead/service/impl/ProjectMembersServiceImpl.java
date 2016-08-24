@@ -446,7 +446,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								/*projectMembersService.saveProjectMember(pm);*/
 								projectMemberList.add(pm);
 								
-								commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+								/*commonUtil.storeTimesheetSubmissionRecords(emp.getUser());*/
 								
 								pm.setEmpName(emp.getUser().getFirstName()+" "+emp.getUser().getLastName());
 								/*String teamMember = "";

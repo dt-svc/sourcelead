@@ -59,7 +59,7 @@ public class OrgServiceTest {
 	@Test
 	public void addOrganiztion() throws Exception {
 		Org organization = new Org();
-	//	organization.setId(3l);
+		organization.setId(1l);
 		organization.setDocFile(new byte[123]);
 		organization.setOrgName("BIS");
 		organization.setOrgCode("dell.com");
@@ -128,7 +128,7 @@ public class OrgServiceTest {
 	public void saveOrgSettings() throws Exception{
 		
 		Org organization = new Org();
-		//organization.setId(1l);
+		organization.setId(1l);
 		organization.setDocFile(new byte[4096]);
 		organization.setCreatedBy("raju");
 		organization.setStatus(Status.INACTIVE);
@@ -170,7 +170,8 @@ public class OrgServiceTest {
 		logger.info("getEnrolledOrgs "+organization.size());
 		
 	}
-	@Test
+
+	//@Test
 		public void deletOrg() throws Exception {
 			//Long l = 3L;
 			Boolean deletOrg=orgService.deleteOrg(2l);

@@ -22,9 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.States;
+import com.bis.sourcelead.entity.Webgeocities;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.WebgeocitiesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.AutoCompleteController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -39,9 +44,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @RestController
 public class AutoCompleteRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteRestController.class);
-
-	
+	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteController.class);
 	
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -55,30 +58,31 @@ public class AutoCompleteRestController {
 	@Autowired
 	private CountriesService countriesService;
 	
+	@Autowired
+	private StatesService statesService;
+	
+	@Autowired
+	private WebgeocitiesService webgeocitiesService;
+	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** AutoCompleteController init with: " + applicationContext);
+		logger.debug(" *** AutoCompleteController init with: " + applicationContext);
 	}
-
-   
-    
     @RequestMapping(value = "/clientAutoComplete")
     public String clientAutoComplete(HttpServletRequest request) throws Exception {
-    	 
     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
     	for(OrgRelations orgRelations : clientsList ){
     		orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
     	}
-		
     	String resultJson = toJSON(clientsList);
     	return resultJson;
 	}
     
     @RequestMapping(value = "/countryAutoComplete")
-    public String countryAutoComplete(HttpServletRequest request) throws Exception {
+    public String countryAutoComplete() throws Exception {
     	
-    	ArrayList<String> countriesList = new ArrayList<String>();
+    	ArrayList<String> countriesList = new ArrayList<>();
     	
     	List<Countries> countryList = countriesService.getAllCountries();
     	 
@@ -99,20 +103,37 @@ public class AutoCompleteRestController {
     
     
     @RequestMapping(value = "/locationAutoComplete")
-    public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName, HttpServletRequest request) throws Exception {
-    	
-    	ArrayList<String> countriesList = new ArrayList<String>();
-    	
+    public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
+    	ArrayList<String> countriesList = new ArrayList<>();
     	List<String> countryList = countriesService.getAllStatesAndCitiesByCountryName(countryName);
-    	 
     	if(countryList != null && !countryList.isEmpty())
     	{
     		for(String countries: countryList){
     			countriesList.add(countries);
     		}
     	}
-		
 		String[] temp = (String[]) countriesList.toArray(new String[] {});
+		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+		
+		String result = mJSONArray.toString();
+        return result;
+	}
+    
+    @RequestMapping(value = "/getStatesByCountry")
+    public String getStatesByCountry(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
+    	
+    	ArrayList<String> statesList = new ArrayList<>();
+    	
+    	List<States> states = statesService.getAllStatesByCountry(countryName);
+    	 
+    	if(states != null && !states.isEmpty())
+    	{
+    		for(States state: states){
+    			statesList.add(state.getStateName());
+    		}
+    	}
+		
+		String[] temp = (String[]) statesList.toArray(new String[] {});
 		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
 		
 		String result = mJSONArray.toString();
@@ -120,7 +141,26 @@ public class AutoCompleteRestController {
         return result;
 	}
     
-   
+    
+    @RequestMapping(value = "/getCitiesByStateAndCountry")
+    public String getCitiesByStateAndCountry(@RequestParam(value="countryName", required=false) String countryName, @RequestParam(value="stateName", required=false) String stateName) throws Exception {
+    	
+    	ArrayList<String> citiesList = new ArrayList<>();
+    	
+    	List<Webgeocities> cities = webgeocitiesService.getAllCitiesByStateAndCountry(stateName,countryName);
+    	 
+    	if(cities != null && !cities.isEmpty())
+    	{
+    		for(Webgeocities city: cities){
+    			citiesList.add(city.getCityName());
+    		}
+    	}
+		String[] temp = (String[]) citiesList.toArray(new String[] {});
+		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+		String result = mJSONArray.toString();
+        return result;
+	}
+    
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

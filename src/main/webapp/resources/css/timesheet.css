@@ -1048,6 +1048,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summ_wrap_table {
     width:100%; max-height:440px; overflow-y:auto;
 }   
+.user_summ_wrap_table a {
+	cursor: pointer;
+}
 .user_summ_wrap_table table {
     width:100%; font-size:14px; font-weight:400; border:none;
     }
@@ -1735,7 +1738,13 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }   
 .paginate_button.current {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background-color: #FFF !important; border-radius: 0px !important; margin-left: -1px !important;
+    color: #337ab7 !important; background: #3186d6 !important; border-radius: 0px !important; margin-left: -1px !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
+    color:#fff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+    color: #337ab7 !important;
     }
 .paginate_button.previous {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
