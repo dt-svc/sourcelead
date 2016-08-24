@@ -36,14 +36,14 @@ public class OrgRelationServiceTest {
 
 		orgRelations.setResponderLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
-		orgRelations.setRelationType("Client");
+		//orgRelations.setRelationType("Client");
 		orgRelations.setStatus("ACTIVE");
 		orgRelations.setCreatedDate(new Date());
 		orgRelations.setCreatedBy("source");
 		orgRelations.setUpdatedDate(new Date());
 		orgRelations.setUpdatedBy("Source");
 		orgRelationsService.addOrgRelations(orgRelations);
-		logger.info("Added Successfully..."+orgRelations.getRelationType());
+		logger.info("Added Successfully..."+orgRelations.getStatus());
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class OrgRelationServiceTest {
 		orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(3l, orgRelations.getResponderLocationId().getId());
 		if(orgRelations != null)
 		{
-		logger.info("getOrgRelationIdByOrgLocationIdAndClientLocationId "+orgRelations.getRelationType());
+		logger.info("getOrgRelationIdByOrgLocationIdAndClientLocationId "+orgRelations.getStatus());
 	}
 	}
 	
