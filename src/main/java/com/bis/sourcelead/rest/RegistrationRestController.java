@@ -1,12 +1,14 @@
 package com.bis.sourcelead.rest;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,19 +26,16 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class RegistrationRestController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
 	@Autowired
 	 RegistrationService registrationService;
 	
@@ -52,107 +51,91 @@ public class RegistrationRestController {
 	 @Autowired
 	 OrgService orgService;
 	 
+	 @Autowired
+	 CommonUtil commonUtil;
 	 
 	 @RequestMapping(value = "/getOrgsList")
-		@ResponseBody
-		public String getUsersList(HttpServletRequest request,
+		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
-				@RequestParam(value="userState", required=false) String userState) {
+			@RequestParam(value = "userState", required = false) String userState) {
 
-		 	String resultJson = null;
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			List<Org> orgsList = new ArrayList<Org>();
-			
-			try {
-				orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
-			 resultJson = toJSON(orgsList);
-			 return resultJson;
+		String resultJson;
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		List<Org> orgsList = new ArrayList<>();
 
+		try {
+			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	 
-	 
-	
+
+		resultJson = commonUtil.toJSON(orgsList);
+		return resultJson;
+
+	}
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
 				@RequestParam(value="modules", required=false) String modules ,
 				@RequestParam(value="subModules", required=false) String subModules ,
 	   			HttpServletRequest request) {
-
 		try {
+
 				json = "{"+json+"}";
-				JSONObject jsonObj = new JSONObject(json);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				
 			    String[] registredModules =  modules.split(",");
-			    if(registredModules[0].equalsIgnoreCase("Recruiting")){
+			    if("Recruiting".equalsIgnoreCase(registredModules[0])){
 			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
 			    		return "Invalid Sub Modules";
 			    	}
 			    }
-				
 				registrationService.addRegistration(registration,user,modules,subModules);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
-				
-				
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			
 			return "orgList";
 	     
 	   }
 	
-	
 	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.GET)
-	   public String resetPasswordWithUserName(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
-		
-		
-		json = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json);
-		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration =  gson.fromJson(json,Registration.class);
-		
+	public String resetPasswordWithUserName(@RequestParam(value = "json", required = false) String json,
+			HttpServletRequest request) throws Exception {
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		Registration registration = gson.fromJson(json, Registration.class);
 		User user = userService.findByUserName(registration.getEmail());
-		if(null != user){
+		if (null != user) {
 			try {
-				PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
-				if(null == passwordResets){
+				PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
+				if (null == passwordResets) {
 					String verificationCode = registrationService.addPasswordResets(user);
-					
-					//email to user
-					registrationService.sendResetPasswordEmail(user,verificationCode);
-				}else{
+					registrationService.sendResetPasswordEmail(user, verificationCode);
+				} else {
 					passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
 					passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
-					
-					//email to user
-					registrationService.sendResetPasswordEmail(user,passwordResets.getVerificationCode());
+					// email to user
+					registrationService.sendResetPasswordEmail(user, passwordResets.getVerificationCode());
 				}
-				
-				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg", "Verification Code sent to your mail.");
+
+				SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
+						"Verification Code sent to your mail.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			return "valid";
-		}else{
+		} else {
 			return "Invalid";
 		}
-		
+
 	}
 	
 
 	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
 	   public String verifyResetPassword(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
 		
-		json = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json);
 		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		Registration registration =  gson.fromJson(json,Registration.class);
 		
@@ -170,7 +153,7 @@ public class RegistrationRestController {
 				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
 				
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			return "login";
 		}else{
@@ -184,13 +167,12 @@ public class RegistrationRestController {
 	   public @ResponseBody String validateOrgWebsite(
 	   		@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
-		
-			String status = null;
+			String status;
 			if(!isNullOrEmpty(website)){
 			    String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-				if (orgInfo.equalsIgnoreCase("Website Duplicated")) {
+				if ("Website Duplicated".equalsIgnoreCase(orgInfo)) {
 					status = "Website Duplicated";
-				}else if(orgInfo.equalsIgnoreCase("Invalid Website")){
+				}else if("Invalid Website".equalsIgnoreCase(orgInfo)){
 					status = "Invalid Website";
 				}
 				else{
@@ -202,31 +184,14 @@ public class RegistrationRestController {
 			
 	    return status;
 	   }
-	   
-	   
 	   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
 	   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
 	   		@RequestParam(value="email", required=false) String email) throws Exception {
-	   	
-		  String status  = userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
-		  return status;
+		   return userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
 	   }
-	   
-	   
-	   private String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	    }
-		
 	
 	   protected boolean isNullOrEmpty(String str) {
-			return (str == null || "".equals(str.trim()));
+			return str == null || "".equals(str.trim());
 		}
-	
-	
 	}

@@ -26,6 +26,8 @@ public interface UserService  {
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
+	
+	User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception;
 
 	public Collection<User> getUsers() throws Exception;
 	

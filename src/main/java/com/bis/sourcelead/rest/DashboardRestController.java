@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -46,7 +47,8 @@ public class DashboardRestController {
 	@Autowired
 	public OrgLocationService orgLocationService;
 	
-	
+	@Autowired
+	CommonUtil commonUtil;
 	/****
 	 * This  controller method is   for getting TimesheetSubmission Counts in dashboard Landing Page Based on User Login
 	 * @author: Sammeta David
@@ -55,38 +57,21 @@ public class DashboardRestController {
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 
-		String resultJson = null;
+		String resultJson;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		
-		if(userRole.equalsIgnoreCase("ROLE_ADMIN")){
-			
+		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
-		}else if(userRole.equalsIgnoreCase("ROLE_USER")){
-			
+		}else if("ROLE_USER".equalsIgnoreCase(userRole)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
-		}else if(userRole.equalsIgnoreCase("ROLE_APPROVER")){
-			
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
 		}
-		
-		resultJson = toJSON(timeSheetSubmissionCount);
+		resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
 		return resultJson;
 	}
-
-	private String toJSON(Object obj) {
-		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-			public HierarchicalStreamWriter createWriter(Writer writer) {
-				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-			}
-		});
-		return xstream.toXML(obj);
-	}
-
-	
 	/****
 	 * 
 	 * @author: Pavan Jampana 
@@ -94,8 +79,7 @@ public class DashboardRestController {
 	 */
 	
 	@RequestMapping(value = "/totalTimesheetList/{status}")
-	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
 		response.sendRedirect("/sourcelead/timesheetlistByStatus?status=" + status);
 	}
 

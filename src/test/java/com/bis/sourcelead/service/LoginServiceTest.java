@@ -51,6 +51,7 @@ public class LoginServiceTest {
 
 		Boolean check = loginService.checkAuthentication("admin", "admin");
 		logger.info("checkAuthentication "+check.FALSE);
+		logger.info("checkAuthentication "+check);
 	}
 
 }

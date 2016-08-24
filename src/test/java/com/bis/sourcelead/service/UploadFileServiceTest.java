@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.impl.UploadFileServiceImpl;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * Handles Junit Test Cases for Bulk imports
@@ -52,60 +55,64 @@ public class UploadFileServiceTest {
 	}
 	@Autowired
 	UploadFileService uploadFileService;
+	
+	@Autowired
+	HttpServletRequest request;
 
 	@Test
 	public void getOrgCodeandLocationCodeTimeSheetNotification() throws Exception{
 		
-		User user = new User();
-		user.setId(3L);
-		user.setFirstName("Rajashekar");
-		user.setLastName("Chelpuri");
-		user.setEmail("rajasekhar@businessintelli.com");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("Admin");
-		user.setUserName("rajasekhar@businessintelli.com");
-		user.setPassword("Pwd123");
-		user.setUserCode("6eHaBeO6");
-		user.setIsMailSent(Status.Y);
-		user.setCreatedBy("6eHaBeO6");
-		/*<--------------------User Entity End-------------------->*/
-		UserRole userRole = new UserRole();
-		Roles roles = new Roles();
-		roles.setId(1L);
-		roles.setRoleName("ROLE_ADMIN");
-		roles.setDisplayName("Admin");
-		OrgLocations orgLocation = new OrgLocations();
+//		User user = new User();
+//		user.setId(3L);
+//		user.setFirstName("Rajashekar");
+//		user.setLastName("Chelpuri");
+//		user.setEmail("rajasekhar@businessintelli.com");
+//		user.setUserState(Status.ACTIVE);
+//		user.setUserType("Admin");
+//		user.setUserName("rajasekhar@businessintelli.com");
+//		user.setPassword("Pwd123");
+//		user.setUserCode("6eHaBeO6");
+//		user.setIsMailSent(Status.Y);
+//		user.setCreatedBy("6eHaBeO6");
+//		/*<--------------------User Entity End-------------------->*/
+//		UserRole userRole = new UserRole();
+//		Roles roles = new Roles();
+//		roles.setId(1L);
+//		roles.setRoleName("ROLE_ADMIN");
+//		roles.setDisplayName("Admin");
+//		OrgLocations orgLocation = new OrgLocations();
+//		
+//		Org org = new Org();
+//		org.setId(2L);
+//		org.setOrgName("Business Intelli solutions");
+//		org.setUser(user);
+//		org.setWebSite("businessintelli.com");
+//		org.setOrgType("Company");
+//		org.setOrgCode("tb8y");
+//		org.setStatus(Status.ACTIVE);
+//        orgLocation.setId(3L);
+//        orgLocation.setOrg(org);
+//        orgLocation.setUser(user);
+//        orgLocation.setCountry("India");
+//        orgLocation.setLocationCode("tb8yIN");
+//        orgLocation.setStatus(Status.ACTIVE);
+//        orgLocation.setCreatedBy("6eHaBeO6");
+//        
+//		userRole.setId(4L);
+//		userRole.setRoles(roles);
+//		userRole.setOrgLocations(orgLocation);
+//		userRole.setIsPrimary(1);
+//		userRole.setCreatedBy("6eHaBeO6");
+//		Set<UserRole> userRoleSet = new HashSet<UserRole>();
+//		user.setUserRole(userRoleSet);
 		
-		Org org = new Org();
-		org.setId(2L);
-		org.setOrgName("Business Intelli solutions");
-		org.setUser(user);
-		org.setWebSite("businessintelli.com");
-		org.setOrgType("Company");
-		org.setOrgCode("tb8y");
-		org.setStatus(Status.ACTIVE);
-        orgLocation.setId(3L);
-        orgLocation.setOrg(org);
-        orgLocation.setUser(user);
-        orgLocation.setCountry("India");
-        orgLocation.setLocationCode("tb8yIN");
-        orgLocation.setStatus(Status.ACTIVE);
-        orgLocation.setCreatedBy("6eHaBeO6");
-        
-		userRole.setId(4L);
-		userRole.setRoles(roles);
-		userRole.setOrgLocations(orgLocation);
-		userRole.setIsPrimary(1);
-		userRole.setCreatedBy("6eHaBeO6");
-		Set<UserRole> userRoleSet = new HashSet<UserRole>();
-		user.setUserRole(userRoleSet);
-		
-		File file = new File("/root/Downloads/Create Users.xls");
+		File file = new File("//root/Desktop/DF/Create users.xls");
 	    FileInputStream input = new FileInputStream(file);
 	    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
-
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String isMailChecked = null;
-	  	uploadFileService.uploadFile(multipartFile, orgLocation, user, isMailChecked);
+	  	uploadFileService.uploadFile(multipartFile, orgLocations, user, isMailChecked);
 	}
 	
 	

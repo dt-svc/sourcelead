@@ -408,9 +408,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public List<User> getAllUesrTimeSheetSubmissionStatus() throws Exception {
+	public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 		
-		return projectsDao.getAllUesrTimeSheetSubmissionStatus();
+		return projectsDao.getAllUserTimeSheetSubmissionStatus();
 	}
 
 	@Override
@@ -489,9 +489,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
+	public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
 		
-		return projectsDao.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
+		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 	}
 
 	@Override

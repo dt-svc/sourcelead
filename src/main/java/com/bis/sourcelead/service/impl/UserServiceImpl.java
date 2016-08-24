@@ -422,6 +422,12 @@ public class UserServiceImpl implements UserService {
 		logger.debug("In UserService class...");
 		return userDao.getUserById(Id);
 	}
+	
+	@Override
+	public User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.getUserByIdAndOrgLocationsId(Id,orgLocationsId);
+	}
 
 	@Override
 	public User saveUserProfile(UserProfile userProfile, MultipartFile multiFile,User user) throws Exception {

@@ -94,7 +94,9 @@ public class EmployeesServiceTest {
 	
 	@Test
 	public void getEmployee() throws Exception{
+
 		Employees employee = employeesService.getEmployee("1");
+
 		
 		logger.info("getEmployee" + employee.getStatus());
 	}
@@ -139,7 +141,10 @@ public class EmployeesServiceTest {
 	
 	@Test
 	public void getEmployeesExcludeTeamMembers() throws Exception{
-		List<Employees> emplist= employeesService.getEmployeesExcludeTeamMembers(1L, 3L);
+
+
+		List<Employees> emplist= employeesService.getEmployeesExcludeTeamMembers(1L, 2L);
+
 		if(emplist != null)
 		{
 		logger.info("getEmployeesExcludeTeamMembers " + emplist.size());
@@ -147,7 +152,9 @@ public class EmployeesServiceTest {
 	}
 	@Test
 	public void getAllEmployeesByOrgLocationId() throws Exception{
-		Collection<Employees> emplist= employeesService.getAllEmployeesByOrgLocationId(3L, 3L, 3L);
+
+		Collection<Employees> emplist= employeesService.getAllEmployeesByOrgLocationId(1L, 1L, 1L);
+
 		if(emplist != null)
 		{
 		logger.info("getAllEmployeesByOrgLocationId " + emplist.size());
@@ -156,7 +163,9 @@ public class EmployeesServiceTest {
 	
 	@Test
 	public void validateEmployeeEmailId() throws Exception{
-		Boolean flag =  employeesService.validateEmployeeEmailId(3L, "raj@gmail.com");
+
+		Boolean flag =  employeesService.validateEmployeeEmailId(4L, "raj@gmail.com");
+
 		if(flag != null)
 		{
 		logger.info("validateEmployeeEmailId " + flag);
@@ -164,7 +173,9 @@ public class EmployeesServiceTest {
 	}
 	@Test
 		public void deleteEmployee() throws Exception{
-			Boolean flag =	employeesService.deleteEmployee("1");
+
+			Boolean flag =	employeesService.deleteEmployee("3");
+
 			if(flag != null)
 			{
 			System.out.println("Successfully deleted!!!!");

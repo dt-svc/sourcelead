@@ -3,7 +3,6 @@ import java.io.Writer;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -23,6 +21,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -48,17 +47,32 @@ public class TimesheetEntriesRestController {
 	@Autowired
 	public TimeSheetExcelView timeSheetExcelView;
 	
+	@Autowired
+	CommonUtil commonUtil;
 	
-	// sarath kumar punnana : this controller  method is for get new timwsheet screen at page load.
+	/**
+	 * @author sarath kumar punnana
+	 * @param request
+	 * @param navigation
+	 * @param startDate
+	 * @return JSON
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String result = timesheetEntriesService.newTimesheet(user, navigation, startDate);
 		return result;
 	}
-	
-	// sarath kumar punnana : this controller  method is for get timwsheet popup at approver scrren when click on count.
+	/**
+	 * @author sarath kumar punnana
+	 * @param request
+	 * @param employeeId
+	 * @param startDate
+	 * @param endDate
+	 * @return JSON
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
 	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="employeeId", required=false) Long employeeId,
 																				 @RequestParam(value="startDate", required=false) String startDate,
@@ -68,8 +82,15 @@ public class TimesheetEntriesRestController {
 		String result = timesheetEntriesService.dynamicTimesheetpopUp(user, employeeId, startDate, endDate);
 		return result;
 	}
-
-	// sarath kumar punnana : this  controller method is for store  timwsheet entries.
+/**
+ * @author sarath kumar punnana 
+ * @param timesheetEntriesForm
+ * @param json
+ * @param request
+ * @param status
+ * @return
+ * @throws Exception
+ */
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
 				MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
@@ -79,71 +100,40 @@ public class TimesheetEntriesRestController {
 			
 	}
 	
-	
-	// sarath kumar punnana : This method is for get tasks list by projectId
+	/**
+	 * @author sarath kumar punnana
+	 * @param projectId
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	
-		 	 String resultJson = null;
+		 	 String resultJson;
 			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
-			 resultJson = toJSON(taskList);
+			 resultJson = commonUtil.toJSON(taskList);
 			 return resultJson;
 		 	
 	 }
-	
-
-	//sarath kumar punnana : unused method 
+/**
+ * @author sarath kumar punnana
+ * @return
+ * @throws Exception
+ */
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception
 			 
 	{
 		TimesheetEntries timesheetEntries = new TimesheetEntries();
-		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
 		timesheetSubmissions.setId(1l);
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
-		
-		ProjectTasks task = new ProjectTasks();
-		/*Tasks task = new Tasks();
-		task.setId(1l);
-		timesheetEntries.setStartDate(new Date());
-		timesheetEntries.setEndDate(new Date());
-		timesheetEntries.setTotalHours(5);
-		timesheetEntries.setSubmittedHours(10);
-		timesheetEntries.setEntryStatus("X");
-		timesheetEntries.setMonTask(task);
-		timesheetEntries.setMonHours(15);
-		timesheetEntries.setMoncomments("some how");
-		timesheetEntries.setTueTask(task);
-		timesheetEntries.setTueHours(5);
-		timesheetEntries.setTuecomments("nothing");
-		timesheetEntries.setWedTask(task);
-		timesheetEntries.setWedHours(10);
-		timesheetEntries.setWedcomments("some alone");
-		timesheetEntries.setThuTask(task);
-		timesheetEntries.setThuHours(12);
-		timesheetEntries.setThucomments("every day");
-		timesheetEntries.setFriTask(task);
-		timesheetEntries.setFriHours(15);
-		timesheetEntries.setFricomments("all");
-		timesheetEntries.setSatTask(task);
-		timesheetEntries.setSatHours(16);
-		timesheetEntries.setSatcomments("saturady no comments");
-		timesheetEntries.setSunTask(task);
-		timesheetEntries.setSunHours(10);
-		timesheetEntries.setSuncomments("sleep");
-		timesheetEntries.setEntryType("open");
-		timesheetEntries.setStatus("rejected");
-		timesheetEntries.setCreatedDate(new Date());
-		timesheetEntries.setCreatedBy("prsad k");
-		timesheetEntries.setUpdatedBy("naidu l");
-		timesheetEntries.setUpdatedDate(new Date());*/
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.addTimesheetEntries(timesheetEntries);
 		return savedTimesheetEntries; 
 	}
-	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana
+	 */
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries updateTimesheetEntries() throws Exception
 			 
@@ -156,45 +146,14 @@ public class TimesheetEntriesRestController {
 		
 		ProjectTasks task = new ProjectTasks();
 		task.setId(1l);
-		
-		/*timesheetEntries.setStartDate(new Date());
-		timesheetEntries.setEndDate(new Date());
-		timesheetEntries.setTotalHours(5);
-		timesheetEntries.setSubmittedHours(10);
-		timesheetEntries.setEntryStatus("A");
-		timesheetEntries.setMonTask(task);
-		timesheetEntries.setMonHours(15);
-		timesheetEntries.setMoncomments("some how");
-		timesheetEntries.setTueTask(task);
-		timesheetEntries.setTueHours(5);
-		timesheetEntries.setTuecomments("nothing");
-		timesheetEntries.setWedTask(task);
-		timesheetEntries.setWedHours(10);
-		timesheetEntries.setWedcomments("some alone");
-		timesheetEntries.setThuTask(task);
-		timesheetEntries.setThuHours(12);
-		timesheetEntries.setThucomments("every day");
-		timesheetEntries.setFriTask(task);
-		timesheetEntries.setFriHours(15);
-		timesheetEntries.setFricomments("all");
-		timesheetEntries.setSatTask(task);
-		timesheetEntries.setSatHours(16);
-		timesheetEntries.setSatcomments("saturady no comments");
-		timesheetEntries.setSunTask(task);
-		timesheetEntries.setSunHours(10);
-		timesheetEntries.setSuncomments("sleep");
-		timesheetEntries.setEntryType("open");
-		timesheetEntries.setStatus("rejected");
-		timesheetEntries.setCreatedDate(new Date());
-		timesheetEntries.setCreatedBy("prsad");
-		timesheetEntries.setUpdatedBy("naidu");
-		timesheetEntries.setUpdatedDate(new Date());*/
-		
-		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
-		return savedTimesheetEntries; 
+		return  timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
 	}
-	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getTimesheetEntries/{id}", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries getTimesheetEntries(@PathVariable String id) throws Exception
 			 
@@ -202,8 +161,12 @@ public class TimesheetEntriesRestController {
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.getTimesheetEntries(id);
 		return savedTimesheetEntries; 
 	}
-	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana 
+	 * @param id
+	 * @return json
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	public @ResponseBody  Boolean deleteTimesheetEntries(@PathVariable String id) throws Exception
 			 
@@ -231,19 +194,9 @@ public class TimesheetEntriesRestController {
 		  return timesheetEntriesList;
 	}
 	
-	//sarath kumar punnana : convert java object to json data 
-	private String toJSON(Object obj){
-	    XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	        public HierarchicalStreamWriter createWriter(Writer writer) {
-	            return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	        }
-	    });
-	    return xstream.toXML(obj);
-	}
-	
 	//sarath kumar punnana : this method is for null check
 	public static boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
+		return str == null || "".equals(str.trim());
 	}
  
 }

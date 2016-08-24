@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -130,12 +131,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		cal.setLenient(false);
 		cal.setTime(commonUtil.currentDate());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
 		Date previousMondayDate = previousMonday.getTime();
 		
-		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
 		Date nextSundayDate = nextSunday.getTime();
 		
 		
@@ -215,13 +216,17 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 		
 		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
-		if(leftNavStartDate != null){
+		if(leftNavStartDate != null && leftNavStartDate.after(employeeStartDate)){
 			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
 		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
-		if(rightNavStartDate != null){
+		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		rightCal.setLenient(false);
+		rightCal.setTime(rightNavStartDate);
+		Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
+		if(rightNavStartDate != null && rightNavEndDate.getTime().before(employeeEndDate)){
 			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
 		}
 		               

@@ -12,6 +12,9 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.service.TimesheetEntriesService;
+import com.bis.sourcelead.web.AutoCompleteController;
 import com.bis.sourcelead.web.DocumentFonts;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -39,7 +43,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 @RestController
 @RequestMapping(value = "/timesheetPdf")
 public class TimesheetPdfRestController {
-
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetPdfRestController.class);
 	@Autowired
 	public TimesheetEntriesService timesheetEntriesService;
 
@@ -56,36 +60,18 @@ public class TimesheetPdfRestController {
 	@RequestMapping(value = "/downloadPdf", method = RequestMethod.GET)
 	public void generateAllTimesheetPdf(HttpServletResponse response) throws Exception {
 
-		TimesheetEntries ts = new TimesheetEntries();
-
 		Collection<TimesheetEntries> timesheetEntriesList = timesheetEntriesService.getAllTimesheetEntries();
-
-		System.out.println("entered....");
 		try {
-
 			Document document = new Document(PageSize.A4, 36, 36, 50, 36);
-
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
 			PdfWriter writer = PdfWriter.getInstance(document, bos);
-
 			document.open();
 			document.newPage();
-
-			/*
-			 * URL url = getClass().getResource("borderpdf.pdf"); File is = new
-			 * File(url.toURI());
-			 */
-
 			ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 			URL url = classloader.getResource("borderpdf.pdf");
 			File is = new File(url.toURI());
-//			InputStream is = classloader.getResourceAsStream("borderpdf.pdf");
-
 			PdfReader reader = new PdfReader(is.toString());
-
 			PdfImportedPage page = writer.getImportedPage(reader, 1);
-
 			PdfContentByte cb = writer.getDirectContent();
 			cb.addTemplate(page, 0, 0);
 
@@ -271,7 +257,6 @@ public class TimesheetPdfRestController {
 			document.add(Chunk.NEWLINE);
 
 			document.close();
-			// return bos.toByteArray();
 
 			String mimeType = null;
 			if (mimeType == null) {
@@ -287,7 +272,6 @@ public class TimesheetPdfRestController {
 
 				byte[] buffer = new byte[4096];
 				int bytesRead = -1;
-
 				while ((bytesRead = inputStream.read(buffer)) != -1) {
 					outStream.write(buffer, 0, bytesRead);
 				}
@@ -296,13 +280,10 @@ public class TimesheetPdfRestController {
 				outStream.close();
 
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
 	}
