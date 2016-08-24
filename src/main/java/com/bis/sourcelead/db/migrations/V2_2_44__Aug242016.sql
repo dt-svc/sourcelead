@@ -65,3 +65,17 @@ INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `O
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','REPORTING_MANAGER_ID','BIGINT NULL AFTER `STATUS`');
 ALTER TABLE `sourcelead`.`USER` ADD FOREIGN KEY(REPORTING_MANAGER_ID) REFERENCES USER(ID);
+
+
+
+
+
+UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='3' WHERE `ID`='7';
+UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='4' WHERE `ID`='8';
+UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='5' WHERE `ID`='9';
+UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='6' WHERE `ID`='10';
+UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='7' WHERE `ID`='3';
+UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='8' WHERE `ID`='4';
+UPDATE `sourcelead`.`TABS` SET `TAB_ID`='8', `TAB_ORDER`='8' WHERE `ID`='5';
+UPDATE `sourcelead`.`TABS` SET `TAB_ID`='8', `TAB_ORDER`='8' WHERE `ID`='6';
+
