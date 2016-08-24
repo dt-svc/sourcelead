@@ -189,7 +189,7 @@ public class OrgLocationsServiceTest {
 	@Test
 	public void findByEmail() throws Exception{
 
-		OrgLocations orgLocations = orgLocationService.findByEmail("vishnu123@hcl.com");
+		OrgLocations orgLocations = orgLocationService.findByEmail("vishnu123@hcl.com",1l);
 		logger.info("findByEmail " + orgLocations.getId());
 	}
 	@Test
@@ -197,7 +197,7 @@ public class OrgLocationsServiceTest {
 		
 		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(2l);
 
-		OrgLocations orgLocations = orgLocationService.findByEmail("abc@gmail.com");
+		OrgLocations orgLocations = orgLocationService.findByEmail("abc@gmail.com",1l);
 		if(orgLocations != null)
 		{
 		logger.info("findByEmail " + orgLocations.getId());
