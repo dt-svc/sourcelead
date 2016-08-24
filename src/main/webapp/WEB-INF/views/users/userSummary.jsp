@@ -306,8 +306,8 @@ function firstname(name)
 						   result = result + '            <th>End Date</th>';
 						   result = result + '             <th>Approved hrs</th>';
 						   result = result + '              <th>Rejected hrs</th>';
-						   result = result + '             <th>Wait for approval</th>';
 						   result = result + '             <th>Saved</th>';
+						   result = result + '             <th>Wait for approval</th>';
 						   result = result + '                 <th>Action</th>';
 						   result = result + '         </tr>';
 						   for(var i=0; i<jsonData.length; i++){

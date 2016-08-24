@@ -954,7 +954,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 		    		approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
 			    	pah1.setApproverUserId(approverUserId1);
-			    	pah1.setLevel(1);
+			    	if(jsonObj.has("level2Manager")){ 	
+			    		pah1.setLevel(1);
+			    	}else{
+			    		pah1.setLevel(2);
+			    	}
 			    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 			    	ids[0] = saveProjectApproverHierarchy.getApproverUserId().getId();
 			    	
