@@ -38,8 +38,17 @@ public class OrgRelations {
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     
-    @Column(name="RELATION_TYPE")
-	private String relationType;
+    /*@Column(name="RELATION_TYPE")
+	private String relationType;*/
+	
+	@Column(name="INITIATOR_TYPE")
+	private String initiatorType;
+	
+	@Column(name="RESPONDER_TYPE")
+	private String responderType;
+	
+	@Column(name="LEVEL")
+	private String level;
 	
 	@Column(name="STATUS")
 	private String status;
@@ -166,13 +175,7 @@ public class OrgRelations {
 		this.locationId = locationId;
 	}
 
-	public String getRelationType() {
-		return relationType;
-	}
-
-	public void setRelationType(String relationType) {
-		this.relationType = relationType;
-	}
+	
 
 	public String getStatus() {
 		return status;
@@ -238,4 +241,30 @@ public class OrgRelations {
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
+
+	public String getInitiatorType() {
+		return initiatorType;
+	}
+
+	public void setInitiatorType(String initiatorType) {
+		this.initiatorType = initiatorType;
+	}
+
+	public String getResponderType() {
+		return responderType;
+	}
+
+	public void setResponderType(String responderType) {
+		this.responderType = responderType;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	
+	
 }
