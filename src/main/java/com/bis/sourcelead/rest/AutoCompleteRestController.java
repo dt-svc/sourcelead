@@ -77,7 +77,7 @@ public class AutoCompleteRestController {
     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
     	for(OrgRelations orgRelations : clientsList ){
-    		orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
+    		orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
     	}
     	String resultJson = commonUtil.toJSON(clientsList);
     	return resultJson;

@@ -34,7 +34,7 @@ public class OrgRelationServiceTest {
 
 		orglocations.setId(2L);
 
-		orgRelations.setClientLocationId(orglocations);
+		orgRelations.setResponderLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
 		orgRelations.setRelationType("Client");
 		orgRelations.setStatus("ACTIVE");
@@ -51,9 +51,9 @@ public class OrgRelationServiceTest {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
 		orglocations.setId(1L);
-		orgRelations.setClientLocationId(orglocations);
+		orgRelations.setResponderLocationId(orglocations);
 		orgRelations.setLocationId(orglocations);
-		orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(3l, orgRelations.getClientLocationId().getId());
+		orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(3l, orgRelations.getResponderLocationId().getId());
 		if(orgRelations != null)
 		{
 		logger.info("getOrgRelationIdByOrgLocationIdAndClientLocationId "+orgRelations.getRelationType());

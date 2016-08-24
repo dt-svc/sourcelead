@@ -72,8 +72,8 @@ public class ProjectsController {
 				
 				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
 				for(OrgRelations ocl :orgClientList){
-					ocl.setOrgName(ocl.getClientLocationId().getOrg().getOrgName());
-					ocl.setOrgid(ocl.getClientLocationId().getOrg().getId());
+					ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 				 }
 			    model.addObject("add_clientList", orgClientList);
 			    

@@ -46,7 +46,7 @@ public class OrgLocations {
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	@OneToMany(mappedBy="clientLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
 	 
