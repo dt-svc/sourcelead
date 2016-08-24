@@ -161,13 +161,13 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public OrgLocations findByEmail(String email) throws Exception {
+	public OrgLocations findByEmail(String email, Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
 		logger.debug("findByEmail start");
 		try{
-			orgLocations = session.createQuery("from OrgLocations where email=:email" ).setString( "email", email ).setCacheable(true).list();
+			orgLocations = session.createQuery("from OrgLocations ol where ol.email=:email and ol.id(select orgRelations.clientLocationId.org.id from OrgRelations orgRelations"+" where orgRelations.locationId.id = :orgLocationId)" ).setString( "email", email ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 			
 			logger.debug("findByEmail end");
 			if (orgLocations.size() > 0) {
@@ -182,6 +182,5 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return null;
 		
    	}
-	
 
 }
