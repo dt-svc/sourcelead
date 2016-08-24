@@ -163,7 +163,24 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		// TODO Auto-generated method stub
 		return submissionApproverHierarchy;
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId where sah.submissionId.id = :submissionId and sah.hierarchyId.level IN(select min(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = :submissionId)");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setCacheable(true).list();
+		//return submissionApproverHierarchyList;
+	    SubmissionApproverHierarchy submissionApproverHierarchy = null;
+		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+			submissionApproverHierarchy = submissionApproverHierarchyList.iterator().next();
+	     }
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchy;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,Long approverUserId) {

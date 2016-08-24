@@ -64,6 +64,13 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	
 	@Override
+	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getSubmissionLowLevelApproverHierarchyForEmployee(submissionId);
+	}
+	
+	
+	@Override
 	public List<SubmissionApproverHierarchy>getSubmissionApproverHierarchyBySubmissionId(Long submissionId) {
 		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyBySubmissionId(submissionId);

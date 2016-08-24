@@ -1252,16 +1252,18 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				                Long total = 0l;
 				                TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 				                startDate = timesheetSubmissions.getStartDate();
-				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);
-					    		/*if(status.equalsIgnoreCase("Draft")){
-					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
+				                
+				               /* if(status.equalsIgnoreCase("Draft")){
+				                	sah.setSubmissionStatus(Submission_Status.DRAFT);
 					    		}
 					    		if(status.equalsIgnoreCase("Submit")){
-					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.SUBMITTED);
-					    			timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+					    			sah.setSubmissionStatus(Submission_Status.SUBMITTED);
+					    			sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 					    		}*/
 					    		
-					    		
+				                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionLowLevelApproverHierarchyForEmployee(timesheetSubmissions.getId());
+				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected"))){
+				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
 								Iterator<String> itrator = request.getFileNames();
 								while (itrator.hasNext()) {
@@ -1454,6 +1456,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									}
 								}
 								
+			          }	
 								
 					    	}
 		} 
