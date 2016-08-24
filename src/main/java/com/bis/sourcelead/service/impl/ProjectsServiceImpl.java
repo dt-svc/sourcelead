@@ -369,7 +369,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
 			    if(projects.getOrgRelationId()!=null) {
-	                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+	                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
 	            }
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
@@ -566,10 +566,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(projects.getOrgRelationId() !=null){
 				if(projects.getOrgRelationId().getId().equals(ocl.getId())){
 					projects.setRelationId(ocl.getId());
-					projects.setClient(ocl.getClientLocationId().getOrg().getOrgName());
+					projects.setClient(ocl.getResponderLocationId().getOrg().getOrgName());
 				}
 			}
-			clientList[j] = ocl.getClientLocationId().getOrg().getOrgName()+"&"+ocl.getId();
+			clientList[j] = ocl.getResponderLocationId().getOrg().getOrgName()+"&"+ocl.getId();
 			j++;
 		 }
 		projects.setClientName(clientList);

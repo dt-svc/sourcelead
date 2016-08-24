@@ -71,7 +71,7 @@ public class ProjectsDashboardController {
         
         List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
-        	orgRelations.setClientName(orgRelations.getClientLocationId().getOrg().getOrgName());
+        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
         }
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
@@ -82,7 +82,7 @@ public class ProjectsDashboardController {
         List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
-                projects.setClient(projects.getOrgRelationId().getClientLocationId().getOrg().getOrgName());
+                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
                 
             }
         }

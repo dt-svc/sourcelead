@@ -248,7 +248,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.info("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         
-        String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.clientLocationId orgLocation "	
+        String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.responderLocationId orgLocation "	
 
         		+ "left join fetch orgLocation.org  where projects.id IN (:projectIds) and projects.orgLocationsId = :orgLocationId";
         List<Projects> projectsList  =   session.createQuery(query.toString()).setParameterList("projectIds", projectIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
@@ -288,7 +288,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	public List<Projects> getAllClientProjectsByOrgRelationId(Long orgRelationId, Long locationId) throws Exception {
 		logger.debug("In ProjectsDaoImpl class getAllProjectsByOrgRelationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects projects  left join fetch projects.orgRelationId orgre  where  orgre.clientLocationId  IN(select orgrel.clientLocationId from OrgRelations  orgrel where orgrel.clientLocationId = :orgRelationId and orgrel.locationId = :locationId) and projects.orgLocationsId = :locationId";
+		String query = "from Projects projects  left join fetch projects.orgRelationId orgre  where  orgre.responderLocationId  IN(select orgrel.responderLocationId from OrgRelations  orgrel where orgrel.responderLocationId = :orgRelationId and orgrel.locationId = :locationId) and projects.orgLocationsId = :locationId";
 		List<Projects> clientProjectsList =  session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("locationId", locationId).list();
 		
 		return clientProjectsList;

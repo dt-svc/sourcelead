@@ -167,7 +167,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
 		logger.debug("findByEmail start");
 		try{
-			orgLocations = session.createQuery("from OrgLocations ol where ol.email=:email and ol.id(select orgRelations.clientLocationId.org.id from OrgRelations orgRelations"+" where orgRelations.locationId.id = :orgLocationId)" ).setString( "email", email ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			orgLocations = session.createQuery("from OrgLocations ol where ol.email=:email and ol.id(select orgRelations.responderLocationId.org.id from OrgRelations orgRelations"+" where orgRelations.locationId.id = :orgLocationId)" ).setString( "email", email ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 			
 			logger.debug("findByEmail end");
 			if (orgLocations.size() > 0) {

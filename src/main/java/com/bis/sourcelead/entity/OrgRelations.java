@@ -31,8 +31,8 @@ public class OrgRelations {
 	private Long id;
 	
 	@ManyToOne
-    @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
-    private OrgLocations clientLocationId;
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
+    private OrgLocations responderLocationId;
 	
 	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )        
@@ -150,12 +150,12 @@ public class OrgRelations {
 		this.id = id;
 	}
 
-	public OrgLocations getClientLocationId() {
-		return clientLocationId;
+	public OrgLocations getResponderLocationId() {
+		return responderLocationId;
 	}
 
-	public void setClientLocationId(OrgLocations clientLocationId) {
-		this.clientLocationId = clientLocationId;
+	public void setResponderLocationId(OrgLocations responderLocationId) {
+		this.responderLocationId = responderLocationId;
 	}
 
 	public OrgLocations getLocationId() {
