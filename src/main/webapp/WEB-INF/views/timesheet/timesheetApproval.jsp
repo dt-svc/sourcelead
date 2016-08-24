@@ -1,4 +1,4 @@
-<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+<!-- <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet"> -->
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -140,13 +140,16 @@ $(document).ready(function() {
 </script>
 
 <script>
-function pagination(){     
+function pagination(){ 
     $('#example').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false
+    	"ordering": false,
+    	"oLanguage": {
+    		"sSearch": ""
+    	}
     } );
 }
 </script>
@@ -187,62 +190,17 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	<div class="timesheet_appr_wrap" >
 		<div class="timesheet_appr_wrap">
 		<div class="timesheet_head">
-        	<ul>
-        	<li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+        	 <ul>
+        	 <%-- <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
                 	<div id="filter3ApprovedPop" class="approved_pop">
                     	<ul>
                     	 <c:forEach var="report" items="${thslist}">  
                         	<li><input  id="employee${report.employeeId}" name="employeeById" value ="${report.employeeId}"  onclick="approvalList();"  type="checkbox"><label for="employee${report.employeeId}">${report.fullName}</label></li>
 						  </c:forEach>
-                        	<!-- <li><input type="checkbox" value="None" id="c9"><label for="c9">employee1</label></li>
-							<li><input type="checkbox" id="c10"><label for="c10">employee2</label></li>
-							<li><input type="checkbox" id="c11"><label for="c11">employee3</label></li>
-							<li><input type="checkbox" id="c12"><label for="c12">employee4</label></li> -->
                         </ul>
                     </div>                	
-                </li>	
-                <!-- <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
-                	<div id="filter1ApprovedPop" class="approved_pop">  
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">client1</label></li>
-							<li><input type="checkbox" id="c2"><label for="c2">client2</label></li>
-							<li><input type="checkbox" id="c3"><label for="c3">client3</label></li>
-							<li><input type="checkbox" id="c4"><label for="c4">client4</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-                <li><i class="fa fa-filter"></i><span>Project</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c5"><label for="c5">project1</label></li>
-							<li><input type="checkbox" id="c6"><label for="c6">project2</label></li>
-							<li><input type="checkbox" id="c7"><label for="c7">project3</label></li>
-							<li><input type="checkbox" id="c8"><label for="c8">project4</label></li>
-                        </ul>
-                    </div>                	
-                </li>				
-                <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
-                	<div id="filter3ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c9"><label for="c9">employee1</label></li>
-							<li><input type="checkbox" id="c10"><label for="c10">employee2</label></li>
-							<li><input type="checkbox" id="c11"><label for="c11">employee3</label></li>
-							<li><input type="checkbox" id="c12"><label for="c12">employee4</label></li>
-                        </ul>
-                    </div>                	
-                </li>				
-                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
-                	<div id="filter4ApprovedPop" class="approved_pop" >
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c13"><label for="c13">All</label></li>
-							<li><input type="checkbox" id="c14"><label for="c14">Approved</label></li>
-							<li><input type="checkbox" id="c15"><label for="c15">Draft</label></li>
-							<li><input type="checkbox" id="c16"><label for="c16">Rejected</label></li>
-                        </ul>
-                    </div>                	
-                </li>				
-                <div class="clearfix"></div>-->
-            </ul>
+                </li> --%>	
+            </ul> 
             <div class="clearfix"></div>
         </div> 
 		
@@ -997,6 +955,7 @@ function checkHours(){
 	
 	if(result != "" && result != null && result != 'undefined'){   
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").attr('style','display:block;');
 		$("#timeSheetErrorMsg").empty();
 		$("#timeSheetErrorMsg").append(outPut);
 		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
@@ -1008,7 +967,8 @@ function checkHours(){
 	} 
 	
 	$(".time_pop b").click(function(){
-	    $("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").attr('style','display:none;');
+		$("#timeSheetErrorMsg").empty();
 	}); 
 	
 }

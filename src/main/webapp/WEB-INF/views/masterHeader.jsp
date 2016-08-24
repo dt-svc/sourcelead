@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
