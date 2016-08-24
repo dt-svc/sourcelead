@@ -58,7 +58,7 @@ public class PasswordResetsServiceTest {
 		logger.info("Retrieved Successfully..."+passwordResets.getId());
 	}
 	
-	@Test
+/*	@Test
 	public void getPasswordResetsByVerificationCode() throws Exception {
 		String verificationCode = "VERF";
 		PasswordResets pwdReset = passwordResetsSevice.getPasswordResetsByVerificationCode(verificationCode);
@@ -71,7 +71,7 @@ public class PasswordResetsServiceTest {
 		if(passwordResets != null)
 		{
 		logger.info("getPasswordResetsByUserId "+passwordResets.getEmail());
-	}}
+	}}*/
 	
 		
 	//@Test
