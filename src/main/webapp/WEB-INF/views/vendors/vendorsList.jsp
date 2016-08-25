@@ -4,7 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -41,7 +40,7 @@
                     </div>
                 </li>                
 				<li><a href="add-vendor-contact.html"><i class="fa fa-plus"></i>Add contact</a></li>	
-                <li><a href="add-vendor.html"><i class="fa fa-plus"></i>Add Vendor</a></li>		
+                <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>

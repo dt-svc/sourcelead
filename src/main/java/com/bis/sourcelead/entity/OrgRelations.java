@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,11 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -64,6 +69,11 @@ public class OrgRelations {
 	
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
+	
+	@OneToMany(mappedBy = "spocUser",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<OrgSpoc> orgSpoc = new HashSet<OrgSpoc>(0);
+	
 	
 	@Transient
     private String orgName;

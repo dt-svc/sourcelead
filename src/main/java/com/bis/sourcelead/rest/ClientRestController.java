@@ -24,6 +24,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.AutoCompleteController;
@@ -76,16 +77,17 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			HttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
-
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.storeClient(jsonObj, user, orgLocation);
-
+		clientService.storeClient(jsonObj, user, orgLocation,responderType);
+	 	
 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
 				"Successfully you have created a client");
 
