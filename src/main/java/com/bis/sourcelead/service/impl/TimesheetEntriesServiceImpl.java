@@ -216,20 +216,21 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 		
 		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
-		if(leftNavStartDate != null && leftNavStartDate.after(employeeStartDate)){
+		if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || leftNavStartDate.equals(employeeStartDate))){
 			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
 		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
-		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		if(rightNavStartDate != null){
+	    Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);	
 		rightCal.setLenient(false);
 		rightCal.setTime(rightNavStartDate);
 		Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
-		if(rightNavStartDate != null && rightNavEndDate.getTime().before(employeeEndDate)){
+		if((rightNavEndDate.getTime().before(employeeEndDate) || employeeEndDate.equals(rightNavEndDate.getTime()))){
 			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
 		}
-		               
+		}               
 		sb.append("           </li><div class='clearfix'></div>");
 		sb.append("       </ul>");
 		sb.append("       <div class='clearfix'></div>");
