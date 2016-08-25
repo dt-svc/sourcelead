@@ -531,17 +531,33 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
 	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 	   
-	    for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
-	    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-	    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
-	    	}
-	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
-	    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
-	    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
-	    	}
+	    /**
+	     * If the Project has Only Manager the His Level is taken as Higher Level  
+	     */
+	    if(projectApproverHierarchies.size()==1){
 	    	
+	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    	}
+	    	}
+	    }else{
+	    	
+	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
+		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    	}
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
+		    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    	}
+		    	
+		    }
 	    }
+	    
+	    
 	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
 	    
 	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());

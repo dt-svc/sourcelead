@@ -863,8 +863,10 @@ function filter(){
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
    		    			result = result +report.managerLevel1;
    		    		}
-   		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
+   		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined' && report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
    		    			result = result + " , ";
+   		    		}
+   		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
    		    			result = result +report.managerLevel2;
    		    		} 
    		    		result = result +'</span></div>';

@@ -86,8 +86,11 @@ function filter(){
 			         					if(report.managerLevel1 != null && report.managerLevel1 !=''){
 		         	                    	result = result + ''+report.managerLevel1+'';
 			         					}
+			         					if(report.managerLevel2 != null && report.managerLevel2 !='' && report.managerLevel1 != null && report.managerLevel1 !=''){
+			         						result = result + ',';
+			         					}
 			         					if(report.managerLevel2 != null && report.managerLevel2 !=''){
-		         	                    	result = result +'";"'+report.managerLevel2+'';
+		         	                    	result = result +''+report.managerLevel2+'';
 			         					}
 			         					result = result +'</div></td>';
 			         					if(report.totalHours != null && report.totalHours !=''){

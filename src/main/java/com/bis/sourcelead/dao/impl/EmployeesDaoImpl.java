@@ -180,7 +180,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
 		
-		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' ");
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' and usr.userType <>'Admin' ");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
 	}

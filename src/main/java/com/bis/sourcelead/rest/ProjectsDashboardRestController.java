@@ -273,21 +273,11 @@ public class ProjectsDashboardRestController {
 		 	String resultJson;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-				Long level1Manager = null;
-				Long  level2Manager = null;
-			  List<ProjectApproverHierarchy> prh = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-			  for(ProjectApproverHierarchy projectApproverHierarchy : prh){
-				  if(projectApproverHierarchy.getLevel() == 1){
-					 level1Manager = projectApproverHierarchy.getApproverUserId().getId();
-				  }
-				  if(projectApproverHierarchy.getLevel() == 2){
-					   level2Manager = projectApproverHierarchy.getApproverUserId().getId();
-				  }
-			  }
-			 Collection<Employees> employeList = employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId(),level1Manager,level2Manager);
+			
+			 List<Employees>  employeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
 			 
 			 resultJson = commonUtil.toJSON(employeList);
-			return resultJson;
+			 return resultJson;
 		}
 	/**
 	 * Assign Employee to project by  project id	 
