@@ -15,11 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -29,11 +27,9 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -67,12 +63,6 @@ public class ClientServiceImpl implements ClientService{
 
 	@Autowired
 	private CommonUtil commonUtil;
-	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	OrgSpocService orgSpocService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -162,41 +152,12 @@ public class ClientServiceImpl implements ClientService{
 	 * @throws NullPointer
 	 */
 	@Override
-	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType) throws Exception {
+	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
 		
 		Org org = populateOrg(jsonObj, user.getUserCode());
-		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode());
 		org.setOrgLocationsList(orgLocationList);
 		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
-		
-		if(jsonObj.has("owner")){
-			String ownersId = jsonObj.getString("owner");
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
-			String[] owners = ownersId.split(",");
-			
-			for(int i=0 ;i<owners.length;i++ ){
-				OrgSpoc orgSpoc = new OrgSpoc();
-				for(OrgLocations orl :orgLocationList){
-					Set<OrgRelations> orgr = orl.getOrgRelationsList();
-					for (OrgRelations orgRelations : orgr) {
-						orgSpoc.setOrgRelations(orgRelations);
-					}
-				}
-				orgSpoc.setSpocUser(spocUser);
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				orgSpoc.setOwnerUser(ownerUser);
-				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
-				orgSpoc.setInvitationStatus("NEW");
-				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				orgSpoc.setCreatedDate(commonUtil.currentDate());
-				orgSpoc.setCreatedBy(user.getUserCode());
-				orgSpoc.setUpdatedDate(commonUtil.currentDate());
-				orgSpoc.setUpdatedBy(user.getUserCode());
-				orgSpocService.addOrgSpoc(orgSpoc);
-				}
-		}
-		
 	}
 	
 	/**

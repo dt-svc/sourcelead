@@ -86,7 +86,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgRelations> clientsList = null;
-		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
+		// Prasanna vadla : query changed to get new client list for ATS_VMS  
+		//Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
+		
+		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
 		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return clientsList;
 	}
@@ -132,6 +135,18 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		String query="select count(*) from Projects pro where pro.orgRelationId = :orgRelationId and pro.orgLocationsId = :orgLocationId";
 		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).uniqueResult();
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId) {
+		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgRelations> vandorsList = null;
+		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
+		
+		vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return vandorsList;
 	}
 	
 }

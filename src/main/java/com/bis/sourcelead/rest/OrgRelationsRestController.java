@@ -64,7 +64,7 @@ public class OrgRelationsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.storeClient(jsonObj, user, orgLocation,"");
+		clientService.storeClient(jsonObj, user, orgLocation);
 		
 		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId()); 
 		for(OrgRelations ocl :orgClientList){

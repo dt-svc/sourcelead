@@ -80,6 +80,8 @@
 					</thead>
 					<c:forEach var="report" items="${clientsList}" varStatus="raId">
 						<tr>
+						
+						<c:if test="${report.locationId.id == loginOrgLocId}"> 
 							<td><div class="proj_show"
 									onclick="clientSideBar('${report.responderLocationId.id}','${report.responderLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
@@ -111,13 +113,43 @@
 							<c:if test="${empty report.responderLocationId.phone}">
 								<td><div>--</div></td>
 							</c:if>
+						</c:if>
+						
+						
+						<c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
+							<td><div class="proj_show"
+									onclick="clientSideBar('${report.locationId.id}','${report.locationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</span><i
+										class="fa fa-binoculars"></i>
+								</div></td>
 
-							<%-- <c:if test="${!empty report.projectsCont}">
-								<td><div><span class="tblminwidth-50">${report.projectsCont}</span></div></td>
+							<c:if test="${!empty report.locationId.org.webSite}">
+								<td><div><span class="tbldata-dotdot-sm" title="${report.locationId.org.webSite}">${report.locationId.org.webSite}</span></div></td>
 							</c:if>
-							<c:if test="${empty report.projectsCont}">
+							<c:if test="${empty report.locationId.org.webSite}">
 								<td><div>--</div></td>
-							</c:if> --%>
+							</c:if>
+
+							<c:if test="${!empty report.locationId.country}">
+								<td><div><span class="tbldata-dotdot-me" title="${report.locationId.country}&nbsp;&nbsp;,${report.locationId.state}&nbsp;&nbsp;,${report.locationId.city}">${report.locationId.country}&nbsp;&nbsp;,${report.locationId.state}&nbsp;&nbsp;,${report.locationId.city}</span></div></td>
+							</c:if>
+							<c:if test="${empty report.locationId.country }">
+								<td><div>--</div></td>
+							</c:if>
+							<c:if test="${!empty report.locationId.email}">
+								<td><div><span class="tbldata-dotdot-vsm" title="${report.locationId.email}">${report.locationId.email}</span></div></td>
+							</c:if>
+							<c:if test="${empty report.locationId.email}">
+								<td><div>--</div></td>
+							</c:if>
+							<c:if test="${!empty report.locationId.phone}">
+								<td><div><span class="tblminwidth-125">${report.locationId.phone}</span></div></td>
+							</c:if>
+
+							<c:if test="${empty report.locationId.phone}">
+								<td><div>--</div></td>
+							</c:if>
+						</c:if>
+							
 						</tr>
 					</c:forEach>
 					</tbody>

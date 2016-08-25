@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -40,7 +41,7 @@
                     </div>
                 </li>                
 				<li><a href="add-vendor-contact.html"><i class="fa fa-plus"></i>Add contact</a></li>	
-                <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
+                <li><a href="add-vendor.html"><i class="fa fa-plus"></i>Add Vendor</a></li>		
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -59,96 +60,24 @@
                     <th>Actions</th>
                 </tr>
 			</thead>	
+			<c:forEach var="report" items="${vandorsListByOrgLocationId}">
                 <tr>
-                    <td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">Broadridge Broadridge Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">clientdomain.comclientdomain.comclientdomain.com</span></div></td>
-                    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
+                    <c:if test="${report.locationId.id == loginOrgLocId}"> 
+                   		<td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.responderLocationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
+					    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.responderLocationId.org.webSite}</span></div></td>                  
+                 		<td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.responderLocationId.country}</span></div></td>
+                  </c:if> 
+                   <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
+                  	 	<td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.locationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
+                  	 	<td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.locationId.org.webSite}</span></div></td>
+                   	    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
+                   </c:if> 
                     <td><div>20</div></td>
                     <td><div>10</div></td>
-                    <td><div>level 1</div></td>
+                    <td><div>${report.level}</div></td>
                     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
                 </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr> 
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>                                                                                                                                                			
+                 </c:forEach>                                                                                                                                              			
             </tbody>
         </table>
 	
