@@ -95,10 +95,7 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			/*for(OrgRelations orgRelation : clientsList){
-				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
-				orgRelation.setProjectsCont(count);
-			}*/
+			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);

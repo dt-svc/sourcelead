@@ -62,9 +62,16 @@
 			</thead>	
 			<c:forEach var="report" items="${vandorsListByOrgLocationId}">
                 <tr>
-                    <td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.locationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.locationId.org.webSite}</span></div></td>
-                    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
+                    <c:if test="${report.locationId.id == loginOrgLocId}"> 
+                   		<td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.responderLocationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
+					    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.responderLocationId.org.webSite}</span></div></td>                  
+                 		<td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.responderLocationId.country}</span></div></td>
+                  </c:if> 
+                   <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
+                  	 	<td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.locationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
+                  	 	<td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.locationId.org.webSite}</span></div></td>
+                   	    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
+                   </c:if> 
                     <td><div>20</div></td>
                     <td><div>10</div></td>
                     <td><div>${report.level}</div></td>

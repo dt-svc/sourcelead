@@ -35,7 +35,8 @@ public class VendorController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-        model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
+		model.addObject("loginOrgLocId",orgLoc.getId());
+		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		

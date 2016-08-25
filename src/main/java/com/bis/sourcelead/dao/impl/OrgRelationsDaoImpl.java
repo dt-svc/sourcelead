@@ -143,7 +143,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgRelations> vandorsList = null;
-		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
+		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
 		
 		vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return vandorsList;
