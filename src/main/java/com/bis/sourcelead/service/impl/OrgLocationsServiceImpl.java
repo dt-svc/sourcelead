@@ -106,7 +106,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode) throws Exception {
+	public Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		String locationCode = orgLocations.getLocationCode();
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		
@@ -136,7 +136,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		clientOrgLocations.setUpdatedBy(loginUserCode);
 		clientOrgLocations.setUpdatedDate(commonUtil.currentDate());
 		
-		Set<OrgRelations> orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, loginUserCode);
+		Set<OrgRelations> orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, loginUserCode,responderType);
 		clientOrgLocations.setOrgRelationsList(orgRelationsList);
 		
 		orgLocationsList.add(clientOrgLocations);
