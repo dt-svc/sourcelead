@@ -1,14 +1,23 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class VendorController {
@@ -17,7 +26,11 @@ public class VendorController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	private UserService userService;
 	
+	@Autowired
+	CountriesService countriesService;
 	
 	@RequestMapping(value = "/vendorsList")
 	public ModelAndView usersList(HttpServletRequest request) {
@@ -39,12 +52,14 @@ public class VendorController {
 	}
 
 	@RequestMapping(value = "/addVendor")
-	public ModelAndView addVendor(HttpServletRequest request) {
+	public ModelAndView addVendor(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendor");
-		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		model.addObject("userList", userList);
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -52,6 +67,10 @@ public class VendorController {
 		}
 		sessionData.setNav(Constants.Vendors);
 		request.getSession().setAttribute("sessionData",sessionData);
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		model.addObject("loginCountryName", countries.getName());
+		
 		return model;
 
 	}
