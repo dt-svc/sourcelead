@@ -29,9 +29,8 @@
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>User Summary</h2>
+				<h2>Timesheet Submissions List</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
 		</section>
 
 		
