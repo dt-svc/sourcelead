@@ -50,6 +50,6 @@ INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `O
 
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('10', '1', 'Y', '1');
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('10', '2', 'N', '1');
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('10', '3', 'N', '1');
+INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('10', '3', 'Y', '1');
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('10', '4', 'Y', '1');
 

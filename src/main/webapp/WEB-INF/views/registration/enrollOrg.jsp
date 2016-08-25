@@ -88,7 +88,7 @@
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkbox">
-            <!-- <ul class="list-unstyled pull-left">
+             <ul class="list-unstyled pull-left">
             	<li>
                 <label class="mr pull-left">
                 <input type="checkbox" id="isRecruiting" onclick="getRecruitmentTypes()" onblur="moduleCheckValidation(this)">
@@ -111,7 +111,7 @@
                     </ul>
                 </li>
                 <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            </ul> -->
+            </ul> 
               <label class="mr">
                 <input type="checkbox" id="isTimeSheet" onblur="moduleCheckValidation(this)">
                 Timesheet</label>
@@ -144,8 +144,7 @@
       
   <script type="text/javascript">
 	function moduleCheckValidation(id){
-		/* if (document.getElementById('isRecruiting').checked || document.getElementById('isTimeSheet').checked) { */
-		if (document.getElementById('isTimeSheet').checked) {
+		if (document.getElementById('isRecruiting').checked || document.getElementById('isTimeSheet').checked) { 
 		document.getElementById("moduleValue").value = id.value;
 		}else{
 			$('#moduleValue').val(''); 
@@ -197,22 +196,22 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          		
          		var modules = "";
-         		/* if (document.getElementById('isRecruiting').checked) {
+            	if (document.getElementById('isRecruiting').checked) {
          			modules = modules + "Recruiting"+","
-                } */
+                } 
          		
          		if (document.getElementById('isTimeSheet').checked) {
          			modules = modules + "TimeSheet"+","
                 }
          		
          		 var subModules = "";
-         		/* if (document.getElementById('ats').checked) {
+         		 if (document.getElementById('ats').checked) {
          			subModules = subModules + "ATS"+","
                 }
          		
          		if (document.getElementById('vms').checked) {
          			subModules = subModules + "VMS"+","
-                }  */
+                }  
          		
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
          		 	$.ajax({

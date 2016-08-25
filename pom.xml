@@ -456,7 +456,7 @@
 				    <phase>install</phase>
 				    <configuration>
 				          <target>
-				              <copy file="${project.build.directory}/sourcelead.war" todir="/home/tomcat/webapps"/>
+				              <copy file="${project.build.directory}/sourcelead.war" todir="/home/apache-tomcat-8.0.36/webapps"/>
 				          </target>
 				    </configuration>
 				    <goals>
@@ -467,7 +467,7 @@
 			</plugin> 
 			
 			<!-- For to create zip -->
-			<plugin>
+			<!-- <plugin>
 			    <artifactId>maven-assembly-plugin</artifactId>
 				<version>2.5.3</version>
 				 <executions>
@@ -483,7 +483,7 @@
 					    </goals>
 					</execution>
 			    </executions>
-			</plugin>
+			</plugin> -->
 			<!-- For to create zip -->
 
 		</plugins>
