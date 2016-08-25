@@ -105,4 +105,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
 	}
+
+	@Override
+	public List<OrgRelations> getAllVendorsListByOrgLocationId(Long orgLocationId) {
+		return orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
+	}
 }

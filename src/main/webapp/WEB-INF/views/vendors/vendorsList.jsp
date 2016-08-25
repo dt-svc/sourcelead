@@ -60,96 +60,17 @@
                     <th>Actions</th>
                 </tr>
 			</thead>	
+			<c:forEach var="report" items="${vandorsListByOrgLocationId}">
                 <tr>
-                    <td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">Broadridge Broadridge Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">clientdomain.comclientdomain.comclientdomain.com</span></div></td>
-                    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
+                    <td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.locationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.locationId.org.webSite}</span></div></td>
+                    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
                     <td><div>20</div></td>
                     <td><div>10</div></td>
-                    <td><div>level 1</div></td>
+                    <td><div>${report.level}</div></td>
                     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
                 </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr> 
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                    <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span class="td_overflow">clientdomain.com</span></div></td>
-                    <td><div><span class="td_overflow">Hyderabad</span></div></td>
-                    <td><div>20</div></td>
-                    <td><div>10</div></td>
-                    <td><div>level 1</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>                                                                                                                                                			
+                 </c:forEach>                                                                                                                                              			
             </tbody>
         </table>
 	
