@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mysql.jdbc.log.Log;
 
 /**
  * 
@@ -271,8 +273,20 @@ public class ProjectsDashboardRestController {
 		 	String resultJson;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
-			resultJson = commonUtil.toJSON(employeeList);
+				Long level1Manager = null;
+				Long  level2Manager = null;
+			  List<ProjectApproverHierarchy> prh = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+			  for(ProjectApproverHierarchy projectApproverHierarchy : prh){
+				  if(projectApproverHierarchy.getLevel() == 1){
+					 level1Manager = projectApproverHierarchy.getApproverUserId().getId();
+				  }
+				  if(projectApproverHierarchy.getLevel() == 2){
+					   level2Manager = projectApproverHierarchy.getApproverUserId().getId();
+				  }
+			  }
+			 Collection<Employees> employeList = employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId(),level1Manager,level2Manager);
+			 
+			 resultJson = commonUtil.toJSON(employeList);
 			return resultJson;
 		}
 	/**
