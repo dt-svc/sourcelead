@@ -37,7 +37,6 @@ public class SourceleadCustomExceptions {
 	@ExceptionHandler(NullPointerException.class)
 	public String customErrorPage(NullPointerException exception){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
 		if(auth != null && auth.getPrincipal() != null){
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 			return "redirect:/errorPage";
@@ -46,7 +45,6 @@ public class SourceleadCustomExceptions {
 			 return "redirect:/login";
 		 }
 	}
-	
 	/**
 	 * Returns Error Page when ObjectNotFoundException occurred
 	 * @param exception
