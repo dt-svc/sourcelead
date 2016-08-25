@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,11 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -38,8 +43,17 @@ public class OrgRelations {
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     
-    @Column(name="RELATION_TYPE")
-	private String relationType;
+    /*@Column(name="RELATION_TYPE")
+	private String relationType;*/
+	
+	@Column(name="INITIATOR_TYPE")
+	private String initiatorType;
+	
+	@Column(name="RESPONDER_TYPE")
+	private String responderType;
+	
+	@Column(name="LEVEL")
+	private String level;
 	
 	@Column(name="STATUS")
 	private String status;
@@ -55,6 +69,11 @@ public class OrgRelations {
 	
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
+	
+	@OneToMany(mappedBy = "spocUser",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<OrgSpoc> orgSpoc = new HashSet<OrgSpoc>(0);
+	
 	
 	@Transient
     private String orgName;
@@ -166,13 +185,7 @@ public class OrgRelations {
 		this.locationId = locationId;
 	}
 
-	public String getRelationType() {
-		return relationType;
-	}
-
-	public void setRelationType(String relationType) {
-		this.relationType = relationType;
-	}
+	
 
 	public String getStatus() {
 		return status;
@@ -238,4 +251,30 @@ public class OrgRelations {
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
+
+	public String getInitiatorType() {
+		return initiatorType;
+	}
+
+	public void setInitiatorType(String initiatorType) {
+		this.initiatorType = initiatorType;
+	}
+
+	public String getResponderType() {
+		return responderType;
+	}
+
+	public void setResponderType(String responderType) {
+		this.responderType = responderType;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	
+	
 }
