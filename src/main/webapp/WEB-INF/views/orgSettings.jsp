@@ -191,7 +191,7 @@ function cancel(){
 							<div class="form-group comp-textarea">
 							<label class="col-md-3">About</label>
 							<div class="col-md-9">
-							<textarea rows="2" name="aboutCompany" field-name="About" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							<textarea rows="2" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
 							</div>
 							</div>
 						</div>

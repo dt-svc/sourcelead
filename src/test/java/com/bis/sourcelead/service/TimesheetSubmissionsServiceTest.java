@@ -318,13 +318,6 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timeSheetSubmissionsCount);
 	}*/
 	
-	@Test
-	public void getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId() throws Exception{
-		
-		//TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
-		Collection<TimesheetSubmissions>timesheetSubmissions = timesheetSubmissionsService.getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(3l, "2");
-		logger.info(" getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId "+timesheetSubmissions.size());
-	}
 	
 	@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{

@@ -60,8 +60,6 @@ public interface TimesheetSubmissionsDao {
 	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId);
 	
 	public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(Long memberId, Date terminatedDate) throws Exception;
-	
-	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,String employeeId) throws Exception ;
 
 	public List<TimesheetSubmissions>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,String status,Long orgLocationId) throws Exception ;
  

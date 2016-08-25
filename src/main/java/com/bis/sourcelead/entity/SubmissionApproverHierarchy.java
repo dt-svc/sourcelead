@@ -82,6 +82,24 @@ public class SubmissionApproverHierarchy {
 	    
 	@Transient
 	private String managerLevel2;
+	
+	@Transient
+	private String projectName;
+	
+	@Transient
+	private String employeeName;
+	
+	@Transient
+	private String startDate;
+	
+	@Transient
+	private String endDate;
+	
+	@Transient
+	private Float totalHours;
+	
+	
+	
 
 	public Long getId() {
 		return id;
@@ -201,6 +219,54 @@ public class SubmissionApproverHierarchy {
 
 	public void setManagerLevel2(String managerLevel2) {
 		this.managerLevel2 = managerLevel2;
+	}
+
+	public ProjectApproverHierarchy getHierarchyId() {
+		return hierarchyId;
+	}
+
+	public void setHierarchyId(ProjectApproverHierarchy hierarchyId) {
+		this.hierarchyId = hierarchyId;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public Float getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(Float totalHours) {
+		this.totalHours = totalHours;
 	}
 	
 	

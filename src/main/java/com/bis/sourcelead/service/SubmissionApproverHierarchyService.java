@@ -19,6 +19,8 @@ public interface SubmissionApproverHierarchyService {
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployee(Long submissionId);
 	
+	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId);
+	
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyBySubmissionId(Long submissionId);
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,Long approverUserId);
