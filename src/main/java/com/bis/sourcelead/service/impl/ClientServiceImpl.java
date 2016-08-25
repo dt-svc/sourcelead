@@ -245,7 +245,9 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setResponderLocationId(clientOrgLocation);
 					orgRelations.setLocationId(orgLocations);
 					orgRelations.setStatus("ACTIVE");
-					orgRelations.setRelationType("Customer");
+					//orgRelations.setRelationType("Customer");
+					orgRelations.setInitiatorType("Client");
+					orgRelations.setResponderType("");
 					orgRelations.setCreatedBy(loginUserCode);
 					orgRelations.setCreatedDate(new Date());
 					return orgRelations;

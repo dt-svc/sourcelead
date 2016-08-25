@@ -34,10 +34,25 @@ public class VendorController {
 		sessionData.setNav(Constants.Vendors);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
-		
-		
 		return model;
 
 	}
 
+	@RequestMapping(value = "/addVendor")
+	public ModelAndView addVendor(HttpServletRequest request) {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("vendors/vendor");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Vendors);
+		request.getSession().setAttribute("sessionData",sessionData);
+		return model;
+
+	}
 }
