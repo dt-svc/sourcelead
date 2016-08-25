@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -296,8 +297,8 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 	    // TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();  
-		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:employeeId and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
-		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("employeeId", employeeId).setLong("userId", userId).setParameter("startDate", startDate).list();
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where  ts.projectMembers.id  = :memberId and ts.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.approverUserId =:userId)  and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setLong("memberId", memberId).setParameter("startDate", startDate).list();
 		
 		
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
@@ -305,13 +306,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			java.sql.Date sDate = new java.sql.Date(ts.getStartDate().getTime());
 			Long empId = ts.getProjectMembers().getEmployee().getId();
 			
-		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, startDate);
+		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(employeeId, userId, startDate);
 			 
-			/*String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:employeeId  and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
-			List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
-					                                                      .setLong("employeeId", employeeId)
-					                                                      .setLong("userId", userId)
-					                                                      .setParameter("startDate", sDate).list();*/
+
 		    Boolean isRejected = false; 
 		    Boolean isAPPROVED = false; 
 		    Boolean isSUBMITTEDFORAPPROVAL = false; 
@@ -341,8 +338,8 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 						 status = "APPROVED";
 					}
 				
-			
-			   ts.setCombinedTotalHours(combinedTotalHours.toString());
+			   DecimalFormat formatter = new DecimalFormat("#0.00");
+			   ts.setCombinedTotalHours(formatter.format(combinedTotalHours));
 			   ts.setCombinedStatus(status);
 			   ts.setRejectedReason(sah.getRejectedReason());
 		    }

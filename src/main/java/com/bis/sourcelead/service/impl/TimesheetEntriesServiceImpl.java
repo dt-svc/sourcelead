@@ -696,8 +696,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Save' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"user\");' value='Save' class='time_btn time_dra'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"user\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();'  value='Clear' class='time_btn time_cancel'>");
 				   
 				   sb.append("");
@@ -1166,7 +1166,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Update' class='time_btn'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 				   sb.append("    </div>");
 				   sb.append("	<div class='clearfix'></div>");
@@ -1180,8 +1180,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Save' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\");' value='Save' class='time_btn time_dra'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();' value='Clear' class='time_btn time_cancel'>");
 				   
 				   sb.append("");
@@ -1226,7 +1226,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 	@Override
 	public String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm, String json,
-			MultipartHttpServletRequest request, String status) throws Exception {
+			MultipartHttpServletRequest request, String status,String savingType) throws Exception {
 		// TODO Auto-generated method stub
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1262,7 +1262,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					    		}*/
 					    		
 				                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionLowLevelApproverHierarchyForEmployee(timesheetSubmissions.getId());
-				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected"))){
+				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft"))  || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected")) || (sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("submitted")) && "approver".equalsIgnoreCase(savingType)  ) ){
 				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
 								Iterator<String> itrator = request.getFileNames();
