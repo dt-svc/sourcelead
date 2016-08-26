@@ -549,5 +549,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			pm.setMemberHistoryList(pmhList);
 			return pm;
 	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId) {
+		return projectMembersDao.getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(projectId);
+	}
 	
 }
