@@ -1,13 +1,8 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-<link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 
 
 <script>
@@ -55,7 +50,7 @@
 	                    	 var opt = json[i]; 
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
-			                 result = result +"  <td><div class='proj_show'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
+			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar();'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
 			                 result = result +"  <td><div><span>Web designer Web designer</span></div></td>";
 			                 result = result +"  <td><div>Full Time</div></td>";
 			                 result = result +"  <td><div ><span>vannam@domain.com</span></div></td>";
@@ -92,12 +87,38 @@
 </script>
 
 <script>
-function pagination(){  alert("pagination");
+function pagination(){  
     $('#candidatePagination').DataTable( { 
+    	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
     } );
 }
 </script>
+
+<script>
+function clientSideBar(){
+				$(".clients_side_wrap").addClass("clients_side_wrap_active");
+				$(".side_mask").fadeIn(200);
+				$("body").css('overflow-y', 'hidden');
+}
+</script>
+<!-- 
+$(document).ready(function() {
+    $(".proj_show").click(function(){  
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+}); -->
+
 
 <!-- Content Area --> 
 <section class="content-wraper">
@@ -234,32 +255,7 @@ function pagination(){  alert("pagination");
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
 <!--   Error Message   --> 
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/jquery-ui.min.js"></script> 
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-});
- 		</script> 
+ 
 <script>
 
 // Error pop
@@ -300,19 +296,6 @@ $(document).ready(function() {
     });	
 });	
 	
-// project side bar
-$(document).ready(function() {
-    $(".proj_show").click(function(){
-		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".side_mask").fadeIn(200);
-		$("body").css('overflow-y', 'hidden');
-	});
-    $(".proj_close, .side_mask").click(function(){
-		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-		$(".side_mask").fadeOut(200);
-		$("body").css('overflow-y', 'auto');
-	});	
-});
 
 // project side bar tabs
 $(document).ready(function() {
@@ -325,53 +308,6 @@ $(document).ready(function() {
         $(".project_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
     });
-	
-	
-	// Levels adding script
-$(".addUser-org").click(function(){
-	 $(".collapse-div-adduser").toggleClass("show-div");
-	 $(".collapse-div").removeClass("show-div");
- });
- $(".close-div").click(function(){
-	 $(this).parent().toggleClass("show-div");
-	 });
- $(".assign-org").click(function(){
-	 $(".collapse-div").toggleClass("show-div");
-	 $(".collapse-div-adduser").removeClass("show-div");
- });
- $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
-	 e.stopPropagation();
- });
- $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   });	
-   $("#endDate").click(function(){
-	   $(".endDate").toggle(200);
-   });
-});
-</script>
-<script>
-  $(function() {
-    $("#validFrom, #edu-endDate, #edu-startDate, #validTo").datepicker();
-  } );
-  </script>
-  
-	<div class="theme-color">
-        <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-        <ul class="list-unstyled">
-            <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-            <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-            <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-        </ul>
-	</div>  
-  
-</body>
-</html>
-
-
-
-
-
-
+<script>	
+ 
 <jsp:include page="../masterFooter.jsp" />
