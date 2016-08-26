@@ -18,6 +18,21 @@ public class CandidateController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	
+	/**
+	 * Handles to display candidate jsp
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/candidate")
+		public ModelAndView candidate(HttpServletRequest request) throws Exception {
+		 	logger.debug("Display the candiade page");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("candidates/candidate");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+	    }
+	
 	@RequestMapping(value = "/candidatesList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		logger.debug("--------candidatesList------");
