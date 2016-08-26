@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 
 	public OrgSpoc addOrgSpoc(OrgSpoc orgSpoc) throws Exception {
 		return orgSpocDao.addOrgSpoc(orgSpoc);
+	}
+
+	
+	@Override
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId) throws Exception {
+		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId);
 	}
 	
 	

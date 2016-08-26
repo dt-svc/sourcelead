@@ -1,0 +1,338 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+ 
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script type="text/javascript">
+window.onload = function () {
+	cscInit();
+ };
+</script>
+
+<!-- client details View starts-->
+<script type="text/javascript">
+	function clientDetails(orgRelationID) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		$
+				.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
+					success : function(data) {
+						var json = JSON.parse(data);
+						var result = "";
+						var city = "";
+						var state = "";
+						var country = "";
+						
+						result = result+ '<div class="project_tabs_inn_table">';
+                        
+						result = result + '<div class="project_details">';
+						result = result + ' <div class="useredit useredit_a">';
+						result = result + '<a id="edit-client" href="javascript:editClientDetails('+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						result = result + ' </div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Client name:</strong>';
+						
+						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
+						result = result + '<span>'+json.orgName+'</span>';
+						}
+						
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						result = result + '<div class="project_details_cta">';
+						
+						result = result + '<strong>Website:</strong>';
+						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+						result = result + '<span>'+json.webSite+'</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+					
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Client Country:</strong>';
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Client State:</strong>';
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Client City:</strong>';
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						
+						
+						/* result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Email:</strong>';
+						if(json.email != null && json.email !='' && json.email !='undefined'){
+						result = result + '<span>'+json.email+'</span><div class="clearfix"></div>';
+						}else{
+							
+							result = result + '<span>No Data</span><div class="clearfix"></div>';	
+						}
+						result = result + '</div>';
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Phone number:</strong>';
+						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
+						result = result + '<span>'+json.phone+'</span><div class="clearfix"></div>';
+						}else{
+							
+							result = result + '<span>No Data</span><div class="clearfix"></div>';	
+						}
+						result = result + '</div>'; */
+						/* result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Projects:</strong>';
+						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
+						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
+						} */
+						result = result + '<div class="clearfix"></div>';
+						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
+						result = result + '</div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						$("#tab-1").empty();
+						$("#tab-1").append(result);
+						$("#tab-1").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
+
+					}
+				});
+	}
+</script>
+<!--  client details ends -->
+
+
+
+<script type="text/javascript">
+	function editClientDetails(orgRelationID) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		      $.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
+						success : function(data) {
+						var json = JSON.parse(data);
+						
+						var result = "";
+						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Client Name </label>';
+						result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" placeholder="client name" >';
+						result = result + '</div>';
+						
+						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
+						result = result + '<label>Website</label>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Country</label>';
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							result = result + '<input type="text"  id="clientCountry" name="clientCountry" value="'+json.country+'" placeholder="client country" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientCountry" name="clientCountry"  placeholder="client country" ></div>';
+						}
+						result = result + '</div>  ';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>State</label>';
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" placeholder="client state" ></div>';
+						}
+						result = result + '</div> ';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>City</label>';
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" value=""></div>';
+						}
+						result = result + '</div> ';
+						
+						/* result = result + '<div class="user_summary_edit_cta" id="EmailIdDiv">';
+						result = result + '	<label>Email</label>';
+						if(json.email != null && json.email !='' && json.email !='undefined'){
+							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  value="'+json.email+'" placeholder="client email" c></div>';
+						}else{
+							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  placeholder="client email" c></div>';
+						}
+						result = result + '</div> '; */
+						
+						/* result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Phone</label>';
+						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
+							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
+						}else{
+							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber"  data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
+						}
+						result = result + '</div> ';   */ 
+						
+						result = result + '<div class="clearfix"></div>';
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<input class="us-btn" id="save_client" type="button" value="Save" onclick="storeClientDetails('+orgRelationID+')"/ /> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetails('+orgRelationID+')"/>';
+						result = result + '</div>';		
+						result = result + '<div class="clearfix"></div>';
+						result = result + ' </form>';
+						
+						$(".user_summary_edit").slideToggle(100);
+						$("#editClientDetailsDiv").empty();
+				        $("#editClientDetailsDiv").append(result);
+					}
+				});
+	}
+</script>
+
+<script type="text/javascript">
+	function storeClientDetails(orgRelationId) {
+         if ($('#editClient_form').validate(false, validationSettings)){
+    		 var frm = $('#editClient_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgRelationId="+orgRelationId, 	   
+	   		    success: function(data) {
+	   		    	clientDetails(orgRelationId);
+	   		    }
+		 }); 
+	     	return true;
+         }else{
+             return false;
+           }
+		
+    }
+	$('body').on('blur', '#editClient_form', function() {
+        $("#editClient_form").showHelpOnFocus();
+        $("#editClient_form").validateOnBlur(false, validationSettings);  
+    });
+</script>
+
+<script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("companyWebsite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) != null){
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		
+		if (website != null && website != '') {
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == "Website Duplicated" || result == "Invalid Website") {
+						//existed website
+						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
+						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
+						$("#save_client").attr("disabled", "disabled");
+						
+					} else {
+						//New WebSite class="form-control"
+						 $("#save_client").removeAttr("disabled");
+						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#companyWebsite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+				
+					}
+				},
+
+			});
+		  }
+		}
+	}
+</script>
+
+<script type="text/javascript">
+ function validateClientEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script> 
+ 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>

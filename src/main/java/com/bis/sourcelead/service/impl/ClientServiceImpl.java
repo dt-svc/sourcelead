@@ -165,10 +165,12 @@ public class ClientServiceImpl implements ClientService{
 public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType) throws Exception {
 		
 		Org org = populateOrg(jsonObj, user.getUserCode());
-		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		OrgLocations clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		Set<OrgLocations> orgLocationList = new HashSet<>();
+		orgLocationList.add(clientOrgLocations);
 		org.setOrgLocationsList(orgLocationList);
 		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER");
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");

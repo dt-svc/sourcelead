@@ -29,6 +29,6 @@ public interface OrgLocationService {
 
 	public OrgLocations findByEmail(String email,Long orgLocationId) throws Exception;
 
-	Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations,
+	OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations,
 			String loginUserCode,String responderType) throws Exception;
 }
