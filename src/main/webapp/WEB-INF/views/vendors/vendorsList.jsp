@@ -65,12 +65,18 @@
 			<c:forEach var="report" items="${vandorsListByOrgLocationId}">
                 <tr>
                     <c:if test="${report.locationId.id == loginOrgLocId}"> 
-                   		<td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.responderLocationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
-					    <td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.responderLocationId.org.webSite}</span></div></td>                  
-                 		<td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.responderLocationId.country}</span></div></td>
+                   		<td><div class="proj_show"
+									onclick="vendorSideBar('${report.responderLocationId.id}','${report.id}','${report.responderLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</span><i
+										class="fa fa-binoculars"></i>
+								</div></td>
+					    <td><div><span title="Website" class="td_overflow">${report.responderLocationId.org.webSite}</span></div></td>                  
+                 		<td><div><span title="Country" class="td_overflow">${report.responderLocationId.country}</span></div></td>
                   </c:if> 
                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<td><div class="proj_show"><span title="Broadridge Broadridge Broadridge" class="td_overflow">${report.locationId.org.orgName}</span><i class="fa fa-binoculars"></i></div></td>
+                  	 	<td><div class="proj_show"
+									onclick="vendorSideBar('${report.locationId.id}','${report.id}','${report.locationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</span><i
+										class="fa fa-binoculars"></i>
+								</div></td>
                   	 	<td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.locationId.org.webSite}</span></div></td>
                    	    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
                    </c:if> 
@@ -103,542 +109,166 @@
 </div>
 
 <div class="side_mask"><div class="proj_close"></div></div>
+
+<!-- Client Side Nav Div -->
 <div class="clients_side_wrap">
-	<div class="clients_side_wrap_inn">
-    	<h1>Vendor name here</h1> 
-        
-<div class="project_side_wrap_inn_tabs">
-    <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1">Details</a></li>
-        <li><a href="#tab-2">Contacts</a></li>
-        <li><a href="#tab-3">Documents</a></li>
-        <li><a href="#tab-4">Activity</a></li>
-        <div class="clearfix"></div>
-    </ul>
-    
-    <div class="project_tabs">
-    
-        <div id="tab-1" class="project_tabs_inn">
-            
-<div class="require_wrap_details">
- <h1>Vendor details:</h1>
-                <div class="require_one">
-                	<div class="require_wrap_details_cta">
-                    	<b>Name:</b>
-                        <span>Sudhakar Reddy</span>
-                         <div class="clearfix"></div>
-                    </div>
-                	<div class="require_wrap_details_cta">
-                    	<b>Wedsite:</b>
-                        <span>wedsitewedsite.com</span>
-                         <div class="clearfix"></div>
-                    </div>
-                	<div class="require_wrap_details_cta">
-                    	<b>Location:</b>
-                        <span>Hyderabad, Telangana, India</span>
-                         <div class="clearfix"></div>
-                    </div>
-                	<div class="require_wrap_details_cta">
-                    	<b>Email:</b>
-                        <span>wedsitewedsite@domain.com</span>
-                         <div class="clearfix"></div>
-                    </div> 
-                	<div class="require_wrap_details_cta">
-                    	<b>Level:</b>
-                        <span>Level text</span>
-                         <div class="clearfix"></div>
-                    </div> 
-                	<div class="require_wrap_details_cta">
-                    	<b>Created by:</b>
-                        <span>Vannam Mahesh</span>
-                         <div class="clearfix"></div>
-                    </div>                                                                                                                     
-                    <div class="clearfix"></div>
-                </div>              
-            </div>            
-            
-        </div> 
-        
-            
-        <div id="tab-2" class="project_tabs_inn">
-<div class="project_tabs_inn_head">
-              <input class="vendorfild" type="text"><i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop">
-              <i class="glyphicon glyphicon-plus"></i>Add Contact</a>
-              
-				<!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                                                    
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="First name">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Last name">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Email Id *">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Work phone">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Owner">
-                              </div>
-                            </div>                                                                                                                
-                            <div class="clearfix mb10">
-                              <div class="col-md-12 checkbox">
-                                <label>
-                                <input type="checkbox" name="Position" id="endDate">Send Invitation</label>
-                              </div>
-                            </div>
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-				<!-- Popup Div -->              
-              
-              </div>
-            <div class="project_tabs_inn_table vendor_wrap_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Name</th>
-                    <th>Email</th>
-                    <th>Ph. No</th>
-                    <th>Owner</th>
-                    <th>Status</th>
-                    <th>Invitation status</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><select>
-						<option>Active</option>
-						<option>Closed</option>
-						<option>Process</option>
-						<option>Option</option>
-					</select></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_active">Active</b><i class=" fa fa-edit"></i></div></td>
-                    <td><div><b class="proj_active">Accepted</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam@domain.comVannam@domain.comVannam@domain.com</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><b class="proj_closed">Closed</b><i class=" fa fa-edit"></i></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_process">Process</b><i class=" fa fa-edit"></i></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_active">Active</b><i class=" fa fa-edit"></i></div></td>
-                    <td><div><b class="proj_active">Accepted</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b>Option</b><i class=" fa fa-edit"></i></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                    <td><div><b class="proj_active">Accepted</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                    <td><div><b class="proj_active">Accepted</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>			
-				
-            </tbody>
-        </table>  
+			<div class="clients_side_wrap_inn">
+				<h1 id="vendorNameDiv"></h1>
+				<div class="proj_close">
+					<i></i>
+				</div>
+				<div id="vendorSideDiv"></div>
+			</div>
+		</div>
 
-	</div>
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>		
-		
-           
-        </div>
-        
-<div id="tab-3" class="project_tabs_inn">
-<div class="project_tabs_inn_head">
-              <input class="vendorfild" type="text"><i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop">
-              <i class="glyphicon glyphicon-plus"></i>Add Document</a> 
-              
-				<!-- Popup Div -->
-                          <div class="collapse-div-adduser col-md-4 show-div"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                          
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                              </div>
-                            </div>
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Select Type</option>
-                                    <option value="January">Type 1</option>
-                                    <option value="February">Type 2</option>
-                                    <option value="March">Type 3</option>
-                                    <option value="April">Type 4</option>
-                                </select>
-                                </div>
-                                <div class="col-md-12 mt10">
-                                  <div class="input-group">
-                                    <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                                      <input type="file" style="display: none;" multiple="" id="uploadBtn" class="upload">
-                                      </span> </label>
-                                    <input type="text" class="form-control" readonly="" id="uploadFile" placeholder="Files are not selected...">
-                                  </div>
-                                </div>
-                              </div>
-                              
-                            <div class="clearfix mb10">
-                              <div class="col-md-6">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Client Contact</option>
-                                    <option value="January">Contact 1</option>
-                                    <option value="February">Contact 2</option>
-                                    <option value="March">Contact 3</option>
-                                    <option value="April">Contact 4</option>
-                                </select>
-                                </div>
-                              <div class="col-md-6">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Owner</option>
-                                    <option value="January">Owner 1</option>
-                                    <option value="February">Owner 2</option>
-                                    <option value="March">Owner 3</option>
-                                    <option value="April">Owner 4</option>
-                                </select>
-                                </div>
-                              </div>   
-                              
-							<div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <textarea rows="2" placeholder="Description" class="form-control"></textarea>
-                              </div>
-                            </div>                                                         
-
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-				<!-- Popup Div -->               
-              
-              </div>
-            <div class="project_tabs_inn_table vendor_wrap_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>Name</th>
-                    <th>Document Type</th>
-                    <th>Contact Person</th>
-                    <th>Attachment</th>
-                    <th>Description</th>
-                    <th>Created By</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div>File Name</div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><span>Vannam Mahesh Vannam Mahesh</span></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>			
-				
-            </tbody>
-        </table>  
-
-	</div>
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>		
-		
-           
-        </div>
-        
-<div id="tab-4" class="project_tabs_inn">
-              <div class="project_tabs_inn_head">
-              <input class="vendorfild" type="text"><i class="fa fa-search"></i> </div>	
-            <div class="project_tabs_inn_table vendor_wrap_inn_table">
-		<table>
-        	<tbody>
-            	<tr>
-                	<th>By</th>
-                    <th>To</th>
-                    <th>Date & Time</th>
-                    <th>Details</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>12/8/2016  07:30 AM</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div><span>Vannam Vannam Vannam Vannam</span></div></td>
-                    <td><div>9000 000 000</div></td>
-                    <td><div><a href="javascript:void(0)">Vannam</a></div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>		
-				
-            </tbody>
-        </table>  
-
-	</div>
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>		
-		
-           
-        </div>                
-               
-    </div>
-</div>        
-      	
-    </div>
-</div> 		
-		<!-- Project -->
-	</div>	
-      </section>
+ </div>
+<!-- Client Side Nav Div Ends -->
+</section>
       
-      </div>
-      </div>
-  </section>
+<script>
+	function vendorSideBar(vendorLocationId,orgRelationId,orgName) {
+		var result = "";
+		result = result + '<div class="project_side_wrap_inn_tabs">';
+		result = result + '<ul class="project-tabs-menu">';
+		result = result
+				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
+				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		result = result + '<li><a href="#tab-2">Contacts</a></li>'; 
+		result = result + '<li><a href="#tab-3">Documents</a></li>'; 
+		result = result + '<li><a href="#tab-4">Activity</a></li>'; 
+		result = result + '<div class="clearfix"></div>'
+		result = result + '</ul>';
+		result = result + '<div class="project_tabs">';
+
+		result = result + '<div id="tab-1" class="project_tabs_inn">';
+		result = result + '</div>';
+
+
+		result = result + '</div>';
+		result = result + '</div>'
+		$("#vendorSideDiv").empty();
+		$("#vendorSideDiv").append(result);
+		
+		$("#vendorNameDiv").empty();
+		$("#vendorNameDiv").append(orgName);
+		
+		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+	}
+</script>
+
+<script type="text/javascript">
+	function vendorDetailsbyLocationId(vendorLocationId,orgRelationId) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
+					success : function(data) {
+						
+						var json = JSON.parse(data);
+						var result = "";
+						var city = "";
+						var state = "";
+						var country = "";
+						
+						result = result+ '<div class="project_tabs_inn_table">';
+						result = result+ '<div class="require_wrap_details">';
+						result = result+ '<h1>Vendor details:</h1>';
+						
+							result = result + '<div class="project_details_cta">';
+								result = result + '<strong>Name:</strong>';
+								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
+									result = result + '<span>'+json.orgName+'</span>';
+								}
+								result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+								result = result + '<strong>Website:</strong>';
+								if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+								result = result + '<span>'+json.webSite+'</span><div class="clearfix"></div>';
+								}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Client City:</strong>';
+							if(json.city != null && json.city !='' && json.city !='undefined'){
+								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Client State:</strong>';
+							if(json.state != null && json.state !='' && json.state !='undefined'){
+								result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Client Country:</strong>';
+							if(json.country != null && json.country !='' && json.country !='undefined'){
+								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email:</strong>';
+							if(json.email != null && json.email !='' && json.email !='undefined'){
+							result = result + '<span>'+json.email+'</span><div class="clearfix"></div>';
+							}else{
+								
+								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+							}
+							result = result + '</div>';
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Level:</strong>';
+							if(json.level != null && json.level !='' && json.level !='undefined'){
+							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
+							}else{
+								
+								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Created By:</strong>';
+							if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
+								result = result + '<span>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
+							}else{
+								
+								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+							}
+							result = result + '</div>';
+							
+						result = result + '</div>';
+						result = result + '</div>';
+						
+						$("#tab-1").empty();
+						$("#tab-1").append(result);
+						$("#tab-1").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
+
+					}
+				});
+	}
+</script>
+
+
 
 <jsp:include page="../masterFooter.jsp" />
 <script src="resources/js/jquery-fun.js"></script> 
