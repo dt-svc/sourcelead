@@ -176,26 +176,19 @@ window.onload = function () {
 				</label>
               </div>
             </div>
-            <div class="form-group  clientDetails">
-              <label class="col-md-3">Role <span class="text-danger">*</span></label>
-              <div class="col-md-9 checkbox check-box">
-                <label>
-                  <input type="radio" value="Admin" name="role">
-                  Admin</label>
-                <label>
-                  <input type="radio" value="Approver"  name="role">
-                  Approver/Project Manager</label>
-                <label>
-                  <input type="radio" value="HR Manager" name="role">
-                  HR Manager</label>
-                <label>
-                  <input type="radio" value="Account Manager" name="role">
-                  Account Manager</label>
-                <label>
-                  <input type="radio" value="Recruiter" name="role">
-                  Recruiter</label>
-              </div>
-            </div>
+               <div class="form-group">
+                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-md-9">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
+		                        <option value="">-Select Role-</option>
+									<option value="Admin">Admin</option>
+									<option value="Approver">Approver/Project Manager</option>
+									<option value="HR Manager">HR Manager</option>
+									<option value="Account Manager">Account Manager</option>
+									<option value="Recruiter">Recruiter</option>
+			              </select>
+                  </div>
+                </div>
           </div>
         </div>
       </div>
