@@ -30,12 +30,12 @@
                    <div class="modal-body-custom mt clearfix" id="employeesList">
                    </div>
                    <div class="col-md-9">
-		<div class="checkbox">
-			<label> <input type="checkbox" id="membermailCheckbox" value="Y"
-				name="isMailToTeamMembers"> Mail to Team Members
-			</label>
-		</div>
-	</div>
+					<div class="checkbox">
+						<label> <input type="checkbox" id="membermailCheckbox" value="Y"
+							name="isMailToTeamMembers"> Mail to Team Members
+						</label>
+					</div>
+				</div>
                  </div>
                  <div class="modal-footer">
                    <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
@@ -349,7 +349,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        			role = 'Employee';
 	        		}
 	        		output = output + "<tr>";
-	        		output = output + "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+	        		output = output + "<td><input type='hidden' id='projectStartDateStr'  value="+startDateStr+"><input type='hidden' id='projectEndDateStr'  value="+endDateStr+"><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
 	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
@@ -441,8 +441,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 <script>
 function assignEmployee(){
 	 	var projectId = $("#projectId").val();
-	 	var startDateStr =  $("#startDateStr").val();
-	 	var endDateStr =  $("#endDateStr").val();
+	 	var projectStartDateStr =  $("#projectStartDateStr").val();
+	 	var projectEndDateStr =  $("#projectEndDateStr").val(); 
 	 	
 	    var result = "";
 	    var mailtoMembers = "NO";
@@ -459,7 +459,7 @@ function assignEmployee(){
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
 		            success: function(data) {
-		            	projectEmployee(projectId,startDateStr,endDateStr,status);
+		            	projectEmployee(projectId,projectStartDateStr,projectEndDateStr,status);
 		            }
 				})
 	        }
