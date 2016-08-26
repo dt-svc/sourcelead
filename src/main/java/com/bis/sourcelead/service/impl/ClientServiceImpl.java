@@ -165,10 +165,12 @@ public class ClientServiceImpl implements ClientService{
 public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType) throws Exception {
 		
 		Org org = populateOrg(jsonObj, user.getUserCode());
-		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		OrgLocations clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		Set<OrgLocations> orgLocationList = new HashSet<>();
+		orgLocationList.add(clientOrgLocations);
 		org.setOrgLocationsList(orgLocationList);
 		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER");
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
@@ -392,5 +394,71 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
 			
+		}
+
+		
+		@Override
+		public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId,Long loginOrgId) throws Exception {
+			
+			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
+			String vendorName = "vendorName";
+			String companyWebsite = "companyWebsite";
+			String vendorCity = "vendorCity";
+			String vendorState = "vendorState";
+			String vendorCountry = "vendorCountry" ;
+			//String emailId = "EmailId";
+			String level = "level";
+			
+			if(null != orgRelation){
+				 OrgLocations orgLocations = null;
+				//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
+				 if(orgRelation.getLocationId().getId()== loginOrgId){ 
+					 orgLocations = orgRelation.getResponderLocationId();
+				 }
+				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
+					 orgLocations = orgRelation.getLocationId();
+				 }
+				// orgRelation.setLevel(jsonObj.getString(level));
+				// orgRelationsService.addOrgRelations(orgRelation);		
+				 
+				Org org = orgLocations.getOrg();
+				if(null != org){
+					if(jsonObj.getString(vendorName) != null && !jsonObj.getString(vendorName).isEmpty()){
+						org.setOrgName(jsonObj.getString(vendorName));
+					}
+					
+					if(jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
+						org.setWebSite(jsonObj.getString(companyWebsite));
+					}
+				orgService.updateOrg(org);
+				}	
+				if(jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
+					orgLocations.setCity(jsonObj.getString(vendorCity));
+				}else{
+					orgLocations.setCity("");
+				}
+				if(jsonObj.getString(vendorState) != null && !jsonObj.getString(vendorState).isEmpty()){
+					orgLocations.setState(jsonObj.getString(vendorState));
+				}else{
+					
+					orgLocations.setState("");
+				}
+				if(jsonObj.getString(vendorCountry) != null && !jsonObj.getString(vendorCountry).isEmpty()){
+					orgLocations.setCountry(jsonObj.getString(vendorCountry));
+			     }else{
+			    	 
+			    	 orgLocations.setCountry("");
+			     }
+				/*if(jsonObj.getString(emailId) !=null && !jsonObj.getString(emailId).isEmpty()){
+					orgLocations.setEmail(jsonObj.getString(emailId));
+				}else{
+					orgLocations.setEmail("");
+				}*/
+				orgLocationService.updateOrgLocations(orgLocations);
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+
 		}
 }
