@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,8 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -53,6 +56,11 @@ public class CommonUtil {
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	private ProjectsService projectsService;
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
@@ -84,8 +92,12 @@ public class CommonUtil {
 		projectTasksService.saveAll(tasksList);
 	}
 	
+	/**
+	 * This method is used to in-activate timesheet submissions based on projectmemberId and terminationdate
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
 	public void inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(Long memberId,Date terminationDate){
-		
 		List<TimesheetSubmissions> timesheetSubmissionsList;
 		try {
 			timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId,terminationDate);
@@ -101,6 +113,12 @@ public class CommonUtil {
 		}
 			
 	}
+	
+	/**
+	 * This method is used to terminate project member by project memberId and way of termination
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
 	public void terminateProjectMemberByProjectMemberId(Long projectMemberId,Primary isManuallyTerminated){
 		try {
 			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
@@ -121,6 +139,48 @@ public class CommonUtil {
 		}
 	}
 	
+	
+	/**
+	 * This method is used to newly added admin as a level2 manager for all existing projectmembers
+	 * @author: Naresh Bolisetty
+	 * @throws Exception 
+	 * 
+	 */
+	public void addAdminAsSecondLevelManager(Long locationId,User adminUser,User loginUser) throws Exception{
+		
+		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(locationId);
+        if(projectsList != null && !projectsList.isEmpty()){
+        	for(Projects projects :projectsList){
+        		if(StringUtils.isNotEmpty(projects.getStatus()) && projects.getStatus().equalsIgnoreCase(Project_Status.COMPLETED.getValue()))
+        			continue;
+        		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+		    	pah.setProjectId(projects);
+		    	pah.setApproverUserId(adminUser);
+		    	pah.setLevel(2);
+		    	pah.setCreatedBy(loginUser.getUserCode());
+		    	pah.setCreatedDate(currentDate());
+		    	pah.setUpdatedBy(loginUser.getUserCode());
+		    	pah.setUpdatedDate(currentDate());
+		    	pah = projectApproverHierarchyService.saveProjectApproverHierarchy(pah);
+		    	List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyService.getSubmissionApproverHierarchyByApproverUserId(loginUser.getId());
+		    	List<SubmissionApproverHierarchy> freshSahList = new ArrayList<SubmissionApproverHierarchy>();
+		    	if(sahList != null && !sahList.isEmpty()){
+		    		for(SubmissionApproverHierarchy sah :sahList){
+		    			sah.setId(null);
+		    			sah.setHeirarchyId(pah);
+		    			freshSahList.add(sah);
+		    		}
+		    		submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(freshSahList);
+		    	}
+        	}
+        }
+	}
+	
+	/**
+	 * This method is used to terminate all projectmembers whose project is closed
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
 	public void terminateAllProjectMembersByUser(User user){
 		List<ProjectMembers> projectMembers;
 		try {
@@ -138,13 +198,28 @@ public class CommonUtil {
 				
 	}
 	
+	
+	/**
+	 * This method is used to terminate project whose endDate is greaterthan current date
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
 	public Projects terminateProject(Projects project) throws Exception{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(project.getId());
 		if(projectMembersList != null && !projectMembersList.isEmpty()){
 			 for(ProjectMembers pojectMember : projectMembersList){
 				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pojectMember.getId());
+				if(pmh == null){
+					pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pojectMember.getId());
+				}
 				Date currentDate = new  Date();
-				Date terminationDate = pmh.getProjectTerminationDate();
+				Date terminationDate = null;
+				if(pmh.getProjectTerminationDate() != null){
+					terminationDate = pmh.getProjectTerminationDate();
+				}
+				else{
+					terminationDate = pmh.getProjectAssignedDate();
+				}
 				if(currentDate.after(terminationDate)){
 					pmh.setProjectTerminationDate(project.getEndDate());
 					pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
@@ -155,6 +230,65 @@ public class CommonUtil {
 		project.setProjectStatus(Project_Status.COMPLETED);
 		return project;
 	}
+	
+	
+	/**
+	 * This method is used to Terminate Project Members whose assigned date is after project end date
+	 * @author: Naresh Bolisetty
+	 * @throws Exception 
+	 * 
+	 */
+ 	public void terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(Projects project,User user) throws Exception{
+ 		if(project.getEndDate() != null){
+	 		List<ProjectMembers> pmList =  projectMembersService.getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(project.getId());
+		   	   for(ProjectMembers projectMember :pmList){
+		   		ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
+				 if(pmh == null)  {
+					  pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+				 }
+				 Date terminatedDate = null;
+		   		   if(pmh != null && pmh.getProjectAssignedDate().after(project.getEndDate()) || pmh.getProjectAssignedDate().equals(project.getEndDate())){
+				   			 projectMember.setStatus(Constants.MEMBER_IN_ACTIVE);
+				   			 projectMember.setIsManuallyTerminated(Primary.NO);
+				   			 projectMember.setUpdatedDate(new Date());
+					    		 projectMember.setUpdatedBy(user.getUserCode());
+					    		 HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+							  	 
+								  if(pmh != null){
+									  pmh.setProjectTerminationDate(pmh.getProjectAssignedDate());
+										Calendar terminateDateCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+										terminateDateCal.setLenient(false);
+										terminateDateCal.setTime(pmh.getProjectTerminationDate());
+										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON");
+										terminatedDate = terminatedDateMonday.getTime();
+									 
+									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  memberHistoryList.add(pmh);
+									  projectMember.setMemberHistoryList(memberHistoryList);
+								  }
+								  projectMember = projectMembersService.saveProjectMember(projectMember);
+				   		 }
+				   		 else{
+				   			 HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+								  if(pmh != null){
+									  pmh.setProjectTerminationDate(project.getEndDate());
+									  terminatedDate = pmh.getProjectTerminationDate();
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  memberHistoryList.add(pmh);
+									  projectMember.setMemberHistoryList(memberHistoryList);
+								  }
+								  projectMember = projectMembersService.saveProjectMember(projectMember);
+				   		 }
+		   		
+				   	
+				   		inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMember.getId(),terminatedDate);
+		   	   }
+ 		 }
+	}
+	
 	
 	/**
 	 * This method is used to storeTimesheetSubmissionRecords based on projectMemberAssignDate and projectMemberEndDate(optional)
@@ -270,14 +404,9 @@ public class CommonUtil {
 							Calendar currentWeekEndDate = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 							currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
 							
-							Calendar submissionStartCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-							submissionStartCal.setLenient(false);
-							submissionStartCal.setTime(currentWeekEndDate.getTime());
-							Calendar tsMondayCal = CalendarUtil.getCurrentWeekDayByCalendar(submissionStartCal, "MON");
-							Calendar tsSundayCal = CalendarUtil.getCurrentWeekDayByCalendar(submissionStartCal, "SUN");
 							
-							timesheetSubmissions.setStartDate(tsMondayCal.getTime());
-							timesheetSubmissions.setEndDate(tsSundayCal.getTime());
+							timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
+							timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
 							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
 							timesheetSubmissions.setCreatedDate(new Date());
 							timesheetSubmissions.setCreatedBy(user.getUserCode());

@@ -1162,7 +1162,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 
 
 .time_pop {
-	position:absolute !important; bottom:35px; left:0px; display:block; margin:0px auto; width:310px; right:0px;
+	position:absolute !important; bottom:35px; left:0px; display:none; margin:0px auto; width:310px; right:0px;
 	z-index:800; top:80px; text-align:right; max-height:90px;
 }
 .time_pop.time_pop_a {

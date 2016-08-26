@@ -715,10 +715,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	    	 }
 			    	     }
 			    	}
-			    	
 			    }
 		 
-		 return null;
+				/*
+	    	     * Termination Of ProjectMember whose assignDate is greaterthan project endDate /
+	    	     *   in-activate the submissions whose startDate is greaterthan project endDate
+	    	     */
+	    	    if(projects.getEndDate() != null) {
+	    	    	commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
+	    	    }
+		 return "success";
 	}
 
 	 /**

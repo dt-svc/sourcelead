@@ -518,7 +518,7 @@ public class UserRestController {
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 					
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					if (endDate != null && !"".equals(endDate)) {
+					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
 							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
