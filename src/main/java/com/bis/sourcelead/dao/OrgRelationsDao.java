@@ -27,5 +27,7 @@ public interface OrgRelationsDao {
 	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId)throws Exception;
 
 	List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId);
+
+	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
 }
