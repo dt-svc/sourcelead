@@ -92,14 +92,15 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 				 */
 			 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 			 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-				   
+					String resultJson;
 				    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					 
 					Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long.valueOf(candidateId), loginOrgCode.getId(), loginOrgLocation.getId());
 					
-					return null;
+					resultJson = commonUtil.toJSON(can);
+					return resultJson;
 			   }
 		 
 		 

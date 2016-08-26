@@ -1,209 +1,157 @@
-<div id="tab-3" class="project_tabs_inn">
-              <div class="project_tabs_inn_head">
-                  <a href="#" class="addUser-org">
-                        <i class="glyphicon glyphicon-plus"></i>Add Experince
-                  </a>
-                  	<!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Employer *">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12 checkbox">
-                                <label>
-                                <input type="checkbox" name="Position" id="endDate">Is Current Position</label>
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Designation">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Address">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <p class="ml">Start Date</p>
-                              <div class="col-md-6">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="April">May</option>
-                                    <option value="April">June</option>
-                                    <option value="April">Jully</option>
-                                    <option value="April">August</option>
-                                    <option value="April">September</option>
-                                    <option value="April">October</option>
-                                    <option value="April">November</option>
-                                    <option value="April">December</option>
-                                </select>
-                                </div>
-                                <div class="col-md-6">
-                                <input type="text" max class="form-control" value="" placeholder="Enter Year">
-                              </div>
-                              </div>
-                              <div class="clearfix mb10 endDate">
-                              <p class="ml">End Date</p>
-                              <div class="col-md-6">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="April">May</option>
-                                    <option value="April">June</option>
-                                    <option value="April">Jully</option>
-                                    <option value="April">August</option>
-                                    <option value="April">September</option>
-                                    <option value="April">October</option>
-                                    <option value="April">November</option>
-                                    <option value="April">December</option>
-                                </select>
-                                </div>
-                                <div class="col-md-6">
-                                <input type="text" max class="form-control" value="" placeholder="Enter Year">
-                              </div>
-                              </div>
-                              <div class="clearfix mb10 hidden">
-                              <div class="col-md-12">
-                              <label>End Date</label>
-                              <select class="chosen-select">
-	                               <option value="Select Month">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="April">May</option>
-                                    <option value="April">June</option>
-                                    <option value="April">Jully</option>
-                                    <option value="April">August</option>
-                                    <option value="April">September</option>
-                                    <option value="April">October</option>
-                                    <option value="April">November</option>
-                                    <option value="April">December</option>
-                                </select>
-                                <input type="text" class="form-control input-sm mt10" value="" placeholder="Enter Year">
-                                <span class="input-group-addon input-groupAddon hidden"><i class="fa fa-calendar"></i></span>
-                              </div>
-                            </div>
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-					<!-- Popup Div -->
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Employer</th>
-                      <th>Designation</th>
-                      <th>Address</th>
-                      <th>Start date</th>
-                      <th>End date</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>                    
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingdg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
+<script>
+function candidateExperience(){  
+	var result ="";
+	result = result  +'		 <div class="project_tabs_inn_head">                                                                            ';                          
+	result = result  +'	     <a href="#" class="addUser-org">                                                                               ';
+	result = result  +'	           <i class="glyphicon glyphicon-plus"></i>Add Experince                                                    ';
+	result = result  +'	     </a>                                                                                                           ';
+	result = result  +'	     	<!-- Popup Div -->                                                                                          ';
+	result = result  +'	       <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>                            ';
+	result = result  +'	             <div class="form-horizontal clearfix">                                                                 ';
+	result = result  +'	               <div class="clearfix mb10">                                                                          ';
+	result = result  +'	                 <div class="col-md-12">                                                                            ';
+	result = result  +'	                   <input type="text" class="form-control input-sm" value="" placeholder="Employer *">              ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	               </div>                                                                                               ';
+	result = result  +'	               <div class="clearfix mb10">                                                                          ';
+	result = result  +'	                 <div class="col-md-12 checkbox">                                                                   ';
+	result = result  +'	                   <label>                                                                                          ';
+	result = result  +'	                   <input type="checkbox" name="Position" id="endDate">Is Current Position</label>                  ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	               </div>                                                                                               ';
+	result = result  +'	               <div class="clearfix mb10">                                                                          ';
+	result = result  +'	                 <div class="col-md-12">                                                                            ';
+	result = result  +'	                   <input type="text" class="form-control input-sm" value="" placeholder="Designation">             ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	               </div>                                                                                               ';
+	result = result  +'	               <div class="clearfix mb10">                                                                          ';
+	result = result  +'	                 <div class="col-md-12">                                                                            ';
+	result = result  +'	                   <input type="text" class="form-control input-sm" value="" placeholder="Address">                 ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	               </div>                                                                                               ';
+	result = result  +'	               <div class="clearfix mb10">                                                                          ';
+	result = result  +'	                 <p class="ml">Start Date</p>                                                                       ';
+	result = result  +'	                 <div class="col-md-6">                                                                             ';
+	result = result  +'	                   <select class="chosen-select">                                                                   ';
+	result = result  +'	                       <option value="Select Month">Select Month</option>                                           ';
+	result = result  +'	                       <option value="January">January</option>                                                     ';
+	result = result  +'	                       <option value="February">February</option>                                                   ';
+	result = result  +'	                       <option value="March">March</option>                                                         ';
+	result = result  +'	                       <option value="April">April</option>                                                         ';
+	result = result  +'	                       <option value="April">May</option>                                                           ';
+	result = result  +'	                       <option value="April">June</option>                                                          ';
+	result = result  +'	                       <option value="April">Jully</option>                                                         ';
+	result = result  +'	                       <option value="April">August</option>                                                        ';
+	result = result  +'	                       <option value="April">September</option>                                                     ';
+	result = result  +'	                       <option value="April">October</option>                                                       ';
+	result = result  +'	                       <option value="April">November</option>                                                      ';
+	result = result  +'	                       <option value="April">December</option>                                                      ';
+	result = result  +'	                   </select>                                                                                        ';
+	result = result  +'	                   </div>                                                                                           ';
+	result = result  +'	                   <div class="col-md-6">                                                                           ';
+	result = result  +'	                   <input type="text" max class="form-control" value="" placeholder="Enter Year">                   ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	                 <div class="clearfix mb10 endDate">                                                                ';
+	result = result  +'	                 <p class="ml">End Date</p>                                                                         ';
+	result = result  +'	                 <div class="col-md-6">                                                                             ';
+	result = result  +'	                   <select class="chosen-select">                                                                   ';
+	result = result  +'	                       <option value="Select Month">Select Month</option>                                           ';
+	result = result  +'	                       <option value="January">January</option>                                                     ';
+	result = result  +'	                       <option value="February">February</option>                                                   ';
+	result = result  +'	                       <option value="March">March</option>                                                         ';
+	result = result  +'	                       <option value="April">April</option>                                                         ';
+	result = result  +'	                       <option value="April">May</option>                                                           ';
+	result = result  +'	                       <option value="April">June</option>                                                          ';
+	result = result  +'	                       <option value="April">Jully</option>                                                         ';
+	result = result  +'	                       <option value="April">August</option>                                                        ';
+	result = result  +'	                       <option value="April">September</option>                                                     ';
+	result = result  +'	                       <option value="April">October</option>                                                       ';
+	result = result  +'	                       <option value="April">November</option>                                                      ';
+	result = result  +'	                       <option value="April">December</option>                                                      ';
+	result = result  +'	                   </select>                                                                                        ';
+	result = result  +'	                   </div>                                                                                           ';
+	result = result  +'	                   <div class="col-md-6">                                                                           ';
+	result = result  +'	                   <input type="text" max class="form-control" value="" placeholder="Enter Year">                   ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	                 <div class="clearfix mb10 hidden">                                                                 ';
+	result = result  +'	                 <div class="col-md-12">                                                                            ';
+	result = result  +'	                 <label>End Date</label>                                                                            ';
+	result = result  +'	                 <select class="chosen-select">                                                                     ';
+	result = result  +'	                      <option value="Select Month">Select Month</option>                                            ';
+	result = result  +'	                       <option value="January">January</option>                                                     ';
+	result = result  +'	                       <option value="February">February</option>                                                   ';
+	result = result  +'	                       <option value="March">March</option>                                                         ';
+	result = result  +'	                       <option value="April">April</option>                                                         ';
+	result = result  +'	                       <option value="April">May</option>                                                           ';
+	result = result  +'	                       <option value="April">June</option>                                                          ';
+	result = result  +'	                       <option value="April">Jully</option>                                                         ';
+	result = result  +'	                       <option value="April">August</option>                                                        ';
+	result = result  +'	                       <option value="April">September</option>                                                     ';
+	result = result  +'	                       <option value="April">October</option>                                                       ';
+	result = result  +'	                       <option value="April">November</option>                                                      ';
+	result = result  +'	                       <option value="April">December</option>                                                      ';
+	result = result  +'	                   </select>                                                                                        ';
+	result = result  +'	                   <input type="text" class="form-control input-sm mt10" value="" placeholder="Enter Year">         ';
+	result = result  +'	                   <span class="input-group-addon input-groupAddon hidden"><i class="fa fa-calendar"></i></span>    ';
+	result = result  +'	                 </div>                                                                                             ';
+	result = result  +'	               </div>                                                                                               ';
+	result = result  +'	               <div class="clearfix mr">                                                                            ';
+	result = result  +'	                 <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>                       ';
+	result = result  +'	               </div>                                                                                               ';
+	result = result  +'	             </div>                                                                                                 ';
+	result = result  +'	           </div>                                                                                                   ';
+	result = result  +'			<!-- Popup Div -->                                                                                          ';
+	result = result  +'	 </div>                                                                                                             ';
+	result = result  +'	 <div class="project_tabs_inn_table vendor_wrap_inn_table">                                                         ';
+	result = result  +'	   <table>                                                                                                          ';
+	result = result  +'	     <tbody>                                                                                                        ';
+	result = result  +'	       <tr>                                                                                                         ';
+	result = result  +'	         <th>Employer</th>                                                                                          ';
+	result = result  +'	         <th>Designation</th>                                                                                       ';
+	result = result  +'	         <th>Address</th>                                                                                           ';
+	result = result  +'	         <th>Start date</th>                                                                                        ';
+	result = result  +'	         <th>End date</th>                                                                                          ';
+	result = result  +'	         <th>Action</th>                                                                                            ';
+	result = result  +'	       </tr>                                                                                                        ';
+	result = result  +'	       <tr>                                                                                                         ';
+	result = result  +'	         <td><div><span>TCS Pvt Ltd</span></div></td>                                                               ';
+	result = result  +'	         <td><div><span>Web developer</span></div></td>                                                             ';
+	result = result  +'	         <td><div><span>Hyderabad Hyderabad</span></div></td>                                                       ';
+	result = result  +'	         <td><div><span>30/08/2016</span></div></td>                                                                ';
+	result = result  +'	         <td><div><span>30/09/2016</span></div></td>                                                                ';
+	result = result  +'	         <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>  ';
+	result = result  +'	       </tr>                                                                                                        ';
+	result = result  +'	     </tbody>                                                                                                       ';
+	result = result  +'	   </table>                                                                                                         ';
+	result = result  +'	 </div>                                                                                                             ';
+	result = result  +'	 <nav>                                                                                                              ';
+	result = result  +'	   <ul id="pagingdg" class="pagination">                                                                            ';
+	result = result  +'	     <li><a href="#">Previous</a></li>                                                                              ';
+	result = result  +'	     <li><a href="#">2</a></li>                                                                                     ';
+	result = result  +'	     <li><a href="#">3</a></li>                                                                                     ';
+	result = result  +'	     <li class="disabled"><a href="#">6</a></li>                                                                    ';
+	result = result  +'	     <li data-page="last"><a href="#">Next</a></li>                                                                 ';
+	result = result  +'	   </ul>                                                                                                            ';
+	result = result  +'	   <div class="clearfix"></div>                                                                                     ';
+	result = result  +'	 </nav>                                                                                                             ';
+	
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-5").empty();  
+    $("#tab-6").empty();  
+    $("#tab-3").append(result);  
+	
+}
+</script>
+
+            
+
+
+
+
+
+             

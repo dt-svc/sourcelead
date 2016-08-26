@@ -7,6 +7,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<jsp:include page="candidatesProfile.jsp"></jsp:include>
+<jsp:include page="candidatesResumes.jsp"></jsp:include>
+<jsp:include page="candidatesExperience.jsp"></jsp:include>
+<jsp:include page="candidatesEducation.jsp"></jsp:include>
+<jsp:include page="candidatesCertificates.jsp"></jsp:include>
+<jsp:include page="candidatesActivities.jsp"></jsp:include>
+
+
 <script>
  window.onload = function() {
  	 candidateList();
@@ -52,7 +60,7 @@
 	                    	 var opt = json[i]; 
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar();'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
+			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
 			                 result = result +"  <td><div><span>Web designer Web designer</span></div></td>";
 			                 result = result +"  <td><div>Full Time</div></td>";
 			                 result = result +"  <td><div ><span>vannam@domain.com</span></div></td>";
@@ -101,10 +109,123 @@ function pagination(){
 </script>
 
 <script>
-function clientSideBar(){
-				$(".clients_side_wrap").addClass("clients_side_wrap_active");
-				$(".side_mask").fadeIn(200);
-				$("body").css('overflow-y', 'hidden');
+function clientSideBar(candidateId){ 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+          type : "POST",
+           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           success :function(data) {
+                if(data != null && data != 'undefined' && data != ""){
+              		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+              		 else if (data.indexOf('exception') >= 0) {
+              			 location.replace(sourceleadUrl+"/errorPage");
+              		 }
+              		 else{
+	                	 $("#candidateSideDiv").empty();
+	                	 var result = "";
+			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+			             result = result+'               <div class="col-md-6">';
+			             result = result+'                   <div class="media">';
+			             result = result+'                     <div class="media-left image-parent">';
+			             result = result+'                     <div class="imageParent">';
+			             result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">';
+			             result = result+'                     </div>';
+			             result = result+'                     </div>';
+			             result = result+'                     <div class="media-body candidate-details">';
+			             result = result+'                       <h4 class="media-heading">Jaden Smith</h4>';
+			             result = result+'                       <ul class="list-unstyled">';
+			             result = result+'                         <li><strong>Business Analyst - Full Time</strong></li>';
+			             result = result+'                         <li>Experience - 4 years</li>';
+			             result = result+'                       </ul>';
+			             result = result+'                   </div>';
+			             result = result+'                 </div>';
+			             result = result+'                 <div class="other-detials">';
+			             result = result+'                 <div class="professinal-details">';
+			             result = result+'                 	<ul class="list-inline list-unstyled"><li>BA</li><li>BRS</li><li>SRS</li><li>Agile</li><li>SDLC</li></ul>';
+			             result = result+'                 </div>';
+			             result = result+'                 <div class="socialnetwork-details">';
+			             result = result+'                 <ul class="list-inline list-unstyled">';
+			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             result = result+'                               </ul>';
+			             result = result+'                 </div>';
+			             result = result+'                 </div>';
+			             result = result+'               </div>';
+			             result = result+'               <div class="col-md-6">';
+			             result = result+'                 <ul class="list-unstyled can-perdt">';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">jadensmith@hotmail.com</a></li>';
+			             result = result+'                   <li><i class="fa fa-phone"></i>+91 9900223355</li>';
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>';
+			             result = result+'                   <li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>';
+			             result = result+'                   <li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>';
+			             result = result+'                 </ul>';
+			             result = result+'               </div>';
+			             result = result+'			</div>';
+			             result = result+'   <div class="proj_close"></div>';
+			             result = result+'   <div class="project_side_wrap_inn_tabs">';
+			             result = result+'     <ul class="project-tabs-menu">';
+			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile();">Profile</a></li>';
+			             result = result+'       <li><a href="#tab-2" onclick="candidateResume();" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience();">Experience</a></li>';
+			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation();">Education</a></li>';
+			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate();">Certificate</a></li>';
+			             result = result+'       <li><a href="#tab-6" onclick="candidateActivities();">Activities</a></li>';
+			             result = result+'       <div class="clearfix"></div>';
+			             result = result+'     </ul>';
+			             result = result+'     <div class="project_tabs">';
+				         result = result + ' <div id="tab-1" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-2" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-3" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + ' <div id="tab-4" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-5" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-6" class="project_tabs_inn">';
+						 result = result + '</div>';
+			             result = result+'     </div>';
+			             result = result+'   </div>';
+			             
+			             $("#candidateSideDiv").empty();  
+			 		     $("#candidateSideDiv").append(result);  
+				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+						 $(".side_mask").fadeIn(200);
+						 $("body").css('overflow-y', 'hidden');
+						 candidateProfile();
+			 			 
+			    	} 
+                }else{
+               	 $("#candidateSideDiv").removeAttr("style");
+ 	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Candidates Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#candidateSideDiv").empty();
+				    $("#candidateSideDiv").append(result); 
+                }
+         },
+           
+      }); 
+				
 }
 </script>
 <!-- 
@@ -179,7 +300,11 @@ $(document).ready(function() {
       <div class="proj_close"></div>
     </div>
     <div class="clients_side_wrap">
-      <div class="clients_side_wrap_inn">
+	    <div class="clients_side_wrap_inn">
+		             <div id="candidateSideDiv">
+				     </div>  
+	    </div>			     
+      <%-- <div class="clients_side_wrap_inn">
        <div class="profile_details clearfix" style="margin-bottom:20px;">
                     <div class="col-md-6">
                         <div class="media">
@@ -241,7 +366,7 @@ $(document).ready(function() {
                 <jsp:include page="candidatesActivities.jsp"></jsp:include>
           </div>
         </div>
-      </div>
+      </div> --%>
     </div>
     <!-- Compnay details Ends --> 
     <!-- Project --> 
@@ -310,6 +435,31 @@ $(document).ready(function() {
         $(".project_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
     });
-<script>	
+
+	// Levels adding script
+	 $(".addUser-org").click(function(event){ alert("hai");
+		 $(".collapse-div-adduser").toggleClass("showMydiv");
+		 $(".collapse-div").removeClass("showMydiv");
+		 event.preventDefault();
+	 });
+	 $(".close-div").click(function(){
+		 $(this).parent().toggleClass("showMydiv");
+		 });
+	 $(".assign-org").click(function(){
+		 $(".collapse-div").toggleClass("show-div");
+		 $(".collapse-div-adduser").removeClass("show-div");
+	 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
+		 e.stopPropagation();
+	 });
+	 $('html').click(function(){
+	    $(".collapse-div-adduser").removeClass("show-div");
+		$(".collapse-div").removeClass("show-div");
+	   });	
+	   $("#endDate").click(function(){
+		   $(".endDate").toggle(200);
+	   });
+});
+</script>	
  
 <jsp:include page="../masterFooter.jsp" />
