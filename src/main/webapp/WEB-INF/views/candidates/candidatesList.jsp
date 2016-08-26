@@ -4,6 +4,8 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
  window.onload = function() {
@@ -145,7 +147,7 @@ $(document).ready(function() {
           <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li> -->
-          <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+         <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>

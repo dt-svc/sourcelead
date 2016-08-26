@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Candidate service.
  * 
@@ -29,7 +35,7 @@ public class CandidateRestController {
 	private String sourceleadUrl;
 	
 	@Autowired
-	private CandidateService candiadteService;
+	private CandidateService candidateService;
 
 	
 
@@ -37,7 +43,7 @@ public class CandidateRestController {
 	
 	
 	/**
-	 * Handles Candidate  save
+	 * Store Candidate
 	 * 
 	 * @param json
 	 * @param request
@@ -45,11 +51,17 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json) throws Exception {
+	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
 
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-		candiadteService.storeCandidate(jsonObj);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     
+		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user);
+		candidate.setOrgLocationId(orgLocation);
+		candidateService.addCandidate(candidate);
 		return "candidates/candidatesList";
 	}
 	

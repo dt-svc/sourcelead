@@ -46,12 +46,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		return (str == null || "".equals(str.trim()));
 	}
 
-    /**
+	 /**
+	  * @author PrasadK
      * This method for to store candidate into Database
      * @return candidate
-     * @exception
+     * @exception NullPointerException
      */
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Candidate storeCandidate(Candidate candidate) throws Exception {
 		logger.debug("Storing Candidate");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -66,7 +68,6 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return candidate;
 	}
-
 	
 	/**
 	 * @author David Raju Sammeta

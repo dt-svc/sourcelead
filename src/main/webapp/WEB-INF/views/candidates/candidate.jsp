@@ -77,140 +77,167 @@
         <div class="form-group">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" name="Email" value="">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email"  value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" name="Mobile" value="">
+            <input type="text" class="form-control" id="phone" name="phone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="">
           </div>
         </div>
-        <div class="form-group">
+         <div class="form-group">
           <label class="col-md-3">Country</label>
           <div class="col-md-9">
-            <select class="form-control selectpicker">
-              <option>India</option>
-              <option>United States of America</option>
-              <option>UK (United Kingdom)</option>
-              <option>Swizerland</option>
-            </select>
+            <input type="text" class="form-control" id="country" name="country" value="${country}"  field-name="Country"  value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
-            <select class="form-control selectpicker">
-              <option>Maharashtra</option>
-              <option>Telanga</option>
-              <option>Andhra Pradesh</option>
-              <option>Uttar Pradesh</option>
-              <option>Rajastahan</option>
-            </select>
+            <input type="text" class="form-control" id="state" name="state" value="${state}"  field-name="State"  value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-            <select class="form-control selectpicker">
-              <option>Delhi</option>
-              <option>Hyderabad</option>
-              <option>Visakhapatnam</option>
-              <option>Mumbai</option>
-            </select>
+           <input type="text" class="form-control" id="city" name="city" value="${city}"  field-name="City"  value="">
           </div>
-        </div>
+        </div> 
         <div class="form-group">
           <label class="col-md-3">Address</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" name="Mobile" value="">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address"  value="">
           </div>
         </div>
         <div class="form-group">
-          <label class="col-md-3">Job Title</label>
-          <div class="col-md-9">
-            <div class="input-group">
-              <input type="text" value="" class="form-control">
-              <div class="input-group-btn">
-                <button aria-expanded="false" data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"> Type <span class="caret"></span> </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  <li><a href="#">C2C</a></li>
-                  <li><a href="#">W-2</a></li>
-                  <li><a href="#">Part</a></li>
-                  <li><a href="#">Time</a></li>
-                  <li><a href="#">Other</a></li>
-                </ul>
-              </div>
-              /btn-group 
-            </div>
-          </div>
-        </div>
+         <label class="col-md-3">Designation</label>
+         <div class="col-md-9">
+           <div class="row div-padding">
+           <div class="col-xs-8 col-md-8">
+             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  value="" class="form-control">
+           </div>
+             <div class="col-xs-4 col-md-4">
+             <select class="form-control">
+                 <option><a href="#">C2C</a></option>
+                 <option><a href="#">W-2</a></option>
+                 <option><a href="#">Part</a></option>
+                 <option><a href="#">Time</a></option>
+                 <option><a href="#">Other</a></option>
+             </select>
+             </div>
+           </div>
+         </div>
+       </div>
+
         <div class="form-group">
           <label class="col-md-3">Experience</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" name="Mobile" value="">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-md-3">Current Rate</label>
-          <div class="col-md-9">
-            <div class="input-group">
-              <input type="text" value="" class="form-control">
-              <div class="input-group-btn">
-                <button aria-expanded="false" data-toggle="dropdown" 
-                                class="btn btn-primary dropdown-toggle" type="button"> Select <span class="caret"></span> </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  <li><a href="#">&#x20B9;</a></li>
-                  <li><a href="#">&#x20A0;</a></li>
-                  <li><a href="#">$</a></li>
-                </ul>
-              </div>
-              /btn-group 
+            <div class="row">
+             <div class="col-xs-6 col-md-6">
+             		<select class="form-control" id="experienceYears" name="experienceYears">
+             		  <option selected disabled>Year</option>
+             		<option>0</option>
+             		<option>1</option>
+             		<option>2</option>
+             		<option>3</option>
+             		<option>4</option>
+             		<option>5</option>
+             		<option>6</option>
+             		<option>7</option>
+             		<option>8</option>
+             		<option>9</option>
+             		<option>10</option>
+             		<option>11</option>
+             		<option>12</option>
+             		<option>13</option>
+             		<option>14</option>
+             		<option>15</option>
+             		</select>
+             </div>
+             <div class="col-xs-6 col-md-6">
+             		<select class="form-control" id="experienceMonths" name="experienceMonths">
+             		<option selected disabled>Month</option>
+             		<option>0</option>
+             		<option>1</option>
+             		<option>2</option>
+             		<option>3</option>
+             		<option>4</option>
+             		<option>5</option>
+             		<option>6</option>
+             		<option>7</option>
+             		<option>8</option>
+             		<option>9</option>
+             		<option>10</option>
+             		<option>11</option>
+             		<option>12</option>
+             		</select>
+             </div>
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label class="col-md-3">Expected Rate</label>
-          <div class="col-md-9">
-            <div class="input-group">
-              <input type="text" value="" class="form-control">
-              <div class="input-group-btn">
-                <button aria-expanded="false" data-toggle="dropdown" 
-                                class="btn btn-primary dropdown-toggle" type="button"> Select <span class="caret"></span> </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li class="divider" role="separator"></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </div>
-              /btn-group 
-            </div>
-          </div>
-        </div>
+       
+         <div class="form-group">
+         <label class="col-md-3">Current Rate</label>
+         <div class="col-md-9">
+           <div class="row div-padding">
+           <div class="col-xs-8 col-md-8">
+             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  value="" class="form-control">
+           </div>
+             <div class="col-xs-4 col-md-4">
+             <select class="form-control">
+                 <option><a href="#">&#x20B9;</a></option>
+                 <option><a href="#">&#x20A0;</a></option>
+                 <option><a href="#">$</a></option>
+                 
+             </select>
+             </div>
+           </div>
+         </div>
+       </div>
+        
+        
+        
+         <div class="form-group">
+         <label class="col-md-3">Expected Rate</label>
+         <div class="col-md-9">
+           <div class="row div-padding">
+           <div class="col-xs-8 col-md-8">
+            <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate"  value="" class="form-control">
+           </div>
+             <div class="col-xs-4 col-md-4">
+             <select class="form-control">
+                 <option><a href="#">&#x20B9;</a></option>
+                 <option><a href="#">&#x20A0;</a></option>
+                 <option><a href="#">$</a></option>
+             </select>
+             </div>
+           </div>
+         </div>
+       </div>
+        
         <div class="form-group">
           <label class="col-md-3">Skills</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" value="Need to tagit code">
+            <input type="text" class="form-control" id="candidateSkills" name="candidateSkills" value="${candidateSkills}"  field-name="Skills"  value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Education</label>
           <div class="col-md-9">
-            <input type="text" value="" name="Education" class="form-control">
+             <input type="text" class="form-control" id="candidateEducation" name="candidateEducation" value="${candidateEducation}"  field-name="Education"  value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Employer's</label>
           <div class="col-md-9">
-            <input type="text" value="" name="Education" class="form-control">
+            <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers"  value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
-            <textarea rows="2" class="form-control"></textarea>
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" ></textarea>
           </div>
         </div>
         <div class="form-group">
@@ -223,7 +250,7 @@
         </div>
       </div> 
     </div>
-    </div>
+    
     
     <div class="form-footer clearfix">
       <div class="col-lg-12">
@@ -233,10 +260,11 @@
         </div>
       </div>
     </div>
-    </form:form>
+     </form:form>
+    </div>
+   
     
     <!-- Content Area Ends--> 
-  </div>
 </section>
 <!-- Footer Area -->
 <footer class="footer-area clearfix">

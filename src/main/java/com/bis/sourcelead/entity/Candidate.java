@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,10 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
@@ -111,23 +117,23 @@ public class Candidate {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	/*@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
 	
 	
-	@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);*/
+	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 
 
 	public Long getId() {
@@ -420,7 +426,7 @@ public class Candidate {
 	}
 
 
-	/*public Set<CandidateEducation> getCandidateEducation() {
+	public Set<CandidateEducation> getCandidateEducation() {
 		return candidateEducation;
 	}
 
@@ -457,7 +463,7 @@ public class Candidate {
 
 	public void setCandidateEmployers(Set<CandidateEmployers> candidateEmployers) {
 		this.candidateEmployers = candidateEmployers;
-	}*/
+	}
 	
 	
 }
