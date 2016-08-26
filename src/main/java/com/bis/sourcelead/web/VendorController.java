@@ -88,7 +88,6 @@ public class VendorController {
 		model.addObject("loginCountryName", countries.getName());
 		
 		return model;
-
 	}
 
 }
