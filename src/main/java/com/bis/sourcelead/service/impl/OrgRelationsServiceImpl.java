@@ -87,7 +87,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
+	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode) throws Exception {
 		
 		HashSet<OrgRelations> orgRelationsList = new HashSet<OrgRelations>();
 		
@@ -98,20 +98,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setCreatedBy(loginUserCode);
 		orgRelations.setCreatedDate(commonUtil.currentDate());
 		
-		if(null != responderType  && !responderType.isEmpty()){
-			if("Client".equalsIgnoreCase(responderType)){
-				orgRelations.setInitiatorType("Vendor"); 
-				orgRelations.setResponderType("Client");
-			}else{
-				orgRelations.setInitiatorType("Client"); 
-				orgRelations.setResponderType("Vendor");
-			}
-		  }
-		
-		if(jsonObj.has("level")){
-			orgRelations.setLevel(jsonObj.getString("level"));
-		}
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
+	}
+
+	@Override
+	public List<OrgRelations> getAllVendorsListByOrgLocationId(Long orgLocationId) {
+		return orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
 	}
 }

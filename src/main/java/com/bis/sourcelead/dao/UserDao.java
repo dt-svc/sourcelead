@@ -22,35 +22,13 @@ public interface UserDao {
 	
 	User findByEmail(String email);
 	
-	/**
-	 * This method to fetch only Admin role users
-	 * @param orgLocationsId
-	 * @return
-	 * @throws Exception
-	 */
 	public Collection<User> getUsersByUserRoles(Long orgLocationsId) throws Exception;
 	
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	
-	/**
-	 * This method to fetch only Approver role users
-	 * @param orgLocationsId
-	 * @return
-	 * @throws Exception
-	 */
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
-	
-	
-	/**
-	 * This method to fetch Owner used in Client and vendor
-	 * @param orgLocationsId
-	 * @return
-	 * @throws Exception
-	 */
-	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
-	
 }

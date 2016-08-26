@@ -224,13 +224,13 @@ function uploadSave() {
                     return false;
                   return false;
                 }
-                	if (fsize > 5120000)
+                	if (fsize>50000)
                     {
                    	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
                			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
                         return false;
-                    }  
+                    } 
                 
        }
      

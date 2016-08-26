@@ -11,10 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
+
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -27,15 +34,23 @@ public class VendorController {
 	private String sourceleadUrl;
 	
 	@Autowired
+	OrgRelationsService orgRelationsService;
+
+	@Autowired
 	private UserService userService;
 	
 	@Autowired
 	CountriesService countriesService;
+
 	
 	@RequestMapping(value = "/vendorsList")
-	public ModelAndView usersList(HttpServletRequest request) {
+	public ModelAndView vendorsList(HttpServletRequest request) {
 		
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+		model.addObject("loginOrgLocId",orgLoc.getId());
+		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		
@@ -47,6 +62,7 @@ public class VendorController {
 		sessionData.setNav(Constants.Vendors);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
+
 		return model;
 
 	}
@@ -74,4 +90,5 @@ public class VendorController {
 		return model;
 
 	}
+
 }

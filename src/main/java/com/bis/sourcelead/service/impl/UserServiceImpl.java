@@ -124,8 +124,8 @@ public class UserServiceImpl implements UserService {
       *  @return 
       */
 	@Override
-	public User storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType) throws Exception {
-	   User user1 = null;
+	public void storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType) throws Exception {
+	
 	 	User user = getUserDetails(jsonObj,loginuser.getUserCode());
 	 	if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
 		
 		 //For saving the User  
 		try {
-			user1 = userDao.addUser(user);
+			userDao.addUser(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -169,7 +169,6 @@ public class UserServiceImpl implements UserService {
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 			sendEmail(user,loginuser,password);
 		}
-		return user1;
 				
 		
 	}
@@ -226,22 +225,10 @@ public class UserServiceImpl implements UserService {
 	private User getUserDetails(JSONObject jsonObj,String userCode) throws JSONException {
 		User user = new User();
 		
-		if(jsonObj.has("firstName")){
-			user.setFirstName(jsonObj.getString("firstName"));
-		}
-		
-		if(jsonObj.has("lastName")){
-			user.setLastName(jsonObj.getString("lastName"));
-		}
-		
-		if(jsonObj.has("email")){
-			user.setEmail(jsonObj.getString("email"));
-		}
-		
-		if(jsonObj.has("email")){
-			user.setUserName(jsonObj.getString("email"));
-		}
-		
+		user.setFirstName(jsonObj.getString("firstName"));
+		user.setLastName(jsonObj.getString("lastName"));
+		user.setEmail(jsonObj.getString("email"));
+		user.setUserName(jsonObj.getString("email"));
 		if(jsonObj.has("phoneNumber")){
 			user.setMobilePhone(jsonObj.getString("phoneNumber"));
 		}
@@ -507,11 +494,6 @@ public class UserServiceImpl implements UserService {
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userID) throws Exception {
 		
 		return userDao.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(userID);
-	}
-
-	@Override
-	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception {
-		return userDao.getOwnersByOrgLocationId(orgLocationsId);
 	}
 
 	

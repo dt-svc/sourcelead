@@ -73,8 +73,8 @@ public class ClientController {
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
-			model.addObject("userList", userList);
+			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
+			model.addObject("user_List", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
@@ -95,10 +95,7 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			/*for(OrgRelations orgRelation : clientsList){
-				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
-				orgRelation.setProjectsCont(count);
-			}*/
+			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
