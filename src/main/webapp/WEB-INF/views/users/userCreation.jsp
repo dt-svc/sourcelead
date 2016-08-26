@@ -314,26 +314,35 @@
 </script>
 <!-- end script for datepicker -->
 
+ 
 <script type="text/javascript">
  function getReportingManager() {
 	 var role = document.getElementById("role").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-- Select Manager --</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
-				}
-	        	$("#reportingManager").empty();
-		        $("#reportingManager").append(output);
-		        //$('.selectpicker').selectpicker('refresh');
-	        },
-	    });
+	 if(role != null && role != "" && role != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Manager --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+					}
+		        	$("#reportingManager").empty();
+			        $("#reportingManager").append(output);
+			        //$('.selectpicker').selectpicker('refresh'); 
+		        },
+		    });
+	 }else{
+		 var output = "";
+     	 output = output + "<option value=''>-- Select Manager --</option>"; 
+     	 $("#reportingManager").empty();
+	     $("#reportingManager").append(output);
+	 }
+	
  }
 </script>
