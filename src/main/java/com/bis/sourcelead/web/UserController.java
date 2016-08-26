@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -46,6 +48,9 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	RolesService rolesService;
+	
 	/**
 	 * To forward user creation jsp page
 	 * @param request
@@ -55,10 +60,14 @@ public class UserController {
 	@RequestMapping(value = "/userCreation")
 	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
 		
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
+		    
+		    List<Roles> rolesList = rolesService.getMoudleRoles(org.getId());
+		    model.addObject("rolesList", rolesList);
 		    
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    

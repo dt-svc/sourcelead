@@ -169,12 +169,16 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 @RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 		 String resultJson = null;   
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Employees employee = employeesService.getEmployeeByUserId(userId);
 		 if(employee.getHireDate() != null){
 			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
 		 }else{
 			 employee.setHireDateStr("");
 		 }
+		 
+		 List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(employee.getUser().getId(), employee.getUser().getUserType(), orgLocations.getId());
+		 employee.setAllReportingManagers(userList);
 		 resultJson = toJSON(employee);
 		 return resultJson;
 	  }
@@ -218,6 +222,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					user.setFirstName(jsonObj.getString("FirstName"));
 					user.setLastName(jsonObj.getString("LastName"));
 					user.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
+						User reportingManager = new User();
+						reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+						user.setReportingManager(reportingManager);
+					}
 					if(user.getUserState() != null && !"".equals(user.getUserState()) && Status.NOT_LOGGEDIN.equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						//generate random password
 						user.setEmail(jsonObj.getString("EmailId"));
