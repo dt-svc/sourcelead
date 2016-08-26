@@ -254,7 +254,7 @@ public class CommonUtil {
 					totalWeeks = (int)((endMonday.getTimeInMillis()-startMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
 					long startMondayInMilliSeconds = startMonday.getTimeInMillis();
 					for (int week = 0; week < totalWeeks; week++) {
-						Calendar currentMondayOfTheWeek = Calendar.getInstance();
+						Calendar currentMondayOfTheWeek = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						long weekVal = 7l * 24l * 60l * 60l * week * 1000l; 
 						currentMondayOfTheWeek.setTimeInMillis(startMondayInMilliSeconds + weekVal);
 						
@@ -265,18 +265,19 @@ public class CommonUtil {
 						}
 						else{
 							timesheetSubmissions = new TimesheetSubmissions();
-							
 							timesheetSubmissions.setProjectMembers(projectMember);
-							timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
 							
-							Calendar currentWeekEndDate = Calendar.getInstance();
+							Calendar currentWeekEndDate = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 							currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
-							timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
 							
-							/*SubmissionApproverHierarchy 
-							timesheetSubmissions.setSubmissionStatus(Submission_Status.getNameByValue("new"));
-							timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));*/
+							Calendar submissionStartCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+							submissionStartCal.setLenient(false);
+							submissionStartCal.setTime(currentWeekEndDate.getTime());
+							Calendar tsMondayCal = CalendarUtil.getCurrentWeekDayByCalendar(submissionStartCal, "MON");
+							Calendar tsSundayCal = CalendarUtil.getCurrentWeekDayByCalendar(submissionStartCal, "SUN");
 							
+							timesheetSubmissions.setStartDate(tsMondayCal.getTime());
+							timesheetSubmissions.setEndDate(tsSundayCal.getTime());
 							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
 							timesheetSubmissions.setCreatedDate(new Date());
 							timesheetSubmissions.setCreatedBy(user.getUserCode());

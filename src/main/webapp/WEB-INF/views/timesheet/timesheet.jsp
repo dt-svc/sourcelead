@@ -112,11 +112,12 @@ function dynamicTimesheet(navigation , startDate){
 		   	type: "POST",
 		    url: sourceleadUrl+"/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
 				    success: function(data) {
-				    	
-				    	
-				    	if( data.indexOf('DOCTYPE') >= 0){
+				    	if( data.indexOf('Sign In') >= 0){
 				    		location.replace(sourceleadUrl);
-				    	}else{
+				    	}
+	               		else if (data.indexOf('exception') >= 0) {
+	               			 location.replace(sourceleadUrl+"/errorPage");
+	               		}else{
 				    	       if(data != '' && data != 'undefined' && data != null){
 				    	    	   $("#dynamic").removeAttr("style");
 				    	    	   $("#dynamic").empty();
@@ -403,7 +404,7 @@ function addTimeSheetRow(submissionId,projectId) {
                 
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
-function saveMyTimesheet(status){ 
+function saveMyTimesheet(status,savingType){ 
 	 checkHours();
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -436,7 +437,7 @@ function saveMyTimesheet(status){
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	   dynamicTimesheet("left",result); 
         		    	  /* dynamicTimesheet(); */
@@ -455,10 +456,9 @@ $('body').on('blur', '#timesheet_form', function() {
 });
 </script>
 <script type="text/javascript">
-function withdrawMyTimesheet(submissionId){ 
+function withdrawMyTimesheet(submissionId,startdate){ 
 	/* var frm = $('#timesheet_form').serializeFormJSON(); */
 	var sourceleadUrl ='${sourceleadUrl}';
-	var startdate;
 	var navigation;
 	   
 /* 	var mydata = JSON.stringify(frm);
