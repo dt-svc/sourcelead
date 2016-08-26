@@ -94,6 +94,18 @@ public class OrgRelations {
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+	private String vendorCreateduserName;
+	
+	
+	public String getVendorCreateduserName() {
+		return vendorCreateduserName;
+	}
+
+	public void setVendorCreateduserName(String vendorCreateduserName) {
+		this.vendorCreateduserName = vendorCreateduserName;
+	}
 
 	public Long getProjectsCont() {
 		return projectsCont;
