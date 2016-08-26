@@ -377,13 +377,13 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
-				if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+				if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
 				}else{
 					
 					orgLocations.setEmail("");
 				}
-				if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+				if(jsonObj.has("clientPhoneNumber") && jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
 					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
 				}else{
 					orgLocations.setPhone("");
