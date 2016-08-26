@@ -48,7 +48,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orgRelations != null) {
-				session.save(orgRelations);
+				session.saveOrUpdate(orgRelations);
 			}
 			logger.debug("OrgRelations Added Successfully");
 		} catch (Exception exception) {
