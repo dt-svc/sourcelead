@@ -176,26 +176,20 @@ window.onload = function () {
 				</label>
               </div>
             </div>
-            <div class="form-group  clientDetails">
-              <label class="col-md-3">Role <span class="text-danger">*</span></label>
-              <div class="col-md-9 checkbox check-box">
-                <label>
-                  <input type="radio" value="Admin" name="role">
-                  Admin</label>
-                <label>
-                  <input type="radio" value="Approver"  name="role">
-                  Approver/Project Manager</label>
-                <label>
-                  <input type="radio" value="HR Manager" name="role">
-                  HR Manager</label>
-                <label>
-                  <input type="radio" value="Account Manager" name="role">
-                  Account Manager</label>
-                <label>
-                  <input type="radio" value="Recruiter" name="role">
-                  Recruiter</label>
-              </div>
-            </div>
+            
+              <div class="form-group">
+                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-md-9">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
+		                        <option value="">-Select Role-</option>
+									<option value="Admin">Admin</option>
+									<option value="Approver">Approver/Project Manager</option>
+									<option value="HR Manager">HR Manager</option>
+									<option value="Account Manager">Account Manager</option>
+									<option value="Recruiter">Recruiter</option>
+			              </select>
+                  </div>
+                </div>
           </div>
         </div>
       </div>
@@ -238,7 +232,7 @@ window.onload = function () {
 	})(jQuery);
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function saveClient() {
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -268,8 +262,48 @@ window.onload = function () {
 		$("#client_form").validateOnBlur(false, validationSettings);
 	});	
 		
-</script>
+</script> -->
 
+<script type="text/javascript">
+	function saveClient() {
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#client_form').validate(false, validationSettings)) {
+			var frm = $('#client_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#save_client").attr("disabled", "disabled");
+			$("#save_client").addClass('button').val('Processing..');
+			$
+					.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+						success : function(result) {
+							if (result == 'clientDashboard') {
+								location.replace(sourceleadUrl
+										+ "/clientDashboard");
+							}
+
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#client_form', function() {
+		$("#client_form").showHelpOnFocus();
+		$("#client_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 
 <script type="text/javascript">
@@ -322,7 +356,7 @@ function validateClientName(){
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
-		/*  $("#save_client").attr("disabled", "disabled");
+		/*$("#save_client").attr("disabled", "disabled");
          $("#save_client" ).addClass('button').val('Processing..'); */
 		 $.ajax({
 		    	type: "POST",
