@@ -521,4 +521,9 @@ public class UserServiceImpl implements UserService {
 		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
 	}
 
+	@Override
+	public User getUserDetailsByUserCode(String userCode) {
+		return userDao.getUserDetailsByUserCode(userCode);
+	}
+
 }
