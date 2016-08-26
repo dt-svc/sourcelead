@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mysql.jdbc.log.Log;
 
 /**
  * 
@@ -271,9 +273,11 @@ public class ProjectsDashboardRestController {
 		 	String resultJson;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
-			resultJson = commonUtil.toJSON(employeeList);
-			return resultJson;
+			
+			 List<Employees>  employeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
+			 
+			 resultJson = commonUtil.toJSON(employeList);
+			 return resultJson;
 		}
 	/**
 	 * Assign Employee to project by  project id	 

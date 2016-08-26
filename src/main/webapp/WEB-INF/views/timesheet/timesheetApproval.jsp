@@ -38,9 +38,13 @@ $(document).ready(function() {
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId,        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
-               		if( data.indexOf('DOCTYPE') >= 0){
+               		if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
-			    	}else{
+			    	}
+               		else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		}
+               		else{
 			    		 $("#timesheetApprList").removeAttr("style");
 	                	 $("#timesheetApprList").empty();
 	                     $("#timesheetApprList").append(data); 
@@ -143,7 +147,7 @@ $(document).ready(function() {
 function pagination(){ 
     $('#example').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -163,12 +167,15 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 		   	type: "POST",
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
-				    	if( data.indexOf('DOCTYPE') >= 0){
+				    	if( data.indexOf('Sign In') >= 0){
 				    		location.replace(sourceleadUrl);
-				    	}else{
+				    	}
+	               		else if (data.indexOf('exception') >= 0) {
+	               			 location.replace(sourceleadUrl+"/errorPage");
+	               		}else{
 				    		$("#row"+projectMemberUserId).empty();
 					        $("#row"+projectMemberUserId).append(data);
-					        pagination();
+					        /* pagination(); */
 				    	}
 				        
 				    }
@@ -299,15 +306,17 @@ function myTimesheet(local,startDate,endDate){
    	type: "POST",
     url: sourceleadUrl+"/dynamicTimesheetpopUp?${_csrf.parameterName}=${_csrf.token}&employeeId="+local+"&startDate="+startDate+"&endDate="+endDate, 	   
     success: function(data) {
-    	 
-	    	if( data.indexOf('DOCTYPE') >= 0){
+	    	if( data.indexOf('Sign In') >= 0){
 	    		location.replace(sourceleadUrl);
-	    	}else{
-	    		$("#myId").empty();
-	              $("#myId").append(data); 
-	              maskme();   
-	              $("html").trigger('click');
 	    	}
+	   		else if (data.indexOf('exception') >= 0) {
+	   			 location.replace(sourceleadUrl+"/errorPage");
+	   		}else{    
+		    		$("#myId").empty();
+		            $("#myId").append(data); 
+		            maskme();   
+		            $("html").trigger('click');
+		    }
               
     }
     });
@@ -557,7 +566,7 @@ function maskme(){
 
 <!-- this script is for save timesheets -->	 
 <script type="text/javascript">
-function saveMyTimesheet(status){  
+function saveMyTimesheet(status,savingType){  
 	
 	 checkHours();
 	 var validationSettings = {
@@ -589,7 +598,7 @@ function saveMyTimesheet(status){
 	      	          processData: false,
 	      	          contentType:false,
 	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
+        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
         		    		 $(".side_mask").fadeOut(200); 

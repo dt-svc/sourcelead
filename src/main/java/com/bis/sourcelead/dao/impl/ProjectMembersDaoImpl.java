@@ -153,7 +153,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and emp.user.userType = 'Employee' ");
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         
@@ -217,7 +217,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))  OR (pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
@@ -259,7 +259,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)  OR pm.projects.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))" ;
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId))" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).setCacheable(true).list(); 
 		return allProjectsList;
 	}

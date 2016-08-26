@@ -1155,6 +1155,13 @@
 <script type="text/javascript">
 function getLevel2Approvers(){
 	var currentApproverId = document.getElementById("level1Manager").value;
+	var count = 1;
+	$(".myCheckbox").each(
+					function() {
+						var localId = this.id;
+						document.getElementById(localId).checked = false; 
+	});
+	$(".myCheckbox").val('');
 	getChildLevel1Approvers(currentApproverId);
 } 
 </script>
@@ -1183,6 +1190,7 @@ function getChildLevel1Approvers(currentApproverId){
 		    });
 	 }else{
 		 getApproversLevel2();
+		 flushEmployee();
 	 }
 } 
 </script>
