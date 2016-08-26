@@ -40,4 +40,10 @@ public class RolesServiceImpl implements RolesService{
 		return rolesDao.getMoudleRoles(orgId);
 	}
 
+
+	@Override
+	public Roles getRolesById(Long id) throws Exception {
+		return rolesDao.getRolesById(id);
+	}
+
 }

@@ -3,18 +3,14 @@ package com.bis.sourcelead.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-
 import java.util.HashSet;
-import java.util.Iterator;
-
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -52,7 +48,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * This Service Class is used to get User Object
@@ -124,8 +119,8 @@ public class UserServiceImpl implements UserService {
       *  @return 
       */
 	@Override
-	public void storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType) throws Exception {
-	
+	public User storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType) throws Exception {
+	   User user1 = null;
 	 	User user = getUserDetails(jsonObj,loginuser.getUserCode());
 	 	if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
@@ -135,7 +130,7 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
        //For saving the User Role 
-		UserRole userRole = getUserRoleDetails(user,user.getUserCode(),orgLocations.getId());
+		UserRole userRole = getUserRoleDetails(jsonObj,user,user.getUserCode(),orgLocations.getId());
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
@@ -148,7 +143,7 @@ public class UserServiceImpl implements UserService {
 		
 		 //For saving the User  
 		try {
-			userDao.addUser(user);
+			user1 = userDao.addUser(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -169,6 +164,7 @@ public class UserServiceImpl implements UserService {
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 			sendEmail(user,loginuser,password);
 		}
+		return user1;
 				
 		
 	}
@@ -187,7 +183,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//For saving the User Role 
-		UserRole userRole = getUserRoleDetails(user,loginUser.getUserCode(),orgLocationsId);
+		UserRole userRole = getUserRoleDetails(jsonObj,user,loginUser.getUserCode(),orgLocationsId);
 		try {
 			userRoleService.addUserRole(userRole);
 		} catch (Exception e) {
@@ -225,12 +221,29 @@ public class UserServiceImpl implements UserService {
 	private User getUserDetails(JSONObject jsonObj,String userCode) throws JSONException {
 		User user = new User();
 		
-		user.setFirstName(jsonObj.getString("firstName"));
-		user.setLastName(jsonObj.getString("lastName"));
-		user.setEmail(jsonObj.getString("email"));
-		user.setUserName(jsonObj.getString("email"));
+		if(jsonObj.has("firstName")){
+			user.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName")){
+			user.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email")){
+			user.setEmail(jsonObj.getString("email"));
+		}
+		
+		if(jsonObj.has("email")){
+			user.setUserName(jsonObj.getString("email"));
+		}
+		
 		if(jsonObj.has("phoneNumber")){
 			user.setMobilePhone(jsonObj.getString("phoneNumber"));
+		}
+		if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
+			User reportingManager = new User();
+			reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+			user.setReportingManager(reportingManager);
 		}
 		user.setUserState(Status.NOT_LOGGEDIN);
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
@@ -239,7 +252,14 @@ public class UserServiceImpl implements UserService {
 			user.setIsMailSent(Status.N);
 		}
 		if(jsonObj.has("roleType")){
-			user.setUserType(jsonObj.getString("roleType"));
+			Roles roles;
+			try {
+				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+				user.setUserType(roles.getDisplayName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
@@ -247,7 +267,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	private UserRole getUserRoleDetails(User user,String userCode, Long orgLocationsId) {
+	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) {
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		
@@ -256,27 +276,17 @@ public class UserServiceImpl implements UserService {
 		userRole.setOrgLocations(orgLocations);
 		
 		Roles roles = null;
-		String roleName = "";
 		try {
-			if(user != null && user.getUserType() != null && "Admin".equals(user.getUserType())){
-				roleName = Constants.ROLE_ADMIN;
-			}else if(user != null && user.getUserType() != null && "Approver".equals(user.getUserType())){
-				roleName = Constants.ROLE_APPROVER;
-			}else if(user != null && user.getUserType() != null && "Employee".equals(user.getUserType())){
-				roleName = Constants.ROLE_USER;
-			}else if(user != null && user.getUserType() != null && "Account Manager".equals(user.getUserType())){
-				roleName = Constants.ACCOUNT_MANAGER;
-			}else if(user != null && user.getUserType() != null && "Sales Manager".equals(user.getUserType())){
-				roleName = Constants.SALES_MANAGER;
-			}else if(user != null && user.getUserType() != null && "Recruiter".equals(user.getUserType())){
-				roleName = Constants.RECRUITER;
-			}else if(user != null && user.getUserType() != null && "HR Manager".equals(user.getUserType())){
-				roleName = Constants.HR_MANAGER;
+			if(jsonObj.has("roleType") && !isNullOrEmpty(jsonObj.getString("roleType"))){
+				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+			}else{
+				roles = rolesService.getRolesById(2L);
 			}
-			roles = rolesService.getRolesByRoleName(roleName);
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
 		userRole.setRoles(roles);
 		userRole.setIsPrimary(1);
 		userRole.setCreatedDate(commonUtil.currentDate());
@@ -496,6 +506,19 @@ public class UserServiceImpl implements UserService {
 		return userDao.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(userID);
 	}
 
+	@Override
+	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception {
+		return userDao.getOwnersByOrgLocationId(orgLocationsId);
+	}
+
+	@Override
+	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
+		return userDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+	}
 	
+	@Override
+	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
+		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
+	}
 
 }

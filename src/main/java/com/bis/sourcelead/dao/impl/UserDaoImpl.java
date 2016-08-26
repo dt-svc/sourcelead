@@ -251,6 +251,86 @@ public class UserDaoImpl implements UserDao {
 		List<Employees> empList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		return empList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception {
+		
+	 Session session = this.sessionFactory.getCurrentSession();
+     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+     List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+     return userRoleList;
+        
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		if(roleType != null && !"".equals(roleType) && "1".equals(roleType)){
+			subQuery = "and user.userType = 'Admin'";
+		}
+		else if(roleType != null && !"".equals(roleType) && "3".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "2".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "6".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "5".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "7".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "8".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+		}
+		
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' "+subQuery+" ";
+	    List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+        return userRoleList;
+        
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		if(roleType != null && !"".equals(roleType) && "Admin".equals(roleType)){
+			subQuery = "and user.userType = 'Admin'";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Project Manager".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Employee".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Account Manager".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "HR Manager".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Sales Manager".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Recruiter".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+		}
+		
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId "+subQuery+" ";
+	    List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
+        return userRoleList;
+        
+	}
 	
 
 }

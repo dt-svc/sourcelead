@@ -35,19 +35,44 @@ public interface UserService  {
 	
 	public User saveUserProfile(UserProfile userProfile,MultipartFile multiFile,User user) throws Exception;
 	
+	/**
+	 * This method to fetch only Admin role users
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
 	public Collection<User> getUsersByUserRoles(Long orgLocationsId) throws Exception;
 	
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	
+	
+	/**
+	 * This method to fetch only Approver role users
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 	
-	void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType)  throws Exception;
-
+	User storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType)  throws Exception;
 	
+	/**
+	 * This method to fetch Owner used in Client and vendor
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
+
+	//Prasad Salina to get managers list baded on role type
+	List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
+			
+	//Prasad Salina to get managers list baded on role type and except current user
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;	
 }	
 		
 	

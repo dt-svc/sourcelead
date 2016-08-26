@@ -4,7 +4,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -639,3 +641,92 @@
   </section>
 
 <jsp:include page="../masterFooter.jsp" />
+<script src="resources/js/jquery-fun.js"></script> 
+<script>
+
+// Approved Popup
+$(document).ready(function() {
+    $("#appro-pop").click(function(){
+		$(".approved_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".approved_pop").slideUp(200);
+    });
+    $(".approved_pop, #appro-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+
+// Export Popup
+$(document).ready(function() {
+    $("#export-pop").click(function(){
+		$(".export_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".export_pop").slideUp(200);
+    });
+    $(".export_pop, #export-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+});	
+	
+	
+// Error pop
+$(document).ready(function() {
+    $(".glyphicon-trash").click(function(){
+		$(".vendor_error").slideToggle(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	});
+	$(".vendor_error a").click(function(){
+		$(".vendor_error").slideUp(200);
+		$(".vendor_wrap_mask").fadeOut(200);
+	});
+});	
+	
+// project side bar
+$(document).ready(function() {
+    $(".proj_show").click(function(){
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+});
+
+// project side bar tabs
+$(document).ready(function() {
+	$("#tab-1").show()
+    $(".project-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+
+
+	// pop head pop
+	
+$(".addcon-pop").click(function(){
+	 $(".collapse-div-adduser").toggleClass("show-div");
+	 $(".collapse-div").removeClass("show-div");
+ });
+ $(".close-div").click(function(){
+	 $(this).parent().removeClass("show-div");
+	 });
+ $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+	 e.stopPropagation();
+ });
+ $('html').click(function(){
+    $(".collapse-div-adduser").removeClass("show-div");
+	$(".collapse-div").removeClass("show-div");
+   });
+
+
+</script> 
