@@ -80,8 +80,6 @@ margin:10px 220px 0;
 				</div>
 		   	 <!--  Downloaded File show here -->
 		   	 
-		   	 
-		   	 
 			</div>
 			
 			<!-- =================== -->
