@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -63,6 +64,36 @@ public class CandidateDaoImpl implements CandidateDao {
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return candidate;
+	}
+
+	
+	/**
+	 * @author David Raju Sammeta
+	 * 
+	 * This Method is for getting Candidate by Candidate Id
+	 * 
+	 * @return Candidate
+	 * 
+	 * @exception NullPointerException
+	 */
+	@Override
+	public Candidate getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long candidateId, Long orgId, Long orgLocationId)
+			throws Exception {
+		return null;
+	}
+
+	/**
+	 * to Candidates List by OrgCode OrgLocationCode
+	 * @author David Sammeta
+	 * @param request
+	 * @return String
+	 * @throws NullPointerException
+    */
+	@Override
+	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgId, Long orgLocationId) throws Exception {
+		
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
