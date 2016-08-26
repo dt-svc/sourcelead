@@ -31,4 +31,7 @@ public interface OrgRelationsService {
 	Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception;
 	
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
+
+	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
+
 }
