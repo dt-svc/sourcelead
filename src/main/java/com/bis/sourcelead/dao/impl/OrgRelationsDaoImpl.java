@@ -48,7 +48,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orgRelations != null) {
-				session.save(orgRelations);
+				session.saveOrUpdate(orgRelations);
 			}
 			logger.debug("OrgRelations Added Successfully");
 		} catch (Exception exception) {
@@ -147,6 +147,20 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return vandorsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId) {
+			Session session = this.sessionFactory.getCurrentSession();
+	    	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org org left join fetch org.user where orgrelation.id = :orgRelationId and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId)");
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+	       OrgRelations orgRelation = null;
+			if(orgRelations != null && !orgRelations.isEmpty())
+			{
+				orgRelation = orgRelations.iterator().next();
+			}
+			return orgRelation;
 	}
 	
 }

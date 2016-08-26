@@ -28,6 +28,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -51,6 +52,9 @@ public class ClientRestController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 
+	@Autowired
+	private UserService userService;
+	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 
@@ -128,7 +132,7 @@ public class ClientRestController {
 	 */
 
 	@RequestMapping(value = "/getClientDeatilsById", method = RequestMethod.POST)
-	public @ResponseBody String getProjectById(@RequestParam(value = "clientId", required = false) String orgLocationId) throws Exception {
+	@ResponseBody String getProjectById(@RequestParam(value = "clientId", required = false) String orgLocationId) throws Exception {
 		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
@@ -210,6 +214,73 @@ public class ClientRestController {
 		return result;
 	}
 
+	/***
+	 * @author  Prasanna vadla
+	 * 26-8-2016
+	 * To get the details of the org by the orgLocationId and orgRelationId
+	 * to fetch user details by usercode 
+	 * @param orgLocationId
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/getClientAndVendorOrgDeatilsById", method = RequestMethod.POST)
+	@ResponseBody String getClientAndVendorOrgDeatilsById(@RequestParam(value = "vendorLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
+		 if(orgRelation.getLocationId().getId()== orgLocation.getId()){ 
+				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+				orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+				orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+				orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+				orgRelation.setState(orgRelation.getResponderLocationId().getState());
+				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
+				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
+				
+		 }
+		 //to fetch user details by usercode 
+		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+		
+		//if login user org id is equals to vendor ResponderLocationId id then we get vendor list of location Org details 
+		 if(orgRelation.getResponderLocationId().getId()== orgLocation.getId()){ 
+				orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+				orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+				orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+				orgRelation.setCity(orgRelation.getLocationId().getCity());
+				orgRelation.setState(orgRelation.getLocationId().getState());
+				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
+				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+		 } 
+		 
+		return commonUtil.toJSON(orgRelation);
+		 
+	}
+	
+	/**
+	 * @author Prasanna vadla
+	 * @param json
+	 * @param vendorLocationId
+	 * @param orgRelationId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/vendorDetailsUpdateUsingId", method = RequestMethod.POST)
+	public String vendorDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		
+	       json = "{" + json + "}";
+	       JSONObject jsonObj = new JSONObject(json);
+	
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
+
+		return "success";
+	}
+	
 	/**
 	 * check given string empty or null
 	 * @param str
