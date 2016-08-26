@@ -605,7 +605,29 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setCacheable(true).list();
 		return submissionApproverHierarchyList;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByApproverUserId(Long approverUserId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where approver.id = :approverUserId");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("approverUserId", approverUserId).setCacheable(true).list();
+		return submissionApproverHierarchyList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveAllSubmissionApproverHierarchy(
+			List<SubmissionApproverHierarchy> submissionApproverHierarchyList) throws Exception {
+		
+		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+			for(SubmissionApproverHierarchy sah :submissionApproverHierarchyList){
+				addSubmissionApproverHierarchy(sah);
+			}
+		}
+	}
+
 
 	
 

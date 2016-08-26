@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,8 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -53,6 +56,11 @@ public class CommonUtil {
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	private ProjectsService projectsService;
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
@@ -129,6 +137,43 @@ public class CommonUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	
+	/**
+	 * This method is used to newly added admin as a level2 manager for all existing projectmembers
+	 * @author: Naresh Bolisetty
+	 * @throws Exception 
+	 * 
+	 */
+	public void addAdminAsSecondLevelManager(Long locationId,User adminUser,User loginUser) throws Exception{
+		
+		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(locationId);
+        if(projectsList != null && !projectsList.isEmpty()){
+        	for(Projects projects :projectsList){
+        		if(StringUtils.isNotEmpty(projects.getStatus()) && projects.getStatus().equalsIgnoreCase(Project_Status.COMPLETED.getValue()))
+        			continue;
+        		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+		    	pah.setProjectId(projects);
+		    	pah.setApproverUserId(adminUser);
+		    	pah.setLevel(2);
+		    	pah.setCreatedBy(loginUser.getUserCode());
+		    	pah.setCreatedDate(currentDate());
+		    	pah.setUpdatedBy(loginUser.getUserCode());
+		    	pah.setUpdatedDate(currentDate());
+		    	pah = projectApproverHierarchyService.saveProjectApproverHierarchy(pah);
+		    	List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyService.getSubmissionApproverHierarchyByApproverUserId(loginUser.getId());
+		    	List<SubmissionApproverHierarchy> freshSahList = new ArrayList<SubmissionApproverHierarchy>();
+		    	if(sahList != null && !sahList.isEmpty()){
+		    		for(SubmissionApproverHierarchy sah :sahList){
+		    			sah.setId(null);
+		    			sah.setHeirarchyId(pah);
+		    			freshSahList.add(sah);
+		    		}
+		    		submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(freshSahList);
+		    	}
+        	}
+        }
 	}
 	
 	/**
