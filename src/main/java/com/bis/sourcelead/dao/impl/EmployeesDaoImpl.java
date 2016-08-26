@@ -198,15 +198,15 @@ public class EmployeesDaoImpl implements EmployeesDao{
         List<Employees> employeeList = null;
         if(level1Manager!=null && level2Manager!=null){
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and user.userType <>'Admin'" );
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE'" );
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
         }else if(level1Manager!=null){
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and user.userType <>'Admin'");
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE'");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
         }else{
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and user.userType <>'Admin'");
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and user.userType <>'Admin' and user.userState <> 'INACTIVE'");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
         }
 		return employeeList;

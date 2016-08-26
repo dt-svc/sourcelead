@@ -10,7 +10,7 @@
 	<condition property="root.dir" value="c:">
 		<isset property="windows" />
 	</condition>
-	<condition property="root.dir" value="/root/Desktop/sourcelead">
+	<condition property="root.dir" value="/home">
 		<isset property="unix" />
 	</condition>
 	
