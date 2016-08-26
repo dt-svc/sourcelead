@@ -94,6 +94,7 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			
 			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);
 		

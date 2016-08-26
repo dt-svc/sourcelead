@@ -235,6 +235,28 @@ public class ClientRestController {
 	}
 	
 	/**
+	 * @author Prasanna vadla
+	 * @param json
+	 * @param vendorLocationId
+	 * @param orgRelationId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/vendorDetailsUpdateUsingId", method = RequestMethod.POST)
+	public String vendorDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		
+	       json = "{" + json + "}";
+	       JSONObject jsonObj = new JSONObject(json);
+	
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
+
+		return "success";
+	}
+	
+	/**
 	 * check given string empty or null
 	 * @param str
 	 * @return boolean
