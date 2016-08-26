@@ -331,6 +331,18 @@ public class UserDaoImpl implements UserDao {
         return userRoleList;
         
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserDetailsByUserCode(String userCode) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = session.createQuery("from User where userCode=:userCode" ).setString( "userCode", userCode ).setCacheable(true).list();
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 
 }

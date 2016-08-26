@@ -72,7 +72,16 @@ public interface UserService  {
 	List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
 			
 	//Prasad Salina to get managers list baded on role type and except current user
-	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;	
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
+
+	/**
+	 * @author Prasanna vadla
+	 * to fetch user details by usercode
+	 * @param createdBy
+	 * @return
+	 */
+	User getUserDetailsByUserCode(String userCode);
+
 }	
 		
 	
