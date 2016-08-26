@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 *{
@@ -476,7 +476,7 @@ ul.timesheet-menu li a{
 }
 ul.timesheet-menu li a::before {
     color: #f0ad4e;
-    content: "";
+    content: "ïˆ­";
     font-family: fontawesome;
     padding-right: 5px;
 }

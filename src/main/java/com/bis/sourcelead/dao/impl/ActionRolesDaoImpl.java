@@ -63,21 +63,26 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 		
 		String actionRoles = "";
 		
-		if(Status.Y.equals(org.getVms()) && Status.Y.equals(org.getAts()) && Status.Y.equals(org.getTimeSheet())){
+		if((Status.Y.equals(org.getVms()) && Status.Y.equals(org.getAts())) || (Status.Y.equals(org.getVms()) && Status.Y.equals(org.getAts()) && Status.Y.equals(org.getTimeSheet()))){
 			actionRoles = "and actionRoles.roles.id <> '4' ";
 		}
 		
-		if(Status.Y.equals(org.getVms())){
+		else if((Status.Y.equals(org.getVms())) || ((Status.Y.equals(org.getVms())) && (Status.Y.equals(org.getTimeSheet())))){
 			actionRoles = "and actionRoles.roles.id <> '4' and actionRoles.roles.id <> '7' and actionRoles.roles.id <> '6' ";
 		}
 		
-		if(Status.Y.equals(org.getAts())){
+		else if(Status.Y.equals(org.getAts()) && Status.Y.equals(org.getTimeSheet())){
+			actionRoles = "and actionRoles.roles.id <> '4'";
+		}
+		
+		else if((Status.Y.equals(org.getAts()))){
 			actionRoles = "and actionRoles.roles.id <> '4' and actionRoles.roles.id <> '3' ";
 		}
 		
-		if(Status.Y.equals(org.getTimeSheet())){
-			actionRoles = "and actionRoles.roles.id == '1' and actionRoles.roles.id == '2' and actionRoles.roles.id == '3' ";
+		else if(Status.Y.equals(org.getTimeSheet())){
+			actionRoles = "and actionRoles.roles.id <> '4' and actionRoles.roles.id <> '5' and actionRoles.roles.id <> '6' and actionRoles.roles.id <> '7' and actionRoles.roles.id <> '8'";
 		}
+		
 		
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId "
 				+ "and actionRoles.tabActions.modules.id IN (:modulesId) "+actionRoles+" ")

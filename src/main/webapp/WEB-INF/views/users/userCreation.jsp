@@ -2,7 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ <link href="resources/css/bootstrap-select.min.css" rel="stylesheet">
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
@@ -32,107 +34,29 @@
         <div class="content-area clearfix">
         <div id="loading"></div> 
           
-      <!-- modal dialog box start -->    
-        <div class="modal fade" id="addProject" role="dialog">
-          <div class="modal-dialog">
-          <div id="modelLoading"></div>
-           <form:form id="addProject_form"  name="addProject_form" method="post">
-             <div class="modal-content" id="newProject">
-		          <div class="modal-header">
-		            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-		            <h4 class="modal-title">Add Project</h4>
-		          </div>
-          <div class="modal-body clearfix">
-            <div class="form-horizontal custom-form clearfix">
-              <div class="col-xs-12 col-md-12 col-lg-12">
-                <div class="form-group" id="ProjectIdDiv">
-                  <label class="col-lg-3">Project Id</label>
-                  <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-lg-3">Project Name<span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-lg-9">
-                    <input type="text" value="" id="ProjectName" name="ProjectName" class="form-control" field-name="Project Name" data-validation="required validate_Space validate_length length2-250">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-md-3"> Date<span class="text-danger">&nbsp; *</span> </label>
-		              <div class="col-md-9">
-		                <div class="row">
-		                  <div class="col-lg-6 positionRelative" id="StartDateDiv">
-		                      <input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly">
-		                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-		                    </div>
-		                  <div class="col-lg-6 positionRelative">
-		                      <input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly">
-		                   <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-		                   </div>
-		                  <span class="hidden">Enter Project Id</span> </div>
-		              </div>
-                 </div>
-                 
-                <div class="form-group">
-              <label class="col-md-3" for="Project Manager">Manager<span class="text-danger">&nbsp; *</span></label>
-              <div class="col-md-9">
-              <div class="form-icon-min">
-                <select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
-                  <option value="">-Select Manager-</option>
-                      <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName} ${option.lastName}</option>
-	                  </c:forEach>
-                </select>
-                    <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>
-                    </div>
-                    <span class="hidden">Select Project Manager</span>
-                </div>
-            </div>
-            <div class="form-group level-second">
-              <label class="col-md-3" for="Level-II">Level-II Manager</label>
-              <div class="col-md-9">
-                <select class="form-control select-bg"  name="level2Manager" id="level2Manager">
-                  <option value="">-Select Manager-</option>
-                      <c:forEach var="option" items="${user_List}">
-	                     <option value="${option.id}">${option.firstName}</option>
-	                  </c:forEach>
-                </select>
-                </div>
-            </div>
-                
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" id="save_project" class="btn btn-primary" data-dismiss="modal" onclick = "saveProject();">Save</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          </div>
-        </div>
-        </form:form>
-      </div>
-    </div>
-<!-- modal dialog box end -->          
-          
-          
-          
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
             <div class="row">
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();">
-                    <span class="hidden">Error Text</span></div>
+                    </div>
                 </div>
-                
+                <div class="form-group">
+                      <label class="col-md-3">Date of Join</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
+                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                           </div>
+                        </div>
+                  </div>
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20">
-                    <span class="hidden">First Name</span>
+                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-100">
                   </div>
                 </div>
                 
@@ -140,7 +64,6 @@
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" name="lastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
-                    <span class="hidden">Last Name</span>
                   </div>
                 </div>
                 
@@ -148,18 +71,39 @@
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();">
-                    <span class="hidden">Valid Email</span>
                   </div>
                   </div>
-                  
-                <div class="form-group">
+                 <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
                     <input type="text" class="form-control" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                   </div>
+                </div> 
+                
+                <div class="form-group">
+                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-md-9">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required" onchange="getReportingManager();">
+		                        <option value="">-Select Role-</option>
+		                        <c:forEach var="option" items="${rolesList}">
+									<option value="${option.id}">${option.displayName}</option>
+								</c:forEach>
+			              </select>
+                  </div>
                 </div>
+               
+              <div class="form-group">
+                  <label class="col-md-3">Manager</label>
+                  <div class="col-md-9">
+                      <select class="form-control select-bg" name="reportingManager" id="reportingManager" field-name="Manager">
+                        <option value="">-Select Manager-</option>
+                      </select>
+                  </div>
+            </div>
+            
+            
                 
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
@@ -184,154 +128,15 @@
                           </div>
                      </div>
                 </div>
-                
-                <div class="form-group">
+            <div class="form-group">
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
-		                <div class="checkbox">
+		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isMailSent" checked="checked">
 		                    Send Mail to User</label>
 		                </div>
-		                <span class="hidden">Select Check Box</span> </div>
-               </div>
-              </div>
-              
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                  <div class="form-group">
-                      <label class="col-md-3">Date of Join</label>
-                         <div class="col-md-9">
-                           <div class="input-group">
-                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                           </div>
-                        </div>
-                  </div>
-                <!-- <div class="form-group">
-                  <label class="col-md-3">Department</label>
-                  <div class="col-md-9">
-                    <div class="form-icon">
-                      <select class="form-control select-bg">
-                        <option>Department</option>
-                        <option>Department-2</option>
-                        <option>Department-3</option>
-                        <option>Department-4</option>
-                      </select>
-                      <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" data-target="#addDepartment"></i> </div>
-                    <span class="hidden">Enter Project Id</span>
-                    <div class="modal fade" id="addDepartment" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="modal-title">Add Department</h4>
-          </div>
-          <div class="modal-body clearfix">
-            <div class="form-horizontal custom-form clearfix">
-              <div class="col-xs-12 col-md-12 col-lg-12">
-                <div class="form-group">
-                  <label class="col-lg-3">Client Name</label>
-                  <div class="col-lg-9">
-                    <input type="text" value="" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-lg-3">Client Website</label>
-                  <div class="col-lg-9">
-                    <input type="text" value="" class="form-control">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </div>
-                    </div>
-                </div> -->
-                <div class="form-group" id="RoleDiv">
-                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
-	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Admin"  onclick="roleTypeValidation(this);validateRole();">Admin
-	                    </label>
-	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Approver" onclick="roleTypeValidation(this);validateRole();">Approver/Manager
-	                    </label>
-	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Employee" onclick="roleTypeValidation(this);validateRole();">Employee
-	                    </label>
-	                    
-	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Account Manager"  onclick="roleTypeValidation(this);validateRole();">Account Manager
-	                    </label>
-	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="HR Manager" onclick="roleTypeValidation(this);validateRole();">HR Manager
-	                    </label>
-	                    <label class="radio-inline">
-	                      <input type="radio" name="role" value="Sales Manager" onclick="roleTypeValidation(this);validateRole();">Sales Manager
-	                    </label>
-	                     <label class="radio-inline">
-	                      <input type="radio" name="role" value="Recruiter" onclick="roleTypeValidation(this);validateRole();">Recruiter
-	                    </label>
-                    
-                    <span class="hidden">Select Role</span> 
-                    <input type="hidden" name="roleType" id="roleValue" field-name="Role" data-validation="required" />
-                    
-                    
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3">Project</label>
-                  <div class="col-md-9">
-                    <div class="form-icon">
-                      <select class="form-control select-bg" id="proId" name="projectId" onchange="getManagerName();">
-                          <option value="">-Select Project-</option>
-                        <c:forEach var="option" items="${org_projectsList}">
-  						   <option value="${option.id}">${option.projectName}</option>
-				        </c:forEach>
-                      </select>
-                      <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();getApproversLevel1();" data-target="#addProject"></i> </div>
-                    <span class="hidden">Select Project</span>
-                    
-                    
-         
-        
-                    </div>
-                </div>
-                  
-                  <div class="form-group">
-                  <label class="col-md-3">Manager</label>
-                  <div class="col-md-9">
-                      <input type="text" id="managerName" class="form-control" disabled>
-              </div>
-            </div>
-                  <div class="form-group">
-                  <label class="col-md-3">Invoice Frequency</label>
-                  <div class="col-md-9">
-                      <select class="form-control" name="invoiceFrequency" field-name="Invoice Frequency">
-                        <option value="">-Select Frequency-</option>
-                        <option>Weekly</option>
-                        <option>Bi-Weekly</option>
-                        <option>Semi-Monthly</option>
-                        <option>Monthly</option>
-                      </select>
-                      <span class="hidden">Invoice Frequency</span>  
-              </div>
-            </div>
-                  <div class="form-group" id="DayHoursDiv">
-                  <label class="col-md-3">Day Hours</label>
-                  <div class="col-md-9 positionRelative">
-                      
-                          <input type="text" value="" name="dayHours" class="form-control" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">
-                          <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span>
-                      
-                       
-                  </div>
+		                 </div>
                </div>
             </div>
             </div>
@@ -351,106 +156,9 @@
       <!-- Content Area Ends--> 
 
       <!-- Footer Area -->
-      <footer class="footer-area clearfix">
-        <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-        <div class="powered-by"> Powered by: businessintelli.com </div>
-      </footer>
+      <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area --> 
       
-      
-<script type="text/javascript">
-function roleTypeValidation(id){
-	document.getElementById("roleValue").value = id.value;
-} 
-</script>      
-
-<script type="text/javascript">
-function getApproversLevel1(){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-    	type: "POST",
-        url: sourceleadUrl+"/getAllApprovers?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	var output = "";
-        	output = output + "<option value=''>-Select Manager-</option>"; 
-        	for (var i=0; i<json.length; i++)
-			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-			}
-        	$("#level1Manager").empty();
-	        $("#level1Manager").append(output);
-        },
-        error: function(e){
-            
-        }
-    });
-	
-} 
-</script> 
-
-<script type="text/javascript">
-function getApproversLevel2(){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-    	type: "POST",
-        url: sourceleadUrl+"/getAllApprovers?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	var output = "";
-        	output = output + "<option value=''>-Select Manager-</option>"; 
-        	for (var i=0; i<json.length; i++)
-			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-			}
-	        $("#level2Manager").empty();
-	        $("#level2Manager").append(output);
-        },
-        error: function(e){
-            
-        }
-    });
-	
-} 
-</script>
-
-<script type="text/javascript">
-function getLevel2Approvers(){
-	var currentApproverId = document.getElementById("level1Manager").value;
-	getChildLevel1Approvers(currentApproverId);
-} 
-</script> 
-
-<script type="text/javascript">
-function getChildLevel1Approvers(currentApproverId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-Select Manager-</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-					}
-		        	$("#level2Manager").empty();
-			        $("#level2Manager").append(output);
-		        },
-		        error: function(e){
-		            
-		        }
-		    });
-	 }else{
-		 getApproversLevel2();
-	 }
-} 
-</script> 
       
 <script type="text/javascript">
 (function ($) {
@@ -472,123 +180,6 @@ function getChildLevel1Approvers(currentApproverId){
    };
 })(jQuery);
 </script>
-
-<script type="text/javascript">
-function flushProject(){
-	$(".level-second").removeClass("level-second-active");
-	$("#save_project").removeAttr("disabled");
-	$('#ProjectSequeneNumber').val('');
-	 $('#ProjectName').val('');
-	 $('#level1Manager').val('');
-	 $('#StartDate').val('');
-	 $('#EndDate').val('');
-	 $('#level2Manager').val('');
-	 $(".error").removeClass("error");
-	 $('#newProject').find('p.jquery_form_error_message').remove();
-	 projectDates();
-	 $("#StartDate").datepicker("option", "maxDate", '');
-     $("#StartDate").datepicker("option", "minDate", '');
-     
-     $("#EndDate").datepicker("option", "maxDate", '');
-     $("#EndDate").datepicker("option", "minDate", '');
-	 
-	 
-}
-</script>
-
-<script type="text/javascript">
-function saveProject(){
-		
-		 if ($('#addProject_form').validate(false, validationSettings)){ 
-		        
-		        var frm = $('#addProject_form').serializeFormJSON();
-		        var con = JSON.stringify(frm);
-		        con = con.replace(/[{}]/g, "");
-		        
-		        //It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-		        
-		        var sourceleadUrl ='${sourceleadUrl}';
-		        
-		        $("#save_project").attr("disabled", "disabled");
-	     		$("#save_project" ).addClass('button').val('Processing..');
-	     		$("#modelLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		        
-		        $.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/storeProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-			        success: function(data) {
-			        	addProject();
-			        },
-			        error: function(e){
-			            
-			        }
-			    });
-		       return true;
-		  }else{
-			 $("#save_project").removeAttr('data-dismiss','modal');
-			return false;
-		  }
-	    }
-
-	    $('body').on('blur', '#addProject_form', function() {
-			$("#addProject_form").showHelpOnFocus();;
-			$("#addProject_form").validateOnBlur(false, validationSettings);  
-		});
-</script>
-<script type="text/javascript">
- function addProject() {
-	
-	 if ($('#addProject_form').validate(false, validationSettings)){ 
-	        
-	        var frm = $('#addProject_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        
-	        $("#save_project").attr("disabled", "disabled");
-     		$("#save_project" ).addClass('button').val('Processing..');
-     		$("#modelLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        
-	        $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/addProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select Project --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-					}
-		        	$("#proId").empty();
-			        $("#proId").append(output);
-			        $("#addProject").modal('hide');
-			        $("#modelLoading").removeAttr("style");
-		        },
-		        error: function(e){
-		            
-		        }
-		    });
-	       return true;
-	  }else{
-		 $("#save_project").removeAttr('data-dismiss','modal');
-		return false;
-	  }
-    }
-
-    $('body').on('blur', '#addProject_form', function() {
-		$("#addProject_form").showHelpOnFocus();;
-		$("#addProject_form").validateOnBlur(false, validationSettings);  
-	});
- 
-</script>
-
 
 <script type="text/javascript">
  function createUser() {
@@ -649,41 +240,6 @@ function saveProject(){
         
 </script> 
 
-<script type="text/javascript">
- function getManagerName() {
-	 var projectId = document.getElementById("proId").value; 
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#managerName").val('');
-	 if(projectId != null && projectId != ""){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getProjectManager?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	$("#managerName").val(json.fullName);
-			        
-		        },
-		    });
-	 }
- }
-</script> 
-
-<script type="text/javascript">
- function validateDayHours() {
-	 var DayHours = document.getElementById("DayHours").value; 
-	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-	if(DayHours > 24){
-		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
-		 document.getElementById("DayHours").setAttribute('record-exist','yes');
-		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
-	}else{
-		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
-	}
-	
- }
-</script>  
-
 
 <script type="text/javascript">
  function validateEmployeeId() {
@@ -722,7 +278,7 @@ function saveProject(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $("#create_user").attr("disabled", "disabled");
-         $("#create_user" ).addClass('button').val('Processing..');
+         //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
@@ -744,38 +300,6 @@ function saveProject(){
 	 }
  }
  </script>     
-
- <!-- start script for project sequence number  -->
- 
- <script type="text/javascript">
- function validateProjectSequeneNumber() {
-	 var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value; 
-	 if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-	 if(ProjectSequeneNumber != null && ProjectSequeneNumber != ""){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateProjectSequeneNumber?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ProjectSequeneNumber, 
-		        success: function(data) {
-		        	if(data == true){
-						  $("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ProjectSequeneNumber+" is Already Existed</span>");
-						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist','yes');
-						  document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+' is Already Existed');
-						  $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
-		        	}
-		        	else{
-		        		 $('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#ProjectIdDiv').find('p.jquery_form_error_message').remove(); 
-		        	} 
-		        },
-		    });
-	    }
-	 }
- }
- </script> 
- 
- <!-- end script for project sequence number  -->
  
 <!-- start script for datepicker -->
 <script>
@@ -788,52 +312,28 @@ function saveProject(){
 	  
   } );
 </script>
-
-
 <!-- end script for datepicker -->
 
-
-<script type="text/javascript"> 
-	function projectDates(){
-		  $('#StartDate').datepicker({
-		      dateFormat: 'yy-mm-dd',
-		      onSelect: function (selected) {
-		            var dt = new Date(selected);
-		            dt.setDate(dt.getDate() + 1);
-		            $("#EndDate").datepicker("option", "minDate", dt);
-		            addValidClass();
-		        }
-		  });
-		  
-		  $('#EndDate').datepicker({
-		      dateFormat: 'yy-mm-dd',
-		        onSelect: function (selected) {
-		            var dt = new Date(selected);
-		            dt.setDate(dt.getDate() - 1);
-		            $("#StartDate").datepicker("option", "maxDate", dt);
-		        }
-		  });
-}
+<script type="text/javascript">
+ function getReportingManager() {
+	 var role = document.getElementById("role").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Manager --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+				}
+	        	$("#reportingManager").empty();
+		        $("#reportingManager").append(output);
+		        //$('.selectpicker').selectpicker('refresh');
+	        },
+	    });
+ }
 </script>
-
-<script type="text/javascript"> 
-	function addValidClass(){
-		 var StartDate = document.getElementById("StartDate").value;
-		 if(StartDate){
-			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
-		 }
-}
-</script>
-<script>
-
-function validateRole()
-{
-	var rolename=document.getElementById("roleValue").value;
-	if(rolename != null){
-		$('#RoleDiv').find('p.jquery_form_error_message').remove();
-	}
-}
-
-</script>
-
-
