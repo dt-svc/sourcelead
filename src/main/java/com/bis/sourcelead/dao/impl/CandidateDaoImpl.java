@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -90,10 +91,14 @@ public class CandidateDaoImpl implements CandidateDao {
 	 * @throws NullPointerException
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgId, Long orgLocationId) throws Exception {
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgLocationId) throws Exception {
+		 // TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return candidateList;
 		
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	

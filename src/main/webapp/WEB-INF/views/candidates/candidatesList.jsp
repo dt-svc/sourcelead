@@ -5,6 +5,99 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
+
+
+<script>
+ window.onload = function() {
+ 	 candidateList();
+};
+</script>
+
+<!-- candidateList script -->
+<script>
+  function candidateList(){ 	 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+           type : "POST",
+            url: sourceleadUrl+"/getCandidatesListByOrgIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}",        
+            success :function(data) {
+                 if(data != null && data != 'undefined' && data != ""){
+               		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+			    	     $("#candidateList").removeAttr("style");
+	                	 $("#candidateList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th><input type='checkbox' id='checkbox1'/></th>"; 
+	                     result = result +"    <th>Name</th>"; 
+	                     result = result +"    <th>Designation</th>"; 
+	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Email</th>"; 
+	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"    <th>Address</th>"; 
+	                     result = result +"    <th>Last Update</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+		                     result = result +"<tr>";
+			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
+			                 result = result +"  <td><div class='proj_show'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
+			                 result = result +"  <td><div><span>Web designer Web designer</span></div></td>";
+			                 result = result +"  <td><div>Full Time</div></td>";
+			                 result = result +"  <td><div ><span>vannam@domain.com</span></div></td>";
+			                 result = result +"  <td><div>9000 000 000</div></td>";
+			                 result = result +"  <td><div><span title='Hyderabad, Hyderabad, Hyderabad'>Hyderabad, Hyderabad, Hyderabad</span></div></td>";
+			                 result = result +"  <td><div>11/08/2016</div></td>";
+			                 result = result +"</tr>"; 
+	                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>";
+	                     $("#candidateList").append(result); 
+	                     pagination(); 
+			    	} 
+                 }else{
+                	 $("#candidateList").removeAttr("style");
+  	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Candidates Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#candidateList").empty();
+				    $("#candidateList").append(result); 
+                 }
+          },
+            
+       }); 
+  } 
+</script>
+
+<script>
+function pagination(){  alert("pagination");
+    $('#candidatePagination').DataTable( { 
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    } );
+}
+</script>
 
 <!-- Content Area --> 
 <section class="content-wraper">
@@ -36,131 +129,15 @@
         </ul>
         <div class="clearfix"></div>
         
-            <div class="remove_search">
+           <!--  <div class="remove_search">
             	<input type="text" placeholder="search" />
-            </div>          
+            </div>     -->      
         
       </div>
       <div class="candidate_wrap_table">
-        <table>
-          <tbody>
-          <thead>
-            <tr>
-              <th><input type="checkbox" id="checkbox1"/></th>
-              <th>Name</th>
-              <th>Designation</th>
-              <th>Position type</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Address</th>
-              <th>Last Update</th>
-            </tr>
-          </thead>
-          <tr>
-            <td><input type="checkbox" id="checkbox12"/></td>
-            <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div ><span>vannam@domain.com</span></div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-            </tbody>
-          
-        </table>
+        <div id="candidateList"></div>
       </div>
-      <nav>
+      <!--   <nav>
         <ul id="paging" class="pagination">
           <li><a href="#">Previous</a></li>
           <li><a href="#">2</a></li>
@@ -171,7 +148,7 @@
           <li data-page="last"><a href="#">Next</a></li>
         </ul>
         <div class="clearfix"></div>
-      </nav>
+      </nav> -->
     </div>
     
     <!-- Compnay details -->
@@ -391,5 +368,10 @@ $(".addUser-org").click(function(){
   
 </body>
 </html>
+
+
+
+
+
 
 <jsp:include page="../masterFooter.jsp" />

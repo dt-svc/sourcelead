@@ -54,26 +54,32 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		 CandidateService candidateService;
 		 
 		
+		 /**
+		 * @author David and sarath kumar
+		 * @since  aug 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is used to display employee Timesheet.
+		 * this method is called at onload when click on timesheet left menu
+		 * 
+		 * @param user This is the first paramter to newTimesheet method
+		 * @param navigation This is the second paramter to newTimesheet method
+		 * @param startDate This is the third paramter to newTimesheet method
+		 *  
+		 * @return string 
+		 * 
+		 * @throws NullPointer
+		 */
 		 
-		  /**
-		     *  @author David Raju
-			 * to Candidates List by OrgCode OrgLocationCode
-			 * @author David Sammeta
-			 * @param request
-			 * @return String
-			 * @throws Exception
-	        */
-				@RequestMapping(value = "/getCandidatesListByOrgIdAndOrgLocationID")
-				public String getCandidatesListByOrgIdAndOrgLocationID(HttpServletRequest request) throws Exception {
+		 @RequestMapping(value = "/getCandidatesListByOrgIdAndOrgLocationID")
+		 public String getCandidatesListByOrgIdAndOrgLocationID(HttpServletRequest request) throws Exception {
 
-					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-					String resultJson;
-					Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-
-					 List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgIdAndOrgLocationID(loginOrgCode.getId(), loginOrgLocation.getId());
-					 resultJson = commonUtil.toJSON(candidatesList);
-					 return resultJson;
-				}
+			String resultJson;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgIdAndOrgLocationID(loginOrgLocation.getId());
+			resultJson = commonUtil.toJSON(candidatesList);
+			return resultJson;
+		 }
 		 
 		 
 				/**

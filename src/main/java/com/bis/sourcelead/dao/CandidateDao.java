@@ -11,6 +11,6 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long candidateId,Long orgId,Long orgLocationId) throws Exception;
 
-	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgId, Long orgLocationId) throws Exception;
+	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgLocationId) throws Exception;
 	
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -60,15 +59,9 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgId, Long orgLocationId) throws Exception {
-		
-		 return candidateDao.getCandidatesListByOrgIdAndOrgLocationID(orgId, orgLocationId);
+	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgLocationId) throws Exception {
+		 return candidateDao.getCandidatesListByOrgIdAndOrgLocationID(orgLocationId);
 	}
-	
-
-	
-
-	
 	
 	
 }
