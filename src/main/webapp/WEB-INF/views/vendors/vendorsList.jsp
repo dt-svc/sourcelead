@@ -352,21 +352,18 @@
 
 <script type="text/javascript">
 	function storeVendorDetails(orgRelationId,vendorLocationId) {
-		alert("fsadfsdfdsfs");
          if ($('#editClient_form').validate(false, validationSettings)){
-        	 alert("dsfdsfsdfsd");
     		 var frm = $('#editClient_form').serializeFormJSON();
              var con = JSON.stringify(frm);
              con = con.replace(/[{}]/g, "");
              //It will escape all the special characters
              var jsonData = encodeURIComponent(con);
              var sourceleadUrl ='${sourceleadUrl}';
-             alert("dsfsdfsdfdsffffffffffffff");
 	 	 $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
 	   		    success: function(data) {
-	   		    	vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');
+	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
 	   		    }
 		 }); 
 	     	return true;
