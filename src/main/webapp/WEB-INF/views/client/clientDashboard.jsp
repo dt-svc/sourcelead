@@ -550,7 +550,7 @@ function getEndDatePickerById(projectId,localFieldName){
 						
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite(\''+json.webSite+'\');"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
@@ -642,14 +642,14 @@ function getEndDatePickerById(projectId,localFieldName){
 </script>
 
 <script type="text/javascript">
-	function validateWebsite() {
+	function validateWebsite(dbWebsite) {
 		var website = document.getElementById("companyWebsite").value;
 		var sourceleadUrl = '${sourceleadUrl}';
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		
-		if (website != null && website != '') {
+		if (dbWebsite== null || (website != null && website != '' && dbWebsite != null && dbWebsite != '' && dbWebsite != website)) {
 			//$("#save_client").attr("disabled", "disabled");
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
