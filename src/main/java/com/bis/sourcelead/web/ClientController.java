@@ -73,15 +73,14 @@ public class ClientController {
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-			model.addObject("user_List", userList);
+			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			model.addObject("userList", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			model.addObject("loginCountryName", countries.getName());
 			return model;
 	    }
-	 
 	 /**
 	  * Handles to display clientdash board
 	  * @param request
