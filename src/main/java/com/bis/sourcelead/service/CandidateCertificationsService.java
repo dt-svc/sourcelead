@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.CandidateCertifications;
@@ -16,6 +18,8 @@ public interface CandidateCertificationsService {
 	 * @return CandidateCertifications
 	 * @throws Exception
 	 */
-	public CandidateCertifications storeCandidateCertifications(JSONObject jsonobject)
-			throws Exception;
+	public CandidateCertifications storeCandidateCertifications(JSONObject jsonobject)throws Exception;
+	
+	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
+			
 }

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.json.JSONObject;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 
 /**
@@ -33,4 +36,15 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 		logger.debug("In CandidateCertificationsDaoImpl class store method");
 		return storeCandidateCertifications(jsonObject);
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCertifications cc where cc.orgLocationId.id =:orgLocationId and cc.candidateId.id =:candidateId";  
+		List<CandidateCertifications> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		return candidateCertifications;	
+	}
 }
+

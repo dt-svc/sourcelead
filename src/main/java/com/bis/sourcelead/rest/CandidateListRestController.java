@@ -71,12 +71,12 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		 * @throws NullPointer
 		 */
 		 
-		 @RequestMapping(value = "/getCandidatesListByOrgIdAndOrgLocationID")
-		 public String getCandidatesListByOrgIdAndOrgLocationID(HttpServletRequest request) throws Exception {
+		 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
+		 public String getCandidatesListByOrgLocationID(HttpServletRequest request) throws Exception {
 
 			String resultJson;
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgIdAndOrgLocationID(loginOrgLocation.getId());
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId());
 			resultJson = commonUtil.toJSON(candidatesList);
 			return resultJson;
 		 }
