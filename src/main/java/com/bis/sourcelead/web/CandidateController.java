@@ -1,16 +1,26 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class CandidateController {
@@ -18,6 +28,11 @@ public class CandidateController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	 CandidateService candidateService;
+	
+	@Autowired
+	CountriesService countriesService;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -27,18 +42,27 @@ public class CandidateController {
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the candiade page");
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
 			model.setViewName("candidates/candidate");
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+            model.addObject("loginCountryName", countries.getName());
 			return model;
 	    }
 	
 	@RequestMapping(value = "/candidatesList")
-	public ModelAndView usersList(HttpServletRequest request) {
+	public ModelAndView usersList(HttpServletRequest request) throws Exception {
 		logger.debug("--------candidatesList------");
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
+		
+		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId());
+		model.addObject("candidatesList", candidatesList);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)

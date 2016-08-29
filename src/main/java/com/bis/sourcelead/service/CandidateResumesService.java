@@ -1,6 +1,11 @@
 package com.bis.sourcelead.service;
 
+import java.io.IOException;
+import java.util.HashSet;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -21,4 +26,6 @@ public interface CandidateResumesService {
 	* @throws NullPointerException
 	*/
 	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation) throws Exception;
+	
+	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode,MultipartFile multiFile)throws JSONException, IOException;
 }

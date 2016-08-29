@@ -1,8 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +85,15 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		return candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 	}
 
-	
+	@Override
+	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,Long orgLocationId,String userCode) throws JSONException {
+		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
+		    if(jsonObj.has("candidateEducation")){
+		    	CandidateEducation ce = new  CandidateEducation();
+		    	ce.setName(jsonObj.getString("candidateEducation"));
+		    	candidateEducationList.add(ce);
+		    }
+			return  candidateEducationList;
+	  }
 
 }

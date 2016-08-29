@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -16,7 +17,11 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -35,14 +40,48 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	CandidateEducationService candidateEducationService;
+	
+	@Autowired
+	CandidateEmployersService candidateEmployersService;
+	
+	@Autowired
+	CandidateSkillsService candidateSkillsService;
+	
+	@Autowired
+	CandidateResumesService candidateResumesService;
 	/**
-	 * This method for to store Candidate Into db
+	 * @author prasad k
+	 * @since  aug 26 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to store/save candidate in candidate table.
+	 * 1.internalley store/save in candidateEducation in candidateEducation table .
+	 * 2.internalley store/save in candidateSkills in candidateSkills table .
+	 * 3.internalley store/save in candidateResumes in candidateResumes table .
+	 * 4.internalley store/save in candidateEmployers in candidateEmployers table .
+	 *  
+	 *  
+	 * 
+	 * @param jsonObj This is the first paramter to storeCandidate method
+	 * @param orgLocations This is the second paramter to storeCandidate method
+	 * @param user This is the third paramter to storeCandidate method
+	 * @param multiFile This is the fourth paramter to storeCandidate method
+	 * 
+	 * @return Candidate 
+	 * 
+	 * @throws NullPointer
 	 */
 	
 	@Override
-	public Candidate storeCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user) throws Exception {
+	public Candidate storeCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
 		
 		Candidate candidate = new Candidate();
+		
+		if(orgLocations != null){
+		candidate.setOrgLocationId(orgLocations);
+		}
 		if(jsonObj.has("firstName")){
 		candidate.setFirstName(jsonObj.getString("firstName"));
 		}
@@ -95,24 +134,25 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		
-		HashSet<CandidateEducation>	 candidateEducationList = getCandidateEducationDetails(jsonObj, orgLocations.getId(),user.getUserCode());
+		
+		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations.getId(),user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
-		HashSet<CandidateEmployers> candidateEmployersList = getCandidateEmployersDetails(jsonObj, orgLocations.getId(),user.getUserCode());
+		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj, orgLocations.getId(),user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
-		HashSet<CandidateSkills> candidateSkillsList = getCandidateSkillsDetails(jsonObj, orgLocations.getId(),user.getUserCode());
+		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations.getId(),user.getUserCode());
 		candidate.setCandidateSkills(candidateSkillsList);
 		
-		HashSet<CandidateResumes> candidateResumesList = getCandidateResumesDetails(jsonObj, orgLocations.getId(),user.getUserCode());
+		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(jsonObj, orgLocations.getId(),user.getUserCode(),multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
 		
 		candidate.setCreatedDate(commonUtil.currentDate());
-		candidate.setCreatedBy("prasad");
-		candidate.setUpdatedBy("prasad");
+		candidate.setCreatedBy(user.getUserCode());
+		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
-		
-		return candidate;
+		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+		return savedCandidate;
 	}
 
 	@Override

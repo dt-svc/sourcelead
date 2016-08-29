@@ -1,8 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,6 +100,15 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	}
 
 	
-	
+	@Override
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException{
+		  HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
+		  if(jsonObj.has("candidateEmployers")){
+			  CandidateEmployers cemp = new  CandidateEmployers();
+			  cemp.setName(jsonObj.getString("candidateEmployers"));
+			  candidateEmployersList.add(cemp);
+		    }
+		return candidateEmployersList;
+	 }
 
 }

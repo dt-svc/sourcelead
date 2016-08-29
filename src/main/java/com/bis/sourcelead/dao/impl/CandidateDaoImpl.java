@@ -59,7 +59,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (candidate != null) {
-				session.save(candidate);
+				session.saveOrUpdate(candidate);
 			}
 			logger.debug("Candidate Stored Successfully");
 		} catch (Exception exception) {

@@ -1,8 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.IOException;
+import java.util.HashSet;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -46,6 +51,19 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		candidateResume.setUpdatedDate(commonUtil.currentDate());
 		
 		return candidateResume;
+	}
+	
+	@Override
+	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode,MultipartFile multiFile)throws JSONException, IOException{
+			 HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
+			 CandidateResumes candidateResumes = new CandidateResumes();
+			 if(multiFile != null){
+				 candidateResumes.setDocFile(multiFile.getBytes());
+				 candidateResumes.setFileName(multiFile.getOriginalFilename());
+				 candidateResumes.setFileContentType(multiFile.getContentType());
+				 candidateResumesList.add(candidateResumes);
+			 }
+	     return candidateResumesList;
 	}
 
 }

@@ -7,6 +7,19 @@
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+
+<!-- these files for autocomplete with tagit -->
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- end files for autocomplete with tagit -->
+<script type="text/javascript">
+window.onload = function () {
+	cscInit();
+ };
+</script>
  
  <script>
 	$(document).ready(function() {
@@ -29,7 +42,7 @@
     <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
   </section>
   <div class="content-area content-new clearfix">
-  <form:form id="candidate_form" name="candidate_form" method="get">
+  <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -38,9 +51,13 @@
         <div class="well">
           <div class="input-group col-md-6" style="margin:0 auto">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-              <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-              </span> </label>
-            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+              <input type="file" name="uploadBtn" id="uploadBtn"  class="upload">
+              
+              </span> 
+               </label>
+               <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ...">
+             
+           
           </div>
           </div>
         </div>
@@ -83,31 +100,38 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="phone" name="phone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="phone" name="phone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20" data-validation-optional="true" value="">
           </div>
         </div>
-         <div class="form-group">
+        
+        
+          <div class="form-group">
           <label class="col-md-3">Country</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="country" name="country" value="${country}"  field-name="Country"  value="">
+            <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
+						name="country" field-name="Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true"/> 
+						<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="state" name="state" value="${state}"  field-name="State"  value="">
+            <input type="hidden" id="stateAutoComplete" name="state"
+					field-name="State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
+			<ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="city" name="city" value="${city}"  field-name="City"  value="">
+           <input type="hidden" id="cityAutoComplete" name="city" field-name="State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
+			    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
           </div>
-        </div> 
+        </div>  
         <div class="form-group">
           <label class="col-md-3">Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address"  value="">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         <div class="form-group">
@@ -115,14 +139,14 @@
          <div class="col-md-9">
            <div class="row div-padding">
            <div class="col-xs-8 col-md-8">
-             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  value="" class="form-control">
+             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
            </div>
              <div class="col-xs-4 col-md-4">
-             <select class="form-control">
+             <select class="form-control" id="designationType" name="designationType">
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
-                 <option><a href="#">Part</a></option>
-                 <option><a href="#">Time</a></option>
+                 <option><a href="#">Part Time</a></option>
+                 <option><a href="#">Full Time</a></option>
                  <option><a href="#">Other</a></option>
              </select>
              </div>
@@ -153,6 +177,11 @@
              		<option>13</option>
              		<option>14</option>
              		<option>15</option>
+             		<option>16</option>
+             		<option>17</option>
+             		<option>18</option>
+             		<option>19</option>
+             		<option>20+</option>
              		</select>
              </div>
              <div class="col-xs-6 col-md-6">
@@ -185,7 +214,7 @@
              <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  value="" class="form-control">
            </div>
              <div class="col-xs-4 col-md-4">
-             <select class="form-control">
+             <select class="form-control" id="currentRateCurrency" name="currentRateCurrency">
                  <option><a href="#">&#x20B9;</a></option>
                  <option><a href="#">&#x20A0;</a></option>
                  <option><a href="#">$</a></option>
@@ -206,7 +235,7 @@
             <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate"  value="" class="form-control">
            </div>
              <div class="col-xs-4 col-md-4">
-             <select class="form-control">
+             <select class="form-control" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  <option><a href="#">&#x20B9;</a></option>
                  <option><a href="#">&#x20A0;</a></option>
                  <option><a href="#">$</a></option>
@@ -237,17 +266,17 @@
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" ></textarea>
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="col-md-3"></label>
           <div class="col-md-9 checkbox checkBox">
             <label>
               <input type="checkbox" value="">
               Send Invitation </label>
           </div>
-        </div>
+        </div> -->
       </div> 
     </div>
     
@@ -256,7 +285,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -267,27 +296,10 @@
     <!-- Content Area Ends--> 
 </section>
 <!-- Footer Area -->
-<footer class="footer-area clearfix">
-  <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-  <div class="powered-by"> Powered by: businessintelli.com </div>
-</footer>
-<!-- Footer Area --> 
+<jsp:include page="../masterFooter.jsp" />
+<!-- Footer Area -->
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
+
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -326,29 +338,44 @@ $(document).ready(function(){
     <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
   </ul>
 </div>
-
+ -->
 
 <script type="text/javascript">
 	function storeCandidate() {
+		
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			
+			var form = $('#candidate_form')[0];
+      		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
-			alert("sourceleadUrl"+sourceleadUrl);
-			alert("aaa"+con);
 			$.ajax({
 						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
 						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+con,
 						success : function(result) {
-							if (result == 'candidatesList') {
-								location.replace(sourceleadUrl
-										+ "/candidatesList");
-							}
+								location.replace(sourceleadUrl+"/candidatesList");
 						},
 					});
 			return true;
-		} 
+		 }else{ 
+				return false;
+		 } 
+	} 
 </script>
 
 <script type="text/javascript">
@@ -371,3 +398,75 @@ $(document).ready(function(){
 		};
 	})(jQuery);
 </script>
+
+<!-- Country,State,City Script Starts Here -->
+
+<script>
+function getAllCountries(sourceleadUrl){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').tagit({
+        		allowSpaces: false,
+        		availableTags: json
+        		
+	       	 	});
+        },
+        error: function(e){
+        }
+    });
+}
+</script> 
+
+<script>
+function getStates(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+</script> 
+
+
+<script>
+function getCities(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	var stateName = document.getElementById("stateAutoComplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+</script>
+
+<!-- Country,State,City Script Ends Here -->
