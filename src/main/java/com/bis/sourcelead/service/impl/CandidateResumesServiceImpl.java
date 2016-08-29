@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,6 +28,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private CandidateResumesDao candidateResumesDao;
 
 	/**
 	* @author Venkat Kesav 
@@ -35,20 +40,33 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	* @throws NullPointerException
 	*/
 	@Override
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations) throws Exception {
+	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations, MultipartFile multiFile) throws Exception {
 		CandidateResumes candidateResume = new CandidateResumes();
-		candidateResume.setTitle(jsonObj.getString("firstName"));
-		candidateResume.setDescription(jsonObj.getString("firstName"));
-		candidateResume.setCandidateId(candidate);
-		candidateResume.setOrgLocationId(orgLocations);
-		
-		candidateResume.setFileContentType(jsonObj.getString("firstName"));
-		candidateResume.setFileName(jsonObj.getString("firstName"));
+		if(jsonObj.has("title")){
+			candidateResume.setTitle(jsonObj.getString("title"));
+		}
+		if(jsonObj.has("description")){
+			candidateResume.setDescription(jsonObj.getString("description"));
+		}
+		if(candidate != null){
+			candidateResume.setCandidateId(candidate);
+		}
+		if(orgLocations != null){
+			candidateResume.setOrgLocationId(orgLocations);
+		}
 		
 		candidateResume.setCreatedDate(commonUtil.currentDate());
 		candidateResume.setUpdatedBy(user.getUserCode());
 		candidateResume.setCreatedBy(user.getUserCode());
 		candidateResume.setUpdatedDate(commonUtil.currentDate());
+		
+		if(multiFile != null){
+			 candidateResume.setDocFile(multiFile.getBytes());
+			 candidateResume.setFileName(multiFile.getOriginalFilename());
+			 candidateResume.setFileContentType(multiFile.getContentType());
+		 }
+		
+		candidateResumesDao.storeCandidateResumes(candidateResume);
 		
 		return candidateResume;
 	}
@@ -64,6 +82,18 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				 candidateResumesList.add(candidateResumes);
 			 }
 	     return candidateResumesList;
+	}
+	
+	/**
+	 * to Candidates resumes list by candidate Id
+	 * @author Venkat Kesav
+	 * @param candidateId
+	 * @return List<CandidateResumes>
+	 * @throws Exception
+    */
+	@Override
+	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception {
+		 return candidateResumesDao.getCandidateResumesListByCandidateId(candidateId);
 	}
 
 }

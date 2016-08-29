@@ -21,9 +21,9 @@ function candidateResume(){
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" style="display: none;"  multiple="" id="uploadBtn" class="upload">';
+	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'	                            </span> </label>';
-	result = result+'	                          <input type="text" class="form-control" readonly=""  name="uploadFile" id="uploadFile" placeholder="Files are not selected...">';
+	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Files are not selected...">';
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';                         
@@ -34,42 +34,21 @@ function candidateResume(){
 	result = result+'	                </div>';
 	result = result+'	              </div>';
 	result = result+'	    </div>';
-	result = result+'	    <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result = result+'	      <table>';
-	result = result+'	        <tbody>';
-	result = result+'	          <tr>';
-	result = result+'	            <th>Title</th>';
-	result = result+'	            <th>Attachment</th>';
-	result = result+'	            <th>Description</th>';
-	result = result+'	            <th>Created By</th>';
-	result = result+'	            <th>Action</th>';
-	result = result+'	          </tr>';
-	result = result+'	          <tr>';
-	result = result+'	            <td><div><span>javaresume</span></div></td>';
-	result = result+'	            <td><div><span>javaresume.doc</span></div></td>';
-	result = result+'	            <td><div><span>javaresume description here</span></div></td>';
-	result = result+'	            <td><div><span>Sujith S</span></div></td>';
-	result = result+'	            <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
-	result = result+'	          </tr>';
-	result = result+'	          <tr>';
-	result = result+'	            <td><div><span>javaresume</span></div></td>';
-	result = result+'	            <td><div><span>javaresume.doc</span></div></td>';
-	result = result+'	            <td><div><span>javaresume description here</span></div></td>';
-	result = result+'	            <td><div><span>Sujith S</span></div></td>';
-	result = result+'	            <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
-	result = result+'	          </tr>';
-	result = result+'	        </tbody>';
-	result = result+'	      </table>';
-	result = result+'	    </div>';
+	
+	
+	result = result+'   <div id="resumesList"></div>'; 
+	
+	
+	
 	result = result+'	    <nav>';
-	result = result+'	      <ul id="pagingg" class="pagination">';
+	/* result = result+'	      <ul id="pagingg" class="pagination">';
 	result = result+'	        <li><a href="#">Previous</a></li>';
 	result = result+'	        <li><a href="#">2</a></li>';
 	result = result+'	        <li><a href="#">3</a></li>';
 	result = result+'	        <li class="disabled"><a href="#">6</a></li>';
 	result = result+'	        <li data-page="last"><a href="#">Next</a></li>';
 	result = result+'	      </ul>';
-	result = result+'	      <div class="clearfix"></div>';
+	result = result+'	      <div class="clearfix"></div>'; */
 	result = result+'	    </nav>';
 	
     $("#tab-1").empty();
@@ -109,21 +88,128 @@ function addResume() {
 	}
 </script>	 
         
-<!-- 
 <script type="text/javascript">
 	function storeCandidateResume(){
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
-		alert("ki");
-		if ($('#candidateResume_form').validate(false, validationSettings)) {
-
-			 alert("t");
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#candidateResume_form').validate(false, validationSettings)){
+				var frm = $('#candidateResume_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#candidateResume_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						success : function(result) {
+							if (result == 'candidatesList') {
+								location.replace(sourceleadUrl
+										+ "/candidatesList");
+							}
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 } 
 		}
-	}
-	
-</script> -->
+</script>
+
+<script>
+  function candidateResumesList(candidateId){ 	 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var candidateId = candidateId;
+	  var result = "";
+	  $.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			success : function(data) {
+				if(data == null && data == 'undefined' && data == ""){
+						result = result+"   <div class='row'>"; 
+					 	result = result+"	<div class='col-lg-12'>"; 
+					 	result = result+"		<div class='content-area clearfix'>"; 
+					 	result = result+"			<div class='blank-pages'>";
+					 	result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 	result = result+"			        <p>No Resumes Found</p>";
+					 	result = result+"			 </div>";
+					 	result = result+"		</div>"; 
+					 	result = result+"	</div>"; 
+					 	result = result+"  </div> "; 
+					}else{
+						result = result+'	    <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+						result = result+'	      <table>';
+						result = result+'	        <tbody>';
+						result = result+'	          <tr>';
+						result = result+'	            <th>Title</th>';
+						result = result+'	            <th>Attachment</th>';
+						result = result+'	            <th>Description</th>';
+						result = result+'	            <th>Created By</th>';
+						result = result+'	            <th>Action</th>';
+						result = result+'	          </tr>';
+						
+						 var json = JSON.parse(data);
+			             for (var i = 0; i < json.length; i++) {
+				            	var opt = json[i];
+				            	var title = "";
+				            	var description = "";
+				            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+				            		title = opt.title;
+				            	}else{
+				            		title = opt.fileName;
+				            	}
+				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+				            		description = opt.description;
+				            	}else{
+				            		description = 'NO DATA';
+				            	}
+				            	
+				            	result = result+'	          <tr>';
+				           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
+				           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
+				           		result = result+'	            <td><div><span>'+description+'</span></div></td>';
+				           		result = result+'	            <td><div><span>'+opt.createdBy+'</span></div></td>';
+				           		result = result+'	            <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
+				           		result = result+'	          </tr>';
+			             }
+			            result = result+'	          </tbody>';
+			       		result = result+'	      </table>';
+			       		result = result+'	    </div>';
+					}
+				$("#resumesList").append(result); 
+				},
+		});
+  }
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
 

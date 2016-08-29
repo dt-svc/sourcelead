@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +26,9 @@ public interface CandidateResumesService {
 	* @return CandidateResumes
 	* @throws NullPointerException
 	*/
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation) throws Exception;
+	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws Exception;
 	
 	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode,MultipartFile multiFile)throws JSONException, IOException;
+	
+	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception;
 }

@@ -170,7 +170,7 @@ function clientSideBar(candidateId){
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">';
 			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-2" onclick="candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
 			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Experience</a></li>';
 			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certificate</a></li>';
