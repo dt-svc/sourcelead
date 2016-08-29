@@ -169,12 +169,12 @@ function clientSideBar(candidateId){
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">';
-			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile();">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-2" onclick="candidateResume();" >Resume</a></li>';
-			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience();">Experience</a></li>';
+			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			             result = result+'       <li><a href="#tab-2" onclick="candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Experience</a></li>';
 			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate();">Certificate</a></li>';
-			             result = result+'       <li><a href="#tab-6" onclick="candidateActivities();">Activities</a></li>';
+			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certificate</a></li>';
+			             result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
 			             result = result+'     <div class="project_tabs">';
