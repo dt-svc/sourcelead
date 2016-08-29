@@ -61,20 +61,16 @@ window.onload = function () {
 			<div class="form-group " id="companyWebsiteDiv">
 				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="webSite"
-						name="webSite" onblur="validateWebsite();" field-name="Website"
-						data-validation="validate_Space validate_length length2-50 validate_domain"
-						data-validation-optional="true" value="${webSite}"> <span
-						class="hidden">Website</span>
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
 			</div>
 						
 			<div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-					<input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
+					 <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
 						name="country" field-name="Client Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true"/> 
-						<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
+						<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul> 
 				</div>
 			</div>
 			
@@ -117,14 +113,14 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20" type="text">
+                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100" type="text">
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-3">Last Name</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" id="lastName" name="lastName" value="">
+                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             
@@ -139,7 +135,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">Phone Number</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" value="">
+                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_NumberAlphabet validate_phone validate_length length2-20" data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
@@ -158,7 +154,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="owner" id="owner">
+                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                 </c:forEach>
@@ -311,7 +307,8 @@ function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if(clientName.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
 		//$("#save_client").attr("disabled", "disabled");
 		// $( "#save_client" ).addClass('button').val('Processing..');
@@ -322,16 +319,11 @@ function validateClientName(){
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("input#orgName").after(
-							"<p class='jquery_form_error_message'>"
-									+ clientName
-									+ " is Already Existed</span>");
-					document.getElementById("orgName").setAttribute(
-							'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute(
-							'record-exist-errorMsg',
-							clientName +"  already existed");
-				} else {
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					
+				}else {
 					//New WebSite class="form-control"
 					//$("#save_client").removeAttr("disabled");
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
@@ -346,6 +338,7 @@ function validateClientName(){
 
 		});
 	}
+  }
 }
 </script>
 
@@ -383,44 +376,48 @@ function validateClientName(){
  
  
  <script type="text/javascript">
-function validateWebsite(){
-      var website = document.getElementById("webSite").value; 
-     var sourceleadUrl ='${sourceleadUrl}';
-     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
-	 $('input#webSite').removeAttr( "record-exist record-exist-errormsg");
-	 if(website != null && website != ''){
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		
-		 $("#register_button").attr("disabled", "disabled");
-		 $( "#register_button" ).addClass('button').val('Processing..');
-			 $.ajax({
-				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
-			        success: function(data) {
-			        	 var result = data;
-			        		if (result == "Website Duplicated" || result == "Invalid Website") {
-		        			//existed website
-		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
-		    	    		$("input#webSite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
-		    				$('input#webSite').attr('record-exist','yes');
-		    				$('input#webSite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$('input#webSite').addClass('form-control');
-			        	}
-			        	else{
-			        		//New WebSite
-			        		$("#save_client").removeAttr("disabled");
-				    		$('input#webSite').removeAttr( "class record-exist record-exist-errormsg");
-				    		$('input#webSite').addClass('form-control');
-				    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-							$( "#save_client" ).click(function() {
-							 if ($(this).validate(false, validationSettings)){
-							 }
-							});
-			        	}  
-			       },
-			        
-		   }); 
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == "Website Duplicated" || result == "Invalid Website") {
+						//existed website
+						$("#save_client").attr("disabled", "disabled");
+						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						document.getElementById("webSite").setAttribute('record-exist', 'yes');
+						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#webSite').removeAttr( "record-exist record-exist-errormsg");
+						
+					} else {
+						//New WebSite class="form-control"
+					    $("#save_client").removeAttr("disabled");
+						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+				
+						$("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	  }
 	}
-}
 </script>
 
 <script type="text/javascript">
@@ -438,7 +435,7 @@ function validateWebsite(){
             };
 </script> 
 
-<script>
+<script type="text/javascript">
 function getAllCountries(sourceleadUrl){
 	$.ajax({
     	type: "POST",
@@ -455,8 +452,9 @@ function getAllCountries(sourceleadUrl){
         error: function(e){
         }
     });
-}
-</script> 
+} 
+</script>
+
 
 <script>
 function getStates(sourceleadUrl){
@@ -506,7 +504,8 @@ function getCities(sourceleadUrl){
 }
 </script>
 <script type="text/javascript">
-			var config = {
+$(function(){
+	       var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -520,4 +519,5 @@ function getCities(sourceleadUrl){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-</script> 
+});
+</script>

@@ -195,7 +195,7 @@ window.onload = function () {
       <div class="form-footer clearfix">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
+            <input type="button" value="Save" id="save_client" onclick="saveVendor(); flushSaveClient()" class="btn btn-primary"> 
 			<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
           </div>
         </div>
@@ -233,7 +233,7 @@ window.onload = function () {
 
 
 <script type="text/javascript">
-	function saveClient() {
+	function saveVendor() {
 		/* var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
