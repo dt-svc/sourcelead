@@ -22,7 +22,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
- * Handles requests for the Candidate service.
+ * Handles requests for the CandidateCandidateEmployers Service.
  * 
  * @author Ajith Matta
  * @date 30th June 2016
@@ -32,7 +32,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class CandidateEmployersRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -46,7 +46,7 @@ public class CandidateEmployersRestController {
 
 	
 
-	/*------------Create a Candidate Employers--------------------------------*/
+	/*------------Create a Candidate Employers details--------------------------------*/
 	
 
 	 /**
