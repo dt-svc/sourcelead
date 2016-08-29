@@ -163,54 +163,6 @@ public class CandidateServiceImpl implements CandidateService {
 		return candidateDao.storeCandidate(candidate);
 	}
 
-	
-	 HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,Long orgLocationId,String userCode) throws JSONException {
-		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
-		    if(jsonObj.has("candidateEducation")){
-		    	CandidateEducation ce = new  CandidateEducation();
-		    	ce.setName(jsonObj.getString("candidateEducation"));
-		    	candidateEducationList.add(ce);
-		    }
-			return  candidateEducationList;
-	  }
-	
-	
-	 HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException{
-		  HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
-		  if(jsonObj.has("candidateEmployers")){
-			  CandidateEmployers cemp = new  CandidateEmployers();
-			  cemp.setName(jsonObj.getString("candidateEmployers"));
-			  candidateEmployersList.add(cemp);
-		    }
-		return candidateEmployersList;
-	 }
-	 
-	 HashSet<CandidateSkills> getCandidateSkillsDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException{
-		
-		 HashSet<CandidateSkills> candidateSkillsList = new HashSet<CandidateSkills>();
-		 
-		 if(jsonObj.has("candidateSkills")){
-			 CandidateSkills candSkills = new  CandidateSkills();
-			 candSkills.setName(jsonObj.getString("candidateSkills"));
-			  candidateSkillsList.add(candSkills);
-		    }
-		return candidateSkillsList;
-	
-       }
-	 
-	 HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException{
-			
-		 HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
-		 
-		 if(jsonObj.has("candidateResumes")){
-			 CandidateResumes candResumes = new  CandidateResumes();
-			 candResumes.setFileName(jsonObj.getString("candidateResumes"));
-			 candidateResumesList.add(candResumes);
-		    }
-		return candidateResumesList;
-	
-     }
-
 	/**
 	 * @author David Raju Sammeta
 	 * 
