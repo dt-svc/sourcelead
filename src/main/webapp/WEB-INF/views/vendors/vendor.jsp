@@ -25,7 +25,7 @@ window.onload = function () {
 </script>
  <script>
 	$(document).ready(function() {
-		document.getElementById("client_form").reset();
+		document.getElementById("vendor_form").reset();
 	});
 </script>
  
@@ -46,7 +46,7 @@ window.onload = function () {
 	</section>
 	
 	<div class="content-area content-new clearfix">
-	<form:form id="client_form" name="client_form" method="post">
+	<form:form id="vendor_form" name="vendor_form" method="post">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -117,14 +117,14 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-20" type="text">
+                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100" type="text">
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-3">Last Name</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" id="lastName" name="lastName" value="">
+                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             
@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">Phone Number</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" value="">
+                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_NumberAlphabet validate_phone validate_length length2-20" data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
@@ -158,7 +158,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <select class="chosen-select form-control" name="owner" id="owner" multiple="true">
+                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                 </c:forEach>
@@ -195,7 +195,7 @@ window.onload = function () {
       <div class="form-footer clearfix">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" id="save_client" onclick="saveVendor(); flushSaveClient()" class="btn btn-primary"> 
+            <input type="button" value="Save" id="save_vendor" onclick="saveVendor(); flushSaveClient()" class="btn btn-primary"> 
 			<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
           </div>
         </div>
@@ -234,72 +234,47 @@ window.onload = function () {
 
 <script type="text/javascript">
 	function saveVendor() {
-		/* var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-		if ($('#client_form').validate(false, validationSettings)) { */
-			var frm = $('#client_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_client").attr("disabled", "disabled");
-			$("#save_client").addClass('button').val('Processing..');
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Vendor",
-						success : function(result) {
-								location.replace(sourceleadUrl+ "/vendorsList");
-						},
-					});
-			/* return true;
-		} else {
-			return false;
-		} */
-	}
-	$('body').on('blur', '#client_form', function() {
-		$("#client_form").showHelpOnFocus();
-		$("#client_form").validateOnBlur(false, validationSettings);
-	});
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+			if ($('#vendor_form').validate(false, validationSettings)) {
+				var frm = $('#vendor_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				alert("con"+con);
+				
+				con = con.replace(/[{}]/g, "");
+				  //It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#save_vendor").attr("disabled", "disabled");
+				$("#save_vendor").addClass('button').val('Processing..');
+				$
+						.ajax({
+							type : "POST",
+							url : sourceleadUrl
+									+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Vendor",
+							success : function(result) {
+								if (result == 'clientDashboard') {
+									location.replace(sourceleadUrl
+											+ "/clientDashboard");
+								}
+
+							},
+						});
+				return true;
+			} else {
+				return false;
+			}
+		}
+		$('body').on('blur', '#vendor_form', function() {
+			$("#vendor_form").showHelpOnFocus();
+			$("#vendor_form").validateOnBlur(false, validationSettings);
+		});
+		
 </script>
-
-
-<!-- <script type="text/javascript">
-	function saveClient() {
-			var frm = $('#client_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var owner = document.getElementById("owner").value; 
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_client").attr("disabled", "disabled");
-			$("#save_client").addClass('button').val('Processing..');
-			$
-				.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
-						success : function(result) {
-							if (result == 'clientDashboard') {
-								location.replace(sourceleadUrl+ "/clientDashboard");
-							}
-
-						},
-					}); 
-		
-	}
-		
-	$('body').on('blur', '#client_form', function() {
-		$("#client_form").showHelpOnFocus();
-		$("#client_form").validateOnBlur(false, validationSettings);
-	});	
-		
-</script> -->
-
 
 
 <script type="text/javascript">
@@ -307,7 +282,8 @@ function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if(clientName.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
 		//$("#save_client").attr("disabled", "disabled");
 		// $( "#save_client" ).addClass('button').val('Processing..');
@@ -318,22 +294,17 @@ function validateClientName(){
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("input#orgName").after(
-							"<p class='jquery_form_error_message'>"
-									+ clientName
-									+ " is Already Existed</span>");
-					document.getElementById("orgName").setAttribute(
-							'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute(
-							'record-exist-errorMsg',
-							clientName +"  already existed");
-				} else {
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					
+				}else {
 					//New WebSite class="form-control"
 					//$("#save_client").removeAttr("disabled");
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
+					$("#save_vendor").click(function() {
 						if ($(this).validate(false, validationSettings)) {
 						}
 					});
@@ -342,6 +313,7 @@ function validateClientName(){
 
 		});
 	}
+  }
 }
 </script>
 
@@ -367,8 +339,8 @@ function validateClientName(){
 		        	else{
 		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_client" ).addClass('button').val('Save');
-                         $("#save_client").removeAttr("disabled");
+		        		 $("#save_vendor" ).addClass('button').val('Save');
+                         $("#save_vendor").removeAttr("disabled");
 		        	}
 		        },
 		    });
@@ -379,49 +351,53 @@ function validateClientName(){
  
  
  <script type="text/javascript">
-function validateWebsite(){
-      var website = document.getElementById("webSite").value; 
-     var sourceleadUrl ='${sourceleadUrl}';
-     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
-	 $('input#webSite').removeAttr( "record-exist record-exist-errormsg");
-	 if(website != null && website != ''){
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		
-		 $("#register_button").attr("disabled", "disabled");
-		 $( "#register_button" ).addClass('button').val('Processing..');
-			 $.ajax({
-				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
-			        success: function(data) {
-			        	 var result = data;
-			        		if (result == "Website Duplicated" || result == "Invalid Website") {
-		        			//existed website
-		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
-		    	    		$("input#webSite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
-		    				$('input#webSite').attr('record-exist','yes');
-		    				$('input#webSite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$('input#webSite').addClass('form-control');
-			        	}
-			        	else{
-			        		//New WebSite
-			        		$("#save_client").removeAttr("disabled");
-				    		$('input#webSite').removeAttr( "class record-exist record-exist-errormsg");
-				    		$('input#webSite').addClass('form-control');
-				    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-							$( "#save_client" ).click(function() {
-							 if ($(this).validate(false, validationSettings)){
-							 }
-							});
-			        	}  
-			       },
-			        
-		   }); 
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == "Website Duplicated" || result == "Invalid Website") {
+						//existed website
+						$("#save_vendor").attr("disabled", "disabled");
+						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						document.getElementById("webSite").setAttribute('record-exist', 'yes');
+						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#webSite').removeAttr( "record-exist record-exist-errormsg");
+						
+					} else {
+						//New WebSite class="form-control"
+					    $("#save_vendor").removeAttr("disabled");
+						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+				
+						$("#save_vendor").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						});
+					}
+				},
+
+			});
+		}
+	  }
 	}
-}
 </script>
 
 <script type="text/javascript">
 	function flushSaveClient() {
-		$("#save_client").removeAttr("disabled");
+		$("#save_vendor").removeAttr("disabled");
 	}
 </script>
 

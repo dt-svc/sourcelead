@@ -228,38 +228,6 @@ window.onload = function () {
 	})(jQuery);
 </script>
 
-<!-- <script type="text/javascript">
-	function saveClient() {
-			var frm = $('#client_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var owner = document.getElementById("owner").value; 
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_client").attr("disabled", "disabled");
-			$("#save_client").addClass('button').val('Processing..');
-			$
-				.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
-						success : function(result) {
-							if (result == 'clientDashboard') {
-								location.replace(sourceleadUrl+ "/clientDashboard");
-							}
-
-						},
-					}); 
-		
-	}
-		
-	$('body').on('blur', '#client_form', function() {
-		$("#client_form").showHelpOnFocus();
-		$("#client_form").validateOnBlur(false, validationSettings);
-	});	
-		
-</script> -->
-
 <script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {

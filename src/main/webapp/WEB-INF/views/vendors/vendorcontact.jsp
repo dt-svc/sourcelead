@@ -84,39 +84,42 @@
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
                 <div class="form-group">
-                  <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
-                    <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_length length2-100" type="text">
-                  </div>
-                </div>
+	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
+	              <div class="col-md-9">
+	                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100" type="text">
+	              </div>
+	            </div>
+                
                 <div class="form-group">
-                  <label class="col-md-3">Last Name</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" id="lasttName" name="lastName" value="">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
-                   <input type="text" class="form-control" id="email" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_email"">
-                  </div>
-                  </div>
-                   <div class="form-group">
-                  <label class="col-md-3">Work Phone</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"  value="">
-                  </div>
-                </div>
-             <div class="form-group">
-              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
-                <select class="chosen-select form-control" name="owner" id="owner" multiple="true" data-validation="required">
-                <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
+	              <label class="col-md-3">Last Name</label>
+	              <div class="col-md-9">
+	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
+	              </div>
+	            </div>
+                <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
+		                    <span class="hidden">Valid Email</span>
+					</div>
+				</div>
+                  <div class="form-group">
+	              <label class="col-md-3">Phone Number</label>
+	              <div class="col-md-9">
+	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_NumberAlphabet validate_phone validate_length length2-20" data-validation-optional="true">
+	              </div>
+	            </div>
+	            
+	             <div class="form-group">
+	              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+	              <div class="col-md-9">
+	                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <c:forEach var="user" items="${userList}">
+		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                </c:forEach>
+	                </select>
+	              </div>
+	            </div>
                  <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
@@ -214,6 +217,53 @@
 	
 	
 </script>
+<script type="text/javascript">
+ function validateClientEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*  $("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_vendor" ).addClass('button').val('Save');
+                         $("#save_vendor").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>
+ 
+ <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
+
 
 <script type="text/javascript">
 	(function($) {
@@ -234,3 +284,4 @@
 		};
 	})(jQuery);
 </script>
+
