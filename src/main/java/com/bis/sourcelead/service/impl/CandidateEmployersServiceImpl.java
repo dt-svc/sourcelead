@@ -45,13 +45,13 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 
         CandidateEmployers candidateEmployers = new CandidateEmployers();
 		
-        if(jsonObject.getString("candidateId") != null && !jsonObject.getString("candidateId").isEmpty()){
+        if(candidateId!=null){
 			
-        	candidateEmployers.setName(jsonObject.getString("employerName"));
+        	candidateEmployers.setName(jsonObject.getString("name"));
         	Candidate can  = new Candidate();
-        	can.setId(Long.valueOf(jsonObject.getString("candidateId")));
+        	can.setId(candidateId);
         	candidateEmployers.setCandidateId(can);
-        	candidateEmployers.setAddress(jsonObject.getString("employerAddress"));
+        	candidateEmployers.setAddress(jsonObject.getString("address"));
         	if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
         		candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
         		candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -59,26 +59,17 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         		candidateEmployers.setStatus(Constants.CANDIDATE_IN_ACTIVE);
         	}
         	candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
-        	candidateEmployers.setDesignation(jsonObject.getString("employerDesignation"));
-        	if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty())){
-        		try {
- 				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
- 				   candidateEmployers.setStartDate(sdf.parse(jsonObject.getString("startDate")));
+        	candidateEmployers.setDesignation(jsonObject.getString("designation"));
+        	if(jsonObject.has("startYear") && !(jsonObject.getString("startYear").isEmpty())){
+ 				   candidateEmployers.setStartYear(jsonObject.getString("startYear"));
  				   candidateEmployers.setStartMonth(jsonObject.getString("startMonth"));
- 				} catch (Exception e) {
- 				  e.printStackTrace();
- 				}
         	}
-        	if(jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty())){
-        		try {
-  				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-  				   candidateEmployers.setEndDate(sdf.parse(jsonObject.getString("endDate")));
+        	if(jsonObject.has("endYear") && !(jsonObject.getString("endYear").isEmpty())){
+  				   candidateEmployers.setEndYear(jsonObject.getString("endYear"));
   				   candidateEmployers.setEndMonth(jsonObject.getString("endMonth"));
-  				} catch (Exception e) {
-  				  e.printStackTrace();
-  				}
         	}
         	candidateEmployers.setCreatedBy(user.getUserCode());
+        	candidateEmployers.setOrgLocationId(orgLocationId);
         	candidateEmployers.setCreatedDate(commonUtil.currentDate());
         	candidateEmployers.setUpdatedBy(user.getUserCode());
         	candidateEmployers.setUpdatedDate(commonUtil.currentDate());

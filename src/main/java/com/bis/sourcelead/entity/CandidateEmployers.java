@@ -62,6 +62,12 @@ public class CandidateEmployers {
 	@Column(name = " ENDMONTH ")
 	private String endMonth;
 	
+	@Column(name = " STARTYEAR ")
+	private String startYear;
+	
+	@Column(name = " ENDYEAR ")
+	private String endYear;
+	
 	@Column(name = " ENDDATE  ")
 	private Date endDate;
 	
@@ -162,6 +168,22 @@ public class CandidateEmployers {
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+
+	public String getStartYear() {
+		return startYear;
+	}
+
+	public void setStartYear(String startYear) {
+		this.startYear = startYear;
+	}
+
+	public String getEndYear() {
+		return endYear;
+	}
+
+	public void setEndYear(String endYear) {
+		this.endYear = endYear;
 	}
 
 	public Date getEndDate() {

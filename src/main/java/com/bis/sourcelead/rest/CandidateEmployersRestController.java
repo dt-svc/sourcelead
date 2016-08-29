@@ -67,17 +67,15 @@ public class CandidateEmployersRestController {
 	 */
 	
 	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
 		
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Long candidateId =1l; 
 		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObject = new JSONObject(jsonc);
-	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
+		String json1 = "{"+json+"}";
+		JSONObject jsonObject = new JSONObject(json1);
+	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,1L);
 		return json;
 	}
 	
@@ -92,7 +90,7 @@ public class CandidateEmployersRestController {
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
 	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
 		
 
