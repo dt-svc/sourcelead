@@ -14,24 +14,24 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
-<!-- end files for autocomplete with tagit -->
-<script type="text/javascript">
-window.onload = function () {
-	cscInit();
- };
-</script>
- 
- <script>
-	$(document).ready(function() {
-		document.getElementById("candidate_form").reset();
-	});
-</script>
- 
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-</style>
+	<!-- end files for autocomplete with tagit -->
+	<script type="text/javascript">
+	window.onload = function () {
+		cscInit();
+	 };
+	</script>
+	 
+	 <script>
+		$(document).ready(function() {
+			document.getElementById("candidate_form").reset();
+		});
+	</script>
+	 
+	<style>
+	.clsDatePicker {
+		z-index: 100000 !important;
+	}
+	</style>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -51,13 +51,10 @@ window.onload = function () {
         <div class="well">
           <div class="input-group col-md-6" style="margin:0 auto">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-              <input type="file" name="uploadBtn" id="uploadBtn"  class="upload">
-              
+              <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
               </span> 
-               </label>
-               <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ...">
-             
-           
+           </label>
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ...">
           </div>
           </div>
         </div>
@@ -104,15 +101,15 @@ window.onload = function () {
           </div>
         </div>
         
-        
-          <div class="form-group">
+        <div class="form-group">
           <label class="col-md-3">Country</label>
           <div class="col-md-9">
             <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
 						name="country" field-name="Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true"/> 
-						<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
+			<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
           </div>
         </div>
+        
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
@@ -121,6 +118,7 @@ window.onload = function () {
 			<ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
           </div>
         </div>
+        
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
@@ -128,12 +126,14 @@ window.onload = function () {
 			    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
           </div>
         </div>  
+        
         <div class="form-group">
           <label class="col-md-3">Address</label>
           <div class="col-md-9">
            <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
+        
         <div class="form-group">
          <label class="col-md-3">Designation</label>
          <div class="col-md-9">
@@ -184,6 +184,7 @@ window.onload = function () {
              		<option>20+</option>
              		</select>
              </div>
+             
              <div class="col-xs-6 col-md-6">
              		<select class="form-control" id="experienceMonths" name="experienceMonths">
              		<option selected disabled>Month</option>
@@ -218,14 +219,11 @@ window.onload = function () {
                  <option><a href="#">&#x20B9;</a></option>
                  <option><a href="#">&#x20A0;</a></option>
                  <option><a href="#">$</a></option>
-                 
              </select>
              </div>
            </div>
          </div>
        </div>
-        
-        
         
          <div class="form-group">
          <label class="col-md-3">Expected Rate</label>
@@ -251,32 +249,37 @@ window.onload = function () {
             <input type="text" class="form-control" id="candidateSkills" name="candidateSkills" value="${candidateSkills}"  field-name="Skills"  value="">
           </div>
         </div>
+        
         <div class="form-group">
           <label class="col-md-3">Education</label>
           <div class="col-md-9">
              <input type="text" class="form-control" id="candidateEducation" name="candidateEducation" value="${candidateEducation}"  field-name="Education"  value="">
           </div>
         </div>
+        
         <div class="form-group">
           <label class="col-md-3">Employer's</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers"  value="">
           </div>
         </div>
+        
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
-        <!-- <div class="form-group">
+        
+        <div class="form-group">
           <label class="col-md-3"></label>
-          <div class="col-md-9 checkbox checkBox">
+         <!--  <div class="col-md-9 checkbox checkBox">
             <label>
               <input type="checkbox" value="">
               Send Invitation </label>
-          </div>
-        </div> -->
+          </div> -->
+        </div> 
+        <div class="clearfix"></div>
       </div> 
     </div>
     
@@ -289,56 +292,16 @@ window.onload = function () {
         </div>
       </div>
     </div>
+    
      </form:form>
+     
     </div>
-   
     
     <!-- Content Area Ends--> 
-</section>
-<!-- Footer Area -->
-<jsp:include page="../masterFooter.jsp" />
-<!-- Footer Area -->
-
-
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-});
- 		</script> 
-<script>
-$(document).ready(function(){
-    $(function() {
-    $('#accordion-sl .content').hide();
-    $('#accordion-sl h2:first').addClass('active').next().slideDown('slow');
-    $('#accordion-sl h2').click(function() {
-        if($(this).next().is(':hidden')) {
-            $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
-            $(this).toggleClass('active').next().slideDown('slow');
-        }
-    });
-});
-});
-</script>
-<div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-  <ul class="list-unstyled">
-    <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-    <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-    <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-  </ul>
-</div>
- -->
+  </section>
+	<!-- Footer Area -->
+	<jsp:include page="../masterFooter.jsp" />
+	<!-- Footer Area -->
 
 <script type="text/javascript">
 	function storeCandidate() {
@@ -467,6 +430,11 @@ function getCities(sourceleadUrl){
 	    });
 	}
 }
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+document.getElementById("uploadFile").value = this.value;
+};
 </script>
 
 <!-- Country,State,City Script Ends Here -->
