@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -58,6 +59,17 @@ public class OrgSpoc {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+	private String spocName;
+	
+	@Transient
+	private String ownerName;
+	
+	@Transient
+	private String spocEmail;
+	
+	@Transient
+	private String spocMobilePhone;
 	
 
 	public Long getId() {
@@ -147,9 +159,37 @@ public class OrgSpoc {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
 
-	
+	public String getSpocName() {
+		return spocName;
+	}
+
+	public void setSpocName(String spocName) {
+		this.spocName = spocName;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getSpocEmail() {
+		return spocEmail;
+	}
+
+	public void setSpocEmail(String spocEmail) {
+		this.spocEmail = spocEmail;
+	}
+
+	public String getSpocMobilePhone() {
+		return spocMobilePhone;
+	}
+
+	public void setSpocMobilePhone(String spocMobilePhone) {
+		this.spocMobilePhone = spocMobilePhone;
+	}
 	
 }

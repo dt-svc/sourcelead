@@ -7,6 +7,9 @@
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -143,6 +146,8 @@
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
+		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>'; */
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -153,6 +158,7 @@
 		$("#vendorNameDiv").append(orgName);
 		
 		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+		//clientDetails(clientId);
 	}
 </script>
 
@@ -169,11 +175,11 @@
 						var city = "";
 						var state = "";
 						var country = "";
-						
 						result = result+ '<div class="project_tabs_inn_table">';
-						result = result+ '<div class="require_wrap_details">';
-						result = result+ '<h1>Vendor details:</h1>';
-						
+						result = result + '<div class="project_details">';
+							result = result + ' <div class="useredit useredit_a">';
+								result = result + '<a id="edit-client" href="javascript:editVendorDetails('+vendorLocationId+','+orgRelationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+							result = result + ' </div>'; 
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
@@ -216,7 +222,7 @@
 							}
 							result = result + '</div>';
 							
-							result = result + '<div class="project_details_cta">';
+							/* result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Email:</strong>';
 							if(json.email != null && json.email !='' && json.email !='undefined'){
 							result = result + '<span>'+json.email+'</span><div class="clearfix"></div>';
@@ -224,7 +230,8 @@
 								
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	
 							}
-							result = result + '</div>';
+							result = result + '</div>'; */
+							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Level:</strong>';
 							if(json.level != null && json.level !='' && json.level !='undefined'){
@@ -245,6 +252,9 @@
 							}
 							result = result + '</div>';
 							
+							result = result + '<div class="clearfix"></div>';
+							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
+							result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
 						
@@ -270,6 +280,167 @@
 
 
 
+<!-- for Vendor edit -->
+<script type="text/javascript">
+	function editVendorDetails(vendorLocationId,orgRelationId) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		      $.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
+						success : function(data) {
+						var json = JSON.parse(data);
+						var result = "";
+						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Client Name </label>';
+						result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" >';
+						result = result + '</div>';
+						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
+						result = result + '<label>Website</label>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>City</label>';
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							result = result + '<input type="text"  id="vendorCity" name="vendorCity" value="'+json.city+'" placeholder="vendor city" ></div>';
+						}else{
+							result = result + '<input type="text"  id="vendorCity" name="vendorCity"  placeholder="vendor city" value=""></div>';
+						}
+						result = result + '</div> ';
+						
+			 			result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>State</label>';
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							result = result + '<input type="text"  id="vendorState" id="vendorState" name="vendorState" value="'+json.state+'" placeholder="vendor state" ></div>';
+						}else{
+							result = result + '<input type="text"  id="vendorState" id="vendorState" name="vendorState" placeholder="vendor state" ></div>';
+						}
+						result = result + '</div> ';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Country</label>';
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							result = result + '<input type="text"  id="vendorCountry" name="vendorCountry" value="'+json.country+'" placeholder="vendor country" ></div>';
+						}else{
+							result = result + '<input type="text"  id="vendorCountry" name="vendorCountry"  placeholder="vendor country" ></div>';
+						}
+						result = result + '</div>  ';
+						
+					
+						 result = result + '<div class="clearfix"></div>';
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
+						result = result + '</div>';		
+						result = result + '<div class="clearfix"></div>';
+						result = result + ' </form>'; 
+						$(".user_summary_edit").slideToggle(100);
+						$("#editVendorDetailsDiv").empty();
+				        $("#editVendorDetailsDiv").append(result);
+					},
+				}); 
+	}
+</script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+
+<script type="text/javascript">
+	function storeVendorDetails(orgRelationId,vendorLocationId) {
+         if ($('#editClient_form').validate(false, validationSettings)){
+    		 var frm = $('#editClient_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
+	   		    success: function(data) {
+	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+	   		    }
+		 }); 
+	     	return true;
+         }else{
+        	 alert("dsfsdfdsfds");
+             return false;
+           }
+		
+    }
+	$('body').on('blur', '#editClient_form', function() {
+        $("#editClient_form").showHelpOnFocus();
+        $("#editClient_form").validateOnBlur(false, validationSettings);  
+    });
+</script>
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+<script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("companyWebsite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) != null){
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		
+		if (website != null && website != '') {
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == "Website Duplicated" || result == "Invalid Website") {
+						//existed website
+						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
+						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
+						$("#save_vendor").attr("disabled", "disabled");
+						
+					} else {
+						//New WebSite class="form-control"
+						 $("#save_vendor").removeAttr("disabled");
+						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#companyWebsite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+				
+					}
+				},
+
+			});
+		  }
+		}
+	}
+</script>
+
+ 
+
+<!-- for Vendor edit Ends -->
 <jsp:include page="../masterFooter.jsp" />
 <script src="resources/js/jquery-fun.js"></script> 
 <script>
@@ -360,3 +531,4 @@ $(".addcon-pop").click(function(){
 
 
 </script> 
+

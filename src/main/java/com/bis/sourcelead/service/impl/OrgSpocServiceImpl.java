@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import org.json.JSONObject;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				logger.debug("Vendor Contac is added successfully");
 				} 
 		}
+	}
+	@Override
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId) throws Exception {
+		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId);
 	}
 	
 	

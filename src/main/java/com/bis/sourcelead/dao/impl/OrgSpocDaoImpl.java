@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -50,6 +52,16 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		}
 		return orgSpoc;
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId) throws Exception {
+		logger.debug("In OrgSpocDaoImpl getAllSpocsByOrgRelationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId");
+		List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		return spocsList;
 	}
 
 }

@@ -130,13 +130,13 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
        //For saving the User Role 
-		UserRole userRole = getUserRoleDetails(jsonObj,user,user.getUserCode(),orgLocations.getId());
+		UserRole userRole = getUserRoleDetails(jsonObj,user,loginuser.getUserCode(),orgLocations.getId());
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
 		
 	   //For saving Employee details (Every User is an Employee)
-		Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),user.getUserCode());
+		Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
 		HashSet<Employees> employeeList = new HashSet<Employees>();
 		employeeList.add(employee);
 		user.setEmployee(employeeList);
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
 		
 		//For saving Employee details (Every User is an Employee)
 		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
-			ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,user.getUserCode(),orgLocations.getId());
+			ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,loginuser.getUserCode(),orgLocations.getId());
 			try {
 				projectMembersService.saveProjectMember(pm);
 			} catch (Exception e) {
