@@ -80,7 +80,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	@Override
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
 
-		return null;	
+		return candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 	}
 
 	

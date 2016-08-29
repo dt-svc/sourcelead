@@ -28,7 +28,7 @@
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}",        
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
                		 if( data.indexOf('Sign In') >= 0){
@@ -172,7 +172,7 @@ function clientSideBar(candidateId){
 			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile();">Profile</a></li>';
 			             result = result+'       <li><a href="#tab-2" onclick="candidateResume();" >Resume</a></li>';
 			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience();">Experience</a></li>';
-			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation();">Education</a></li>';
+			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate();">Certificate</a></li>';
 			             result = result+'       <li><a href="#tab-6" onclick="candidateActivities();">Activities</a></li>';
 			             result = result+'       <div class="clearfix"></div>';

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -85,13 +84,11 @@ public class CandidateEducationRestController {
 	 * @return CandidateEmployers list
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getCandidateEducationListByCandidateIdAndOrgLocationID")
-	public String getCandidateEducationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getCandidateEducationListByCandidateId")
+	public String getCandidateEducationListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		String resultJson;
-		
-
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
 		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
 		 resultJson = commonUtil.toJSON(candidatesEducationList);
 		 return resultJson;

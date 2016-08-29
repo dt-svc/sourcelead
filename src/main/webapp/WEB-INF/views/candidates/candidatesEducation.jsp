@@ -1,28 +1,7 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
- 
- <script>
-	$(document).ready(function() {
-		document.getElementById("candidateEducation_form").reset();
-	});
-</script>
- 
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-</style>
-
-
-<div id="tab-4" class="project_tabs_inn">
+<!-- <div id="tab-4" class="project_tabs_inn">
               <div class="project_tabs_inn_head addUser-org">
               	<a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a>
-                <!-- Popup Div -->
+                Popup Div
                     <div class="collapse-div-adduser col-md-4">
                     <form:form id="candidateEducation_form"  name="candidateEducation_form" method="post">
                     <i class="fa fa-close close-div"></i>
@@ -75,7 +54,7 @@
                           </div>
                          </form:form>
                         </div>
-					<!-- Popup Div -->
+					Popup Div
               </div>
               <div class="project_tabs_inn_table vendor_wrap_inn_table">
                 <table>
@@ -203,7 +182,158 @@
                 </ul>
                 <div class="clearfix"></div>
               </nav>
-            </div>
-            
-            
-  
+</div> -->
+
+
+<script>
+function candidateEducation(candidateId){
+	
+	var result = "";
+	result = result  +'    <div class="project_tabs_inn_head addUser-org">                                                                                                    ';
+	result = result  +'    	<a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
+	result = result  +'      <!-- Popup Div -->                                                                                                                               ';
+	result = result  +'          <div class="collapse-div-adduser col-md-4">                                                                                                  ';
+	result = result  +'          <form role="form">                                                                                                                           ';
+	result = result  +'          <i class="fa fa-close close-div"></i>                                                                                                        ';
+	result = result  +'                <div class="form-horizontal clearfix">                                                                                                 ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
+	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">                               ';
+	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Institute">                                               ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Address">                                                 ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
+	result = result  +'                    <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>                                                       ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                </div>                                                                                                                                 ';
+	result = result  +'                </form>                                                                                                                                ';
+	result = result  +'              </div>                                                                                                                                   ';
+	result = result  +'			<!-- Popup Div -->                                                                                                                            ';
+	
+	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+	result  = result + '   <div id="candidateEducationList" ></div>';
+	result  = result + '   </div>';
+	  
+
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-5").empty();  
+    $("#tab-6").empty();  
+    $("#tab-4").append(result);  
+	
+    candidateEducationList(candidateId);
+    
+}
+</script>
+
+
+<script>
+function candidateEducationList(candidateId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          success :function(data) {
+               if(data != null && data != 'undefined' && data != ""){
+             		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+             		 else if (data.indexOf('exception') >= 0) {
+             			 location.replace(sourceleadUrl+"/errorPage");
+             		 }
+             		 else{
+	                	 $("#candidateEducationList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result  = result + '           <th>Education</th>';
+	                 	 result  = result + '           <th>Specilization</th>';
+	                 	 result  = result + '           <th>Start date</th>';
+	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Grade %</th>';
+	                 	 result  = result + '           <th>Institute/University</th>';
+	                 	 result  = result + '           <th>Address</th>';
+	                 	 result  = result + '           <th>Action</th>';
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i];  
+	                    	 result  = result + '         <tr>';
+	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.specialization+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.startDate+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.endDate+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.grade+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.institute+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.address+'</span></div></td>';
+	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
+	                    	 result  = result + '         </tr>';
+	                      } 
+	                     result = result +" </tbody>";
+	                     result = result +"</table>";
+	                     $("#candidateEducationList").append(result); 
+	                     pagination(); 
+			    	} 
+               }else{
+	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No CandidatesCertifications Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#candidateEducationList").empty();
+				    $("#candidateEducationList").append(result); 
+               }
+        },
+          
+     }); 
+}
+</script>
+
+ 

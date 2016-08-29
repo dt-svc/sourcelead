@@ -78,7 +78,12 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
-		return null;
+		 
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEducation ce where ce.orglocationId.id =:orgLocationId and ce.candidateId.id =:candidateId";  
+		List<CandidateEducation> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		return candidateCertifications;	
+		
 	}
 
 	
