@@ -48,12 +48,12 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("specialization")){
 			candidateEducation.setSpecialization(jsonObject.getString("specialization"));
 		}
-		if(jsonObject.has("startDate")){
+		/*if(jsonObject.has("startDate")){
 			candidateEducation.setStartDate((Date) jsonObject.get("startDate"));
 		}
 		if(jsonObject.has("endDate")){
 			candidateEducation.setEndDate((Date)jsonObject.get("endDate"));
-		}
+		}*/
 		if(jsonObject.has("grade")){
 			candidateEducation.setGrade(jsonObject.getString("grade"));
 		}

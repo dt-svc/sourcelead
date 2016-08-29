@@ -73,7 +73,7 @@ public class CandidateEducationRestController {
 		JSONObject jsonObject = new JSONObject(jsonc);
 		
 		candidateEducationService.storeCandidateEducation(jsonObject);
-		return json;
+		return "success";
 	}
 	
 	/**

@@ -1,245 +1,58 @@
-<!-- <div id="tab-4" class="project_tabs_inn">
-              <div class="project_tabs_inn_head addUser-org">
-              	<a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a>
-                Popup Div
-                    <div class="collapse-div-adduser col-md-4">
-                    <form:form id="candidateEducation_form"  name="candidateEducation_form" method="post">
-                    <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                          
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Education *" required>
-                              </div>
-                            </div>
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Specialization">
-                              </div>
-                            </div>   
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-6 positionRelative">
-                                <input type="text" class="form-control input-sm" value="" name="startDate"  placeholder="Start Date" id="edu-startDate">
-                                <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-                              </div>
-                              <div class="col-md-6 positionRelative">
-                                <input type="text" class="form-control input-sm" value="" name="endDate" placeholder="End Date" id="edu-endDate">
-                                <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-                              </div>
-                            </div>   
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" name= "grade" placeholder="Grade">
-                              </div>
-                            </div>                                                                              
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" name= "institute"  placeholder="Institute">
-                              </div>
-                            </div>
-
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" name= "address" placeholder="Address">
-                              </div>
-                            </div>
-
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                         </form:form>
-                        </div>
-					Popup Div
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Education</th>
-                      <th>Specilization</th>                      
-                      <th>Start date</th>
-                      <th>End date</th>            
-                      <th>Grade %</th>                                
-                      <th>Institute/University</th>
-                      <th>Address</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>                   
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-</div> -->
-
-
 <script>
 function candidateEducation(candidateId){
 	
 	var result = "";
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">                                                                                                    ';
-	result = result  +'    	<a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
+	result = result  +'    	<a href="javascript:void(0)"  onClick="addExperience();" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
 	result = result  +'      <!-- Popup Div -->                                                                                                                               ';
-	result = result  +'          <div class="collapse-div-adduser col-md-4">                                                                                                  ';
-	result = result  +'          <form role="form">                                                                                                                           ';
+	result = result  +'          <div class="edit-details col-md-4">                                                                                                  ';
+	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" >                                                                                                                           ';
 	result = result  +'          <i class="fa fa-close close-div"></i>                                                                                                        ';
 	result = result  +'                <div class="form-horizontal clearfix">                                                                                                 ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
+	result = result  +'                      <input type="text" name="name" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
+	result = result  +'                      <input type="text" name="specialization" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
+	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">                               ';
+	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
+	result = result  +'                      <input type="text" name="grade" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Institute">                                               ';
+	result = result  +'                      <input type="text" name="institute" class="form-control input-sm" value="" placeholder="Institute">                                               ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" class="form-control input-sm" value="" placeholder="Address">                                                 ';
+	result = result  +'                      <input type="text" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-	result = result  +'                    <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>                                                       ';
+	result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
 	result = result  +'                </form>                                                                                                                                ';
@@ -282,7 +95,7 @@ function candidateEducationList(candidateId){
              		 else{
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
@@ -335,5 +148,110 @@ function candidateEducationList(candidateId){
      }); 
 }
 </script>
+
+<script>
+function pagination(){  
+    $('#candidateEducationPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    } );
+}
+</script>
+
+
+<script>
+function addEducation() {	
+	/* $(".addUser-org").click(function(){
+		 $(".edit-details").toggleClass("edit-details-active");
+	 }); */
+	$(".edit-details").toggleClass("edit-details-active");
+	 $(".close-div").click(function(){
+		 $(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		 e.stopPropagation();
+	 });
+	 $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	   });	
+	   
+	}
+</script>
+
+
+<script>
+function candidateEmployersStore(candidateId){
+	  var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+	  if ($('#education_form').validate(false, validationSettings)) {
+		  
+			 var frm = $('#education_form').serializeFormJSON();
+			 var con = JSON.stringify(frm);
+			 con = con.replace(/[{}]/g, "");
+			 alert("con"+con);
+		     var jsonData = encodeURIComponent(con);
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#education_form").attr("disabled", "disabled");
+			
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) {  
+						       alert("data"+data);
+				                /* if(data != null && data != 'undefined' && data != ""){
+				               		if( data.indexOf('Sign In') >= 0){
+							    		location.replace(sourceleadUrl);
+							    	}
+				               		else if (data.indexOf('exception') >= 0) {
+				               			 location.replace(sourceleadUrl+"/errorPage");
+				               		}
+				               		else{
+				               			 candidateEducationList(candidateId);
+							    	}
+				                 }   */
+				      }, 
+		    });
+			return true; 
+		} else {
+			 alert("raju");
+			return false;
+		}
+} 
+$('body').on('blur', '#education_form', function() {
+	$("#education_form").showHelpOnFocus();
+	$("#education_form").validateOnBlur(false, validationSettings);
+});
+</script>            
+          
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>           
+
+
 
  
