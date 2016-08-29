@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -866,7 +867,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append("                      <div> ");
 						              
 						              if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
-							              sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							              if(timesheetEntries.getProjectTask() != null){
+							            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							              }
+							              else{
+							            	  sb.append("<p>No Data</p>");
+							              }
 						              }
 						              else{
 						              
@@ -1448,7 +1454,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								if(total != null){
 						            int actualHours = (int) (total / 60);
 						            int actualMinutes =   (int)(total % 60);
-						            String actualTimeString =  actualHours+"."+actualMinutes;
+						            String actualMinutesStr = ""+actualMinutes;
+						            String startWithZero = "";
+						            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
+						            	startWithZero ="0";	
+						            	
+						            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
 						            
 									timesheetSubmissions.setTotalHours(actualTimeString);
 									timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);

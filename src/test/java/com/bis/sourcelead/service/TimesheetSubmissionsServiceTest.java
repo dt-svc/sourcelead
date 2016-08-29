@@ -188,11 +188,11 @@ public class TimesheetSubmissionsServiceTest {
 		Date startDate = new Date();
 		Date endDate = new Date();
 		Long  userId = 2l;
-		Long  memberId = (long) 1;
+		Long  memberUserId = (long) 1;
 		Long employeeId = (long) 2;
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		
-		timesheetSubmissions = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(startDate,endDate,userId,memberId,employeeId);
+		timesheetSubmissions = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(startDate,endDate,userId,memberUserId,employeeId);
 		logger.info(" getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId"+timesheetSubmissions);
 	}
 	
