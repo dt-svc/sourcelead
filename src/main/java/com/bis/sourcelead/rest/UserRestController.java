@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -201,7 +202,7 @@ public class UserRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
 	 	 //For Saving of User Details
-	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER","",new Org());
 	 	
 	 	
 	 	 //For Saving of User Details
