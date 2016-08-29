@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -106,7 +105,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public Set<OrgLocations> orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
+	public OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		String locationCode = orgLocations.getLocationCode();
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		
@@ -140,7 +139,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		clientOrgLocations.setOrgRelationsList(orgRelationsList);
 		
 		orgLocationsList.add(clientOrgLocations);
-		return orgLocationsList;
+		return clientOrgLocations;
 	}
 	
 }
