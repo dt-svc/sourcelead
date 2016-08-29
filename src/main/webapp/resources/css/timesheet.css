@@ -1811,16 +1811,18 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .paginate_button.previous {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background-color: #FFF !important; margin-left: -1px !important; position: relative !important; top: 0px !important;
+    color: #337ab7 !important; background-color: #FFF !important; margin-left: -1px !important; position: relative !important; top: -11px !important;
     border-radius: 5px 0px 0px 5px !important;
     }
 .paginate_button.next {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
     color: #337ab7 !important; background-color: #FFF !important;
-    margin-left: -1px !important; position: relative !important; top: 0px !important; border-radius: 0px 5px 5px 0px !important;
+    margin-left: -1px !important; position: relative !important; top: -11px !important; border-radius: 0px 5px 5px 0px !important;
     }
 .dataTables_wrapper .dataTables_paginate {
     color: #333 !important; padding: 8px 15px 8px 0px !important;
     }  					
+
+					
 
 		
