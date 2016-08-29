@@ -1,7 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.List;
+import java.util.Date;
 
+import javax.persistence.Column;
+
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +21,53 @@ import com.bis.sourcelead.service.CandidateCertificationsService;
 @Service
 public class CandidateCertificationsServiceImpl implements CandidateCertificationsService {
 
+	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateCertificationsServiceImpl.class);
 	@Autowired
 	private CandidateCertificationsDao candidateCertificationsDao;
 
-	@Override
-	public CandidateCertifications storeCandidateCertifications(CandidateCertifications candidateCertifications)
-			throws Exception {
-		return null;
-	}
+	CandidateCertifications candidatecertificate;
 
 	@Override
-	public CandidateCertifications updateCandidateCertifications(CandidateCertifications candidateCertifications)
-			throws Exception {
-		return null;
-	}
+	public CandidateCertifications storeCandidateCertifications(JSONObject jsonobject) throws Exception {
 
-	@Override
-	public Boolean deleteCandidateCertifications(Long id) throws Exception {
-		return null;
-	}
+		if (jsonobject.has("name")) {
+			candidatecertificate.setName(jsonobject.getString("name"));
+		}
+		if (jsonobject.has("provider")) {
+			candidatecertificate.setProvider(jsonobject.getString("provider"));
+		}
+		if (jsonobject.has("SCORE")) {
+			candidatecertificate.setScore(jsonobject.getString("SCORE"));
+		}
+		if (jsonobject.has("scoreType")) {
+			candidatecertificate.setScoreType(jsonobject.getString("scoreType"));
+		}
+		if (jsonobject.has("validFrom")) {
+			candidatecertificate.setValidFrom((Date) jsonobject.get("validFrom"));
+		}
+		if (jsonobject.has("validTo")) {
+			candidatecertificate.setValidTo((Date) jsonobject.get("validTo"));
+		}
+		if (jsonobject.has("CREATED_DATE")) {
+			candidatecertificate.setCreatedDate((Date) jsonobject.get("CREATED_DATE"));
+		}
+		if (jsonobject.has("CREATED_BY")) {
+			candidatecertificate.setCreatedBy(jsonobject.getString("CREATED_BY"));
+		}
+		if (jsonobject.has("UPDATED_DATE")) {
+			candidatecertificate.setUpdatedDate((Date) jsonobject.get("UPDATED_DATE"));
+		}
+		if (jsonobject.has("UPDATED_BY")) {
+			candidatecertificate.setUpdatedBy(jsonobject.getString("UPDATED_BY"));
+		}
 
-	@Override
-	public List<CandidateCertifications> getAllCandidateCertifications() throws Exception {
-		return null;
+		
+		
+
+		
+		logger.debug("In CandidateCertificationsServiceImpl class save method");
+		return candidateCertificationsDao.storeCandidateCertifications(jsonobject);
 	}
 
 }

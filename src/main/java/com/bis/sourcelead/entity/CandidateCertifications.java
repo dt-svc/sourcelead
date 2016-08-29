@@ -39,6 +39,33 @@ public class CandidateCertifications {
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "PROVIDER")
+	private String provider;
+
+	@Column(name = "SCORE")
+	private String score;
+
+	@Column(name = "SCORE_TYPE")
+	private String scoreType;
+
+	@Column(name = "VALIDFROM")
+	private Date validFrom;
+
+	@Column(name = "VALIDTO")
+	private Date validTo;
+
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+
+	@Column(name = " CREATED_BY")
+	private String createdBy;
+
+	@Column(name = " UPDATED_DATE")
+	private Date updatedDate;
+
+	@Column(name = " UPDATED_BY")
+	private String updatedBy;
+
 	public Long getId() {
 		return id;
 	}
@@ -47,7 +74,6 @@ public class CandidateCertifications {
 		this.id = id;
 	}
 
-	
 	public OrgLocations getOrgLocationId() {
 		return orgLocationId;
 	}
@@ -143,32 +169,6 @@ public class CandidateCertifications {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-	@Column(name = "PROVIDER")
-	private String provider;
-
-	@Column(name = "SCORE")
-	private String score;
-
-	@Column(name = "SCORE_TYPE")
-	private String scoreType;
-
-	@Column(name = "VALIDFROM")
-	private Date validFrom;
-
-	@Column(name = "VALIDTO")
-	private Date validTo;
-
-	@Column(name = "CREATED_DATE")
-	private Date createdDate;
-
-	@Column(name = " CREATED_BY")
-	private String createdBy;
-
-	@Column(name = " UPDATED_DATE")
-	private Date updatedDate;
-
-	@Column(name = " UPDATED_BY")
-	private String updatedBy;
-
+	
+	
 }
