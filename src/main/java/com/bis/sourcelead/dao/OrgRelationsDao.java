@@ -30,4 +30,6 @@ public interface OrgRelationsDao {
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
+	OrgRelations getOrRelationsById(Long orgRelationId) throws Exception;
+	
 }

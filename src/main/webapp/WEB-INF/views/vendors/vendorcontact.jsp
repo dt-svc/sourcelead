@@ -176,8 +176,6 @@
 
 <script type="text/javascript">
 	function saveVendorContact() {
-		
-			alert("======hai");
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -189,7 +187,6 @@
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
-	        alert("Json=="+jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_vendor_contact").attr("disabled", "disabled");
 			$("#save_vendor_contact").addClass('button').val('Processing..');
