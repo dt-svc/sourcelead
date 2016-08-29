@@ -60,13 +60,13 @@
 	                    	 var opt = json[i]; 
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
-			                 result = result +"  <td><div><span>Web designer Web designer</span></div></td>";
-			                 result = result +"  <td><div>Full Time</div></td>";
-			                 result = result +"  <td><div ><span>vannam@domain.com</span></div></td>";
-			                 result = result +"  <td><div>9000 000 000</div></td>";
-			                 result = result +"  <td><div><span title='Hyderabad, Hyderabad, Hyderabad'>Hyderabad, Hyderabad, Hyderabad</span></div></td>";
-			                 result = result +"  <td><div>11/08/2016</div></td>";
+			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                 result = result +"  <td><div><span>"+opt.designation+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.designation+"</div></td>";
+			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.mobilePhone+"</div></td>";
+			                 result = result +"  <td><div><span title='"+opt.address+"'>"+opt.address+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.updatedDate+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
 	                     result = result +" </tbody>";

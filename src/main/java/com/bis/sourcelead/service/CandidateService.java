@@ -16,6 +16,6 @@ public interface CandidateService {
 
 	public Candidate getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long candidateId,Long orgId,Long orgLocationId) throws Exception;
 	
-	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgLocationId) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 }

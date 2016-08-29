@@ -93,7 +93,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgIdAndOrgLocationID(Long orgLocationId) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception {
 		 // TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
