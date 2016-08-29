@@ -19,7 +19,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEducationServiceImpl.class);
 	@Autowired
 	private CandidateEducationDao candidateEducationDao;
-
+ 
 	/**
 	 * @author ajith kumar
 	 * @since  aug 26 2016
