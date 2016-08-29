@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.CandidateCertifications;
@@ -20,5 +22,5 @@ public interface CandidateCertificationsDao {
 	 * @throws Exception
 	 */
 	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject)throws Exception;
-
+	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
 	}

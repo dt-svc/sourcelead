@@ -1,8 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
-
-import javax.persistence.Column;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -63,11 +62,23 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 		}
 
 		
-		
-
-		
 		logger.debug("In CandidateCertificationsServiceImpl class save method");
 		return candidateCertificationsDao.storeCandidateCertifications(jsonobject);
 	}
+		@Override
+		public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
+				Long orgLocationId) throws Exception {
+			 return candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
