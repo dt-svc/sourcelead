@@ -1,3 +1,4 @@
+
 <script>
 function candidateExperience(){  
 	var result ="";
@@ -7,7 +8,7 @@ function candidateExperience(){
 	result = result  +'	     </a>                                                                                                           ';
 	result = result  +'	     	<!-- Popup Div -->                                                                                          ';
 	result = result  +'	       <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                            ';
-	result = result  +'	         <form:form id="employers_form" name="employers_form" method="post">';
+	result = result  +'	         <form id="employers_form" name="employers_form" method="post">';
 	result = result  +'	             <div class="form-horizontal clearfix">                                                                 ';
 	result = result  +'	               <div class="clearfix mb10">                                                                          ';
 	result = result  +'	                 <div class="col-md-12">                                                                            ';
@@ -80,7 +81,7 @@ function candidateExperience(){
 	result = result  +'	                 <button type="submit"  onClick ="candidateEmployersStore();"class="btn btn-sm btn-primary pull-right">Add</button>                       ';
 	result = result  +'	               </div>                                                                                               ';
 	result = result  +'	             </div>                                                                                                 ';
-	result = result  +'	        </form:form>                                                                                  ';
+	result = result  +'	        </form> ';
 	result = result  +'	           </div>                                                                                                   ';
 	result = result  +'			<!-- Popup Div -->                                                                                          ';
 	result = result  +'	 </div>                                                                                                             ';
@@ -139,19 +140,19 @@ function candidateEmployersStore(){
 			};
 	  if ($('#employers_form').validate(false, validationSettings)) {
 		  
+		     alert("veda");
 			 var frm = $('#employers_form').serializeFormJSON();
 			 var con = JSON.stringify(frm);
 			 con = con.replace(/[{}]/g, "");
-			
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#employers_form").attr("disabled", "disabled");
-
+			
 			$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-							 success :function(data) {
+							+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&json="+con,
+							 success :function(data) {/* 
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
 							    		location.replace(sourceleadUrl);
@@ -182,11 +183,11 @@ function candidateEmployersStore(){
 								    $("#timesheetApprList").append(result);
 				                 }
 				               
-				          },
+				          }, 
 					});
 			return true; 
 		} else {
-			alert("veda");
+			 alert("raju");
 			return false;
 		}
 } 
@@ -194,7 +195,7 @@ function candidateEmployersStore(){
 			$("#employers_form").showHelpOnFocus();
 			$("#employers_form").validateOnBlur(false, validationSettings);
 		});
-</script>        
+</script>            
           
 <script>
 function addExperience() {	
@@ -215,7 +216,26 @@ function addExperience() {
 	}
 </script>
 
-            
+ <script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>           
 
 
 
