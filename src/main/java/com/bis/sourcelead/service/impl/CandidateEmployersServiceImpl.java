@@ -1,14 +1,20 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * @author Ajith Matta
@@ -21,6 +27,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	@Autowired
 	CandidateEmployersDao candidateEmployersDao;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
 	/**
 	 * This method is used for save the candidate employers
@@ -30,10 +39,50 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     */
 	
 	@Override
-	public CandidateEmployers storeCandidateEmployers(JSONObject jsonObject) throws Exception {
+	public CandidateEmployers storeCandidateEmployers(JSONObject jsonObject, User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
+
+        CandidateEmployers candidateEmployers = new CandidateEmployers();
 		
+        if(jsonObject.getString("candidateId") != null && !jsonObject.getString("candidateId").isEmpty()){
+			
+        	candidateEmployers.setName(jsonObject.getString("employerName"));
+        	Candidate can  = new Candidate();
+        	can.setId(Long.valueOf(jsonObject.getString("candidateId")));
+        	candidateEmployers.setCandidateId(can);
+        	candidateEmployers.setAddress(jsonObject.getString("employerAddress"));
+        	if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
+        		candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
+        		candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
+        	}else{
+        		candidateEmployers.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+        	}
+        	candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
+        	candidateEmployers.setDesignation(jsonObject.getString("employerDesignation"));
+        	if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty())){
+        		try {
+ 				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+ 				   candidateEmployers.setStartDate(sdf.parse(jsonObject.getString("startDate")));
+ 				   candidateEmployers.setStartMonth(jsonObject.getString("startMonth"));
+ 				} catch (Exception e) {
+ 				  e.printStackTrace();
+ 				}
+        	}
+        	if(jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty())){
+        		try {
+  				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+  				   candidateEmployers.setEndDate(sdf.parse(jsonObject.getString("endDate")));
+  				   candidateEmployers.setEndMonth(jsonObject.getString("endMonth"));
+  				} catch (Exception e) {
+  				  e.printStackTrace();
+  				}
+        	}
+        	candidateEmployers.setCreatedBy(user.getUserCode());
+        	candidateEmployers.setCreatedDate(commonUtil.currentDate());
+        	candidateEmployers.setUpdatedBy(user.getUserCode());
+        	candidateEmployers.setUpdatedDate(commonUtil.currentDate());
+		}
 		
-		return null;
+		return candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
 	}
 	
 	/**
@@ -47,6 +96,8 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		
 		 return candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 	}
+
+	
 	
 
 }

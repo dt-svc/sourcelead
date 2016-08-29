@@ -5,10 +5,12 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface CandidateEmployersDao {
 
-	public CandidateEmployers storeCandidateEmployers(JSONObject jsonObject) throws Exception;
+	public CandidateEmployers storeCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception;
 	
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 

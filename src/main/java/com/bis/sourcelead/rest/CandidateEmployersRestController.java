@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -65,11 +67,17 @@ public class CandidateEmployersRestController {
 	 */
 	
 	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json) throws Exception {
+	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
 
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long candidateId =1l; 
+		
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObject = new JSONObject(jsonc);
-	 candidateEmployersService.storeCandidateEmployers(jsonObject);
+	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
 		return json;
 	}
 	

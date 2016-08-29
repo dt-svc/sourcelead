@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 /**
  * @author Ajith Matta
@@ -55,9 +57,11 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		
 
 	@Override
-	public CandidateEmployers storeCandidateEmployers(JSONObject jsonObject) throws Exception {
+	public CandidateEmployers storeCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception {
 		
 		return null;
+		
+		
 	}
 	
 	/**

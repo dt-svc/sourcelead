@@ -3,8 +3,8 @@
 function candidateResume(){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head">';
-	result = result+'	    	<a href="#" class="addUser-org" onClick="addResume();"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
-	result = result+'	          <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result+'	    	<a href="#" onClick="addResume();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+	result = result+'	          <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
 	result = result+'	                <div class="form-horizontal clearfix">';
 	result = result+'	                <form id="candidateResume_form" name="candidateResume_form" method="post">';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -83,11 +83,30 @@ function candidateResume(){
 </script>
 
 <script>
-function addResume(event){
+/* function addResume(event){
 		 $(".collapse-div-adduser").toggleClass("show-div");
 		 $(".collapse-div").removeClass("show-div");
 		 event.preventDefault();
-}
+} */
+//script for scroll Popups:: Add or Edit details
+
+function addResume() {	
+	/* $(".addUser-org").click(function(){
+		 $(".edit-details").toggleClass("edit-details-active");
+		 $(".collapse-div").removeClass("edit-details-active");
+	 }); */
+	$(".edit-details").toggleClass("edit-details-active");
+	$(".close-div").click(function(){
+		$(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		 e.stopPropagation();
+	 });
+	 $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	   });	
+	   
+	}
 </script>	 
         
 <!-- 

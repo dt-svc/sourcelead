@@ -2058,11 +2058,11 @@ ul.tree-checkbox::before {
 .collapseDiv_add {
     padding:10px 15px;
 }
-.collapse-div-adduser{
+.collapse-div-adduser, .edit-details{
 	right:92px;
 	padding:10px 5px;
 }
-.collapse-div-adduser a{
+.collapse-div-adduser a, .edit-details a{ 
 	margin-left:0 !important;
 }
 .collapse-div-adduser .input-groupAddon {
@@ -2125,6 +2125,9 @@ ul.tree-checkbox::before {
   opacity: 1;
           transform: translateX(0);
   -webkit-transform: translateX(0);
+}
+.edit-candaite{ 
+	right:35px;
 }
 ul.rating {
 padding:0;
@@ -2666,6 +2669,83 @@ height:30px;
 	padding:10px 0;
 	border-radius:5px;
 }
+.form-header {
+	border-width:1px 0 1px 0;
+	border-color:#838383;
+	border-style:solid;
+	padding:5px 0;
+	margin-bottom:15px;
+}
+.form-header label{
+	font-weight:600;
+	font-size:15px;
+	color:#0049A2;
+}
+.custom-fields select.form-control{
+	border:1px solid #ccc !important;
+	width:100%;
+	padding-left:10px;
+}
+.select-arrow select.form-control{
+	-webkit-appearance:normal !important;
+	appearance: normal !important;
+}
+.custom-fields select.form-control option{
+	padding-left:10px;
+}
+.selectBg-blue {
+	background:#337ab7 !important;
+	color:#fff;
+	line-height:28px;
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background: transparent url("http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png") no-repeat right center;
+
+}
+/* For collapse div styels: .addUser-org .edit-details*/
+.edit-details {
+	background: #fff none repeat scroll 0 0;
+    border: 1px solid #909090;
+    border-radius: 5px;
+    padding:10px 5px;
+    position: absolute;
+    right: 20px;
+    z-index: 8;
+	text-align:left;
+	margin-top:8px;
+	box-shadow:0 8px 6px -8px #505050;
+	visibility:hidden;
+	opacity: 0;
+	transition: 0.6s;
+	-webkit-transition: 0.6s;
+	-O-transition: 0.6s;
+	-webkit-transform: translateX(-100%);
+	-o-transform: translateX(-100%);
+	transform: translateX(-100%);
+}
+.edit-details:before{
+	border-bottom: 10px solid #909090;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    clear: both;
+    content: "";
+    height: 0;
+    position: absolute;
+    right: 10px;
+    top: -10px;
+    width: 0;
+}
+.edit-details.edit-details-active {
+  visibility:visible;
+  opacity: 1;
+          transform: translateX(0);
+  -webkit-transform: translateX(0);
+  -o-transform: translateX(0);
+}
+/* For collapse div styels Ends */
+
 @media (max-width: 320px) {
   .hidden-xs {
     display: none !important;
