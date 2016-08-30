@@ -59,6 +59,9 @@ public class OrgSpoc {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
+	
 	@Transient
 	private String spocName;
 	
@@ -191,5 +194,12 @@ public class OrgSpoc {
 	public void setSpocMobilePhone(String spocMobilePhone) {
 		this.spocMobilePhone = spocMobilePhone;
 	}
-	
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
+	}
 }

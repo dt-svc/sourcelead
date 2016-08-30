@@ -109,7 +109,7 @@
 							</c:if>
 							
 							<td><div><span class="tblminwidth-125">${report.vendorCreateduserName}</span></div></td>
-							<td><div>--</div></td>
+							<td><div>${report.noOfContatcs}</div></td>
 							<td><div><i class="glyphicon glyphicon-trash"></i></div></td>
 						</c:if>
 						
@@ -139,13 +139,8 @@
 							<c:if test="${empty report.level}">
 								<td><div>--</div></td>
 							</c:if>
-							<c:if test="${!empty report.locationId.phone}">
-								<td><div><span class="tblminwidth-125">${report.locationId.phone}</span></div></td>
-							</c:if>
-
-							<c:if test="${empty report.locationId.phone}">
-								<td><div>--</div></td>
-							</c:if>
+							<td><div><span class="tblminwidth-125">${report.vendorCreateduserName}</span></div></td>
+							<td><div>${report.noOfContatcs}</div></td>
 						</c:if>
 							
 						</tr>
@@ -153,6 +148,19 @@
 					</tbody>
 				</table>
 			</div>
+			
+<!-- <nav>
+    <ul id="paging" class="pagination">
+		<li><a href="#">Previous</a></li>
+		<li><a href="#">2</a></li>
+		<li><a href="#">3</a></li>
+		<li><a href="#">4</a></li>
+		<li><a href="#">5</a></li>
+		<li class="disabled"><a href="#">6</a></li>
+		<li data-page="last"><a href="#">Next</a></li>
+	</ul>
+	<div class="clearfix"></div>
+</nav> -->	
 
 		</c:if>
 

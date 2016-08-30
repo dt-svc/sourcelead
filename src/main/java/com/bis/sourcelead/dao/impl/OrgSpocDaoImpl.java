@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -21,6 +23,9 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 public class OrgSpocDaoImpl  implements OrgSpocDao{
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -56,12 +61,38 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId) throws Exception {
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> ids) throws Exception {
 		logger.debug("In OrgSpocDaoImpl getAllSpocsByOrgRelationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId");
-		List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		List<OrgSpoc> spocsList;
+		Boolean isadmin = userRoleDao.isUserAdmin(userId);
+		if (isadmin) {
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' ");
+			spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		}else if(ids != null && !ids.isEmpty()){
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
+			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
+		}else{
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :userId and spoc.status <> 'INACTIVE' ");
+			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+		}
+		
 		return spocsList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgSpoc getOrgSpocById(Long Id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
+		logger.debug("getOrgSpocById start");
+		orgSpocs = session.createQuery("from OrgSpoc where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		logger.debug("getOrgSpocById end");
+		if (orgSpocs.size() > 0) {
+			return orgSpocs.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 }
