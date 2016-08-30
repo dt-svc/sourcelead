@@ -210,6 +210,9 @@ public class ClientRestController {
 		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
+		 //to fetch user details by usercode 
+		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 		return commonUtil.toJSON(orgRelation);
 	}
 	
