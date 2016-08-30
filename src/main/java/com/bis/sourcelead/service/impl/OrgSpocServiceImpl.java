@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -51,7 +52,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 */
 	@Override
 	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception {
-		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER","",new Org());
 		String OrRelationId = jsonObj.getString("vendorName");
 		OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(OrRelationId));
 		if(jsonObj.has("owner")){
