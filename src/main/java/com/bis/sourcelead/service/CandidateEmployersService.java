@@ -18,5 +18,11 @@ public interface CandidateEmployersService {
 	
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
    
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException;
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode) throws JSONException;
+
+	public CandidateEmployers removeCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
+
+	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
+
+	
 }

@@ -75,7 +75,7 @@ public class CandidateEmployersRestController {
 		
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
-	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,1L);
+	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
 		return json;
 	}
 	
@@ -99,6 +99,25 @@ public class CandidateEmployersRestController {
 		 return resultJson;
 	}
 	
+	
+	/**
+	 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
+	 *   @author Sammeta David Raju
+	 * @param candidateemployersId
+	 *  @param candidateId
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
+	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+
+		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
+		 resultJson = commonUtil.toJSON(candidatesEmployersList);
+		 return resultJson;
+	}
 	
 	
 }

@@ -103,8 +103,9 @@ function storeCertificate(candidateId){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
-									else{
-										location.replace(sourceleadUrl+ "/candidatesList#");
+								else{
+									alert("raju");
+										location.replace(sourceleadUrl+ "/candidatesList");
 							   }
 							}
 						},

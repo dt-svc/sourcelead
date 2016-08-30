@@ -58,7 +58,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	}else{
         		candidateEmployers.setStatus(Constants.CANDIDATE_IN_ACTIVE);
         	}
-        	candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
         	candidateEmployers.setDesignation(jsonObject.getString("designation"));
         	if(jsonObject.has("startYear") && !(jsonObject.getString("startYear").isEmpty())){
  				   candidateEmployers.setStartYear(jsonObject.getString("startYear"));
@@ -79,6 +78,24 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	}
 	
 	/**
+	 * This method is used for remove Candidate Employer By candidateId and Candidate Employer ID
+	 * @author Sammeta David Raju
+	 * @param  candidateId
+	 * @param candidateEmployerId
+	 * @return CandidateEmployers
+	 * @exception NullPointerException
+	 * 
+	 */
+	@Override
+	public CandidateEmployers   removeCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId, Long candidateEmployerId) throws Exception {
+		
+		 CandidateEmployers can = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerId, candidateId);
+		 can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		 return candidateEmployersDao.storeCandidateEmployers(can);
+	}
+
+	
+	/**
 	 * This method is used for display the CandidateEmployers list
 	 * @author Ajith Matta
 	 * @return String
@@ -91,6 +108,13 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	}
 
 	
+	
+	/**
+	 * This method is used for display the get Candidate Employers Details list
+	 * @author Sammeta David 
+	 * @return HashSet<CandidateEmployers>
+	 * @throws Exception
+    */
 	@Override
 	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException{
 		  HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
@@ -101,5 +125,19 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		    }
 		return candidateEmployersList;
 	 }
+
+	
+	/**
+	 * This method is used for display the get Candidate Employer By candidateId and CandidateEmployerID 
+	 * @author Sammeta David Raju
+	 * @return CandidateEmployers
+	 * @throws Exception
+    */
+	
+	@Override
+	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId, Long candidateEmployerId)
+			throws Exception {
+		  return candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
+	}
 
 }

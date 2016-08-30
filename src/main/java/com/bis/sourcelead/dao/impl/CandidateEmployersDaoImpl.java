@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEmployersDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -97,9 +94,35 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  where candidateEmployers.orgLocationId.id =:orgLocationId and candidateEmployers.candidateId.id =:candidateId";  
+		String query = "from CandidateEmployers candidateEmployers  where candidateEmployers.orgLocationId.id =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status ='ACTIVE'";  
 		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateList;
+	}
+
+	/**
+	 * This method is used for display the get Candidate Employer By candidateId and CandidateEmployerID 
+	 * @author Sammeta David Raju
+	 * @return CandidateEmployers
+	 * @throws Exception
+    */
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateEmployersId,Long candidateId) {
+
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateEmployersId and cEmp.candidateId.id = :candidateId ";
+		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateEmployersId", candidateEmployersId).setLong("candidateId", candidateId)
+				.setCacheable(true).list();
+		
+
+		CandidateEmployers canEMp = null;
+		if (employersList != null && employersList.size() > 0) {
+			canEMp = (CandidateEmployers) employersList.iterator().next();
+		}
+		return canEMp;
+
 	}
 
 

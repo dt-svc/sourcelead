@@ -161,7 +161,7 @@ function addEducation(candidateId) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEmployersStore('+candidateId+');" />'; 
+    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
 	/* result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       '; */
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
@@ -195,7 +195,7 @@ function closePopup(){
 
 
 <script>
-function candidateEmployersStore(candidateId){
+function candidateEducationStore(candidateId){
 	  var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
