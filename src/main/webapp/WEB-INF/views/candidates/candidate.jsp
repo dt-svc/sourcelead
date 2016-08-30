@@ -254,13 +254,6 @@
           </div>
         </div>
         
-       <%--  <div class="form-group">
-          <label class="col-md-3">Education</label>
-          <div class="col-md-9">
-             <input type="text" class="form-control" id="candidateEducation" name="candidateEducation" value="${candidateEducation}"  field-name="Education"  value="">
-          </div>
-        </div> --%>
-        
          <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">

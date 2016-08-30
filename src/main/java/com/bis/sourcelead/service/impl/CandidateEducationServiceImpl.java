@@ -96,7 +96,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	}
 
 	@Override
-	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,Long orgLocationId,String userCode) throws JSONException {
+	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(jsonObj.has("candidateEducation")){
 		    	  String education = jsonObj.getString("candidateEducation");
@@ -106,8 +106,11 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		    		  CandidateEducation ce = new  CandidateEducation();
 		    		  edu = edu.replace("\"", "");
 		    		  ce.setName(edu);
+		    		  ce.setCandidateId(candidate);
+		    		  ce.setOrglocationId(orgLocations);
 		    		  candidateEducationList.add(ce);
 		    	  }
+		    	  
 		    }
 			return  candidateEducationList;
 	  }
