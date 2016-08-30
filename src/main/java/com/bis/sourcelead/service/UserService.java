@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
@@ -58,7 +59,7 @@ public interface UserService  {
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 	
-	User storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType)  throws Exception;
+	User storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg)  throws Exception;
 	
 	/**
 	 * This method to fetch Owner used in Client and vendor
@@ -85,6 +86,8 @@ public interface UserService  {
 	 * @return
 	 */
 	User getUserDetailsByUserCode(String userCode);
+
+	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg) throws Exception;
 
 }	
 		

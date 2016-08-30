@@ -99,13 +99,17 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			
+			
 			for (OrgRelations orgRelation : clientsList) {
 				 //to fetch user details by usercode 
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+
 				orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 				
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId());
 				orgRelation.setNoOfContatcs(orgSpocs.size());
+
 			}
 		
 			

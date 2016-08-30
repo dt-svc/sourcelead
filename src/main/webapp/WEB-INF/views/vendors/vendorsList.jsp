@@ -136,7 +136,7 @@
 		result = result
 				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
 				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
-		result = result + '<li><a href="#tab-2">Contacts</a></li>'; 
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+ orgRelationId + ');">Contacts</a></li>'; 
 		result = result + '<li><a href="#tab-3">Documents</a></li>'; 
 		result = result + '<li><a href="#tab-4">Activity</a></li>'; 
 		result = result + '<div class="clearfix"></div>'
@@ -158,7 +158,6 @@
 		$("#vendorNameDiv").append(orgName);
 		
 		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
-		//clientDetails(clientId);
 	}
 </script>
 
@@ -279,168 +278,6 @@
 </script>
 
 
-
-<!-- for Vendor edit -->
-<script type="text/javascript">
-	function editVendorDetails(vendorLocationId,orgRelationId) {
-		var sourceleadUrl = '${sourceleadUrl}';
-		      $.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
-						success : function(data) {
-						var json = JSON.parse(data);
-						var result = "";
-						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Client Name </label>';
-						result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" >';
-						result = result + '</div>';
-						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
-						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>City</label>';
-						if(json.city != null && json.city !='' && json.city !='undefined'){
-							result = result + '<input type="text"  id="vendorCity" name="vendorCity" value="'+json.city+'" placeholder="vendor city" ></div>';
-						}else{
-							result = result + '<input type="text"  id="vendorCity" name="vendorCity"  placeholder="vendor city" value=""></div>';
-						}
-						result = result + '</div> ';
-						
-			 			result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>State</label>';
-						if(json.state != null && json.state !='' && json.state !='undefined'){
-							result = result + '<input type="text"  id="vendorState" id="vendorState" name="vendorState" value="'+json.state+'" placeholder="vendor state" ></div>';
-						}else{
-							result = result + '<input type="text"  id="vendorState" id="vendorState" name="vendorState" placeholder="vendor state" ></div>';
-						}
-						result = result + '</div> ';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Country</label>';
-						if(json.country != null && json.country !='' && json.country !='undefined'){
-							result = result + '<input type="text"  id="vendorCountry" name="vendorCountry" value="'+json.country+'" placeholder="vendor country" ></div>';
-						}else{
-							result = result + '<input type="text"  id="vendorCountry" name="vendorCountry"  placeholder="vendor country" ></div>';
-						}
-						result = result + '</div>  ';
-						
-					
-						 result = result + '<div class="clearfix"></div>';
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
-						result = result + '</div>';		
-						result = result + '<div class="clearfix"></div>';
-						result = result + ' </form>'; 
-						$(".user_summary_edit").slideToggle(100);
-						$("#editVendorDetailsDiv").empty();
-				        $("#editVendorDetailsDiv").append(result);
-					},
-				}); 
-	}
-</script>
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script>
-
-<script type="text/javascript">
-	function storeVendorDetails(orgRelationId,vendorLocationId) {
-         if ($('#editClient_form').validate(false, validationSettings)){
-    		 var frm = $('#editClient_form').serializeFormJSON();
-             var con = JSON.stringify(frm);
-             con = con.replace(/[{}]/g, "");
-             //It will escape all the special characters
-             var jsonData = encodeURIComponent(con);
-             var sourceleadUrl ='${sourceleadUrl}';
-	 	 $.ajax({
-			   	type: "POST",
-			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
-	   		    success: function(data) {
-	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
-	   		    }
-		 }); 
-	     	return true;
-         }else{
-        	 alert("dsfsdfdsfds");
-             return false;
-           }
-		
-    }
-	$('body').on('blur', '#editClient_form', function() {
-        $("#editClient_form").showHelpOnFocus();
-        $("#editClient_form").validateOnBlur(false, validationSettings);  
-    });
-</script>
-<script type="text/javascript">
-(function ($) {
-   $.fn.serializeFormJSON = function () {
-
-       var o = {};
-       var a = this.serializeArray();
-       $.each(a, function () {
-           if (o[this.name]) {
-               if (!o[this.name].push) {
-                   o[this.name] = [o[this.name]];
-               }
-               o[this.name].push(this.value || '');
-           } else {
-               o[this.name] = this.value || '';
-           }
-       });
-       return o;
-   };
-})(jQuery);
-</script>
-<script type="text/javascript">
-	function validateWebsite() {
-		var website = document.getElementById("companyWebsite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		if(website.match(/^[^\s-](.*)*$/) != null){
-		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		
-		if (website != null && website != '') {
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
-				success : function(data) {
-					var result = data;
-					if (result == "Website Duplicated" || result == "Invalid Website") {
-						//existed website
-						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
-						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
-						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
-						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-						$("#save_vendor").attr("disabled", "disabled");
-						
-					} else {
-						//New WebSite class="form-control"
-						 $("#save_vendor").removeAttr("disabled");
-						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
-						$('input#companyWebsite').attr('class','valid form-control');
-						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-				
-					}
-				},
-
-			});
-		  }
-		}
-	}
-</script>
-
- 
-
-<!-- for Vendor edit Ends -->
 <jsp:include page="../masterFooter.jsp" />
 <script src="resources/js/jquery-fun.js"></script> 
 <script>
@@ -531,4 +368,5 @@ $(".addcon-pop").click(function(){
 
 
 </script> 
-
+<jsp:include page="editVendor.jsp" />
+<jsp:include page="vendorContacts.jsp" />	
