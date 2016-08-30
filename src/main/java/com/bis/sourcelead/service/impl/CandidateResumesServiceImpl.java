@@ -6,11 +6,15 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -25,6 +29,8 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class CandidateResumesServiceImpl implements CandidateResumesService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -55,6 +61,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			candidateResume.setOrgLocationId(orgLocations);
 		}
 		
+		candidateResume.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidateResume.setCreatedDate(commonUtil.currentDate());
 		candidateResume.setUpdatedBy(user.getUserCode());
 		candidateResume.setCreatedBy(user.getUserCode());
@@ -94,6 +101,19 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception {
 		 return candidateResumesDao.getCandidateResumesListByCandidateId(candidateId);
+	}
+
+	@Override
+	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
+		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
+		return candidateResumesDao.updateCandidateResume(candidateResumes);
+		
+	}
+
+	@Override
+	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
+		logger.debug("In CandidateResumeServiceImpl class getCandidateResumeByResumeId method...");
+		return candidateResumesDao.getCandidateResumeByResumeId(resumeId);
 	}
 
 }

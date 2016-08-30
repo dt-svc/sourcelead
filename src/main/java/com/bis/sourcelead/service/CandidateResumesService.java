@@ -31,4 +31,8 @@ public interface CandidateResumesService {
 	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode,MultipartFile multiFile)throws JSONException, IOException;
 	
 	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception;
+	
+	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception;
+	
+	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception;
 }

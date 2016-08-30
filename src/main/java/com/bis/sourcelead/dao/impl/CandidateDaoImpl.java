@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ClassField;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -101,8 +102,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateList;
 		
 	}
-	
-	
-	
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.id =:candidateId";
+		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		
+		Candidate candidate = null;
+		if(candidateList != null && !candidateList.isEmpty())
+		{
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
+	}
 }

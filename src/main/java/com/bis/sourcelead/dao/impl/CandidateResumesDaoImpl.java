@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
- * @author Ajith Matta
+ * @author Venkat Kesav
  *
  */
 @Repository
 public class CandidateResumesDaoImpl implements CandidateResumesDao {
 
-	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateSkillsDaoImpl.class);
 	
 	@Autowired
@@ -74,10 +75,44 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateResumes candidateResumes  where candidateResumes.candidateId =:candidateId";  
-		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		String query = "from CandidateResumes candidateResumes where candidateResumes.candidateId =:candidateId";  
+		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateResumesList;
 		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
+		logger.debug("In Terminate Resume Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(candidateResumes != null){
+				session.saveOrUpdate(candidateResumes);
+				logger.info("Record updated successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CANDIDATE_RESUMES"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return null;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
+		logger.debug("In Candidate Resume By ResumeId");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from CandidateResumes candidateResumes where candidateResumes.id = :resumeId" ;
+		List<CandidateResumes> crList =session.createQuery(query).setLong("resumeId", resumeId).setCacheable(true).list(); 
+		CandidateResumes cr = null;
+		if(crList != null && !crList.isEmpty()){
+			cr = crList.iterator().next();
+		}
+		return cr;
 	}
 
 }
