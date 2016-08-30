@@ -221,7 +221,7 @@ public class OrgDaoImpl implements OrgDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public boolean isClientNameValid(String clientName,Long orgLocationId,Long orgRelationId) throws Exception {
+	public boolean isClientNameValid(String clientName,Long orgLocationId) throws Exception {
 		   boolean isClientFound = false;
 	        Session session = this.sessionFactory.getCurrentSession();
 	        /*String query = "from Org org where org.orgName = :clientName and org.id IN(Select orgRelations.responderLocationId.org.id from OrgRelations orgRelations "

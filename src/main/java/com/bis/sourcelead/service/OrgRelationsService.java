@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 
 public interface OrgRelationsService {
 	
@@ -35,5 +36,7 @@ public interface OrgRelationsService {
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
 	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
+
+	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long id);
 
 }

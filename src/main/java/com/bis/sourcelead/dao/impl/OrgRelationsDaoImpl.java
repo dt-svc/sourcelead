@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -178,6 +179,33 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 			return session.get(OrgRelations.class, id);
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId) {
+		logger.debug("In OrgRelations getAllVendorsContactListByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		Query vendorsListQuery= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.ownerUser.id = :loginUserId");
+		
+		
+		
+		
+		/*if (isadmin) {
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.ownerUser.id = :loginUserId ");
+            spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+        }else if(ids != null && !ids.isEmpty()){
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
+            spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
+        }else{
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :userId and spoc.status <> 'INACTIVE' ");
+            spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+        }*/
+		
+		
+		List<OrgSpoc> vandorsList = vendorsListQuery.setLong("loginUserId", loginUserId).setCacheable(true).list();
+		return vandorsList;
 	}
 	
 }
