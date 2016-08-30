@@ -194,7 +194,6 @@ public class ClientRestController {
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		logger.info("orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId)"+orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId));
 		return orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId);
 	}
 /**
