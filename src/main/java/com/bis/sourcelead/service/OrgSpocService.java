@@ -1,10 +1,10 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
-import java.util.List;
-
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 
@@ -31,6 +31,14 @@ public interface OrgSpocService {
 	 * @author Prasad Salina 
 	 * To get all the spocs
 	 */
-	List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId) throws Exception;
+	List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId) throws Exception;
+	
+	/**To get OrgSpoc by ID
+	 * @author Prasad Salina
+	 * @param Id
+	 * @return
+	 * @throws Exception
+	 */
+	OrgSpoc getOrgSpocById(Long Id) throws Exception;
 
 }

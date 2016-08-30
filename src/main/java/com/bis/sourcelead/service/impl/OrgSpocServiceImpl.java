@@ -1,8 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
-import org.json.JSONObject;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,10 +83,18 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 	}
 	@Override
-	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId) throws Exception {
-		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId);
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId) throws Exception {
+		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(userId);
+		
+		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds);
 	}
 	
+	
+	@Override
+	public OrgSpoc getOrgSpocById(Long Id) throws Exception {
+		logger.debug("In OrgSpocService class...");
+		return orgSpocDao.getOrgSpocById(Id);
+	}
 	
 
 }
