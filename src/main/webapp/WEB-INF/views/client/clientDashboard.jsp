@@ -107,14 +107,8 @@
 							<c:if test="${empty report.level}">
 								<td><div>--</div></td>
 							</c:if>
-							<c:if test="${!empty report.responderLocationId.phone}">
-								<td><div><span class="tblminwidth-125">${report.responderLocationId.phone}</span></div></td>
-							</c:if>
-
-							<c:if test="${empty report.responderLocationId.phone}">
-								<td><div>--</div></td>
-							</c:if>
 							
+							<td><div><span class="tblminwidth-125">${report.vendorCreateduserName}</span></div></td>
 							<td><div>--</div></td>
 							<td><div><i class="glyphicon glyphicon-trash"></i></div></td>
 						</c:if>

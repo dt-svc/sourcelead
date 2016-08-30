@@ -131,4 +131,9 @@ public class Constants {
 	
 	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
+	public static String MAIL_SEND = "SEND";
+	public static String MAIL_NEW = "NEW";
+	public static String MAIL_RESEND = "Resend";
+	public static String MAIL_ACCEPTED = "Accepted";
+	public static String MAIL_REJECTED = "Rejected";
 }

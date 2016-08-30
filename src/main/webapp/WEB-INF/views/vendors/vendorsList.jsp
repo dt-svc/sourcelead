@@ -45,7 +45,7 @@
                         </ul>
                     </div>
                 </li>                
-				<li><a href="add-vendor-contact.html"><i class="fa fa-plus"></i>Add contact</a></li>	
+				<li><a href="<c:url value='/vendorcontact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
                 <div class="clearfix"></div>
             </ul>

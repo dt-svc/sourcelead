@@ -6,11 +6,7 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
-<script type="text/javascript">
-window.onload = function () {
-	cscInit();
- };
-</script>
+
 
 <!-- client details View starts-->
 <script type="text/javascript">
