@@ -31,5 +31,7 @@ public interface OrgLocationService {
 
 	OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations,
 			String loginUserCode,String responderType) throws Exception;
+	
+	public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode) throws Exception;
 
 }

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,6 +82,73 @@ public class ClientRestController {
 
 	@Autowired
 	ClientService clientService;
+	
+	
+	/**
+	 * Handles to get Orgs
+	 * 
+	 * @param json
+	 * @param request
+	 * @return ResponseBody
+	 * @throws Exception
+	 */
+	
+	 @RequestMapping(value = "/getOrgs",  method = RequestMethod.POST)
+	    public @ResponseBody String getOrgs(@RequestParam(value="orgCode", required=false) String orgCode,
+	    		@RequestParam(value="json", required=false) String json) {
+	    	
+	    	ArrayList<String> orgList = new ArrayList<String>();
+			
+			List<OrgLocations> orgLocationsList = null;
+			try {
+				orgLocationsList = orgLocationService.getOrgsListForClientAndVendorOrgSearch(orgCode);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			HashMap<String, Long> hm = new HashMap<String, Long>();
+			
+			if(orgLocationsList != null)
+			{
+				for(OrgLocations orgLocations: orgLocationsList){
+					hm.put(orgLocations.getOrg().getOrgName(), orgLocations.getId());
+				}
+			}
+			return commonUtil.toJSON(hm);
+	    }
+	 
+	 
+	 /**
+		 * Handles to get Org Deatils
+		 * 
+		 * @param json
+		 * @param request
+		 * @return ResponseBody
+		 * @throws Exception
+		 */	 
+	 
+	 @RequestMapping(value = "/getOrgDetails",  method = RequestMethod.POST)
+	    public @ResponseBody String getOrgDetails(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+	    		@RequestParam(value="json", required=false) String json) {
+			
+			ArrayList<String> orgsList = new ArrayList<String>();
+			
+			OrgLocations orgLocations = null;
+			try {
+				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if(orgLocations != null)
+			{
+				orgsList.add(orgLocations.getCountry());
+				orgsList.add(orgLocations.getState());
+				orgsList.add(orgLocations.getCity());
+				orgsList.add(orgLocations.getOrg().getWebSite());
+			}
+			return commonUtil.toJSON(orgsList);
+			
+		}
+	  
 	
 	/**
 	 * Handles client as well as project save
