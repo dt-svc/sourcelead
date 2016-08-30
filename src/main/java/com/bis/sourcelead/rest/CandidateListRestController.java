@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -97,11 +99,39 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					 
-					Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long.valueOf(candidateId), loginOrgCode.getId(), loginOrgLocation.getId());
+					Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 					
+					String skillsList = "";
+					Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+					int i = 0;
+					for(CandidateSkills skilss: candidateSkills){
+						if(i <= 5){
+							skillsList = skillsList+skilss.getName();
+							if(i != candidateSkills.size()-1){
+								skillsList = skillsList+",";
+							}
+						}
+						i++;
+					}
+					
+					can.setSkillsList(skillsList);
 					resultJson = commonUtil.toJSON(can);
 					return resultJson;
-			   }
+	  }
+			 
+
+	   @RequestMapping(value = "/deleteCandidateImage" , method = RequestMethod.GET)
+	   public String deleteCandidateImage(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+		   
+		   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		   Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId), loginOrgLocation.getId());
+		   candidate.setDocFile(null);
+		   candidate.setFileContentType(null);
+		   candidate.setFileName(null);
+		   candidateService.addCandidate(candidate);
+		   return "success";
+		   
+	   }
 		 
 		 
 		 

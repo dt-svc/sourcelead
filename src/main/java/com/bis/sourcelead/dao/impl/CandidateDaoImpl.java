@@ -117,4 +117,20 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return candidate;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId)throws Exception {
+			
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		Candidate candidate = null;
+		if(candidateList != null && !candidateList.isEmpty()){
+			candidate = candidateList.iterator().next();
+		}
+		return candidate;
+		
+	}
+	
 }

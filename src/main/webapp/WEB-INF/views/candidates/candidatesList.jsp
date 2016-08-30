@@ -114,8 +114,9 @@ function clientSideBar(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-           success :function(data) {
-                if(data != null && data != 'undefined' && data != ""){
+           success :function(data) {  
+                if(data != null && data != 'undefined' && data != ""){  
+                	 var json = JSON.parse(data);
               		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -124,26 +125,65 @@ function clientSideBar(candidateId){
               		 }
               		 else{
 	                	 $("#candidateSideDiv").empty();
+	                	 var skillsList = json.skillsList;
+			             var skills = [];
+			             skills = skillsList.split(",");
+			             
 	                	 var result = "";
 			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                   <div class="media">';
-			             result = result+'                     <div class="media-left image-parent">';
-			             result = result+'                     <div class="imageParent">';
-			             result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">';
+			             
+			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
+			             result = result+'<div class="well text-center clearfix">';
+						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <label class="btn btn-sm btn-primary">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">';
+					     result = result+'  </label>';
+					     if(json.fileName != null && fileName != '' && fileName != 'undefined'){
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+							 result = result+'  <i class="fa fa-trash"></i></button>';
+					     }
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' </div>';
+						 result = result+'<div id="popUp" ></div>  ';
+						 
+						  
+						  
+			            /*  result = result+'                     <div class="media-left image-parent">';
+			             result = result+'                     <div class="imageParent">'; */
+			             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
+			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
 			             result = result+'                     </div>';
-			             result = result+'                     </div>';
+			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             result = result+'                       <h4 class="media-heading">Jaden Smith</h4>';
 			             result = result+'                       <ul class="list-unstyled">';
-			             result = result+'                         <li><strong>Business Analyst - Full Time</strong></li>';
-			             result = result+'                         <li>Experience - 4 years</li>';
+			             result = result+'                         <li><strong>'+json.firstName+' '+json.firstName+'</strong></li>';
+			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
 			             result = result+'                       </ul>';
-			             result = result+'                   </div>';
-			             result = result+'                 </div>';
-			             result = result+'                 <div class="other-detials">';
+			             
+			             
+			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="professinal-details">';
-			             result = result+'                 	<ul class="list-inline list-unstyled"><li>BA</li><li>BRS</li><li>SRS</li><li>Agile</li><li>SDLC</li></ul>';
+			             
+			            
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             for (i=0;i < skills.length;i++)
+			             {
+			            	 result = result+'<li>'+skills[i]+'</li>';
+			             }
+			             result = result+'</ul>';
+			             
 			             result = result+'                 </div>';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';
@@ -156,13 +196,15 @@ function clientSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
+			             result = result+'                   </div>';
+			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">jadensmith@hotmail.com</a></li>';
-			             result = result+'                   <li><i class="fa fa-phone"></i>+91 9900223355</li>';
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>';
-			             result = result+'                   <li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>';
-			             result = result+'                   <li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
+			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
+			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
+			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
@@ -437,7 +479,7 @@ $(document).ready(function() {
     });
 
 	// Levels adding script
-	 $(".addUser-org").click(function(event){ alert("hai");
+	 $(".addUser-org").click(function(event){  
 		 $(".collapse-div-adduser").toggleClass("showMydiv");
 		 $(".collapse-div").removeClass("showMydiv");
 		 event.preventDefault();
@@ -461,5 +503,103 @@ $(document).ready(function() {
 	   });
 });
 </script>	
+
+
+<script>
+	function predefineProfileImage(imageId){   
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+
+<script type="text/javascript">
+function deleteImage(candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+<script type="text/javascript">
+function deleteProfileImage(candidateId){  alert("hai delete");
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteCandidateImage&candidateId="+candidateId,
+	        success: function(data) {
+	        	 var result = data;
+	        	 alert("result"+result);
+	       },
+	        
+     }); 
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+
+<script type="text/javascript">
+  var loadFile = function(event) {
+    var output = document.getElementById('userImage');
+    
+    var uploadedImage = document.getElementById('uploadedImage').value;
+    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+    document.getElementById("errorImage").style.display="none"; 
+    
+    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	
+    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+ 		var msg = "."+extensionName+" extension not allowed";
+ 		alertMessage(msg);
+ 		document.getElementById("errorImage").style.display=""; 
+ 		$("#profile_submit").attr("disabled", "disabled");
+    	
+    }else if(sizeinbytes > 200000){
+    	output.src = URL.createObjectURL(event.target.files[0]);
+ 		var msg = "Image size should be less than 200 KB";
+ 		alertMessage(msg);
+ 		document.getElementById("errorImage").style.display=""; 
+ 		$("#profile_submit").attr("disabled", "disabled");
+    	
+    }else{
+    	output.src = URL.createObjectURL(event.target.files[0]);
+    	$("#profile_submit").removeAttr("disabled")
+    }
+    
+  };
+</script>
+
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+
  
 <jsp:include page="../masterFooter.jsp" />

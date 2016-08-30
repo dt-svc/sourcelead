@@ -15,6 +15,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -134,6 +135,9 @@ public class Candidate {
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
+	
+	@Transient
+	private String skillsList;
 
 
 	public Long getId() {
@@ -464,6 +468,15 @@ public class Candidate {
 	public void setCandidateEmployers(Set<CandidateEmployers> candidateEmployers) {
 		this.candidateEmployers = candidateEmployers;
 	}
-	
+
+
+	public String getSkillsList() {
+		return skillsList;
+	}
+
+
+	public void setSkillsList(String skillsList) {
+		this.skillsList = skillsList;
+	}
 	
 }
