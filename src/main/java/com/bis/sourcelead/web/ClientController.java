@@ -94,6 +94,15 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			for (OrgRelations orgRelation : clientsList) {
+				 //to fetch user details by usercode 
+				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+				if(user != null){
+					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());	
+				}
+				
+			}
+		
 			
 			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);

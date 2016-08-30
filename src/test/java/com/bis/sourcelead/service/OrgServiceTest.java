@@ -158,9 +158,8 @@ public class OrgServiceTest {
 	@Test
 	public void isClientNameValid() throws Exception{
 		
-		Boolean b =orgService.isClientNameValid("tcs",1L);
-		logger.info("isClientNameValid "+b);
-		
+	//	Boolean b =orgService.isClientNameValid("tcs",1L);
+	//	
 	}
 	
 	@Test

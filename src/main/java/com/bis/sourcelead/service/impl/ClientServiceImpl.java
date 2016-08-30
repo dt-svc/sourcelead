@@ -162,7 +162,7 @@ public class ClientServiceImpl implements ClientService{
 	 * @throws NullPointer
 	 */
 	@Override
-public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType) throws Exception {
+public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 		
 		Org org = populateOrg(jsonObj, user.getUserCode());
 		OrgLocations clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
@@ -170,7 +170,7 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 		orgLocationList.add(clientOrgLocations);
 		org.setOrgLocationsList(orgLocationList);
 		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER");
+		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
@@ -377,13 +377,13 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
-				if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+				if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
 				}else{
 					
 					orgLocations.setEmail("");
 				}
-				if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+				if(jsonObj.has("clientPhoneNumber") && jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
 					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
 				}else{
 					orgLocations.setPhone("");
@@ -418,8 +418,8 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getLocationId();
 				 }
-				// orgRelation.setLevel(jsonObj.getString(level));
-				// orgRelationsService.addOrgRelations(orgRelation);		
+				orgRelation.setLevel(jsonObj.getString(level));
+			 orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
 				if(null != org){

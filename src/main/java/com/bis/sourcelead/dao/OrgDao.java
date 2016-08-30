@@ -27,11 +27,12 @@ public interface OrgDao {
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
 	/**
 	 * Handles whether the given client is duplicate or not
+	 * @param orgRelationId 
 	 * @param clienName
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public boolean isClientNameValid(String clientName ,Long orgLocationId) throws Exception;
+	public boolean isClientNameValid(String clientName ,Long orgLocationId, Long orgRelationId) throws Exception;
 	
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;
 	
