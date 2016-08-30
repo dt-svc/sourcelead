@@ -162,13 +162,15 @@ public class ClientServiceImpl implements ClientService{
 	 * @throws NullPointer
 	 */
 	@Override
-public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType) throws Exception {
+public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 		
 		Org org = populateOrg(jsonObj, user.getUserCode());
-		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		OrgLocations clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+		Set<OrgLocations> orgLocationList = new HashSet<>();
+		orgLocationList.add(clientOrgLocations);
 		org.setOrgLocationsList(orgLocationList);
 		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
@@ -416,8 +418,8 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getLocationId();
 				 }
-				// orgRelation.setLevel(jsonObj.getString(level));
-				// orgRelationsService.addOrgRelations(orgRelation);		
+				orgRelation.setLevel(jsonObj.getString(level));
+			 orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
 				if(null != org){

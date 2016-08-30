@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -14,20 +16,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.AutoCompleteController;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -67,6 +71,9 @@ public class ClientRestController {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgSpocService orgSpocService;
 
 	@Autowired
 	ClientService clientService;
@@ -87,9 +94,10 @@ public class ClientRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.storeClient(jsonObj, user, orgLocation,responderType);
+		clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 	 	
 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
 				"Successfully you have created a client");
@@ -132,6 +140,25 @@ public class ClientRestController {
 		orgRelation.setProjectsCont(projectCount);
 		return commonUtil.toJSON(orgRelation);
 	}
+	
+	
+	/**@author Prasad Salina
+	 * To get all the spocs list
+	 * @param orgLocationId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
+	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId);
+		for (OrgSpoc orgSpoc : orgSpocsList) {
+			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+		}
+		return commonUtil.toJSON(orgSpocsList);
+	}
 
 
 	/**
@@ -163,10 +190,12 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
-	public @ResponseBody boolean isClientNameValidated(
-			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request) throws Exception {
+	@ResponseBody boolean isClientNameValidated(
+			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId());
+		logger.info("orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId)"+orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId));
+		return orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId);
 	}
 /**
  * Verifies Client Email

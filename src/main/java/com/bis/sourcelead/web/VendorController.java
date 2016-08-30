@@ -44,7 +44,7 @@ public class VendorController {
 
 	
 	@RequestMapping(value = "/vendorsList")
-	public ModelAndView vendorsList(HttpServletRequest request) {
+	public ModelAndView vendorsList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -53,6 +53,8 @@ public class VendorController {
 		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
+		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+		model.addObject("loginCountryName", countries.getName());
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
