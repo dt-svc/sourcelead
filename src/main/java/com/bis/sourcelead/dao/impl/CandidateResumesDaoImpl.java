@@ -42,10 +42,13 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-	/* 
-	 * This ADO method is used for save the candidate resumes 
-	 */
-	
+	/**
+	 * to store Candidate Resumes
+	 * @author Venkat Kesav
+	 * @param candidateResumes
+	 * @return candidateResumes
+	 * @throws NullPointerException
+    */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResumes storeCandidateResumes(CandidateResumes candidateResumes) throws Exception {
@@ -65,23 +68,30 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	
 	
 	/**
-	 * to Candidates resumes List by candidateId
+	 * to Candidates resumes List by candidateId and status
 	 * @author Venkat Kesav
-	 * @param candidateId
+	 * @param candidateId, status
 	 * @return candidateResumesList
 	 * @throws NullPointerException
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception {
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
+		logger.debug("In get Resumes list by candidateid and status method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateResumes candidateResumes where candidateResumes.candidateId =:candidateId";  
-		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+		String query = "from CandidateResumes candidateResumes where candidateResumes.candidateId =:candidateId and candidateResumes.status = :status";  
+		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setString("status", status).setCacheable(true).list();
 		return candidateResumesList;
 		
 	}
 
-
+	/**
+	 * to update Candidate Resume
+	 * @author Venkat Kesav
+	 * @param candidateResumes
+	 * @return CandidateResumes
+	 * @throws NullPointerException
+    */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
@@ -100,7 +110,14 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		return null;
 	}
 
-
+	
+	/**
+	 * to get Candidate Resume By ResumeId
+	 * @author Venkat Kesav
+	 * @param resumeId
+	 * @return CandidateResumes
+	 * @throws NullPointerException
+    */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {

@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.HashSet;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -190,7 +191,14 @@ public class CandidateServiceImpl implements CandidateService {
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception {
 		 return candidateDao.getCandidatesListByOrgLocationID(orgLocationId);
 	}
-
+	
+	/**
+	 * to get Candidate By CandidateId
+	 * @author Venkat Kesav
+	 * @param candidateId
+	 * @return Candidate
+	 * @throws Exception
+    */
 	@Override
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
 		return candidateDao.getCandidateByCandidateId(candidateId);

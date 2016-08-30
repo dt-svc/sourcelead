@@ -2,19 +2,46 @@
 <script>
 function candidateResume(candidateId){
 	var result ="";
-	result = result+'	    <div class="project_tabs_inn_head">';
-	result = result+'	    	<a href="#" onClick="flushResume(); addResume();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
-	result = result+'	          <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+		result = result+'	    	<a href="#" onClick="addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="resumesList" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	
+	
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-5").empty();  
+    $("#tab-6").empty();  
+    $("#tab-2").append(result); 
+    
+}
+</script>
+
+<script>
+function closeResumePopup(){
+	 $("#popUpDivResume").removeClass("edit-details-active");
+}
+</script>
+<script>
+function addResume(candidateId) {	
+	var result = "";
+	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" enctype="multipart/form-data" method="post">';
+	result = result+'	           <i class="fa fa-close close-div" onClick="closeResumePopup();"></i>';
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
-	result = result+'	                <form id="candidateResume_form" name="candidateResume_form" method="post">';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <input type="text" class="form-control input-sm" id="title"  name="title"  value="" placeholder="Title">';
+	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_Space validate_Description validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_Space validate_Description validate_length length5-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -30,30 +57,12 @@ function candidateResume(candidateId){
 	result = result+'	                  <div class="clearfix mr">';
 	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+');">Add</button>';
 	result = result+'	                  </div>';
-	result = result+'	                </form>';
 	result = result+'	                </div>';
-	result = result+'	              </div>';
-	result = result+'	    </div>';
+	result = result+'	                </form>';
 	
-	result = result+'   <div id="resumesList"></div>'; 
+	$("#popUpDivResume").empty();
+	$("#popUpDivResume").append(result);
 	
-    $("#tab-1").empty();
-    $("#tab-2").empty(); 
-    $("#tab-3").empty();  
-    $("#tab-4").empty();  
-    $("#tab-5").empty();  
-    $("#tab-6").empty();  
-    $("#tab-2").append(result); 
-    
-    /* upload file script */
-    document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value;
-    };
-}
-</script>
-
-<script>
-function addResume() {	
 	$(".edit-details").toggleClass("edit-details-active");
 	$(".close-div").click(function(){
 		$(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -64,10 +73,16 @@ function addResume() {
 	 $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
 	   });	
+	 
+	 /* upload file script */
+	    document.getElementById("uploadBtn").onchange = function () {
+	    document.getElementById("uploadFile").value = this.value;
+	    };
 	   
 	}
 </script>	 
-        
+  
+<!-- Resume saving script -->
 <script type="text/javascript">
 	function storeCandidateResume(candidateId){
 			var validationSettings = {
@@ -83,6 +98,7 @@ function addResume() {
 				var form = $('#candidateResume_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
+				$("#candidateResume_form").attr("disabled", "disabled");
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -93,7 +109,10 @@ function addResume() {
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
 						success : function(result) {
-							candidateResumesList(candidateId);
+							 /* candidateResumesList(candidateId); */
+							 $("#popUpDivResume").removeClass("edit-details-active");
+							 candidateResumesList(candidateId);
+	               			 
 						},
 					});
 					return true;
@@ -101,18 +120,25 @@ function addResume() {
 					return false;
 			 } 
 		}
+		$('body').on('blur', '#candidateResume_form', function() {
+		$("#candidateResume_form").showHelpOnFocus();
+		$("#candidateResume_form").validateOnBlur(false, validationSettings);
+	});
 </script>
 
+<!-- Resume list preparation -->
 <script>
   function candidateResumesList(candidateId){ 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
+	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(data) {
-				if(data == null && data == 'undefined' && data == ""){
+				 var json = JSON.parse(data);
+				if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
 						result = result+"   <div class='row'>"; 
 					 	result = result+"	<div class='col-lg-12'>"; 
 					 	result = result+"		<div class='content-area clearfix'>"; 
@@ -124,7 +150,6 @@ function addResume() {
 					 	result = result+"	</div>"; 
 					 	result = result+"  </div> "; 
 					}else{
-						result = result+'	    <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 						result = result+'	      <table>';
 						result = result+'	        <tbody>';
 						result = result+'	          <tr>';
@@ -135,8 +160,9 @@ function addResume() {
 						result = result+'	            <th>Action</th>';
 						result = result+'	          </tr>';
 						
-						 var json = JSON.parse(data);
+						
 			             for (var i = 0; i < json.length; i++) {
+			            	 	resumesCount = json.length;
 				            	var opt = json[i];
 				            	var title = "";
 				            	var description = "";
@@ -150,36 +176,35 @@ function addResume() {
 				            	}else{
 				            		description = 'NO DATA';
 				            	}
+				            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+				            		createdBy = opt.createdBy;
+				            	}else{
+				            		createdBy = 'NO DATA';
+				            	}
 				            	
 				            	result = result+'	          <tr>';
 				           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
 				           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
 				           		result = result+'	            <td><div><span>'+description+'</span></div></td>';
-				           		result = result+'	            <td><div><span>'+opt.createdBy+'</span></div></td>';
+				           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
 				           		result = result+'	            <td><div><a class="glyphicon glyphicon-eye-open" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></div></td>';
 				           		result = result+'	          </tr>';
 			             }
 			            result = result+'	          </tbody>';
 			       		result = result+'	      </table>';
-			       		result = result+'	    </div>';
 					}
+				if(resumesCount>4){
+					$("#addCandidateResume").hide();
+				}
+				$("#resumesList").empty();
 				$("#resumesList").append(result); 
 				},
 		});
   }
 </script>
 
-<script type="text/javascript">
-function flushResume(){
-     $('#title').val('');
-     $('#description').val('');
-	 $('#uploadBtn').val('');
-	 $('#uploadFile').val('');
-	 $(".error").removeClass("error");
-	 $('#newResumeDiv').find('p.jquery_form_error_message').remove();
-}
-</script>
 
+<!-- Resume soft deletion -->
 <script>
 function deleteResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -189,6 +214,7 @@ function deleteResume(candidateId, resumeId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
    		    success: function(data) {
+   		    	candidateResume(candidateId);
    		    	candidateResumesList(candidateId);
    		    }
 	     });

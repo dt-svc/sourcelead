@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -62,10 +63,13 @@ public class CandidateResumeRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	UserService userService;
+	
 	/**
 	* @author Venkat Kesav 
 	* Handles Resume saving for Candidate
-	* @param json
+	* @param json, candidateId
 	* @param request
 	* @return ResponseBody
 	* @throws Exception
@@ -100,16 +104,24 @@ public class CandidateResumeRestController {
 	* @author Venkat Kesav 
 	* This method is used to get candidate resumes list
 	* @param candidateId
-	* @param request
 	* @return resultJson
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
 	public @ResponseBody String candidateResumesListByCandidateId(String candidateId) throws Exception {
 
-		String resultJson;
-		List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateId(Long.parseLong(candidateId));
-		resultJson = commonUtil.toJSON(candidateResumesList);
+		String resultJson = null;
+		String status = Constants.CANDIDATE_ACTIVE;
+		if(candidateId != null){
+			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
+			for(CandidateResumes candidateResume : candidateResumesList){
+				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
+				if(createdUser != null){
+					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
+				}
+			}
+			resultJson = commonUtil.toJSON(candidateResumesList);
+		}
 		return resultJson;
 	}
 	
@@ -117,7 +129,7 @@ public class CandidateResumeRestController {
 	/**
 	* @author Venkat Kesav 
 	* This method is used to update Resume
-	* @param candidateId
+	* @param resumeId
 	* @param request
 	* @return resultJson
 	* @throws Exception

@@ -13,7 +13,7 @@ public interface CandidateResumesDao {
 	
 	public CandidateResumes storeCandidateResumes(CandidateResumes candidateResumes) throws Exception; 
 	
-	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception;
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception;
 	
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception;
 	

@@ -19,18 +19,11 @@ import com.bis.sourcelead.entity.User;
  */
 public interface CandidateResumesService {
 	
-	/**
-	* @author Venkat Kesav 
-	* This Service is used to save the candidate resumes
-	* @param jsonObj, user, candidate, orgLocations
-	* @return CandidateResumes
-	* @throws NullPointerException
-	*/
 	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws Exception;
 	
 	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException;
 	
-	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception;
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception;
 	
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception;
 	

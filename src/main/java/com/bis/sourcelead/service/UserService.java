@@ -27,6 +27,8 @@ public interface UserService  {
 	
 	User getUserById(Long Id) throws Exception;
 	
+	User getUserByUserCode(String userCode) throws Exception;
+	
 	User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception;
 
 	public Collection<User> getUsers() throws Exception;

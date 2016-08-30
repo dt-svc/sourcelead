@@ -99,17 +99,24 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	}
 	
 	/**
-	 * to Candidates resumes list by candidate Id
+	 * to Candidates resumes list by candidate Id And Status
 	 * @author Venkat Kesav
-	 * @param candidateId
+	 * @param candidateId, status
 	 * @return List<CandidateResumes>
 	 * @throws Exception
     */
 	@Override
-	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception {
-		 return candidateResumesDao.getCandidateResumesListByCandidateId(candidateId);
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
+		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 	}
-
+	
+	/**
+	 * to update Candidate Resume
+	 * @author Venkat Kesav
+	 * @param candidateResumes
+	 * @return CandidateResumes
+	 * @throws Exception
+    */
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
@@ -117,6 +124,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		
 	}
 
+	/**
+	 * to Candidate Resume By ResumeId
+	 * @author Venkat Kesav
+	 * @param resumeId
+	 * @return CandidateResumes
+	 * @throws Exception
+    */
 	@Override
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class getCandidateResumeByResumeId method...");

@@ -3,12 +3,13 @@ function candidateEducation(candidateId){
 	
 	var result = "";
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">                                                                                                    ';
-	result = result  +'    	<a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
-	result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
-	result = result  +'     </div>  ';
-	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result  = result + '   <div id="candidateEducationList" ></div>';
-	result  = result + '   </div>';
+		result = result  +'    	<a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="candidateEducationList" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
 	  
 
     $("#tab-1").empty();

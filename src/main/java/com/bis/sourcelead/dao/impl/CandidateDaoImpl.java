@@ -102,7 +102,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateList;
 		
 	}
-
+	
+	/**
+	 * to get Candidate By CandidateId
+	 * @author Venkat Kesav
+	 * @param candidateId
+	 * @return Candidate
+	 * @throws NullPointerException
+    */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
