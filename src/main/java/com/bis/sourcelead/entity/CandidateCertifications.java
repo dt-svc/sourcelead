@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -57,7 +58,13 @@ public class CandidateCertifications {
 
 	@Column(name = "VALIDTO")
 	private Date validTo;
-
+	
+	@Transient
+	private String candidatevalidFromDateToString;
+    
+	@Transient
+	private String candidatevalidToDateToString;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -148,6 +155,22 @@ public class CandidateCertifications {
 
 	public void setValidTo(Date validTo) {
 		this.validTo = validTo;
+	}
+	
+	public String getCandidatevalidFromDateToString() {
+		return candidatevalidFromDateToString;
+	}
+
+	public void setCandidatevalidFromDateToString(String candidatevalidFromDateToString) {
+		this.candidatevalidFromDateToString = candidatevalidFromDateToString;
+	}
+
+	public String getCandidatevalidToDateToString() {
+		return candidatevalidToDateToString;
+	}
+
+	public void setCandidatevalidToDateToString(String candidatevalidToDateToString) {
+		this.candidatevalidToDateToString = candidatevalidToDateToString;
 	}
 
 	public Date getCreatedDate() {

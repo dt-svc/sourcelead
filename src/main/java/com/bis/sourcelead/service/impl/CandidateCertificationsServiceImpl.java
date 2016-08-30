@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
@@ -88,7 +89,12 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 		@Override
 		public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 				Long orgLocationId) throws Exception {
-			 return candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
+			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
+			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
+				 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertifications.getValidFrom()));
+				 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_YMD.format(candidateCertifications.getValidTo()));
+				    }
+			 return CandidateCertificationsList;
 	}
 
 }

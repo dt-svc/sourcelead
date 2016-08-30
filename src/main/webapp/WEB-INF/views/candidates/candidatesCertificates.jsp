@@ -3,7 +3,7 @@ function candidateCertificate(candidateId){
 	 
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head">                                                                          ';
-	result  = result + '   	<a href="#" onClick="addCertification();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+	result  = result + '   	<a href="javascript:void(0)" onClick="addCertification('+candidateId+');" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
 	result  = result + '     <!-- Popup Div -->                                                                                         ';
 	result  = result + '         <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
 	result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
@@ -66,7 +66,6 @@ function candidateCertificate(candidateId){
     
     candidateCertificateList(candidateId);
     
-    
 }
 </script>
 
@@ -77,55 +76,53 @@ function candidateCertificate(candidateId){
 
 <script>
 function storeCertificate(candidateId){
+	
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-	if ($('#Candidate_certification_form').validate(false, validationSettings)) {
-	     var frm = $('#Candidate_certification_form').serializeFormJSON();
+		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
+			var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-		 var jsonData = encodeURIComponent(con);
-		 var sourceleadUrl = '${sourceleadUrl}';
-		 $("#Candidate_certification_form").attr("disabled", "disabled");
-		
-	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,      
-          success :function(data) {
-        	  if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}
-             		
-             		else{
-              			 $("#popUpDiv").removeClass("edit-details-active");
-              			 candidateEducationList(candidateId);
-			    	}
-
-        	  }
-						
-          },
-});
-	 return true; 
-	} else {
-		return false;
+			var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#Candidate_certification_form").attr("disabled", "disabled");
+				$.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
+								+ jsonData + "&candidateId=" + candidateId,
+						success : function(data) {
+							if (data != null && data != 'undefined'
+									&& data != "") {
+								if (data.indexOf('Sign In') >= 0) {
+									location.replace(sourceleadUrl);
+								} else if (data.indexOf('exception') >= 0) {
+									location.replace(sourceleadUrl+ "/errorPage");
+								}
+									else{
+										location.replace(sourceleadUrl+ "/candidatesList#");
+							   }
+							}
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
 	}
-}
-
-$('body').on('blur', '#Candidate_certification_form', function() {
-	$("#Candidate_certification_form").showHelpOnFocus();
-	$("#Candidate_certification_form").validateOnBlur(false, validationSettings);
-});
+	$('body').on('blur','#Candidate_certification_form',
+			function() {
+				$("#Candidate_certification_form").showHelpOnFocus();
+				$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
+			});
 </script>
 
 
-
+<!-- this script is for serializeFormJSON -->
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -188,8 +185,8 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.score+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.validFrom+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.validTo+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.candidatevalidFromDateToString+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.candidatevalidToDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    	 result  = result + '         </tr>';
 	                      } 
@@ -224,9 +221,6 @@ function addCertification() {
 		 $(".edit-details").toggleClass("edit-details-active");
 	 }); */
 	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){
-		 $(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
