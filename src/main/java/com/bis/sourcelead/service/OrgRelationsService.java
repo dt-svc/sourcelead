@@ -33,5 +33,7 @@ public interface OrgRelationsService {
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
+	
+	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
 
 }
