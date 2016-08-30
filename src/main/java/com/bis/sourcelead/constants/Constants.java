@@ -132,4 +132,11 @@ public class Constants {
 	
 	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
+	/**  For LookUpData (Eductions,Skills) **/
+	
+	public static String EDUCATIONS = "Eductions";
+	public static String SKILLS = "Skills";
+	
+	
+	
 }

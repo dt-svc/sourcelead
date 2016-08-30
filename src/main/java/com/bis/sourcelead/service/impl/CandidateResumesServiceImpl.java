@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -79,14 +80,20 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	}
 	
 	@Override
-	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode,MultipartFile multiFile)throws JSONException, IOException{
+	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException{
 			 HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
 			 CandidateResumes candidateResumes = new CandidateResumes();
 			 if(multiFile != null){
+				 candidateResumes.setCandidateId(candidate);
 				 candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
 				 candidateResumesList.add(candidateResumes);
+				 candidateResumes.setCreatedDate(new Date());
+				 candidateResumes.setCreatedBy(userCode);
+				 candidateResumes.setUpdatedBy(userCode);
+				 candidateResumes.setUpdatedDate(new Date());
+				 candidateResumes.setOrgLocationId(orgLocations);
 			 }
 	     return candidateResumesList;
 	}

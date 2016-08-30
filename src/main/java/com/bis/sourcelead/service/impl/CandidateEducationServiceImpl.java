@@ -99,11 +99,18 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,Long orgLocationId,String userCode) throws JSONException {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(jsonObj.has("candidateEducation")){
-		    	CandidateEducation ce = new  CandidateEducation();
-		    	ce.setName(jsonObj.getString("candidateEducation"));
-		    	candidateEducationList.add(ce);
+		    	  String education = jsonObj.getString("candidateEducation");
+		    	  education = education.replaceAll("\\[", "").replaceAll("\\]","");
+		  	      String[] educations = education.split(",");
+		    	  for (String edu : educations) {
+		    		  CandidateEducation ce = new  CandidateEducation();
+		    		  edu = edu.replace("\"", "");
+		    		  ce.setName(edu);
+		    		  candidateEducationList.add(ce);
+		    	  }
 		    }
 			return  candidateEducationList;
 	  }
+
 
 }

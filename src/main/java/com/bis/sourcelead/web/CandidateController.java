@@ -15,10 +15,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -34,6 +36,9 @@ public class CandidateController {
 	@Autowired
 	CountriesService countriesService;
 	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -48,6 +53,10 @@ public class CandidateController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
             model.addObject("loginCountryName", countries.getName());
+            
+            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByEducation(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
 			return model;
 	    }
 	

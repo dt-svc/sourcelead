@@ -28,7 +28,7 @@ public interface CandidateResumesService {
 	*/
 	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws Exception;
 	
-	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,Long orgLocationId,String userCode,MultipartFile multiFile)throws JSONException, IOException;
+	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException;
 	
 	public List<CandidateResumes> getCandidateResumesListByCandidateId(Long candidateId) throws Exception;
 	

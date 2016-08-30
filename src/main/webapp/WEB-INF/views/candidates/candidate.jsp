@@ -5,9 +5,13 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -250,12 +254,23 @@
           </div>
         </div>
         
-        <div class="form-group">
+       <%--  <div class="form-group">
           <label class="col-md-3">Education</label>
           <div class="col-md-9">
              <input type="text" class="form-control" id="candidateEducation" name="candidateEducation" value="${candidateEducation}"  field-name="Education"  value="">
           </div>
-        </div>
+        </div> --%>
+        
+         <div class="form-group">
+              <label class="col-md-3">Education</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <c:forEach var="edu" items="${educationsList}">
+	                     <option value="${edu.name}">${edu.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
         <div class="form-group">
           <label class="col-md-3">Employer's</label>
@@ -305,7 +320,6 @@
 
 <script type="text/javascript">
 	function storeCandidate() {
-		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -438,3 +452,23 @@ document.getElementById("uploadFile").value = this.value;
 </script>
 
 <!-- Country,State,City Script Ends Here -->
+
+
+<!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
+<!-- Eductions and Skills Autocomplete Scripts End Here -->
