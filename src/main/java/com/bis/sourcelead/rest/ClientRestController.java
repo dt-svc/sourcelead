@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
+
 import com.bis.sourcelead.entity.Org;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -207,6 +210,9 @@ public class ClientRestController {
 		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
+		 //to fetch user details by usercode 
+		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 		return commonUtil.toJSON(orgRelation);
 	}
 	
@@ -218,8 +224,10 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
-	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId);
+
+	public @ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
@@ -229,6 +237,42 @@ public class ClientRestController {
 		return commonUtil.toJSON(orgSpocsList);
 	}
 
+	/** To Terminate Spoc soft deletion only)
+	 * @author Prasad Salina
+	 * @param spocId
+	 * @param reason
+	 * @return
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/terminateSpoc", method = RequestMethod.POST)
+	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="reason", required=false) String reason) throws Exception{
+		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+				if(orgSpoc != null){
+					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
+					orgSpoc.setTerminateReason(reason);
+					orgSpocService.addOrgSpoc(orgSpoc);
+				}
+			
+				return "success";
+		}
+	 
+	 /** To change the spoc status
+	  * @author Prasad Salina
+	  * @param spocId
+	  * @param reason
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/changeSpocStatus", method = RequestMethod.POST)
+	 public @ResponseBody String changeSpocStatus(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="spocStatus", required=false) String spocStatus) throws Exception{
+		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+				if(orgSpoc != null){
+					orgSpoc.setSpocStatus(spocStatus);
+					orgSpocService.addOrgSpoc(orgSpoc);
+				}
+			
+				return "success";
+		}
 
 	
 	/**
