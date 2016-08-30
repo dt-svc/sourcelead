@@ -2,5 +2,5 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','STARTMO
 CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','ENDMONTH',' VARCHAR(10) NULL AFTER `STARTDATE`');
 
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','STARTYEAR','VARCHAR(10) NULL AFTER `STARTMONTH`')
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','ENDYEAR',' VARCHAR(10) NULL AFTER `ENDMONTH`')
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','STARTYEAR','VARCHAR(10) NULL AFTER `STARTMONTH`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','ENDYEAR',' VARCHAR(10) NULL AFTER `ENDMONTH`');
