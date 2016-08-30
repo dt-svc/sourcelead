@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -42,13 +45,16 @@ public class CandidateCertificationsRestController {
 	 * @return ResponseBody
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json) throws Exception {
+	   @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
+		public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
-		String jsonc = "{" + json + "}";
-		JSONObject jsonobject = new JSONObject(jsonc);
-		candidateCertificationsService.storeCandidateCertifications(jsonobject);
-		return "candidates/candidatesCertificates";
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		String json1 = "{"+json+"}";
+		JSONObject jsonObject = new JSONObject(json1);
+		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
+		return json;
 	}
 	
 	

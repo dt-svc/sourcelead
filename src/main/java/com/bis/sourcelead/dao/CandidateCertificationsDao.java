@@ -5,6 +5,8 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 /**
  * 
@@ -21,6 +23,8 @@ public interface CandidateCertificationsDao {
 	 * @return candidateCertifications
 	 * @throws Exception
 	 */
-	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject)throws Exception;
+	public CandidateCertifications storeCandidateCertifications(CandidateCertifications candidateCertifications)throws Exception;
+
+	
 	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
 	}

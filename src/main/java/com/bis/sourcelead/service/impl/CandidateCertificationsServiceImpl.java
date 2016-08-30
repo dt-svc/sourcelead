@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -10,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * @author shivayogi
@@ -24,47 +28,63 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	private static final Logger logger = LoggerFactory.getLogger(CandidateCertificationsServiceImpl.class);
 	@Autowired
 	private CandidateCertificationsDao candidateCertificationsDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 
-	CandidateCertifications candidatecertificate;
+	
 
 	@Override
-	public CandidateCertifications storeCandidateCertifications(JSONObject jsonobject) throws Exception {
-
-		if (jsonobject.has("name")) {
-			candidatecertificate.setName(jsonobject.getString("name"));
+	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
+		CandidateCertifications candidatecertificate  = new CandidateCertifications();
+		 if(candidateId!= null){
+			 
+		if (jsonObject.has("name")) {
+			candidatecertificate.setName(jsonObject.getString("name"));
 		}
-		if (jsonobject.has("provider")) {
-			candidatecertificate.setProvider(jsonobject.getString("provider"));
+		if (jsonObject.has("provider")) {
+			candidatecertificate.setProvider(jsonObject.getString("provider"));
 		}
-		if (jsonobject.has("SCORE")) {
-			candidatecertificate.setScore(jsonobject.getString("SCORE"));
+		if (jsonObject.has("score")) {
+			candidatecertificate.setScore(jsonObject.getString("score"));
 		}
-		if (jsonobject.has("scoreType")) {
-			candidatecertificate.setScoreType(jsonobject.getString("scoreType"));
+		if (jsonObject.has("description")) {
+			candidatecertificate.setScoreType(jsonObject.getString("description"));
 		}
-		if (jsonobject.has("validFrom")) {
-			candidatecertificate.setValidFrom((Date) jsonobject.get("validFrom"));
-		}
-		if (jsonobject.has("validTo")) {
-			candidatecertificate.setValidTo((Date) jsonobject.get("validTo"));
-		}
-		if (jsonobject.has("CREATED_DATE")) {
-			candidatecertificate.setCreatedDate((Date) jsonobject.get("CREATED_DATE"));
-		}
-		if (jsonobject.has("CREATED_BY")) {
-			candidatecertificate.setCreatedBy(jsonobject.getString("CREATED_BY"));
-		}
-		if (jsonobject.has("UPDATED_DATE")) {
-			candidatecertificate.setUpdatedDate((Date) jsonobject.get("UPDATED_DATE"));
-		}
-		if (jsonobject.has("UPDATED_BY")) {
-			candidatecertificate.setUpdatedBy(jsonobject.getString("UPDATED_BY"));
-		}
-
+			if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty())) {
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					candidatecertificate.setValidFrom(sdf.parse(jsonObject.getString("validFrom")));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty())) {
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					candidatecertificate.setValidTo(sdf.parse(jsonObject.getString("validTo")));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		
-		logger.debug("In CandidateCertificationsServiceImpl class save method");
-		return candidateCertificationsDao.storeCandidateCertifications(jsonobject);
+			candidatecertificate.setCreatedBy(user.getUserCode());
+			candidatecertificate.setCreatedDate(commonUtil.currentDate());
+			candidatecertificate.setUpdatedBy(user.getUserCode());
+			candidatecertificate.setUpdatedDate(commonUtil.currentDate());
+			candidatecertificate.setOrgLocationId(orgLocationId);
+			Candidate can = new Candidate();
+			can.setId(candidateId);
+			candidatecertificate.setCandidateId(can);
+		
 	}
+		logger.debug("In CandidateCertificationsServiceImpl class save method");
+		return candidateCertificationsDao.storeCandidateCertifications(candidatecertificate);
+	}
+	
+	
+	
+	
 		@Override
 		public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 				Long orgLocationId) throws Exception {

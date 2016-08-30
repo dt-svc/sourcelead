@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 /**
  * @author Shivayogi
@@ -18,7 +21,7 @@ public interface CandidateCertificationsService {
 	 * @return CandidateCertifications
 	 * @throws Exception
 	 */
-	public CandidateCertifications storeCandidateCertifications(JSONObject jsonobject)throws Exception;
+	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject, User user, OrgLocations orgLocationId,Long candidateId)throws Exception;
 	
 	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
 			

@@ -48,6 +48,10 @@ public class CandidateCertifications {
 	@Column(name = "SCORE_TYPE")
 	private String scoreType;
 
+	@Column(name = "DESCRIPTION")
+	private String description;
+	
+	
 	@Column(name = "VALIDFROM")
 	private Date validFrom;
 
@@ -120,6 +124,14 @@ public class CandidateCertifications {
 
 	public void setScoreType(String scoreType) {
 		this.scoreType = scoreType;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Date getValidFrom() {
