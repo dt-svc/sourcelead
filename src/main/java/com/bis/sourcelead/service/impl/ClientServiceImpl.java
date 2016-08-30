@@ -162,7 +162,7 @@ public class ClientServiceImpl implements ClientService{
 	 * @throws NullPointer
 	 */
 	@Override
-public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType) throws Exception {
+public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 		
 		Org org = populateOrg(jsonObj, user.getUserCode());
 		OrgLocations clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
@@ -170,7 +170,7 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 		orgLocationList.add(clientOrgLocations);
 		org.setOrgLocationsList(orgLocationList);
 		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER");
+		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
