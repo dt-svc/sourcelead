@@ -14,8 +14,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 /**
  * 
@@ -161,6 +163,21 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				orgRelation = orgRelations.iterator().next();
 			}
 			return orgRelation;
+	}
+	
+	
+/**
+ * @author Rajashekar
+ * find OrgRelation by Id
+ * @return OrgRelations
+ * @throws Exception
+ */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getOrRelationsById(Long id) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+			return session.get(OrgRelations.class, id);
 	}
 	
 }
