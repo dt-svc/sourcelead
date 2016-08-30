@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -12,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CandidateEducationDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateEducationService;
 
 @Service
@@ -38,9 +39,18 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 */
 	
 	@Override
-	public CandidateEducation storeCandidateEducation(JSONObject jsonObject) throws Exception {
+	public CandidateEducation storeCandidateEducation(JSONObject jsonObject,Long candidateId, Long orgLocationId) throws Exception {
 		
 		CandidateEducation candidateEducation =new CandidateEducation();
+		
+		Candidate candidate = new Candidate();
+		candidate.setId(candidateId);
+		candidateEducation.setCandidateId(candidate);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(candidateId);
+		candidateEducation.setOrglocationId(orgLocations);
+		
 		
 		if(jsonObject.has("name")){
 			candidateEducation.setName(jsonObject.getString("name"));

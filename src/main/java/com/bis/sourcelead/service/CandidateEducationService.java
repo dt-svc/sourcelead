@@ -12,7 +12,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 public interface CandidateEducationService {
 
 	
-	public CandidateEducation storeCandidateEducation(JSONObject jsonObject) throws Exception;
+	public CandidateEducation storeCandidateEducation(JSONObject jsonObject,Long candidateId, Long orgLocationId) throws Exception;
 	
 
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;

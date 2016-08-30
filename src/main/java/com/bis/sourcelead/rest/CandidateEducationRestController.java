@@ -67,12 +67,13 @@ public class CandidateEducationRestController {
 	 */
 	
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEducation(@RequestParam(value = "json", required = false) String json) throws Exception {
+	public @ResponseBody String storeCandidateEducation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObject = new JSONObject(jsonc);
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		candidateEducationService.storeCandidateEducation(jsonObject);
+		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId());
 		return "success";
 	}
 	
