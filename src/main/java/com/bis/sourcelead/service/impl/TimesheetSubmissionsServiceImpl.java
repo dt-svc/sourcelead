@@ -375,10 +375,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 	 		      		
-	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
+	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 	 		      		Date previousMondayDate = previousMonday.getTime();
 	 		      		
-	 		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
+	 		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
 	 		      		Date nextSundayDate = nextSunday.getTime();
 	 		      		
 	 		      	   /**
@@ -484,10 +484,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 		      		
-		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
+		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		      		Date previousMondayDate = previousMonday.getTime();
 		      		
-		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
+		      		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
 		      		Date nextSundayDate = nextSunday.getTime();
 		      		
 		      	   /**

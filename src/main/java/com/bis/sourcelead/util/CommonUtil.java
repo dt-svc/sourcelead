@@ -381,18 +381,24 @@ public class CommonUtil {
 					}
 					
 					int totalWeeks = 0; 
+					Date tsStartDate = null;
+					Date tsEndDate = null;
+					
+					Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					tsCal.setLenient(false);
+					
 					/**
 					 * Calculating totalweeks b/w startdate and enddate
 					 * 
 					*/
 					totalWeeks = (int)((endMonday.getTimeInMillis()-startMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
-					long startMondayInMilliSeconds = startMonday.getTimeInMillis();
 					for (int week = 0; week < totalWeeks; week++) {
-						Calendar currentMondayOfTheWeek = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-						long weekVal = 7l * 24l * 60l * 60l * week * 1000l; 
-						currentMondayOfTheWeek.setTimeInMillis(startMondayInMilliSeconds + weekVal);
-						
-						TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(projectMember.getId(), currentMondayOfTheWeek.getTime());
+						if(tsStartDate == null){
+							tsCal.setTime(startMonday.getTime());
+							tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
+							tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN").getTime();
+						}
+						TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(projectMember.getId(),tsStartDate);
 						if(timesheetSubmissions != null) {
 							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
 							timesheetSubmissionsList.add(timesheetSubmissions);
@@ -400,13 +406,8 @@ public class CommonUtil {
 						else{
 							timesheetSubmissions = new TimesheetSubmissions();
 							timesheetSubmissions.setProjectMembers(projectMember);
-							
-							Calendar currentWeekEndDate = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-							currentWeekEndDate.setTimeInMillis(currentMondayOfTheWeek.getTimeInMillis() + (6l * 24l * 60l * 60l * 1000l));
-							
-							
-							timesheetSubmissions.setStartDate(currentMondayOfTheWeek.getTime());
-							timesheetSubmissions.setEndDate(currentWeekEndDate.getTime());
+							timesheetSubmissions.setStartDate(tsStartDate);
+							timesheetSubmissions.setEndDate(tsEndDate);
 							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
 							timesheetSubmissions.setCreatedDate(new Date());
 							timesheetSubmissions.setCreatedBy(user.getUserCode());
@@ -432,7 +433,8 @@ public class CommonUtil {
 							}
 							timesheetSubmissionsList.add(timesheetSubmissions);
 						}
-						
+						tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
+						tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
 					}
 				}
 			
