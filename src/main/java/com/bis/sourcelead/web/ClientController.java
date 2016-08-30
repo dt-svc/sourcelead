@@ -97,7 +97,10 @@ public class ClientController {
 			for (OrgRelations orgRelation : clientsList) {
 				 //to fetch user details by usercode 
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
-				orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+				if(user != null){
+					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());	
+				}
+				
 			}
 		
 			
