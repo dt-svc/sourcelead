@@ -147,7 +147,7 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
-	public @ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId);
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
@@ -188,10 +188,12 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
-	public @ResponseBody boolean isClientNameValidated(
-			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request) throws Exception {
+	@ResponseBody boolean isClientNameValidated(
+			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId());
+		logger.info("orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId)"+orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId));
+		return orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId);
 	}
 /**
  * Verifies Client Email

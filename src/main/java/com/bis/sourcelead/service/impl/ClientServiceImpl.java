@@ -418,8 +418,8 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getLocationId();
 				 }
-				// orgRelation.setLevel(jsonObj.getString(level));
-				// orgRelationsService.addOrgRelations(orgRelation);		
+				orgRelation.setLevel(jsonObj.getString(level));
+			 orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
 				if(null != org){
