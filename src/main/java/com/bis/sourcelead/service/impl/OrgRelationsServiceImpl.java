@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Employees;
 
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -129,5 +130,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public OrgRelations getOrRelationsById(Long orgRelationId) throws Exception {
 		return orgRelationsDao.getOrRelationsById(orgRelationId);
+	}
+
+	@Override
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId) {
+		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId);
 	}
 }
