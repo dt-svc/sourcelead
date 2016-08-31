@@ -121,47 +121,47 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="name" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
+	result = result  +'                      <input type="text" name="name" field-name="name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="specialization" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
+	result = result  +'                      <input type="text" name="specialization" field-name="specialization" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
+	result = result  +'                      <input type="text" name="startDate" class="Datepicker" field-name="startDate" id="startDate" data-validation="required" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">                               ';
+	result = result  +'                      <input type="text" name="endDate" class="Datepicker" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="grade" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
+	result = result  +'                      <input type="text" name="grade" field-name="grade" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="institute" class="form-control input-sm" value="" placeholder="Institute">                                               ';
+	result = result  +'                      <input type="text" name="institute" field-name="institute" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Institute">                                               ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
+	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-100" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
+    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEmployersStore('+candidateId+');" />'; 
 	/* result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       '; */
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
@@ -186,13 +186,6 @@ function addEducation(candidateId) {
 	   
 	}
 </script>
-
-<script>
-function closePopup(){
-	 $("#popUpDiv").removeClass("edit-details-active");
-}
-</script>
-
 
 <script>
 function candidateEducationStore(candidateId){
