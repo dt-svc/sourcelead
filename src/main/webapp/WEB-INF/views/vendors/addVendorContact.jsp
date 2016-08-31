@@ -21,7 +21,7 @@
 
  <!-- Save client Model popup  Start-->
          <div role="dialog" id="selectVendor" class="modal fade">
-         <form:form id="client_form" name="client_form" method="post">
+         <form:form id="vendor_form" name="vendor_form" method="post">
              <div class="modal-dialog">
                <div class="modal-content">
                  <div class="modal-header">
@@ -32,9 +32,9 @@
                    <div class="form-horizontal custom-form clearfix">
                      <div class="col-xs-12 col-md-12 col-lg-12">
                        <div class="form-group">
-                         <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
-                         <div class="col-lg-9" id="clientNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                         <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-lg-9" id="vendorNameDiv">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
                          </div>
                        </div>
                        <div class="form-group">
@@ -43,7 +43,6 @@
                            <input type="text" placeholder="client website" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
                        </div>
-                       
                        <div class="form-group">
 			              <label class="col-md-3">Level</label>
 			              <div class="col-md-9">
@@ -60,7 +59,7 @@
                  </div>
               </div>
              <div class="modal-footer">
-              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
+              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="saveVendor();">Save</button>
               <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
              </div>
           </div>
@@ -352,7 +351,7 @@ function validateClientName(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
-		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+		$('#vendorNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
 		$.ajax({
 			type : "GET",
@@ -368,7 +367,7 @@ function validateClientName(){
 				}else {
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
-					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$('#vendorNameDiv').find('p.jquery_form_error_message').remove();
 				}
 			},
 
@@ -376,6 +375,41 @@ function validateClientName(){
 	}
   }
 }
+</script>
+
+<script type="text/javascript">
+	function saveVendor() {
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#vendor_form').validate(false, validationSettings)) {
+			var frm = $('#vendor_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#vendor_form").attr("disabled", "disabled");
+			$("#vendor_form").addClass('button').val('Processing..');
+			$
+					.ajax({
+						type : "POST",
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+						success : function(result) {
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#vendor_form', function() {
+		$("#vendor_form").showHelpOnFocus();
+		$("#vendor_form").validateOnBlur(false, validationSettings);
+	});
 </script>
 
 <script type="text/javascript">
