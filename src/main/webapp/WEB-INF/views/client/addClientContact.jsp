@@ -329,11 +329,6 @@
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
 						success : function(result) {
-							if (result == 'clientDashboard') {
-								location.replace(sourceleadUrl
-										+ "/clientDashboard");
-							}
-
 						},
 					});
 			return true;
