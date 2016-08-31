@@ -466,7 +466,5 @@ $(document).ready(function() {
 
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />	
-<jsp:include page="addClientContact.jsp" />	
-
 <jsp:include page="../masterFooter.jsp" />	
 	
