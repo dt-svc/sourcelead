@@ -17,4 +17,6 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
+	public Candidate findByCandidateEmail(String email) throws Exception;
+	
 }

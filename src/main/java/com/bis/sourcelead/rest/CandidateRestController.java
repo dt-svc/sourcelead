@@ -70,4 +70,23 @@ public class CandidateRestController {
 		return "success";
 	}
 	
+	 /**
+	  * To  validate user email
+	  * @param EmailId
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateCandidateEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email) throws Exception {
+		 	
+		 	String result = null;
+		 	Candidate candidate = candidateService.findByCandidateEmail(email);
+		 	
+		 	if (candidate != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 }

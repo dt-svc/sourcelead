@@ -23,4 +23,6 @@ public interface CandidateService {
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
+	public Candidate findByCandidateEmail(String email) throws Exception;
+	
 }

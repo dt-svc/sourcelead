@@ -92,12 +92,16 @@
            <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email"  value="">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateCandidateEmail();" value="">
+          <span class="hidden">Valid Email</span>
           </div>
         </div>
+        
+        
+						
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
@@ -469,3 +473,36 @@ document.getElementById("uploadFile").value = this.value;
 				})
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
+<!-- Candidate Email validation script starts here -->
+
+<script type="text/javascript">
+ function validateCandidateEmail() {
+	 var email = document.getElementById("email").value; 
+	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+						  document.getElementById("email").setAttribute('record-exist','yes');
+						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#store_candidate" ).addClass('button').val('Save');
+                         $("#store_candidate").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <!-- Candidate Email validation script ends here -->
+ 

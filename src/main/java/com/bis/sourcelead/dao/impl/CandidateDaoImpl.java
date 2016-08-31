@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ClassField;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -138,6 +140,28 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return candidate;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate findByCandidateEmail(String email) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("findByEmail start");
+		try{
+			candidate = session.createQuery("from Candidate where email=:email" ).setString( "email", email ).setCacheable(true).list();
+			
+			logger.debug("findByEmail end");
+			if (candidate.size() > 0) {
+				return candidate.get(0);
+			} else {
+				return null;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			
+		}
+		return null;
 	}
 	
 }

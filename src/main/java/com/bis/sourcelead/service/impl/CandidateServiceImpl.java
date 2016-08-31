@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +35,8 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
+
+	private static final Logger logger = LoggerFactory.getLogger(CandidateServiceImpl.class);
 
 	@Autowired
 	CandidateDao candidateDao;
@@ -210,6 +214,12 @@ public class CandidateServiceImpl implements CandidateService {
 	
 		 Candidate  candidate = candidateDao.getCandidateByCandidateIdAndOrgLocationId(candidateId,orgLocationId);
 		 return candidate;
+	}
+
+	@Override
+	public Candidate findByCandidateEmail(String email) throws Exception {
+		logger.debug("In CandidateService class...");
+		return candidateDao.findByCandidateEmail(email);
 	}
 	
 }
