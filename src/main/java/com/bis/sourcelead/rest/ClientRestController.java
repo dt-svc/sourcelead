@@ -315,7 +315,7 @@ public class ClientRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/changeSpocStatus", method = RequestMethod.POST)
-	 public @ResponseBody String changeSpocStatus(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="spocStatus", required=false) String spocStatus) throws Exception{
+	 @ResponseBody String changeSpocStatus(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="spocStatus", required=false) String spocStatus) throws Exception{
 		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 				if(orgSpoc != null){
 					orgSpoc.setSpocStatus(spocStatus);
@@ -324,7 +324,21 @@ public class ClientRestController {
 			
 				return "success";
 		}
-
+	 
+	 
+	 /** To change the spoc status
+	  * @author Prasanna Vadla
+	  * @param spocId
+	  * @param reason
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
+	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId) throws Exception{
+		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
+		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());    
+		 return commonUtil.toJSON(orgSpoc);
+		}
 	
 	/**
 	 * Handles project inline editing
