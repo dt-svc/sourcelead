@@ -179,7 +179,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/vendorsList'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
