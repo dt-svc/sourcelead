@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -48,7 +49,18 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 	private String duplicateValue;
 	
 	
-	
+	/**
+	 * @author Ajith
+	 * 
+	 * This Method is for storing  CandidateCertifications
+	 * 
+	 * @param candidateCertifications
+	 * 
+	 * @return {@link CandidateCertifications}
+	 * 
+	 * @exception NullPointerException
+	 * 
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateCertifications storeCandidateCertifications(CandidateCertifications candidateCertifications) throws Exception {
@@ -69,15 +81,60 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 		
 		
 	}
-
+	
+	
+	/**
+	 * @author Sammeta David Raju
+	 * 
+	 * This Method is for getting CandidateCertificationList By CandidateId And OrgLocationID
+	 * 
+	 * @param candidateId
+	 * 
+	 * @param orgLocationId
+	 * 
+	 * @return  List<CandidateCertifications>
+	 * 
+	 *@exception NullPointerException 
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateCertifications cc where cc.orgLocationId.id =:orgLocationId and cc.candidateId.id =:candidateId";  
+		String query = "from CandidateCertifications cc where cc.orgLocationId.id =:orgLocationId and cc.candidateId.id =:candidateId and cc.status = 'ACTIVE'";  
 		List<CandidateCertifications> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 		return candidateCertifications;	
+	}
+
+
+	/**
+	 * @author Sammeta David Raju
+	 * 
+	 * This Method is for getting CandidateCertificate By candidateId and CertificateId
+	 * 
+	 * @param candidateId
+	 * @param candidateCertificateId
+	 * 
+	 * @return  {@link CandidateCertifications}
+	 * 
+	 *@exception NullPointerException 
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateCertifications getCandidateCertificateBycandidateIdandCertificateId(Long candidateId,
+			Long candidateCertificateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCertifications  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateCertificateId and cEmp.candidateId.id = :candidateId ";
+		List<CandidateCertifications> certificatesList =  session.createQuery(query.toString()).setLong("candidateCertificateId", candidateCertificateId).setLong("candidateId", candidateId)
+				.setCacheable(true).list();
+		
+
+		CandidateCertifications canEMp = null;
+		if (certificatesList != null && certificatesList.size() > 0) {
+			canEMp = (CandidateCertifications) certificatesList.iterator().next();
+		}
+		return canEMp;
 	}
 }
 

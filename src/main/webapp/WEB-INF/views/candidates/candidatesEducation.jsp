@@ -63,13 +63,12 @@ function candidateEducationList(candidateId){
 	                    	 result  = result + '         <tr>';
 	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.specialization+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.startDate+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.endDate+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.startDateStr+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+opt.endDateStr+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.grade+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.institute+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.address+'</span></div></td>';
-	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
-	                    	 result  = result + '         </tr>';
+	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash" onClick ="removeEducation('+opt.id+','+candidateId+');"></i></div></td>';	                    	 result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -133,7 +132,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="startDate" class="Datepicker" field-name="startDate" id="startDate" data-validation="required" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
+	result = result  +'                      <input type="text" name="startDate" class="Datepicker" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
@@ -161,7 +160,7 @@ function addEducation(candidateId) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEmployersStore('+candidateId+');" />'; 
+    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
 	/* result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       '; */
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
@@ -169,6 +168,27 @@ function addEducation(candidateId) {
 	$("#popUpDiv").empty();
 	$("#popUpDiv").append(result);
 	
+	function educationStartDate(){
+		alert("hiiii");
+	}
+	
+	$('#startDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#endDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
 	
 	/* $(".addUser-org").click(function(){
 		 $(".edit-details").toggleClass("edit-details-active");
@@ -256,5 +276,38 @@ $('body').on('blur', '#education_form', function() {
 </script>           
 
 
+
+   <!-- this script is for removing the Education  starts --> 
+      
+<script>
+function removeEducation(candidateEducationId,candidateId){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          success :function(data) {
+
+				if(data != null && data != 'undefined' && data != ""){
+             		if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	}
+             		else if (data.indexOf('exception') >= 0) {
+             			 location.replace(sourceleadUrl+"/errorPage");
+             		}
+             		else{
+             			 $("#popUpDivEmp").removeClass("edit-details-active");
+             			candidateEducationList(candidateId);
+			    	}
+               } 
+        },
+          
+     }); 
+}
+</script> 
+
+       <!-- this script is for removing the Education  Ends -->       
+            
 
  

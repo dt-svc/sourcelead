@@ -221,8 +221,7 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
-	                    	 result  = result + '         </tr>';
+	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash" onClick ="removeCertification('+opt.id+','+candidateId+');"></i></div></td>';	                    	 result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -291,6 +290,35 @@ function selectDate(){
 };
 </script>
 
-       
-            
+     <!-- this script is for removing the Certification  starts --> 
+      
+<script>
+function removeCertification(candidateCertificationId,candidateId){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          success :function(data) {
+
+				if(data != null && data != 'undefined' && data != ""){
+             		if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	}
+             		else if (data.indexOf('exception') >= 0) {
+             			 location.replace(sourceleadUrl+"/errorPage");
+             		}
+             		else{
+             			 $("#popUpDivEmp").removeClass("edit-details-active");
+             			candidateCertificateList(candidateId);
+			    	}
+               } 
+        },
+          
+     }); 
+}
+</script> 
+
+       <!-- this script is for removing the Certification  Ends -->       
             

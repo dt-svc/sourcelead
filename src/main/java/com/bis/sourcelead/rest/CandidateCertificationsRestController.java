@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -68,6 +69,26 @@ public class CandidateCertificationsRestController {
 		resultJson = commonUtil.toJSON(candidateCertificationsList);
 		return resultJson;
 	 }
+	 
+	 
+	 /**
+		 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
+		 * @author Sammeta David Raju
+		 * @param candidateemployersId
+		 * @param candidateId
+		 * @param request
+		 * @return String
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
+		public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
+
+			String resultJson;
+
+			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId);
+			 resultJson = commonUtil.toJSON(candidatesCertificate);
+			 return resultJson;
+		}
 	 
 	
 	

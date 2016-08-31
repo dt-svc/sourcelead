@@ -16,15 +16,10 @@ import com.bis.sourcelead.entity.User;
  */
 public interface CandidateCertificationsDao {
 
-	/**
-	 * This method is used to save candidate certifications
-	 * 
-	 * @param jsonObject 
-	 * @return candidateCertifications
-	 * @throws Exception
-	 */
 	public CandidateCertifications storeCandidateCertifications(CandidateCertifications candidateCertifications)throws Exception;
-
 	
 	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
-	}
+
+	public CandidateCertifications getCandidateCertificateBycandidateIdandCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
+	
+}

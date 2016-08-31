@@ -51,6 +51,8 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	 * 
 	 * This Method is for save the candidate employers by json 
 	 * 
+	 * @param candidateEmployers
+	 * 
 	 * @return Candidateemployers
 	 * 
 	 * @exception NullPointerException
@@ -83,11 +85,14 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	 * 
 	 *This Method  is for getting Candidates Employers List By CandidateId And OrgLocationID
 	 * 
+	 * @param candidateId
+	 *
+	 * @param orgLocationId
+	 * 
 	 * @return Candidate employers list
 	 * 
 	 * @exception NullPointerException
 	 */
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId)
@@ -101,11 +106,17 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 
 	/**
 	 * This method is used for display the get Candidate Employer By candidateId and CandidateEmployerID 
+	 * 
 	 * @author Sammeta David Raju
+	 * 
+	 * @param candidateEmployersId
+	 * 
+	 * @param candidateId
+	 * 
 	 * @return CandidateEmployers
+	 * 
 	 * @throws Exception
     */
-	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateEmployersId,Long candidateId) {

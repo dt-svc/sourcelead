@@ -76,6 +76,10 @@ public class CandidateCertifications {
 
 	@Column(name = " UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = " STATUS")
+	private String status;
+	
 
 	public Long getId() {
 		return id;
@@ -204,6 +208,14 @@ public class CandidateCertifications {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	
 }

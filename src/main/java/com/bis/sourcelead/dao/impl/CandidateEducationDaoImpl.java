@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 
 @Repository
 public class CandidateEducationDaoImpl implements CandidateEducationDao{
@@ -80,10 +81,42 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
 		 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation ce where ce.orglocationId.id =:orgLocationId and ce.candidateId.id =:candidateId";  
+		String query = "from CandidateEducation ce where ce.orglocationId.id =:orgLocationId and ce.candidateId.id =:candidateId and ce.status ='ACTIVE'";  
 		List<CandidateEducation> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 		return candidateCertifications;	
 		
+	}
+
+	/**
+	 * @author Sammeta David Raju
+	 * 
+	 * This Method is for getting CandidateEducation By candidateId and candidateEducationId
+	 * 
+	 * @param candidateId
+	 * 
+	 * @param candidateCertificateId
+	 * 
+	 * @return {@link CandidateEducation}
+	 * 
+	 * @exception NullPointerException
+	 * 
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,
+			Long candidateCertificateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateCertificateId and cEmp.candidateId.id = :candidateId ";
+		List<CandidateEducation> educationList =  session.createQuery(query.toString()).setLong("candidateCertificateId", candidateCertificateId).setLong("candidateId", candidateId)
+				.setCacheable(true).list();
+		
+
+		CandidateEducation canEMp = null;
+		if (educationList != null && educationList.size() > 0) {
+			canEMp = (CandidateEducation) educationList.iterator().next();
+		}
+		return canEMp;
 	}
 
 	

@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -72,8 +74,10 @@ public class CandidateEducationRestController {
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObject = new JSONObject(jsonc);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 		
-		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId());
+		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
 		return "success";
 	}
 	
@@ -94,6 +98,31 @@ public class CandidateEducationRestController {
 		 resultJson = commonUtil.toJSON(candidatesEducationList);
 		 return resultJson;
 	}	
+	
+
+	
+	
+	 /**
+	 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
+	 *  
+	 * @author Sammeta David Raju
+	 * @param candidateemployersId
+	 * @param candidateId
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
+	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		
+		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
+		 resultJson = commonUtil.toJSON(candidateEducation);
+		 return resultJson;
+	}
+
+
 	
 	
 }
