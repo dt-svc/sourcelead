@@ -10,12 +10,12 @@
 
 <!-- client details View starts-->
 <script type="text/javascript">
-	function clientDetails(orgRelationID) {
+	function clientDetails(clientLocationId,orgRelationID) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -27,7 +27,7 @@
                         
 						result = result + '<div class="project_details">';
 						result = result + ' <div class="useredit useredit_a">';
-						result = result + '<a id="edit-client" href="javascript:editClientDetails('+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						result = result + '<a id="edit-client" href="javascript:editClientDetails('+clientLocationId+','+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 						result = result + ' </div>';
 						
 						result = result + '<div class="project_details_cta">';
@@ -93,30 +93,6 @@
 						}
 						result = result + '</div>';
 						
-						
-						/* result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Email:</strong>';
-						if(json.email != null && json.email !='' && json.email !='undefined'){
-						result = result + '<span>'+json.email+'</span><div class="clearfix"></div>';
-						}else{
-							
-							result = result + '<span>No Data</span><div class="clearfix"></div>';	
-						}
-						result = result + '</div>';
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Phone number:</strong>';
-						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
-						result = result + '<span>'+json.phone+'</span><div class="clearfix"></div>';
-						}else{
-							
-							result = result + '<span>No Data</span><div class="clearfix"></div>';	
-						}
-						result = result + '</div>'; */
-						/* result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Projects:</strong>';
-						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
-						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
-						} */
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
 						result = result + '</div>';
@@ -148,11 +124,11 @@
 
 
 <script type="text/javascript">
-	function editClientDetails(orgRelationID) {
+	function editClientDetails(clientLocationId,orgRelationID) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
+						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
 						success : function(data) {
 						var json = JSON.parse(data);
 						
@@ -193,7 +169,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
@@ -208,9 +184,9 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>State</label>';
 						if(json.state != null && json.state !='' && json.state !='undefined'){
-							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
+							result = result + '<input type="text"  id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
 						}else{
-							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" placeholder="client state" ></div>';
+							result = result + '<input type="text"  id="clientState" name="clientState" placeholder="client state" ></div>';
 						}
 						result = result + '</div> ';
 						
@@ -228,35 +204,17 @@
                         result = result + ' <div class="user_summary_edit_cta">';
                         result = result + ' <label>Level</label>';
                         result = result + ' <select id="level" name="level" >';
-                        result = result + ' <option '+selected1+'>Level1</option>';
-                        result = result + ' <option '+selected2+'>Level2</option>';
-                        result = result + ' <option '+selected3+'>Level3</option>';
-                        result = result + ' <option '+selected4+'>Level4</option>';
-                        result = result + ' <option '+selected5+'>Level5</option>';
+                        result = result + ' <option '+selected1+'>Level-1</option>';
+                        result = result + ' <option '+selected2+'>Level-2</option>';
+                        result = result + ' <option '+selected3+'>Level-3</option>';
+                        result = result + ' <option '+selected4+'>Level-4</option>';
+                        result = result + ' <option '+selected5+'>Level-5</option>';
                         result = result + ' </select>';
                         result = result + ' </div>';   
 						
-						/* result = result + '<div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + '	<label>Email</label>';
-						if(json.email != null && json.email !='' && json.email !='undefined'){
-							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  value="'+json.email+'" placeholder="client email" c></div>';
-						}else{
-							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  placeholder="client email" c></div>';
-						}
-						result = result + '</div> '; */
-						
-						/* result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Phone</label>';
-						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
-							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber"  data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
-						}
-						result = result + '</div> ';   */ 
-						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_client" type="button" value="Save" onclick="storeClientDetails('+orgRelationID+')"/ /> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetails('+orgRelationID+')"/>';
+						result = result + '<input class="us-btn" id="save_client" type="button" value="Save" onclick="storeClientDetails('+orgRelationID+','+clientLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetails('+clientLocationId+','+orgRelationID+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>';
@@ -270,7 +228,7 @@
 </script>
 
 <script type="text/javascript">
-	function storeClientDetails(orgRelationId) {
+	function storeClientDetails(orgRelationId,clientLocationId) {
          if ($('#editClient_form').validate(false, validationSettings)){
     		 var frm = $('#editClient_form').serializeFormJSON();
              var con = JSON.stringify(frm);
@@ -280,9 +238,9 @@
              var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgRelationId="+orgRelationId, 	   
+			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId,
 	   		    success: function(data) {
-	   		    	clientDetails(orgRelationId);
+	   		    	clientDetails(clientLocationId,orgRelationId);
 	   		    }
 		 }); 
 	     	return true;
