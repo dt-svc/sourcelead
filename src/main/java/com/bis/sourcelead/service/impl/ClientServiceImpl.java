@@ -343,12 +343,28 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 
 
 		@Override
-		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId) throws Exception {
+		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId,Long loginLocationId) throws Exception {
 			
-			OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			//OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
 			
 			if(null != orgRelation){
-				OrgLocations orgLocations = orgRelation.getResponderLocationId();
+				//OrgLocations orgLocations = orgRelation.getResponderLocationId();
+				
+				 OrgLocations orgLocations = null;
+					//if login user org id is equals to client location id then we get vendor list of ResponderLocationId Org details 
+					 if(orgRelation.getLocationId().getId() == loginLocationId){ 
+						 orgLocations = orgRelation.getResponderLocationId();
+					 }
+					 if(orgRelation.getResponderLocationId().getId() == loginLocationId){ 
+						 orgLocations = orgRelation.getLocationId();
+					 }
+					if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
+						orgRelation.setLevel(jsonObj.getString("level"));
+				     }
+				 orgRelationsService.addOrgRelations(orgRelation);
+				
+				
 				Org org = orgLocations.getOrg();
 				if(null != org){
 				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
@@ -377,17 +393,17 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
-				if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+				/*if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
 				}else{
 					
 					orgLocations.setEmail("");
-				}
-				if(jsonObj.has("clientPhoneNumber") && jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+				}*/
+				/*if(jsonObj.has("clientPhoneNumber") && jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
 					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
 				}else{
 					orgLocations.setPhone("");
-				}
+				}*/
 				orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));

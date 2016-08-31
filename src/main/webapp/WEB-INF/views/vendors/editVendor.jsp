@@ -65,7 +65,7 @@ window.onload = function () {
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
@@ -113,7 +113,6 @@ window.onload = function () {
 						result = result + ' <option '+selected5+'>Level-5</option>';
 						result = result + ' </select>';
 						result = result + ' </div>';	
-						
 						
 						 result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
@@ -166,7 +165,6 @@ window.onload = function () {
 </script>
 <script>
 function getAllCountries(sourceleadUrl){
-	alert("getAllCountries");
 	$.ajax({
     	type: "POST",
     	dataType: "json",

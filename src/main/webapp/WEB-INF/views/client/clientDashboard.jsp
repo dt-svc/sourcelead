@@ -41,8 +41,8 @@
                         </ul>
                     </div>                	
                 </li> -->
-						<li><a href="<c:url value='/client'/>"><i
-								class="fa fa-plus"></i>Create client</a></li>
+                        <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
+						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
@@ -179,14 +179,14 @@
 </body>
 
 <script>
-	function clientSideBar(clientId,orgName,orgRelationId) {
+	function clientSideBar(clientLocationId,orgName,orgRelationId) {
 
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
 				+ '<li class="current"><a href="#tab-1" onClick="clientDetails('
-				+ clientId + ');">Details</a></li>';
+				+ clientLocationId + + ','+ orgRelationId + ');">Details</a></li>';
 		
 		//for client contatcs tab
 		result = result + '<li><a href="#tab-2" onclick="clientContactList('+ orgRelationId + ');">Contacts</a></li>';
@@ -212,7 +212,7 @@
 		$("#clientNameDiv").append(orgName);
 		
 
-		clientDetails(clientId);
+		clientDetails(clientLocationId,orgRelationId);
 	}
 </script>
 
@@ -466,6 +466,7 @@ $(document).ready(function() {
 
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />	
+<jsp:include page="addClientContact.jsp" />	
 
 <jsp:include page="../masterFooter.jsp" />	
 	
