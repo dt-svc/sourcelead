@@ -61,7 +61,7 @@ window.onload = function () {
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
 						result = result + '<label>Client Name <span	class="text-danger">*</span></label>';
-						result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" field-name="vendor name" data-validation="required validate_Space validate_length length2-250" onblur="validateClientName(\''+json.orgName+'\',\''+orgRelationId+'\');" >';
+						result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" field-name="vendor name" data-validation="required validate_Space validate_length length2-250" onblur="flushVendor(); validateClientName(\''+json.orgName+'\',\''+orgRelationId+'\');" >';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
@@ -245,14 +245,17 @@ function getAllCountries(sourceleadUrl){
 </script>
 
 <!-- for Vendor edit Ends -->
-
+<script type="text/javascript">
+function flushVendor(){
+	$('#vendorNameDiv').find('p.jquery_form_error_message').remove();
+	$('input#vendorName').removeAttr("class record-exist record-exist-errormsg");
+}
+</script>
 
 <script type="text/javascript">
 function validateClientName(vName,orgRelationId){
 	var vendorName = document.getElementById("vendorName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	alert("vName"+vName);
-	alert("vendorName"+vendorName);
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	$('#vendorNameDiv').find('p.jquery_form_error_message').remove();
 	if(vendorName != vName){
@@ -266,12 +269,10 @@ function validateClientName(vName,orgRelationId){
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					alert("result"+result);
 					$("input#vendorName").after("<p class='jquery_form_error_message'>"+ vendorName+ " is Already Existed</span>");
 					document.getElementById("vendorName").setAttribute('record-exist', 'yes');
 					document.getElementById("vendorName").setAttribute('record-exist-errorMsg',vendorName +"  already existed");
 				} else {
-					alert("result else"+result);
 					//New WebSite class="form-control"
 					//$("#save_client").removeAttr("disabled");
 					$('input#vendorName').removeAttr("class record-exist record-exist-errormsg");

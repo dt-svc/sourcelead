@@ -47,6 +47,8 @@
                           </div>
                         </div>
 				<!-- Popup Div -->  
+				
+<div id="popUp"></div>				
 
 <!-- client details View starts-->
 <script type="text/javascript">
@@ -73,6 +75,7 @@
 	    		result = result + '		</div>';
 	    		
 	    		result = result + '        <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+	    		if(json.length != null && json.length != ''){
 		    	    result = result + '	<table>';
 		    		result = result + '	<tbody>';
 		    		result = result + '		<tr>';
@@ -123,8 +126,7 @@
 				                result = result + '	     <td><div>'+opt.ownerName+'</div></td>';
 				                
 				                result = result + ' <td><div>';
-								result = result + ' <select id="spocStatus" name="spocStatus">';
-								result = result + ' <option value="">-Select Status-</option>';
+								result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\);">';
 								result = result + ' <option '+selected1+'>Active</option>';
 								result = result + ' <option '+selected2+'>In-Active</option>';
 								result = result + ' <option '+selected3+'>New</option>';
@@ -153,7 +155,7 @@
 				                
 				                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 				                result = result + '	    <td><div>';
-				                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteSpoc('+json[i].id+'\,\''+orgRelationID+'\')";></i>';
+				                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateSpoc('+json[i].id+'\,\''+orgRelationID+'\')";></i>';
 				                	                    result = result +'</div></td>';
 			                     }
 			                     else{
@@ -163,18 +165,35 @@
 						} 
 			        	result = result + '	     </tbody>';
 			    	    result = result + '	 </table>   ';
-	    		result = result + '	     </div>';
-	    		$("#tab-2").empty();  
-	    	    $("#tab-2").append(result);  
-	    	    $("#tab-2").show();
-	    		$(".project-tabs-menu a").click(function(event) {
-	    		     event.preventDefault();
-	    		     $(this).parent().addClass("current");
-	    		     $(this).parent().siblings().removeClass("current");
-	    		     var tab = $(this).attr("href");
-	    		     $(".project_tabs_inn").not(tab).css("display", "none");
-	    		     $(tab).fadeIn();
-	    		 });
+			    	    
+			    	    result = result + '<div class="project_inn_mask"></div>';
+					    result = result + '<div class="project_error">';
+					    result = result + '	<p>User delete message here ....</p>';
+					    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
+					    result = result + '</div>';
+			    	    
+	        }else{
+   			 result = result + '<div class="table_nodata">';
+   			 result = result + '<div class="table_nodata_inn">';
+   			 result = result + '<img src="resources/images/no-data.png" />';
+   			 result = result + '<span>Nothing is here to show </b>';
+   			 result = result + '</span>';
+   			 result = result + '<div class="clearfix"></div>';
+   			 result = result + '</div>';
+   			 result = result + '</div>';
+   		 }
+    		result = result + '	     </div>';
+    		$("#tab-2").empty();  
+    	    $("#tab-2").append(result);  
+    	    $("#tab-2").show();
+    		$(".project-tabs-menu a").click(function(event) {
+    		     event.preventDefault();
+    		     $(this).parent().addClass("current");
+    		     $(this).parent().siblings().removeClass("current");
+    		     var tab = $(this).attr("href");
+    		     $(".project_tabs_inn").not(tab).css("display", "none");
+    		     $(tab).fadeIn();
+    		 });
 	        },
 	    });
 	}
@@ -230,3 +249,65 @@ $(".addcon-pop").click(function(){
 
 
 </script> 
+
+<script>
+function terminateSpoc(spocId, orgRelationID){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reasonForSpocDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function saveReason(spocId, orgRelationID){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForSpoc").value;
+	if(reason){
+		$("#reasonForSpocDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+		    	clientContactList(orgRelationID);
+		    }
+	   });
+	}else{
+		$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	  
+}
+</script>
+
+<script>
+function cancelTermination(){
+$("#popUp").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function changeSpocStatus(spocId){
+	var spocStatus = document.getElementById("spocStatus").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    success: function(data) {
+	    	clientContactList(orgRelationID);
+	    }
+   });
+}
+
+
+</script>

@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -329,6 +327,17 @@ public class UserDaoImpl implements UserDao {
 	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId "+subQuery+" ";
 	    List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
         return userRoleList;
+        
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from User user where user.reportingManager.id = :reportingManagerId and user.userState != 'INACTIVE' ";
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
+        return userIds;
         
 	}
 

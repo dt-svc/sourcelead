@@ -98,6 +98,9 @@ public class OrgRelations {
 	@Transient
 	private String vendorCreateduserName;
 	
+	@Transient
+	private Integer noOfContatcs;
+	
 	
 	public String getVendorCreateduserName() {
 		return vendorCreateduserName;
@@ -277,6 +280,12 @@ public class OrgRelations {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	
-	
+
+	public Integer getNoOfContatcs() {
+		return noOfContatcs;
+	}
+
+	public void setNoOfContatcs(Integer noOfContatcs) {
+		this.noOfContatcs = noOfContatcs;
+	}
 }
