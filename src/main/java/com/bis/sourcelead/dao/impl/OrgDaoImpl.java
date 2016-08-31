@@ -65,7 +65,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (org != null) {
-				session.save(org);
+				session.saveOrUpdate(org);
 			}
 			logger.debug("Organization Added Successfully");
 		}catch(ConstraintViolationException exception)

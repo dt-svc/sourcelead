@@ -150,32 +150,37 @@ public class ClientRestController {
 		}
 	  
 	
-	/**
-	 * Handles client as well as project save
-	 * 
-	 * @param json
-	 * @param request
-	 * @return ResponseBody
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "responderType", required = false) String responderType,
-			HttpServletRequest request) throws Exception {
+		@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
+		public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "responderType", required = false) String responderType,
+				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+				HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
 
-		clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-	 	
-		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
-				"Successfully you have created a client");
+			if(flag == false){
+				if(null != orgLocationId){
+					jsonObj.put("orgLocationId", orgLocationId);
+				}
+				
+				clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
+			 	
+				SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
+						"Successfully you have created a client");
 
-		return "clientDashboard";
-	}
+				return "clientDashboard";
+			}else{
+				return "invalid";
+			}
+			
+		} 
+
+		
 
 	/**
 	 * validate duplicate projects by project sequence number
