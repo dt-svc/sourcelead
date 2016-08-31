@@ -1,3 +1,10 @@
+<style>
+.clsDatePicker {
+	z-index: 100000 !important;
+}
+</style>
+
+
 <script>
 function candidateCertificate(candidateId){
 	 
@@ -23,29 +30,29 @@ function candidateCertificate(candidateId){
 	result  = result + '                 <div class="clearfix mb10">';
 	result  = result + '                   <div class="col-md-12">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" ';
-	result  = result + '                     data-validation="required" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required" field-name="score">';
 	result  = result + '                   </div>';
 	result  = result + '                 </div>';
 	result  = result + '                 <div class="clearfix mb10">';
 	result  = result + '                   <div class="col-md-12">';
 	result  = result + '                     <textarea class="form-control" rows="1" name ="description"  placeholder="Description"';
-	result  = result + '                     data-validation="required"></textarea>';
+	result  = result + '                     data-validation-optional="true" data-validation="required"></textarea>';
 	result  = result + '                   </div>';
 	result  = result + '                 </div>';
 	result  = result + '                 <div class="clearfix mb10">';
 	result  = result + '                   <div class="col-md-6 positionRelative">';
 	result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
-	result  = result + '                     data-validation="required" field-name="Valid From">';
+	result  = result + '                      data-validation-optional="true" data-validation=" " field-name="Valid From" id="StartDate" >';
 	result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 	result  = result + '                   </div>';
 	result  = result + '                   <div class="col-md-6 positionRelative">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
-	result  = result + '                     data-validation="required" field-name="Valid To" >';
+	result  = result + '                     data-validation-optional="true" data-validation=" " field-name="Valid To" id="EndDate" >';
 	result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 	result  = result + '                   </div>';
 	result  = result + '                 </div>';
 	result  = result + '                 <div class="clearfix mr">';
-	result  = result + '                   <button type="submit" class="btn btn-sm btn-primary pull-right"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
+	result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 	result  = result + '                 </div>';
 	result  = result + '               </div>';
 	result  = result + '              </form>';
@@ -104,7 +111,6 @@ function storeCertificate(candidateId){
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
 								else{
-									alert("raju");
 										location.replace(sourceleadUrl+ "/candidatesList");
 							   }
 							}
@@ -181,13 +187,37 @@ function candidateCertificateList(candidateId){
 	                      var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
+	                    	 var score = "";
+	                    	 var description ="";
+	                    	 var candidatevalidFromDateToString ="";
+	                    	 var candidatevalidToDateToString ="";
+				            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+				            		score = opt.score;
+				            	}else{
+				            		score = "NO DATA";
+				            	}
+				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+				            		description = opt.description;
+				            	}else{
+				            		description = "NO DATA";
+				            	}
+				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+				            	}else{
+				            		candidatevalidFromDateToString = "NO DATA";
+				            	}
+				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
+				            	}else{
+				            		candidatevalidToDateToString = "NO DATA";
+				            	}
 	                    	 result  = result + '         <tr>';
 	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.provider+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.score+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.candidatevalidFromDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.candidatevalidToDateToString+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    	 result  = result + '         </tr>';
 	                      } 
@@ -232,7 +262,27 @@ function addCertification() {
 	}
 </script>
 
-
+<script type="text/javascript"> 
+$( function(){
+		  $('#StartDate').datepicker({
+		      dateFormat: 'yy-mm-dd',
+		      onSelect: function (selected) {
+		            var dt = new Date(selected);
+		            dt.setDate(dt.getDate() + 1);
+		            $("#EndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#EndDate').datepicker({
+		      dateFormat: 'yy-mm-dd',
+		        onSelect: function (selected) {
+		            var dt = new Date(selected);
+		            dt.setDate(dt.getDate() - 1);
+		            $("#StartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+});
+</script>
 
        
             
