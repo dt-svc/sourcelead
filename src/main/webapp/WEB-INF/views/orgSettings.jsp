@@ -6,17 +6,38 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>::Org Settings</title>
+<style type="text/css">
+.comp-textarea textarea {
+min-height: 90px;
+} 
+#loading {
+z-index: 9999999999 !important;
+}
+</style>
 </head>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<meta charset="utf-8">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<!-- these files for autocomplete with tagit -->
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
+<!-- end files for autocomplete with tagit -->
+<script type="text/javascript">
+window.onload = function () {
+	cscInit();
+ };
+</script>
 
 <script>
 	function predefineOrgImage(imageId){
@@ -188,32 +209,37 @@ function cancel(){
 							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
 							</div>
 							</div>
-							<div class="form-group comp-textarea">
-							<label class="col-md-3">About</label>
-							<div class="col-md-9">
-							<textarea rows="2" name="aboutCompany" field-name="About" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							
+							<div class="form-group">
+								<label class="col-md-3">Country</label>
+								<div class="col-md-9">
+									 <input type="text" class="form-control" id="CountryAutocomplete" name="country" field-name="Client Country" value="${SourceLeadWeb_country}" readonly="readonly"/> 
+								</div>
 							</div>
+							
+							
+							<div class="form-group">
+							 <label class="col-md-3">State</label>
+							 <div class="col-md-9">
+								<input type="hidden" id="stateAutoComplete" name="state"
+									field-name="Client State" class="form-control" value="${SourceLeadWeb_orgLocations.state}" data-validation="validate_Space" data-validation-optional="true">
+							
+							    <ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
+						  	 </div>
+						   </div>
+						 
+							<div class="form-group">
+								<label class="col-md-3">City</label>
+								<div class="col-md-9">
+									<input type="hidden" id="cityAutoComplete" name="city" field-name="City" class="form-control" value="${SourceLeadWeb_orgLocations.city}" data-validation="validate_Alphabet validate_Space validate_length length2-50" data-validation-optional="true">
+								    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
+								</div>
 							</div>
+							
+							
 						</div>
 						<div class="col-md-5">
-						<div class="form-group">
-							<label class="col-md-3">Country</label>
-							<div class="col-md-9">
-							<input type="text" class="form-control" readonly="readonly" value="${SourceLeadWeb_country}" />
-							</div>
-						</div>
-						<div class="form-group mt">
-							<label class="col-md-3">State</label>
-							<div class="col-md-9">
-							<input type="text"  class="form-control" name="state" field-name="State"  data-validation="validate_Space validate_Alphabet validate_length length2-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.state}" />
-							</div>
-						</div>
-						<div class="form-group mt">
-							<label class="col-md-3">City</label>
-							<div class="col-md-9">
-							<input type="text"  class="form-control" name="city" field-name="City" data-validation="validate_Alphabet validate_Space validate_length length2-50" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.city}" />
-							</div>
-						</div>
+						
 						<div class="form-group mt">
 							<label class="col-md-3">Zip</label>
 							<div class="col-md-9">
@@ -232,6 +258,14 @@ function cancel(){
 							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_int validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
+						
+						<div class="form-group comp-textarea">
+						  <label class="col-md-3">About</label>
+							<div class="col-md-9">
+							   <textarea rows="2" name="aboutCompany" field-name="About" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							</div>
+						</div>
+							
 						</div>
 						</div>
 					<div class="clearfix">
@@ -274,7 +308,6 @@ var validationSettings = {
 	          		var frm = $('#orgSettings_form').serializeFormJSON();
 	            	var con = JSON.stringify(frm);
 				    con = con.replace(/[{}]/g, "");
-				    
 				  //It will escape all the special characters
     		        var jsonData = encodeURIComponent(con);
 				    
@@ -319,6 +352,77 @@ var validationSettings = {
             
      
 </script> 
+
+
+
+<script type="text/javascript">
+function getAllCountries(sourceleadUrl){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').tagit({
+        		allowSpaces: false,
+        		availableTags: json
+        		
+	       	 	});
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+<script>
+function getStates(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+</script> 
+
+
+<script>
+function getCities(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	var stateName = document.getElementById("stateAutoComplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+</script>
+
 
 
 <script type="text/javascript">

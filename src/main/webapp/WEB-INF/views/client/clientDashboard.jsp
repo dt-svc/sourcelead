@@ -41,8 +41,8 @@
                         </ul>
                     </div>                	
                 </li> -->
-						<li><a href="<c:url value='/client'/>"><i
-								class="fa fa-plus"></i>Create client</a></li>
+                        <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
+						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
@@ -466,6 +466,7 @@ $(document).ready(function() {
 
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />	
+<jsp:include page="addClientContact.jsp" />	
 
 <jsp:include page="../masterFooter.jsp" />	
 	
