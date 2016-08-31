@@ -277,6 +277,25 @@ public class ClientRestController {
 			
 				return "success";
 		}
+	 
+	 /** To validate spoc email id while create new spoc
+	  * @author Prasad salina
+	  * @param EmailId
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateSpocEmailId", method = RequestMethod.POST)
+	 @ResponseBody String validateSpocEmailId(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String result;
+			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId()); 
+			if (orgSpoc != null) {
+				result = "true";
+			} else {
+				result = "false";
+			}
+			return result;
+		}
 
 	
 	/**

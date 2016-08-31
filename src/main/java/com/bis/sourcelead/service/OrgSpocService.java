@@ -40,5 +40,15 @@ public interface OrgSpocService {
 	 * @throws Exception
 	 */
 	OrgSpoc getOrgSpocById(Long Id) throws Exception;
+	
+	/**To validate spoc email id while create new spoc
+	 * @author Prasad Salina
+	 * @param email
+	 * @param orgRelationId
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception;
 
 }
