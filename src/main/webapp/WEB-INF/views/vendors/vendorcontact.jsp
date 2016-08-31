@@ -69,6 +69,20 @@
                               <input type="text" class="form-control">
                             </div>
                           </div>
+                          
+                          <div class="form-group">
+			              <label class="col-md-3">Level</label>
+			              <div class="col-md-9">
+			                  <select class="form-control selectpicker" id="level" name="level">
+			                    <option value="Level-1">Level-1</option>
+			                    <option value="Level-2">Level-2</option>
+			                    <option value="Level-3">Level-3</option>
+			                    <option value="Level-4">Level-4</option>
+			                    <option selected="selected" value="Level-5">Level-5</option>
+			                  </select>
+			              </div>
+			            </div>
+			            
                         </div>
                       </div>
                     </div>
@@ -133,6 +147,20 @@
 			              </select>
                   </div>
                 </div>
+                
+                <div class="form-group">
+	              <label class="col-md-3">Status</label>
+	              <div class="col-md-9">
+	                <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
+	                  <option value="Active">Active</option>
+	                  <option value="In-Active">In-Active</option>
+	                  <option value="New">New</option>
+	                  <option value="Negotiation">Negotiation</option>
+	                  <option value="Contracted">Contracted</option>
+	                </select>
+	              </div>
+	            </div>
+	            
                 <div class="form-group">
                   <div class="col-md-12 checkbox">
                       <label><input type="checkbox" value="Y"
@@ -196,7 +224,7 @@
 			$
 					.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							if (result == 'vendorsList') {
 								location.replace(sourceleadUrl
