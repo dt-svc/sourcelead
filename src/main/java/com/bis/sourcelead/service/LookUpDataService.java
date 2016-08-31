@@ -6,6 +6,6 @@ import com.bis.sourcelead.entity.LookUpData;
 
 public interface LookUpDataService {
 	
-	public List<LookUpData> getLookUpDataByEducation(String category) throws Exception;
+	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception;
 
 }

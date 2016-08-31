@@ -12,6 +12,6 @@ import com.bis.sourcelead.entity.LookUpData;
  */
 public interface LookUpDataDao {
 
-	public List<LookUpData> getLookUpDataByEducation(String category) throws Exception;
+	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception;
 	
 }

@@ -27,8 +27,8 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	 */
 	
 	@Override
-	public List<LookUpData> getLookUpDataByEducation(String category) throws Exception {
-		return lookUpDataDao.getLookUpDataByEducation(category);
+	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
+		return lookUpDataDao.getLookUpDataByCategory(category);
 	}
 
 	
