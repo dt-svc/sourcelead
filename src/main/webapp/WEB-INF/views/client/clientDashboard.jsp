@@ -64,6 +64,7 @@
 			</c:if>
 		</div>
 
+
 		<c:if test="${!empty clientsList}">
 			<div class="clients_wrap_table ">
 				<table>
