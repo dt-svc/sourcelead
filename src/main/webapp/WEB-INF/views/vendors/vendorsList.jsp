@@ -14,7 +14,14 @@
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Vendors list</h2>
+            <h2>Vendors list
+            	<span class="select-fild">
+                	<select onchange="location = this.value;">
+                  		<!-- <option value="vendors-list.html">Search by list</option>
+                        <option value="vendors-list-contact.html">Search by Contact</option> -->
+                    </select>
+                </span>            	
+            </h2>
           </div>
           <div class="pull-right brud-crum">Home &raquo; Vendors list </div>
         </section>
@@ -51,7 +58,7 @@
             </ul>
             <div class="clearfix"></div>
         </div>
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table" id="vendors_list">
     	<table>
         	<tbody>
 			<thead>
@@ -93,6 +100,53 @@
         </table>
 	
 </div>	
+
+
+
+
+
+
+
+ <div class="clients_wrap_table" id ="vendors_contact_list">
+    	<table>
+        	<tbody>
+			<thead>
+				<tr>
+                	<th><input type="checkbox" id="checkbox1"></th>
+                	<th>Name</th>
+                    <th>Email</th>
+                    <th>Ph. No</th>
+                    <th>Owner</th>
+                    <th>Client</th>
+                    <th>Status</th>
+                    <th>Invitation</th>
+                    <th>Action</th>
+                </tr>
+			</thead>	
+			<c:forEach var="report" items="${vandorsContactListByOrgLocationId}">
+				<tr>
+                	<td class="cbox"><div><input type="checkbox" id="checkbox2"></div></td>
+                	<td><div class="proj_show"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>${report.spocEmail}</span></div></td>
+                    <td><div><span>${report.spocEmail}</span></div></td>
+                    <td><div><span>${report.spocEmail}</span></div></td>
+                    <td><div><span>Vannam</span></div></td>
+                    <td><div><select>
+						<option>Active</option>
+						<option>Closed</option>
+						<option>Process</option>
+						<option>Option</option>
+					</select></div></td>
+                    <td><div><b class="proj_closed">Rejected</b></div></td>
+                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
+                </tr>
+                	</c:forEach>			
+            </tbody>
+        </table>
+	
+</div>	
+
+
 <nav>
 <ul id="paging" class="pagination">
 	<li><a href="#">Previous</a></li>

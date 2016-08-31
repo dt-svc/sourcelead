@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -31,6 +32,9 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -139,7 +143,11 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).uniqueResult();
 		return count;
 	}
-
+	/**
+	 * Prasanna vadla
+	 * To get a Vendors list of the login user by orgLocationId
+	 * @return OrgSpoc List
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId) {
@@ -180,32 +188,31 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 			return session.get(OrgRelations.class, id);
 	}
-
+	/**
+	 * Prasanna vadla
+	 * 31/8/2016
+	 * To get a spoc list from all clients
+	 * @return OrgSpoc List
+	 */
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId) {
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,List<Long> ids ) {
 		logger.debug("In OrgRelations getAllVendorsContactListByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		Query vendorsListQuery= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.ownerUser.id = :loginUserId");
-		
-		
-		
-		
-		/*if (isadmin) {
-            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.ownerUser.id = :loginUserId ");
-            spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		List<OrgSpoc> spocsList;
+		Boolean isadmin = userRoleDao.isUserAdmin(loginUserId);
+		if (isadmin) {
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org");
+            spocsList = query.setCacheable(true).list();
         }else if(ids != null && !ids.isEmpty()){
-            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
-            spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.ownerUser IN (:ids))");
+            spocsList = query.setLong("loginUserId", loginUserId).setParameterList("ids", ids).setCacheable(true).list();
         }else{
-            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :userId and spoc.status <> 'INACTIVE' ");
-            spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
-        }*/
-		
-		
-		List<OrgSpoc> vandorsList = vendorsListQuery.setLong("loginUserId", loginUserId).setCacheable(true).list();
-		return vandorsList;
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.ownerUser.id = :loginUserId");
+            spocsList = query.setLong("loginUserId", loginUserId).setCacheable(true).list();
+        }
+		return spocsList;
 	}
 	
 }
