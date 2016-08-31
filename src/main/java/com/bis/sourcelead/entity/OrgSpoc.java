@@ -74,6 +74,18 @@ public class OrgSpoc {
 	@Transient
 	private String spocMobilePhone;
 	
+	@Transient
+	private String orgName;
+
+	
+	
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 
 	public Long getId() {
 		return id;

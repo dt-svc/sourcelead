@@ -224,8 +224,7 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
-
-	public @ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
