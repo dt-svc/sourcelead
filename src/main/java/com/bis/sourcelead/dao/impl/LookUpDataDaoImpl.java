@@ -30,11 +30,14 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	/**
 	 * This method for to get all Educations(MCA,Btech,BSC,...etc) From DB
 	 */
+	
+	
+	
 	@Override
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from LookUpData lookupdata where lookupdata.category = category ";
-	    List<LookUpData> educationsList = session.createQuery(query.toString()).setCacheable(true).list();
+	    String query = "from LookUpData lookupdata where lookupdata.category = :category ";
+	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).setCacheable(true).list();
       
 	    return educationsList;
 	}

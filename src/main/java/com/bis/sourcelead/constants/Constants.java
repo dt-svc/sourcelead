@@ -134,7 +134,7 @@ public class Constants {
 	
 	/**  For LookUpData (Eductions,Skills) **/
 	
-	public static String EDUCATIONS = "Eductions";
+	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
 	
 	

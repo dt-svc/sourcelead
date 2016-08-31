@@ -216,7 +216,7 @@
          <div class="col-md-9">
            <div class="row div-padding">
            <div class="col-xs-8 col-md-8">
-             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  value="" class="form-control">
+             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
            </div>
              <div class="col-xs-4 col-md-4">
              <select class="form-control" id="currentRateCurrency" name="currentRateCurrency">
@@ -234,7 +234,7 @@
          <div class="col-md-9">
            <div class="row div-padding">
            <div class="col-xs-8 col-md-8">
-            <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate"  value="" class="form-control">
+            <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
            </div>
              <div class="col-xs-4 col-md-4">
              <select class="form-control" id="expectedRateCurrencey" name="expectedRateCurrencey">
