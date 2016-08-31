@@ -41,4 +41,6 @@ public interface OrgSpocService {
 	 */
 	OrgSpoc getOrgSpocById(Long Id) throws Exception;
 
+	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
+
 }

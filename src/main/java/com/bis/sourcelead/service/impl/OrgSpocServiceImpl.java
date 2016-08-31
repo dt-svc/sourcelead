@@ -95,6 +95,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		logger.debug("In OrgSpocService class...");
 		return orgSpocDao.getOrgSpocById(Id);
 	}
+
+	@Override
+	public OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId) {
+		return orgSpocDao.getSpocAndOwnerDetailsById(spocId,ownerId);
+	}
 	
 
 }
