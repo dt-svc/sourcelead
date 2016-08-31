@@ -67,8 +67,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 
 	@Override
-	public OrgLocations getOrgLocationsByOrgCode(String  locationCode) throws Exception {
-		return orgLocationsDao.getOrgLocationsByOrgCode(locationCode);
+	public OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception {
+		return orgLocationsDao.getOrgLocationsByOrgCode(orgCode);
 	}
 	
 	
@@ -140,6 +140,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		
 		orgLocationsList.add(clientOrgLocations);
 		return clientOrgLocations;
+	}
+
+	@Override
+	public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode)
+			throws Exception {
+		
+		return orgLocationsDao.getOrgsListForClientAndVendorOrgSearch(orgCode);
 	}
 	
 }
