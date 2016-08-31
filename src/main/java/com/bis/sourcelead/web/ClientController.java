@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +17,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
@@ -53,6 +54,9 @@ public class ClientController {
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -91,16 +95,21 @@ public class ClientController {
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			
+			
 			for (OrgRelations orgRelation : clientsList) {
 				 //to fetch user details by usercode 
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
-				if(user != null){
-					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());	
-				}
+
+				orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 				
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId());
+				orgRelation.setNoOfContatcs(orgSpocs.size());
+
 			}
 		
 			

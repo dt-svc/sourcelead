@@ -17,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 
@@ -52,9 +53,21 @@ public class VendorController {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		
 		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId());
+		
+		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
+			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+		}
+		
 		model.addObject("loginOrgLocId",orgLoc.getId());
 		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
+		model.addObject("vandorsContactListByOrgLocationId", vandorsContactListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());

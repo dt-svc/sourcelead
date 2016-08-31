@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_SPOC','TERMINATE_REASON','TEXT NULL AFTER `STATUS`');

@@ -27,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
@@ -185,9 +187,9 @@ public class UserServiceTest {
 		
 		
 	}
+	
 	@Test
    public void findByEmail() throws Exception{
-		
 		User user = new User();
 		String email = "demomail123@gmail.com";
 		
@@ -201,14 +203,10 @@ public class UserServiceTest {
 		//User user = new User();
 		Collection<User> user  = userService.getUsers();
 		logger.info(" getUsers successfully updated "+user.size());
-		
-		
 	}
 	
 	@Test
-	
 	public void saveUserProfile() throws Exception{
-		
 		User user = new User();
 //		user.setId(10l);
 		user.setCreatedBy("srinivas");
@@ -248,8 +246,6 @@ public class UserServiceTest {
 		
 	//	userService.saveUserProfile(userProfile,request,user);
 		logger.info("saveUserProfile"+multipartFile.getSize());
-		
-			
 	}
 
 	private MultipartFile getMultiPartFile() throws IOException {
@@ -261,13 +257,12 @@ public class UserServiceTest {
 	
 	@Test
 	public void getUsersByUserRoles() throws Exception{
-		
 		Collection<User> user = userService.getUsersByUserRoles(2l);
 		logger.info("getUsersByUserRoles " + user.size());
 	}
+	
 	@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
-		
 		List<User> user = new ArrayList<User>();
 		user = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(1l,2l);
 		logger.info("getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser " + user.size());
@@ -275,7 +270,6 @@ public class UserServiceTest {
 	
 	@Test
 	public void getUsersByUserRolesAndOrgLocationId() throws Exception{
-		
 		List<User> user = new ArrayList<User>();
 		user = userService.getUsersByUserRolesAndOrgLocationId(1l);
 		logger.info("getUsersByUserRolesAndOrgLocationId " + user.size());
@@ -283,7 +277,6 @@ public class UserServiceTest {
 	
 	@Test
 	public void getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser() throws Exception{
-		
 		List<User> user = new ArrayList<User>();
 		user = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(1l,2l,1l);
 		logger.info("getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser " + user.size());
@@ -291,9 +284,99 @@ public class UserServiceTest {
 	
 	@Test
 	public void getAllUserOrgCodeAndLocationCodeTimeSheetNotification() throws Exception{
-		
 		List<Employees> employee = new ArrayList<Employees>();
 		employee = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(1l);
 		logger.info("getAllUserOrgCodeAndLocationCodeTimeSheetNotification " + employee.size());
+	}
+	
+	@Test
+	public void sendEmailToClientOrVendor() throws Exception{
+		Org loginOrg = new Org();
+		loginOrg.setOrgName("Source Lead");
+		User loginUser = new User();
+		loginUser.setFirstName("Sourcelead");
+		User user = new User();
+		user.setFirstName("Raj");
+		user.setLastName("Krishna");
+		user.setEmail("pavan.jampana@businessintelli.com");
+		userService.sendEmailToClientOrVendor(user, loginUser, "Pwd123", "Client", loginOrg);
+		logger.info(" success fully sent email to client/Vendor");
+	}
+	
+	@Test
+	public void getUserByIdAndOrgLocationsId() throws Exception{
+		User user = new User();
+		user.setId(3L);
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(3L);
+		userService.getUserByIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+		logger.info("Retrieved user details are.."+user.getFirstName());
+	}
+	
+	@Test
+	public void storeUser() throws Exception{
+		 JSONObject jsonObj = new JSONObject();
+		 jsonObj.put("firstName", "Demo_final13");
+		 jsonObj.put("lastName", "User");
+		 jsonObj.put("email", "demomail123@gmail.com");
+		 jsonObj.put("phoneNumber", "890876590");
+		 jsonObj.put("roleType", "Admin");
+		 jsonObj.put("isMailSent", "Y");
+		 jsonObj.put("employeeId", "123");
+		 jsonObj.put("rate", "15000");
+		 jsonObj.put("invoiceFrequency", "Monthly");
+		 jsonObj.put("dateofJoin", "2016-08-17");
+		 jsonObj.put("dayHours", "8");
+		 jsonObj.put("projectId", "1");
+		 
+		 User users = new User();
+		 users.setUserCode("sdf21d");
+		 users.setFirstName("Raj");
+		 users.setLastName("Tarun");
+		 
+		 OrgLocations orgLocations = new OrgLocations();
+		 orgLocations.setId(3L);
+		 
+		 String sourceType = "CREATEUSER";
+		 String responderType = "Client";
+		 
+		 Org loginOrg = new Org();
+		 loginOrg.setOrgName("SourceLead");
+		 
+		userService.storeUser(jsonObj, users, orgLocations, sourceType, responderType, loginOrg);
+		logger.info("User details Stored Successfully....");
+	}
+	
+	@Test
+	public void getOwnersByOrgLocationId() throws Exception{
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(3L);
+		List<User> list = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		logger.info("Owner details retrieved Successfully...."+list.size());
+	}
+	
+	@Test
+	public void getManagersByUserRolesAndOrgLocationId() throws Exception{
+		String roleType = "2";
+		Long orgLocationsId = 3l;
+		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+		logger.info("Manager details retrieved Successfully...."+list.size());
+	}
+	
+	@Test
+	public void getManagersByUserIdAndUserRolesAndOrgLocationId() throws Exception{
+		Long userId = 3l;
+		String roleType = "2";
+		Long orgLocationsId = 3l;
+		List<User> list = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userId,roleType,orgLocationsId);
+		logger.info("Manager details retrieved Successfully...."+list.size());
+	}
+	
+	@Test
+	public void getUserDetailsByUserCode() throws Exception{
+		User user = new User();
+		user.setUserCode("0mkBMphb");
+		user =userService.getUserDetailsByUserCode(user.getUserCode());
+		logger.info("User details retrieved Successfully...."+user.getFirstName());
 	}
 }

@@ -75,6 +75,24 @@
 						result = result + '</div>';
 						
 						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Created By :</strong>';
+						if(json.country != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
+							result = result + '<span>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Level :</strong>';
+						if(json.country != null && json.level !='' && json.level !='undefined'){
+							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
 						
 						/* result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Email:</strong>';
@@ -139,6 +157,34 @@
 						var json = JSON.parse(data);
 						
 						var result = "";
+						
+					    var selected1 = '';
+						var selected2 = '';
+						var selected3 = '';
+						var selected4 = '';
+						var selected5 = '';
+						
+						if(json.level == 'Level-1'){
+								selected1 = 'selected';
+							} 
+						
+						if(json.level == 'Level-2'){
+								selected2 = 'selected';
+							} 
+						
+						if(json.level == 'Level-3'){
+								selected3 = 'selected';
+							}
+						
+						if(json.level == 'Level-4'){
+								selected4 = 'selected';
+						}
+						
+						if(json.level == 'Level-5'){
+								selected5 = 'selected';
+						}
+						
+						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Client Name </label>';
@@ -176,6 +222,19 @@
 							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" value=""></div>';
 						}
 						result = result + '</div> ';
+						
+						
+						//level
+                        result = result + ' <div class="user_summary_edit_cta">';
+                        result = result + ' <label>Level</label>';
+                        result = result + ' <select id="level" name="level" >';
+                        result = result + ' <option '+selected1+'>Level1</option>';
+                        result = result + ' <option '+selected2+'>Level2</option>';
+                        result = result + ' <option '+selected3+'>Level3</option>';
+                        result = result + ' <option '+selected4+'>Level4</option>';
+                        result = result + ' <option '+selected5+'>Level5</option>';
+                        result = result + ' </select>';
+                        result = result + ' </div>';   
 						
 						/* result = result + '<div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + '	<label>Email</label>';

@@ -90,8 +90,8 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public boolean isClientNameValid(String clientName ,Long orgLocationId,Long orgRelationId) throws Exception {
-		return orgDao.isClientNameValid(clientName,orgLocationId,orgRelationId);
+	public boolean isClientNameValid(String clientName ,Long orgLocationId) throws Exception {
+		return orgDao.isClientNameValid(clientName,orgLocationId);
 	}
 
 	@Override

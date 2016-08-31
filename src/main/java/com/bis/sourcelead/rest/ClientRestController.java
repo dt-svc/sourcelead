@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
+
 import com.bis.sourcelead.entity.Org;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -78,6 +83,73 @@ public class ClientRestController {
 	@Autowired
 	ClientService clientService;
 	
+	
+	/**
+	 * Handles to get Orgs
+	 * 
+	 * @param json
+	 * @param request
+	 * @return ResponseBody
+	 * @throws Exception
+	 */
+	
+	 @RequestMapping(value = "/getOrgs",  method = RequestMethod.POST)
+	    public @ResponseBody String getOrgs(@RequestParam(value="orgCode", required=false) String orgCode,
+	    		@RequestParam(value="json", required=false) String json) {
+	    	
+	    	ArrayList<String> orgList = new ArrayList<String>();
+			
+			List<OrgLocations> orgLocationsList = null;
+			try {
+				orgLocationsList = orgLocationService.getOrgsListForClientAndVendorOrgSearch(orgCode);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			HashMap<String, Long> hm = new HashMap<String, Long>();
+			
+			if(orgLocationsList != null)
+			{
+				for(OrgLocations orgLocations: orgLocationsList){
+					hm.put(orgLocations.getOrg().getOrgName(), orgLocations.getId());
+				}
+			}
+			return commonUtil.toJSON(hm);
+	    }
+	 
+	 
+	 /**
+		 * Handles to get Org Deatils
+		 * 
+		 * @param json
+		 * @param request
+		 * @return ResponseBody
+		 * @throws Exception
+		 */	 
+	 
+	 @RequestMapping(value = "/getOrgDetails",  method = RequestMethod.POST)
+	    public @ResponseBody String getOrgDetails(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+	    		@RequestParam(value="json", required=false) String json) {
+			
+			ArrayList<String> orgsList = new ArrayList<String>();
+			
+			OrgLocations orgLocations = null;
+			try {
+				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if(orgLocations != null)
+			{
+				orgsList.add(orgLocations.getCountry());
+				orgsList.add(orgLocations.getState());
+				orgsList.add(orgLocations.getCity());
+				orgsList.add(orgLocations.getOrg().getWebSite());
+			}
+			return commonUtil.toJSON(orgsList);
+			
+		}
+	  
+	
 	/**
 	 * Handles client as well as project save
 	 * 
@@ -138,6 +210,9 @@ public class ClientRestController {
 		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
+		 //to fetch user details by usercode 
+		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 		return commonUtil.toJSON(orgRelation);
 	}
 	
@@ -149,8 +224,10 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
-	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId);
+
+	public @ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
@@ -160,7 +237,44 @@ public class ClientRestController {
 		return commonUtil.toJSON(orgSpocsList);
 	}
 
+	/** To Terminate Spoc soft deletion only)
+	 * @author Prasad Salina
+	 * @param spocId
+	 * @param reason
+	 * @return
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/terminateSpoc", method = RequestMethod.POST)
+	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="reason", required=false) String reason) throws Exception{
+		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+				if(orgSpoc != null){
+					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
+					orgSpoc.setTerminateReason(reason);
+					orgSpocService.addOrgSpoc(orgSpoc);
+				}
+			
+				return "success";
+		}
+	 
+	 /** To change the spoc status
+	  * @author Prasad Salina
+	  * @param spocId
+	  * @param reason
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/changeSpocStatus", method = RequestMethod.POST)
+	 public @ResponseBody String changeSpocStatus(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="spocStatus", required=false) String spocStatus) throws Exception{
+		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+				if(orgSpoc != null){
+					orgSpoc.setSpocStatus(spocStatus);
+					orgSpocService.addOrgSpoc(orgSpoc);
+				}
+			
+				return "success";
+		}
 
+	
 	/**
 	 * Handles project inline editing
 	 * @param orgRelationId
@@ -194,7 +308,7 @@ public class ClientRestController {
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId(),orgRelationId);
+		return orgService.isClientNameValid(clientName,orgLocation.getId());
 	}
 /**
  * Verifies Client Email

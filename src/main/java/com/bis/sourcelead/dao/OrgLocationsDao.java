@@ -17,5 +17,7 @@ public interface OrgLocationsDao {
     
     OrgLocations findByEmail(String email, Long orgLocationId) throws Exception;
     
+    public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode) throws Exception;
+    
     
 }
