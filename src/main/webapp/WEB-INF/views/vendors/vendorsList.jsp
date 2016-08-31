@@ -16,9 +16,9 @@
           <div class="pull-left">
             <h2>Vendors list
             	<span class="select-fild">
-                	<select onchange="location = this.value;">
-                  		<!-- <option value="vendors-list.html">Search by list</option>
-                        <option value="vendors-list-contact.html">Search by Contact</option> -->
+                	<select id="listOfVendors" onchange="listChange(this);">
+                  		 <option value="listbyVendor">Search by list</option>
+                        <option value="listbyContact" selected="selected">Search by Contact</option> 
                     </select>
                 </span>            	
             </h2>
@@ -58,7 +58,7 @@
             </ul>
             <div class="clearfix"></div>
         </div>
-    <div class="clients_wrap_table" id="vendors_list">
+    <div class="clients_wrap_table" id="vendors_list" style="display: none">
     	<table>
         	<tbody>
 			<thead>
@@ -79,7 +79,14 @@
 									onclick="vendorSideBar('${report.responderLocationId.id}','${report.id}','${report.responderLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
-					    <td><div><span title="Website" class="td_overflow">${report.responderLocationId.org.webSite}</span></div></td>                  
+					    <td><div><span title="Website" class="td_overflow">
+					    <c:if test="${(report.responderLocationId.org.webSite !=null)&&(report.responderLocationId.org.webSite !='')&&(report.responderLocationId.org.webSite !='undefined')}">
+					 	  ${report.responderLocationId.org.webSite}
+					    </c:if>
+					      <c:if test="${(report.responderLocationId.org.webSite ==null)||(report.responderLocationId.org.webSite =='')||(report.responderLocationId.org.webSite =='undefined')}">
+					 		--
+					    </c:if>
+					    </span></div></td>                  
                  		<td><div><span title="Country" class="td_overflow">${report.responderLocationId.country}</span></div></td>
                   </c:if> 
                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
@@ -87,7 +94,14 @@
 									onclick="vendorSideBar('${report.locationId.id}','${report.id}','${report.locationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</span><i
 										class="fa fa-binoculars"></i>
 								</div></td>
-                  	 	<td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">${report.locationId.org.webSite}</span></div></td>
+                  	 	<td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">
+                  	 		<c:if test="${(report.locationId.org.webSite !=null)&&(report.locationId.org.webSite !='')&&(report.locationId.org.webSite !='undefined')}">
+					 	 	 ${report.locationId.org.webSite}
+					   		 </c:if>
+					      	<c:if test="${(report.locationId.org.webSite ==null)||(report.locationId.org.webSite =='')||(report.locationId.org.webSite =='undefined')}">
+					 			--
+					    	</c:if>
+                  	 	</span></div></td>
                    	    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
                    </c:if> 
                     <td><div>20</div></td>
@@ -102,12 +116,7 @@
 </div>	
 
 
-
-
-
-
-
- <div class="clients_wrap_table" id ="vendors_contact_list">
+ <div class="clients_wrap_table" id ="vendors_contact_list" >
     	<table>
         	<tbody>
 			<thead>
@@ -128,16 +137,18 @@
                 	<td class="cbox"><div><input type="checkbox" id="checkbox2"></div></td>
                 	<td><div class="proj_show"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
                     <td><div><span>${report.spocEmail}</span></div></td>
-                    <td><div><span>${report.spocEmail}</span></div></td>
-                    <td><div><span>${report.spocEmail}</span></div></td>
-                    <td><div><span>Vannam</span></div></td>
-                    <td><div><select>
-						<option>Active</option>
-						<option>Closed</option>
-						<option>Process</option>
-						<option>Option</option>
-					</select></div></td>
-                    <td><div><b class="proj_closed">Rejected</b></div></td>
+                    <td><div><span>${report.spocMobilePhone}</span></div></td>
+                    <td><div><span>${report.ownerName}</span></div></td>
+                    <td><div><span>${report.orgName}</span></div></td>
+                    <td><div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus(${report.id});">
+                     	  <option value="Active" ${report.spocStatus == 'Active' ? 'selected' : ' '}>Active</option>
+                     	  <option value="In-Active" ${report.spocStatus == 'In-Active' ? 'selected' : ' '} >In-Active</option>
+                     	  <option value="New" ${report.spocStatus == 'New' ? 'selected' : ' '} >New</option>
+                     	  <option value="Negotiation" ${report.spocStatus == 'Negotiation' ? 'selected' : ' '}>Negotiation</option>
+                     	  <option value="Contracted" ${report.spocStatus == 'Contracted' ? 'selected' : ' '}>Contracted</option>
+               			 </select></div></td>
+               			
+                    <td><div><b class="proj_closed">${report.invitationStatus}</b></div></td>
                     <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
                 </tr>
                 	</c:forEach>			
@@ -331,6 +342,37 @@
 	}
 </script>
 
+<script>
+function changeSpocStatus(spocId){
+	alert("spocId"+spocId);
+	var spocStatus = document.getElementById("spocStatus").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    success: function(data) {
+	    	clientContactList(orgRelationID);
+	    }
+   });
+}
+
+
+</script>
+
+<script>
+function listChange(sel){
+	 if(sel.value=="listbyVendor"){
+		 document.getElementById("vendors_contact_list").style.display="block";
+		 document.getElementById("vendors_list").style.display="none";
+		 
+	 }
+	 if(sel.value=="listbyContact"){
+		 document.getElementById("vendors_list").style.display="block";
+		 document.getElementById("vendors_contact_list").style.display="none";
+	 }
+	 
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
 <script src="resources/js/jquery-fun.js"></script> 
@@ -423,4 +465,9 @@ $(".addcon-pop").click(function(){
 
 </script> 
 <jsp:include page="editVendor.jsp" />
-<jsp:include page="vendorContacts.jsp" />	
+<jsp:include page="vendorContacts.jsp" />
+
+
+
+
+	
