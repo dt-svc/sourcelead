@@ -33,7 +33,15 @@ window.onload = function () {
 .clsDatePicker {
 	z-index: 100000 !important;
 }
+
+.ui-front {
+    z-index: 9999999;
+}
+
 </style>
+
+
+
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -53,7 +61,8 @@ window.onload = function () {
            <h3>Client Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Client Name</span>
 				</div>
 			</div>
@@ -65,7 +74,7 @@ window.onload = function () {
 				</div>
 			</div>
 						
-			<div class="form-group">
+			<div class="form-group" id="countryDiv" style="display: block;">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
 					 <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
@@ -74,8 +83,15 @@ window.onload = function () {
 				</div>
 			</div>
 			
+			<div class="form-group" id="orgCountryDiv" style="display: none;">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				</div>
+			</div>
 			
-			<div class="form-group">
+			
+		 <div class="form-group" id="stateDiv" style="display: block;">
 			<label class="col-md-3">State</label>
 			<div class="col-md-9">
 				<input type="hidden" id="stateAutoComplete" name="state"
@@ -84,14 +100,28 @@ window.onload = function () {
 			<ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
 			</div>
 		 </div>
+		 
+		 <div class="form-group" id="orgStateDiv" style="display: none;">
+				<label class="col-md-3">State</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgState" name="orgState" value="" readonly="readonly">
+				</div>
+		 </div>
 		
-		<div class="form-group">
+		<div class="form-group" id="cityDiv" style="display: block;">
 			<label class="col-md-3">City</label>
 			<div class="col-md-9">
 				<input type="hidden" id="cityAutoComplete" name="city" field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
 			    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
 			</div>
 		</div>
+		
+		<div class="form-group" id="orgCityDiv" style="display: none;">
+				<label class="col-md-3">City</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCity" name="orgCity" value="" readonly="readonly">
+				</div>
+		 </div>
 				
          
             <div class="form-group">
@@ -192,7 +222,7 @@ window.onload = function () {
       <div class="form-footer clearfix">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
+            <input type="button" value="Save" id="save_client" onclick="validateClientName(); saveClient(); flushSaveClient()" class="btn btn-primary"> 
 			<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
           </div>
         </div>
@@ -207,6 +237,116 @@ window.onload = function () {
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
+
+
+<script type="text/javascript">
+function getOrgName(){
+	var orgCode = '${SourceLeadWeb_orgCode}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	$.ajax({                           
+    	type: "POST",
+    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var org = [];
+        	for(var i=0;i<json.length;i++){
+       		 var label = json[i][0]; 
+       		 var value = json[i][1];
+       	     tmp = {
+       	        'label': label,
+       	        'value': value
+       	      };
+       	  	org.push(tmp);
+       		}
+        	$("#orgName").autocomplete({
+                
+                minLength: 0,
+                source: org,
+                focus: function( event, ui ) {
+                       $( "#orgName" ).val( ui.item.label );
+                       $( "#orgLocationId" ).val( ui.item.value );
+                       return false;
+                   },
+                select: function( event, ui ) {
+                    return false;
+                }  
+             })
+        },
+        error: function(e){
+           alert('Ajax Error: ' + e.value);
+        }
+    });
+}
+</script>
+
+
+<script type="text/javascript">
+function getOrgDetails()
+{
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(orgName && orgLocationId){
+   	 $.ajax({
+   	    	type: "POST",
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	        contentType: "application/json; charset=utf-8",
+   	        dataType: "json",
+   	        success: function(data) {
+   	        	if(data != null && data != ''){
+   	        		var json = JSON.parse(data);
+   	        		if(json[0] != null && json[0] != ''){
+   	        			document.getElementById("countryDiv").style.display="none";
+   	        			document.getElementById("orgCountryDiv").style.display="";
+   	        		    $("#orgCountry").val(json[0]);
+   	        		}
+   	        		
+   	        		if(json[1] != null && json[1] != ''){
+   	        			document.getElementById("stateDiv").style.display="none";
+   	        			document.getElementById("orgStateDiv").style.display="";
+   	        		    $("#orgState").val(json[1]);
+   	        		}
+   	        		
+   	        		if(json[2] != null && json[2] != ''){
+   	        			document.getElementById("cityDiv").style.display="none";
+   	        			document.getElementById("orgCityDiv").style.display="";
+   	        		    $("#orgCity").val(json[2]);
+   	        		}
+		   	        
+			      	if(json[3] != null && json[3] != ''){
+			      		$("#webSite").val(json[3]);
+			      		$("#webSite").attr("disabled", true);
+			      	}
+			      	 
+   	        	}
+   			 },
+   	        error: function(e){
+   	            alert('Ajax Error: ' + e.value);
+   	        }
+   	    });
+	}else{
+		$("#webSite").attr("disabled", false);
+		$("#state").tagit("removeAll");
+		$("#city").tagit("removeAll");
+		$( "#webSite" ).val('');
+		$( "#orgLocationId").val('');
+		
+		document.getElementById("countryDiv").style.display="";
+		document.getElementById("orgCountryDiv").style.display="none";
+		
+		document.getElementById("stateDiv").style.display="";
+		document.getElementById("orgStateDiv").style.display="none";
+		
+		document.getElementById("cityDiv").style.display="";
+		document.getElementById("orgCityDiv").style.display="none";
+	} 
+	
+}
+</script>
+
 
 <script type="text/javascript">
 	(function($) {
@@ -270,7 +410,7 @@ window.onload = function () {
 </script>
 
 
-<script type="text/javascript">
+  <script type="text/javascript">
 function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -308,7 +448,7 @@ function validateClientName(){
 	}
   }
 }
-</script>
+</script>  
 
 
 <script type="text/javascript">

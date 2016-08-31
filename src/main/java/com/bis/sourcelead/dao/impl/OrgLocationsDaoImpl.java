@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,15 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.dao.CitiesDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.exception.NoRecordsFoundException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -183,5 +176,16 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return null;
 		
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.orgCode <> :orgCode and org.orgCode != 'slead') ";
+		
+		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
+		return orgList;}
 
 }
