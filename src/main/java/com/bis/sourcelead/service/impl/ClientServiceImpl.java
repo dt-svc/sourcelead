@@ -167,6 +167,7 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
 		Set<OrgRelations> orgRelationsList = null;
+		User spocUser = null;
 		if(jsonObj.has("orgLocationId")){
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
 		}
@@ -189,7 +190,11 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			orgService.addOrganization(org);
 		}
 
-		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+		spocUser = userService.findByEmail(jsonObj.getString("email"));
+		if(spocUser == null){
+			spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+		}
+		
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
