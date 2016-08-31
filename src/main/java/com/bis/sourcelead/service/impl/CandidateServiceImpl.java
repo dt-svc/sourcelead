@@ -141,7 +141,7 @@ public class CandidateServiceImpl implements CandidateService {
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
-		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj, orgLocations.getId(),user.getUserCode());
+		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
 		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());

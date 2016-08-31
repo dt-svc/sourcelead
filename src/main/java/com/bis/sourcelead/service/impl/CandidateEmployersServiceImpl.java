@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -116,13 +117,22 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode)throws JSONException{
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException{
 		  HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
+		  
 		  if(jsonObj.has("candidateEmployers")){
-			  CandidateEmployers cemp = new  CandidateEmployers();
-			  cemp.setName(jsonObj.getString("candidateEmployers"));
-			  candidateEmployersList.add(cemp);
-		    }
+	    	  String employers = jsonObj.getString("candidateEmployers");
+	    	  employers = employers.replaceAll("\\[", "").replaceAll("\\]","");
+	  	      String[] candidateEmployers = employers.split(",");
+	    	  for (String emps : candidateEmployers) {
+	    		  CandidateEmployers cemp = new  CandidateEmployers();
+	    		  emps = emps.replace("\"", "");
+	    		  cemp.setName(emps);
+	    		  candidateEmployersList.add(cemp);
+	    	  }
+	    	  
+	    }
+		 
 		return candidateEmployersList;
 	 }
 

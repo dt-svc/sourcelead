@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -18,7 +19,7 @@ public interface CandidateEmployersService {
 	
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
    
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,Long orgLocationId,String userCode) throws JSONException;
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException;
 
 	public CandidateEmployers removeCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
 

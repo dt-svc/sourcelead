@@ -248,11 +248,15 @@
        </div>
         
         <div class="form-group">
-          <label class="col-md-3">Skills</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="candidateSkills" name="candidateSkills" value="${candidateSkills}"  field-name="Skills"  value="">
-          </div>
-        </div>
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
          <div class="form-group">
               <label class="col-md-3">Education</label>
