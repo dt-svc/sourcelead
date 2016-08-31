@@ -276,7 +276,7 @@
         <div class="form-group">
           <label class="col-md-3">Employer's</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers"  value="">
+            <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
           </div>
         </div>
         
