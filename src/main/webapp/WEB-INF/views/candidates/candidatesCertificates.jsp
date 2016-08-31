@@ -1,3 +1,5 @@
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -12,7 +14,7 @@ function candidateCertificate(candidateId){
 	result  = result + '   <div class="project_tabs_inn_head">                                                                          ';
 	result  = result + '   	<a href="javascript:void(0)" onClick="addCertification('+candidateId+');" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
 	result  = result + '     <!-- Popup Div -->                                                                                         ';
-	result  = result + '         <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
+	result  = result + '         <div  id="popUpDivEmp" class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
 	result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
 	result  = result + '               <div class="form-horizontal clearfix">';
 	result  = result + '                 <div class="clearfix mb10">';
@@ -42,12 +44,12 @@ function candidateCertificate(candidateId){
 	result  = result + '                 <div class="clearfix mb10">';
 	result  = result + '                   <div class="col-md-6 positionRelative">';
 	result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
-	result  = result + '                      data-validation-optional="true" data-validation=" " field-name="Valid From" id="StartDate" >';
+	result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" onclick="selectDate();" readonly>';
 	result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 	result  = result + '                   </div>';
 	result  = result + '                   <div class="col-md-6 positionRelative">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
-	result  = result + '                     data-validation-optional="true" data-validation=" " field-name="Valid To" id="EndDate" >';
+	result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" onclick="selectDate();" readonly>';
 	result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 	result  = result + '                   </div>';
 	result  = result + '                 </div>';
@@ -111,9 +113,10 @@ function storeCertificate(candidateId){
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
 								else{
-										location.replace(sourceleadUrl+ "/candidatesList");
+				               			$("#popUpDivEmp").removeClass("edit-details-active");
+				               			candidateCertificateList(candidateId);
+							    	}
 							   }
-							}
 						},
 					});
 			return true;
@@ -239,7 +242,10 @@ function candidateCertificateList(candidateId){
 					 result = result+"	</div>"; 
 					 result = result+"  </div> "; 
 					$("#candidateCertificateList").empty();
-				    $("#candidateCertificateList").append(result); 
+				    $("#candidateCertificateList").append(result);
+				    
+				    $("#popUpDivEmp").empty();
+					$("#popUpDivEmp").append(result);
                }
         },
           
@@ -248,9 +254,10 @@ function candidateCertificateList(candidateId){
 </script>
 <script>
 function addCertification() {	
-	/* $(".addUser-org").click(function(){
+	
+	 $(".addUser-org").click(function(){
 		 $(".edit-details").toggleClass("edit-details-active");
-	 }); */
+	 }); 
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
@@ -263,7 +270,7 @@ function addCertification() {
 </script>
 
 <script type="text/javascript"> 
-$( function(){
+function selectDate(){
 		  $('#StartDate').datepicker({
 		      dateFormat: 'yy-mm-dd',
 		      onSelect: function (selected) {
@@ -281,7 +288,7 @@ $( function(){
 		            $("#StartDate").datepicker("option", "maxDate", dt);
 		        }
 		  });
-});
+};
 </script>
 
        

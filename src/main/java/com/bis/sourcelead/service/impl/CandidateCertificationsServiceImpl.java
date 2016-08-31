@@ -54,7 +54,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 		}
 			if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty())) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
 					candidatecertificate.setValidFrom(sdf.parse(jsonObject.getString("validFrom")));
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -62,7 +62,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			}
 			if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty())) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
 					candidatecertificate.setValidTo(sdf.parse(jsonObject.getString("validTo")));
 				} catch (Exception e) {
 					e.printStackTrace();
