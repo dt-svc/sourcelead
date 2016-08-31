@@ -286,12 +286,16 @@ public class ClientRestController {
 	 */
 	@RequestMapping(value = "/clientDetailsUpdateUsingId", method = RequestMethod.POST)
 	public String clientDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+				@RequestParam(value = "vendorLocationId", required = false) Long clientLocationId,
+				@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		
+		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 	       json = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json);
 	
-	       clientService.updateClientDetails(jsonObj, orgRelationId);
+	       //clientService.updateClientDetails(jsonObj, orgRelationId);
+	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
 
 		return "success";
 	}
