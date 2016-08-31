@@ -179,14 +179,14 @@
 </body>
 
 <script>
-	function clientSideBar(clientId,orgName,orgRelationId) {
+	function clientSideBar(clientLocationId,orgName,orgRelationId) {
 
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
 				+ '<li class="current"><a href="#tab-1" onClick="clientDetails('
-				+ clientId + ');">Details</a></li>';
+				+ clientLocationId + + ','+ orgRelationId + ');">Details</a></li>';
 		
 		//for client contatcs tab
 		result = result + '<li><a href="#tab-2" onclick="clientContactList('+ orgRelationId + ');">Contacts</a></li>';
@@ -212,7 +212,7 @@
 		$("#clientNameDiv").append(orgName);
 		
 
-		clientDetails(clientId);
+		clientDetails(clientLocationId,orgRelationId);
 	}
 </script>
 

@@ -65,7 +65,7 @@ window.onload = function () {
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
@@ -103,16 +103,16 @@ window.onload = function () {
 						
 					
 						//level
-						result = result + ' <div class="user_summary_edit_cta">';
-						result = result + ' <label>Level</label>';
-						result = result + ' <select class="rate_sele" id="level" name="level" >';
-						result = result + ' <option '+selected1+'>Level1</option>';
-						result = result + ' <option '+selected2+'>Level2</option>';
-						result = result + ' <option '+selected3+'>Level3</option>';
-						result = result + ' <option '+selected4+'>Level4</option>';
-						result = result + ' <option '+selected5+'>Level5</option>';
-						result = result + ' </select>';
-						result = result + ' </div>';	
+                        result = result + ' <div class="user_summary_edit_cta">';
+                        result = result + ' <label>Level</label>';
+                        result = result + ' <select id="level" name="level" >';
+                        result = result + ' <option '+selected1+'>Level-1</option>';
+                        result = result + ' <option '+selected2+'>Level-2</option>';
+                        result = result + ' <option '+selected3+'>Level-3</option>';
+                        result = result + ' <option '+selected4+'>Level-4</option>';
+                        result = result + ' <option '+selected5+'>Level-5</option>';
+                        result = result + ' </select>';
+                        result = result + ' </div>';   
 						
 						
 						 result = result + '<div class="clearfix"></div>';
@@ -166,7 +166,6 @@ window.onload = function () {
 </script>
 <script>
 function getAllCountries(sourceleadUrl){
-	alert("getAllCountries");
 	$.ajax({
     	type: "POST",
     	dataType: "json",
