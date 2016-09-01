@@ -11,8 +11,15 @@
 
 
 <script>
-	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+	function predefineProfileImage(imageId,userId){
+	    var sourceleadUrl ='${sourceleadUrl}';
+		if(userId != null && userId != 'undefined' && userId != ''){
+			$(imageId).attr('src',sourceleadUrl+'/displayUserImage/'+userId);
+		}
+		else{
+			$(imageId).attr('src','resources/images/userprofile-img.png');
+		}
+		
 	}
 </script>
 
