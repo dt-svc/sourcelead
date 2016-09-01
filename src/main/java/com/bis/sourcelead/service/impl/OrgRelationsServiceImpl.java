@@ -137,8 +137,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId) throws Exception {
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,Long orgLocationId) throws Exception {
 		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
-		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds);
+		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds,orgLocationId);
 	}
 }
