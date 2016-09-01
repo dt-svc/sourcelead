@@ -27,5 +27,6 @@ public interface UserRoleDao {
 	
 	public Boolean isUserAdmin(Long userId);
 	
+	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 
 }

@@ -57,18 +57,27 @@ public class VendorController {
 		
 		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId());
+		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
 			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLoc.getId()){
+				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLoc.getId()){
+				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+			}
 		}
 		
 		model.addObject("loginOrgLocId",orgLoc.getId());
 		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
 		model.addObject("vandorsContactListByOrgLocationId", vandorsContactListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("userList", userList);
 		model.setViewName("vendors/vendorsList");
 		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 		model.addObject("loginCountryName", countries.getName());

@@ -164,13 +164,37 @@ public class ClientServiceImpl implements ClientService{
 	@Override
 public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 		
-		Org org = populateOrg(jsonObj, user.getUserCode());
-		OrgLocations clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
-		Set<OrgLocations> orgLocationList = new HashSet<>();
-		orgLocationList.add(clientOrgLocations);
-		org.setOrgLocationsList(orgLocationList);
-		orgService.addOrganization(org);
-		User spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
+		OrgLocations clientOrgLocations = null;
+		Set<OrgRelations> orgRelationsList = null;
+		User spocUser = null;
+		if(jsonObj.has("orgLocationId")){
+			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+		}
+		
+		if(clientOrgLocations == null){
+			Org org = populateOrg(jsonObj, user.getUserCode());
+			clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+			
+			orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
+			clientOrgLocations.setOrgRelationsList(orgRelationsList);
+			orgLocationsList.add(clientOrgLocations);
+			org.setOrgLocationsList(orgLocationsList);
+			orgService.addOrganization(org);
+		}else{
+			orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
+			clientOrgLocations.setOrgRelationsList(orgRelationsList);
+			orgLocationsList.add(clientOrgLocations);
+			Org org = clientOrgLocations.getOrg();
+			org.setOrgLocationsList(orgLocationsList);
+			orgService.addOrganization(org);
+		}
+
+		spocUser = userService.findByEmail(jsonObj.getString("email"));
+		if(spocUser == null){
+			spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+		}
+		
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
@@ -179,7 +203,7 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			
 			for(int i=0 ;i<owners.length;i++ ){
 				OrgSpoc orgSpoc = new OrgSpoc();
-				for(OrgLocations orl :orgLocationList){
+				for(OrgLocations orl :orgLocationsList){
 					Set<OrgRelations> orgr = orl.getOrgRelationsList();
 					for (OrgRelations orgRelations : orgr) {
 						orgSpoc.setOrgRelations(orgRelations);
