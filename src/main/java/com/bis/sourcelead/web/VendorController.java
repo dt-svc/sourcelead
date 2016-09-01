@@ -56,14 +56,16 @@ public class VendorController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		
 		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId());
+		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLoc.getId());
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
 	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			if(orgSpoc.getSpocUser() != null){
+				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			}
 			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLoc.getId()){
 				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());

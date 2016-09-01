@@ -61,11 +61,11 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> ids) throws Exception {
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> ids,Long orgLocationId) throws Exception {
 		logger.debug("In OrgSpocDaoImpl getAllSpocsByOrgRelationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> spocsList;
-		Boolean isadmin = userRoleDao.isUserAdmin(userId);
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
 		if (isadmin) {
 			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' ");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();

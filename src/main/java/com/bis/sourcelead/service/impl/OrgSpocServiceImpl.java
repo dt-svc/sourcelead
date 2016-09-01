@@ -91,10 +91,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 	}
 	@Override
-	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId) throws Exception {
+	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId,Long orgLocationId) throws Exception {
 		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(userId);
 		
-		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds);
+		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId);
 	}
 	
 	

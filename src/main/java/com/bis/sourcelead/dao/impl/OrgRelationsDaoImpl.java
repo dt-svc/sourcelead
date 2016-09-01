@@ -197,11 +197,11 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,List<Long> ids ) {
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,List<Long> ids,Long orgLocationId ) {
 		logger.debug("In OrgRelations getAllVendorsContactListByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> spocsList;
-		Boolean isadmin = userRoleDao.isUserAdmin(loginUserId);
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
 		if (isadmin) {
             Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org");
             spocsList = query.setCacheable(true).list();

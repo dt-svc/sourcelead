@@ -167,14 +167,15 @@
 						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocUser.lastName+'" placeholder="Last name" field-name="Last name">';
 						result = result + '</div>';
 						
-						result = result + '<div class="user_summary_edit_cta" id="emailId">';
+						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
 						result = result + '<label>EmailId :</label>';
-						result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
+						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocUser.email+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
+						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocUser.email+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocUser.mobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
@@ -206,3 +207,33 @@
 				}); 
 	}
 </script>
+
+<script type="text/javascript">
+ function validateClientEmail(spocId) {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*$("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getVendorClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId+"&spocId="+spocId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_client" ).addClass('button').val('Save');
+                         $("#save_client").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
