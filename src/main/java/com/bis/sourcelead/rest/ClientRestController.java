@@ -437,6 +437,7 @@ public class ClientRestController {
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
 		//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
 		 if(orgRelation.getLocationId().getId()== orgLocation.getId()){ 
 				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
@@ -463,8 +464,8 @@ public class ClientRestController {
 				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
 		 } 
 		 
-		return commonUtil.toJSON(orgRelation);
-		 
+		 resultJson = commonUtil.toJSON(orgRelation);
+		 return resultJson;
 	}
 	
 	/**

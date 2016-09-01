@@ -494,7 +494,7 @@ $(".addcon-pop").click(function(){
 
 </script> 
 <jsp:include page="editVendor.jsp" />
-<jsp:include page="editSpocDetails.jsp" />
+<%-- <jsp:include page="editSpocDetails.jsp" /> --%>
 <jsp:include page="vendorContacts.jsp" />
 
 

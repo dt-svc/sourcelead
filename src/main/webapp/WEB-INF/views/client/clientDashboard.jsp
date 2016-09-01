@@ -207,11 +207,12 @@ function getClientDetails(){
    	        	
    	        	for (var i=0; i<json.length; i++)
    				{  
+   	        		
    	        		var report = json[i];
    	        		result = result +'<tr>';
    	        		if(report.locationID == loginOrgLocId){
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="clientSideBar('+report.responderId+','+report.orgName+','+report.id+');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
 						
@@ -281,6 +282,7 @@ function getClientDetails(){
    	    	    $("#example").empty();  
    	    	    $("#example").append(result)
    	    	    pagination();
+   	    	    
    		    }
 	 }); 
 	
@@ -306,16 +308,12 @@ function pagination(){
 
 <script>
 	function clientSideBar(clientLocationId,orgName,orgRelationId) {
-
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="clientDetails('
-				+ clientLocationId + + ','+ orgRelationId + ');">Details</a></li>';
-		
+		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		//for client contatcs tab
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+ orgRelationId + ');">Contacts</a></li>';
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+');">Contacts</a></li>';
 				
 				
 		result = result + '<div class="clearfix"></div>'
@@ -330,14 +328,18 @@ function pagination(){
 		result = result + '</div>';
 
 		result = result + '</div>';
-		result = result + '</div>'
+		result = result + '</div>';
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
 		$("#clientNameDiv").empty();
 		$("#clientNameDiv").append(orgName);
 		
-
+		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+		 
+ 
 		clientDetails(clientLocationId,orgRelationId);
 	}
 </script>

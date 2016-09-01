@@ -12,8 +12,7 @@
 <script type="text/javascript">
 	function clientDetails(clientLocationId,orgRelationID) {
 		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
 					success : function(data) {
