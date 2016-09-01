@@ -209,7 +209,14 @@ public class CandidateServiceImpl implements CandidateService {
 		return candidateDao.getCandidateByCandidateId(candidateId);
 	}
 	
-	
+	/**
+	 * @author  prasad.k
+	 * This method is used to get Candidate By CandidateId And OrgLocationId
+	 * @param candidateId
+	 * @param orgLocationId
+	 * @return candidate
+	 * @throws Exception
+	 */
 	@Override
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception {
 	
@@ -217,6 +224,13 @@ public class CandidateServiceImpl implements CandidateService {
 		 return candidate;
 	}
 
+	/**
+	 * @author prasad.k
+	 * This mothod is used to get CandidateEmail
+	 * @param email
+	 * @return CandidateEmail
+	 * @throws Exception
+	 */
 	@Override
 	public Candidate findByCandidateEmail(String email) throws Exception {
 		logger.debug("In CandidateService class...");

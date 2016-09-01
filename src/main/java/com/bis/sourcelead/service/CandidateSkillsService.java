@@ -16,17 +16,34 @@ import com.bis.sourcelead.entity.OrgLocations;
  */
 public interface CandidateSkillsService {
 	
-	/**
-	 * @param candidateSkills
-	 * @return CandidateSkills
-	 * @throws Exception
-	 */
+	
 	
 		
+	/**
+	 * @author  prasad.k
+	 * @param candidateSkills
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
 	
+	/**
+	 * @author prasad.k
+	 * @param jsonObj
+	 * @param orgLocations
+	 * @param candidate
+	 * @param userCode
+	 * @return
+	 * @throws JSONException
+	 */
 	public HashSet<CandidateSkills> getCandidateSkillsDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException;
 	
+	/**
+	 * @author prasad.k
+	 * @param candidateId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception;
 		
 }

@@ -41,7 +41,7 @@ public class CandidateServiceTest {
 		private static final Logger logger = LoggerFactory.getLogger(CandidateServiceTest.class);
 		
 		
-		@Test
+		//@Test
 		public void storeCandidate() throws Exception{
 			
 			Candidate candidate = new Candidate();
@@ -125,5 +125,11 @@ public class CandidateServiceTest {
 			logger.info("getCandidatesListByOrgLocationID " + candidate.getEmail());
 			
 		}
+		@Test
+				public void findByCandidateEmail() throws Exception{
+					Candidate candidate = new Candidate();
+					candidate = candidateService.findByCandidateEmail("ajith@gmail.com");
+					logger.info("findByCandidateEmail "+ candidate.getId());
+				}
 	}
 

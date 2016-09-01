@@ -107,7 +107,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CANDIDATE_RESUMES"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
-		return null;
+		return candidateResumes;
 	}
 
 	

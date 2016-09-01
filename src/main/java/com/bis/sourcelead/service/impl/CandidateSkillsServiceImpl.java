@@ -25,14 +25,29 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Autowired
 	CandidateSkillsDao candidateSkillsDao;
 	
-	/* 
-	 * This Service is used to save the candidate skills
+	/**
+	 * @author  prasad.k
+	 * This method is used for to store candidate skills 
+	 * @param candidateSkills
+	 * @return candidateSkills
+	 * @throws Exception
 	 */
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
 		
 		return candidateSkillsDao.storeCandidateSkills(candidateSkills);
 	}
+	
+	/**
+	 * @author prasad.k
+	 * This method is used for to get CandidateSkills
+	 * @param jsonObj
+	 * @param orgLocations
+	 * @param candidate
+	 * @param userCode
+	 * @return candidateSkillsList
+	 * @throws JSONException
+	 */
 	
 	@Override
 	public HashSet<CandidateSkills> getCandidateSkillsDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException{
@@ -55,6 +70,13 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		return candidateSkillsList;    
 
    }
+	/**
+	 * @author prasad.k
+	 * This method is used for to get CandidateSkills
+	 * @param candidateId
+	 * @return CandidateSkills By CandidateId
+	 * @throws Exception
+	 */
 
 	@Override
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception {

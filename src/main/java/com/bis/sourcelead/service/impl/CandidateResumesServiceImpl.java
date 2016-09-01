@@ -79,6 +79,17 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		return candidateResume;
 	}
 	
+	/**
+	 * @author prasad.k
+	 * This method is used for to get CandidateResumesDetails
+	 * @param orgLocations
+	 * @param userCode
+	 * @param candidate
+	 * @param multiFile
+	 * @return candidateResumesList
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@Override
 	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException{
 			 HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
@@ -99,12 +110,15 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	}
 	
 	/**
-	 * to Candidates resumes list by candidate Id And Status
-	 * @author Venkat Kesav
-	 * @param candidateId, status
-	 * @return List<CandidateResumes>
+	 *  @author Venkat Kesav
+	 *  to Candidates resumes list by candidate Id And Status
+	 * @param candidateId
+	 * @param status
+	 * @return getCandidateResumesList
 	 * @throws Exception
-    */
+	 */
+	
+	
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
 		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
