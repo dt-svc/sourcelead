@@ -247,7 +247,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserDetailsByEmailAndLocationId method  start");
 		userRole = session
-				.createQuery("from UserRole userRole where userRole.user.email = :email and userRole.orgLocations.id = :locationId")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+						+ "left join fetch userRole.user where userRole.user.email = :email and userRole.orgLocations.id = :locationId")
 				.setString("email", email).setLong("locationId", locationId).setCacheable(true).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
