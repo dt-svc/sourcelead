@@ -167,14 +167,15 @@
 						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocUser.lastName+'" placeholder="Last name" field-name="Last name">';
 						result = result + '</div>';
 						
-						result = result + '<div class="user_summary_edit_cta" id="emailId">';
+						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
 						result = result + '<label>EmailId :</label>';
-						result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
+						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocUser.email+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
+						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocUser.email+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocUser.mobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
@@ -188,14 +189,25 @@
 						result = result + ' </select>';
 						result = result + ' </div>'
 						
-						result = result + '<div class="user_summary_edit_cta" id="owner">';
+						/* result = result + '<div class="user_summary_edit_cta" id="owner">';
 						result = result + '<label>Owner :</label>';
 						result = result + '<input type="text"  id="owner" name="owner" value="'+json.ownerName+'" placeholder="Owner name" field-name="Owner name">';
-						result = result + '</div>';
+						result = result + '</div>'; */
+						
+						result = result  +'	 <div class="clearfix mb10">';
+						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+						result = result  +'	 <div class="col-md-12">';
+						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						result = result  +'	       <c:forEach var="user" items="${userList}">';
+						result = result  +'	           <option value="${user.id}" ${user.id  == '+json.ownerName+' ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
+						result = result  +'	       </c:forEach>';
+					    result = result  +'	  </select>';
+					    result = result  +'	 </div>';
+					    result = result  +'	 </div>';
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						//result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -206,3 +218,68 @@
 				}); 
 	}
 </script>
+
+<script type="text/javascript">
+ function validateClientEmail(spocId) {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*$("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getVendorClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId+"&spocId="+spocId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_client" ).addClass('button').val('Save');
+                         $("#save_client").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script> 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+ <script type="text/javascript">
+	function storeVendorContactDetails(spocId) {
+         if ($('#editVendorContact_form').validate(false, validationSettings)){
+    		 var frm = $('#editVendorContact_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
+	   		    success: function(data) {
+	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+	   		    }
+		 }); 
+	     	return true;
+         }else{
+             return false;
+           }
+		
+    }
+	$('body').on('blur', '#editClient_form', function() {
+        $("#editClient_form").showHelpOnFocus();
+        $("#editClient_form").validateOnBlur(false, validationSettings);  
+    });
+</script>    
