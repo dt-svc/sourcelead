@@ -25,7 +25,7 @@ public interface OrgSpocService {
  * @param orgLocations
  * @throws Exception
  */
-	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations)throws Exception;
+	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId)throws Exception;
 
 	/**
 	 * @author Prasad Salina 
@@ -40,5 +40,15 @@ public interface OrgSpocService {
 	 * @throws Exception
 	 */
 	OrgSpoc getOrgSpocById(Long Id) throws Exception;
+	
+	/**To validate spoc email id while create new spoc
+	 * @author Prasad Salina
+	 * @param email
+	 * @param orgRelationId
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception;
 
 }

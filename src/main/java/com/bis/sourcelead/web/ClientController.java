@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Client service.
@@ -115,6 +117,10 @@ public class ClientController {
 			
 			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);
+			
+			//for get the owners list for spocs
+			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			model.addObject("userList", userList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			
@@ -129,6 +135,50 @@ public class ClientController {
 	    }
 	    
 	 
+	    /**
+		 * Handles to display client jsp
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		 @RequestMapping(value = "/addClientContact")
+		 public ModelAndView addClientContact(HttpServletRequest request) throws Exception {
+			 ModelAndView model = new ModelAndView();
+				try{
+					
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+					model.addObject("userList", userList);
+					model.setViewName("client/addClientContact");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					
+					List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+					model.addObject("loginOrgLocId", orgLocations.getId());
+					model.addObject("clientContactList", vandorsListByOrgLocationId);
+					
+					SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.Clients);
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+				}catch(Exception e){
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+				return model;
+				/*logger.debug("Display the client page");
+				ModelAndView model = new ModelAndView();
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				
+				List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+				model.addObject("userList", userList);
+				model.setViewName("client/client");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				model.addObject("loginCountryName", countries.getName());
+				return model;*/
+		    }
 		
 		
 }

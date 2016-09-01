@@ -243,7 +243,6 @@ window.onload = function () {
 			if ($('#vendor_form').validate(false, validationSettings)) {
 				var frm = $('#vendor_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				alert("con"+con);
 				
 				con = con.replace(/[{}]/g, "");
 				  //It will escape all the special characters
@@ -259,7 +258,7 @@ window.onload = function () {
 							success : function(result) {
 								if (result == 'clientDashboard') {
 									location.replace(sourceleadUrl
-											+ "/clientDashboard");
+											+ "/vendorsList");
 								}
 
 							},
@@ -304,10 +303,6 @@ function validateClientName(){
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_vendor").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
-					});
 				}
 			},
 

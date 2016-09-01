@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -32,6 +33,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
@@ -133,7 +137,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId) {
-		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId);
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId) throws Exception {
+		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds);
 	}
 }

@@ -63,6 +63,12 @@ public class VendorController {
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLoc.getId()){
+				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLoc.getId()){
+				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+			}
 		}
 		
 		model.addObject("loginOrgLocId",orgLoc.getId());

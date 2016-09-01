@@ -1,54 +1,25 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
- 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
-       <!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                                                    
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="First name">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Last name">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Email Id *">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Work phone">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Owner">
-                              </div>
-                            </div>                                                                                                                
-                            <div class="clearfix mb10">
-                              <div class="col-md-12 checkbox">
-                                <label>
-                                <input type="checkbox" name="Position" id="endDate">Send Invitation</label>
-                              </div>
-                            </div>
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-				<!-- Popup Div -->  
+
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
+<script src="resources/js/chosen.jquery.min.js"></script> 	
+<style type="text/css">
+.collapse-div-adduser select{
+width: 100% !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+    border:1px solid #ccc !important
+}
+</style>
 				
-<div id="popUp"></div>				
 
 <!-- client details View starts-->
 <script type="text/javascript">
@@ -70,8 +41,10 @@
 				
 					
 	        	result = result + '    	<div class="project_tabs_inn_head">';
-	    		result = result + '		<input class="vendorfild" type="text"><i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop">';
+	    		result = result + '		<input class="vendorfild" type="text"><i class="fa fa-search"></i> | <a href="javascript:void(0)" onClick="addContact('+orgRelationID+');" class="addcon-pop">';
 	    		result = result + '		<i class="glyphicon glyphicon-plus"></i>Add Contact</a>';
+	    		result = result  +'     <div id="popUpDivContact"> ';
+	    		result = result  +'     </div>  ';
 	    		result = result + '		</div>';
 	    		
 	    		result = result + '        <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -142,7 +115,7 @@
 			   		    		if(opt.invitationStatus == 'Rejected'){
 			  	    			  result = result +'<b class="proj_deactivate">'+opt.invitationStatus+'</b>';
 			  	    			}
-			   		    		if(opt.invitationStatus == 'NEW'){
+			   		    		if(opt.invitationStatus == 'New'){
 				  	    			  result = result +'<b class="proj_process">'+opt.invitationStatus+'</b>';
 			  	    			}
 			   		    		if(opt.invitationStatus == 'Sent'){
@@ -200,8 +173,9 @@
 </script>
 <!--  client details ends -->
 
+<div id="popUp"></div>
 
-<script>
+ <script>
 	
 // project side bar
 $(document).ready(function() {
@@ -228,27 +202,8 @@ $(document).ready(function() {
 		$(".vendor_wrap_mask").fadeOut(200);
 	});
 });	
-
-
-	// Levels adding script
-	
-$(".addcon-pop").click(function(){
-	 $(".collapse-div-adduser").toggleClass("show-div");
-	 $(".collapse-div").removeClass("show-div");
- });
- $(".close-div").click(function(){
-	 $(this).parent().removeClass("show-div");
-	 });
- $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
-	 e.stopPropagation();
- });
- $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   });	 
-
-
 </script> 
+
 
 <script>
 function terminateSpoc(spocId, orgRelationID){
@@ -308,6 +263,221 @@ function changeSpocStatus(spocId){
 	    }
    });
 }
-
-
 </script>
+
+
+
+   <!-- This Script is For Popup Div Starts-->  
+<script>
+function addContact(orgRelationID) {	
+	var result = "";
+	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
+	result = result  +'	<div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result  +'	<div class="form-horizontal clearfix">';
+                              
+	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	<input type="text" class="form-control input-sm" value="" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length2-100">';
+	result = result  +'	</div>';
+	result = result  +'	</div>';
+	
+	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	  <div class="col-md-12">';
+	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
+	result = result  +'	   </div>';
+	result = result  +'	 </div>';
+	
+	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
+	result = result  +'	  <div class="col-md-12">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email" onKeyUp="validateSpocEmail('+orgRelationID+');" value="" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	   </div>';
+	result = result  +'	 </div>';
+	
+	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	   <div class="col-md-12">';
+	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+	result = result  +'	    </div>';
+	result = result  +'	  </div>';
+	
+	
+	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <label class="col-md-3">Status</label>';
+	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	  <select class="form-control selectpicker" id="spocStatus" name="spocStatus">';
+	result = result  +'	   <option value="Active">Active</option>';
+	result = result  +'	   <option value="In-Active">In-Active</option>';
+	result = result  +'	   <option value="New">New</option>';
+	result = result  +'	   <option value="Negotiation">Negotiation</option>';
+	result = result  +'	   <option value="Contracted">Contracted</option>';
+	result = result  +'	  </select>';
+	result = result  +'	 </div>';
+	result = result  +'	 </div>';
+	
+	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+	result = result  +'	       <c:forEach var="user" items="${userList}">';
+	result = result  +'	           <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
+	result = result  +'	       </c:forEach>';
+    result = result  +'	  </select>';
+    result = result  +'	 </div>';
+    result = result  +'	 </div>';
+	
+	
+	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>';
+	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	       <select class="form-control" id="role" name="roleType" field-name="Role" data-validation="required">';
+	result = result  +'	                    <option value="">-Select Role-</option>';
+	result = result  +'	 					<option value="1">Admin</option>';
+	result = result  +'	 					<option value="3">Approver/Project Manager</option>';
+	result = result  +'	 					<option value="5">HR Manager</option>';
+	result = result  +'	 					<option value="6">Account Manager</option>';
+	result = result  +'	 					<option value="8">Recruiter</option>';
+	result = result  +'	        </select>';
+	result = result  +'	 </div>';
+	result = result  +'	 </div>';
+	
+	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	   <div class="col-md-12 checkbox">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent" checked="checked">Send Invitation</label>';
+	result = result  +'	   </div>';
+	result = result  +'	 </div>';
+	
+	result = result  +'	  <div class="clearfix mr">';
+	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+');" class="btn btn-sm btn-primary pull-right"/>';
+	result = result  +'	  </div>';
+	
+	result = result  +'	 </div>';
+	result = result  +'	 </div>';
+	result = result  +'	        </form> ';
+	$("#popUpDivContact").empty();
+	$("#popUpDivContact").append(result);
+	
+	var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+	
+	$(".addcon-pop").click(function(){
+		 $(".collapse-div-adduser").toggleClass("show-div");
+		 $(".collapse-div").removeClass("show-div");
+	 });
+	 $(".close-div").click(function(){
+		 $(this).parent().removeClass("show-div");
+		 });
+	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+		 e.stopPropagation();
+	 });
+	 $('html').click(function(){
+	    $(".collapse-div-adduser").removeClass("show-div");
+		$(".collapse-div").removeClass("show-div");
+	   });	
+	   
+	}
+</script>
+ <!-- This Script is For Popup Div Ends --> 
+
+<!-- to add new contact -->
+<script type="text/javascript">
+	function check(orgRelationId) {
+		if ($('#clinetContact_form').validate(false, validationSettings)) {
+			var frm = $('#clinetContact_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#addClientContact").attr("disabled", "disabled");
+			$("#addClientContact").addClass('button').val('Processing..');
+			
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
+						success : function(result) {
+							clientContactList(orgRelationId);
+						},
+			});
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#clinetContact_form', function() {
+		$("#clinetContact_form").showHelpOnFocus();
+		$("#clinetContact_form").validateOnBlur(false, validationSettings);
+	}); 
+</script>
+<!-- to add new contact --> 
+
+<script type="text/javascript">
+ function validateSpocEmail(orgRelationId) {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $("#addClientContact").attr("disabled", "disabled");
+         $("#addClientContact" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateSpocEmailId?${_csrf.parameterName}=${_csrf.token}&email="+EmailId+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#addClientContact" ).addClass('button').val('Save');
+                         $("#addClientContact").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>
+ 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+

@@ -51,10 +51,18 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception {
+	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId) throws Exception {
 		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER","",new Org());
-		String OrRelationId = jsonObj.getString("vendorName");
-		OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(OrRelationId));
+		
+		OrgRelations orgRelation = null;
+		if(orgRelationId != null && !"".equals(orgRelationId)){
+			 orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(orgRelationId));
+		}else{
+			String OrRelationId = jsonObj.getString("vendorName");
+			orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(OrRelationId));
+		}
+		
+		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
 			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
@@ -65,14 +73,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				orgSpoc.setSpocUser(spocUser);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
-				orgSpoc.setSpocStatus(Constants.MEMBER_ACTIVE);
 			
 				if(jsonObj.has("isMailSent")){
-					orgSpoc.setInvitationStatus(Constants.MAIL_SEND);
+					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
 				}else{
 					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
 				}
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
 				orgSpoc.setCreatedDate(CommonUtil.currentDate());
 				orgSpoc.setCreatedBy(user.getUserCode());
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
@@ -94,6 +102,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	public OrgSpoc getOrgSpocById(Long Id) throws Exception {
 		logger.debug("In OrgSpocService class...");
 		return orgSpocDao.getOrgSpocById(Id);
+	}
+	
+	@Override
+	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception {
+		logger.debug("In OrgSpocService class...");
+		return orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, userId);
 	}
 	
 

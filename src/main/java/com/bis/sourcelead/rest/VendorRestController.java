@@ -40,15 +40,15 @@ public class VendorRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/saveVendorContact", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId, HttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations);
+		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId);
 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
 		return "vendorsList";
 	}
