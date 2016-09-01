@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ClassField;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -49,12 +47,24 @@ public class CandidateDaoImpl implements CandidateDao {
 		return (str == null || "".equals(str.trim()));
 	}
 
-	 /**
-	  * @author PrasadK
-     * This method for to store candidate into Database
-     * @return candidate
-     * @exception NullPointerException
-     */
+	/**
+	 * @author prasad k
+	 * @since  sep 1 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to store/save candidate in candidate table.
+	 * 1.internalley store/save in candidateEducation in candidateEducation table .
+	 * 2.internalley store/save in candidateSkills in candidateSkills table .
+	 * 3.internalley store/save in candidateResumes in candidateResumes table .
+	 * 4.internalley store/save in candidateEmployers in candidateEmployers table .
+	 *  
+	 * @param candidate This is the first paramter to storeCandidate method
+	 * 
+	 * @return Candidate 
+	 * 
+	 * @throws NullPointer
+	 */
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate storeCandidate(Candidate candidate) throws Exception {

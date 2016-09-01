@@ -55,6 +55,7 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
+	
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016

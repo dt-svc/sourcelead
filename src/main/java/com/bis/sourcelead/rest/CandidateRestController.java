@@ -38,20 +38,30 @@ public class CandidateRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
-
-	
-
-	/*------------Create a Candidate--------------------------------*/
-	
 	
 	/**
-	 * Store Candidate
+	 * @author prasad k
+	 * @since  sep 1 2016
+	 * @version 0.0.1
 	 * 
-	 * @param json
-	 * @param request
-	 * @return ResponseBody
-	 * @throws Exception
+	 * This method is used to store/save candidate in candidate table.
+	 * 1.internalley store/save in candidateEducation in candidateEducation table .
+	 * 2.internalley store/save in candidateSkills in candidateSkills table .
+	 * 3.internalley store/save in candidateResumes in candidateResumes table .
+	 * 4.internalley store/save in candidateEmployers in candidateEmployers table .
+	 *  
+	 *  
+	 * 
+	 * @param jsonObj This is the first paramter to storeCandidate method
+	 * @param orgLocations This is the second paramter to storeCandidate method
+	 * @param user This is the third paramter to storeCandidate method
+	 * @param multiFile This is the fourth paramter to storeCandidate method
+	 * 
+	 * @return Candidate 
+	 * 
+	 * @throws NullPointer
 	 */
+	
 	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		

@@ -22,6 +22,26 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name="LOOKUP_DATA")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="lookupdata")
 public class LookUpData {
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="ID", nullable = false)
+	private Long id;
+	
+	@Column(name = "NAME")
+	private String name;
+	
+	@Column(name = "DESCRIPTION")
+	private String description;
+	
+	@Column(name = "CATEGORY")
+	private String category;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+    private String createdBy;
+
 	public Long getId() {
 		return id;
 	}
@@ -69,26 +89,6 @@ public class LookUpData {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="ID", nullable = false)
-	private Long id;
-	
-	@Column(name = "NAME")
-	private String name;
-	
-	@Column(name = "DESCRIPTION")
-	private String description;
-	
-	@Column(name = "CATEGORY")
-	private String category;
-	
-	@Column(name = "CREATED_DATE")
-	private Date createdDate;
-	
-	@Column(name = "CREATED_BY")
-    private String createdBy;
 	
 	
 

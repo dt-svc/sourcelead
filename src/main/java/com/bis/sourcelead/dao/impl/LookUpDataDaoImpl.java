@@ -28,7 +28,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	private SessionFactory sessionFactory;
 
 	/**
-	 * This method for to get all Educations(MCA,Btech,BSC,...etc) From DB
+	 * This method for to get all Educations(MCA,Btech,BSC,...etc) and Skills (java,.Net,...etc) (Auto completes)From DB
 	 */
 	
 	
