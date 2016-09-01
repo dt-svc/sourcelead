@@ -213,7 +213,11 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
-				orgSpoc.setInvitationStatus("NEW");
+				if(jsonObj.has("isMailSent")){
+					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+				}else{
+					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+				}
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
 				orgSpoc.setCreatedDate(commonUtil.currentDate());
 				orgSpoc.setCreatedBy(user.getUserCode());

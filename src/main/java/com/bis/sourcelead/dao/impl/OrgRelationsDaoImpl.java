@@ -206,10 +206,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
             Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId)");
             spocsList = query.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
         }else if(ids != null && !ids.isEmpty()){
-            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.ownerUser IN (:ids)) and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId)");
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((spoc.ownerUser.id = :loginUserId OR spoc.ownerUser IN (:ids)) OR (spoc.spocUser.id =:loginUserId)) and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId)");
             spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setParameterList("ids", ids).setCacheable(true).list();
         }else{
-            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.ownerUser.id = :loginUserId and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId) ");
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId) ");
             spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setCacheable(true).list();
         }
 		return spocsList;

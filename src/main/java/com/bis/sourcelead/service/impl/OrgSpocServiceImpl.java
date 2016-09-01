@@ -55,7 +55,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER","",new Org());
 		
 		OrgRelations orgRelation = null;
-		if(orgRelationId != null && !"".equals(orgRelationId)){
+		if(orgRelationId != null && !"".equals(orgRelationId) && !"''".equals(orgRelationId)){
 			 orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(orgRelationId));
 		}else{
 			String OrRelationId = jsonObj.getString("vendorName");
