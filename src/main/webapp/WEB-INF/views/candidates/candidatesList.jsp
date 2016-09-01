@@ -13,7 +13,6 @@
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
 
-
 <script>
  window.onload = function() {
  	 candidateList();
