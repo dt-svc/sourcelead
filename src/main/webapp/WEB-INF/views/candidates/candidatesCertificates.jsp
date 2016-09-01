@@ -5,7 +5,11 @@
 	z-index: 100000 !important;
 }
 </style>
-
+<script>
+function closeCertificatePopup(){
+	 $("#popUpDivEmp").removeClass("edit-details-active");
+}
+</script>
 
 <script>
 function candidateCertificate(candidateId){
@@ -16,6 +20,7 @@ function candidateCertificate(candidateId){
 	result  = result + '     <!-- Popup Div -->                                                                                         ';
 	result  = result + '         <div  id="popUpDivEmp" class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
 	result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
+	result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
 	result  = result + '               <div class="form-horizontal clearfix">';
 	result  = result + '                 <div class="clearfix mb10">';
 	result  = result + '                   <div class="col-md-12" id="candidatename">';
@@ -270,6 +275,8 @@ function addCertification() {
 
 <script type="text/javascript"> 
 function selectDate(){
+	
+
 		  $('#StartDate').datepicker({
 		      dateFormat: 'yy-mm-dd',
 		      onSelect: function (selected) {
@@ -287,7 +294,7 @@ function selectDate(){
 		            $("#StartDate").datepicker("option", "maxDate", dt);
 		        }
 		  });
-};
+}
 </script>
 
      <!-- this script is for removing the Certification  starts --> 
