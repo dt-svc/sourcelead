@@ -169,17 +169,6 @@ public class ClientController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
 				return model;
-				/*logger.debug("Display the client page");
-				ModelAndView model = new ModelAndView();
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-				List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
-				model.addObject("userList", userList);
-				model.setViewName("client/client");
-				model.addObject("sourceleadUrl", sourceleadUrl);
-				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-				model.addObject("loginCountryName", countries.getName());
-				return model;*/
 		    }
 		
 		

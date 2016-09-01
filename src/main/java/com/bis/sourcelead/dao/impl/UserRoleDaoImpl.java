@@ -238,5 +238,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		} 
 		return flag;
 	}
+
+	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserDetailsByEmailAndLocationId method  start");
+		userRole = session
+				.createQuery("from UserRole userRole where userRole.user.email = :email and userRole.orgLocations.id = :locationId")
+				.setString("email", email).setLong("locationId", locationId).setCacheable(true).list();
+		logger.debug("getUserDetailsByEmailAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	
+
 	
 }
