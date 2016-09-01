@@ -564,7 +564,7 @@ public class ClientRestController {
 	 */
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "spocId", required = false) Long spocId) throws Exception {
 		
 	       String jsonVal = "{" + json + "}";

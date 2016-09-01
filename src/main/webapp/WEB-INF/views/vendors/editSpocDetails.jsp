@@ -140,11 +140,7 @@
 						var selected4 = '';
 						var selected5 = '';
 						
-						/* if(result.spocStatus == 'Active'){
-							result = result+'<option selected value="Active">Active</option>';
-						}else{
-							result = result+'<option value="Active">Active</option>';
-						} */
+					
 						
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
