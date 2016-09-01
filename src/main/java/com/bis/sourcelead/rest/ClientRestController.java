@@ -381,6 +381,51 @@ public class ClientRestController {
 	}
 	
 	/**
+	 * @author Laxman
+	 * this is method is using client details
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	 
+	   @RequestMapping(value = "/getClientDetails")
+	   @ResponseBody
+		public String getClientDetails(HttpServletRequest request) throws Exception {
+
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    String resultJson;
+		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			
+			for (OrgRelations orgRelation : clientsList) {
+				 //to fetch user details by usercode 
+				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+				orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId());
+				orgRelation.setNoOfContatcs(orgSpocs.size());
+				//responderLocationId.org.
+				
+				orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+				orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+				orgRelation.setState(orgRelation.getResponderLocationId().getState());
+				orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+				
+				orgRelation.setLocationOrgname(orgRelation.getLocationId().getOrg().getOrgName());
+				orgRelation.setLocationWebsite(orgRelation.getLocationId().getOrg().getWebSite());
+				orgRelation.setLocationCountry(orgRelation.getLocationId().getCountry());
+				orgRelation.setLocationState(orgRelation.getLocationId().getState());
+				orgRelation.setLocationCity(orgRelation.getLocationId().getCity());
+				orgRelation.setResponderId(orgRelation.getResponderLocationId().getId().toString());
+				orgRelation.setLocationID(orgRelation.getLocationId().getId().toString());
+				
+			}
+		    
+			 resultJson = commonUtil.toJSON(clientsList);
+			 return resultJson;
+		}
+	 
+	/**
 	 * @author Prasanna vadla
 	 * @param json
 	 * @param vendorLocationId

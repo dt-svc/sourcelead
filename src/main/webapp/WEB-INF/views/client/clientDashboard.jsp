@@ -1,12 +1,15 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
- 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
+
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 
 <body>
 	<!-- Content Area -->
@@ -64,10 +67,11 @@
 			</c:if>
 		</div>
 
-
 		<c:if test="${!empty clientsList}">
 			<div class="clients_wrap_table ">
-				<table>
+			
+			<table id="example" class="display" cellspacing="0" width="100%"> </table>
+				<%-- <table>
 					<tbody>
 					<thead>
 						<tr>
@@ -147,21 +151,9 @@
 						</tr>
 					</c:forEach>
 					</tbody>
-				</table>
+				</table> --%>
 			</div>
 			
-<!-- <nav>
-    <ul id="paging" class="pagination">
-		<li><a href="#">Previous</a></li>
-		<li><a href="#">2</a></li>
-		<li><a href="#">3</a></li>
-		<li><a href="#">4</a></li>
-		<li><a href="#">5</a></li>
-		<li class="disabled"><a href="#">6</a></li>
-		<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav> -->	
 
 		</c:if>
 
@@ -178,6 +170,139 @@
 		</div>
 	</section>
 </body>
+
+
+
+
+
+
+<script type="text/javascript">
+window.onload = function () {
+	getClientDetails();
+ };
+</script>
+
+<script>
+function getClientDetails(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Client name</th>';
+   	        	result = result +'	<th>Website</th>';
+   	        	result = result +'	<th>Location</th>';
+   	        	result = result +'	<th>Level</th>';
+   	        	result = result +'	<th>Created By</th>';
+   	        	result = result +'<th>No.of contacts</th>';
+   	        	result = result +'<th>Action</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'</thead>';
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		var report = json[i];
+   	        		result = result +'<tr>';
+   	        		if(report.locationID == loginOrgLocId){
+   	        			result = result +'<td>';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar('+report.responderId+','+report.orgName+','+report.id+');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+						
+   	        		}
+   	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-sm" title='+report.webSite+'>'+report.webSite+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		
+   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'}">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		if(report.level != null && report.level != '' && report.level != 'undefined'){
+   	        			result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
+   	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		
+   	        		
+   	        		
+   	        		if(report.responderId == loginOrgLocId){
+   	        			result = result +'<td><div class="proj_show" onclick="clientSideBar('+report.locationID+','+report.locationOrgname+','+report.id+');"><span class="tbldata-dotdot-vsm" title='+report.locationOrgname+'>"'+report.locationOrgname+'"</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'</div></td>';
+   	        			
+   	        			if(report.locationWebsite != null && report.locationWebsite != '' && report.locationWebsite != 'undefined'){
+   	        				result = result +'<td><div><span class="tbldata-dotdot-sm" title='+report.locationWebsite+'>'+report.locationWebsite+'</span></div></td>';
+   	        			}else{
+   	        				result = result +'<td><div>--</div></td>';
+   	        			}
+   	        			
+   	        			if(report.locationCountry != null & report.locationCountry != '' && report.locationCountry != 'undefined'){
+   	        				result = result +'<td><div><span class="tbldata-dotdot-me" title="'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'">'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'</span></div></td>';
+   	        			}else{
+   	        				result = result +'<td><div>--</div></td>';
+   	        			}
+   	        			
+   	        			if(report.level != null && report.level != '' && report.level != 'undefined'){
+   	        				result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
+   	        			}else{
+   	        				result = result +'<td><div>--</div></td>';
+   	        			}
+   	        			
+   	        			result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
+   	        			result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   						
+   	        		} 
+   	        		
+   	        		result = result +'</tr>';
+   	        		
+   				}
+   	        	
+   	        	result = result +'</tbody>';
+   	    	    $("#example").empty();  
+   	    	    $("#example").append(result)
+   	    	    pagination();
+   		    }
+	 }); 
+	
+	
+}	
+</script> 
+
+<script>
+function pagination(){  
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
 
 <script>
 	function clientSideBar(clientLocationId,orgName,orgRelationId) {
