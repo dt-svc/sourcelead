@@ -40,12 +40,22 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	private CandidateResumesDao candidateResumesDao;
 
 	/**
-	* @author Venkat Kesav 
-	* This Service is used to save the candidate resumes
-	* @param jsonObj, user, candidate, orgLocations
-	* @return CandidateResumes
-	* @throws NullPointerException
-	*/
+	 * @author Venkat Kesav
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to store/save the candidate resumes in candidate_Resumes table.
+	 * 
+	 * @param jsonObj This is the first parameter to storeCandidateResume method
+	 * @param user This is the second parameter to storeCandidateResume method
+	 * @param candidate This is the third parameter to storeCandidateResume method
+	 * @param orgLocations This is the third parameter to storeCandidateResume method
+	 * @param multiFile This is the fourth parameter to storeCandidateResume method
+	 * 
+	 * @return CandidateResumes 
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations, MultipartFile multiFile) throws Exception {
 		CandidateResumes candidateResume = new CandidateResumes();
@@ -81,14 +91,20 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	/**
 	 * @author prasad.k
-	 * This method is used for to get CandidateResumesDetails
-	 * @param orgLocations
-	 * @param userCode
-	 * @param candidate
-	 * @param multiFile
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get CandidateResumesDetails from candidate_Resumes table.
+	 *  
+	 * 
+	 * @param orgLocations This is the first parameter to getCandidateResumesDetails method
+	 * @param userCode This is the second parameter to getCandidateResumesDetails method
+	 * @param candidate This is the third parameter to getCandidateResumesDetails method
+	 * @param multiFile This is the fourth parameter to getCandidateResumesDetails method
+	 * 
 	 * @return candidateResumesList
-	 * @throws JSONException
-	 * @throws IOException
+	 * 
+	 * @throws NullPointer
 	 */
 	@Override
 	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException{
@@ -111,27 +127,39 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	}
 	
 	/**
-	 *  @author Venkat Kesav
-	 *  to Candidates resumes list by candidate Id And Status
-	 * @param candidateId
-	 * @param status
-	 * @return getCandidateResumesList
-	 * @throws Exception
+	 * @author Venkat Kesav
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to Candidates resumes list by candidate Id And Status from candidate_Resumes table.
+	 *  
+	 * 
+	 * @param candidateId This is the first parameter to getCandidateResumesListByCandidateIdAndStatus method
+	 * @param status This is the second parameter to getCandidateResumesListByCandidateIdAndStatus method
+	 * 
+	 * @return candidateResumesList
+	 * 
+	 * @throws NullPointer
 	 */
-	
-	
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
 		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 	}
 	
 	/**
-	 * to update Candidate Resume
 	 * @author Venkat Kesav
-	 * @param candidateResumes
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to update Candidate Resume in candidate_Resumes table.
+	 *  
+	 * 
+	 * @param candidateResumes This is the first parameter to updateCandidateResume method
+	 * 
 	 * @return CandidateResumes
-	 * @throws Exception
-    */
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
@@ -140,12 +168,19 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	}
 
 	/**
-	 * to Candidate Resume By ResumeId
 	 * @author Venkat Kesav
-	 * @param resumeId
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to update Candidate Resume in candidate_Resumes table.
+	 *  
+	 * 
+	 * @param resumeId This is the first parameter to getCandidateResumeByResumeId method
+	 * 
 	 * @return CandidateResumes
-	 * @throws Exception
-    */
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class getCandidateResumeByResumeId method...");
