@@ -60,7 +60,7 @@ public class CandidateRestController {
 	 * @return Candidate 
 	 * 
 	 * @throws NullPointer
-	 */
+	*/
 	
 	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
