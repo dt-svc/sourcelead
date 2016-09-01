@@ -1,17 +1,29 @@
 package com.bis.sourcelead.rest;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -166,6 +178,57 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 			return "success";
 			
 		 }
+	   
+	   @RequestMapping(value = "/saveCandidateProfile" , method = RequestMethod.POST)
+	   public String saveCandidateProfile(@RequestParam(value="candidateId", required=false) String candidateId ,MultipartHttpServletRequest request) throws Exception {
+			
+		   
+		    Iterator<String> itrator = request.getFileNames();
+	        MultipartFile multiFile = request.getFile(itrator.next());
+		
+	        OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId), loginOrgLocation.getId());
+		    if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+		    	  try {
+		    		  candidate.setFileContentType(multiFile.getContentType());
+		    		  candidate.setDocFile(multiFile.getBytes());
+		    		  candidate.setFileName(multiFile.getOriginalFilename());
+			       }catch (Exception e) {
+		    	      	 e.printStackTrace();
+				   }
+		    }
+		    candidateService.addCandidate(candidate);
+		    return "success";
+	   }
+	   
+	   
+	   @RequestMapping(value = "/displayCandidateImage/{candidateId}" , method = RequestMethod.GET)
+	     public void displayUserImage(@PathVariable Long candidateId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
+	    	 
+		   Candidate candidate = null;
+				try {
+					 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					 candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(candidateId, loginOrgLocation.getId());
+					
+					if(candidate != null && candidate.getDocFile() != null)
+					{
+						candidate.setFileContentType("image/jpeg");
+						InputStream in = new ByteArrayInputStream(candidate.getDocFile());
+						BufferedImage bi = ImageIO.read(in);
+						OutputStream out = response.getOutputStream();
+						ImageIO.write(bi, "jpg", out);
+						out.close();
+					}
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 
+				
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+	  }
 	   
 		 
 		 

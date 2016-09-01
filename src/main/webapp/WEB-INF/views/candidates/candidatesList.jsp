@@ -130,36 +130,43 @@ function clientSideBar(candidateId){
 			             skills = skillsList.split(",");
 			             
 	                	 var result = "";
+	                	 
+	                	 result = result+'<div id="popUp" ></div>  ';
+	                	
+	                	 
+	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
 			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                   <div class="media">';
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
+			             result = result+'<div id="candidateImageId">';
 			             result = result+'<div class="well text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
-					     if(json.fileName != null && fileName != '' && fileName != 'undefined'){
+					     /*  if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     }
+					     } */
 						 result = result+'  </div>';
 						 result = result+'  </div>';
-						 result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
-						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle"></i></a>';
+						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
+						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
 						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
-						 result = result+'  </div>';
+						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
-						 result = result+'<div id="popUp" ></div>  ';
+						 result = result+' </div>';
+						 result = result+'</form>';
 						 
 						  
 						  
@@ -274,6 +281,36 @@ function clientSideBar(candidateId){
 				
 }
 </script>
+<script>
+function saveCandidateImage(candidateId){
+	            		
+          		var frm = $('#candidate_form').serializeFormJSON();
+              	var con = JSON.stringify(frm);
+  			    con = con.replace(/[{}]/g, ""); 
+  			    
+  		        var jsonData = encodeURIComponent(con);
+          		
+          		var sourceleadUrl ='${sourceleadUrl}';
+          		var form = $('#candidate_form')[0];
+           		var formData = new FormData(form);
+	            		
+	            $.ajax({
+	                	      type: "POST",
+	                	      data: formData,
+	                	      contentType : 'application/json; charset=utf-8',
+	                	      enctype: 'multipart/form-data',
+	            	          processData: false,
+	            	          contentType:false,
+	                	      dataType : 'json',
+	                	      
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                          success: function(result) {
+	    			        	  cancel();
+	    			          },  
+	            });
+}
+</script> 
+
 <!-- 
 $(document).ready(function() {
     $(".proj_show").click(function(){  
@@ -532,61 +569,57 @@ function deleteImage(candidateId){
 
 
 <script type="text/javascript">
-function deleteProfileImage(candidateId){  alert("hai delete");
+function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
-	
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage&candidateId="+candidateId,
 	        success: function(data) {
 	        	 var result = data;
-	        	 alert("result"+result);
 	       },
 	        
      }); 
 }
 </script>
 
+
 <script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+
+function loadFile(event,candidateId){
+			
+	    var output = document.getElementById('userImage');
+	    var uploadedImage = document.getElementById('uploadedImage').value;
+	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+	    document.getElementById("errorImage").style.display="none"; 
+	    
+	    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	
+	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+	 		var msg = "."+extensionName+" extension not allowed";
+	 		alertMessage(msg);
+	 		/* document.getElementById("errorImage").style.display=""; 
+	 		$("#profile_submit").attr("disabled", "disabled"); */
+	    	
+	    }else if(sizeinbytes > 200000){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	 		var msg = "Image size should be less than 200 KB";
+	 		alertMessage(msg);
+	 		/* document.getElementById("errorImage").style.display=""; 
+	 		$("#profile_submit").attr("disabled", "disabled"); */
+	    	
+	    }else{
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	/* $("#profile_submit").removeAttr("disabled"); */
+	    	var msg = "Do you want to save the picture.";
+	    	saveOrCancel(msg,candidateId);
+	    	
+	   } 
+    
+    
 }
 </script>
 
-
-
-<script type="text/javascript">
-  var loadFile = function(event) {
-    var output = document.getElementById('userImage');
-    
-    var uploadedImage = document.getElementById('uploadedImage').value;
-    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
-    document.getElementById("errorImage").style.display="none"; 
-    
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
-    	output.src = URL.createObjectURL(event.target.files[0]);
-    	
-    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
- 		var msg = "."+extensionName+" extension not allowed";
- 		alertMessage(msg);
- 		document.getElementById("errorImage").style.display=""; 
- 		$("#profile_submit").attr("disabled", "disabled");
-    	
-    }else if(sizeinbytes > 200000){
-    	output.src = URL.createObjectURL(event.target.files[0]);
- 		var msg = "Image size should be less than 200 KB";
- 		alertMessage(msg);
- 		document.getElementById("errorImage").style.display=""; 
- 		$("#profile_submit").attr("disabled", "disabled");
-    	
-    }else{
-    	output.src = URL.createObjectURL(event.target.files[0]);
-    	$("#profile_submit").removeAttr("disabled")
-    }
-    
-  };
-</script>
 
 <script type="text/javascript">
 function alertMessage(message){
@@ -601,6 +634,29 @@ function alertMessage(message){
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
+
+<script type="text/javascript">
+function saveOrCancel(message,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='saveCandidateImage("+candidateId+");' ><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
