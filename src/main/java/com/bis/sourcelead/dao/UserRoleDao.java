@@ -25,8 +25,13 @@ public interface UserRoleDao {
 
 	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds, String userState, String searchByName) throws Exception;
 	
-	public Boolean isUserAdmin(Long userId);
+	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
 	
+
+	public Boolean isUserAdmin(Long userId);
+
+
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
+
 
 }

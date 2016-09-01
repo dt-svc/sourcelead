@@ -83,7 +83,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			@RequestParam(value="searchByName", required=false) String searchByName,
 			@RequestParam(value="userState", required=false) String userState,
 			@RequestParam(value="loginUserRole", required=false) String loginUserRole) {
-
+		
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -116,9 +116,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRolesList.add(role);
 				}
 			}
-			
-			 
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
