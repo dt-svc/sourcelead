@@ -398,6 +398,9 @@ public class CommonUtil {
 							tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
 							tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN").getTime();
 						}
+						else{
+							tsCal.setTime(tsStartDate);
+						}
 						TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(projectMember.getId(),tsStartDate);
 						if(timesheetSubmissions != null) {
 							timesheetSubmissions.setStatus(Constants.MEMBER_ACTIVE);
