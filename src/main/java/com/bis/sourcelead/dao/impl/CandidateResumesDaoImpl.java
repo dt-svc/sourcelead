@@ -14,9 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateResumesDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -43,12 +41,19 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	private String duplicateValue;
 	
 	/**
-	 * to store Candidate Resumes
 	 * @author Venkat Kesav
-	 * @param candidateResumes
-	 * @return candidateResumes
-	 * @throws NullPointerException
-    */
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to store Candidate Resume in candidate_Resumes table.
+	 *  
+	 * 
+	 * @param candidateResumes This is the first parameter to storeCandidateResumes method
+	 * 
+	 * @return CandidateResumes
+	 * 
+	 * @throws NullPointer
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResumes storeCandidateResumes(CandidateResumes candidateResumes) throws Exception {
@@ -68,12 +73,20 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	
 	
 	/**
-	 * to Candidates resumes List by candidateId and status
 	 * @author Venkat Kesav
-	 * @param candidateId, status
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to store Candidate Resume in candidate_Resumes table.
+	 *  
+	 * 
+	 * @param candidateId This is the first parameter to getCandidateResumesListByCandidateIdAndStatus method
+	 * @param status This is the first parameter to getCandidateResumesListByCandidateIdAndStatus method
+	 * 
 	 * @return candidateResumesList
+	 * 
 	 * @throws NullPointerException
-    */
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
@@ -86,12 +99,19 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	}
 
 	/**
-	 * to update Candidate Resume
 	 * @author Venkat Kesav
-	 * @param candidateResumes
-	 * @return CandidateResumes
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to update Candidate Resume in candidate_Resumes table.
+	 *  
+	 * 
+	 * @param candidateResumes This is the first parameter to updateCandidateResume method
+	 * 
+	 * @return candidateResumes
+	 * 
 	 * @throws NullPointerException
-    */
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
@@ -112,24 +132,31 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 
 	
 	/**
-	 * to get Candidate Resume By ResumeId
 	 * @author Venkat Kesav
-	 * @param resumeId
-	 * @return CandidateResumes
+	 * @since  aug 30 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get Candidate Resume By ResumeId from candidate_Resumes table.
+	 *  
+	 * 
+	 * @param resumeId This is the first parameter to getCandidateResumeByResumeId method
+	 * 
+	 * @return candidateResumes
+	 * 
 	 * @throws NullPointerException
-    */
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from CandidateResumes candidateResumes where candidateResumes.id = :resumeId" ;
-		List<CandidateResumes> crList =session.createQuery(query).setLong("resumeId", resumeId).setCacheable(true).list(); 
-		CandidateResumes cr = null;
-		if(crList != null && !crList.isEmpty()){
-			cr = crList.iterator().next();
+		List<CandidateResumes> candidateResumesList =session.createQuery(query).setLong("resumeId", resumeId).setCacheable(true).list(); 
+		CandidateResumes candidateResumes = null;
+		if(candidateResumesList != null && !candidateResumesList.isEmpty()){
+			candidateResumes = candidateResumesList.iterator().next();
 		}
-		return cr;
+		return candidateResumes;
 	}
 
 }
