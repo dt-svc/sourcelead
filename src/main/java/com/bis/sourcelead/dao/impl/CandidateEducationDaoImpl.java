@@ -104,11 +104,11 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,
-			Long candidateCertificateId) throws Exception {
+			Long candidateEducationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateCertificateId and cEmp.candidateId.id = :candidateId ";
-		List<CandidateEducation> educationList =  session.createQuery(query.toString()).setLong("candidateCertificateId", candidateCertificateId).setLong("candidateId", candidateId)
+		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateEducationId and cEmp.candidateId.id = :candidateId ";
+		List<CandidateEducation> educationList =  session.createQuery(query.toString()).setLong("candidateEducationId", candidateEducationId).setLong("candidateId", candidateId)
 				.setCacheable(true).list();
 		
 
