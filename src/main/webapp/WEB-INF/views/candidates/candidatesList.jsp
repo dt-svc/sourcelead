@@ -1,11 +1,10 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
@@ -21,7 +20,14 @@
 };
 </script>
 
-<!-- candidateList script -->
+<%-- 
+     @author : sarath kumar.
+     this script is for get candidate list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
 <script>
   function candidateList(){ 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -355,27 +361,10 @@ $(document).ready(function() {
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        
-           <!--  <div class="remove_search">
-            	<input type="text" placeholder="search" />
-            </div>     -->      
-        
       </div>
       <div class="candidate_wrap_table">
         <div id="candidateList"></div>
       </div>
-      <!--   <nav>
-        <ul id="paging" class="pagination">
-          <li><a href="#">Previous</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">6</a></li>
-          <li data-page="last"><a href="#">Next</a></li>
-        </ul>
-        <div class="clearfix"></div>
-      </nav> -->
     </div>
     
     <!-- Compnay details -->
@@ -387,69 +376,6 @@ $(document).ready(function() {
 		             <div id="candidateSideDiv">
 				     </div>  
 	    </div>			     
-      <%-- <div class="clients_side_wrap_inn">
-       <div class="profile_details clearfix" style="margin-bottom:20px;">
-                    <div class="col-md-6">
-                        <div class="media">
-                          <div class="media-left image-parent">
-                          <div class="imageParent">
-                          	<img src="./images/24.jpg" alt="candidate" title="Candidate">
-                          </div>
-                          </div>
-                          <div class="media-body candidate-details">
-                            <h4 class="media-heading">Jaden Smith</h4>
-                            <ul class="list-unstyled">
-                              <li><strong>Business Analyst - Full Time</strong></li>
-                              <li>Experience - 4 years</li>
-                            </ul>
-                        </div>
-                      </div>
-                      <div class="other-detials">
-                      <div class="professinal-details">
-                      	<ul class="list-inline list-unstyled"><li>BA</li><li>BRS</li><li>SRS</li><li>Agile</li><li>SDLC</li></ul>
-                      </div>
-                      <div class="socialnetwork-details">
-                      <ul class="list-inline list-unstyled">
-                                      <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>
-                                      <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>
-                                      <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>
-                                      <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>
-                                      <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>
-                                    </ul>
-                      </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <ul class="list-unstyled can-perdt">
-                        <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">jadensmith@hotmail.com</a></li>
-                        <li><i class="fa fa-phone"></i>+91 9900223355</li>
-                        <li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>
-                        <li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>
-                        <li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>
-                      </ul>
-                    </div>
-				</div>
-        <div class="proj_close"></div>
-        <div class="project_side_wrap_inn_tabs">
-          <ul class="project-tabs-menu">
-            <li class="current"><a href="#tab-1" onclick="candidateProfile();">Profile</a></li>
-            <li><a href="#tab-2">Resume</a></li>
-            <li><a href="#tab-3">Experience</a></li>
-            <li><a href="#tab-4">Education</a></li>
-            <li><a href="#tab-5">Certificate</a></li>
-            <li><a href="#tab-6">Activities</a></li>
-            <div class="clearfix"></div>
-          </ul>
-          <div class="project_tabs">
-                <jsp:include page="candidatesProfile.jsp"></jsp:include>
-                <jsp:include page="candidatesResumes.jsp"></jsp:include>
-                <jsp:include page="candidatesExperience.jsp"></jsp:include>
-                <jsp:include page="candidatesEducation.jsp"></jsp:include>
-                <jsp:include page="candidatesCertificates.jsp"></jsp:include>
-                <jsp:include page="candidatesActivities.jsp"></jsp:include>
-          </div>
-        </div>
-      </div> --%>
     </div>
     <!-- Compnay details Ends --> 
     <!-- Project --> 
