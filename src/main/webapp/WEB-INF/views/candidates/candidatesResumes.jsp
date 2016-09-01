@@ -1,4 +1,9 @@
-
+<%-- 
+     @author : Venkat Kesav
+     this script is for get candidate resumes list.
+     1.usage     : onload
+     2.parameter : candidateId.
+--%>
 <script>
 function candidateResume(candidateId){
 	var result ="";
@@ -11,7 +16,6 @@ function candidateResume(candidateId){
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	
-	
     $("#tab-1").empty();
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
@@ -23,11 +27,23 @@ function candidateResume(candidateId){
 }
 </script>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for close resume popup
+     1.usage     : onload
+--%>
 <script>
 function closeResumePopup(){
 	 $("#popUpDivResume").removeClass("edit-details-active");
 }
 </script>
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for add resume popup
+     1.usage     : onload
+     2.parameter : candidateId.
+--%>
 <script>
 function addResume(candidateId) {	
 	var result = "";
@@ -46,11 +62,11 @@ function addResume(candidateId) {
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'	                            </span> </label>';
-	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Files are not selected..." field-name="Resume" data-validation="required validate_Space">';
+	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Resume" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';                         
@@ -74,15 +90,31 @@ function addResume(candidateId) {
 		$(".edit-details").removeClass("edit-details-active");
 	   });	
 	 
-	 /* upload file script */
+	 	/* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
 	    document.getElementById("uploadFile").value = this.value;
 	    };
-	   
+	    
+	    /* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("uploadBtn");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
 	}
 </script>	 
   
-<!-- Resume saving script -->
+<%-- 
+     @author : Venkat Kesav
+     this script is for saving resume
+     1.usage     : onclick
+     2.parameter : candidateId.
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
 <script type="text/javascript">
 	function storeCandidateResume(candidateId){
 			var validationSettings = {
@@ -109,10 +141,8 @@ function addResume(candidateId) {
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
 						success : function(result) {
-							 /* candidateResumesList(candidateId); */
 							 $("#popUpDivResume").removeClass("edit-details-active");
 							 candidateResumesList(candidateId);
-	               			 
 						},
 					});
 					return true;
@@ -126,7 +156,13 @@ function addResume(candidateId) {
 	});
 </script>
 
-<!-- Resume list preparation -->
+<%-- 
+     @author : Venkat Kesav
+     this script is for prepare list of resumes
+     1.usage     : onload
+     2.parameter : candidateId.
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
 <script>
   function candidateResumesList(candidateId){ 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -204,7 +240,13 @@ function addResume(candidateId) {
 </script>
 
 
-<!-- Resume soft deletion -->
+<%-- 
+     @author : Venkat Kesav
+     this script is for terminate resume (inactive status)
+     1.usage     : onclick
+     2.parameter : candidateId, resumeId
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
 <script>
 function deleteResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -242,4 +284,3 @@ function deleteResume(candidateId, resumeId){
 		};
 	})(jQuery);
 </script>
-
