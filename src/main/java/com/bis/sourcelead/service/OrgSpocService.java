@@ -51,4 +51,6 @@ public interface OrgSpocService {
 	 */
 	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception;
 
+	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
+
 }
