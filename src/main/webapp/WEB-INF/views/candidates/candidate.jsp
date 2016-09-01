@@ -1,29 +1,31 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
-<!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+
+<!-- these files for autocomplete with tagit -->
+
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
 
 <!-- end files for autocomplete with tagit -->
+	
 	<script type="text/javascript">
-	window.onload = function () {
-		cscInit();
-	 };
+		window.onload = function () {
+			cscInit();
+		 };
 	</script>
 	 
 	 <script>
@@ -320,13 +322,13 @@
 	<jsp:include page="../masterFooter.jsp" />
 	<!-- Footer Area -->
 	
+	
 	<%-- 
-     @author : Prasad K.
+     @author : prasad k.
      this script is for save/store candidate.
      1.usage     : onclick.
-     2.parameter : csrf token ,con.
+     2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
-     
     --%>
 
 <script type="text/javascript">
