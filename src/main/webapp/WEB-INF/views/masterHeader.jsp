@@ -34,11 +34,25 @@
 			document.getElementById("logoutForm").submit();
 		}
 </script>
+
+<script>
+		function linkFormSubmit(orgLocationId) {
+			document.getElementById("logoutForm").action="${sourceleadUrl}/dashboard/"+orgLocationId
+			document.getElementById("logoutForm").submit();
+		}
+</script>
+
+
 <body>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
+
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
@@ -94,6 +108,19 @@
 	            </div>
 	          </li>
             </c:if>
+            
+            <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks"> <i class="fa fa-globe"></i> </a>
+	              <div class="spoclinks-area">
+	              <ul class="list-unstyled">
+                        <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+							<li><a href="${sourceleadUrl}/dashboard/${links.orgLocations.id}"><i class="fa fa-user"></i>&nbsp;${links.orgLocations.org.orgName}</a></li>
+						</c:forEach>
+	              </ul>
+	            </div>
+	          </li>
+	          </c:if>
+           
           <!-- <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
             <div class="header-widget note-area">
               <ul class="list-unstyled">
