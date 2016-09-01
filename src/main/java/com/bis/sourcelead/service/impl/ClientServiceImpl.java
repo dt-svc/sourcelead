@@ -205,20 +205,24 @@ public class ClientServiceImpl implements ClientService{
 							orgSpoc.setOrgRelations(orgRelations);
 						}
 					}
-					orgSpoc.setSpocUser(spocUser);
-					User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-					orgSpoc.setOwnerUser(ownerUser);
-					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
-					orgSpoc.setInvitationStatus("NEW");
-					orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-					orgSpoc.setCreatedDate(commonUtil.currentDate());
-					orgSpoc.setCreatedBy(user.getUserCode());
-					orgSpoc.setUpdatedDate(commonUtil.currentDate());
-					orgSpoc.setUpdatedBy(user.getUserCode());
-					orgSpocService.addOrgSpoc(orgSpoc);
-					}
-			}
-			
+				}
+				orgSpoc.setSpocUser(spocUser);
+				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				orgSpoc.setOwnerUser(ownerUser);
+				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if(jsonObj.has("isMailSent")){
+					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+				}else{
+					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+				}
+				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+				orgSpoc.setCreatedDate(commonUtil.currentDate());
+				orgSpoc.setCreatedBy(user.getUserCode());
+				orgSpoc.setUpdatedDate(commonUtil.currentDate());
+				orgSpoc.setUpdatedBy(user.getUserCode());
+				orgSpocService.addOrgSpoc(orgSpoc);
+				}
+
 		}
 	
 	

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -344,6 +345,22 @@ public class ClientRestController {
 			return result;
 		}
 
+	 
+	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
+	 public  String saveInvitationStatus(HttpServletRequest request,@RequestParam(value="spocId", required=false) Long spocId,
+													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
+										             
+	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+	        if(orgSpoc !=  null){
+	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
+	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
+	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        	}
+	        	orgSpocService.addOrgSpoc(orgSpoc);
+	        }
+	        return "success";
+	    }
 
 	 
 	 /** To change the spoc status
