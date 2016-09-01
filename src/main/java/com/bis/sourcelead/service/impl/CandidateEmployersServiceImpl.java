@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;

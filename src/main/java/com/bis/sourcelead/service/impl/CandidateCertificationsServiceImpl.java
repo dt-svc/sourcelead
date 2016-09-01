@@ -36,7 +36,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	
 		/**
 		 * 
-		 * @author ShivYogi
+		 * @author Shivayogi
 		 * This Method is for Storing candidateCertifications
 		 * 
 		 * @param jsonObject
@@ -105,7 +105,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	
 		/**
 		 * 
-		 * @author root ShivaYogi
+		 * @author root Shivayogi
 		 * 
 		 * This method is for getting CandidateCertificationList By CandidateId And OrgLocationID
 		 * 
