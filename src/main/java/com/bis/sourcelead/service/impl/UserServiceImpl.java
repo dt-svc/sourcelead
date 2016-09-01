@@ -121,16 +121,33 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
-	 	User user = getUserDetails(jsonObj,loginuser.getUserCode());
-	 	if(sourceType.equalsIgnoreCase("PROJECTS")){
-	 		user.setUserType("Employee");
-	 	}
-	 	
-		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		user.setPassword(sourceleadPasswordEncoder.encode(password));
+	   User user = null;
+	   String password = null;
+	   UserRole userRole = null;
+	   user = userDao.findByEmail(jsonObj.getString("email"));
+	   
+	   if(null == user){
+		    user = getUserDetails(jsonObj,loginuser.getUserCode());
+		 	if(sourceType.equalsIgnoreCase("PROJECTS")){
+		 		user.setUserType("Employee");
+		 	}
+		 	
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+	   }
+	    
 		
        //For saving the User Role 
-		UserRole userRole = getUserRoleDetails(jsonObj,user,loginuser.getUserCode(),orgLocations.getId());
+	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(jsonObj.getString("email"),orgLocations.getId());
+	   if(userRole == null){
+		   userRole = getUserRoleDetails(jsonObj,user,loginuser.getUserCode(),orgLocations.getId());
+		   if(null == user.getId()){
+				userRole.setIsPrimary(1);
+		  }else{
+				userRole.setIsPrimary(0);
+			}
+	   }
+		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
@@ -159,18 +176,19 @@ public class UserServiceImpl implements UserService {
 			commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
-		
-		//send mail to user
-		if( ("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
-				 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
-				 && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,loginuser,password);
-		}
-		if(( ("Client".equals(responderType) || "Vendor".equals(responderType)) 
-				&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
-				&& ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg);
-		}
+		 if(null == user.getId()){
+		   //send mail to user
+			if( ("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
+					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
+					 && ("Y".equals(jsonObj.getString("isMailSent")))){
+				sendEmail(user,loginuser,password);
+			}
+			if(( ("Client".equals(responderType) || "Vendor".equals(responderType)) 
+					&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
+					&& ("Y".equals(jsonObj.getString("isMailSent")))){
+				sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg);
+			}
+		 }
 		return user1;
 				
 		
@@ -282,15 +300,14 @@ public class UserServiceImpl implements UserService {
 		orgLocations.setId(orgLocationsId);
 		userRole.setOrgLocations(orgLocations);
 		
+		
+		
 		Roles roles = null;
 		try {
 			if(jsonObj.has("roleType") && !isNullOrEmpty(jsonObj.getString("roleType"))){
 				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
-			}else{
-				roles = rolesService.getRolesById(2L);
 			}
-			
-			if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
+			else if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
 				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
 			}else{
 				roles = rolesService.getRolesById(2L);
@@ -301,7 +318,6 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		userRole.setRoles(roles);
-		userRole.setIsPrimary(1);
 		userRole.setCreatedDate(commonUtil.currentDate());
 		userRole.setCreatedBy(userCode);
 		return userRole;

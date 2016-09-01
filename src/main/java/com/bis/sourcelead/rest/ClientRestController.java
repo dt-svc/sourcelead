@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -153,41 +154,37 @@ public class ClientRestController {
 			return commonUtil.toJSON(orgsList);
 			
 		}
-	  
 	
+		
 		@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
-		public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
-				@RequestParam(value = "responderType", required = false) String responderType,
-				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-				HttpServletRequest request) throws Exception {
+			public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
+					@RequestParam(value = "responderType", required = false) String responderType,
+					@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+					HttpServletRequest request) throws Exception {
 
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
-			
-			/*System.out.println(jsonObj.getString("roleType"));
-			System.out.println(jsonObj.getString("roleTypeId"));*/
+				String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
+				
+				if(flag == false){
+					if(null != orgLocationId){
+						jsonObj.put("orgLocationId", orgLocationId);
+					}
+					
+					clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
+				 	
+					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
+							"Successfully you have created a client");
 
-			if(flag == false){
-				if(null != orgLocationId){
-					jsonObj.put("orgLocationId", orgLocationId);
+					return "clientDashboard";
+				}else{
+					return "invalid";
 				}
 				
-				clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-			 	
-				SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
-						"Successfully you have created a client");
-
-				return "clientDashboard";
-			}else{
-				return "invalid";
-			}
-			
-		} 
-		
+			} 
 		
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
 		    public @ResponseBody String getSpocUserDetails(@RequestParam(value="email", required=false) String email,
@@ -348,6 +345,22 @@ public class ClientRestController {
 			return result;
 		}
 
+	 
+	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
+	 public  String saveInvitationStatus(HttpServletRequest request,@RequestParam(value="spocId", required=false) Long spocId,
+													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
+										             
+	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+	        if(orgSpoc !=  null){
+	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
+	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
+	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        	}
+	        	orgSpocService.addOrgSpoc(orgSpoc);
+	        }
+	        return "success";
+	    }
 
 	 
 	 /** To change the spoc status

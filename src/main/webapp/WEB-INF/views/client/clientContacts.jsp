@@ -113,7 +113,7 @@ width: 100% !important;
 				  	    			  result = result +'<b class="proj_active">'+opt.invitationStatus+'</b>';
 			  	    			}
 			   		    		if(opt.invitationStatus == 'Rejected'){
-			  	    			  result = result +'<b class="proj_deactivate">'+opt.invitationStatus+'</b>';
+			  	    			  result = result +'<b class="proj_closed">'+opt.invitationStatus+'</b>';
 			  	    			}
 			   		    		if(opt.invitationStatus == 'New'){
 				  	    			  result = result +'<b class="proj_process">'+opt.invitationStatus+'</b>';
