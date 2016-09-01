@@ -54,6 +54,7 @@ window.onload = function () {
 	</section>
 	
 	<div class="content-area content-new clearfix">
+	<div id="loading"></div> 
 	<form:form id="client_form" name="client_form" method="post">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
@@ -140,6 +141,14 @@ window.onload = function () {
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <h3>Contact Details</h3>
             
+            <div class="form-group" id="EmailIdDiv">
+				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+				</div>
+			</div>
+            
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
@@ -153,14 +162,6 @@ window.onload = function () {
                 <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
-            
-            <div class="form-group" id="EmailIdDiv">
-				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
-	                            <span class="hidden">Valid Email</span>
-				</div>
-			</div>
 			
             <div class="form-group">
               <label class="col-md-3">Phone Number</label>
@@ -203,26 +204,36 @@ window.onload = function () {
               </div>
             </div>
             
-              <div class="form-group">
+              <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 		                        <option value="">-Select Role-</option>
-									<option value="Admin">Admin</option>
-									<option value="Approver">Approver/Project Manager</option>
-									<option value="HR Manager">HR Manager</option>
-									<option value="Account Manager">Account Manager</option>
-									<option value="Recruiter">Recruiter</option>
+									<option value="1">Admin</option>
+									<option value="3">Approver/Project Manager</option>
+									<option value="5">HR Manager</option>
+									<option value="6">Account Manager</option>
+									<option value="8">Recruiter</option>
 			              </select>
                   </div>
                 </div>
+                
+                <div class="form-group" id="userRoleDiv" style="display: none;">
+					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+					<div class="col-md-9">
+					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
+					<input type="hidden" id="userRole" name="roleType" value="" />
+					
+				   </div>
+		        </div>
+		 
           </div>
         </div>
       </div>
       <div class="form-footer clearfix">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" id="save_client" onclick="validateClientName(); saveClient(); flushSaveClient()" class="btn btn-primary"> 
+            <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
 			<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
           </div>
         </div>
@@ -244,6 +255,28 @@ window.onload = function () {
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
 	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	$( "#orgName" ).val( '' );
+	$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#state").tagit("removeAll");
+	$("#city").tagit("removeAll");
+	$("#webSite" ).val('');
+	
+	document.getElementById("countryDiv").style.display="";
+	document.getElementById("orgCountryDiv").style.display="none";
+	
+	document.getElementById("stateDiv").style.display="";
+	document.getElementById("orgStateDiv").style.display="none";
+	
+	document.getElementById("cityDiv").style.display="";
+	document.getElementById("orgCityDiv").style.display="none";
+	
+	$("#role").attr("data-validation", "required");
+	document.getElementById("roleDiv").style.display="";
+	document.getElementById("userRoleDiv").style.display="none";
 	
 	
 	$.ajax({                           
@@ -327,22 +360,10 @@ function getOrgDetails()
    	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
-	}else{
-		$("#webSite").attr("disabled", false);
-		$("#state").tagit("removeAll");
-		$("#city").tagit("removeAll");
-		$( "#webSite" ).val('');
-		$( "#orgLocationId").val('');
-		
-		document.getElementById("countryDiv").style.display="";
-		document.getElementById("orgCountryDiv").style.display="none";
-		
-		document.getElementById("stateDiv").style.display="";
-		document.getElementById("orgStateDiv").style.display="none";
-		
-		document.getElementById("cityDiv").style.display="";
-		document.getElementById("orgCityDiv").style.display="none";
-	} 
+   	 
+	getSpocUserDetails();
+	
+	}
 	
 }
 </script>
@@ -377,27 +398,35 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#client_form').validate(false, validationSettings)) {
+			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_client").attr("disabled", "disabled");
-			$("#save_client").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 		$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
 						success : function(result) {
 							if (result == 'clientDashboard') {
 								location.replace(sourceleadUrl
 										+ "/clientDashboard");
 							}
+							else if (result == 'invalid') {
+								//duplicate client
+								$("#loading").removeAttr("style");
+								var clientName = document.getElementById("orgName").value;
+								$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+								document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+								document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+								
+							}
 
 						},
-					});
+					}); 
 			return true;
 		} else {
 			return false;
@@ -409,8 +438,73 @@ function getOrgDetails()
 	});
 </script>
 
-
-  <script type="text/javascript">
+ 
+<script type="text/javascript">
+function getSpocUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }
+		        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#phoneNumber").attr("disabled", true);
+		        		    $("#phoneNumber").val(json[2]);
+	        		 }
+	        		 
+	        		 
+	        		 if(json[3] != null && json[3] != ''){
+	        			$("#role").removeAttr("data-validation");
+        			    document.getElementById("roleDiv").style.display="none";
+   	        			document.getElementById("userRoleDiv").style.display="";
+   	        			$("#userRole").val(json[3]);
+   	        			$("#userRoleText").val(json[4]);
+	        		 }
+	        		
+	        		
+			      	 
+	        	}
+			 },
+	        error: function(e){
+	            alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	    $("#phoneNumber").attr("disabled", false);
+	    $("#phoneNumber").val('');
+	    
+	    document.getElementById("roleDiv").style.display="";
+		document.getElementById("userRoleDiv").style.display="none";
+	   
+	}
+	
+}
+</script>
+ 
+  <!-- <script type="text/javascript">
 function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -448,10 +542,10 @@ function validateClientName(){
 	}
   }
 }
-</script>  
+</script>   -->
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function validateClientEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -480,7 +574,7 @@ function validateClientName(){
 	 }
  }
  </script>     
-
+ -->
  
  
  <script type="text/javascript">

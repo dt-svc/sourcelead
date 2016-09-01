@@ -39,23 +39,23 @@ window.onload = function () {
 						var selected4 = '';
 						var selected5 = '';
 						
-						if(json.level == 'Level1'){
+						if(json.level == 'Level-1'){
 								selected1 = 'selected';
 							} 
 						
-						if(json.level == 'Level2'){
+						if(json.level == 'Level-2'){
 								selected2 = 'selected';
 							} 
 						
-						if(json.level == 'Level3'){
+						if(json.level == 'Level-3'){
 								selected3 = 'selected';
 							}
 						
-						if(json.level == 'Level4'){
+						if(json.level == 'Level-4'){
 								selected4 = 'selected';
 						}
 						
-						if(json.level == 'Level5'){
+						if(json.level == 'Level-5'){
 								selected5 = 'selected';
 						}
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
@@ -103,17 +103,16 @@ window.onload = function () {
 						
 					
 						//level
-                        result = result + ' <div class="user_summary_edit_cta">';
-                        result = result + ' <label>Level</label>';
-                        result = result + ' <select id="level" name="level" >';
-                        result = result + ' <option '+selected1+'>Level-1</option>';
-                        result = result + ' <option '+selected2+'>Level-2</option>';
-                        result = result + ' <option '+selected3+'>Level-3</option>';
-                        result = result + ' <option '+selected4+'>Level-4</option>';
-                        result = result + ' <option '+selected5+'>Level-5</option>';
-                        result = result + ' </select>';
-                        result = result + ' </div>';   
-						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Level</label>';
+						result = result + ' <select class="rate_sele" id="level" name="level" >';
+						result = result + ' <option '+selected1+'>Level-1</option>';
+						result = result + ' <option '+selected2+'>Level-2</option>';
+						result = result + ' <option '+selected3+'>Level-3</option>';
+						result = result + ' <option '+selected4+'>Level-4</option>';
+						result = result + ' <option '+selected5+'>Level-5</option>';
+						result = result + ' </select>';
+						result = result + ' </div>';	
 						
 						 result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';

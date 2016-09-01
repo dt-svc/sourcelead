@@ -117,6 +117,10 @@ public class ClientController {
 			
 			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);
+			
+			//for get the owners list for spocs
+			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			model.addObject("userList", userList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			

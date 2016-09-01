@@ -37,7 +37,7 @@ public class OrgLocations {
     @Column(name = "id", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "ORG_ID")
     private Org org;
