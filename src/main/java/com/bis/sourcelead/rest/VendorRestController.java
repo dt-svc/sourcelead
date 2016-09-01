@@ -40,7 +40,7 @@ public class VendorRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/saveVendorContact", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId, HttpServletRequest request) throws Exception {
 

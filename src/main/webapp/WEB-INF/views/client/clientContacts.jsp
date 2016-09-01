@@ -277,25 +277,25 @@ function addContact(orgRelationID) {
                               
 	result = result  +'	<div class="clearfix mb10">';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	<input type="text" class="form-control input-sm" value="" name="firstName" field-name="First name" placeholder="First name *" data-validation="required">';
+	result = result  +'	<input type="text" class="form-control input-sm" value="" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length2-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
 	
 	result = result  +'	<div class="clearfix mb10">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" value="" placeholder="Last name">';
+	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" name="email" value="" field-name="Email" placeholder="Email Id *" data-validation="required">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email" onKeyUp="validateSpocEmail('+orgRelationID+');" value="" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	   <div class="col-md-12">';
-	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" placeholder="Phone number">';
+	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 	result = result  +'	    </div>';
 	result = result  +'	  </div>';
 	
@@ -399,19 +399,14 @@ function addContact(orgRelationID) {
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_vendor_contact").attr("disabled", "disabled");
-			$("#save_vendor_contact").addClass('button').val('Processing..');
+			$("#addClientContact").attr("disabled", "disabled");
+			$("#addClientContact").addClass('button').val('Processing..');
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
 						success : function(result) {
 							clientContactList(orgRelationId);
-							/* if (result == 'vendorsList') {
-								location.replace(sourceleadUrl
-										+ "/vendorsList");
-							} */
-
 						},
 			});
 			return true;
@@ -425,6 +420,36 @@ function addContact(orgRelationID) {
 	}); 
 </script>
 <!-- to add new contact --> 
+
+<script type="text/javascript">
+ function validateSpocEmail(orgRelationId) {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $("#addClientContact").attr("disabled", "disabled");
+         $("#addClientContact" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateSpocEmailId?${_csrf.parameterName}=${_csrf.token}&email="+EmailId+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#addClientContact" ).addClass('button').val('Save');
+                         $("#addClientContact").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>
  
  <script type="text/javascript">
         var validationSettings = {

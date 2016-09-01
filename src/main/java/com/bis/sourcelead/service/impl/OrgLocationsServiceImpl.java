@@ -107,38 +107,32 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		String locationCode = orgLocations.getLocationCode();
-		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
-		
 		OrgLocations clientOrgLocations = new OrgLocations();
-		clientOrgLocations.setOrg(addOrg);
-		if(jsonObj.has("phone")){
-			clientOrgLocations.setPhone(jsonObj.getString("phone"));
-		}
-		if(jsonObj.has("emailId")){
-			clientOrgLocations.setEmail(jsonObj.getString("emailId"));
-		}
+			clientOrgLocations.setOrg(addOrg);
+			if(jsonObj.has("phone")){
+				clientOrgLocations.setPhone(jsonObj.getString("phone"));
+			}
+			if(jsonObj.has("emailId")){
+				clientOrgLocations.setEmail(jsonObj.getString("emailId"));
+			}
+			
+			if(jsonObj.has("country")){
+				clientOrgLocations.setCountry(jsonObj.getString("country"));
+			}
+			if(jsonObj.has("state")){
+				clientOrgLocations.setState(jsonObj.getString("state"));
+			}
+			
+			if(jsonObj.has("city")){
+				clientOrgLocations.setCity(jsonObj.getString("city"));
+			}
+			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
+			clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
+			clientOrgLocations.setCreatedDate(commonUtil.currentDate());
+			clientOrgLocations.setCreatedBy(loginUserCode);
+			clientOrgLocations.setUpdatedBy(loginUserCode);
+			clientOrgLocations.setUpdatedDate(commonUtil.currentDate());
 		
-		if(jsonObj.has("country")){
-			clientOrgLocations.setCountry(jsonObj.getString("country"));
-		}
-		if(jsonObj.has("state")){
-			clientOrgLocations.setState(jsonObj.getString("state"));
-		}
-		
-		if(jsonObj.has("city")){
-			clientOrgLocations.setCity(jsonObj.getString("city"));
-		}
-		String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
-		clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
-		clientOrgLocations.setCreatedDate(commonUtil.currentDate());
-		clientOrgLocations.setCreatedBy(loginUserCode);
-		clientOrgLocations.setUpdatedBy(loginUserCode);
-		clientOrgLocations.setUpdatedDate(commonUtil.currentDate());
-		
-		Set<OrgRelations> orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, loginUserCode,responderType);
-		clientOrgLocations.setOrgRelationsList(orgRelationsList);
-		
-		orgLocationsList.add(clientOrgLocations);
 		return clientOrgLocations;
 	}
 

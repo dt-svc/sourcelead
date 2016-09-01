@@ -18,6 +18,56 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 
+ <!-- Save client Model popup  Start-->
+         <div role="dialog" id="selectVendor" class="modal fade">
+         <form:form id="client_form" name="client_form" method="post">
+             <div class="modal-dialog">
+               <div class="modal-content">
+                 <div class="modal-header">
+                   <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
+                   <h4 class="modal-title">Select Client</h4>
+                 </div>
+                 <div class="modal-body clearfix">
+                   <div class="form-horizontal custom-form clearfix">
+                     <div class="col-xs-12 col-md-12 col-lg-12">
+                       <div class="form-group">
+                         <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-lg-9" id="clientNameDiv">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                         </div>
+                       </div>
+                       <div class="form-group">
+                         <label class="col-lg-3">Website</label>
+                         <div class="col-lg-9">
+                           <input type="text" placeholder="client website" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                         </div>
+                       </div>
+                       
+                       <div class="form-group">
+			              <label class="col-md-3">Level</label>
+			              <div class="col-md-9">
+			                  <select class="form-control selectpicker" id="level" name="level">
+			                    <option value="Level-1">Level-1</option>
+			                    <option value="Level-2">Level-2</option>
+			                    <option value="Level-3">Level-3</option>
+			                    <option value="Level-4">Level-4</option>
+			                    <option selected="selected" value="Level-5">Level-5</option>
+			                  </select>
+			              </div>
+                      </div>
+                    </div>
+                 </div>
+              </div>
+             <div class="modal-footer">
+              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
+              <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+             </div>
+          </div>
+        </div>
+        </form:form>
+      </div>
+ <!-- Save client Model popup  End-->             
+              
  <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -47,38 +97,6 @@
                  </c:forEach> 
                 </select>
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
-              <div role="dialog" id="selectVendor" class="modal fade">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                      <h4 class="modal-title">Select Client</h4>
-                    </div>
-                    <div class="modal-body clearfix">
-                      <div class="form-horizontal custom-form clearfix">
-                        <div class="col-xs-12 col-md-12 col-lg-12">
-                          <div class="form-group">
-                            <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label class="col-lg-3">Website</label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                      <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           </div>
@@ -133,12 +151,27 @@
 			              </select>
                   </div>
                 </div>
+                
                 <div class="form-group">
-                  <div class="col-md-12 checkbox">
+	              <label class="col-md-3">Status</label>
+	              <div class="col-md-9">
+	                <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
+	                  <option value="Active">Active</option>
+	                  <option value="In-Active">In-Active</option>
+	                  <option value="New">New</option>
+	                  <option value="Negotiation">Negotiation</option>
+	                  <option value="Contracted">Contracted</option>
+	                </select>
+	              </div>
+	            </div>
+	            <div class="form-group">
+                <label class="col-md-3">&nbsp;</label>
+                  <div class="col-md-9 checkBox">
                       <label><input type="checkbox" value="Y"
 							name="isMailSent" checked="checked">Send Invitation</label>
                   </div>
                 </div>
+                
                 </div>
                 </div>
                 </div>
@@ -146,7 +179,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/vendorsList'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -196,7 +229,7 @@
 			$
 					.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							if (result == 'vendorsList') {
 								location.replace(sourceleadUrl
@@ -273,6 +306,73 @@
             };
 </script> 
 
+
+<script type="text/javascript">
+	function saveClient() {
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#client_form').validate(false, validationSettings)) {
+			var frm = $('#client_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#save_client").attr("disabled", "disabled");
+			$("#save_client").addClass('button').val('Processing..');
+			$
+					.ajax({
+						type : "POST",
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+						success : function(result) {
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#client_form', function() {
+		$("#client_form").showHelpOnFocus();
+		$("#client_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+<script type="text/javascript">
+function validateClientName(){
+	var clientName = document.getElementById("orgName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	if(clientName.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (clientName != null && clientName != '') {
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					
+				}else {
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+				}
+			},
+
+		});
+	}
+  }
+}
+</script>
 
 <script type="text/javascript">
 	(function($) {

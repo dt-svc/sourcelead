@@ -121,7 +121,6 @@
         	<tbody>
 			<thead>
 				<tr>
-                	<th><input type="checkbox" id="checkbox1"></th>
                 	<th>Name</th>
                     <th>Email</th>
                     <th>Ph. No</th>
@@ -134,8 +133,7 @@
 			</thead>	
 			<c:forEach var="report" items="${vandorsContactListByOrgLocationId}">
 				<tr>
-                	<td class="cbox"><div><input type="checkbox" id="checkbox2"></div></td>
-                	<td><div class="proj_show"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
+                	<td><div class="proj_show"onclick="vendorSpocSideBar('${report.id}','${report.ownerUser.id}','${report.spocName}');"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
                     <td><div><span>${report.spocEmail}</span></div></td>
                     <td><div><span>${report.spocMobilePhone}</span></div></td>
                     <td><div><span>${report.ownerName}</span></div></td>
@@ -149,7 +147,8 @@
                			 </select></div></td>
                			
                     <td><div><b class="proj_closed">${report.invitationStatus}</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a><i class="glyphicon glyphicon-trash"></i></div></td>
+                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>
+                    <i class="glyphicon glyphicon-trash"></i></div></td>
                 </tr>
                 	</c:forEach>			
             </tbody>
@@ -192,7 +191,38 @@
  </div>
 <!-- Client Side Nav Div Ends -->
 </section>
-      
+
+<script>
+	function vendorSpocSideBar(spocId,ownerId,spocName) {
+		var result = "";
+		result = result + '<div class="project_side_wrap_inn_tabs">';
+		result = result + '<ul class="project-tabs-menu">';
+		result = result
+				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+');">Details</a></li>';
+		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
+		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
+		result = result + '<div class="clearfix"></div>'
+		result = result + '</ul>';
+		result = result + '<div class="project_tabs">';
+
+		result = result + '<div id="tab-1" class="project_tabs_inn">';
+		result = result + '</div>';
+
+		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>'; */
+
+		result = result + '</div>';
+		result = result + '</div>';
+		$("#vendorSideDiv").empty();
+		$("#vendorSideDiv").append(result);
+		
+		$("#vendorNameDiv").empty();
+		$("#vendorNameDiv").append(spocName);
+
+		vendorDetailsbySpocId(spocId,ownerId);
+	}
+</script>
+
 <script>
 	function vendorSideBar(vendorLocationId,orgRelationId,orgName) {
 		var result = "";
@@ -362,13 +392,12 @@ function changeSpocStatus(spocId){
 <script>
 function listChange(sel){
 	 if(sel.value=="listbyVendor"){
-		 document.getElementById("vendors_contact_list").style.display="block";
-		 document.getElementById("vendors_list").style.display="none";
-		 
-	 }
-	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendors_list").style.display="block";
 		 document.getElementById("vendors_contact_list").style.display="none";
+	 }
+	 if(sel.value=="listbyContact"){
+		 document.getElementById("vendors_contact_list").style.display="block";
+		 document.getElementById("vendors_list").style.display="none";
 	 }
 	 
 }
@@ -465,6 +494,7 @@ $(".addcon-pop").click(function(){
 
 </script> 
 <jsp:include page="editVendor.jsp" />
+<jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
 
 
