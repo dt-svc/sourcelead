@@ -85,6 +85,11 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		Candidate candidate = new Candidate();
 		
+        if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") !=null ){
+			
+			candidate.setId(Long.valueOf(jsonObj.getString("candidateId")));
+		}
+        
 		if(orgLocations != null){
 		candidate.setOrgLocationId(orgLocations);
 		}
@@ -198,7 +203,7 @@ public class CandidateServiceImpl implements CandidateService {
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
-			 can.setcandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
 			}
 		}
 		return candidateList;

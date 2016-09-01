@@ -118,21 +118,6 @@ public class Candidate {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@Transient
-	private String candidateUpdateDateToString;
-	
-
-
-	public String getcandidateUpdateDateToString() {
-		return candidateUpdateDateToString;
-	}
-
-
-	public void setcandidateUpdateDateToString(String candidateUpdateDateToString) {
-		this.candidateUpdateDateToString = candidateUpdateDateToString;
-	}
-
-
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
@@ -153,7 +138,12 @@ public class Candidate {
 	
 	@Transient
 	private String skillsList;
-
+	
+	@Transient
+	private Long candidateId;
+	
+	@Transient
+	private String candidateUpdateDateToString;
 
 	public Long getId() {
 		return id;
@@ -493,5 +483,27 @@ public class Candidate {
 	public void setSkillsList(String skillsList) {
 		this.skillsList = skillsList;
 	}
+
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+
+	public String getCandidateUpdateDateToString() {
+		return candidateUpdateDateToString;
+	}
+
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
+	
 	
 }
