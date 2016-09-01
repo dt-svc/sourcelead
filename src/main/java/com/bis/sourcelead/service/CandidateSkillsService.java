@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,5 +26,7 @@ public interface CandidateSkillsService {
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
 	
 	public HashSet<CandidateSkills> getCandidateSkillsDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException;
-
+	
+	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception;
+		
 }

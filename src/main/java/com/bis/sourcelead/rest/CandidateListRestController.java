@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -54,6 +55,10 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 		 @Autowired
 		 CandidateService candidateService;
+		 
+		 
+		 @Autowired
+		 CandidateSkillsService candidateSkillsService;
 		 
 		
 		 /**
@@ -132,7 +137,36 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		   return "success";
 		   
 	   }
+	   
+	   @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
+	   public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<CandidateSkills>  candidateSkillsList =  candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
+			resultJson = commonUtil.toJSON(candidateSkillsList);
+			return resultJson;
+			
+		 }
 		 
+	   
+	   @RequestMapping(value = "/saveSkilsBycandidateID")
+	   public String saveSkilsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson;
+			CandidateSkills cs = new CandidateSkills();
+			
+			Candidate candidate = new Candidate();
+			candidate.setId(Long.parseLong(candidateId));
+			cs.setCandidateId(candidate);
+			cs.setOrgLocationID(loginOrgLocation);
+			cs.setName(skillName);
+			candidateSkillsService.storeCandidateSkills(cs);
+			return "success";
+			
+		 }
+	   
 		 
 		 
 		

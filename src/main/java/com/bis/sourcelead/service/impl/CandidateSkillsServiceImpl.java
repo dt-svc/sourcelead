@@ -1,13 +1,15 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.CandidateSkillsDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateSkillsService;
@@ -20,8 +22,8 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 @Service
 public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 
-	
-	
+	@Autowired
+	CandidateSkillsDao candidateSkillsDao;
 	
 	/* 
 	 * This Service is used to save the candidate skills
@@ -29,7 +31,7 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
 		
-		return null;
+		return candidateSkillsDao.storeCandidateSkills(candidateSkills);
 	}
 	
 	@Override
@@ -53,4 +55,10 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		return candidateSkillsList;    
 
    }
+
+	@Override
+	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception {
+		 
+		return candidateSkillsDao.getCandidateSkillsByCandidateId(candidateId);
+	}
 }

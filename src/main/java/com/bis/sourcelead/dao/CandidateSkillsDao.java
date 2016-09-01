@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.CandidateSkills;
 
 /**
@@ -14,5 +16,7 @@ public interface CandidateSkillsDao {
 	 * @throws Exception
 	 */
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
+	
+	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception;
 
 }
