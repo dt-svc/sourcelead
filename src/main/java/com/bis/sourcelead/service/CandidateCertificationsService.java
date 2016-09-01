@@ -22,13 +22,39 @@ public interface CandidateCertificationsService {
 	 * @return CandidateCertifications
 	 * @throws Exception
 	 */
+	/**
+	 * @param jsonObject
+	 * @param user
+	 * @param orgLocationId
+	 * @param candidateId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject, User user, OrgLocations orgLocationId,Long candidateId)throws Exception;
 	
+	/**
+	 * @param candidateId
+	 * @param orgLocationId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
 	
 	
+	/**
+	 * @param candidateId
+	 * @param candidateCertificateId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
 
+	/**
+	 * @param candidateId
+	 * @param candidateCertificateId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateCertifications getCandidateCertificateBycandidateIdandCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
 	
 }
