@@ -205,7 +205,7 @@ public class ClientServiceImpl implements ClientService{
 							orgSpoc.setOrgRelations(orgRelations);
 						}
 					}
-				}
+				
 				orgSpoc.setSpocUser(spocUser);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
@@ -222,7 +222,7 @@ public class ClientServiceImpl implements ClientService{
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 				}
-
+			}
 		}
 	
 	
