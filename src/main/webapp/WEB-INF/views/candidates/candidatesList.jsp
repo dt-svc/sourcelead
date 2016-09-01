@@ -102,6 +102,12 @@
   } 
 </script>
 
+<%-- 
+     @author : sarath kumar.
+     this script is for prepare pagination to candidateList.
+     1.usage     : used in candidateList() function.
+--%>
+
 <script>
 function pagination(){  
     $('#candidatePagination').DataTable( { 
@@ -113,6 +119,14 @@ function pagination(){
     } );
 }
 </script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for show side bar when you click on the candidate name.
+     1.usage     : called at candidateList() function.
+     2.parameter : csrf token , candidateId .
+     3.ajax url implementation in CandidateListRestController.
+--%>
 
 <script>
 function clientSideBar(candidateId){ 
@@ -173,10 +187,9 @@ function clientSideBar(candidateId){
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
-						 
 						  
 						  
-			            /*  result = result+'                     <div class="media-left image-parent">';
+			             /*  result = result+'                     <div class="media-left image-parent">';
 			             result = result+'                     <div class="imageParent">'; */
 			             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
 			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
@@ -287,6 +300,15 @@ function clientSideBar(candidateId){
 				
 }
 </script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for show side bar when you click on the candidate name.
+     1.usage     : called at saveOrCancel() function. line number 595.
+     2.parameter : csrf token , candidateId .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
 <script>
 function saveCandidateImage(candidateId){
 	            		
@@ -317,7 +339,13 @@ function saveCandidateImage(candidateId){
 }
 </script> 
 
-<!-- 
+
+<%-- 
+     @author : sarath kumar.
+     this script is for hide side bar when you click on the cross button on popup.
+--%>
+
+<script> 
 $(document).ready(function() {
     $(".proj_show").click(function(){  
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
@@ -329,10 +357,148 @@ $(document).ready(function() {
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});	
-}); -->
+}); 
+</script> 
+
+<%-- 
+     @author : sarath kumar.
+     this script is for load predefined image for candidate.
+     1.usage     : called at clientSideBar() function. line number 166.
+--%>
+
+<script>
+	function predefineProfileImage(imageId){   
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for delete image for candidate.
+     1.usage     : not used..future enhancements
+--%>
+<script type="text/javascript">
+function deleteImage(candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for delete image for candidate.
+     1.usage     : not used..future enhancements
+--%>
+<script type="text/javascript">
+function deleteProfileImage(candidateId){   
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteCandidateImage&candidateId="+candidateId,
+	        success: function(data) {
+	        	 var result = data;
+	       },
+	        
+     }); 
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for validate image for candidate.
+     1.usage     : used in clientSideBar() function line number :171.
+--%>
+<script type="text/javascript">
+function loadFile(event,candidateId){
+	    var output = document.getElementById('userImage');
+	    var uploadedImage = document.getElementById('uploadedImage').value;
+	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+	    document.getElementById("errorImage").style.display="none"; 
+	    
+	    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	
+	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+	 		var msg = "."+extensionName+" extension not allowed";
+	 		alertMessage(msg);
+	    }else if(sizeinbytes > 200000){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	 		var msg = "Image size should be less than 200 KB";
+	 		alertMessage(msg);
+	    }else{
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	var msg = "Do you want to save the picture.";
+	    	saveOrCancel(msg,candidateId);
+	   } 
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for show  alert message for candidate image format.
+     1.usage     : used in loadFile() function line number :422.
+--%>
+
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for conformation message to save file / not .
+     1.usage     : used in loadFile() function line number :439.
+--%>
+<script type="text/javascript">
+function saveOrCancel(message,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='saveCandidateImage("+candidateId+");' ><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for close alert popup.
+     1.usage     : used in saveOrCancel() / alertMessage function line number : 435 / 439.
+--%>
+<script type="text/javascript">
+function cancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
-<!-- Content Area --> 
+<!--HTML CONTENT -->
+
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -353,11 +519,11 @@ $(document).ready(function() {
               </ul>
             </div>
           </li>
-         <!--  <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>
+          <!--  <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li> -->
-         <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+          <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
@@ -369,7 +535,7 @@ $(document).ready(function() {
     
     <!-- Compnay details -->
     <div class="side_mask">
-      <div class="proj_close"></div>
+       <div class="proj_close"></div>
     </div>
     <div class="clients_side_wrap">
 	    <div class="clients_side_wrap_inn">
@@ -378,22 +544,19 @@ $(document).ready(function() {
 	    </div>			     
     </div>
     <!-- Compnay details Ends --> 
-    <!-- Project --> 
   </div>
 </section>
 
-
 <!--   Error Message   -->
-<div class="vendor_wrap_mask"></div>
-<div class="vendor_error">
+  <div class="vendor_wrap_mask"></div>
+  <div class="vendor_error">
   <p>Delete conformation message....</p>
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-
 <!--   Error Message   --> 
  
+<!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
-
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
@@ -470,122 +633,5 @@ $(document).ready(function() {
 	   });
 });
 </script>	
-
-
-<script>
-	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
-	}
-</script>
-
-<script type="text/javascript">
-function deleteImage(candidateId){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-
-<script type="text/javascript">
-function deleteProfileImage(candidateId){   
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage&candidateId="+candidateId,
-	        success: function(data) {
-	        	 var result = data;
-	       },
-	        
-     }); 
-}
-</script>
-
-
-<script type="text/javascript">
-
-function loadFile(event,candidateId){
-			
-	    var output = document.getElementById('userImage');
-	    var uploadedImage = document.getElementById('uploadedImage').value;
-	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
-	    document.getElementById("errorImage").style.display="none"; 
-	    
-	    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
-	    	output.src = URL.createObjectURL(event.target.files[0]);
-	    	
-	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
-	 		var msg = "."+extensionName+" extension not allowed";
-	 		alertMessage(msg);
-	 		/* document.getElementById("errorImage").style.display=""; 
-	 		$("#profile_submit").attr("disabled", "disabled"); */
-	    	
-	    }else if(sizeinbytes > 200000){
-	    	output.src = URL.createObjectURL(event.target.files[0]);
-	 		var msg = "Image size should be less than 200 KB";
-	 		alertMessage(msg);
-	 		/* document.getElementById("errorImage").style.display=""; 
-	 		$("#profile_submit").attr("disabled", "disabled"); */
-	    	
-	    }else{
-	    	output.src = URL.createObjectURL(event.target.files[0]);
-	    	/* $("#profile_submit").removeAttr("disabled"); */
-	    	var msg = "Do you want to save the picture.";
-	    	saveOrCancel(msg,candidateId);
-	    	
-	   } 
-    
-    
-}
-</script>
-
-
-<script type="text/javascript">
-function alertMessage(message){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>"+message+"</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-
-}
-</script>
-
-<script type="text/javascript">
-function saveOrCancel(message,candidateId){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>"+message+"</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='saveCandidateImage("+candidateId+");' ><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-
-}
-</script>
-
-<script type="text/javascript">
-function cancel(){ 
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-
  
 <jsp:include page="../masterFooter.jsp" />
