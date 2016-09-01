@@ -371,10 +371,15 @@ public class ClientRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
-	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId) throws Exception{
+	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
 		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
 		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId);
+		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     
+		     
 		 return commonUtil.toJSON(orgSpoc);
 		}
 
@@ -577,7 +582,7 @@ public class ClientRestController {
 	 */
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "spocId", required = false) Long spocId) throws Exception {
 		
 	       String jsonVal = "{" + json + "}";
