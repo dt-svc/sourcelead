@@ -23,9 +23,9 @@
 <!-- end files for autocomplete with tagit -->
 	
 	<script type="text/javascript">
-	window.onload = function () {
-		cscInit();
-	 };
+		window.onload = function () {
+			cscInit();
+		 };
 	</script>
 	 
 	 <script>
