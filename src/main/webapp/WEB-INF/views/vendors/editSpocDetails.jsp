@@ -189,14 +189,25 @@
 						result = result + ' </select>';
 						result = result + ' </div>'
 						
-						result = result + '<div class="user_summary_edit_cta" id="owner">';
+						/* result = result + '<div class="user_summary_edit_cta" id="owner">';
 						result = result + '<label>Owner :</label>';
 						result = result + '<input type="text"  id="owner" name="owner" value="'+json.ownerName+'" placeholder="Owner name" field-name="Owner name">';
-						result = result + '</div>';
+						result = result + '</div>'; */
+						
+						result = result  +'	 <div class="clearfix mb10">';
+						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+						result = result  +'	 <div class="col-md-12">';
+						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						result = result  +'	       <c:forEach var="user" items="${userList}">';
+						result = result  +'	           <option value="${user.id}" ${user.id  == '+json.ownerName+' ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
+						result = result  +'	       </c:forEach>';
+					    result = result  +'	  </select>';
+					    result = result  +'	 </div>';
+					    result = result  +'	 </div>';
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						//result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -236,4 +247,39 @@
 		    });
 	 }
  }
- </script>     
+ </script> 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+ <script type="text/javascript">
+	function storeVendorContactDetails(spocId) {
+         if ($('#editVendorContact_form').validate(false, validationSettings)){
+    		 var frm = $('#editVendorContact_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
+	   		    success: function(data) {
+	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+	   		    }
+		 }); 
+	     	return true;
+         }else{
+             return false;
+           }
+		
+    }
+	$('body').on('blur', '#editClient_form', function() {
+        $("#editClient_form").showHelpOnFocus();
+        $("#editClient_form").validateOnBlur(false, validationSettings);  
+    });
+</script>    

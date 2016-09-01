@@ -501,4 +501,42 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			}
 
 		}
+		
+		@Override
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId) throws Exception {
+			
+			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
+			
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+			
+			String vendorContactFirstName = "vendorContactFirstName";
+			String vendorContactLastName = "vendorContactLastName";
+			String mobilePhone = "mobilePhone";
+			String spocStatus = "spocStatus";
+			String emailId = "emailId";
+			
+			if(null != orgSpoc){
+				User user = orgSpoc.getSpocUser();
+				if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
+					user.setFirstName(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
+					user.setLastName(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
+					user.setMobilePhone(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
+					user.setEmail(jsonObj.getString(emailId));
+				}
+				
+				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
+					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
+				}
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+
+		}
 }
