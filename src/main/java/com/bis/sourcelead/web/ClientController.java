@@ -110,7 +110,7 @@ public class ClientController {
 				if(user != null){
 					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 				}
-				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),,orgLocations.getId());
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
 
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 
