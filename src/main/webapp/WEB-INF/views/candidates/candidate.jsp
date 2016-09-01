@@ -167,7 +167,7 @@
           <div class="col-md-9">
             <div class="row">
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceYears" name="experienceYears">
+             		<select class="form-control" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option selected disabled>Year</option>
              		<option>0</option>
              		<option>1</option>
@@ -505,4 +505,21 @@ document.getElementById("uploadFile").value = this.value;
  </script>     
  
  <!-- Candidate Email validation script ends here -->
+ 
+ <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
+ <script type="text/javascript">
+ function disableMonths() {
+     $("#experienceYears").change(function() {
+    	 
+         if ($(this).val() == '20+') {
+             $("#experienceMonths").prop("disabled", true);
+         }
+         else{
+        	 $("#experienceMonths").prop("disabled", false); 
+         }
+         
+     });
+ }
+</script>
+<!-- Experience Years and Months validation Script End here -->
  

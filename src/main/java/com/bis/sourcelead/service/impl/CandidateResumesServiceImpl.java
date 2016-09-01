@@ -99,12 +99,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				 candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
-				 candidateResumesList.add(candidateResumes);
+				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 				 candidateResumes.setCreatedDate(new Date());
 				 candidateResumes.setCreatedBy(userCode);
 				 candidateResumes.setUpdatedBy(userCode);
 				 candidateResumes.setUpdatedDate(new Date());
 				 candidateResumes.setOrgLocationId(orgLocations);
+				 candidateResumesList.add(candidateResumes);
 			 }
 	     return candidateResumesList;
 	}
