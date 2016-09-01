@@ -513,7 +513,7 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 			String vendorContactLastName = "vendorContactLastName";
 			String mobilePhone = "mobilePhone";
 			String spocStatus = "spocStatus";
-			String emailId = "emailId";
+			String emailId = "email";
 			
 			if(null != orgSpoc){
 				User user = orgSpoc.getSpocUser();
@@ -529,10 +529,12 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
 					user.setEmail(jsonObj.getString(emailId));
 				}
+				userService.addUser(user);
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
+				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
