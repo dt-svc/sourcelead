@@ -206,8 +206,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("isUserAdmin By UserId start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'SOURCELEAD_ADMIN') and userRole.user =:userId")
-						   .setLong("userId", userId).setCacheable(true).list();
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'SOURCELEAD_ADMIN') and userRole.user =:userId")
+						   .setLong("userId", userId)
+						   .setCacheable(true).list();
 		
 		logger.debug("isUserAdmin By UserId End");
 		
@@ -218,6 +219,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return flag;
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isUserAdminByOrgLocationId(Long userId,Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("isUserAdmin By UserId start");
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'SOURCELEAD_ADMIN') and userRole.user =:userId and userRole.orgLocations.id = :orgLocationId")
+						   .setLong("userId", userId)
+						   .setLong("orgLocationId", orgLocationId) .setCacheable(true).list();
+		
+		logger.debug("isUserAdmin By UserId End");
+		
+		Boolean flag = false;
+		if (userRole.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+	}
 	
 }

@@ -231,7 +231,9 @@ public class ClientRestController {
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId());
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
@@ -289,7 +291,8 @@ public class ClientRestController {
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
 	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
-		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());    
+		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
 		 return commonUtil.toJSON(orgSpoc);
 		}
 	
@@ -353,6 +356,22 @@ public class ClientRestController {
 		return result;
 	}
 
+	@RequestMapping(value = "/getVendorClientEmailVerification", method = RequestMethod.POST)
+	@ResponseBody String getVendorClientEmailVerification(@RequestParam(value = "EmailId", required = false) String emailId,@RequestParam(value = "spocId", required = false) Long spocId)
+			throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String result = null;
+	//	OrgLocations orgLocations = orgLocationService.findByEmail(EmailId,orgLocation.getId());
+
+		
+		/*if (orgLocations != null) {
+			result = "true";
+		} else {
+			result = "false";
+		}*/
+		return result;
+	}
+	
 	/***
 	 * @author  Prasanna vadla
 	 * 26-8-2016

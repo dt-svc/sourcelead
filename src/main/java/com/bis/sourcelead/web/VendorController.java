@@ -56,7 +56,7 @@ public class VendorController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		
 		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId());
+		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLoc.getId());
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
 	
 		

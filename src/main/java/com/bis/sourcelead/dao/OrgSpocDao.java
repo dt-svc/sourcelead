@@ -14,7 +14,7 @@ public interface OrgSpocDao {
 	 * @author Prasad Salina 
 	 * To get all the spocs
 	 */
-    List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> userIds) throws Exception;
+    List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> userIds,Long orgLocationId) throws Exception;
     
     /**To get OrgSpoc by ID
 	 * @author Prasad Salina
