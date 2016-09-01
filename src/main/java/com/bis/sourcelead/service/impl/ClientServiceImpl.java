@@ -516,9 +516,11 @@ public class ClientServiceImpl implements ClientService{
 			String mobilePhone = "mobilePhone";
 			String spocStatus = "spocStatus";
 			String emailId = "email";
+			String owner = "owner";
 			
 			if(null != orgSpoc){
 				User user = orgSpoc.getSpocUser();
+				
 				if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
 					user.setFirstName(jsonObj.getString(vendorContactFirstName));
 				}
@@ -535,6 +537,11 @@ public class ClientServiceImpl implements ClientService{
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
+				}
+				if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+					User ownerUser = new User();
+					ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
+					orgSpoc.setOwnerUser(ownerUser);
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{

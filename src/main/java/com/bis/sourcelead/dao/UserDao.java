@@ -63,5 +63,7 @@ public interface UserDao {
 	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
 
 	User getUserDetailsByUserCode(String userCode);
+
+	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
 	
 }
