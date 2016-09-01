@@ -168,8 +168,8 @@ public class ClientRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
 			
-			System.out.println(jsonObj.getString("roleType"));
-			System.out.println(jsonObj.getString("roleTypeId"));
+			/*System.out.println(jsonObj.getString("roleType"));
+			System.out.println(jsonObj.getString("roleTypeId"));*/
 
 			if(flag == false){
 				if(null != orgLocationId){
@@ -358,10 +358,15 @@ public class ClientRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
-	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId) throws Exception{
+	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
 		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
 		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId);
+		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     
+		     
 		 return commonUtil.toJSON(orgSpoc);
 		}
 

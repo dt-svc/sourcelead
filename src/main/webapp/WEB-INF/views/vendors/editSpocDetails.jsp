@@ -19,11 +19,11 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId) {
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -34,7 +34,7 @@
 						result = result + '<div class="project_details">';
 						
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 							
 							result = result + '<div class="project_details_cta">';
@@ -126,11 +126,11 @@
 	}
 </script>
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -204,7 +204,7 @@
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						result = result  +'	       <c:forEach var="user" items="${userList}">';
-						result = result  +'	           <option value="${user.id}" ${user.id  == ownerId ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
+						result = result  +'	           <option value="${user.id}" ${user.id  == ownerId ? "selected" : ''} > ${user.firstName} ${user.lastName}</option>';
 						result = result  +'	       </c:forEach>';
 					    result = result  +'	  </select>';
 					    result = result  +'	 </div>';

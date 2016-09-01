@@ -604,4 +604,9 @@ public class UserServiceImpl implements UserService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 	}
+
+	@Override
+	public List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long orgLocationsId, Long ownerId, List<Long> ownerListOfSpoc) {
+		return userDao.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLocationsId,ownerId,ownerListOfSpoc);
+	}
 }

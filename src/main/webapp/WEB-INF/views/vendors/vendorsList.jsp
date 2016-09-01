@@ -133,7 +133,7 @@
 			</thead>	
 			<c:forEach var="report" items="${vandorsContactListByOrgLocationId}">
 				<tr>
-                	<td><div class="proj_show"onclick="vendorSpocSideBar('${report.id}','${report.ownerUser.id}','${report.spocName}');"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
+                	<td><div class="proj_show"onclick="vendorSpocSideBar('${report.id}','${report.ownerUser.id}','${report.spocUser.id}','${report.spocName}');"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
                     <td><div><span>${report.spocEmail}</span></div></td>
                     <td><div><span>${report.spocMobilePhone}</span></div></td>
                     <td><div><span>${report.ownerName}</span></div></td>
@@ -193,12 +193,12 @@
 </section>
 
 <script>
-	function vendorSpocSideBar(spocId,ownerId,spocName) {
+	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+');">Details</a></li>';
+				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+');">Details</a></li>';
 		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
 		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
 		result = result + '<div class="clearfix"></div>'
@@ -219,7 +219,7 @@
 		$("#vendorNameDiv").empty();
 		$("#vendorNameDiv").append(spocName);
 
-		vendorDetailsbySpocId(spocId,ownerId);
+		vendorDetailsbySpocId(spocId,ownerId,spocUserId);
 	}
 </script>
 

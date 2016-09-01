@@ -114,6 +114,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		logger.debug("In OrgSpocService class...");
 		return orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, userId);
 	}
+
+	@Override
+	public List<Long> getOwnerIdbySpocId(Long spocUserId) {
+		return orgSpocDao.getOwnerIdbySpocId(spocUserId);	
+		}
 	
 
 }

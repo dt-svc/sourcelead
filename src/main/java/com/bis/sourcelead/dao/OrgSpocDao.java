@@ -38,4 +38,7 @@ public interface OrgSpocDao {
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 
 
+	List<Long> getOwnerIdbySpocId(Long spocUserId);
+
+
 }
