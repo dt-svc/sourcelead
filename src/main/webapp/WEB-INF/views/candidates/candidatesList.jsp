@@ -64,15 +64,34 @@
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
+	                    	 var mobilePhone = "";
+	                    	 var designation ="";
+	                    	 var address="";
+	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+	                    		 mobilePhone = opt.mobilePhone;
+				            	}else{
+				            		mobilePhone = "NO DATA";
+				            	}
+				            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+				            		designation = opt.designation;
+				            	}else{
+				            		designation = "NO DATA";
+				            	}
+				            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
+				            		address = opt.address;
+				            	}else{
+				            		address = "NO DATA";
+				            	}
+				            	
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
 			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
-			                 result = result +"  <td><div><span>"+opt.designation+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.designation+"</div></td>";
+			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.designationType+"</div></td>";
 			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.mobilePhone+"</div></td>";
-			                 result = result +"  <td><div><span title='"+opt.address+"'>"+opt.address+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.updatedDate+"</div></td>";
+			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
+			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
 	                     result = result +" </tbody>";

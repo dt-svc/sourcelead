@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -194,7 +195,13 @@ public class CandidateServiceImpl implements CandidateService {
     */
 	@Override
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception {
-		 return candidateDao.getCandidatesListByOrgLocationID(orgLocationId);
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId);
+		for(Candidate can :candidateList){
+			if(can.getUpdatedDate() != null){
+			 can.setcandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+			}
+		}
+		return candidateList;
 	}
 	
 	/**

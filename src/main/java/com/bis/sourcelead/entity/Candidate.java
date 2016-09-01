@@ -118,6 +118,21 @@ public class Candidate {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+	private String candidateUpdateDateToString;
+	
+
+
+	public String getcandidateUpdateDateToString() {
+		return candidateUpdateDateToString;
+	}
+
+
+	public void setcandidateUpdateDateToString(String candidateUpdateDateToString) {
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
+
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);

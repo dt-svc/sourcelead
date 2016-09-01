@@ -30,7 +30,7 @@ public interface CandidateResumesService {
 	 * @return
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws Exception;
+	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws JSONException,Exception;
 	
 	/**
 	 * @author Venkat Kesav
