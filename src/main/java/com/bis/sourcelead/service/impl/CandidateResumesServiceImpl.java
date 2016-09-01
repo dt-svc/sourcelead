@@ -80,7 +80,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	}
 	
 	@Override
-	public HashSet<CandidateResumes> getCandidateResumesDetails(JSONObject jsonObj,OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException{
+	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException{
 			 HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
 			 CandidateResumes candidateResumes = new CandidateResumes();
 			 if(multiFile != null){
