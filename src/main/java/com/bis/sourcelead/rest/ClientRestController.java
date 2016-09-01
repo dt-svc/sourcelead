@@ -169,6 +169,7 @@ public class ClientRestController {
 			boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
 			
 			System.out.println(jsonObj.getString("roleType"));
+			System.out.println(jsonObj.getString("roleTypeId"));
 
 			if(flag == false){
 				if(null != orgLocationId){

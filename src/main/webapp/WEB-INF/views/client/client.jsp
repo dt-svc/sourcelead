@@ -222,7 +222,7 @@ window.onload = function () {
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
 					<div class="col-md-9">
 					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
-					<input type="hidden" id="userRole" name="roleType" value="" />
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
 					
 				   </div>
 		        </div>
