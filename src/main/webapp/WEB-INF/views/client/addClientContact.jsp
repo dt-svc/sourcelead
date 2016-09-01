@@ -229,7 +229,7 @@
 			$
 					.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
 						success : function(result) {
 							if (result == 'vendorsList') {
 								location.replace(sourceleadUrl

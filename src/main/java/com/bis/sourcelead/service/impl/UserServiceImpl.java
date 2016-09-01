@@ -290,6 +290,12 @@ public class UserServiceImpl implements UserService {
 				roles = rolesService.getRolesById(2L);
 			}
 			
+			if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
+				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
+			}else{
+				roles = rolesService.getRolesById(2L);
+			}
+			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}

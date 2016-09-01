@@ -222,7 +222,7 @@ window.onload = function () {
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
 					<div class="col-md-9">
 					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
-					<input type="hidden" id="userRole" name="roleType" value="" />
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
 					
 				   </div>
 		        </div>
@@ -457,16 +457,25 @@ function getSpocUserDetails(){
 	        		 if(json[0] != null && json[0] != ''){
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
 		        			$("#lastName").attr("disabled", true);
 		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
 		        			$("#phoneNumber").attr("disabled", true);
 		        		    $("#phoneNumber").val(json[2]);
+	        		 }else{
+	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
@@ -476,6 +485,10 @@ function getSpocUserDetails(){
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
+	        		 }else{
+	        			 $("#role").attr("data-validation", "required");
+	        			 document.getElementById("roleDiv").style.display="";
+	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
 	        		
 	        		
@@ -496,6 +509,7 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
+	    $("#role").attr("data-validation", "required");
 	    document.getElementById("roleDiv").style.display="";
 		document.getElementById("userRoleDiv").style.display="none";
 	   
