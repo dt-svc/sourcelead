@@ -507,7 +507,7 @@ public class ClientRestController {
 				 //to fetch user details by usercode 
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
 				orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
-				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId());
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 				//responderLocationId.org.
 				
