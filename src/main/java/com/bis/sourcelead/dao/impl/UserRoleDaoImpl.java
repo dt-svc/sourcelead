@@ -239,6 +239,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return flag;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
