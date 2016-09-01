@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -169,7 +170,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			
 		}
 		return null;
 	}
