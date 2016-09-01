@@ -61,9 +61,11 @@ public class VendorController {
 	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			if(orgSpoc.getSpocUser() != null){
+				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			}
 			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLoc.getId()){
 				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
