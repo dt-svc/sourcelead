@@ -32,6 +32,14 @@ public interface UserRoleDao {
 
 
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
+	
+	/**
+	 * This method is used for whether spoc is in multile orgs 
+	 * @param Venkat I
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
 
 
 }

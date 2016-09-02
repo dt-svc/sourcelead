@@ -314,7 +314,7 @@ transform: translateY(-3px);
 /* Alerts Styels ends */
  
 /* Quick Links Styels */
-.qlinks-area {
+.qlinks-area, .spoclinks-area{
     min-width:150px;
     height:auto;
     background: #eef1fc none repeat scroll 0 0;
@@ -325,7 +325,7 @@ transform: translateY(-3px);
     top: 50px;
     border-top:4px solid #3081cb;
 }
-.qlinks-area {
+.qlinks-area, .spoclinks-area {
     transform: translateX(3000px);
     -ms-transform: translateX(3000px);
      -webkit-transform: translateX(3000px);
@@ -333,24 +333,24 @@ transform: translateY(-3px);
      -webkit-transition:all ease-in-out 0.5s;
     -ms-transition:all ease-in-out 0.5s;
 }
-.qlinks-area.qlinks-area-active{
+.qlinks-area.qlinks-area-active, .spoclinks-area.spoclinks-area-active{
     transform: translateX(0px);
     -ms-transform: translateX(0px);
      -webkit-transform: translateX(0px);
 }
-.qlinks-area ul li{
+.qlinks-area ul li, .spoclinks-area ul li{
     line-height:34px;
     height:34px;
     border-bottom:1px solid #d2d2d2;
     transition:all ease-in-out 0.5s;
 }
-.qlinks-area ul li:last-child{
+.qlinks-area ul li:last-child, .spoclinks-area ul li:last-child{
     border-bottom:0;
 }
-.qlinks-area ul li:hover{
+.qlinks-area ul li:hover, .spoclinks-area ul li:hover{
     background: #eee none repeat scroll 0 0 !important;
 }
-.qlinks-area ul li a{
+.qlinks-area ul li a, .spoclinks-area ul li a{
     color:#333 !important;
     text-shadow:none !important;
     display:block !important;
@@ -363,7 +363,7 @@ transform: translateY(-3px);
     font-size:12px;
     color:#8a8a8a;
     } */
-    .qlinks-area ul li a .fa{
+    .qlinks-area ul li a .fa, .spoclinks-area ul li a .fa{
     padding-right:5px;  
     color:#8a8a8a;
     }
