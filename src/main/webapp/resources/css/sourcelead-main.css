@@ -350,7 +350,7 @@ transform: translateY(-3px);
 .qlinks-area ul li:hover, .spoclinks-area ul li:hover{
     background: #eee none repeat scroll 0 0 !important;
 }
-.qlinks-area ul li a, .spoclinks-area ul li a{
+.qlinks-area ul li a{
     color:#333 !important;
     text-shadow:none !important;
     display:block !important;
@@ -367,6 +367,30 @@ transform: translateY(-3px);
     padding-right:5px;  
     color:#8a8a8a;
     }
+   .spoclinks-area {
+     min-width:300px;
+   } 
+    .spoclinks-area li {
+     line-height: normal !important;
+    height: auto !important;
+    padding: 10px !important;
+    display: inline-block;
+    width:100%;
+   }
+   .spoclinks-area li p{
+    margin-bottom: 5px;
+    line-height: normal !important;
+    padding-left: 10px;
+   }
+   .spoclinks-area ul li a{
+    color:#333 !important;
+    text-shadow:none !important;
+    display:block !important;
+    padding:0px !important;
+}
+   .imageParent.org-imagelink{
+   height:55px;
+   }
 /* Quick Links Styels Ends */
 .setting-area{
     -webkit-transform: translateX(3000px);
