@@ -221,7 +221,7 @@ window.onload = function () {
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
 					<div class="col-md-9">
 					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
-					<!-- <input type="hidden" id="userRole" name="roleTypeId" value="" /> -->
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
 					
 				   </div>
 		        </div>
@@ -273,6 +273,7 @@ function getOrgName(){
 	document.getElementById("cityDiv").style.display="";
 	document.getElementById("orgCityDiv").style.display="none";
 	
+	$("#role" ).val('');
 	$("#role").attr("data-validation", "required");
 	document.getElementById("roleDiv").style.display="";
 	document.getElementById("userRoleDiv").style.display="none";
@@ -480,12 +481,14 @@ function getSpocUserDetails(){
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
 	        			$("#role").removeAttr("data-validation");
+	        			$("#role" ).val('');
         			    document.getElementById("roleDiv").style.display="none";
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
 	        			 $("#role").attr("data-validation", "required");
+	        			 $("#userRole" ).val('');
 	        			 document.getElementById("roleDiv").style.display="";
 	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
@@ -509,6 +512,7 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").val('');
 	    
 	    $("#role").attr("data-validation", "required");
+	    $("#userRole" ).val('');
 	    document.getElementById("roleDiv").style.display="";
 		document.getElementById("userRoleDiv").style.display="none";
 	   
