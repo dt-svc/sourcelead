@@ -10,6 +10,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -90,14 +91,18 @@ public class CandidateResumeRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-		
-		candidateResumesService.storeCandidateResume(jsonObj, user, candidate, orgLocation, multiFile);
+		if(StringUtils.isNotEmpty(candidateId)){
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+			
+			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, orgLocation, multiFile);
 
-		SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
-				"Successfully you have added");
+			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
+					"Successfully you have added");
 
-		return "success";
+			return "success";
+		}else{
+			return "exception";
+		}
 	}
 	
 	
@@ -155,7 +160,7 @@ public class CandidateResumeRestController {
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
 		}
-		return null;
+		return "success";
 	}
 	
 	

@@ -14,11 +14,6 @@
 	}
 </style>
 
-
-
-
-
-
 <script>
 function candidateResume(candidateId){
 	var result ="";
@@ -156,8 +151,16 @@ function addResume(candidateId) {
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
 						success : function(result) {
-							 $("#popUpDivResume").removeClass("edit-details-active");
-							 candidateResumesList(candidateId);
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		$("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId);
+		            		 }
 						},
 					});
 					return true;
@@ -188,67 +191,75 @@ function addResume(candidateId) {
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(data) {
-				 var json = JSON.parse(data);
-				if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
-						result = result+"   <div class='row'>"; 
-					 	result = result+"	<div class='col-lg-12'>"; 
-					 	result = result+"		<div class='content-area clearfix'>"; 
-					 	result = result+"			<div class='blank-pages'>";
-					 	result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 	result = result+"			        <p>No Resumes Found</p>";
-					 	result = result+"			 </div>";
-					 	result = result+"		</div>"; 
-					 	result = result+"	</div>"; 
-					 	result = result+"  </div> "; 
-					}else{
-						result = result+'	      <table>';
-						result = result+'	        <tbody>';
-						result = result+'	          <tr>';
-						result = result+'	            <th>Title</th>';
-						result = result+'	            <th>Attachment</th>';
-						result = result+'	            <th>Description</th>';
-						result = result+'	            <th>Created By</th>';
-						result = result+'	            <th>Action</th>';
-						result = result+'	          </tr>';
-						
-						
-			             for (var i = 0; i < json.length; i++) {
-			            	 	resumesCount = json.length;
-				            	var opt = json[i];
-				            	var title = "";
-				            	var description = "";
-				            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-				            		title = opt.title;
-				            	}else{
-				            		title = opt.fileName;
-				            	}
-				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
-				            		description = opt.description;
-				            	}else{
-				            		description = 'NO DATA';
-				            	}
-				            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
-				            		createdBy = opt.createdBy;
-				            	}else{
-				            		createdBy = 'NO DATA';
-				            	}
-				            	
-				            	result = result+'	          <tr>';
-				           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
-				           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
-				           		result = result+'	            <td><div><span>'+description+'</span></div></td>';
-				           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
-				           		result = result+'	            <td><div><a class="glyphicon glyphicon-eye-open" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></div></td>';
-				           		result = result+'	          </tr>';
-			             }
-			            result = result+'	          </tbody>';
-			       		result = result+'	      </table>';
+				var json = JSON.parse(data);
+				if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (data.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
+							result = result+"   <div class='row'>"; 
+						 	result = result+"	<div class='col-lg-12'>"; 
+						 	result = result+"		<div class='content-area clearfix'>"; 
+						 	result = result+"			<div class='blank-pages'>";
+						 	result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						 	result = result+"			        <p>No Resumes Found</p>";
+						 	result = result+"			 </div>";
+						 	result = result+"		</div>"; 
+						 	result = result+"	</div>"; 
+						 	result = result+"  </div> "; 
+						}else{
+							result = result+'	      <table>';
+							result = result+'	        <tbody>';
+							result = result+'	          <tr>';
+							result = result+'	            <th>Title</th>';
+							result = result+'	            <th>Attachment</th>';
+							result = result+'	            <th>Description</th>';
+							result = result+'	            <th>Created By</th>';
+							result = result+'	            <th>Action</th>';
+							result = result+'	          </tr>';
+							
+							
+				             for (var i = 0; i < json.length; i++) {
+				            	 	resumesCount = json.length;
+					            	var opt = json[i];
+					            	var title = "";
+					            	var description = "";
+					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+					            		title = opt.title;
+					            	}else{
+					            		title = opt.fileName;
+					            	}
+					            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+					            		description = opt.description;
+					            	}else{
+					            		description = 'NO DATA';
+					            	}
+					            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+					            		createdBy = opt.createdBy;
+					            	}else{
+					            		createdBy = 'NO DATA';
+					            	}
+					            	
+					            	result = result+'	          <tr>';
+					           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
+					           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
+					           		result = result+'	            <td><div><span>'+description+'</span></div></td>';
+					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
+					           		result = result+'	            <td><div><a class="glyphicon glyphicon-eye-open" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></div></td>';
+					           		result = result+'	          </tr>';
+				             }
+				            result = result+'	          </tbody>';
+				       		result = result+'	      </table>';
+						}
+					if(resumesCount>4){
+						$("#addCandidateResume").hide();
 					}
-				if(resumesCount>4){
-					$("#addCandidateResume").hide();
-				}
-				$("#resumesList").empty();
-				$("#resumesList").append(result); 
+					$("#resumesList").empty();
+					$("#resumesList").append(result);
+        		}
 				},
 		});
   }
@@ -265,14 +276,22 @@ function addResume(candidateId) {
 <script>
 function deleteResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var r = confirm("You are choosing to delete the resume");
-	if (r == true) {
+	var message = confirm("You are choosing to delete the resume");
+	if (message == true) {
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
    		    success: function(data) {
-   		    	candidateResume(candidateId);
-   		    	candidateResumesList(candidateId);
+   		    	if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (data.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+        			 candidateResume(candidateId);
+        		     candidateResumesList(candidateId);
+        		 }
    		    }
 	     });
 	}
