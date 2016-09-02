@@ -124,9 +124,14 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
       
 		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		
 		for(CandidateEducation education :edulist){
+			if(education.getStartDate() != null){
 			education.setStartDateStr(Constants.DF_DMY.format(education.getStartDate()));
+			}
+			if(education.getEndDate() != null){
 			education.setEndDateStr(Constants.DF_DMY.format(education.getEndDate()));
+			}
 		}
 		return edulist;
 	}
@@ -144,6 +149,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		    		  ce.setName(edu);
 		    		  ce.setCandidateId(candidate);
 		    		  ce.setOrglocationId(orgLocations);
+		    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 		    		  candidateEducationList.add(ce);
 		    	  }
 		    	  

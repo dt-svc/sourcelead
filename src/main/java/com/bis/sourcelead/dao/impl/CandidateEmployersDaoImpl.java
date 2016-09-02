@@ -95,7 +95,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  where candidateEmployers.orgLocationId.id =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status ='ACTIVE'";  
+		String query = "from CandidateEmployers candidateEmployers  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status ='ACTIVE'";  
 		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateList;
 	}

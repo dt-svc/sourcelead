@@ -152,6 +152,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	    		  CandidateEmployers cemp = new  CandidateEmployers();
 	    		  emps = emps.replace("\"", "");
 	    		  cemp.setName(emps);
+	    		  cemp.setCandidateId(candidate);
+	    		  cemp.setOrgLocationId(orgLocations);
+	    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
 	    		  candidateEmployersList.add(cemp);
 	    	  }
 	    	  
