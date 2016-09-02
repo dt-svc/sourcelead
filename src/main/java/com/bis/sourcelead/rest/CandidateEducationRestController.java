@@ -55,7 +55,9 @@ public class CandidateEducationRestController {
 
 	 /**
 	 * @author Ajith Matta
+	 * 
 	 * @since  aug 26 2016
+	 * 
 	 * @version 0.0.1
 	 * 
 	 * This method is used to save the candidate Employers.
@@ -82,11 +84,15 @@ public class CandidateEducationRestController {
 	}
 	
 	/**
-	 *  This Method is for getting candidate employers 
-	 *   @author Ajith Matta
+	 * This Method is for getting candidate employers 
+	 *  
+	 * @author Ajith Matta
+	 * 
 	 * @param candidateemployersId
 	 * @param request
+	 * 
 	 * @return CandidateEmployers list
+	 * 
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateEducationListByCandidateId")

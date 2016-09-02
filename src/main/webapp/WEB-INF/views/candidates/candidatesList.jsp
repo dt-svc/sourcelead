@@ -264,7 +264,7 @@ function clientSideBar(candidateId){
 			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Experience</a></li>';
 			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certificate</a></li>';
-			             result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>';
+			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
 			             result = result+'     <div class="project_tabs">';

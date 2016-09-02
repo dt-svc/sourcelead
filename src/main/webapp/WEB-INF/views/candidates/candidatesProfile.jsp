@@ -1,5 +1,3 @@
-
-
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -7,7 +5,11 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-
+<style type="text/css">
+.require_wrap_details{
+text-align:left;
+}
+</style>
 <script>
 function editCandidate(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -84,27 +86,7 @@ function editCandidate(candidateId){
 							result = result + '		    </div>';
 							result = result + '		  </div>';
 							
-						    result = result +'<div class="require_wrap_details">';	 
-							result = result +'		<h1>Summary:</h1>';
-							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
-							result = result +'		<h2>Skills:</h2>';
-							
-							result = result + '	<div class="row select-skills">';
-							result = result + '    <div class="divskill col-md-8"> ';
-							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							result = result + '        <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>';
-							result = result + '          <div class="form-horizontal clearfix">';
-							result = result + '            <div class="clearfix div-padding">';
-							result = result + '              <div class="col-md-10">';
-							result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">';
-							result = result + '              </div>';
-							result = result + '              <div class="col-md-2">';
-							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';   
-							result = result + '              </div>';
-							result = result + '            </div>';
-							result = result + '          </div>';
-							result = result + '        </div>';
-							result = result + '      </div>';
+						   
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
@@ -241,6 +223,29 @@ function candidateProfile(candidateId){
 							result = result + '          </div>';
 							result = result + '        </div>';
 							result = result + '      </div>'; */
+							
+							 result = result +'<div class="require_wrap_details">';	 
+							result = result +'		<h1>Summary:</h1>';
+							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
+							result = result +'		<h2>Skills:</h2>';
+							
+							result = result + '	<div class="row select-skills">';
+							result = result + '    <div class="divskill col-md-8"> ';
+							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
+							result = result + '        <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>';
+							result = result + '          <div class="form-horizontal clearfix">';
+							result = result + '            <div class="clearfix div-padding">';
+							result = result + '              <div class="col-md-10">';
+							result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">';
+							result = result + '              </div>';
+							result = result + '              <div class="col-md-2">';
+							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';   
+							result = result + '              </div>';
+							result = result + '            </div>';
+							result = result + '          </div>';
+							result = result + '        </div>';
+							result = result + '      </div>';
+							
 							
 							result = result + '<div id="candidateSkillList"></div> ';
 							
