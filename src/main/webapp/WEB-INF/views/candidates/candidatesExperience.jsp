@@ -263,19 +263,35 @@ function candidateEmployersList(candidateId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.designation+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.address+'</span></div></td>';
-	                    	 if(opt.startYear!=null && opt.startYear!=''){
+	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+	                    	 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }else{
+	                    	   result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
+	                    	 }
+	                    	 if(opt.designation != null && opt.designation && opt.designation != 'undefined'){
+	                    	 result  = result + '<td><div><span>'+opt.designation+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.address != null && opt.address && opt.address != 'undefined'){
+	                    		 result  = result + '<td><div><span>'+opt.address+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 
+	                    	 if(opt.startYear!=null && opt.startYear!='' && opt.startYear != 'undefined'){
 	         					result = result  +'<td><div><span>'+opt.startMonth+' -'+opt.startYear+'</span></div></td>';     
+	         					}else{
+	         						result = result  +'<td><div><span>--</span></div></td>'; 
 	         					}
-	                    	 if(opt.endYear!=null && opt.endYear!=''){
-		         					result = result  +'	         <td><div><span>'+opt.endMonth+'-'+opt.endYear+'</span></div></td>';     
+	                    	 
+	                    	 if(opt.endYear!=null && opt.endYear!='' && opt.endYear!='undefined'){
+		         					result = result  +' <td><div><span>'+opt.endMonth+'-'+opt.endYear+'</span></div></td>';     
 		         				}else{
-		         					result = result  +'<td><div><span>NO DATA</span></div></td>';
+		         					result = result  +'<td><div><span>--</span></div></td>';
 		         				}
-	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"  onClick ="removeEmployer('+opt.id+','+candidateId+');"></i></div></td>';
-	                    	 result  = result + '         </tr>';
+	                    	 result  = result + '<td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"  onClick ="removeEmployer('+opt.id+','+candidateId+');"></i></div></td>';
+	                    	 result  = result + '</tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
