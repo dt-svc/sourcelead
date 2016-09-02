@@ -514,8 +514,6 @@ document.getElementById("uploadFile").value = this.value;
      });
  }
  
- 
- 
  /* upload file script for size validation 2MB*/
  var selectedFile = document.getElementById("uploadBtn");
  selectedFile.addEventListener("change", function() {
