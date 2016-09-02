@@ -587,11 +587,10 @@ public class ClientRestController {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
-	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId());
 
-		return "success";
+		return jsonObj.getString("owner");
 	}
 	
 	
