@@ -97,13 +97,17 @@ public class LoginSessionController {
 	   public ModelAndView loginSessionLinks(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		
+		ModelAndView model = new ModelAndView();
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(user.getEmail(), orgLocationId);
-		setLoginSession(request, authentication,user,userRole);
+		if(null != userRole){
+			setLoginSession(request, authentication,user,userRole);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("dashboard");
+		}else{
+			model.setViewName("registration/persmissionDenied");
+		}
 		
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("dashboard");
 	    return model;
 		
 	}
