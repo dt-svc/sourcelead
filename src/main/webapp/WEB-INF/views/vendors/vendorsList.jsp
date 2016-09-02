@@ -62,110 +62,9 @@
             <div class="clearfix"></div>
         </div>
     <div class="clients_wrap_table">
-    	
     	<table id="vendorList" class="display" cellspacing="0" width="100%"> </table>
     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
-    	
-    	
-    	<%-- <table>
-        	<tbody>
-			<thead>
-            	<tr>
-                    <th>Name</th>
-                    <th>Website</th>
-                    <th>Location</th>
-                    <th>No.of Contacts</th>
-                    <th>Released jobs</th>
-                    <th>Level</th>
-                    <th>Actions</th>
-                </tr>
-			</thead>	
-			<c:forEach var="report" items="${vandorsListByOrgLocationId}">
-                <tr>
-                    <c:if test="${report.locationId.id == loginOrgLocId}"> 
-                   		<td><div class="proj_show"
-									onclick="vendorSideBar('${report.responderLocationId.id}','${report.id}','${report.responderLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</span><i
-										class="fa fa-binoculars"></i>
-								</div></td>
-					    <td><div><span title="Website" class="td_overflow">
-					    <c:if test="${(report.responderLocationId.org.webSite !=null)&&(report.responderLocationId.org.webSite !='')&&(report.responderLocationId.org.webSite !='undefined')}">
-					 	  ${report.responderLocationId.org.webSite}
-					    </c:if>
-					      <c:if test="${(report.responderLocationId.org.webSite ==null)||(report.responderLocationId.org.webSite =='')||(report.responderLocationId.org.webSite =='undefined')}">
-					 		--
-					    </c:if>
-					    </span></div></td>                  
-                 		<td><div><span title="Country" class="td_overflow">${report.responderLocationId.country}</span></div></td>
-                  </c:if> 
-                   <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<td><div class="proj_show"
-									onclick="vendorSideBar('${report.locationId.id}','${report.id}','${report.locationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</span><i
-										class="fa fa-binoculars"></i>
-								</div></td>
-                  	 	<td><div><span title="clientdomain.comclientdomain.comclientdomain.com" class="td_overflow">
-                  	 		<c:if test="${(report.locationId.org.webSite !=null)&&(report.locationId.org.webSite !='')&&(report.locationId.org.webSite !='undefined')}">
-					 	 	 ${report.locationId.org.webSite}
-					   		 </c:if>
-					      	<c:if test="${(report.locationId.org.webSite ==null)||(report.locationId.org.webSite =='')||(report.locationId.org.webSite =='undefined')}">
-					 			--
-					    	</c:if>
-                  	 	</span></div></td>
-                   	    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
-                   </c:if> 
-                    <td><div>${report.noOfContatcs}</div></td>
-                    <td><div>10</div></td>
-                    <td><div>${report.level}</div></td>
-                    <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                 </c:forEach>                                                                                                                                              			
-            </tbody>
-        </table> --%>
-	
-</div>	
- <!-- <div class="clients_wrap_table">
- 
- <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table>  -->
- 
-    	<%-- <table>
-        	<tbody>
-			<thead>
-				<tr>
-                	<th>Name</th>
-                    <th>Email</th>
-                    <th>Ph. No</th>
-                    <th>Owner</th>
-                    <th>Client</th>
-                    <th>Status</th>
-                    <th>Invitation</th>
-                    <th>Action</th>
-                </tr>
-			</thead>	
-			<c:forEach var="report" items="${vandorsContactListByOrgLocationId}">
-				<tr>
-                	<td><div class="proj_show"onclick="vendorSpocSideBar('${report.id}','${report.ownerUser.id}','${report.spocUser.id}','${report.spocName}');"><span>${report.spocName}</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div><span>${report.spocEmail}</span></div></td>
-                    <td><div><span>${report.spocMobilePhone}</span></div></td>
-                    <td><div><span>${report.ownerName}</span></div></td>
-                    <td><div><span>${report.orgName}</span></div></td>
-                    <td><div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus(${report.id});">
-                     	  <option value="Active" ${report.spocStatus == 'Active' ? 'selected' : ' '}>Active</option>
-                     	  <option value="In-Active" ${report.spocStatus == 'In-Active' ? 'selected' : ' '} >In-Active</option>
-                     	  <option value="New" ${report.spocStatus == 'New' ? 'selected' : ' '} >New</option>
-                     	  <option value="Negotiation" ${report.spocStatus == 'Negotiation' ? 'selected' : ' '}>Negotiation</option>
-                     	  <option value="Contracted" ${report.spocStatus == 'Contracted' ? 'selected' : ' '}>Contracted</option>
-               			 </select></div></td>
-               			
-                    <td><div><b class="proj_closed">${report.invitationStatus}</b></div></td>
-                    <td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>
-                    <i class="glyphicon glyphicon-trash"></i></div></td>
-                </tr>
-                	</c:forEach>			
-            </tbody>
-        </table> --%>
-	
-<!-- </div>	 -->
-
-	
+   </div>	
 </div>
 
 <div class="side_mask"><div class="proj_close"></div></div>
@@ -203,8 +102,6 @@ function getVendorLists(){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	
-   	        	
-   	        	
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +' <th>Name</th>';
@@ -223,10 +120,9 @@ function getVendorLists(){
    	        		
    	        		var report = json[i];
    	        		result = result +'<tr>';
-   	        		if(report.locationID == loginOrgLocId){
    	        			
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		
@@ -249,27 +145,6 @@ function getVendorLists(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
-   	        		
-   				}
-   	        		
-	       		if(report.responderId == loginOrgLocId){
-	       			result = result +'<td>';
-	       			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
-	       			result = result +'</div>';
-	       			result = result +'</td>';
-	       			
-	       			if(report.locationWebsite != null && report.locationWebsite != '' && report.locationWebsite != 'undefined'){
-	       				result = result +'<td><div><span class="tbldata-dotdot-sm" title='+report.locationWebsite+'>'+report.locationWebsite+'</span></div></td>';
-	       			}else{
-	       				result = result +'<td><div>--</div></td>';
-	       			}
-	       			
-	       			if(report.locationCountry != null & report.locationCountry != '' && report.locationCountry != 'undefined'){
-	       				result = result +'<td><div><span class="tbldata-dotdot-me" title="'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'">'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'</span></div></td>';
-	       			}else{
-	       				result = result +'<td><div>--</div></td>';
-	       			}
-	       		}
 	       		
 	       		result = result +'<td><div>20</div></td>';
 	       		result = result +' <td><div>10</div></td>';
@@ -365,7 +240,7 @@ function getVendorContactLists(){
 					} 
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
@@ -395,7 +270,7 @@ function getVendorContactLists(){
    	        		}
    	        		
    	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
-   	        			result = result +' <td><div><b class="proj_process">Invitation Received</b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
    	        		}
    	        		
    	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){

@@ -122,6 +122,18 @@ public class OrgRelations {
 	@Transient
 	private String locationID;
 	
+	public Long getVendorlocationId() {
+		return vendorlocationId;
+	}
+
+	public void setVendorlocationId(Long vendorlocationId) {
+		this.vendorlocationId = vendorlocationId;
+	}
+
+	@Transient
+	private Long vendorlocationId;
+	
+	
 	
 	public String getVendorCreateduserName() {
 		return vendorCreateduserName;

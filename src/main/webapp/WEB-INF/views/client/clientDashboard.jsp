@@ -84,7 +84,6 @@
 
 
        <div class="side_mask"><div class="proj_close"></div></div>
-       
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
@@ -93,14 +92,9 @@
 				</div>
 				<div id="clientSideDiv"></div>
 			</div>
-		</div>
+         </div>
 	</section>
 </body>
-
-
-
-
-
 
 <script type="text/javascript">
 window.onload = function () {
@@ -137,9 +131,9 @@ function getClientDetails(){
    	        		
    	        		var report = json[i];
    	        		result = result +'<tr>';
-   	        		if(report.locationID == loginOrgLocId){
+   	        		
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
 						
@@ -157,7 +151,7 @@ function getClientDetails(){
    	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
-   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'}">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		}else{
@@ -171,36 +165,6 @@ function getClientDetails(){
    	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
    	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-   	        		
-   	        		}
-   	        		
-   	        		if(report.responderId == loginOrgLocId){
-   	        			result = result +'<td><div class="proj_show" onclick="clientSideBar('+report.locationID+','+report.locationOrgname+','+report.id+');"><span class="tbldata-dotdot-vsm" title='+report.locationOrgname+'>"'+report.locationOrgname+'"</span><i class="fa fa-binoculars"></i>';
-   	        			result = result +'</div></td>';
-   	        			
-   	        			if(report.locationWebsite != null && report.locationWebsite != '' && report.locationWebsite != 'undefined'){
-   	        				result = result +'<td><div><span class="tbldata-dotdot-sm" title='+report.locationWebsite+'>'+report.locationWebsite+'</span></div></td>';
-   	        			}else{
-   	        				result = result +'<td><div>--</div></td>';
-   	        			}
-   	        			
-   	        			if(report.locationCountry != null & report.locationCountry != '' && report.locationCountry != 'undefined'){
-   	        				result = result +'<td><div><span class="tbldata-dotdot-me" title="'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'">'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'</span></div></td>';
-   	        			}else{
-   	        				result = result +'<td><div>--</div></td>';
-   	        			}
-   	        			
-   	        			if(report.level != null && report.level != '' && report.level != 'undefined'){
-   	        				result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
-   	        			}else{
-   	        				result = result +'<td><div>--</div></td>';
-   	        			}
-   	        			
-   	        			result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
-   	        			result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-   						
-   	        		} 
-   	        		
    	        		result = result +'</tr>';
    	        		
    				}
@@ -271,19 +235,6 @@ function pagination(){
 	}
 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
 function getVendorContactLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -312,49 +263,82 @@ function getVendorContactLists(){
    	        	for (var i=0; i<json.length; i++)
    				{  
    	        		var report = json[i];
+   	        		var selected1 = '';
+   					var selected2 = '';
+   					var selected3 = '';
+   					var selected4 = '';
+   					var selected5 = '';
+   	        		
+   	        		if(report.spocStatus == 'Active'){
+						selected1 = 'selected';
+					} 
+				
+					if(report.spocStatus == 'In-Active'){
+							selected2 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'New'){
+							selected3 = 'selected';
+						}
+					
+					if(report.spocStatus == 'Negotiation'){
+							selected4 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'Contracted'){
+						selected5 = 'selected';
+					} 
+   	        		
+   	        		
+   	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
-   	        		result = result +'<td><div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+report.id+');">';
    	        		
-   	        		if(report.spocStatus == 'Active'){
-   						result = result+'<option selected value="Active" >Active</option>';
-   					}else{
-   						result = result+'<option value="Active" >Active</option>';
-   					}
+   	        		result = result + ' <td><div>';
+					result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
    	        		
-   	        		if(report.spocStatus == 'In-Active'){
-   						result = result+'<option selected value="In-Active" >In-Active</option>';
-   					}else{
-   						result = result+'<option value="In-Active" >In-Active</option>';
-   					}
+   	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div>---</div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.invitationStatus == 'Accepted'){ 
+     	        			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+     	        		}
+               		
+               		if(report.invitationStatus == 'Rejected'){
+               			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+               		}
    	        		
-   	        		if(report.spocStatus == 'New'){
-   						result = result+'<option selected value="New" >New</option>';
-   					}else{
-   						result = result+'<option value="New" >New</option>';
-   					}
-   	        		
-   	        		if(report.spocStatus == 'Negotiation'){
-   						result = result+'<option selected value="Negotiation" >Negotiation</option>';
-   					}else{
-   						result = result+'<option value="Negotiation" >Negotiation</option>';
-   					}
-   	        		
-   	        		
-   	        		if(report.spocStatus == 'Contracted'){
-   						result = result+'<option selected value="Contracted" >Contracted</option>';
-   					}else{
-   						result = result+'<option value="Contracted" >Contracted</option>';
-   					}
-   	        		result = result +' </select></div></td>';
-               			
-   	        		result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
-   	        		result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
+   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="#";></i></div></td>';
    	        		
    	        		
    	        		result = result +'</tr>';
@@ -391,12 +375,12 @@ function pagination1(){
 
 
 <script>
-	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName) {
+	function clientSpocSideBar(spocId,ownerId,spocUserId,spocName) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+');">Details</a></li>';
+				+ '<li class="current"><a href="#tab-1" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+');">Details</a></li>';
 		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
 		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
 		result = result + '<div class="clearfix"></div>'
@@ -411,17 +395,18 @@ function pagination1(){
 
 		result = result + '</div>';
 		result = result + '</div>';
-		$("#vendorSideDiv").empty();
-		$("#vendorSideDiv").append(result);
 		
-		$("#vendorNameDiv").empty();
-		$("#vendorNameDiv").append(spocName);
+		$("#clientSideDiv").empty();
+		$("#clientSideDiv").append(result);
+		
+		$("#clientNameDiv").empty();
+		$("#clientNameDiv").append(spocName);
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 
-		vendorDetailsbySpocId(spocId,ownerId,spocUserId);
+		clientDetailsbySpocId(spocId,ownerId,spocUserId);
 	}
 </script>
 
@@ -449,13 +434,6 @@ function listChange(sel){
 	 
 }
 </script>
-
-
-
-
-
-
-
 
 <script>
 	function clientProjectDetails(clientId) {
@@ -691,7 +669,33 @@ function getEndDatePickerById(projectId,localFieldName){
 <!-- End -->
 
 
+<!-- Scripts for invitations  -->
+<script>
+function acceptInvitation(spocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    success: function(data) {
+		    	
+		    }
+	   });
+}
+</script>
 
+<script>
+function rejectInvitation(spocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
+		    success: function(data) {
+		    	
+		    }
+	   });
+}
+</script>
+<!-- Scripts for invitations  -->	
 
 
 <script>
@@ -704,7 +708,7 @@ $(document).ready(function() {
 		
 });
 </script> 
-
+<jsp:include page="editClientSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />	
 <jsp:include page="../masterFooter.jsp" />	
