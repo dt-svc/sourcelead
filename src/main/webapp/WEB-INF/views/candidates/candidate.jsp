@@ -173,46 +173,19 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option selected disabled>Year</option>
-             		<option>0</option>
-             		<option>1</option>
-             		<option>2</option>
-             		<option>3</option>
-             		<option>4</option>
-             		<option>5</option>
-             		<option>6</option>
-             		<option>7</option>
-             		<option>8</option>
-             		<option>9</option>
-             		<option>10</option>
-             		<option>11</option>
-             		<option>12</option>
-             		<option>13</option>
-             		<option>14</option>
-             		<option>15</option>
-             		<option>16</option>
-             		<option>17</option>
-             		<option>18</option>
-             		<option>19</option>
-             		<option>20+</option>
+             		  <c:forEach begin="0" end="24" varStatus="loop">
+						    <option>${loop.index}</option>
+						</c:forEach>
+             		     <option>25+</option>
              		</select>
              </div>
              
              <div class="col-xs-6 col-md-6">
              		<select class="form-control" id="experienceMonths" name="experienceMonths">
              		<option selected disabled>Month</option>
-             		<option>0</option>
-             		<option>1</option>
-             		<option>2</option>
-             		<option>3</option>
-             		<option>4</option>
-             		<option>5</option>
-             		<option>6</option>
-             		<option>7</option>
-             		<option>8</option>
-             		<option>9</option>
-             		<option>10</option>
-             		<option>11</option>
-             		<option>12</option>
+             		 <c:forEach begin="0" end="12" varStatus="loop">
+						    <option>${loop.index}</option>
+						</c:forEach>
              		</select>
              </div>
             </div>
@@ -255,16 +228,14 @@
          </div>
        </div>
         
-        <div class="form-group">
-              <label class="col-md-3">Skills</label>
-              <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
+        
+         <div class="form-group">
+          <label class="col-md-3">Employer's</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
+          </div>
+        </div>
+        
         
          <div class="form-group">
               <label class="col-md-3">Education</label>
@@ -276,13 +247,18 @@
                 </select>
               </div>
             </div>
+       
         
         <div class="form-group">
-          <label class="col-md-3">Employer's</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
-          </div>
-        </div>
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
         <div class="form-group">
           <label class="col-md-3">Summary</label>
@@ -484,8 +460,14 @@ document.getElementById("uploadFile").value = this.value;
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
+				
+				/* $('.chosen-container').click(function(){
+                   $(this).find("li").css("color","red");
+               }) */
+				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
+
 <!-- Candidate Email validation script starts here -->
 
 <script type="text/javascript">
@@ -524,8 +506,9 @@ document.getElementById("uploadFile").value = this.value;
  function disableMonths() {
      $("#experienceYears").change(function() {
     	 
-         if ($(this).val() == '20+'){
+         if ($(this).val() == '25+'){
              $("#experienceMonths").attr("disabled", true);
+             $("#experienceMonths").val("disabled", true);
          }else
         	 $("#experienceMonths").attr("disabled", false); 
      });
