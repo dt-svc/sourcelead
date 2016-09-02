@@ -1,8 +1,3 @@
-<script src="jquery.js" type="text/javascript"></script>
-<script src="jquery.maskedinput.js" type="text/javascript"></script>
-
-
-
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -34,8 +29,6 @@ function candidateExperience(candidateId){
     
 }
 </script>
-
-
 
 
  <%-- 
@@ -97,7 +90,7 @@ $('body').on('blur', '#employers_form', function() {
    
   
   
-  <%-- 
+<%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
      1.usage     :  used in candidateExperience  function  line 17
@@ -204,7 +197,7 @@ function addExperience(candidateId) {
 </script>
  
  
-  <%-- 
+<%-- 
      @author : David Sammeta.
      this script is for serializeFormJSON.
      1.usage     :  used in candidateEmployersStore function  line 57

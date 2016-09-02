@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -34,12 +33,16 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
+	
 	@Value("${SourceLead.101}")
 	private String noRecords;
+	
 	@Value("${SourceLead.102}")
 	private String statusUpdate;
+	
 	@Value("${SourceLead.103}")
 	private String statusDelete;
+	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
@@ -100,9 +103,13 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	/**
 	 * to Candidates List by OrgCode OrgLocationCode
+	 * 
 	 * @author David Sammeta
+	 * 
 	 * @param request
+	 * 
 	 * @return String
+	 * 
 	 * @throws NullPointerException
     */
 	@Override
@@ -118,9 +125,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	/**
 	 * to get Candidate By CandidateId
+	 * 
 	 * @author Venkat Kesav
+	 * 
 	 * @param candidateId
+	 * 
 	 * @return Candidate
+	 * 
 	 * @throws NullPointerException
     */
 	@Override
@@ -138,6 +149,16 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidate;
 	}
 	
+	
+	/**
+	 * @author David Raju Sammeta
+	 * 
+	 * This Method is for getting Candidate by Candidate Id OrgId and OrgLocationID
+	 * 
+	 * @return Candidate
+	 * 
+	 * @exception NullPointerException
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId)throws Exception {
@@ -153,6 +174,17 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 	}
 
+	/**
+	 * @author prasad.k
+	 * 
+	 * This mothod is used to get CandidateEmail
+	 * 
+	 * @param email
+	 * 
+	 * @return CandidateEmail
+	 * 
+	 * @throws Exception
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate findByCandidateEmail(String email) throws Exception {
