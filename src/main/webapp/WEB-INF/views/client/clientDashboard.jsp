@@ -9,7 +9,7 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
+ 
 
 <body>
 	<!-- Content Area -->
@@ -21,7 +21,15 @@
 			</div>
 	     </c:if>
 			<div class="pull-left">
-				<h2>Clients</h2>
+				<!-- <h2>Clients</h2> -->
+				 <h2>Clients
+            	<span class="select-fild">
+                	<select id="listOfClients" onchange="listChange(this);">
+                  		 <option value="listbyClient">Search by list</option>
+                        <option value="listbyContact" selected="selected">Search by Contact</option> 
+                    </select>
+                </span>            	
+            </h2>
 			</div>
 
 			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
@@ -65,12 +73,13 @@
 					</div>
 				</div>
 			</c:if>
-		</div>
+		</div>http://localhost:8080/sourcelead/clientDashboard
 
 		<c:if test="${!empty clientsList}">
 			<div class="clients_wrap_table ">
 			
 			<table id="example" class="display" cellspacing="0" width="100%"> </table>
+			<table id="clientContacts" class="display" cellspacing="0" width="100%"> </table>
 				<%-- <table>
 					<tbody>
 					<thead>
@@ -165,25 +174,46 @@
 				<div class="proj_close">
 					<i></i>
 				</div>
-				<div id="clientSideDiv"></div>
+				<div id="clientSideDiv"></div> 
+			</div>
+		</div>
+		<div class="clients_side_wrap">http://localhost:8080/sourcelead/clientDashboard
+			<div class="clients_side_wrap_inn">
+				<h1 id="clientNameDiv"></h1>
+				<div class="proj_close">
+					<i></i>
+				</div>
+			<div id="vendorSideDiv"></div>
 			</div>
 		</div>
 	</section>
 </body>
 
-
-
-
-
-
-<script type="text/javascript">
+ <script type="text/javascript">
 window.onload = function () {
-	getClientDetails();
+	 document.getElementById("example").style.display="none";
+	 document.getElementById("clientContacts").style.display="block";
+	getListByContactsDetails();
  };
+</script> 
+<script>
+function listChange(sel){
+	 if(sel.value=="listbyClient"){
+		 document.getElementById("clientContacts").style.display="none";
+		 document.getElementById("example").style.display="block";
+		 getListByClientDetails()
+	 }
+	 if(sel.value=="listbyContact"){
+		 document.getElementById("example").style.display="none";
+		 document.getElementById("clientContacts").style.display="block";
+		 getListByContactsDetails();
+	 }
+	 
+}
 </script>
 
 <script>
-function getClientDetails(){
+function getListByClientDetails(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	 $.ajax({
@@ -225,7 +255,7 @@ function getClientDetails(){
    	        			result = result +'</td>';
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
-   	        		}
+   	        		}example
    	        		
    	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
    	        			result = result +'<td>';
@@ -285,14 +315,173 @@ function getClientDetails(){
    	    	    
    		    }
 	 }); 
-	
-	
 }	
 </script> 
 
+<script type="text/javascript">
+function getListByContactsDetails(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getListByContactsDetails?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Name</th>';
+   	        	result = result +'	<th>Email</th>';
+   	        	result = result +'	<th>Ph. No</th>';                
+   	        	result = result +'	<th>Owner</th>';
+   	        	result = result +'	<th>Client</th>';
+   	        	result = result +'  <th>Status</th>';
+   	        	result = result +' <th>Invitation</th>';
+   	        	result = result +' <th>Action</th>';
+   	        	result = result +' </tr>';
+   	        	result = result +' </thead>';
+   	        	result = result +' <tbody>';
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		var report = json[i];
+   	        		result = result +'<tr>';
+   	        			result = result +'<td>';
+   	        			/* result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>'; */
+   	        			result = result +'<div class="proj_show" onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span title='+report.spocEmail+'>'+report.spocEmail+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span  title='+report.spocMobilePhone+'>'+report.spocMobilePhone+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span  title='+report.ownerName+'>'+report.ownerName+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span  title='+report.orgName+'>'+report.orgName+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+report.id+');">';
+   	        			if(report.spocStatus == 'Active'){
+	   	 				     result = result +'<option selected value="Active">Active</option>';
+	   	 					
+	   	 				}else{
+	   	 				result = result +'<option value="Active">Active</option>';
+	   	 				}
+   	        			
+   	        			if(report.spocStatus == 'In-Active'){
+	   	 				     result = result +'<option selected value="In-Active">In-Active</option>';
+	   	 					
+	   	 				}else{
+	   	 				result = result +'<option value="In-Active">In-Active</option>';
+	   	 				}
+   	        			if(report.spocStatus == 'New'){
+	   	 				     result = result +'<option selected value="New">New</option>';
+	   	 					
+	   	 				}else{
+	   	 				result = result +'<option value="New">New</option>';
+	   	 				}
+   	        			if(report.spocStatus == 'Negotiation'){
+	   	 				     result = result +'<option selected value="Negotiation">Negotiation</option>';
+	   	 					
+	   	 				}else{
+	   	 				result = result +'<option value="Negotiation">Negotiation</option>';
+	   	 				}
+   	        			
+   	        			if(report.spocStatus == 'Contracted'){
+	   	 				     result = result +'<option selected value="Contracted">Contracted</option>';
+	   	 					
+	   	 				}else{
+	   	 				result = result +'<option value="Contracted">Contracted</option>';
+	   	 				}
+   	        			result = result +'</select>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<b class="proj_closed">';
+   	        			result = result +'<span  title='+report.invitationStatus+'>'+report.invitationStatus+'</span>';
+   	        			result = result +'</b>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span><a href="add-vendor.html"><i class="glyphicon glyphicon-trash"></i></a></span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		    result = result +'</tr>';
+   				}
+   	        	result = result +'</tbody>';
+   	    	    $("#clientContacts").empty();  
+   	    	    $("#clientContacts").append(result)
+   	    	    pagination1();
+   	    	    
+   		    }
+	 }); 
+}
+</script>
 <script>
-function pagination(){  
+function changeSpocStatus(spocId){
+	alert("spocId"+spocId);
+	var spocStatus = document.getElementById("spocStatus").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    success: function(data) {
+	    	clientContactList(orgRelationID);
+	    }
+   });
+}
+
+
+</script>
+
+
+
+
+
+<script>
+function pagination(){
+	 document.getElementById("clientContacts_info").style.display="none";
+	 document.getElementById("clientContacts_info").style.display="none";
+	 document.getElementById("example").style.display="block";
     $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
+<script>
+function pagination1(){  
+	 document.getElementById("clientContacts").style.display="block";
+	 document.getElementById("example").style.display="none";
+    $('#clientContacts').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -343,6 +532,8 @@ function pagination(){
 		clientDetails(clientLocationId,orgRelationId);
 	}
 </script>
+
+
 
 <script>
 	function clientProjectDetails(clientId) {
@@ -546,7 +737,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	$(document).ready(function() {
 		$(".proj_show").click(function() {
 			$(".clients_side_wrap").addClass("clients_side_wrap_active");
-			$(".side_mask").fadeIn(200);
+			$(".side_mask").fadeIn(200);http://localhost:8080/sourcelead/clientDashboard
 			$("body").css('overflow-y', 'hidden');
 		});
 		$(".proj_close, .side_mask").click(function() {
@@ -591,6 +782,150 @@ $(document).ready(function() {
 		
 });
 </script> 
+
+
+<script>
+	function vendorSpocSideBar(spocId,ownerId,spocName) {
+		var result = "";
+		result = result + '<div class="project_side_wrap_inn_tabs">';
+		result = result + '<ul class="project-tabs-menu">';
+		result = result
+				+ '<li class="current"><a href="#spoctab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+');">Details</a></li>';
+		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
+		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
+		result = result + '<div class="clearfix"></div>'
+		result = result + '</ul>';
+		result = result + '<div class="project_tabs">';
+
+		result = result + '<div id="spoctab-1" class="project_tabs_inn">';
+		result = result + '</div>';
+
+		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>'; */
+
+		result = result + '</div>';
+		result = result + '</div>';
+		$("#vendorSideDiv").empty();
+		$("#vendorSideDiv").append(result);
+		
+		$("#vendorNameDiv").empty();
+		$("#vendorNameDiv").append(spocName);
+		
+		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+
+		vendorDetailsbySpocId(spocId,ownerId);
+	}
+</script>
+
+<script type="text/javascript">
+	function vendorDetailsbySpocId(spocId,ownerId) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId,
+					success : function(data) {
+						var json = JSON.parse(data);
+						var result = "";
+						
+						result = result+ '<div class="project_tabs_inn_table">';
+						result = result + '<div class="project_details">';
+						
+							result = result + ' <div class="useredit useredit_a">';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+							result = result + ' </div>'; 
+							
+							result = result + '<div class="project_details_cta">';
+								result = result + '<strong>First Name:</strong>';
+								if(json.spocUser.firstName !=null && json.spocUser.firstName !='' && json.spocUser.firstName !='undefined'){
+									result = result + '<span>'+json.spocUser.firstName+'</span>';
+								}
+								result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Last Name:</strong>';
+							if(json.lastName !=null && json.spocUser.lastName !='' && json.spocUser.lastName !='undefined'){
+								result = result + '<span>'+json.spocUser.lastName+'</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>EmailId:</strong>';
+							if(json.spocUser.email !=null && json.spocUser.email !='' && json.spocUser.email !='undefined'){
+								result = result + '<span>'+json.spocUser.email+'</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Phone No:</strong>';
+							if(json.spocUser.mobilePhone !=null && json.spocUser.mobilePhone !='' && json.spocUser.mobilePhone !='undefined'){
+								result = result + '<span>'+json.spocUser.mobilePhone+'</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Status:</strong>';
+							if(json.spocStatus !=null && json.spocStatus !='' && json.spocStatus !='undefined'){
+								result = result + '<span>'+json.spocStatus+'</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							/* spoc Status */
+							
+					       /*  result = result + ' <td><div>';
+							result = result + ' <select id="spocStatus" name="spocStatus">';
+							result = result + ' <option value="">-Select Status-</option>';
+							result = result + ' <option '+selected1+'>Active</option>';
+							result = result + ' <option '+selected2+'>In-Active</option>';
+							result = result + ' <option '+selected3+'>New</option>';
+							result = result + ' <option '+selected4+'>Negotiation</option>';
+							result = result + ' <option '+selected5+'>Contracted</option>';
+							result = result + ' </select>';
+							result = result + ' </div></td>'; */
+							
+							/* Owners */
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Owner :</strong>';
+							if(json.ownerName !=null && json.ownerName !='' && json.ownerName !='undefined'){
+								result = result + '<span>'+json.ownerName+'</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="clearfix"></div>';
+							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorContactDetailsDiv"></div>';
+							result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						
+						$("#spoctab-1").empty();
+						$("#spoctab-1").append(result);
+						$("#spoctab-1").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
+
+					}
+				});
+	}
+</script>
+
+
 
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />	
