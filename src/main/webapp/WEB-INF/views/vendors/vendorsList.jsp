@@ -10,6 +10,8 @@
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -26,13 +28,15 @@
           <div class="pull-right brud-crum">Home &raquo; Vendors list </div>
         </section>
         
+       
+       
 		<!-- Project -->
 <div class="timesheet_out">
 
 <div class="vendor_wrap">
 	<div class="timesheet_head">
         	<ul>
-				<li class="li-vendor"><input type="text" class="vendorfild"><i class="fa fa-search"></i>|</li>
+				<!-- <li class="li-vendor"><input type="text" class="vendorfild"><i class="fa fa-search"></i>|</li>
 				<li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
                 	<div class="approved_pop">
                     	<ul>
@@ -51,15 +55,19 @@
                             <li>Word<i class="fa fa-file-word-o"></i></li>
                         </ul>
                     </div>
-                </li>                
+                </li>   -->              
 				<li><a href="<c:url value='/vendorcontact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
-                <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
         </div>
-    <div class="clients_wrap_table" id="vendors_list" style="display: none">
-    	<table>
+    <div class="clients_wrap_table">
+    	
+    	<table id="vendorList" class="display" cellspacing="0" width="100%"> </table>
+    	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
+    	
+    	
+    	<%-- <table>
         	<tbody>
 			<thead>
             	<tr>
@@ -111,13 +119,14 @@
                 </tr>
                  </c:forEach>                                                                                                                                              			
             </tbody>
-        </table>
+        </table> --%>
 	
 </div>	
-
-
- <div class="clients_wrap_table" id ="vendors_contact_list" >
-    	<table>
+ <!-- <div class="clients_wrap_table">
+ 
+ <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table>  -->
+ 
+    	<%-- <table>
         	<tbody>
 			<thead>
 				<tr>
@@ -152,26 +161,10 @@
                 </tr>
                 	</c:forEach>			
             </tbody>
-        </table>
+        </table> --%>
 	
-</div>	
+<!-- </div>	 -->
 
-
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>		
-		
-	
-	
 	
 </div>
 
@@ -192,6 +185,374 @@
 <!-- Client Side Nav Div Ends -->
 </section>
 
+<script> 
+$(document).ready(function(){
+	//getVendorLists();
+	getVendorContactLists();
+});
+</script>
+
+<script>
+function getVendorLists(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorLists?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	
+   	        	
+   	        	
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +' <th>Name</th>';
+   	        	result = result +' <th>Website</th>';
+   	        	result = result +'<th>Location</th>';
+   	        	result = result +'<th>No.of Contacts</th>';
+   	        	result = result +'<th>Released jobs</th>';
+   	        	result = result +'<th>Level</th>';
+   	        	result = result +'<th>Actions</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'</thead>';
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		
+   	        		var report = json[i];
+   	        		result = result +'<tr>';
+   	        		if(report.locationID == loginOrgLocId){
+   	        			
+   	        			result = result +'<td>';
+   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		
+   	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-sm" title='+report.webSite+'>'+report.webSite+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		
+   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'}">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		
+   				}
+   	        		
+	       		if(report.responderId == loginOrgLocId){
+	       			result = result +'<td>';
+	       			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+	       			result = result +'</div>';
+	       			result = result +'</td>';
+	       			
+	       			if(report.locationWebsite != null && report.locationWebsite != '' && report.locationWebsite != 'undefined'){
+	       				result = result +'<td><div><span class="tbldata-dotdot-sm" title='+report.locationWebsite+'>'+report.locationWebsite+'</span></div></td>';
+	       			}else{
+	       				result = result +'<td><div>--</div></td>';
+	       			}
+	       			
+	       			if(report.locationCountry != null & report.locationCountry != '' && report.locationCountry != 'undefined'){
+	       				result = result +'<td><div><span class="tbldata-dotdot-me" title="'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'">'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'</span></div></td>';
+	       			}else{
+	       				result = result +'<td><div>--</div></td>';
+	       			}
+	       		}
+	       		
+	       		result = result +'<td><div>20</div></td>';
+	       		result = result +' <td><div>10</div></td>';
+	       		result = result +'<td><div>${report.level}</div></td>';
+	       		result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		result = result +'</tr>';
+   				}
+   	        	
+   	        	result = result +'</tbody>';
+   	    	    $("#vendorList").empty();  
+   	    	    $("#vendorList").append(result)
+   	    	    pagination1();
+   	    	    
+   		    }
+	 });
+	
+	
+}	
+</script> 
+
+ <script>
+function pagination1(){  
+	document.getElementById("vendorContactList").style.display="none";
+    $('#vendorList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
+
+
+<script>
+function getVendorContactLists(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Name</th>';
+   	        	result = result +'  <th>Email</th>';
+   	        	result = result +'  <th>Ph. No</th>';
+   	        	result = result +' <th>Owner</th>';
+   	        	result = result +'  <th>Client</th>';
+   	        	result = result +' <th>Status</th>';
+   	        	result = result +' <th>Invitation</th>';
+   	        	result = result +'<th>Action</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'	</thead>';
+   	        	
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		var report = json[i];
+   	        		result = result +'<tr>';
+   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
+   	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
+   	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
+   	        		result = result +'<td><div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+report.id+');">';
+   	        		
+   	        		if(report.spocStatus == 'Active'){
+   						result = result+'<option selected value="Active" >Active</option>';
+   					}else{
+   						result = result+'<option value="Active" >Active</option>';
+   					}
+   	        		
+   	        		if(report.spocStatus == 'In-Active'){
+   						result = result+'<option selected value="In-Active" >In-Active</option>';
+   					}else{
+   						result = result+'<option value="In-Active" >In-Active</option>';
+   					}
+   	        		
+   	        		if(report.spocStatus == 'New'){
+   						result = result+'<option selected value="New" >New</option>';
+   					}else{
+   						result = result+'<option value="New" >New</option>';
+   					}
+   	        		
+   	        		if(report.spocStatus == 'Negotiation'){
+   						result = result+'<option selected value="Negotiation" >Negotiation</option>';
+   					}else{
+   						result = result+'<option value="Negotiation" >Negotiation</option>';
+   					}
+   	        		
+   	        		
+   	        		if(report.spocStatus == 'Contracted'){
+   						result = result+'<option selected value="Contracted" >Contracted</option>';
+   					}else{
+   						result = result+'<option value="Contracted" >Contracted</option>';
+   					}
+   	        		result = result +' </select></div></td>';
+               			
+   	        		result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+   	        		result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
+   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		
+   	        		
+   	        		result = result +'</tr>';
+   				}
+   	        	
+   	        	result = result +'</tbody>';
+   	    	    $("#vendorContactList").empty();  
+   	    	    $("#vendorContactList").append(result)
+   	    	    pagination(); 
+   	    	    
+   		    }
+	 });
+	
+	
+}	
+</script> 
+<script>
+function pagination(){  
+	/* document.getElementById("vendorList").style.display="none"; */
+	/*  document.getElementById("vendorList_info").style.display="none"; 
+	 document.getElementById("vendorList_paginate").style.display="none";  */
+    $('#vendorContactList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
+<script>
+function getClientDetails(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Client name</th>';
+   	        	result = result +'	<th>Website</th>';
+   	        	result = result +'	<th>Location</th>';
+   	        	result = result +'	<th>Level</th>';
+   	        	result = result +'	<th>Created By</th>';
+   	        	result = result +'<th>No.of contacts</th>';
+   	        	result = result +'<th>Action</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'</thead>';
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		
+   	        		var report = json[i];
+   	        		result = result +'<tr>';
+   	        		if(report.locationID == loginOrgLocId){
+   	        			result = result +'<td>';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+						
+   	        		}
+   	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-sm" title='+report.webSite+'>'+report.webSite+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		
+   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'}">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		if(report.level != null && report.level != '' && report.level != 'undefined'){
+   	        			result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
+   	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		
+   	        		
+   	        		
+   	        		if(report.responderId == loginOrgLocId){
+   	        			result = result +'<td><div class="proj_show" onclick="clientSideBar('+report.locationID+','+report.locationOrgname+','+report.id+');"><span class="tbldata-dotdot-vsm" title='+report.locationOrgname+'>"'+report.locationOrgname+'"</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'</div></td>';
+   	        			
+   	        			if(report.locationWebsite != null && report.locationWebsite != '' && report.locationWebsite != 'undefined'){
+   	        				result = result +'<td><div><span class="tbldata-dotdot-sm" title='+report.locationWebsite+'>'+report.locationWebsite+'</span></div></td>';
+   	        			}else{
+   	        				result = result +'<td><div>--</div></td>';
+   	        			}
+   	        			
+   	        			if(report.locationCountry != null & report.locationCountry != '' && report.locationCountry != 'undefined'){
+   	        				result = result +'<td><div><span class="tbldata-dotdot-me" title="'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'">'+report.locationCity+'&nbsp;,'+report.locationState+'&nbsp;,'+report.locationCountry+'</span></div></td>';
+   	        			}else{
+   	        				result = result +'<td><div>--</div></td>';
+   	        			}
+   	        			
+   	        			if(report.level != null && report.level != '' && report.level != 'undefined'){
+   	        				result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
+   	        			}else{
+   	        				result = result +'<td><div>--</div></td>';
+   	        			}
+   	        			
+   	        			result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
+   	        			result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   						
+   	        		} 
+   	        		
+   	        		result = result +'</tr>';
+   	        		
+   				}
+   	        	
+   	        	result = result +'</tbody>';
+   	    	    $("#vendorList").empty();  
+   	    	    $("#vendorList").append(result)
+   	    	  pagination1();
+   	    	    
+   		    }
+	 }); 
+	
+	
+}	
+</script> 
+
+<script>
+function pagination1(){  
+	/* document.getElementById("vendorList").style.display="none"; */
+	/*  document.getElementById("vendorList_info").style.display="none"; 
+	 document.getElementById("vendorList_paginate").style.display="none";  */
+    $('#vendorList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+	 
+	 
+   /*  $(document).ready(function() {
+    	var oTable = $('#example').dataTable( {
+    	"sScrollY": "200px",
+    	"bPaginate": false
+    	} );
+    	$(window).bind('resize', function () {
+    	oTable.fnAdjustColumnSizing();
+    	} ); document.getElementById("example").style.display="block";
+
+    	} ); */
+}
+</script>
 <script>
 	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName) {
 		var result = "";
@@ -218,10 +579,17 @@
 		
 		$("#vendorNameDiv").empty();
 		$("#vendorNameDiv").append(spocName);
+		
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
 
 		vendorDetailsbySpocId(spocId,ownerId,spocUserId);
 	}
 </script>
+
+
+
 
 <script>
 	function vendorSideBar(vendorLocationId,orgRelationId,orgName) {
@@ -251,6 +619,10 @@
 		
 		$("#vendorNameDiv").empty();
 		$("#vendorNameDiv").append(orgName);
+		
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
 		
 		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
 	}
@@ -392,12 +764,23 @@ function changeSpocStatus(spocId){
 <script>
 function listChange(sel){
 	 if(sel.value=="listbyVendor"){
-		 document.getElementById("vendors_list").style.display="block";
-		 document.getElementById("vendors_contact_list").style.display="none";
+		 document.getElementById("vendorList").style.display="block";
+		 document.getElementById("vendorContactList").style.display="none";
+		 document.getElementById("vendorContactList_wrapper").style.display="none";
+		 /* document.getElementById("vendorContactList_info").style.display="none"; 
+		 document.getElementById("vendorList_paginate").style.display="none"; */
+		 
+		 getVendorLists();
 	 }
 	 if(sel.value=="listbyContact"){
-		 document.getElementById("vendors_contact_list").style.display="block";
-		 document.getElementById("vendors_list").style.display="none";
+		 document.getElementById("vendorContactList").style.display="block";
+		 document.getElementById("vendorList").style.display="none";
+		 document.getElementById("vendorList_wrapper").style.display="none";
+		 document.getElementById("vendorContactList_wrapper").style.display="block";
+		/*  document.getElementById("vendorList_info").style.display="none"; 
+		 document.getElementById("vendorList_paginate").style.display="none"; */
+		 
+		 getVendorContactLists();
 	 }
 	 
 }
@@ -494,10 +877,11 @@ $(".addcon-pop").click(function(){
 
 </script> 
 <jsp:include page="editVendor.jsp" />
- <jsp:include page="editSpocDetails.jsp" /> 
+<jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
 
 
 
 
-	
+
+
