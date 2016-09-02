@@ -57,12 +57,12 @@
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
         <div class="well">
-          <div class="input-group col-md-6" style="margin:0 auto">
+          <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
               <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
               </span> 
            </label>
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ...">
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
           </div>
           </div>
         </div>
@@ -513,6 +513,20 @@ document.getElementById("uploadFile").value = this.value;
         	 $("#experienceMonths").attr("disabled", false); 
      });
  }
+ 
+ 
+ 
+ /* upload file script for size validation 2MB*/
+ var selectedFile = document.getElementById("uploadBtn");
+ selectedFile.addEventListener("change", function() {
+   var docSize = this.files[0].size;
+   $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+   if(docSize > 2097152){
+ 	  document.getElementById("uploadFile").value = '';
+ 	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+   }
+ });
+ 
 </script>
 <!-- Experience Years and Months validation Script End here -->
  
