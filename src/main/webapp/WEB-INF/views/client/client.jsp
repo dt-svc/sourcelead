@@ -212,7 +212,6 @@ window.onload = function () {
 									<option value="1">Admin</option>
 									<option value="3">Approver/Project Manager</option>
 									<option value="5">HR Manager</option>
-									<option value="6">Account Manager</option>
 									<option value="8">Recruiter</option>
 			              </select>
                   </div>
