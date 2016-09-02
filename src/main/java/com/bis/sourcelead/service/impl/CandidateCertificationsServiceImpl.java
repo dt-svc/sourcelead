@@ -67,6 +67,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			if (jsonObject.has("score")) {
 				candidatecertificate.setScore(jsonObject.getString("score"));
 			}
+			if (jsonObject.has("scoreType")) {
+				candidatecertificate.setScoreType(jsonObject.getString("scoreType"));
+			}
 			if (jsonObject.has("description")) {
 				candidatecertificate.setDescription(jsonObject.getString("description"));
 			}
