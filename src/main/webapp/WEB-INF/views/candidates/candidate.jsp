@@ -39,6 +39,11 @@
 	.clsDatePicker {
 		z-index: 100000 !important;
 	}
+	#uploadFileGroup p.jquery_form_error_message{
+	position: absolute;
+	left:0;
+	bottom:-16px;
+	}
 	</style>
 
 <!-- Content Area -->
@@ -57,7 +62,7 @@
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
         <div class="well">
-          <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto">
+          <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
               <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
               </span> 
