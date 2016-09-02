@@ -116,8 +116,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public List<Long> getOwnerIdbySpocId(Long spocUserId) {
-		return orgSpocDao.getOwnerIdbySpocId(spocUserId);	
+	public List<Long> getOwnerIdbySpocId(Long spocUserId,Long ownerId) {
+		return orgSpocDao.getOwnerIdbySpocId(spocUserId,ownerId);	
 		}
 	
 
