@@ -587,14 +587,43 @@ public class ClientRestController {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
-	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId());
 
-		return "success";
+		return jsonObj.getString("owner");
 	}
 	
 	
+	
+	@RequestMapping(value = "/getClientContactLists")
+	public @ResponseBody String getClientContactLists(HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+	    String resultJson;
+	    
+	    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId());
+	
+		
+		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
+			if(orgSpoc.getSpocUser() != null){
+				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+			}
+			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
+				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLocations.getId()){
+				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+			}
+		}
+		
+		 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
+		 return resultJson;
+	}
 	/**
 	 * check given string empty or null
 	 * @param str

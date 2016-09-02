@@ -73,7 +73,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
 		}else{
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :userId and spoc.status <> 'INACTIVE' ");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and (spoc.ownerUser.id = :userId OR spoc.spocUser.id = :userId) and spoc.status <> 'INACTIVE' ");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
 		}
 		

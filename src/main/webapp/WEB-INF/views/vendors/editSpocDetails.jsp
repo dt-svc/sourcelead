@@ -221,7 +221,7 @@
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -288,7 +288,7 @@
             };
 </script>
  <script type="text/javascript">
-	function storeVendorContactDetails(spocId,ownerId) {
+	function storeVendorContactDetails(spocId,ownerId,spocUserId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
     		 var frm = $('#editVendorContact_form').serializeFormJSON();
              var con = JSON.stringify(frm);
@@ -300,7 +300,9 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
-	   		    	vendorDetailsbySpocId(spocId,ownerId);
+	   		    	var ownerId = data;
+	   		    	alert("ownerId"+ownerId);
+	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId);
 	   		    }
 		 }); 
 	     	return true;
