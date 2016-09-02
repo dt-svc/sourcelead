@@ -3,7 +3,12 @@
 
 
 
-
+<%-- 
+     @author : David Sammeta.
+     this script is for upDate Candidate Details .
+     1.usage     :  used in candidatelist.jsp function  line 264
+     2.parameter : candidateId .
+--%> 
 <script>
 function candidateExperience(candidateId){
 	
@@ -33,9 +38,13 @@ function candidateExperience(candidateId){
 
 
 
-
-<!-- This Script is For candidate Employers Store Div Starts --> 
-
+ <%-- 
+     @author : David Sammeta.
+     this script is to Store  candidateEmployer.
+     1.usage     :  used in addExperience function  line 187
+     2.parameter : candidateId,csrf.token
+     3.ajax url implementation in CandidateEmployersRestController.
+--%> 
 <script type="text/javascript">
 function candidateEmployersStore(candidateId){
 	
@@ -86,16 +95,17 @@ $('body').on('blur', '#employers_form', function() {
 });
 </script>            
    
-   <!-- This Script is For candidate Employers Store Div ends --> 
-    
-    
   
-    <!-- This Script is For Popup Div Starts-->  
+  
+  <%-- 
+     @author : David Sammeta.
+     this script is for upDate Candidate Details .
+     1.usage     :  used in candidateExperience  function  line 17
+     2.parameter : candidateId .
+--%> 
+  
 <script>
 function addExperience(candidateId) {	
-	
-	
-	 
 	
 	var result = "";
 	result = result  +'      <!-- Popup Div --> ';   
@@ -192,11 +202,13 @@ function addExperience(candidateId) {
 	   
 	}
 </script>
- <!-- This Script is For Popup Div Ends --> 
  
  
- <!-- This Script is For serialization of form to Json Div Starts --> 
-  
+  <%-- 
+     @author : David Sammeta.
+     this script is for serializeFormJSON.
+     1.usage     :  used in candidateEmployersStore function  line 57
+--%> 
  <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -218,10 +230,13 @@ function addExperience(candidateId) {
 	})(jQuery);
 </script>           
 
-
-<!-- This Script is For serialization of form to Json Div Ends --> 
- <!-- This Script is For candidate Employers List Starts-->  
-
+ <%-- 
+     @author : David Sammeta.
+     this script is getting candidateEmployers List .
+     1.usage     :  used in candidateExperience  function  line 34
+     2.parameter : candidateId ,csrf.token.
+     3.ajax url implementation in CandidateListRestController.
+--%> 
 <script>
 function candidateEmployersList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -294,15 +309,21 @@ function candidateEmployersList(candidateId){
      }); 
 }
 </script>
-<!-- This Script is For candidate Employers List Ends-->
 
+
+<%-- 
+     @author : David Sammeta.
+     this script is getting removing Employer in the  List .
+     1.usage     :  used in candidateEmployersList  function  line 286
+     2.parameter : candidateId ,csrf.token,candidateemployerId
+     3.ajax url implementation in CandidateListRestController.
+--%> 
 <script>
 
 function removeEmployer(candidateemployerId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
-	 alert("raju");
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateemployerId="+candidateemployerId,        
@@ -325,6 +346,13 @@ function removeEmployer(candidateemployerId,candidateId){
      }); 
 }
 </script>
+
+
+<%-- 
+     @author : David Sammeta.
+     this script is for onclick function iscurrentPosition  addExperience  .
+     1.usage     :  used in addExperience  function  line 124
+--%> 
 <script>
 function iscurrentPosition(){
 	
