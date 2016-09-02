@@ -67,6 +67,9 @@ public class OrgSpoc {
 	private String spocName;
 	
 	@Transient
+	private Long spocUserId;
+	
+	@Transient
 	private String ownerName;
 	
 	@Transient
@@ -195,6 +198,14 @@ public class OrgSpoc {
 
 	public void setSpocName(String spocName) {
 		this.spocName = spocName;
+	}
+	
+	public Long getSpocUserId() {
+		return spocUserId;
+	}
+
+	public void setSpocUserId(Long spocUserId) {
+		this.spocUserId = spocUserId;
 	}
 
 	public String getOwnerName() {
