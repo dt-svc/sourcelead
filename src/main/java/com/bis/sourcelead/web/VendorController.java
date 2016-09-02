@@ -20,7 +20,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
-
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -46,6 +46,9 @@ public class VendorController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 
 	
 	@RequestMapping(value = "/vendorsList")
@@ -59,6 +62,10 @@ public class VendorController {
 		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLoc.getId());
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
 	
+		for(OrgRelations orgRelation : vandorsListByOrgLocationId){
+			List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLoc.getId());
+			orgRelation.setNoOfContatcs(orgSpocs.size());
+		}
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
 			/*if(orgSpoc.getSpocUser() != null){
