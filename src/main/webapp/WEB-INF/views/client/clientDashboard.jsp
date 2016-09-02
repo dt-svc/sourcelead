@@ -66,7 +66,7 @@
 				</div>
 				
 			</div>
-			<c:if test="${empty clientsList}">
+			<%-- <c:if test="${empty clientsList}">
 				<div class="row mt">
 					<div class="col-lg-12">
 						<div class="content-area clearfix">
@@ -79,7 +79,7 @@
 						</div>
 					</div>
 				</div>
-			</c:if>
+			</c:if> --%>
 		</div>
 
 
@@ -113,6 +113,7 @@ function getClientDetails(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
+   	        	if(json.length != null && json.length != ''){
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Client name</th>';
@@ -170,6 +171,20 @@ function getClientDetails(){
    				}
    	        	
    	        	result = result +'</tbody>';
+   	        	}else{
+   	        		result = result +'<div class="row mt">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p>';
+   	        		result = result +'<i class="fa fa-5x fa-users"></i>';
+   	        		result = result +'</p>';
+   	        		result = result +'<p>No Clients for organisation... Add Clients</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        	}
    	    	    $("#clientList").empty();  
    	    	    $("#clientList").append(result)
    	    	    pagination();
@@ -245,6 +260,7 @@ function getVendorContactLists(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
+   	        	if(json.length != null && json.length != ''){
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Name</th>';
@@ -343,8 +359,21 @@ function getVendorContactLists(){
    	        		
    	        		result = result +'</tr>';
    				}
-   	        	
    	        	result = result +'</tbody>';
+   	        	}else{
+   	        		result = result +'<div class="row mt">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p>';
+   	        		result = result +'<i class="fa fa-5x fa-users"></i>';
+   	        		result = result +'</p>';
+   	        		result = result +'<p>No Client Contacts for organisation... Add Client Contacts</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        	}
    	    	    $("#vendorContactList").empty();  
    	    	    $("#vendorContactList").append(result)
    	    	    pagination1(); 
@@ -677,7 +706,7 @@ function acceptInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
-		    	
+		    	getVendorContactLists();
 		    }
 	   });
 }
@@ -690,7 +719,7 @@ function rejectInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
-		    	
+		    	getVendorContactLists();
 		    }
 	   });
 }
