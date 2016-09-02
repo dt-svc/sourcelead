@@ -23,6 +23,7 @@
 		 $('.alert-area').removeClass('alert-area-active');
 		 $('.qlinks-area').removeClass('qlinks-area-active');
 		 $('.note-area').removeClass('note-area-active');
+		 $('.spoclinks-area').removeClass('spoclinks-area-active');
 	    });
 		
 		$("#notification").click(function(){
@@ -31,6 +32,7 @@
 			$('.setting-area').removeClass('setting-area-active');
 			$('.alert-area').removeClass('alert-area-active');
 			$('.qlinks-area').removeClass('qlinks-area-active');
+			$('.spoclinks-area').removeClass('spoclinks-area-active');
 		});
 		$("#alert").click(function(){
 			$('.alert-area').toggleClass('alert-area-active');
@@ -38,9 +40,20 @@
 			$('.setting-area').removeClass('setting-area-active');
 			$('.note-area').removeClass('note-area-active');
 			$('.qlinks-area').removeClass('qlinks-area-active');
+			$('.spoclinks-area').removeClass('spoclinks-area-active');
 		});
 		$("#qlinks").click(function(){
 			$('.qlinks-area').toggleClass('qlinks-area-active');
+			$('.alert-area').removeClass('alert-area-active');
+			$('.user-details').removeClass('user-details-active');
+			$('.setting-area').removeClass('setting-area-active');
+			$('.note-area').removeClass('note-area-active');
+			$('.spoclinks-area').removeClass('spoclinks-area-active');
+		});
+		$("#spoclinks").click(function(){
+			
+			$('.spoclinks-area').toggleClass('spoclinks-area-active');
+			$('.qlinks-area').removeClass('qlinks-area-active');
 			$('.alert-area').removeClass('alert-area-active');
 			$('.user-details').removeClass('user-details-active');
 			$('.setting-area').removeClass('setting-area-active');
@@ -53,6 +66,7 @@
 		  $('.alert-area').removeClass('alert-area-active');
 		  $('.qlinks-area').removeClass('qlinks-area-active');
 		  $('.timesheet-menu').removeClass('timesheet-menu-active');
+		  $('.spoclinks-area').removeClass('spoclinks-area-active');
 	    });
 		$('.header-nav .navbar, .custom-navbar, .user-details, .tree-view-new').click(function(e){
 		  e.stopPropagation();
@@ -63,6 +77,7 @@
 		$('.user-details').removeClass('user-details-active');
 		$('.alert-area').removeClass('alert-area-active');
 		$('.qlinks-area').removeClass('qlinks-area-active');
+		$('.spoclinks-area').removeClass('spoclinks-area-active');
 	    });
 		$(".collpase-div").click(function(){
 			$(".toggle-div").slideToggle(800);
