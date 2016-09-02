@@ -104,7 +104,7 @@
                   	 	</span></div></td>
                    	    <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">${report.locationId.country}</span></div></td>
                    </c:if> 
-                    <td><div>20</div></td>
+                    <td><div>${report.noOfContatcs}</div></td>
                     <td><div>10</div></td>
                     <td><div>${report.level}</div></td>
                     <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
