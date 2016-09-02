@@ -233,7 +233,7 @@
 						success : function(result) {
 							if (result == 'vendorsList') {
 								location.replace(sourceleadUrl
-										+ "/vendorsList");
+										+ "/clientDashboard");
 							}
 
 						},

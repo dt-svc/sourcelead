@@ -376,10 +376,10 @@ public class ClientRestController {
 		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
 		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
 		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId);
+		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
 		     
-		     
+		     orgSpoc.setUserList(userList);
 		 return commonUtil.toJSON(orgSpoc);
 		}
 
@@ -587,11 +587,10 @@ public class ClientRestController {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
-	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId());
 
-		return "success";
+		return jsonObj.getString("owner");
 	}
 	
 	

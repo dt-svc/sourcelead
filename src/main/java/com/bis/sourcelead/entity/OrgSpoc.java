@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,8 +80,19 @@ public class OrgSpoc {
 
 	@Transient
 	private String ownerUserId;
+
+	@Transient
+	private List<User> userList;
+
 	
-	
+	public List<User> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<User> userList) {
+		this.userList = userList;
+	}
+
 	public String getOrgName() {
 		return orgName;
 	}

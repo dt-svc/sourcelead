@@ -73,7 +73,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
 		}else{
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :userId and spoc.status <> 'INACTIVE' ");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and (spoc.ownerUser.id = :userId OR spoc.spocUser.id = :userId) and spoc.status <> 'INACTIVE' ");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
 		}
 		
@@ -128,11 +128,11 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getOwnerIdbySpocId(Long spocUserId) {
-		logger.debug("getOrgSpocById start");
+	public List<Long> getOwnerIdbySpocId(Long spocUserId,Long ownerId) {
+		logger.debug("getOwnerIdbySpocId start");
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "select spoc.ownerUser.id from OrgSpoc spoc where spoc.spocUser.id=:spocUserId";
-	    List<Long> ownersList = session.createQuery(query).setLong( "spocUserId", spocUserId ).setCacheable(true).list();
+	    String query = "select spoc.ownerUser.id from OrgSpoc spoc where spoc.spocUser.id=:spocUserId and spoc.ownerUser.id != :ownerId";
+	    List<Long> ownersList = session.createQuery(query).setLong( "ownerId", ownerId ).setLong( "spocUserId", spocUserId ).setCacheable(true).list();
         return ownersList;
         
 	}
