@@ -113,8 +113,8 @@ public class UserRestController {
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	
-		    json = "{"+json+"}";
+			String resultJson = null;
+		   /* json = "{"+json+"}";
 		    JSONObject jsonObj = new JSONObject(json);
 		 	
 		 	String resultJson = null;
@@ -169,7 +169,7 @@ public class UserRestController {
 			pah2.setApproverUserId(approverUserId2);
 			pah2.setLevel(2);
 			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
-		}
+		}*/
 	    	
 			
 		 List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
