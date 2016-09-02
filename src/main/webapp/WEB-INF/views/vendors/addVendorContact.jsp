@@ -143,11 +143,10 @@
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 		                        <option value="">-Select Role-</option>
-									<option value="Admin">Admin</option>
-									<option value="Approver">Approver/Project Manager</option>
-									<option value="HR Manager">HR Manager</option>
-									<option value="Account Manager">Account Manager</option>
-									<option value="Recruiter">Recruiter</option>
+									<option value="1">Admin</option>
+									<option value="3">Approver/Project Manager</option>
+									<option value="5">HR Manager</option>
+									<option value="8">Recruiter</option>
 			              </select>
                   </div>
                 </div>

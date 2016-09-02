@@ -93,14 +93,23 @@
 				</div>
 				<div id="clientSideDiv"></div>
 			</div>
-		</div>
+			<!-- Client Side Nav Div -->
+<!-- <div class="clients_side_wrap">
+			<div class="clients_side_wrap_inn">
+				<h1 id="vendorNameDiv"></h1>
+				<div class="proj_close">
+					<i></i>
+				</div>
+				<div id="vendorSideDiv"></div>
+			</div>
+		</div> -->
+
+ </div>
+	
+		
+		
 	</section>
 </body>
-
-
-
-
-
 
 <script type="text/javascript">
 window.onload = function () {
@@ -312,49 +321,86 @@ function getVendorContactLists(){
    	        	for (var i=0; i<json.length; i++)
    				{  
    	        		var report = json[i];
+   	        		var selected1 = '';
+   					var selected2 = '';
+   					var selected3 = '';
+   					var selected4 = '';
+   					var selected5 = '';
+   	        		
+   	        		if(report.spocStatus == 'Active'){
+						selected1 = 'selected';
+					} 
+				
+					if(report.spocStatus == 'In-Active'){
+							selected2 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'New'){
+							selected3 = 'selected';
+						}
+					
+					if(report.spocStatus == 'Negotiation'){
+							selected4 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'Contracted'){
+						selected5 = 'selected';
+					} 
+   	        		
+   	        		
+   	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUser.id+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
-   	        		result = result +'<td><div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+report.id+');">';
    	        		
-   	        		if(report.spocStatus == 'Active'){
-   						result = result+'<option selected value="Active" >Active</option>';
-   					}else{
-   						result = result+'<option value="Active" >Active</option>';
-   					}
+   	        		result = result + ' <td><div>';
+					result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
    	        		
-   	        		if(report.spocStatus == 'In-Active'){
-   						result = result+'<option selected value="In-Active" >In-Active</option>';
-   					}else{
-   						result = result+'<option value="In-Active" >In-Active</option>';
-   					}
-   	        		
-   	        		if(report.spocStatus == 'New'){
-   						result = result+'<option selected value="New" >New</option>';
-   					}else{
-   						result = result+'<option value="New" >New</option>';
-   					}
-   	        		
-   	        		if(report.spocStatus == 'Negotiation'){
-   						result = result+'<option selected value="Negotiation" >Negotiation</option>';
-   					}else{
-   						result = result+'<option value="Negotiation" >Negotiation</option>';
-   					}
-   	        		
-   	        		
-   	        		if(report.spocStatus == 'Contracted'){
-   						result = result+'<option selected value="Contracted" >Contracted</option>';
-   					}else{
-   						result = result+'<option value="Contracted" >Contracted</option>';
-   					}
-   	        		result = result +' </select></div></td>';
+   	        	
                			
-   	        		result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
-   	        		result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		/* result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>'; */
+   	        		
+   	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div>---</div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.invitationStatus == 'Accepted'){ 
+     	        			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+     	        		}
+               		
+               		if(report.invitationStatus == 'Rejected'){
+               			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+               		}
+   	        		
+   	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
+   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="#";></i></div></td>';
    	        		
    	        		
    	        		result = result +'</tr>';
@@ -411,11 +457,17 @@ function pagination1(){
 
 		result = result + '</div>';
 		result = result + '</div>';
-		$("#vendorSideDiv").empty();
+		
+		$("#clientSideDiv").empty();
+		$("#clientSideDiv").append(result);
+		
+		$("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName);
+		/* $("#vendorSideDiv").empty();
 		$("#vendorSideDiv").append(result);
 		
 		$("#vendorNameDiv").empty();
-		$("#vendorNameDiv").append(spocName);
+		$("#vendorNameDiv").append(spocName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -449,13 +501,6 @@ function listChange(sel){
 	 
 }
 </script>
-
-
-
-
-
-
-
 
 <script>
 	function clientProjectDetails(clientId) {
@@ -704,7 +749,7 @@ $(document).ready(function() {
 		
 });
 </script> 
-
+<jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />	
 <jsp:include page="../masterFooter.jsp" />	
