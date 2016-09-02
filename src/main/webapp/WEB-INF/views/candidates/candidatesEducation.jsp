@@ -1,3 +1,8 @@
+<%-- 
+     @author : sarath kumar.
+     this script is for display candidate education tab data.
+     1.usage     : used at clientSideBar().
+--%>
 <script>
 function candidateEducation(candidateId){
 	
@@ -25,7 +30,13 @@ function candidateEducation(candidateId){
 }
 </script>
 
-
+<%-- 
+     @author : sarath kumar.
+     this script is for get candidateEducationList.
+     1.usage     : used in candidateEducation().
+     2.parameter : csrf token,candidateId .
+     3.ajax url implementation in CandidateListRestController.
+--%>
 <script>
 function candidateEducationList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -96,6 +107,12 @@ function candidateEducationList(candidateId){
 }
 </script>
 
+<%-- 
+     @author : sarath kumar.
+     this script is for prepare pagination.
+     1.usage     : used in candidateEducationList().
+--%>
+
 <script>
 function pagination(){  
     $('#candidateEducationPagination').DataTable( { 
@@ -108,11 +125,24 @@ function pagination(){
 }
 </script>
 
+
+<%-- 
+     @author : sarath kumar.
+     this script is for remove popUp.
+     1.usage   : used in addEducation() function.
+--%>
+
 <script>
 function closePopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for shown popUp.
+     1.usage   : used in candidateEducation() function.
+--%>
 <script>
 function addEducation(candidateId) {	
 	
@@ -210,6 +240,13 @@ function addEducation(candidateId) {
 	}
 </script>
 
+
+<%-- 
+     @author : sarath kumar.
+     this script is for store candidateEducationstore .
+     1.usage   : used in candidateEducation() function.
+--%>
+
 <script>
 function candidateEducationStore(candidateId){
 	  var validationSettings = {
@@ -280,7 +317,12 @@ $('body').on('blur', '#education_form', function() {
 
 
 
-   <!-- this script is for removing the Education  starts --> 
+   
+<%-- 
+     @author : david.
+     this script is for remove candidateEducation.
+--%>
+
       
 <script>
 function removeEducation(candidateEducationId,candidateId){
