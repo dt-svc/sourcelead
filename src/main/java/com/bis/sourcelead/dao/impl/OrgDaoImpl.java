@@ -227,10 +227,10 @@ public class OrgDaoImpl implements OrgDao {
 	        /*String query = "from Org org where org.orgName = :clientName and org.id IN(Select orgRelations.responderLocationId.org.id from OrgRelations orgRelations "
 	        		+ "where orgRelations.locationId.id = :orgLocationId )";*/
 	        
-	     String query ="from Org org where org.orgName = :clientName and org.id IN(Select orgrelation.responderLocationId.org.id  from OrgRelations orgrelation "
+	     String query ="from Org org where org.orgName = :clientName and (org.id IN(Select orgrelation.responderLocationId.org.id  from OrgRelations orgrelation "
 	    		+"  where orgrelation.locationId.id = :orgLocationId) OR "
 	    		+"org.id IN(Select orl.locationId.org.id from OrgRelations orl"
-	    		+" where orl.responderLocationId.id = :orgLocationId)";
+	    		+" where orl.responderLocationId.id = :orgLocationId))";
 	        
 	        
 	         List<Org> orglist = session.createQuery(query.toString()).setString("clientName", clientName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();

@@ -53,4 +53,6 @@ public interface OrgSpocService {
 
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 
+	List<Long> getOwnerIdbySpocId(Long spocUserId);
+
 }

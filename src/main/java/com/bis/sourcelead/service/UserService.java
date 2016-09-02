@@ -89,6 +89,8 @@ public interface UserService  {
 
 	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg) throws Exception;
 
+	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
+
 }	
 		
 	

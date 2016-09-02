@@ -61,20 +61,27 @@ public class VendorController {
 	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-			if(orgSpoc.getSpocUser() != null){
+			/*if(orgSpoc.getSpocUser() != null){
 				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			}
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			}*/
+			
 			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLoc.getId()){
 				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 			}
 			if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLoc.getId()){
 				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+				orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+				orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+				orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+				orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 			}
 		}
-		
 		model.addObject("loginOrgLocId",orgLoc.getId());
 		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
 		model.addObject("vandorsContactListByOrgLocationId", vandorsContactListByOrgLocationId);
@@ -90,7 +97,6 @@ public class VendorController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Vendors);
-		
 		request.getSession().setAttribute("sessionData",sessionData);
 
 		return model;
