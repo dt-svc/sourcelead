@@ -407,6 +407,7 @@ function getOrgDetails()
 		};
 		if ($('#client_form').validate(false, validationSettings)) {
 			var frm = $('#client_form').serializeFormJSON();
+			var orgLocationId = document.getElementById("orgLocationId").value;
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
@@ -417,7 +418,7 @@ function getOrgDetails()
 			$
 					.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
 						success : function(data) {
 							location.replace(sourceleadUrl+ "/addClientContact");
 						},

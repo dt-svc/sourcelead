@@ -31,18 +31,31 @@
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
                      <div class="col-xs-12 col-md-12 col-lg-12">
-                       <div class="form-group">
+                      <div class="form-group" id="org_dialog">
+                         <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-lg-9" id="vendorNameDiv">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="hidden" id="orgLocationId" />
+                         </div>
+                       </div>
+                       <!-- <div class="form-group">
                          <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="vendorNameDiv">
                            <input type="text" class="form-control" id="orgName" name="orgName" value="" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
                          </div>
-                       </div>
+                       </div> -->
                        <div class="form-group">
+                         <label class="col-lg-3">Website</label>
+                         <div class="col-lg-9">
+                           <input type="text" placeholder="client website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                         </div>
+                       </div>
+                      <!--  <div class="form-group">
                          <label class="col-lg-3">Website</label>
                          <div class="col-lg-9">
                            <input type="text" placeholder="client website" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
-                       </div>
+                       </div> -->
                        <div class="form-group">
 			              <label class="col-md-3">Level</label>
 			              <div class="col-md-9">
@@ -190,6 +203,102 @@
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
+<script type="text/javascript">
+function getOrgName(){
+	var orgCode = '${SourceLeadWeb_orgCode}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	$( "#orgName" ).val( '' );
+	$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	
+	$.ajax({                           
+    	type: "POST",
+    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var org = [];
+        	for(var i=0;i<json.length;i++){
+       		 var label = json[i][0]; 
+       		 var value = json[i][1];
+       	     tmp = {
+       	        'label': label,
+       	        'value': value
+       	      };
+       	  	org.push(tmp);
+       		}
+        	$("#orgName").autocomplete({
+                
+                minLength: 0,
+                source: org,
+                appendTo: "#org_dialog",
+                focus: function( event, ui ) {
+                       $( "#orgName" ).val( ui.item.label );
+                       $( "#orgLocationId" ).val( ui.item.value );
+                       return false;
+                   },
+                select: function( event, ui ) {
+                    return false;
+                }  
+             })
+        },
+        error: function(e){
+           alert('Ajax Error: ' + e.value);
+        }
+    });
+}
+</script>
+
+<script type="text/javascript">
+function getOrgDetails()
+{
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(orgName && orgLocationId){
+   	 $.ajax({
+   	    	type: "POST",
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	        contentType: "application/json; charset=utf-8",
+   	        dataType: "json",
+   	        success: function(data) {
+   	        	if(data != null && data != ''){
+   	        		var json = JSON.parse(data);
+			      	if(json[3] != null && json[3] != ''){
+			      		$("#webSite").val(json[3]);
+			      		$("#webSite").attr("disabled", true);
+			      	}
+			      	 
+   	        	}
+   			 },
+   	        error: function(e){
+   	            alert('Ajax Error: ' + e.value);
+   	        }
+   	    });
+   	 
+	}
+	
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -386,6 +495,7 @@ function validateClientName(){
 		};
 		if ($('#vendor_form').validate(false, validationSettings)) {
 			var frm = $('#vendor_form').serializeFormJSON();
+			var orgLocationId = document.getElementById("orgLocationId").value;
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
@@ -396,8 +506,9 @@ function validateClientName(){
 			$
 					.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Vendor",
 						success : function(result) {
+							location.replace(sourceleadUrl+ "/addVendorContac");
 						},
 					});
 			return true;
