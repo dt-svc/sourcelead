@@ -127,13 +127,22 @@
 	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
 	              </div>
 	            </div>
-                <div class="form-group" id="EmailIdDiv">
+	            
+	              <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					
+			        	<div class="col-md-9">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+			     	</div>
+					</div>
+                <%-- <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
 						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
 		                    <span class="hidden">Valid Email</span>
 					</div>
-				</div>
+				</div> --%>
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
@@ -151,7 +160,8 @@
 	                </select>
 	              </div>
 	            </div>
-                 <div class="form-group">
+	            
+	            <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
@@ -163,6 +173,27 @@
 			              </select>
                   </div>
                 </div>
+                
+                <div class="form-group" id="userRoleDiv" style="display: none;">
+					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+					<div class="col-md-9">
+					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
+					
+				   </div>
+		        </div>
+                 <!-- <div class="form-group">
+                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-md-9">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
+		                        <option value="">-Select Role-</option>
+									<option value="1">Admin</option>
+									<option value="3">Approver/Project Manager</option>
+									<option value="5">HR Manager</option>
+									<option value="8">Recruiter</option>
+			              </select>
+                  </div>
+                </div> -->
                 
                 <div class="form-group">
 	              <label class="col-md-3">Status</label>
@@ -521,6 +552,90 @@ function validateClientName(){
 		$("#vendor_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+
+<script type="text/javascript">
+function getSpocUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
+	        		 }
+		        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#phoneNumber").attr("disabled", true);
+		        		    $("#phoneNumber").val(json[2]);
+	        		 }else{
+	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").val('');
+	        		 }
+	        		 
+	        		 
+	        		 if(json[3] != null && json[3] != ''){
+	        			$("#role").removeAttr("data-validation");
+	        			$("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none";
+   	        			document.getElementById("userRoleDiv").style.display="";
+   	        			$("#userRole").val(json[3]);
+   	        			$("#userRoleText").val(json[4]);
+	        		 }else{
+	        			 $("#role").attr("data-validation", "required");
+	        			 $("#userRole" ).val('');
+	        			 document.getElementById("roleDiv").style.display="";
+	        			 document.getElementById("userRoleDiv").style.display="none";
+	        		 }
+			      	 
+	        	}
+			 },
+	        error: function(e){
+	            alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	    $("#phoneNumber").attr("disabled", false);
+	    $("#phoneNumber").val('');
+	    
+	    $("#role").attr("data-validation", "required");
+	    $("#userRole" ).val('');
+	    document.getElementById("roleDiv").style.display="";
+		document.getElementById("userRoleDiv").style.display="none";
+	   
+	}
+	
+}
+</script>
+
+
+
+
 
 <script type="text/javascript">
 	(function($) {

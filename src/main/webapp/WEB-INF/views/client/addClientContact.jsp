@@ -212,13 +212,13 @@ function getOrgDetails()
 					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
-					
+					</div>
 					
 					<%-- <div class="col-md-9">
 						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
 		                    <span class="hidden">Valid Email</span>
 					</div> --%>
-				</div>
+				
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
