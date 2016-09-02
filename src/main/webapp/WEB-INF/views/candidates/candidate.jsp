@@ -114,7 +114,7 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="phone" name="phone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="phone" name="phone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         

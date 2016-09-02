@@ -178,13 +178,13 @@ function closePopup(){
 function addEducation(candidateId) {	
 	
 	var result = "";
-	result = result  +'      <!-- Popup Div -->                                                                                                                               ';
-	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" >                                                                                                                           ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i>                                                                                                        ';
-	result = result  +'                <div class="form-horizontal clearfix">                                                                                                 ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result  +'   ';
+	result = result  +'                  <div class="clearfix mb10"> ';
+	result = result  +'                    <div class="col-md-12">';
 	result = result  +'                      <input type="text" name="name" field-name="name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
@@ -208,7 +208,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="grade" field-name="grade" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
+	result = result  +'                      <input type="text" name="grade" field-name="grade" data-validation="required validate_Space validate_length length1-5" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -277,15 +277,17 @@ function addEducation(candidateId) {
      this script is for store candidateEducationstore .
      1.usage   : used in candidateEducation() function.
 --%>
-
+<script>
+var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd'
+	};
+</script>
 <script>
 function candidateEducationStore(candidateId){
-	  var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
+	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
 			 var frm = $('#education_form').serializeFormJSON();
