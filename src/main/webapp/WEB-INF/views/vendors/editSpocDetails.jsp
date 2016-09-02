@@ -8,6 +8,9 @@
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -16,11 +19,11 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId) {
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -31,7 +34,7 @@
 						result = result + '<div class="project_details">';
 						
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 							
 							result = result + '<div class="project_details_cta">';
@@ -123,11 +126,11 @@
 	}
 </script>
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -137,23 +140,24 @@
 						var selected4 = '';
 						var selected5 = '';
 						
-						if(result.spocStatus == 'Active'){
+					
+						
+						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
 					
-						if(result.spocStatus == 'In-Active'){
+						if(json.spocStatus == 'In-Active'){
 								selected2 = 'selected';
 							} 
 						
-						if(result.spocStatus == 'New'){
+						if(json.spocStatus == 'New'){
 								selected3 = 'selected';
 							}
-						
-						if(result.spocStatus == 'Negotiation'){
+						if(json.spocStatus == 'Negotiation'){
 								selected4 = 'selected';
 							} 
 						
-						if(result.spocStatus == 'Contracted'){
+						if(json.spocStatus == 'Contracted'){
 							selected5 = 'selected';
 						} 
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
@@ -189,22 +193,51 @@
 						result = result + ' </select>';
 						result = result + ' </div>'
 						
-						result = result + '<div class="user_summary_edit_cta" id="owner">';
+						/* result = result + '<div class="user_summary_edit_cta" id="owner">';
 						result = result + '<label>Owner :</label>';
 						result = result + '<input type="text"  id="owner" name="owner" value="'+json.ownerName+'" placeholder="Owner name" field-name="Owner name">';
-						result = result + '</div>';
+						result = result + '</div>'; */
+						
+						
+				 		result = result  +'	 <div class="clearfix mb10">';
+						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+						result = result  +'	 <div class="col-md-12">';
+						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						result = result  +'	       <c:forEach var="user" items="${userList}">';
+						result = result  +'	           <option value="${user.id}" ${user.id  == ownerId ? "selected" : ''} > ${user.firstName} ${user.lastName}</option>';
+						result = result  +'	       </c:forEach>';
+					    result = result  +'	  </select>';
+					    result = result  +'	 </div>';
+					    result = result  +'	 </div>'; 
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						//result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorContactDetailsDiv").empty();
 				        $("#editVendorContactDetailsDiv").append(result);
+				        
+				        var config = {
+								  '.chosen-select'           : {},
+								  '.chosen-select-deselect'  : {allow_single_deselect:true},
+								  '.chosen-select-no-single' : {disable_search_threshold:10},
+								  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+								  '.chosen-select-width'     : {width:"95%"}
+								}
+								for (var selector in config) {
+								  $(selector).chosen(config[selector]);
+								}
+								$('.chosen-select').each(function() {
+									var $this = $(this);
+									$this.next().css({'width': '100%'});
+									})
 					},
 				}); 
+		      
+		   
 	}
 </script>
 
@@ -236,4 +269,40 @@
 		    });
 	 }
  }
- </script>     
+ </script> 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+ <script type="text/javascript">
+	function storeVendorContactDetails(spocId,ownerId) {
+         if ($('#editVendorContact_form').validate(false, validationSettings)){
+    		 var frm = $('#editVendorContact_form').serializeFormJSON();
+             var con = JSON.stringify(frm);
+             con = con.replace(/[{}]/g, "");
+             //It will escape all the special characters
+             var jsonData = encodeURIComponent(con);
+             var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
+	   		    success: function(data) {
+	   		    	alert("data"+data);
+	   		    	vendorDetailsbySpocId(spocId,ownerId);
+	   		    }
+		 }); 
+	     	return true;
+         }else{
+             return false;
+           }
+		
+    }
+	$('body').on('blur', '#editClient_form', function() {
+        $("#editClient_form").showHelpOnFocus();
+        $("#editClient_form").validateOnBlur(false, validationSettings);  
+    });
+</script>    

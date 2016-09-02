@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -82,5 +83,12 @@ public class DashboardRestController {
 	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
 		response.sendRedirect("/sourcelead/timesheetlistByStatus?status=" + status);
 	}
+	
+	
+	@RequestMapping(value = "/dashboard/{orgLocationId}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			response.sendRedirect("/sourcelead/dashboardLinks?orgLocationId="+orgLocationId);
+			
+	   }
 
 }

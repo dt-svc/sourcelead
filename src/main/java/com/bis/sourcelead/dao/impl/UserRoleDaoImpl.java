@@ -239,13 +239,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return flag;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserDetailsByEmailAndLocationId method  start");
 		userRole = session
-				.createQuery("from UserRole userRole where userRole.user.email = :email and userRole.orgLocations.id = :locationId")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+						+ "left join fetch userRole.user where userRole.user.email = :email and userRole.orgLocations.id = :locationId")
 				.setString("email", email).setLong("locationId", locationId).setCacheable(true).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
@@ -255,7 +258,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		return userRoleList;
+
+	}
 
 	
 }

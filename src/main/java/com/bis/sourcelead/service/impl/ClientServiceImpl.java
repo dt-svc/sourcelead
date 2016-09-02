@@ -162,58 +162,59 @@ public class ClientServiceImpl implements ClientService{
 	 * @throws NullPointer
 	 */
 	@Override
-public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
-		
-		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
-		OrgLocations clientOrgLocations = null;
-		Set<OrgRelations> orgRelationsList = null;
-		User spocUser = null;
-		if(jsonObj.has("orgLocationId")){
-			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
-		}
-		
-		if(clientOrgLocations == null){
-			Org org = populateOrg(jsonObj, user.getUserCode());
-			clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 			
-			orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
-			clientOrgLocations.setOrgRelationsList(orgRelationsList);
-			orgLocationsList.add(clientOrgLocations);
-			org.setOrgLocationsList(orgLocationsList);
-			orgService.addOrganization(org);
-		}else{
-			orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
-			clientOrgLocations.setOrgRelationsList(orgRelationsList);
-			orgLocationsList.add(clientOrgLocations);
-			Org org = clientOrgLocations.getOrg();
-			org.setOrgLocationsList(orgLocationsList);
-			orgService.addOrganization(org);
-		}
+			HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
+			OrgLocations clientOrgLocations = null;
+			Set<OrgRelations> orgRelationsList = null;
+			User spocUser = null;
+			if(jsonObj.has("orgLocationId")){
+				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+			}
+			
+			if(clientOrgLocations == null){
+				Org org = populateOrg(jsonObj, user.getUserCode());
+				clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+				
+				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
+				clientOrgLocations.setOrgRelationsList(orgRelationsList);
+				orgLocationsList.add(clientOrgLocations);
+				org.setOrgLocationsList(orgLocationsList);
+				orgService.addOrganization(org);
+			}else{
+				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
+				clientOrgLocations.setOrgRelationsList(orgRelationsList);
+				orgLocationsList.add(clientOrgLocations);
+				Org org = clientOrgLocations.getOrg();
+				org.setOrgLocationsList(orgLocationsList);
+				orgService.addOrganization(org);
+			}
 
-		spocUser = userService.findByEmail(jsonObj.getString("email"));
-		if(spocUser == null){
-			spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-		}
-		
-		
-		if(jsonObj.has("owner")){
-			String ownersId = jsonObj.getString("owner");
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
-			String[] owners = ownersId.split(",");
+				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
 			
-			for(int i=0 ;i<owners.length;i++ ){
-				OrgSpoc orgSpoc = new OrgSpoc();
-				for(OrgLocations orl :orgLocationsList){
-					Set<OrgRelations> orgr = orl.getOrgRelationsList();
-					for (OrgRelations orgRelations : orgr) {
-						orgSpoc.setOrgRelations(orgRelations);
+			if(jsonObj.has("owner")){
+				String ownersId = jsonObj.getString("owner");
+				ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
+				String[] owners = ownersId.split(",");
+				
+				for(int i=0 ;i<owners.length;i++ ){
+					OrgSpoc orgSpoc = new OrgSpoc();
+					for(OrgLocations orl :orgLocationsList){
+						Set<OrgRelations> orgr = orl.getOrgRelationsList();
+						for (OrgRelations orgRelations : orgr) {
+							orgSpoc.setOrgRelations(orgRelations);
+						}
 					}
-				}
+				
 				orgSpoc.setSpocUser(spocUser);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
-				orgSpoc.setInvitationStatus("NEW");
+				if(jsonObj.has("isMailSent")){
+					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+				}else{
+					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+				}
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
 				orgSpoc.setCreatedDate(commonUtil.currentDate());
 				orgSpoc.setCreatedBy(user.getUserCode());
@@ -221,9 +222,10 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 				}
+			}
 		}
-		
-	}
+	
+	
 	/**
 	 * populating Org data
 	 * @param jsonObj
@@ -495,6 +497,53 @@ public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,S
 					orgLocations.setEmail("");
 				}*/
 				orgLocationService.updateOrgLocations(orgLocations);
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+
+		}
+		
+		@Override
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId) throws Exception {
+			
+			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
+			
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+			
+			String vendorContactFirstName = "vendorContactFirstName";
+			String vendorContactLastName = "vendorContactLastName";
+			String mobilePhone = "mobilePhone";
+			String spocStatus = "spocStatus";
+			String emailId = "email";
+			String owner = "owner";
+			
+			if(null != orgSpoc){
+				User user = orgSpoc.getSpocUser();
+				
+				if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
+					user.setFirstName(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
+					user.setLastName(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
+					user.setMobilePhone(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
+					user.setEmail(jsonObj.getString(emailId));
+				}
+				userService.addUser(user);
+				
+				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
+					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
+				}
+				if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+					User ownerUser = new User();
+					ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
+					orgSpoc.setOwnerUser(ownerUser);
+				}
+				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
