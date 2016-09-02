@@ -57,7 +57,7 @@ public class VendorController {
 		
 		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLoc.getId());
-		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
 	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
@@ -86,7 +86,7 @@ public class VendorController {
 		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
 		model.addObject("vandorsContactListByOrgLocationId", vandorsContactListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("userList", userList);
+		//model.addObject("userList", userList);
 		model.setViewName("vendors/vendorsList");
 		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 		model.addObject("loginCountryName", countries.getName());
