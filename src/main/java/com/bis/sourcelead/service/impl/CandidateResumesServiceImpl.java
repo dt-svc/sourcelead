@@ -109,8 +109,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException{
 			 HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
-			 CandidateResumes candidateResumes = new CandidateResumes();
-			 if(multiFile != null){
+			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+				 CandidateResumes candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
 				 candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());

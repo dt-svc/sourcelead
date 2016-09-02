@@ -146,18 +146,19 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		  
 		  if(jsonObj.has("candidateEmployers")){
 	    	  String employers = jsonObj.getString("candidateEmployers");
-	    	  employers = employers.replaceAll("\\[", "").replaceAll("\\]","");
-	  	      String[] candidateEmployers = employers.split(",");
-	    	  for (String emps : candidateEmployers) {
-	    		  CandidateEmployers cemp = new  CandidateEmployers();
-	    		  emps = emps.replace("\"", "");
-	    		  cemp.setName(emps);
-	    		  cemp.setCandidateId(candidate);
-	    		  cemp.setOrgLocationId(orgLocations);
-	    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
-	    		  candidateEmployersList.add(cemp);
-	    	  }
-	    	  
+	    	  if(employers != null && !employers.isEmpty() ){
+		    	  employers = employers.replaceAll("\\[", "").replaceAll("\\]","");
+		  	      String[] candidateEmployers = employers.split(",");
+		    	  for (String emps : candidateEmployers) {
+		    		  CandidateEmployers cemp = new  CandidateEmployers();
+		    		  emps = emps.replace("\"", "");
+		    		  cemp.setName(emps);
+		    		  cemp.setCandidateId(candidate);
+		    		  cemp.setOrgLocationId(orgLocations);
+		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
+		    		  candidateEmployersList.add(cemp);
+		    	  }
+	    	  }  
 	    }
 		 
 		return candidateEmployersList;
