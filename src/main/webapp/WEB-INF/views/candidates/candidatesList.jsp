@@ -511,11 +511,11 @@ function loadFile(event,candidateId){
 	    	
 	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
 	 		var msg = "."+extensionName+" extension not allowed";
-	 		alertMessage(msg);
+	 		alertMessage(msg,candidateId);
 	    }else if(sizeinbytes > 200000){
 	    	output.src = URL.createObjectURL(event.target.files[0]);
 	 		var msg = "Image size should be less than 200 KB";
-	 		alertMessage(msg);
+	 		alertMessage(msg,candidateId);
 	    }else{
 	    	output.src = URL.createObjectURL(event.target.files[0]);
 	    	var msg = "Do you want to save the picture.";
@@ -531,7 +531,7 @@ function loadFile(event,candidateId){
 --%>
 
 <script type="text/javascript">
-function alertMessage(message){
+function alertMessage(message,candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -542,6 +542,7 @@ function alertMessage(message){
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+	refreshImageBlock(candidateId);
 
 }
 </script>
