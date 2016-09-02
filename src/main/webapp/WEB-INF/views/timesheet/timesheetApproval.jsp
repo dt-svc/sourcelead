@@ -17,7 +17,7 @@
 			$(imageId).attr('src',sourceleadUrl+'/displayUserImage/'+userId);
 		}
 		else{
-			$(imageId).attr('src','resources/images/userprofile-img.png');
+			$(imageId).attr('src',sourceleadUrl+'resources/images/userprofile-img.png');
 		}
 		
 	}
