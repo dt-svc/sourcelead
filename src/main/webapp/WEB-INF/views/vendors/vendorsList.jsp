@@ -765,6 +765,7 @@ function changeSpocStatus(spocId){
 function listChange(sel){
 	 if(sel.value=="listbyVendor"){
 		 document.getElementById("vendorList").style.display="block";
+		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 /* document.getElementById("vendorContactList_info").style.display="none"; 
