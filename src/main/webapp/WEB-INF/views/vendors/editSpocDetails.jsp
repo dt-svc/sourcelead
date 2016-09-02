@@ -203,10 +203,19 @@
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
-						result = result  +'	       <c:forEach var="user" items="${userList}">';
-						result = result  +'	           <option value="${user.id}" ${user.id  == ownerId ? "selected" : ''} > ${user.firstName} ${user.lastName}</option>';
-						result = result  +'	       </c:forEach>';
-					    result = result  +'	  </select>';
+						
+					    
+						for (var j = 0; j < json.userList.length; j++) {
+							var user = json.userList[j];
+							   if(user.id == ownerId){
+								   selected = 'selected';
+								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
+							  }else{
+									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
+			   		 	    	 } 
+						}
+						
+						result = result  +'	  </select>';
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
 						
@@ -291,7 +300,6 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
-	   		    	alert("data"+data);
 	   		    	vendorDetailsbySpocId(spocId,ownerId);
 	   		    }
 		 }); 
