@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -116,11 +117,11 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception {
 		 // TODO Auto-generated method stub
+		String status = Constants.CANDIDATE_ACTIVE;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and (cnadidate.status = :status or cnadidate.status is null)";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString( "status", status ).list();
 		return candidateList;
-		
 	}
 	
 	/**
@@ -164,8 +165,8 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId)throws Exception {
 			
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		String query = "from Candidate cnadidate  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty()){
 			candidate = candidateList.iterator().next();

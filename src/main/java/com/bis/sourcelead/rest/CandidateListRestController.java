@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
@@ -320,5 +321,29 @@ public class CandidateListRestController {
 			
 		 }
 		 
+	   
+	   /**
+		 *  This Method is for update Candidate details
+		 * @author David Raju
+		 * @param json   This is the first parameter to updateCandidate method
+		 * @param  request    This is the second parameter to updateCandidate method
+		 * @return String
+		 * @throws NullPointerException
+		 */ 
+	   @RequestMapping(value = "/deleteCandidateByCandidateId")
+	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+			String resultJson;
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
+			if(candidate != null){
+				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				candidate.setUpdatedBy(user.getUserCode());
+				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidateService.saveOrUpdateCandidate(candidate);
+			}
+			return "success";
+		 }
 		
 	}

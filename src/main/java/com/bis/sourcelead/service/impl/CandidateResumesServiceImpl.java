@@ -31,7 +31,7 @@ import com.bis.sourcelead.util.CommonUtil;
 @Service
 public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CandidateResumesServiceImpl.class);
 	
 	@Autowired
 	private CommonUtil commonUtil;

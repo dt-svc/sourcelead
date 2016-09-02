@@ -117,6 +117,38 @@ function editCandidate(candidateId){
 
 
 <%-- 
+     @author : Venkat Kesav
+     this script is for Delete Candidate.
+     1.usage     :  used in candidateProfile.
+     2.parameter : csrf token, candidateId
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
+<script>
+function deleteCandidate(candidateId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != ""){
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+            			 location.replace(sourceleadUrl+"/candidatesList");
+            		 }
+                }
+                 },
+              }); 
+}
+</script>
+
+
+<%-- 
      @author : sarath kumar.
      this script is for edit Candidate.
      1.usage     :  used in candidateList.jsp.
@@ -140,7 +172,7 @@ function candidateProfile(candidateId){
             		 }
             		 else{ 
 							var result ="";
-							result = result + '<div class="project_tabs_inn_head addUser-org"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+							result = result + '<div class="project_tabs_inn_head addUser-org"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="deleteCandidate('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 							
 							result = result + '<div id="profileEditPopup"></div>';
 							/* result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>';

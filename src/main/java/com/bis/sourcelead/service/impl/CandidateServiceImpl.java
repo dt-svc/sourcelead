@@ -265,4 +265,22 @@ public class CandidateServiceImpl implements CandidateService {
 		return candidateDao.findByCandidateEmail(email);
 	}
 	
+	
+	/**
+	 * @author Venkat Kesav
+	 * 
+	 * This method is used to save Or Update Candidate
+	 * 
+	 * @param candidate
+	 * 
+	 * @return candidate
+	 * 
+	 * @throws Exception
+	 */
+	@Override
+	public Candidate saveOrUpdateCandidate(Candidate candidate) throws Exception {
+		logger.debug("In CandidateService class...");
+		return candidateDao.storeCandidate(candidate);
+	}
+	
 }

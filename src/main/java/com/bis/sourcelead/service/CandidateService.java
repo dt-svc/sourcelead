@@ -29,4 +29,6 @@ public interface CandidateService {
 	
 	public Candidate findByCandidateEmail(String email) throws Exception;
 	
+	public Candidate saveOrUpdateCandidate(Candidate candidate) throws Exception;
+	
 }

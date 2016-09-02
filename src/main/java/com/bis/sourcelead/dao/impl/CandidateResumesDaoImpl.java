@@ -24,7 +24,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 @Repository
 public class CandidateResumesDaoImpl implements CandidateResumesDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateSkillsDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CandidateResumesDaoImpl.class);
 	
 	@Autowired
 	private SessionFactory sessionFactory;

@@ -105,6 +105,9 @@ public class Candidate {
 	
 	@Column(name="INVITATION_STATUS")
 	private String invitationstatus;
+	
+	@Column(name="STATUS")
+	private String status;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -392,6 +395,16 @@ public class Candidate {
 
 	public void setInvitationstatus(String invitationstatus) {
 		this.invitationstatus = invitationstatus;
+	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 
