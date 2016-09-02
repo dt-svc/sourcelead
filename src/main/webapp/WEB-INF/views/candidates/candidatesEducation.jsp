@@ -72,14 +72,45 @@ function candidateEducationList(candidateId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.specialization+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.startDateStr+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.endDateStr+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.grade+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.institute+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.address+'</span></div></td>';
-	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash" onClick ="removeEducation('+opt.id+','+candidateId+');"></i></div></td>';	                    	 result  = result + '         </tr>';
+	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+	                    	 result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
+	                    	    }else{
+	                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	    }
+	                    	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+	                    	 result  = result + ' <td><div><span>'+opt.specialization+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    	 result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	 result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.grade != null && opt.grade != '' && opt.grade != 'undefined'){
+	                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+	                    	 }
+	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+	                    	 result  = result + '<td><div><span>'+opt.institute+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+	                    	 result  = result + ' <td><div><span>'+opt.address+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+	                    	 result  = result + ' <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash" onClick ="removeEducation('+opt.id+','+candidateId+');"></i></div></td>';
+	                    	 }
+	                    	 result  = result + '</tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
