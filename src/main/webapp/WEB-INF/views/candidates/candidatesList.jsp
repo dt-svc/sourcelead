@@ -35,7 +35,7 @@
            type : "POST",
             url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",        
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != ""){
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -134,6 +134,9 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
     } );
 }
 </script>

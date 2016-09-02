@@ -122,7 +122,7 @@
           <label class="col-md-3">Country</label>
           <div class="col-md-9">
             <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
-						name="country" field-name="Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true"/> 
+						name="country" field-name="Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true" disabled="disabled" readonly="readonly"/> 
 			<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
           </div>
         </div>
