@@ -578,6 +578,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
+			}else if(row.getCell(3) != null || !"".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())){
+				userImport.setReason("Invalid Email");
+				return false;
 			}
 			
 			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
@@ -597,10 +600,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				if (rate != null && !"".equalsIgnoreCase(rate)) {
 					isValidated = isRateLengthValid(rate);
 					if(isValidated == false){
-						userImport.setReason("rate should be >2 and <=8");
+						userImport.setReason("Incorrect Value");
 						return isValidated;
 					}
 				}
+			}
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 				isValidated = isCellValueDate(row.getCell(7),fileName);
 				if(isValidated == false){
@@ -622,7 +626,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 						}
 					}
 				}
-			}
 		}
 		return true;
 	}

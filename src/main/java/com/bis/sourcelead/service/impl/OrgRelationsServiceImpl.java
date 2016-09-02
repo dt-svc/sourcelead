@@ -20,7 +20,9 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Employees;
 
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -31,6 +33,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
@@ -87,7 +92,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode) throws Exception {
+	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		
 		HashSet<OrgRelations> orgRelationsList = new HashSet<OrgRelations>();
 		
@@ -98,6 +103,19 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setCreatedBy(loginUserCode);
 		orgRelations.setCreatedDate(commonUtil.currentDate());
 		
+		if(null != responderType  && !responderType.isEmpty()){
+			if("Client".equalsIgnoreCase(responderType)){
+				orgRelations.setInitiatorType("Vendor"); 
+				orgRelations.setResponderType("Client");
+			}else{
+				orgRelations.setInitiatorType("Client"); 
+				orgRelations.setResponderType("Vendor");
+			}
+		  }
+		
+		if(jsonObj.has("level")){
+			orgRelations.setLevel(jsonObj.getString("level"));
+		}
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
 	}
@@ -105,5 +123,22 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public List<OrgRelations> getAllVendorsListByOrgLocationId(Long orgLocationId) {
 		return orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId) {
+		
+		return orgRelationsDao.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
+	}
+
+	@Override
+	public OrgRelations getOrRelationsById(Long orgRelationId) throws Exception {
+		return orgRelationsDao.getOrRelationsById(orgRelationId);
+	}
+
+	@Override
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,Long orgLocationId) throws Exception {
+		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds,orgLocationId);
 	}
 }

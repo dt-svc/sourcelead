@@ -46,7 +46,7 @@ public class EMailJobScheduler {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 /**
- * Fires at 7:30 PM Every Day	
+ * Fires at 7:00 PM Every Day	
  */
 	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
 	public void runEMailJobScheduler() {

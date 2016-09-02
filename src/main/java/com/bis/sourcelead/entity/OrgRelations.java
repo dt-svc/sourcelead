@@ -94,6 +94,42 @@ public class OrgRelations {
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+	private String vendorCreateduserName;
+	
+	@Transient
+	private Integer noOfContatcs;
+	
+	@Transient
+	private String locationOrgname;
+	
+	@Transient
+	private String locationWebsite;
+	
+	@Transient
+	private String locationCountry;
+	
+	@Transient
+	private String locationState;
+	
+	@Transient
+	private String locationCity;
+	
+	@Transient
+	private String responderId;
+	
+	@Transient
+	private String locationID;
+	
+	
+	public String getVendorCreateduserName() {
+		return vendorCreateduserName;
+	}
+
+	public void setVendorCreateduserName(String vendorCreateduserName) {
+		this.vendorCreateduserName = vendorCreateduserName;
+	}
 
 	public Long getProjectsCont() {
 		return projectsCont;
@@ -265,6 +301,68 @@ public class OrgRelations {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	
-	
+
+	public Integer getNoOfContatcs() {
+		return noOfContatcs;
+	}
+
+	public void setNoOfContatcs(Integer noOfContatcs) {
+		this.noOfContatcs = noOfContatcs;
+	}
+
+	public String getLocationOrgname() {
+		return locationOrgname;
+	}
+
+	public void setLocationOrgname(String locationOrgname) {
+		this.locationOrgname = locationOrgname;
+	}
+
+	public String getLocationWebsite() {
+		return locationWebsite;
+	}
+
+	public void setLocationWebsite(String locationWebsite) {
+		this.locationWebsite = locationWebsite;
+	}
+
+	public String getLocationCountry() {
+		return locationCountry;
+	}
+
+	public void setLocationCountry(String locationCountry) {
+		this.locationCountry = locationCountry;
+	}
+
+	public String getLocationState() {
+		return locationState;
+	}
+
+	public void setLocationState(String locationState) {
+		this.locationState = locationState;
+	}
+
+	public String getLocationCity() {
+		return locationCity;
+	}
+
+	public void setLocationCity(String locationCity) {
+		this.locationCity = locationCity;
+	}
+
+	public String getResponderId() {
+		return responderId;
+	}
+
+	public void setResponderId(String responderId) {
+		this.responderId = responderId;
+	}
+
+	public String getLocationID() {
+		return locationID;
+	}
+
+	public void setLocationID(String locationID) {
+		this.locationID = locationID;
+	}
 }

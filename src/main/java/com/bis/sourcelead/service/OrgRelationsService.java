@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 
 public interface OrgRelationsService {
 	
@@ -28,7 +29,14 @@ public interface OrgRelationsService {
 	
 	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId)throws Exception;
 	
-	Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode) throws Exception;
-
+	Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception;
+	
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
+
+	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
+	
+	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
+
+	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long id, Long orgLocationId) throws Exception;
+
 }

@@ -25,4 +25,6 @@ public interface UserRoleService {
 	
 	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds,String userState,String searchByName) throws Exception;
 	
+	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
+	
 }
