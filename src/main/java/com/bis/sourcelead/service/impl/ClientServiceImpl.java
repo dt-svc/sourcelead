@@ -190,8 +190,9 @@ public class ClientServiceImpl implements ClientService{
 				orgService.addOrganization(org);
 			}
 
+			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-			
+			}
 			if(jsonObj.has("owner")){
 				String ownersId = jsonObj.getString("owner");
 				ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");

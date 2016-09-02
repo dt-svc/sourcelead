@@ -19,7 +19,7 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
+	function clientDetailsbySpocId(spocId,ownerId,spocUserId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -212,7 +212,7 @@
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -279,7 +279,7 @@
             };
 </script>
  <script type="text/javascript">
-	function storeVendorContactDetails(spocId,ownerId) {
+	function storeClientContactDetails(spocId,ownerId,spocUserId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
     		 var frm = $('#editVendorContact_form').serializeFormJSON();
              var con = JSON.stringify(frm);
@@ -292,7 +292,7 @@
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
 	   		    	alert("data"+data);
-	   		    	vendorDetailsbySpocId(spocId,ownerId);
+	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId);
 	   		    }
 		 }); 
 	     	return true;
