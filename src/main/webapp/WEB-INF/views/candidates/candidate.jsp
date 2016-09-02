@@ -25,6 +25,7 @@
 	<script type="text/javascript">
 		window.onload = function () {
 			cscInit();
+			disableMonths();
 		 };
 	</script>
 	 
@@ -523,13 +524,10 @@ document.getElementById("uploadFile").value = this.value;
  function disableMonths() {
      $("#experienceYears").change(function() {
     	 
-         if ($(this).val() == '20+') {
-             $("#experienceMonths").prop("disabled", true);
-         }
-         else{
-        	 $("#experienceMonths").prop("disabled", false); 
-         }
-         
+         if ($(this).val() == '20+'){
+             $("#experienceMonths").attr("disabled", true);
+         }else
+        	 $("#experienceMonths").attr("disabled", false); 
      });
  }
 </script>

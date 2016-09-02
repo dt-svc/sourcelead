@@ -31,8 +31,6 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	 * This method for to get all Educations(MCA,Btech,BSC,...etc) and Skills (java,.Net,...etc) (Auto completes)From DB
 	 */
 	
-	
-	
 	@Override
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
