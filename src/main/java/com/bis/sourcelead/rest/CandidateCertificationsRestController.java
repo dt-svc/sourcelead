@@ -35,19 +35,20 @@ public class CandidateCertificationsRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	 
-/*------------store a CandidateCartifications--------------------------------*/
-	
 	
 	/**
 	 * Handles CandidateCartifications  store
 	 * 
 	 * @param json
+	 * 
 	 * @param request
+	 * 
 	 * @return ResponseBody
+	 * 
 	 * @throws Exception
 	 */
-	   @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
-		public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
+     public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -56,10 +57,21 @@ public class CandidateCertificationsRestController {
 		JSONObject jsonObject = new JSONObject(json1);
 		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
 		return json;
-	}
+	 }
 	
 	
-	
+
+	 /**
+	   * This Method is to getCandidateCertificationListByCandidateIdAndOrgLocationID
+	   * 
+	   * @author Sammeta David Raju
+	   * 
+	   * @param candidateId
+	   * 
+	   * @return String
+	   * 
+	   * @throws Exception
+	   */
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
 	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
@@ -72,16 +84,19 @@ public class CandidateCertificationsRestController {
 	 
 	 
 	 /**
-		 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
-		 * @author Sammeta David Raju
-		 * @param candidateemployersId
-		 * @param candidateId
-		 * @param request
-		 * @return String
-		 * @throws Exception
-		 */
-		@RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
-		public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
+	   * This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
+	   * @author Sammeta David Raju
+	   * 
+	   * @param candidateemployersId
+	   * @param candidateId
+	   * @param request
+	   * 
+	   * @return String
+	   * 
+	   * @throws Exception
+	   */
+	   @RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
+	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
 			String resultJson;
 
@@ -89,8 +104,5 @@ public class CandidateCertificationsRestController {
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
 			 return resultJson;
 		}
-	 
-	
-	
 
 }

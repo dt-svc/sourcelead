@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.entity.CandidateCertifications;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
  * @author Shivayogi
  * @date 25th August 2016
  */
-
-
 
 @Repository
 public class CandidateCertificationsDaoImpl implements CandidateCertificationsDao {
@@ -35,16 +29,18 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 	@Autowired
 	SessionFactory sessionFactory;
 	
-	
-	
 	@Value("${SourceLead.100}")
 	private String notFound;
+	
 	@Value("${SourceLead.101}")
 	private String noRecords;
+	
 	@Value("${SourceLead.102}")
 	private String statusUpdate;
+	
 	@Value("${SourceLead.103}")
 	private String statusDelete;
+	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	

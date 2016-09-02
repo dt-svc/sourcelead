@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -27,7 +26,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  * Handles requests for the CandidateEducation Service
  * 
  * @author Ajith Matta
- * @date 30th June 2016
+ * @date 30th Aug 2016
  *
  */
 
@@ -44,14 +43,9 @@ public class CandidateEducationRestController {
 	private CandidateEducationService candidateEducationService;
 	
 	
-	
 	@Autowired
 	private CommonUtil commonUtil;
 
-	
-
-	/*------------Create a Candidate Education details--------------------------------*/
-	
 
 	 /**
 	 * @author Ajith Matta
@@ -112,10 +106,13 @@ public class CandidateEducationRestController {
 	 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
 	 *  
 	 * @author Sammeta David Raju
+	 * 
 	 * @param candidateemployersId
 	 * @param candidateId
 	 * @param request
+	 * 
 	 * @return String
+	 * 
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
 
 @Repository
 public class CandidateEducationDaoImpl implements CandidateEducationDao{
@@ -25,12 +24,16 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
+	
 	@Value("${SourceLead.101}")
 	private String noRecords;
+	
 	@Value("${SourceLead.102}")
 	private String statusUpdate;
+	
 	@Value("${SourceLead.103}")
 	private String statusDelete;
+	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
@@ -42,9 +45,14 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	/**
 	 *  This Method is for saving candidate education details
 	 *   
-	 *   @author Ajith Matta
+	 * @author Ajith Matta
+	 * 
+	 * @since 
+	 * 
 	 * @param CandidateEducation 
+	 * 
 	 * @return CandidateEducation
+	 * 
 	 * @throws Exception
 	 */
 	
@@ -69,10 +77,15 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 
 	
 	/**
-	 *  This Method is used to get candidate education details 
-	 *   @author Ajith Matta
+	 * This Method is used to get candidate education details 
+	 * @author Ajith Matta
+	 * 
+	 * @since
+	 * 
 	 * @param candidateId
+	 * 
 	 * @return CandidateEducation list
+	 * 
 	 * @throws Exception
 	 */
 	
@@ -118,10 +131,5 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 		}
 		return canEMp;
 	}
-
-	
-	
-
-	
 
 }

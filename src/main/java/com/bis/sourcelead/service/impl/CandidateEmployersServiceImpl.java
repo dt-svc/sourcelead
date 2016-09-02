@@ -34,12 +34,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	/**
 	 * This method is used for save the candidate employers
+	 * 
 	 * @author Ajith Matta
+	 * 
 	 * @param  jsonObject      This is the first parameter of storeCandidateEmployers
 	 * @param  user          This is the second parameter of storeCandidateEmployers
 	 * @param  orgLocationId   This is the third parameter of storeCandidateEmployers
 	 * @param  candidateId     This is the fourth parameter of storeCandidateEmployers
+	 * 
 	 * @return CandidateEmployers
+	 * 
 	 * @throws Exception
     */
 	
@@ -82,10 +86,14 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	/**
 	 * This method is used for remove Candidate Employer By candidateId and Candidate Employer ID
+	 * 
 	 * @author Sammeta David Raju
+	 * 
 	 * @param  candidateId  This is the first parameter of removeCandidateEmployerBycandidateIdandCandidateEmployerID
 	 * @param candidateEmployerId  This is the second parameter of removeCandidateEmployerBycandidateIdandCandidateEmployerID
+	 *
 	 * @return CandidateEmployers   removeCandidateEmployerBycandidateIdandCandidateEmployerID
+	 * 
 	 * @exception NullPointerException
 	 * 
 	 */
@@ -100,10 +108,14 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	/**
 	 * This method is used for display the CandidateEmployers list
+	 * 
 	 * @author Ajith Matta
+	 * 
 	 * @param candidateId    This is the first parameter of getCandidatesEmployersListByCandidateIdAndOrgLocationID
 	 * @param orgLocationId  This is the second parameter of getCandidatesEmployersListByCandidateIdAndOrgLocationID
+	 * 
 	 * @return String
+	 * 
 	 * @throws Exception
     */
 	@Override
@@ -116,12 +128,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	/**
 	 * This method is used for display the get Candidate Employers Details list
+	 * 
 	 * @author Sammeta David 
+	 * 
 	 * @param  jsonObj This is the first parameter of getCandidateEmployersDetails
 	 * @param orgLocations This is the second parameter of getCandidateEmployersDetails
 	 * @param candidate    This is the third parameter of getCandidateEmployersDetails
 	 * @param userCode     This is the fourth parameter of getCandidateEmployersDetails
+	 * 
 	 * @return HashSet<CandidateEmployers>
+	 * 
 	 * @throws Exception
     */
 	@Override
@@ -147,9 +163,14 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	/**
 	 * This method is used for display the get Candidate Employer By candidateId and CandidateEmployerID 
+	 * 
 	 * @author Sammeta David Raju
-	 * @param
+	 * 
+	 * @param candidateId
+	 * @param candidateEmployerId
+	 * 
 	 * @return CandidateEmployers
+	 * 
 	 * @throws Exception
     */
 	

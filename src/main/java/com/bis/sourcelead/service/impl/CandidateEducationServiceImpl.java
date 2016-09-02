@@ -110,10 +110,13 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	
 	
 	/**
-	 *  This Method is used to get candidate education details 
-	 *   @author Ajith Matta
+	 * This Method is used to get candidate education details 
+	 * @author Ajith Matta
+	 * 
 	 * @param candidateId
+	 * 
 	 * @return CandidateEducation list
+	 * 
 	 * @throws Exception
 	 */
 

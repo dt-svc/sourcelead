@@ -53,10 +53,13 @@ public class CandidateEmployersRestController {
 
 	 /**
 	 * @author Ajith Matta
+	 * 
 	 * @since  aug 26 2016
+	 * 
 	 * @version 0.0.1
 	 * 
 	 * This method is used to save the candidate Employers.
+	 * 
 	 * @param   json This is the first parameter of storeCandidateEmployers
 	 * @param   candidateId   This is the second parameter of storeCandidateEmployers
 	 * @param   request    This is the third parameter of storeCandidateEmployers
@@ -79,11 +82,15 @@ public class CandidateEmployersRestController {
 	}
 	
 	/**
-	 *  This Method is for getting candidate employers 
-	 *   @author Ajith Matta
+	 * This Method is for getting candidate employers 
+	 * 
+	 * @author Ajith Matta
+	 * 
 	 * @param candidateemployersId This is the first parameter of getCandidatesEmployersListByCandidateIdAndOrgLocationID
 	 * @param request              This is the second parameter of getCandidatesEmployersListByCandidateIdAndOrgLocationID
+	 * 
 	 * @return CandidateEmployers list
+	 * 
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
@@ -100,12 +107,16 @@ public class CandidateEmployersRestController {
 	
 	
 	/**
-	 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
-	 *   @author Sammeta David Raju
+	 * This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
+	 * 
+	 * @author Sammeta David Raju
+	 * 
 	 * @param candidateemployersId
 	 * @param candidateId This is the first parameter of removeCandidateEmployerBycandidateIdandCandidateEmployerID
 	 * @param candidateemployerId  This is the second parameter of removeCandidateEmployerBycandidateIdandCandidateEmployerID
+	 * 
 	 * @return String
+	 * 
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")

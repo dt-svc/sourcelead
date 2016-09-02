@@ -28,20 +28,17 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+
 /**
  * 
  * @author root
@@ -68,10 +65,14 @@ public class CandidateResumeRestController {
 	
 	/**
 	* @author Venkat Kesav 
+	* 
 	* Handles Resume saving for Candidate
+	* 
 	* @param json, candidateId
 	* @param request
+	* 
 	* @return ResponseBody
+	* 
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
@@ -102,9 +103,13 @@ public class CandidateResumeRestController {
 	
 	/**
 	* @author Venkat Kesav 
+	* 
 	* This method is used to get candidate resumes list
+	* 
 	* @param candidateId
+	* 
 	* @return resultJson
+	* 
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
@@ -128,10 +133,14 @@ public class CandidateResumeRestController {
 	
 	/**
 	* @author Venkat Kesav 
+	* 
 	* This method is used to update Resume
+	* 
 	* @param resumeId
 	* @param request
+	* 
 	* @return resultJson
+	* 
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
@@ -152,10 +161,14 @@ public class CandidateResumeRestController {
 	
 	/**
 	* @author Venkat Kesav 
+	* 
 	* This method is used to download Resume
+	* 
 	* @param resumeId
 	* @param request
+	* 
 	* @return resultJson
+	* 
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/downloadResume", method = RequestMethod.GET)
@@ -185,15 +198,5 @@ public class CandidateResumeRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 		}
-
-
-	/**
-	 * check given string empty or null
-	 * @param str
-	 * @return boolean
-	 */
-	protected static boolean isNullOrEmpty(String str) {
-		return str == null || "".equals(str.trim());
-	}
-
+	
 }

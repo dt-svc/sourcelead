@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -30,19 +29,19 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
+	
 	@Value("${SourceLead.101}")
 	private String noRecords;
+	
 	@Value("${SourceLead.102}")
 	private String statusUpdate;
+	
 	@Value("${SourceLead.103}")
 	private String statusDelete;
+	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-	
-	protected boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
-	}
 	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersDaoImpl.class);
 	
@@ -57,9 +56,6 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	 * 
 	 * @exception NullPointerException
 	 */
-
-		
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public CandidateEmployers storeCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception {
