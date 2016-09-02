@@ -79,7 +79,11 @@ public class OrgSpoc {
 	private String orgName;
 
 	@Transient
+	private String ownerUserId;
+
+	@Transient
 	private List<User> userList;
+
 	
 	public List<User> getUserList() {
 		return userList;
@@ -224,4 +228,13 @@ public class OrgSpoc {
 	public void setTerminateReason(String terminateReason) {
 		this.terminateReason = terminateReason;
 	}
+
+	public String getOwnerUserId() {
+		return ownerUserId;
+	}
+
+	public void setOwnerUserId(String ownerUserId) {
+		this.ownerUserId = ownerUserId;
+	}
+	
 }

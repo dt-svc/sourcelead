@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
 			commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
-		 if(null == user.getId()){
+		 if(!isNullOrEmpty(password)){
 		   //send mail to user
 			if( ("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
 					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
