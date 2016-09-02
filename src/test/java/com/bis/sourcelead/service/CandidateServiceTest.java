@@ -101,6 +101,13 @@ public class CandidateServiceTest {
 			logger.info("addCandidate successfully " +candidate.getLastName());
 		}
 		
+		/*@Test
+		public void getCandidateByCandidateIdAndOrgLocationIdAndOrgId() throws Exception{
+			Candidate candidate = new Candidate();
+			candidate = candidateService.getCandidateByCandidateIdAndOrgLocationIdAndOrgId(1l,1l,1l);
+			logger.info("getCandidateByCandidateIdAndOrgLocationIdAndOrgId " + candidate.getCity());
+		}*/
+		
 		//@Test
 		public void getCandidateByCandidateId() throws Exception{
 			Candidate candidate = new Candidate();
@@ -122,14 +129,14 @@ public class CandidateServiceTest {
 		public void getCandidateByCandidateIdAndOrgLocationId() throws Exception{
 			Candidate candidate = new Candidate();
 			candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(1l,1l);
-			logger.info("getCandidatesListByOrgLocationID " + candidate.getEmail());
+			logger.info("getCandidateByCandidateIdAndOrgLocationId " + candidate.getEmail());
 			
 		}
 		@Test
-				public void findByCandidateEmail() throws Exception{
-					Candidate candidate = new Candidate();
-					candidate = candidateService.findByCandidateEmail("ajith@gmail.com");
-					logger.info("findByCandidateEmail "+ candidate.getId());
+		public void findByCandidateEmail() throws Exception{
+		Candidate candidate = new Candidate();
+		candidate = candidateService.findByCandidateEmail("ajith@gmail.com");
+		logger.info("findByCandidateEmail "+ candidate.getId());
 				}
 	}
 
