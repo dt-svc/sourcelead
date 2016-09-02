@@ -90,6 +90,7 @@
           <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Vendor Contact Details</div>
         </section>
         <div class="content-area content-new clearfix">
+        <div id="loading"></div>
         <form:form id="vendor_contact_form" name="vendor_contact_form" method="post">
           <div class="clearfix form-horizontal inner-content">
             <div class="row">
@@ -362,16 +363,14 @@ function getOrgDetails()
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_vendor_contact").attr("disabled", "disabled");
-			$("#save_vendor_contact").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
+							$("#loading").removeAttr("style");
 							if (result == 'vendorsList') {
-								location.replace(sourceleadUrl
-										+ "/vendorsList");
+								location.replace(sourceleadUrl+"/vendorsList");
 							}
 
 						},
@@ -534,8 +533,7 @@ function validateClientName(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Vendor",
 						success : function(result) {

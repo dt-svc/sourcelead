@@ -168,7 +168,8 @@ function getOrgDetails()
           <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Vendor Contact Details</div>
         </section>
         <div class="content-area content-new clearfix">
-        <form:form id="vendor_contact_form" name="vendor_contact_form" method="post">
+        <div id="loading"></div> 
+        <form:form id="client_contact_form" name="client_contact_form" method="post">
           <div class="clearfix form-horizontal inner-content">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -336,19 +337,18 @@ function getOrgDetails()
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#vendor_contact_form').validate(false, validationSettings)) {
-			var frm = $('#vendor_contact_form').serializeFormJSON();
+		if ($('#client_contact_form').validate(false, validationSettings)) {
+			var frm = $('#client_contact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_vendor_contact").attr("disabled", "disabled");
-			$("#save_vendor_contact").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
 						success : function(result) {
+							$("#loading").removeAttr("style");
 							if (result == 'vendorsList') {
 								location.replace(sourceleadUrl
 										+ "/clientDashboard");
@@ -361,9 +361,9 @@ function getOrgDetails()
 			return false;
 		}
 	}
-	$('body').on('blur', '#vendor_contact_form', function() {
-		$("#vendor_contact_form").showHelpOnFocus();
-		$("#vendor_contact_form").validateOnBlur(false, validationSettings);
+	$('body').on('blur', '#client_contact_form', function() {
+		$("#client_contact_form").showHelpOnFocus();
+		$("#client_contact_form").validateOnBlur(false, validationSettings);
 	}); 
 	
 	
