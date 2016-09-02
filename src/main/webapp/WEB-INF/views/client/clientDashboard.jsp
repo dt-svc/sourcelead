@@ -216,7 +216,7 @@ function getClientDetails(){
    	        			result = result +'</div>';
    	        			result = result +'</td>';
 						
-   	        		}
+   	        	
    	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
@@ -245,7 +245,7 @@ function getClientDetails(){
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
    	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
    	        		
-   	        		
+   	        		}
    	        		
    	        		if(report.responderId == loginOrgLocId){
    	        			result = result +'<td><div class="proj_show" onclick="clientSideBar('+report.locationID+','+report.locationOrgname+','+report.id+');"><span class="tbldata-dotdot-vsm" title='+report.locationOrgname+'>"'+report.locationOrgname+'"</span><i class="fa fa-binoculars"></i>';
