@@ -4,6 +4,21 @@
      1.usage     : onload
      2.parameter : candidateId.
 --%>
+
+
+<style>
+#uploadFileGroup p.jquery_form_error_message{
+	position: absolute;
+	left:0;
+	bottom:-16px;
+	}
+</style>
+
+
+
+
+
+
 <script>
 function candidateResume(candidateId){
 	var result ="";
@@ -62,7 +77,7 @@ function addResume(candidateId) {
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group" id="uploadFileGroup">';
+	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'	                            </span> </label>';
@@ -70,7 +85,7 @@ function addResume(candidateId) {
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';                         
-	result = result+'	                  <div class="clearfix mr">';
+	result = result+'	                  <div class="clearfix mr mt">';
 	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+');">Add</button>';
 	result = result+'	                  </div>';
 	result = result+'	                </div>';
