@@ -901,5 +901,31 @@ $(".addcon-pop").click(function(){
 
 
 
+<!-- Scripts for invitations  -->
+<script>
+function acceptInvitation(spocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    success: function(data) {
+		    	
+		    }
+	   });
+}
+</script>
 
+<script>
+function rejectInvitation(spocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
+		    success: function(data) {
+		    	
+		    }
+	   });
+}
+</script>
+<!-- Scripts for invitations  -->	
 
