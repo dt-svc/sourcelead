@@ -126,7 +126,7 @@
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();">
                     <span class="hidden">Error Text</span></div>
-                </div>
+                </div> 
                 
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
