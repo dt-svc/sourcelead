@@ -130,7 +130,7 @@ function getOrgDetails()
                        <div class="form-group">
                          <label class="col-lg-3">Website</label>
                          <div class="col-lg-9">
-                           <input type="text" placeholder="client website" id="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                           <input type="text" placeholder="client website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
                        </div>
                        
@@ -150,7 +150,7 @@ function getOrgDetails()
                  </div>
               </div>
              <div class="modal-footer">
-              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
+              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="validateClientName();saveClient()">Save</button>
               <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
              </div>
           </div>
@@ -187,7 +187,7 @@ function getOrgDetails()
                    </c:if>  
                  </c:forEach> 
                 </select>
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
+                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();"></i> </div>
             </div>
           </div>
           </div>
@@ -418,7 +418,8 @@ function getOrgDetails()
 					.ajax({
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
-						success : function(result) {
+						success : function(data) {
+							location.replace(sourceleadUrl+ "/addClientContact");
 						},
 					});
 			return true;
@@ -484,3 +485,10 @@ function validateClientName(){
 	})(jQuery);
 </script>
 
+<script>
+function flusAddClint(){
+	$("#orgName").val('');
+	$("#webSite").val('');
+}
+
+</script>
