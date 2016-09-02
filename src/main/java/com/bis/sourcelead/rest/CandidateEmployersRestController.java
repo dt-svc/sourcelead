@@ -57,10 +57,9 @@ public class CandidateEmployersRestController {
 	 * @version 0.0.1
 	 * 
 	 * This method is used to save the candidate Employers.
-	 * Candidate employers details saved by json
-	 * 
-	 * @param This is the first parameter of candidate employers
-	 *  
+	 * @param   json This is the first parameter of storeCandidateEmployers
+	 * @param   candidateId   This is the second parameter of storeCandidateEmployers
+	 * @param   request    This is the third parameter of storeCandidateEmployers
 	 * @return string 
 	 * 
 	 * @throws NullPointer
@@ -82,8 +81,8 @@ public class CandidateEmployersRestController {
 	/**
 	 *  This Method is for getting candidate employers 
 	 *   @author Ajith Matta
-	 * @param candidateemployersId
-	 * @param request
+	 * @param candidateemployersId This is the first parameter of getCandidatesEmployersListByCandidateIdAndOrgLocationID
+	 * @param request              This is the second parameter of getCandidatesEmployersListByCandidateIdAndOrgLocationID
 	 * @return CandidateEmployers list
 	 * @throws Exception
 	 */
@@ -104,8 +103,8 @@ public class CandidateEmployersRestController {
 	 *  This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
 	 *   @author Sammeta David Raju
 	 * @param candidateemployersId
-	 *  @param candidateId
-	 * @param request
+	 * @param candidateId This is the first parameter of removeCandidateEmployerBycandidateIdandCandidateEmployerID
+	 * @param candidateemployerId  This is the second parameter of removeCandidateEmployerBycandidateIdandCandidateEmployerID
 	 * @return String
 	 * @throws Exception
 	 */

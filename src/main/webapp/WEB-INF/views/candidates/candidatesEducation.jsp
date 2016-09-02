@@ -108,7 +108,11 @@ function pagination(){
 }
 </script>
 
-
+<script>
+function closePopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
 <script>
 function addEducation(candidateId) {	
 	
@@ -132,11 +136,11 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="startDate" class="Datepicker" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">                           ';
+	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="endDate" class="Datepicker" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">                               ';
+	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
@@ -169,7 +173,6 @@ function addEducation(candidateId) {
 	$("#popUpDiv").append(result);
 	
 	function educationStartDate(){
-		alert("hiiii");
 	}
 	
 	$('#startDate').datepicker({

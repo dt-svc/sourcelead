@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,12 +79,12 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		 * @since  aug 19 2016
 		 * @version 0.0.1
 		 * 
-		 * This method is used to display employee Timesheet.
+		 * This method is used to for getting CandidatesList By OrgLocationID
 		 * this method is called at onload when click on timesheet left menu
 		 * 
-		 * @param user This is the first paramter to newTimesheet method
-		 * @param navigation This is the second paramter to newTimesheet method
-		 * @param startDate This is the third paramter to newTimesheet method
+		 * @param user This is the first parameter to getCandidatesListByOrgLocationID method
+		 * @param navigation This is the second parameter to getCandidatesListByOrgLocationID method
+		 * @param startDate This is the third parameter to getCandidatesListByOrgLocationID method
 		 *  
 		 * @return string 
 		 * 
@@ -101,14 +102,14 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		 }
 		 
 		 
-				/**
-				 *  This Method is for getting candidate by candidate ID
-				 *   @author David Raju
-				 * @param candidateId
-				 * @param request
-				 * @return Candidate
-				 * @throws Exception
-				 */
+		/* *
+			 *  This Method is for getting candidate by candidate ID
+			 * @author David Raju
+			 * @param candidateId This is the first parameter to getCandidateById method
+			 * @param request This is the second parameter to getCandidateById method
+			 * @return Candidate This is the third parameter to getCandidateById method
+			 * @throws Exception
+			 */
 			 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 			 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 					String resultJson;
@@ -137,6 +138,14 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 	  }
 			 
 
+	 /**
+		 *  This Method is for deleting CandidateImage
+		 * @author sarath kumar
+		 * @param candidateId This is the first parameter to deleteCandidateImage method
+		 * @param request    This is the second parameter to deleteCandidateImage method
+		 * @return String
+		 * @throws NullPointerException
+		 */
 	   @RequestMapping(value = "/deleteCandidateImage" , method = RequestMethod.GET)
 	   public String deleteCandidateImage(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 		   
@@ -150,6 +159,14 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		   
 	   }
 	   
+	   /**
+		 *  This Method is for getting CandidatesSkills By candidateID
+		 * @author sarath kumar
+		 * @param candidateId  This is the first parameter to getCandidatesSkillsBycandidateID method
+		 * @param request      This is the second parameter to getCandidatesSkillsBycandidateID method
+		 * @return String
+		 * @throws NullPointerException
+		 */
 	   @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
 	   public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 
@@ -161,7 +178,15 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 			
 		 }
 		 
-	   
+	   /**
+		 *  This Method is for saving Skils By candidateID
+		 * @author sarath kumar
+		 * @param candidateId This is the first parameter to saveSkilsBycandidateID method
+		 * @param skillName   This is the second parameter to saveSkilsBycandidateID method
+		 * @param request     This is the third parameter to saveSkilsBycandidateID method
+		 * @return String
+		 * @throws NullPointerException
+		 */
 	   @RequestMapping(value = "/saveSkilsBycandidateID")
 	   public String saveSkilsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName,HttpServletRequest request) throws Exception {
 
@@ -179,6 +204,14 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 			
 		 }
 	   
+	   /**
+		 *  This Method is for saving  Candidate Profile
+		 * @author sarath kumar
+		 * @param candidateId  This is the first parameter to saveCandidateProfile method
+		 * @param request      This is the second parameter to saveCandidateProfile method
+		 * @return String 
+		 * @throws NullPointerException
+		 */
 	   @RequestMapping(value = "/saveCandidateProfile" , method = RequestMethod.POST)
 	   public String saveCandidateProfile(@RequestParam(value="candidateId", required=false) String candidateId ,MultipartHttpServletRequest request) throws Exception {
 			
@@ -201,7 +234,16 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 		    return "success";
 	   }
 	   
-	   
+	   /**
+		 *  This Method is for displaying  Candidate Image
+		 * @author sarath kumar
+		 * @param candidateId   This is the first parameter to displayCandidateImage method
+		 * @param response      This is the second parameter to displayCandidateImage method
+		 * @param session       This is the third parameter to displayCandidateImage method
+		 * @param request       This is the fourth parameter to displayCandidateImage method
+		 * @return void
+		 * @throws NullPointerException
+		 */ 
 	   @RequestMapping(value = "/displayCandidateImage/{candidateId}" , method = RequestMethod.GET)
 	     public void displayUserImage(@PathVariable Long candidateId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
 	    	 
@@ -230,7 +272,28 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 				
 	  }
 	   
-		 
+	   /**
+		 *  This Method is for update Candidate details
+		 * @author David Raju
+		 * @param json   This is the first parameter to updateCandidate method
+		 * @param  request    This is the second parameter to updateCandidate method
+		 * @return String
+		 * @throws NullPointerException
+		 */ 
+	   @RequestMapping(value = "/updateCandidate")
+	   public String updateCandidate(@RequestParam(value="json", required=false) String  json,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			MultipartFile multiFile = null;
+			Candidate candidate ;
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
+			
+			return "success";
+			
+		 }
 		 
 		
 	}

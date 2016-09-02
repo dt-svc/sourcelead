@@ -138,7 +138,12 @@ public class Candidate {
 	
 	@Transient
 	private String skillsList;
-
+	
+	@Transient
+	private Long candidateId;
+	
+	@Transient
+	private String candidateUpdateDateToString;
 
 	public Long getId() {
 		return id;
@@ -478,5 +483,27 @@ public class Candidate {
 	public void setSkillsList(String skillsList) {
 		this.skillsList = skillsList;
 	}
+
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+
+	public String getCandidateUpdateDateToString() {
+		return candidateUpdateDateToString;
+	}
+
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
+	
 	
 }
