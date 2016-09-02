@@ -32,13 +32,6 @@ width: 100% !important;
 	        	
 	        	var json = JSON.parse(data);
 	        	var result = "";
-	        	
-	        	var selected1 = '';
-				var selected2 = '';
-				var selected3 = '';
-				var selected4 = '';
-				var selected5 = '';
-				
 					
 	        	result = result + '    	<div class="project_tabs_inn_head">';
 	    		result = result + '		<input class="vendorfild" type="text"><i class="fa fa-search"></i> | <a href="javascript:void(0)" onClick="addContact('+orgRelationID+');" class="addcon-pop">';
@@ -64,7 +57,12 @@ width: 100% !important;
 			          for (var i=0; i<json.length; i++)
 					  {        
 				        		var opt = json[i];
-				        		
+				        		var selected1 = '';
+								var selected2 = '';
+								var selected3 = '';
+								var selected4 = '';
+								var selected5 = '';
+								
 				        		if(opt.spocStatus == 'Active'){
 									selected1 = 'selected';
 								} 

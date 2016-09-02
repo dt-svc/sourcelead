@@ -319,6 +319,7 @@ function getVendorContactLists(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
+   	        	
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Name</th>';
@@ -337,49 +338,81 @@ function getVendorContactLists(){
    	        	for (var i=0; i<json.length; i++)
    				{  
    	        		var report = json[i];
+   	        		var selected1 = '';
+   					var selected2 = '';
+   					var selected3 = '';
+   					var selected4 = '';
+   					var selected5 = '';
+   	        		
+   	        		if(report.spocStatus == 'Active'){
+						selected1 = 'selected';
+					} 
+				
+					if(report.spocStatus == 'In-Active'){
+							selected2 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'New'){
+							selected3 = 'selected';
+						}
+					
+					if(report.spocStatus == 'Negotiation'){
+							selected4 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'Contracted'){
+						selected5 = 'selected';
+					} 
+   	        		
    	        		result = result +'<tr>';
    	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
-   	        		result = result +'<td><div><select class="form-control selectpicker" id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+report.id+');">';
-   	        		
-   	        		if(report.spocStatus == 'Active'){
-   						result = result+'<option selected value="Active" >Active</option>';
-   					}else{
-   						result = result+'<option value="Active" >Active</option>';
-   					}
-   	        		
-   	        		if(report.spocStatus == 'In-Active'){
-   						result = result+'<option selected value="In-Active" >In-Active</option>';
-   					}else{
-   						result = result+'<option value="In-Active" >In-Active</option>';
-   					}
-   	        		
-   	        		if(report.spocStatus == 'New'){
-   						result = result+'<option selected value="New" >New</option>';
-   					}else{
-   						result = result+'<option value="New" >New</option>';
-   					}
-   	        		
-   	        		if(report.spocStatus == 'Negotiation'){
-   						result = result+'<option selected value="Negotiation" >Negotiation</option>';
-   					}else{
-   						result = result+'<option value="Negotiation" >Negotiation</option>';
-   					}
    	        		
    	        		
-   	        		if(report.spocStatus == 'Contracted'){
-   						result = result+'<option selected value="Contracted" >Contracted</option>';
-   					}else{
-   						result = result+'<option value="Contracted" >Contracted</option>';
-   					}
-   	        		result = result +' </select></div></td>';
+   	        		result = result + ' <td><div>';
+					result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
                			
-   	        		result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
-   	        		result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+   	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+   	        		}
+   	        		
+   	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+   	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
+   	        		}
+   	        		
+   	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+   	        			result = result +' <td><div>---</div></td>';
+   	        		}
+   	        		
+   	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+   	        			result = result +' <td><div><b class="proj_process">Invitation Received</b></div></td>';
+   	        		}
+   	        		
+   	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+   	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
+   	        		}
+   	        		
+   	        		if(report.invitationStatus == 'Accepted'){ 
+   	        			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+   	        		}
+             		
+             		if(report.invitationStatus == 'Rejected'){
+             			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+             		}
+   	        		
+   	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
+   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="#";></i></div></td>';
    	        		
    	        		
    	        		result = result +'</tr>';
@@ -745,26 +778,10 @@ function pagination1(){
 </script>
 
 <script>
-function changeSpocStatus(spocId){
-	alert("spocId"+spocId);
-	var spocStatus = document.getElementById("spocStatus").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
-	    success: function(data) {
-	    	clientContactList(orgRelationID);
-	    }
-   });
-}
-
-
-</script>
-
-<script>
 function listChange(sel){
 	 if(sel.value=="listbyVendor"){
 		 document.getElementById("vendorList").style.display="block";
+		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 /* document.getElementById("vendorContactList_info").style.display="none"; 
@@ -774,6 +791,7 @@ function listChange(sel){
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
+		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
