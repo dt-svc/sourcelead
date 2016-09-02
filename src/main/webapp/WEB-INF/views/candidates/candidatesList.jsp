@@ -191,10 +191,10 @@ function clientSideBar(candidateId){
 						 result = result+'  <label class="btn btn-sm btn-primary">';
 					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
-					     /*  if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     } */
+					     } 
 						 result = result+'  </div>';
 						 result = result+'  </div>';
 						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
@@ -354,7 +354,7 @@ function saveCandidateImage(candidateId){
 	                	      
 	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 	                          success: function(result) {
-	    			        	  cancel();
+	                        	  cancel(candidateId);
 	    			          },  
 	            });
 }
@@ -393,10 +393,12 @@ $(document).ready(function() {
 	}
 </script>
 
+
+
 <%-- 
      @author : sarath kumar.
      this script is for delete image for candidate.
-     1.usage     : not used..future enhancements
+     1.usage     : this script is used to delete image
 --%>
 <script type="text/javascript">
 function deleteImage(candidateId){
@@ -405,7 +407,7 @@ function deleteImage(candidateId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -416,21 +418,81 @@ function deleteImage(candidateId){
 <%-- 
      @author : sarath kumar.
      this script is for delete image for candidate.
-     1.usage     : not used..future enhancements
+     1.usage : this script is used to delete image
 --%>
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage&candidateId="+candidateId,
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
 	        success: function(data) {
 	        	 var result = data;
+	        	 $("#popUp").empty();
+	        	 $(".project_inn_mask").fadeOut(200);
+	        	 refreshImageBlock(candidateId);
 	       },
 	        
      }); 
 }
 </script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for refresh image block
+     1.usage     : 
+--%>
+<script>
+function refreshImageBlock(candidateId){   
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+          type : "POST",
+           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           success :function(data) {   
+                if(data != null && data != 'undefined' && data != ""){  
+                	 var json = JSON.parse(data);
+              		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+              		 else if (data.indexOf('exception') >= 0) {
+              			 location.replace(sourceleadUrl+"/errorPage");
+              		 }
+              		 else{
+	                	 $("#candidateImageId").empty();
+	                	 var result = '';
+			             result = result+'<div class="well text-center clearfix">';
+						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <label class="btn btn-sm btn-primary">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  </label>';
+					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+							 result = result+'  <i class="fa fa-trash"></i></button>';
+					     } 
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 
+						 
+						 result = result+'  </div>';
+						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' </div>';
+						 $("#candidateImageId").append(result);
+						 
+			    	} 
+                } 
+         },
+           
+      }); 
+				
+}
+</script>
+
 
 <%-- 
      @author : sarath kumar.
@@ -501,7 +563,6 @@ function saveOrCancel(message,candidateId){
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
-
 }
 </script>
 
@@ -511,9 +572,10 @@ function saveOrCancel(message,candidateId){
      1.usage     : used in saveOrCancel() / alertMessage function line number : 435 / 439.
 --%>
 <script type="text/javascript">
-function cancel(){ 
+function cancel(candidateId){ 
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+	refreshImageBlock(candidateId);
 }
 </script>
 

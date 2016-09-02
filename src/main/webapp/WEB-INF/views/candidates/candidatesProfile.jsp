@@ -78,7 +78,7 @@ function editCandidate(candidateId){
 							result = result + '		        <div class="clearfix mr">';
 							result = result + '		          <div class="pull-right">';
 							result = result + '		            <button type="submit"  onClick ="upDateCandidate();" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>';
+							result = result + '		            <button type="button" class="btn btn-sm btn-danger">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
