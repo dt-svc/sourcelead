@@ -48,6 +48,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * This Service Class is used to get User Object
@@ -645,6 +646,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void sendEmailToGuestClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
+		 
+		String actionLink = null; 
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -664,13 +667,23 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
 			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-			 if(null != password){
+			 
+		     if(null != password){
+			    globalVarsMap.put("userName",user.getEmail());
+			    globalVarsMap.put("password",password);
+			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
+				 user.setPassword(password);
+				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
 			 }else{
-				 globalVarsMap.put("userName","Your Registred User Name");
+				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password","Your Registred Password");
-			 }
+			 } 
+			 
+			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"";
+			 
 			 
 		 }else if("Vendor".equals(responderType)){
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -681,14 +694,25 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("clientLastName",loginUser.getLastName());
 			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
 			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
-			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
 			    globalVarsMap.put("password",password);
+			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
+				 user.setPassword(password);
+				 userDao.addUser(user);
+				 globalVarsMap.put("userName",user.getEmail());
+				 globalVarsMap.put("password",password);
 			 }else{
-				 globalVarsMap.put("userName","Your Registred User Name");
+				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password","Your Registred Password");
 			 }
+			 
+			 
+			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"";
+			 
 		 }
 		 
 		 //setting the Recipient information
@@ -700,10 +724,13 @@ public class UserServiceImpl implements UserService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
+		 EmailScenario noificationEmailScenario = null;
 		 if("Client".equals(responderType)){
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+			 noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }else if("Vendor".equals(responderType)){
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+			 noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		
 		 //covert subject,body and signature
@@ -719,6 +746,10 @@ public class UserServiceImpl implements UserService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 noificationEmailScenario.setBody(notificationbody);
+			
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, respondingPartyOrgLocation, noificationEmailScenario);
 	}
 	
 	

@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -52,6 +53,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 private ActionRolesService actionRolesService;
+	 
+	 @Autowired
+	 private NotificationsService notificationsService;
 	 
 	 
 	 @Autowired
@@ -112,7 +116,8 @@ public class RegistrationController {
 	 
 	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
 		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
-				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId,HttpServletRequest request) {
+				@RequestParam(value = "actionLink", required = false) String actionLink,
+				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId) {
 			
 		    Org org = null;
 		    OrgLocations orgLocations = null;
@@ -153,18 +158,14 @@ public class RegistrationController {
 			}
 		    
 		    
+			if(null == actionLink){
+				return "redirect:/login";
+			}else{
+				return "redirect:/dashboard/"+respondingPartyOrgLocationId+"";
+			}
 			
-			return "redirect:/login";
 		}
 		
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
 	 
 	 
 	 /**	 

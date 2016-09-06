@@ -48,3 +48,5 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 
 
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','NOTIFICATIONS','USER_NOTIFICATION_STATUS','VARCHAR(25) NULL');
+
