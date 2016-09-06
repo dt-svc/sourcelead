@@ -31,18 +31,31 @@
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
                      <div class="col-xs-12 col-md-12 col-lg-12">
-                       <div class="form-group">
+                      <div class="form-group" id="org_dialog">
+                         <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-lg-9" id="vendorNameDiv">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="hidden" id="orgLocationId" />
+                         </div>
+                       </div>
+                       <!-- <div class="form-group">
                          <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="vendorNameDiv">
                            <input type="text" class="form-control" id="orgName" name="orgName" value="" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
                          </div>
-                       </div>
+                       </div> -->
                        <div class="form-group">
+                         <label class="col-lg-3">Website</label>
+                         <div class="col-lg-9">
+                           <input type="text" placeholder="client website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                         </div>
+                       </div>
+                      <!--  <div class="form-group">
                          <label class="col-lg-3">Website</label>
                          <div class="col-lg-9">
                            <input type="text" placeholder="client website" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
-                       </div>
+                       </div> -->
                        <div class="form-group">
 			              <label class="col-md-3">Level</label>
 			              <div class="col-md-9">
@@ -77,6 +90,7 @@
           <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Vendor Contact Details</div>
         </section>
         <div class="content-area content-new clearfix">
+        <div id="loading"></div>
         <form:form id="vendor_contact_form" name="vendor_contact_form" method="post">
           <div class="clearfix form-horizontal inner-content">
             <div class="row">
@@ -114,13 +128,22 @@
 	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
 	              </div>
 	            </div>
-                <div class="form-group" id="EmailIdDiv">
+	            
+	              <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					
+			        	<div class="col-md-9">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+			     	</div>
+					</div>
+                <%-- <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
 						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
 		                    <span class="hidden">Valid Email</span>
 					</div>
-				</div>
+				</div> --%>
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
@@ -138,7 +161,8 @@
 	                </select>
 	              </div>
 	            </div>
-                 <div class="form-group">
+	            
+	            <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
@@ -150,6 +174,27 @@
 			              </select>
                   </div>
                 </div>
+                
+                <div class="form-group" id="userRoleDiv" style="display: none;">
+					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+					<div class="col-md-9">
+					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
+					
+				   </div>
+		        </div>
+                 <!-- <div class="form-group">
+                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-md-9">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
+		                        <option value="">-Select Role-</option>
+									<option value="1">Admin</option>
+									<option value="3">Approver/Project Manager</option>
+									<option value="5">HR Manager</option>
+									<option value="8">Recruiter</option>
+			              </select>
+                  </div>
+                </div> -->
                 
                 <div class="form-group">
 	              <label class="col-md-3">Status</label>
@@ -190,6 +235,102 @@
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
+<script type="text/javascript">
+function getOrgName(){
+	var orgCode = '${SourceLeadWeb_orgCode}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	$( "#orgName" ).val( '' );
+	$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	
+	$.ajax({                           
+    	type: "POST",
+    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var org = [];
+        	for(var i=0;i<json.length;i++){
+       		 var label = json[i][0]; 
+       		 var value = json[i][1];
+       	     tmp = {
+       	        'label': label,
+       	        'value': value
+       	      };
+       	  	org.push(tmp);
+       		}
+        	$("#orgName").autocomplete({
+                
+                minLength: 0,
+                source: org,
+                appendTo: "#org_dialog",
+                focus: function( event, ui ) {
+                       $( "#orgName" ).val( ui.item.label );
+                       $( "#orgLocationId" ).val( ui.item.value );
+                       return false;
+                   },
+                select: function( event, ui ) {
+                    return false;
+                }  
+             })
+        },
+        error: function(e){
+           alert('Ajax Error: ' + e.value);
+        }
+    });
+}
+</script>
+
+<script type="text/javascript">
+function getOrgDetails()
+{
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(orgName && orgLocationId){
+   	 $.ajax({
+   	    	type: "POST",
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	        contentType: "application/json; charset=utf-8",
+   	        dataType: "json",
+   	        success: function(data) {
+   	        	if(data != null && data != ''){
+   	        		var json = JSON.parse(data);
+			      	if(json[3] != null && json[3] != ''){
+			      		$("#webSite").val(json[3]);
+			      		$("#webSite").attr("disabled", true);
+			      	}
+			      	 
+   	        	}
+   			 },
+   	        error: function(e){
+   	            alert('Ajax Error: ' + e.value);
+   	        }
+   	    });
+   	 
+	}
+	
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -222,16 +363,14 @@
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_vendor_contact").attr("disabled", "disabled");
-			$("#save_vendor_contact").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
+							$("#loading").removeAttr("style");
 							if (result == 'vendorsList') {
-								location.replace(sourceleadUrl
-										+ "/vendorsList");
+								location.replace(sourceleadUrl+"/vendorsList");
 							}
 
 						},
@@ -386,6 +525,7 @@ function validateClientName(){
 		};
 		if ($('#vendor_form').validate(false, validationSettings)) {
 			var frm = $('#vendor_form').serializeFormJSON();
+			var orgLocationId = document.getElementById("orgLocationId").value;
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
@@ -393,11 +533,11 @@ function validateClientName(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Vendor",
 						success : function(result) {
+							location.replace(sourceleadUrl+ "/addVendorContac");
 						},
 					});
 			return true;
@@ -410,6 +550,90 @@ function validateClientName(){
 		$("#vendor_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+
+<script type="text/javascript">
+function getSpocUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
+	        		 }
+		        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#phoneNumber").attr("disabled", true);
+		        		    $("#phoneNumber").val(json[2]);
+	        		 }else{
+	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").val('');
+	        		 }
+	        		 
+	        		 
+	        		 if(json[3] != null && json[3] != ''){
+	        			$("#role").removeAttr("data-validation");
+	        			$("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none";
+   	        			document.getElementById("userRoleDiv").style.display="";
+   	        			$("#userRole").val(json[3]);
+   	        			$("#userRoleText").val(json[4]);
+	        		 }else{
+	        			 $("#role").attr("data-validation", "required");
+	        			 $("#userRole" ).val('');
+	        			 document.getElementById("roleDiv").style.display="";
+	        			 document.getElementById("userRoleDiv").style.display="none";
+	        		 }
+			      	 
+	        	}
+			 },
+	        error: function(e){
+	            alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	    $("#phoneNumber").attr("disabled", false);
+	    $("#phoneNumber").val('');
+	    
+	    $("#role").attr("data-validation", "required");
+	    $("#userRole" ).val('');
+	    document.getElementById("roleDiv").style.display="";
+		document.getElementById("userRoleDiv").style.display="none";
+	   
+	}
+	
+}
+</script>
+
+
+
+
 
 <script type="text/javascript">
 	(function($) {
