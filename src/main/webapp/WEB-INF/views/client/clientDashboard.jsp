@@ -399,10 +399,6 @@ function pagination1(){
     } );
 }
 </script>
-
-
-
-
 <script>
 	function clientSpocSideBar(spocId,ownerId,spocUserId,spocName) {
 		var result = "";

@@ -19,6 +19,7 @@ public interface OrgSpocService {
 	OrgSpoc addOrgSpoc(OrgSpoc orgSpoc)throws Exception;
 	
 /**
+ * @author Rajashekar
  * add Vendor contacts
  * @param jsonObj
  * @param user
