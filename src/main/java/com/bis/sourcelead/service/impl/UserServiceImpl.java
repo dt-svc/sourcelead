@@ -673,7 +673,7 @@ public class UserServiceImpl implements UserService {
 			    globalVarsMap.put("password",password);
 			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
-				 user.setPassword(password);
+				 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
@@ -701,7 +701,7 @@ public class UserServiceImpl implements UserService {
 			    globalVarsMap.put("password",password);
 			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
-				 user.setPassword(password);
+				 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
