@@ -248,7 +248,7 @@ function getVendorContactLists(){
    	        		
    	        		
    	        		result = result + ' <td><div>';
-					result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus(\''+report.id+'\');">';
+					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 					result = result + ' <option '+selected1+'>Active</option>';
 					result = result + ' <option '+selected2+'>In-Active</option>';
 					result = result + ' <option '+selected3+'>New</option>';
@@ -304,6 +304,21 @@ function getVendorContactLists(){
 	
 }	
 </script> 
+
+<script>
+function updateSpocStatus(spocId){
+    var spocStatus = $('#spocState'+spocId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    success: function(data) {
+	    	clientContactList(orgRelationID);
+	    }
+   });
+}
+</script>
+
 <script>
 function pagination(){  
 	/* document.getElementById("vendorList").style.display="none"; */
@@ -517,8 +532,10 @@ function pagination1(){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>';
+		result = result + '<div class="clients_wrap_table " >';
+	   	result = result + '<div id="tab-2-addContact"> </div>';
+        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
+        result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -536,6 +553,22 @@ function pagination1(){
 	}
 </script>
 
+
+<script>
+function contactPagination(){  
+    $('#tab-2').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
 <script type="text/javascript">
 	function vendorDetailsbyLocationId(vendorLocationId,orgRelationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
