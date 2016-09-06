@@ -19,14 +19,49 @@ import com.bis.sourcelead.entity.User;
  */
 public interface CandidateResumesService {
  
+	/**
+	 * @param jsonObj
+	 * @param user
+	 * @param candidate
+	 * @param orgLocation
+	 * @param multiFile
+	 * @return
+	 * @throws JSONException
+	 * @throws Exception
+	 */
 	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws JSONException,Exception;
 	
+	/**
+	 * @param orgLocations
+	 * @param userCode
+	 * @param candidate
+	 * @param multiFile
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException;
 	 
+	/**
+	 * @param candidateId
+	 * @param status
+	 * @return
+	 * @throws Exception
+	 */
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception;
 	
+	/**
+	 * @param candidateResumes
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception;
 	
+	/**
+	 * @param resumeId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception;
 	
 }

@@ -19,14 +19,48 @@ import com.bis.sourcelead.entity.User;
 @Service
 public interface CandidateEmployersService {
  
+	/**
+	 * @param jsonObject
+	 * @param user
+	 * @param orgLocationId
+	 * @param candidateId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateEmployers storeCandidateEmployers(JSONObject jsonObject,User user,OrgLocations orgLocationId,Long candidateId) throws Exception; ; 
 	
+	/**
+	 * @param candidateId
+	 * @param orgLocationId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
    
+	/**
+	 * @param jsonObj
+	 * @param orgLocations
+	 * @param candidate
+	 * @param userCode
+	 * @return
+	 * @throws JSONException
+	 */
 	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException;
 	 
+	/**
+	 * @param candidateId
+	 * @param candidateEmployerId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateEmployers removeCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
 
+	/**
+	 * @param candidateId
+	 * @param candidateEmployerId
+	 * @return
+	 * @throws Exception
+	 */
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
 
 	

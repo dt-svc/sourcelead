@@ -17,64 +17,9 @@ function candidateCertificate(candidateId){
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head">                                                                          ';
 	result  = result + '   	<a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
-	result  = result + '     <!-- Popup Div -->                                                                                         ';
-	result  = result + '         <div  id="popUpDivEmp" class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
-	result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
-	result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
-	result  = result + '               <div class="form-horizontal clearfix">';
-	result  = result + '                 <div class="clearfix mb10">';
-	result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="name"  placeholder="Name *" id="candidateName" ';
-	result  = result + '                      data-validation="required validate_Space validate_length length2-100" field-name="Name" >';
-	result  = result + '                   </div>';
-	result  = result + '                 </div>';
-	result  = result + '                 <div class="clearfix mb10">';
-	result  = result + '                   <div class="col-md-12">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="provider" placeholder="Provider *" id="candidateProvider"';
-	result  = result + '                      data-validation="required validate_Space validate_length length2-100" field-name="Provider">';
-	result  = result + '                   </div>';
-	result  = result + '                 </div>';
 	
-	result  = result + '                 <div class="clearfix mb10">';
-	result  = result + '                   <div class="col-md-8" positionRelative>';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_Alphabet validate_length length1-5" field-name="score">';
-	result  = result + '                 	 </div>';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onClick="selectScoreType();">';
-	result = result  +' 					   <option value="" disabled="disabled" selected="selected">Score Type</option>';
-	result = result  +'	                       <option value="Percentage">%</option>';
-	result = result  +'	                       <option value="CGPA">CGPA</option>';
-	result = result  +'	                       <option value="GRADE">GRADE</option>';
-	result = result  +'	                      </select>';
-	result = result  +'	                   </div>';
-	result = result  +'	                   </div>';
-	
-	result  = result + '                 <div class="clearfix mb10">';
-	result  = result + '                   <div class="col-md-12">';
-	result  = result + '                     <textarea class="form-control" rows="1" name ="description"  placeholder="Description" id="candidateDescription"';
-	result  = result + '                     data-validation-optional="true" data-validation="required"></textarea>';
-	result  = result + '                   </div>';
-	result  = result + '                 </div>';
-	result  = result + '                 <div class="clearfix mb10">';
-	result  = result + '                   <div class="col-md-6 positionRelative">';
-	result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
-	result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
-	result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-	result  = result + '                   </div>';
-	result  = result + '                   <div class="col-md-6 positionRelative">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
-	result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
-	result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-	result  = result + '                   </div>';
-	result  = result + '                 </div>';
-	result  = result + '                 <div class="clearfix mr">';
-	result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
-	result  = result + '                 </div>';
-	result  = result + '               </div>';
-	result  = result + '              </form>';
-	result  = result + '             </div>';
-	result  = result + '   </div>';
+	result = result  +'     <div id="popUpDivCertificates" > ';
+	result = result  +'     </div>  ';
 	
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	result  = result + '   <div id="candidateCertificateList" ></div>';
@@ -276,18 +221,93 @@ function candidateCertificateList(candidateId){
 }
 </script>
 <script>
-function addCertification() {	
+function addCertification(candidateId) {	
 	
-	 $(".addUser-org").click(function(){
-		 $(".edit-details").toggleClass("edit-details-active");
-	 }); 
-	$(".edit-details").toggleClass("edit-details-active");
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
-	 $('html').click(function(){
+	 	var result = '';
+	 	result  = result + '     <!-- Popup Div -->                                                                                         ';
+		result  = result + '         <div  id="popUpDivEmp" class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
+		result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
+		result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
+		result  = result + '               <div class="form-horizontal clearfix">';
+		result  = result + '                 <div class="clearfix mb10">';
+		result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="name"  placeholder="Name *" id="candidateName" ';
+		result  = result + '                      data-validation="required validate_Space validate_length length2-100" field-name="Name" >';
+		result  = result + '                   </div>';
+		result  = result + '                 </div>';
+		result  = result + '                 <div class="clearfix mb10">';
+		result  = result + '                   <div class="col-md-12">';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="provider" placeholder="Provider *" id="candidateProvider"';
+		result  = result + '                      data-validation="required validate_Space validate_length length2-100" field-name="Provider">';
+		result  = result + '                   </div>';
+		result  = result + '                 </div>';
+		
+		result  = result + '                 <div class="clearfix mb10">';
+		result  = result + '                   <div class="col-md-8" positionRelative>';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore"';
+		result  = result + '                     data-validation-optional="true" data-validation="required validate_Alphabet validate_length length1-5" field-name="score">';
+		result  = result + '                 	 </div>';
+		result = result  +'	                     <div class="col-md-4" positionRelative>';
+		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onClick="selectScoreType();">';
+		result = result  +' 					   <option value="" disabled="disabled" selected="selected">Score Type</option>';
+		result = result  +'	                       <option value="Percentage">%</option>';
+		result = result  +'	                       <option value="CGPA">CGPA</option>';
+		result = result  +'	                       <option value="GRADE">GRADE</option>';
+		result = result  +'	                      </select>';
+		result = result  +'	                   </div>';
+		result = result  +'	                   </div>';
+		
+		result  = result + '                 <div class="clearfix mb10">';
+		result  = result + '                   <div class="col-md-12">';
+		result  = result + '                     <textarea class="form-control" rows="1" name ="description"  placeholder="Description" id="candidateDescription"';
+		result  = result + '                     data-validation-optional="true" data-validation="required"></textarea>';
+		result  = result + '                   </div>';
+		result  = result + '                 </div>';
+		result  = result + '                 <div class="clearfix mb10">';
+		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
+		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
+		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '                   </div>';
+		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
+		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
+		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '                   </div>';
+		result  = result + '                 </div>';
+		result  = result + '                 <div class="clearfix mr">';
+		result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
+		result  = result + '                 </div>';
+		result  = result + '               </div>';
+		result  = result + '              </form>';
+		result  = result + '             </div>';
+		result  = result + '   </div>';
+		$("#popUpDivCertificates").empty();
+		$("#popUpDivCertificates").append(result);
+		
+		$(".edit-details").toggleClass("edit-details-active");
+		
+		$(".close-div").click(function(){
+			 $(this).parent("div.edit-details").removeClass("edit-details-active");
+			 });
+		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+			 e.stopPropagation();
+		 });
+		 /* $('html').click(function(){
+			$(".edit-details").removeClass("edit-details-active");
+		   });	 */
+		
+		
+		/*  $(".addUser-org").click(function(){
+			 $(".edit-details").toggleClass("edit-details-active");
+		 });  */
+		/* $(".edit-details").toggleClass("edit-details-active");
+		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+			 e.stopPropagation();
+		 }); */
+	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
-	   });	
+	   });	 */
 
 	  $('#StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',

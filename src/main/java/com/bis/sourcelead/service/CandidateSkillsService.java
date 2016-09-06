@@ -20,7 +20,6 @@ public interface CandidateSkillsService {
 	
 		
 	/**
-	 * @author  prasad.k
 	 * @param candidateSkills
 	 * @return
 	 * @throws Exception
@@ -28,7 +27,6 @@ public interface CandidateSkillsService {
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
 	
 	/**
-	 * @author prasad.k
 	 * @param jsonObj
 	 * @param orgLocations
 	 * @param candidate
@@ -39,7 +37,6 @@ public interface CandidateSkillsService {
 	public HashSet<CandidateSkills> getCandidateSkillsDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException;
 	
 	/**
-	 * @author prasad.k
 	 * @param candidateId
 	 * @return
 	 * @throws Exception
