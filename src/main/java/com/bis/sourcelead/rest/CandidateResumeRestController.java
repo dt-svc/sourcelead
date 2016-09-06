@@ -155,7 +155,7 @@ public class CandidateResumeRestController {
 		
 		CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		if(candidateResume != null){
-			candidateResume.setStatus(Constants.MEMBER_IN_ACTIVE);
+			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);

@@ -18,7 +18,7 @@
 function candidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
-		result = result+'	    	<a href="javascript:void(0)" onClick="addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+		result = result+'	    	<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -37,16 +37,31 @@ function candidateResume(candidateId){
 }
 </script>
 
+
 <%-- 
      @author : Venkat Kesav
-     this script is for close resume popup
-     1.usage     : onload
+     this script is for refresh Resume List
+     1.usage     : onclick
 --%>
 <script>
 function closeResumePopup(){
 	 $("#popUpDivResume").removeClass("edit-details-active");
 }
 </script>
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for add resume popup
+     1.usage     : onload
+--%>
+<script>
+function refreshResumeList(candidateId){
+	candidateResumesList(candidateId);
+}
+</script>
+
+
 
 <%-- 
      @author : Venkat Kesav
@@ -246,7 +261,7 @@ function addResume(candidateId) {
 					            	result = result+'	          <tr>';
 					           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
-					           		result = result+'	            <td><div><span>'+description+'</span></div></td>';
+					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'	            <td><div><a class="glyphicon glyphicon-eye-open" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></div></td>';
 					           		result = result+'	          </tr>';
@@ -256,6 +271,7 @@ function addResume(candidateId) {
 						}
 					if(resumesCount>4){
 						$("#addCandidateResume").hide();
+						closeResumePopup();
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
