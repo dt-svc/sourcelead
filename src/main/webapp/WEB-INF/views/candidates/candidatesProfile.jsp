@@ -77,8 +77,8 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mr">';
 							result = result + '		          <div class="pull-right">';
-							result = result + '		            <button type="submit"  onClick ="upDateCandidate();" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="button" class="btn btn-sm btn-danger">Cancel</button>';
+							result = result + '		            <button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
+							result = result + '		            <button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
@@ -86,7 +86,6 @@ function editCandidate(candidateId){
 							result = result + '		    </div>';
 							result = result + '		  </div>';
 							
-						   
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
@@ -172,7 +171,7 @@ function candidateProfile(candidateId){
             		 }
             		 else{ 
 							var result ="";
-							result = result + '<div class="project_tabs_inn_head addUser-org"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="deleteCandidate('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="deleteCandidate('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 							
 							result = result + '<div id="profileEditPopup"></div>';
 							/* result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>';
@@ -264,7 +263,7 @@ function candidateProfile(candidateId){
 							result = result + '	<div class="row select-skills">';
 							result = result + '    <div class="divskill col-md-8"> ';
 							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							result = result + '        <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>';
+							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+candidateId+');"></i>';
 							result = result + '          <div class="form-horizontal clearfix">';
 							result = result + '            <div class="clearfix div-padding">';
 							result = result + '              <div class="col-md-10">';
@@ -294,18 +293,19 @@ function candidateProfile(candidateId){
 							    
 							candidateSkillsList(candidateId);
 							
-							 $("#tab-1").show();
-								$(".project-tabs-menu a").click(function(event) {
-								     event.preventDefault();
-								     $(this).parent().addClass("current");
-								     $(this).parent().siblings().removeClass("current");
-								     var tab = $(this).attr("href");
-								     $(".project_tabs_inn").not(tab).css("display", "none");
-								     $(tab).fadeIn();
-								 });
+							$("#tab-1").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
 								
-								$(".addSkills").click(function(){
-									$(".add-skills").toggleClass('add-skills-active');
+								$(".btn-addskills").click(function(){
+									$(".add-skills").css({"display":"block","opacity":"1"});
+									$("#skillName").val('');
 									});
 								$(".close-div").click(function(){
 									$(".add-skills").removeClass('add-skills-active');
@@ -319,14 +319,14 @@ function candidateProfile(candidateId){
 									 $(".collapse-div").removeClass("edit-details-active");
 								 });
 								 $(".close-div").click(function(){
-									 $(this).closest(".edit-details").toggleClass("edit-details-active");
+									 $(this).parent().toggleClass("edit-details-active");
 									 });
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
-								 $('html').click(function(){
+								/*  $('html').click(function(){
 								  $(".edit-details").removeClass("edit-details-active");
-							     });	
+							     });	 */
 							     $("#endDate").click(function(){
 								   $(".endDate").toggle(200);
 							     });
@@ -365,19 +365,24 @@ function candidateProfile(candidateId){
 --%>
 <script>  
  function saveSkils(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var skillName = $("#skillName").val();
-	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+skillName,        
-          success :function(data) {
-               if(data != null && data != 'undefined' && data != ""){
-            	   candidateSkillsList(candidateId);
-            	   removeSkillPopUp(candidateId);
-               }
-        },
-          
-     }); 
+	 if(skillName != null && skillName != '' && skillName !='undefined'){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({  
+	          type : "POST",
+	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+skillName,        
+	          success :function(data) {
+	               if(data != null && data != 'undefined' && data != ""){
+	            	   candidateSkillsList(candidateId);
+	            	   removeSkillPopUp(candidateId);
+	               }
+	        },
+	          
+	     }); 
+	 }else{
+		 alert("Enter Skill");
+	 }
+	 
  }  
 </script>
  
@@ -390,7 +395,8 @@ function candidateProfile(candidateId){
 --%>
 <script>  
 function removeSkillPopUp(candidateId){           
-		$(".add-skills").removeClass('add-skills-active');
+		/* $(".add-skills").removeClass('add-skills-active'); */
+		$(".add-skills").css({"display":"none","opacity":"0"});
 }
 </script>             
             
@@ -403,7 +409,7 @@ function removeSkillPopUp(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>         
 <script type="text/javascript">
-	function upDateCandidate() {
+	function upDateCandidate(candidateId) {
 	
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -424,7 +430,8 @@ function removeSkillPopUp(candidateId){
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							location.replace(sourceleadUrl+"/candidatesList");
+							/* location.replace(sourceleadUrl+"/candidatesList");  */
+							clientSideBar(candidateId);
 						},
 					});
 			return true;
@@ -438,6 +445,13 @@ function removeSkillPopUp(candidateId){
 					});
 	} 
 </script>
+
+<script>
+function cancelEdit(){
+	$("#profileEditPopup").empty();
+}
+</script>
+
 
 
 <%-- 

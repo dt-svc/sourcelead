@@ -150,7 +150,7 @@ function pagination(){
 --%>
 
 <script>
-function clientSideBar(candidateId){ 
+function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
@@ -693,28 +693,28 @@ $(document).ready(function() {
     });
 
 	// Levels adding script
-	 $(".addUser-org").click(function(event){  
+	/*  $(".addUser-org").click(function(event){  
 		 $(".collapse-div-adduser").toggleClass("showMydiv");
 		 $(".collapse-div").removeClass("showMydiv");
 		 event.preventDefault();
-	 });
-	 $(".close-div").click(function(){
+	 }); */
+	/*  $(".close-div").click(function(){
 		 $(this).parent().toggleClass("showMydiv");
-		 });
-	 $(".assign-org").click(function(){
+		 }); */
+	/*  $(".assign-org").click(function(){
 		 $(".collapse-div").toggleClass("show-div");
 		 $(".collapse-div-adduser").removeClass("show-div");
-	 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
+	 }); */
+	/*  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
 		 e.stopPropagation();
-	 });
-	 $('html').click(function(){
+	 }); */
+	 /* $('html').click(function(){
 	    $(".collapse-div-adduser").removeClass("show-div");
 		$(".collapse-div").removeClass("show-div");
 	   });	
 	   $("#endDate").click(function(){
 		   $(".endDate").toggle(200);
-	   });
+	   }); */
 });
 </script>	
  
