@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -235,11 +236,12 @@ public class ProjectsDashboardRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
-		 
-		 String employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
-		 	
-		 return employeeList;
+	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+		 String resultJson;
+		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
+		
+		 resultJson = commonUtil.toJSON(employeeList);
+		 return resultJson;
 	  }
 	 
 	 /**

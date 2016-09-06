@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 
@@ -50,7 +51,6 @@ public interface ProjectsService {
 		List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 		
 		List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
-		
 	
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
@@ -68,7 +68,7 @@ public interface ProjectsService {
 	
 		String storeEmployeeInProjectDashboard(OrgLocations loginOrgLocation,User users,JSONObject jsonObj) throws Exception ;
 		 
-		String getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
+		ProjectMembers getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         

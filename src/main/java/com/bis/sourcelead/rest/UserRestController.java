@@ -220,7 +220,10 @@ public class UserRestController {
 		 	if(projectId != null && !"".equals(projectId)){
 		 		ph = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(Long.parseLong(projectId));
 		 	}
-		 	ph.setFullName(ph.getApproverUserId().getFirstName() +" "+ph.getApproverUserId().getLastName());
+		 	if(ph.getApproverUserId().getId()!=null){
+		 		ph.setFullName(ph.getApproverUserId().getFirstName() +" "+ph.getApproverUserId().getLastName());
+		 	}
+		 	
 		 	resultJson = toJSON(ph);
 			return resultJson;
 	   }
