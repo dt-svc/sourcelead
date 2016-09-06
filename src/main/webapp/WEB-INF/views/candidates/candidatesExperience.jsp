@@ -264,9 +264,9 @@ function candidateEmployersList(candidateId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    	 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
 	                    	 }else{
-	                    	   result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
+	                    	   result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.designation != null && opt.designation && opt.designation != 'undefined'){
 	                    	 result  = result + '<td><div><span>'+opt.designation+'</span></div></td>';

@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * @author Ajith Matta
@@ -41,6 +43,10 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersDaoImpl.class);
@@ -93,9 +99,8 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId)
 			throws Exception {
-
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status ='ACTIVE'";  
+		String query = "from CandidateEmployers candidateEmployers  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status ='1'";  
 		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateList;
 	}
