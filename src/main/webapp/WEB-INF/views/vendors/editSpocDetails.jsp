@@ -301,7 +301,6 @@
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
 	   		    	var ownerId = data;
-	   		    	alert("ownerId"+ownerId);
 	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId);
 	   		    }
 		 }); 

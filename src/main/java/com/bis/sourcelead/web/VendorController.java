@@ -56,44 +56,16 @@ public class VendorController {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		
-		List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-		List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLoc.getId());
-		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
 	
-		for(OrgRelations orgRelation : vandorsListByOrgLocationId){
+	/*	for(OrgRelations orgRelation : vandorsListByOrgLocationId){
 			List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLoc.getId());
 			orgRelation.setNoOfContatcs(orgSpocs.size());
-		}
+		}*/
 		
-		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-			/*if(orgSpoc.getSpocUser() != null){
-				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			}*/
-			
-			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLoc.getId()){
-				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-			}
-			if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLoc.getId()){
-				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
-				orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-				orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-				orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-				orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			}
-		}
+	
 		model.addObject("loginOrgLocId",orgLoc.getId());
-		model.addObject("vandorsListByOrgLocationId", vandorsListByOrgLocationId);
-		model.addObject("vandorsContactListByOrgLocationId", vandorsContactListByOrgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		//model.addObject("userList", userList);
 		model.setViewName("vendors/vendorsList");
 		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 		model.addObject("loginCountryName", countries.getName());

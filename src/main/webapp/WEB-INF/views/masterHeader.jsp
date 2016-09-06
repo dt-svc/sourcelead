@@ -24,6 +24,12 @@
 
 
 <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
+</script>
+
+<script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','resources/images/userprofile-img.png');
 	}
@@ -113,9 +119,24 @@
             <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks"> <i class="fa fa-globe"></i> </a>
 	              <div class="spoclinks-area">
 	              <ul class="list-unstyled">
-                        <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-							<li><a href="${sourceleadUrl}/dashboard/${links.orgLocations.id}"><i class="fa fa-user"></i>&nbsp;${links.orgLocations.org.orgName}</a></li>
-						</c:forEach>
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="${sourceleadUrl}/dashboard/${links.orgLocations.id}">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent">
+				                   <div class="imageParent org-imagelink">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     </div>
+				                   </div>
+				                   <div class="pull-left">
+				                     <p><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
 	              </ul>
 	            </div>
 	          </li>

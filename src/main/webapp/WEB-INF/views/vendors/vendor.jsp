@@ -204,6 +204,7 @@ window.onload = function () {
               </div>
             </div>
             
+             <!-- These are the default sourelead roles we are providing for spoc in vendor creation -->
               <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
