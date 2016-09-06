@@ -51,8 +51,8 @@ public class Constants {
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
 	
-	public static String CANDIDATE_ACTIVE = "ACTIVE";
-	public static String  CANDIDATE_IN_ACTIVE= "INACTIVE";
+	public static String CANDIDATE_ACTIVE = "1";
+	public static String  CANDIDATE_IN_ACTIVE= "0";
 	
 
 	/** projectMemberHistory constants**/
