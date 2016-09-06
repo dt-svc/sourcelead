@@ -76,7 +76,7 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_Space validate_length length2-100" value="">
+            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validateAlphanumeric validate_Space validate_length length2-100" value="">
             <div class="input-group hidden">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-danger dropdown-toggle"
