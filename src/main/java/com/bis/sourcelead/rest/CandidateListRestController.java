@@ -206,14 +206,19 @@ public class CandidateListRestController {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String resultJson;
-			CandidateSkills cs = new CandidateSkills();
 			
-			Candidate candidate = new Candidate();
-			candidate.setId(Long.parseLong(candidateId));
-			cs.setCandidateId(candidate);
-			cs.setOrgLocationID(loginOrgLocation);
-			cs.setName(skillName);
-			candidateSkillsService.storeCandidateSkills(cs);
+			String[] skills = skillName.split(",");
+			for(String skill   : skills){
+				
+				CandidateSkills cs = new CandidateSkills();
+				Candidate candidate = new Candidate();
+				candidate.setId(Long.parseLong(candidateId));
+				cs.setCandidateId(candidate);
+				cs.setOrgLocationID(loginOrgLocation);
+				cs.setName(skill);
+				candidateSkillsService.storeCandidateSkills(cs);
+				
+			}
 			return "success";
 			
 		 }

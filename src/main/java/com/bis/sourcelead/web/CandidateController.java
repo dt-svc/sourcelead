@@ -76,6 +76,9 @@ public class CandidateController {
 		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId());
 		model.addObject("candidatesList", candidatesList);
 		
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{

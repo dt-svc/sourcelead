@@ -1,3 +1,20 @@
+
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+
+<!-- these files for autocomplete with tagit -->
+
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -27,7 +44,7 @@ function editCandidate(candidateId){
             		 }
             		 else{   
 							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>';
+							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							
@@ -194,7 +211,8 @@ function removeCandidateAlertMessage(candidateId){
 --%>
 <script>
 function candidateProfile(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -215,88 +233,8 @@ function candidateProfile(candidateId){
 							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 							
 							result = result + '<div id="profileEditPopup"></div>';
-							/* result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>';
-							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
-							result = result + '		      <div class="form-horizontal clearfix">';
 							
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name">';
-							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name">';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email">';
-							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6 custom-fields">';
-							result = result + '		            <select class="form-control select-arrow select-bg">';
-							result = result + '		              <option>India</option>';
-							result = result + '		              <option>United States</option>';
-							result = result + '		              <option>UK</option>';
-							result = result + '		            </select>';
-							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6 custom-fields select-arrow">';
-							result = result + '		            <select class="form-control input-sm">';
-							result = result + '		              <option>India</option>';
-							result = result + '		              <option>United States</option>';
-							result = result + '		              <option>UK</option>';
-							result = result + '		            </select>';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="hidden"  name="candidateId" value="'+candidateId+'" >';
-							result = result + '		            <input type="text" class="form-control input-sm"  name="city" value="'+json.city+'" placeholder="City">';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-12">';
-							result = result + '		            <textarea class="form-control input-sm" placeholder="Summary"  name="summary" value="'+json.summary+'" rows="2" cols="0">';
-							result = result + '		                  </textarea>';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mr">';
-							result = result + '		          <div class="pull-right">';
-							result = result + '		            <button type="submit"  onClick ="upDateCandidate();" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		      </div>';
-							result  = result + '              </form>';
-							result = result + '		    </div>';
-							result = result + '		  </div>';
-							
-						    result = result +'<div class="require_wrap_details">';	 
-							result = result +'		<h1>Summary:</h1>';
-							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
-							result = result +'		<h2>Skills:</h2>';
-							
-							result = result + '	<div class="row select-skills">';
-							result = result + '    <div class="divskill col-md-8"> ';
-							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							result = result + '        <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>';
-							result = result + '          <div class="form-horizontal clearfix">';
-							result = result + '            <div class="clearfix div-padding">';
-							result = result + '              <div class="col-md-10">';
-							result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">';
-							result = result + '              </div>';
-							result = result + '              <div class="col-md-2">';
-							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';
-							result = result + '              </div>';
-							result = result + '            </div>';
-							result = result + '          </div>';
-							result = result + '        </div>';
-							result = result + '      </div>'; */
-							
-							 result = result +'<div class="require_wrap_details">';	 
+							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
 							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
 							result = result +'		<h2>Skills:</h2>';
@@ -308,7 +246,13 @@ function candidateProfile(candidateId){
 							result = result + '          <div class="form-horizontal clearfix">';
 							result = result + '            <div class="clearfix div-padding">';
 							result = result + '              <div class="col-md-10">';
-							result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">';
+							
+							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
+			                <c:forEach var="skill" items="${skillsList}">
+			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
+			                </c:forEach>
+			                result = result + '</select>';
+							/* result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">'; */
 							result = result + '              </div>';
 							result = result + '              <div class="col-md-2">';
 							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';   
@@ -347,6 +291,24 @@ function candidateProfile(candidateId){
 								$(".btn-addskills").click(function(){
 									$(".add-skills").css({"display":"block","opacity":"1"});
 									$("#skillName").val('');
+									 
+									/* skill auto complete */
+									var config = {
+											  '.chosen-select'           : {},
+											  '.chosen-select-deselect'  : {allow_single_deselect:true},
+											  '.chosen-select-no-single' : {disable_search_threshold:10},
+											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+											  '.chosen-select-width'     : {width:"95%"}
+								    }
+									for (var selector in config) {
+									  $(selector).chosen(config[selector]);
+									}
+									$('.chosen-select').each(function() {
+										var $this = $(this);
+										$this.next().css({'width': '100%'});
+										})
+												
+									
 									});
 								$(".close-div").click(function(){
 									$(".add-skills").removeClass('add-skills-active');
@@ -640,6 +602,27 @@ function removeSkillById(candidateId, skillId){
 		};
 	})(jQuery);
 </script> 
+
+
+<!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+				
+</script> 
+<!-- Eductions and Skills Autocomplete Scripts End Here -->
            
            
             
