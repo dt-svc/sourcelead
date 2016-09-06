@@ -208,6 +208,8 @@ public class ClientServiceImpl implements ClientService{
 					}
 				
 				orgSpoc.setSpocUser(spocUser);
+				orgSpoc.setResponderLocationId(clientOrgLocations);
+				orgSpoc.setInitiatorLocationId(orgLocations);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));

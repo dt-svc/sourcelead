@@ -31,6 +31,14 @@ public class OrgSpoc {
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
+	@ManyToOne
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
+    private OrgLocations responderLocationId;
+	
+	@ManyToOne
+    @JoinColumn(name="INITIATOR_LOCATION_ID", nullable=false )        
+    private OrgLocations initiatorLocationId;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SPOC_USER_ID")
 	private User spocUser;
@@ -134,6 +142,22 @@ public class OrgSpoc {
 
 	public void setOwnerUser(User ownerUser) {
 		this.ownerUser = ownerUser;
+	}
+
+	public OrgLocations getResponderLocationId() {
+		return responderLocationId;
+	}
+
+	public void setResponderLocationId(OrgLocations responderLocationId) {
+		this.responderLocationId = responderLocationId;
+	}
+
+	public OrgLocations getInitiatorLocationId() {
+		return initiatorLocationId;
+	}
+
+	public void setInitiatorLocationId(OrgLocations initiatorLocationId) {
+		this.initiatorLocationId = initiatorLocationId;
 	}
 
 	public String getInvitationStatus() {
