@@ -5,6 +5,7 @@
      2.parameter : candidateId .
 --%> 
 <script>
+
 function candidateExperience(candidateId){
 	
 	var result = "";
