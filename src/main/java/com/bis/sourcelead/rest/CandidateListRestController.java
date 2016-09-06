@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -331,14 +332,17 @@ public class CandidateListRestController {
 		 * @throws NullPointerException
 		 */ 
 	   @RequestMapping(value = "/deleteCandidateByCandidateId")
-	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson;
+	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,
+			   													@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 
 			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			if(candidate != null){
 				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				if(StringUtils.isNotEmpty(reason)){
+					candidate.setTerminateReason(reason);
+				}
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);

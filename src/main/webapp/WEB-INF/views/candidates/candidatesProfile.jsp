@@ -126,9 +126,10 @@ function editCandidate(candidateId){
 <script>
 function deleteCandidate(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var reason = document.getElementById("rejectReason").value;
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             		 if( data.indexOf('Sign In') >= 0){
@@ -145,6 +146,26 @@ function deleteCandidate(candidateId){
               }); 
 }
 </script>
+
+
+
+
+<script type="text/javascript">
+function removeAlertMessage(candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
 
 
 <%-- 
@@ -171,7 +192,10 @@ function candidateProfile(candidateId){
             		 }
             		 else{ 
 							var result ="";
-							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="deleteCandidate('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+							
+							result = result+'<div id="popUp" ></div>  ';
+							
+							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 							
 							result = result + '<div id="profileEditPopup"></div>';
 							/* result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>';

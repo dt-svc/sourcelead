@@ -108,6 +108,9 @@ public class Candidate {
 	
 	@Column(name="STATUS")
 	private String status;
+	
+	@Column(name="TERMINATE_REASON")
+	private String terminateReason;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -405,6 +408,16 @@ public class Candidate {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
 	}
 
 
