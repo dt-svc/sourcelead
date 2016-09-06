@@ -185,7 +185,7 @@ function addEducation(candidateId) {
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
 	result = result  +'                    <div class="col-md-12">';
-	result = result  +'                      <input type="text" name="name" field-name="name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
+	result = result  +'                      <input type="text" name="name" field-name="name" data-validation="required validate_AlphaNumber validate_length length2-100" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';

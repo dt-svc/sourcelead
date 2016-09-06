@@ -107,7 +107,7 @@ function addExperience(candidateId) {
 	result = result  +'	             <div class="form-horizontal clearfix">';
 	result = result  +'	               <div class="clearfix mb10">';
 	result = result  +'	                 <div class="col-md-12">';
-	result = result  +'	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
+	result = result  +'	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_AlphaNumber validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
 	result = result  +'	                 </div>';
 	result = result  +'	               </div>';
 	result = result  +'	               <div class="clearfix mb10">';
@@ -118,12 +118,12 @@ function addExperience(candidateId) {
 	result = result  +'	               </div>';
 	result = result  +'	               <div class="clearfix mb10">';
 	result = result  +'	                 <div class="col-md-12">';
-	result = result  +'	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation" data-validation="required validate_Space validate_length length2-100" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
+	result = result  +'	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
 	result = result  +'	                 </div>';
 	result = result  +'	               </div>';
 	result = result  +'	               <div class="clearfix mb10">';
 	result = result  +'	                 <div class="col-md-12">';
-	result = result  +'	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250" field-name="Address" value=""> <span 	class="hidden">Address</span>';
+	result = result  +'	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
 	result = result  +'	                 </div>';
 	result = result  +'	               </div>';
 	result = result  +'	               <div class="clearfix mb10">';
@@ -146,7 +146,7 @@ function addExperience(candidateId) {
 	result = result  +'	                   </select>';
 	result = result  +'	                   </div>';
 	result = result  +'	                   <div class="col-md-6">';
-	result = result  +'	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" >';
+	result = result  +'	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 	result = result  +'	                 </div>';
 	result = result  +'	                 </div>';
 	result = result  +'	                 <div id="endDateDiv">';
@@ -170,7 +170,7 @@ function addExperience(candidateId) {
 	result = result  +'	                   </select>';
 	result = result  +'	                   </div>';
 	result = result  +'	                   <div class="col-md-6" >';
-	result = result  +'	                   <input type="text" max class="form-control" value="" id="endYear" name="mobileOffer" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length1-2" >';
+	result = result  +'	                   <input type="text" max class="form-control" value="" id="endYear" name="mobileOffer" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" >';
 	result = result  +'	                 </div>';
 	result = result  +'	                 </div> ';
 	result = result  +'	                 </div> ';
