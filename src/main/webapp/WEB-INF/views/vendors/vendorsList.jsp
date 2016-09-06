@@ -148,7 +148,7 @@ function getVendorLists(){
 	       		
 	       		result = result +'<td><div>20</div></td>';
 	       		result = result +' <td><div>10</div></td>';
-	       		result = result +'<td><div>${report.level}</div></td>';
+	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
    	        		result = result +'</tr>';
    				}
@@ -242,7 +242,11 @@ function getVendorContactLists(){
    	        		result = result +'<tr>';
    	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
+   	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
    	        		

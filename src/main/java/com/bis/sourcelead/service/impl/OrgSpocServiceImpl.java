@@ -71,6 +71,20 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				OrgSpoc orgSpoc = new OrgSpoc();
 				orgSpoc.setOrgRelations(orgRelation);
 				orgSpoc.setSpocUser(spocUser);
+				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+					orgSpoc.setResponderLocationId(orgRelation.getLocationId());
+				}
+				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+					orgSpoc.setResponderLocationId(orgRelation.getResponderLocationId());
+				}
+					
+				/*if(jsonObj.has("vendorContact") && jsonObj.getString("vendorContact").equals("vendorContact")){
+					orgSpoc.setResponderLocationId(orgRelation.getResponderLocationId());
+				}else{
+					orgSpoc.setResponderLocationId(orgRelation.getLocationId());	
+				}*/
+				
+				orgSpoc.setInitiatorLocationId(orgLocations);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 			
@@ -120,5 +134,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		return orgSpocDao.getOwnerIdbySpocId(spocUserId,ownerId);	
 		}
 	
-
+	@Override
+	public OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception {
+		logger.debug("In OrgSpocService class...");
+		return orgSpocDao.getSpocUserByUserId(spocUserId);
+	}
+	
 }
