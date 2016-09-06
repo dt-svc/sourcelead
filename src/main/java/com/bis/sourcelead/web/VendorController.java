@@ -120,7 +120,7 @@ public class VendorController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/addVendorContac")
+	@RequestMapping(value = "/addVendorContact")
 	public ModelAndView addVendorContac(HttpServletRequest request){
 		ModelAndView model = new ModelAndView();
 		try{

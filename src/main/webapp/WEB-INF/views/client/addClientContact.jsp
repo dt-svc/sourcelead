@@ -123,7 +123,7 @@ function getOrgDetails()
                        <div class="form-group" id="org_dialog">
                          <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="clientNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
                            <input type="hidden" id="orgLocationId" />
                          </div>
                        </div>
@@ -150,7 +150,7 @@ function getOrgDetails()
                  </div>
               </div>
              <div class="modal-footer">
-              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="validateClientName();saveClient()">Save</button>
+              <button  class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
               <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
              </div>
           </div>
@@ -426,14 +426,14 @@ function getOrgDetails()
 
 
 <script type="text/javascript">
-	function saveClient() {
+	function saveClient() { 
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#client_form').validate(false, validationSettings)) {
+		if ($('#client_form').validate(false, validationSettings)) {  
 			var frm = $('#client_form').serializeFormJSON();
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var con = JSON.stringify(frm);
@@ -443,8 +443,7 @@ function getOrgDetails()
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
 						success : function(data) {
@@ -452,7 +451,7 @@ function getOrgDetails()
 						},
 					});
 			return true;
-		} else {
+		} else {   
 			return false;
 		}
 	}
@@ -480,6 +479,7 @@ function validateClientName(){
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					/* <input type ="hidden" name ="isDuplicateClient" value = "isDuplicateClient"/> */
 					
 				}else {
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");

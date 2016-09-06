@@ -34,7 +34,7 @@
                       <div class="form-group" id="org_dialog">
                          <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="vendorNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
                            <input type="hidden" id="orgLocationId" />
                          </div>
                        </div>
@@ -72,7 +72,7 @@
                  </div>
               </div>
              <div class="modal-footer">
-              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="saveVendor();">Save</button>
+              <button  class="btn btn-primary" type="button" onclick="saveVendor();">Save</button>
               <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
              </div>
           </div>
@@ -537,7 +537,7 @@ function validateClientName(){
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Vendor",
 						success : function(result) {
-							location.replace(sourceleadUrl+ "/addVendorContac");
+							location.replace(sourceleadUrl+ "/addVendorContact");
 						},
 					});
 			return true;

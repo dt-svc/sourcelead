@@ -130,10 +130,16 @@ public class VendorRestController {
 	   
 	   
 	   
-	   
+	   /**
+	    * @author Rajashekar
+	    * @param request
+	    * @return JSON
+	    * @throws Exception
+	    */
 	   
 	   @RequestMapping(value = "/getVendorContactLists")
-		public @ResponseBody String getVendorContactLists(HttpServletRequest request) throws Exception {
+	   @ResponseBody
+		public  String getVendorContactLists(HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
