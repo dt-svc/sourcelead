@@ -1,9 +1,10 @@
 package com.bis.sourcelead.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import org.junit.Test;
+import org.json.JSONObject;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,11 +66,31 @@ public class CandidateSkillsServiceTest {
 			
 		}
 		
-		@Test
+		//@Test
 		public void getCandidateSkillsByCandidateId() throws Exception{
 			List<CandidateSkills> candidateSkillsList = new ArrayList<>();
 			candidateSkillsList = candidateSkillsService.getCandidateSkillsByCandidateId("1l");
 			logger.info("getCandidateSkillsByCandidateId " + candidateSkillsList.size());
+			
+		}
+		
+		//@Test
+		public void getCandidateSkillsDetails() throws Exception{
+			
+			HashSet<CandidateSkills> candidateSkills = new HashSet<>();
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("java","java");
+			jsonObject.put(".net",".net");
+			Candidate candidate = new Candidate();
+			OrgLocations orglocations = new OrgLocations();
+			candidate.setId(1l);
+			orglocations.setId(1l);
+			CandidateSkills candidateSkil = new CandidateSkills();
+			candidateSkil.setCandidateId(candidate);
+			candidateSkil.setOrgLocationID(orglocations);
+			
+			candidateSkills = candidateSkillsService.getCandidateSkillsDetails(jsonObject,orglocations,candidate,"reddy");
+			logger.info("getCandidateSkillsDetails " + candidateSkills.size());
 			
 		}
 		

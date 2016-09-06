@@ -82,7 +82,7 @@ public class CandidateServiceTest {
 			return multipartFile;
 		}
 		
-		//@Test
+		/*@Test
 		public void addCandidate() throws Exception{
 			Candidate candidate = new Candidate();
 			OrgLocations orglocations = new OrgLocations();
@@ -99,13 +99,6 @@ public class CandidateServiceTest {
 			candidate.setCity("waragal");
 			candidate = candidateService.addCandidate(candidate);
 			logger.info("addCandidate successfully " +candidate.getLastName());
-		}
-		
-		/*@Test
-		public void getCandidateByCandidateIdAndOrgLocationIdAndOrgId() throws Exception{
-			Candidate candidate = new Candidate();
-			candidate = candidateService.getCandidateByCandidateIdAndOrgLocationIdAndOrgId(1l,1l,1l);
-			logger.info("getCandidateByCandidateIdAndOrgLocationIdAndOrgId " + candidate.getCity());
 		}*/
 		
 		//@Test
@@ -132,11 +125,31 @@ public class CandidateServiceTest {
 			logger.info("getCandidateByCandidateIdAndOrgLocationId " + candidate.getEmail());
 			
 		}
-		@Test
+		//@Test
 		public void findByCandidateEmail() throws Exception{
 		Candidate candidate = new Candidate();
 		candidate = candidateService.findByCandidateEmail("ajith@gmail.com");
 		logger.info("findByCandidateEmail "+ candidate.getId());
 				}
+		//@Test
+		public void saveOrUpdateCandidate() throws Exception{
+			
+			Candidate candidate = new Candidate();
+			OrgLocations orglocations = new OrgLocations();
+			orglocations.setId(1l);
+			candidate.setId(1l);
+			candidate.setFirstName("swathi");
+			candidate.setLastName("reddy");
+			candidate.setEmail("swathi@gmail.com");
+			candidate.setFileContentType("input.txt");
+			candidate.setOrgLocationId(orglocations);
+			candidate.setMobilePhone("547896654");
+			candidate.setCountry("usa");
+			candidate.setState("telangana");
+			candidate.setCity("waragal");
+			candidate = candidateService.addCandidate(candidate);
+			logger.info("saveOrUpdateCandidate successfully " +candidate.getLastName());
+			
+		}
 	}
 
