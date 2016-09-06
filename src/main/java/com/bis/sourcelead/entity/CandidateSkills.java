@@ -49,6 +49,9 @@ public class CandidateSkills {
 	@Column(name = "SCALE")
 	private String scale ;
 	
+	@Column(name = "STATUS")
+	private String status ;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -107,6 +110,14 @@ public class CandidateSkills {
 
 	public void setScale(String scale) {
 		this.scale = scale;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Date getCreatedDate() {

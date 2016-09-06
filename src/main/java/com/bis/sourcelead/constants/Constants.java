@@ -54,6 +54,10 @@ public class Constants {
 	public static String CANDIDATE_ACTIVE = "1";
 	public static String  CANDIDATE_IN_ACTIVE= "0";
 	
+	/** Candidate Skill  constants**/
+	public static String CANDIDATE_SKILL_ACTIVE = "1";
+	public static String CANDIDATE_SKILL_IN_ACTIVE= "0";
+	
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";

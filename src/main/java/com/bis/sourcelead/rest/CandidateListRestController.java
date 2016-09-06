@@ -218,6 +218,35 @@ public class CandidateListRestController {
 			
 		 }
 	   
+	   
+	   /**
+		 *  This Method is for remove Skill By Skill Id
+		 *  
+		 * @author venkat Kesav
+		 * @param skillId   This is the second parameter to removeSkillBySkillId method
+		 * @param request     This is the third parameter to removeSkillBySkillId method
+		 * 
+		 * @return String
+		 * 
+		 * @throws NullPointerException
+		 */
+	   @RequestMapping(value = "/removeSkillBySkillId")
+	   public String removeSkillBySkillId(@RequestParam(value="skillId", required=false) String  skillId,HttpServletRequest request) throws Exception {
+		  
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    if(StringUtils.isNotEmpty(skillId)){
+		    	CandidateSkills candidateSkills = candidateSkillsService.getCandidateSkillBySkillId(Long.parseLong(skillId));
+				candidateSkills.setStatus(Constants.CANDIDATE_SKILL_IN_ACTIVE);
+				candidateSkills.setUpdatedBy(user.getUserCode());
+				candidateSkills.setUpdatedDate(commonUtil.currentDate());
+				candidateSkillsService.storeCandidateSkills(candidateSkills);
+				return "success";
+		    }else{
+				return "exception";
+			}
+		 }
+	   
+	   
 	   /**
 		 * This Method is for saving  Candidate Profile
 		 * 

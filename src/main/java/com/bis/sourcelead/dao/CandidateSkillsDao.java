@@ -17,6 +17,8 @@ public interface CandidateSkillsDao {
 	 */
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
 	
+	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception;
+	
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception;
 
 }

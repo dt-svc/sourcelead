@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateSkillsDao;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 
 /**
@@ -47,10 +49,26 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		String status = Constants.CANDIDATE_SKILL_ACTIVE;
 		List<CandidateSkills> candidateSkillsList = null;
-		Query citiesListQuery= session.createQuery("from CandidateSkills cs where cs.candidateId.id =:candidateId ");
-		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).list();
+		Query citiesListQuery= session.createQuery("from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)");
+		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setString( "status", status ).setCacheable(true).list();
 		return candidateSkillsList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception {
+		logger.debug("In Candidate Skill by SkillId");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from CandidateSkills candidateSkills where candidateSkills.id = :candidateSkillId" ;
+		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setLong("candidateSkillId", candidateSkillId).setCacheable(true).list(); 
+		CandidateSkills candidateSkills = null;
+		if(candidateSkillsList != null && !candidateSkillsList.isEmpty()){
+			candidateSkills = candidateSkillsList.iterator().next();
+		}
+		return candidateSkills;
 	}
 	
 }

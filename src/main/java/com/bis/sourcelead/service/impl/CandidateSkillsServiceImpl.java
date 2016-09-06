@@ -83,4 +83,17 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		 
 		return candidateSkillsDao.getCandidateSkillsByCandidateId(candidateId);
 	}
+
+	/**
+	 * @author Venkat Kesav
+	 * This method is used for to get CandidateSkill by Id
+	 * @param candidateSkillId
+	 * @return CandidateSkills By candidateSkillId
+	 * @throws Exception
+	 */
+	@Override
+	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception {
+		
+		return candidateSkillsDao.getCandidateSkillBySkillId(candidateSkillId);
+	}
 }

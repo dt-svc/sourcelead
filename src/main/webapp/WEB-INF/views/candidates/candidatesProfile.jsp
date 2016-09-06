@@ -148,18 +148,35 @@ function deleteCandidate(candidateId){
 </script>
 
 
-
-
+<%-- 
+     @author : Venkat Kesav
+     this script is for Delete Candidate alert
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
 <script type="text/javascript">
-function removeAlertMessage(candidateId){
+function cancelAlert(){ 
+	$("#removeCandidateAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for close alert popup.
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function removeCandidateAlertMessage(candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
-	$("#popUp").append(result);
+	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
@@ -193,9 +210,9 @@ function candidateProfile(candidateId){
             		 else{ 
 							var result ="";
 							
-							result = result+'<div id="popUp" ></div>  ';
+							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							
-							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 							
 							result = result + '<div id="profileEditPopup"></div>';
 							/* result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>';
@@ -535,7 +552,7 @@ function candidateSkillsList(candidateId){
 		                		result = result + '                <option>5</option>';
 		                		result = result + '                <option>6</option>';
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><div class="text-center"> <i class="fa fa-trash"></i> </div></td>';
+		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";
@@ -562,7 +579,40 @@ function candidateSkillsList(candidateId){
      }); 
 }
 </script>
-     
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for Remove Candidate Skill.
+     1.usage     :  used in candidateProfile.
+     2.parameter : csrf token, candidateId, Skill Name
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
+<script>
+function removeSkillById(candidateId, skillId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != ""){
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+            			 candidateSkillsList(candidateId);
+            		 }
+                }
+                 },
+		}); 
+}
+</script>
+    
      
           
 <%-- 

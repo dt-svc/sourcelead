@@ -27,6 +27,13 @@ public interface CandidateSkillsService {
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
 	
 	/**
+	 * @param candidateSkillId
+	 * @return
+	 * @throws Exception
+	 */
+	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception;
+	
+	/**
 	 * @param jsonObj
 	 * @param orgLocations
 	 * @param candidate
