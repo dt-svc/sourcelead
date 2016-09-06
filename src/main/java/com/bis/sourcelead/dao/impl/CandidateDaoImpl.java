@@ -87,20 +87,6 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidate;
 	}
 	
-	/**
-	 * @author David Raju Sammeta
-	 * 
-	 * This Method is for getting Candidate by Candidate Id
-	 * 
-	 * @return Candidate
-	 * 
-	 * @exception NullPointerException
-	 */
-	@Override
-	public Candidate getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long candidateId, Long orgId, Long orgLocationId)
-			throws Exception {
-		return null;
-	}
 
 	/**
 	 * to Candidates List by OrgCode OrgLocationCode

@@ -174,22 +174,6 @@ public class CandidateServiceImpl implements CandidateService {
 		return candidateDao.storeCandidate(candidate);
 	}
 
-	/**
-	 * @author David Raju Sammeta
-	 * 
-	 * This Method is for getting Candidate by Candidate Id OrgId and OrgLocationID
-	 * 
-	 * @return Candidate
-	 * 
-	 * @exception NullPointerException
-	 */
-	@Override
-	public Candidate getCandidateByCandidateIdAndOrgLocationIdAndOrgId(Long candidateId,Long orgId,Long orgLocationId) throws Exception {
-	
-		   Candidate  candidate = candidateDao.getCandidateByCandidateIdAndOrgLocationIdAndOrgId(candidateId, orgId, orgLocationId);
-	
-		 return candidate;
-	}
 
 	/**
 	 * to Candidates List by OrgCode OrgLocationCode
