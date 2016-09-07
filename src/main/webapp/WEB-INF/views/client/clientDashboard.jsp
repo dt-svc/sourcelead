@@ -228,7 +228,7 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		//for client contatcs tab
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+');">Contacts</a></li>';
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 				
 				
 		result = result + '<div class="clearfix"></div>'
@@ -439,7 +439,7 @@ function updateSpocStatus(spocId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
-	    	clientContactList(orgRelationID);
+	    	//clientContactList(orgRelationID);
 	    }
    });
 }
