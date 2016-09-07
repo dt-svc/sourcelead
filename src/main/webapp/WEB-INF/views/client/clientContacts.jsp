@@ -24,6 +24,7 @@ width: 100% !important;
 <!-- client details View starts-->
 <script type="text/javascript">
 	function clientContactList(orgRelationID) {
+		alert("Hi");
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",

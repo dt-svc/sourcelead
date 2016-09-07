@@ -524,7 +524,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			boolean isValidate = isCellValueDate(row.getCell(7), fileName);
 			if(isValidate){
 				 Date date = getCellDate(row.getCell(7), fileName);
-				 writeRow.createCell(7).setCellValue(date);
+				 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
+	             String strDate = dateFormat.format(date);
+				 writeRow.createCell(7).setCellValue(strDate);
 			}else{
 				 writeRow.createCell(7).setCellValue(row.getCell(7).toString());
 			}
@@ -573,12 +575,18 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
+			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
+				isValidated = isFnameLnameValid(row.getCell(1).toString());
+				if(isValidated == false){
+					userImport.setReason("should contain above 2 char");
+					return isValidated;
+				}
 			}
 			
 			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
-			}else if(row.getCell(3) != null || !"".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())){
+			}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validateEmail(row.getCell(3).toString())){
 				userImport.setReason("Invalid Email");
 				return false;
 			}
@@ -595,14 +603,24 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			/*code to check Rate validation*/
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())) {
-				
-				String rate = getCellValueAsString(row.getCell(5), fileName);
-				if (rate != null && !"".equalsIgnoreCase(rate)) {
-					isValidated = isRateLengthValid(rate);
-					if(isValidated == false){
-						userImport.setReason("Incorrect Value");
-						return isValidated;
+				if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString().trim())){
+					String rate = getCellValueAsString(row.getCell(5), fileName);
+					if (rate != null && !"".equalsIgnoreCase(rate)) {
+						isValidated = isRateLengthValid(rate);
+						if(isValidated == false){
+							userImport.setReason("Incorrect Value");
+							return isValidated;
+						}
 					}
+				}else{
+					userImport.setReason("Rate Per Required");
+					return false;
+				}
+			}
+			if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString().trim())){
+				if(row.getCell(5) == null || "".equalsIgnoreCase(row.getCell(5).toString().trim())){
+					userImport.setReason("Rate is Required");
+					return false;
 				}
 			}
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
@@ -791,6 +809,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			cell6.setCellValue("");
 		}
 		if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
+			
+			
 			Cell cell7 = writeRow.createCell(7);
 			cell7.setCellValue(record.get(Constants.DATEOFJOIN));
 		} else {
@@ -852,7 +872,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	
 	
 	private  Date getDateFormat(String dateToValidate, String dateFromat){
-		
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
 		Date date = null;
 		try {
@@ -878,6 +897,20 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}else{
 			flag=false;
 		}
+		return flag;
+	}
+	
+	
+	private boolean isFnameLnameValid(String name){
+		boolean flag = false;
+		boolean istabSpace = name.matches("\\s*");
+		if(istabSpace){
+			flag = false;
+		}else{
+			if(name.length() > 2 && name.length() <= 200){
+				flag = true;
+			}
+	}
 		return flag;
 	}
 	
@@ -907,7 +940,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			flag = false;
 		}
 		return flag;
-
 		}
 	
 	private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName) {

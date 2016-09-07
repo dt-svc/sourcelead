@@ -405,6 +405,7 @@ function pagination1(){
     } );
 }
 </script>
+
 <script>
 function contactPagination(){ 
     $('#tab-2').DataTable( {
@@ -434,6 +435,7 @@ function updateSpocStatus(spocId){
    });
 }
 </script>
+
 
 
 <script>

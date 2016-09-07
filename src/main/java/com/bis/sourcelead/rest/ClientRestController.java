@@ -103,9 +103,7 @@ public class ClientRestController {
 	    public @ResponseBody String getOrgs(@RequestParam(value="orgCode", required=false) String orgCode,
 	    		@RequestParam(value="json", required=false) String json) {
 	    	
-	    	ArrayList<String> orgList = new ArrayList<String>();
-			
-			List<OrgLocations> orgLocationsList = null;
+	    	List<OrgLocations> orgLocationsList = null;
 			try {
 				orgLocationsList = orgLocationService.getOrgsListForClientAndVendorOrgSearch(orgCode);
 			} catch (Exception e) {
@@ -404,7 +402,6 @@ public class ClientRestController {
 		
 	       json = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json);
-	
 	       //clientService.updateClientDetails(jsonObj, orgRelationId);
 	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
 
@@ -449,7 +446,6 @@ public class ClientRestController {
 	@RequestMapping(value = "/getVendorClientEmailVerification", method = RequestMethod.POST)
 	@ResponseBody String getVendorClientEmailVerification(@RequestParam(value = "EmailId", required = false) String emailId,@RequestParam(value = "spocId", required = false) Long spocId)
 			throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String result = null;
 	//	OrgLocations orgLocations = orgLocationService.findByEmail(EmailId,orgLocation.getId());
 

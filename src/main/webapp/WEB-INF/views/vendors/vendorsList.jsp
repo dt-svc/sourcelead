@@ -56,7 +56,7 @@
                         </ul>
                     </div>
                 </li>   -->              
-				<li><a href="<c:url value='/addVendorContac'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
+				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
             </ul>
             <div class="clearfix"></div>
