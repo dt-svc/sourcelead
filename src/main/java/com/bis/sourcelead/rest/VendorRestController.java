@@ -14,13 +14,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
@@ -44,6 +50,12 @@ public class VendorRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	/**
 	 * Handles Vendor Contacts 
@@ -114,10 +126,16 @@ public class VendorRestController {
 	   
 	   
 	   
-	   
+	   /**
+	    * @author Rajashekar
+	    * @param request
+	    * @return JSON
+	    * @throws Exception
+	    */
 	   
 	   @RequestMapping(value = "/getVendorContactLists")
-		public @ResponseBody String getVendorContactLists(HttpServletRequest request) throws Exception {
+	   @ResponseBody
+		public  String getVendorContactLists(HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
@@ -171,5 +189,32 @@ public class VendorRestController {
 			 return resultJson;
 		}
 	   
+	   
+	   // this method is used to re-send email to Spoc
+	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
+		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    //get user by userId
+			    User user = userService.getUserById(Long.parseLong(spocUserId));
+			    
+			    //generate random password
+			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		 		if(user != null){
+		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		 			user.setIsMailSent(Status.Y);
+		 			userService.addUser(user);
+		 			
+		 			//to update spoc invitation status
+		 			/*OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(spocUserId));
+		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
+		 			orgSpocService.addOrgSpoc(spoc);*/
+		 			
+		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg);
+		 		}
+			
+		 	  return "success";
+		    }
 	   
 }
