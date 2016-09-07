@@ -383,5 +383,37 @@ public class CandidateListRestController {
 			}
 			return "success";
 		 }
+	   
+	   
+	   /**
+ 		 * This Method is for save field Candidate details
+ 		 * 
+ 		 * @author sarath kumar
+ 		 * 
+ 		 * @param json   This is the first parameter to updateCandidate method
+ 		 * @param name   This is the first parameter to updateCandidate method
+ 		 * @param value   This is the first parameter to updateCandidate method
+ 		 * @param request    This is the second parameter to updateCandidate method
+ 		 * 
+ 		 * @return String
+ 		 * 
+ 		 * @throws NullPointerException
+ 		 */ 
+	 	 @RequestMapping(value = "/fieldUpdateCandidate")
+	 	 public String fieldUpdateCandidate(@RequestParam(value="candidateSkillId", required=false) String  candidateSkillId,@RequestParam(value="name", required=false) String  name,@RequestParam(value="value", required=false) String  value,HttpServletRequest request) throws Exception {
+	 		       
+	 		 	CandidateSkills candidateSkills =  candidateSkillsService.getCandidateSkillBySkillId(Long.parseLong(candidateSkillId));
+	 		 	if("scale".equalsIgnoreCase(name)){
+	 		 		candidateSkills.setScale(value);
+	 		 	}
+	 		 	if("totalExperience".equalsIgnoreCase(name)){
+	 		 		candidateSkills.setTotalExperience(value);
+	 		 	}
+	 		 	candidateSkillsService.storeCandidateSkills(candidateSkills);
+	 			return "success";
+	 			
+	 	 }
+	 		 
+	 	   
 		
 	}

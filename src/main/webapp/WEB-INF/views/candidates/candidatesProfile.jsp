@@ -265,7 +265,7 @@ function candidateProfile(candidateId){
 							
 							result = result + '<div id="candidateSkillList"></div> ';
 							
-							result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>';
+							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
 							result = result + '    </div>';
 							result = result + '  </div>';
 							$("#tab-1").empty();
@@ -404,7 +404,7 @@ function removeSkillPopUp(candidateId){
 </script>             
             
    
- <%-- 
+<%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
      1.usage     :  used in editCandidate() function  line 78
@@ -496,23 +496,72 @@ function candidateSkillsList(candidateId){
 	                    	 var opt = json[i];   
 	                    	    result = result + '          <tr>';
 		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
-		                		result = result + '            <td><select class="tbldata-dotdot-me width100percnt">';
+		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
-		                		result = result + '                <option>Beginner</option>';
-		                		result = result + '                <option>Familiar</option>';
-		                		result = result + '                <option>proficient</option>';
-		                		result = result + '                <option>Expert</option>';
-		                		result = result + '                <option>Master</option>';
+		                		
+		                		if(opt.scale == "Beginner"){
+		                			result = result + '<option selected>Beginner</option>';
+		                		}else{
+		                			result = result + '<option>Beginner</option>';
+		                		}
+		                		if(opt.scale == "Familiar"){
+		                		    result = result +'<option selected>Familiar</option>';
+		                		}else{
+		                			result = result +'<option>Familiar</option>';
+		                		}
+		                		if(opt.scale == "proficient"){
+		                			result = result + '<option selected>proficient</option>';
+		                		}else{
+		                			result = result + '<option>proficient</option>';
+		                		}
+		                		if(opt.scale == "Expert"){
+		                			result = result + '<option selected>Expert</option>';
+		                		}else{
+		                			result = result + '<option>Expert</option>';
+		                		}
+		                		if(opt.scale == "Master"){
+		                			result = result + '<option selected>Master</option>';
+		                		}else{
+		                			result = result + '  <option>Master</option>';
+		                		}
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><select class="tbldata-dotdot-me width100percnt">';
+		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
-		                		result = result + '                <option>0</option>';
-		                		result = result + '                <option>1</option>';
-		                		result = result + '                <option>2</option>';
-		                		result = result + '                <option>3</option>';
-		                		result = result + '                <option>4</option>';
-		                		result = result + '                <option>5</option>';
-		                		result = result + '                <option>6</option>';
+		                		if(opt.totalExperience == "0"){
+		                			result = result + '<option selected>0</option>';   
+		                		}else{
+		                			result = result + '<option>0</option>';
+		                		}
+		                		if(opt.totalExperience == "1"){
+		                			result = result + '<option selected>1</option>';   
+		                		}else{
+		                			result = result + '<option>1</option>';
+		                		}
+		                		if(opt.totalExperience == "2"){
+		                			result = result + '<option selected>2</option>';   
+		                		}else{
+		                			result = result + '<option>2</option>';
+		                		}
+		                		if(opt.totalExperience == "3"){
+		                			result = result + '<option selected>3</option>';   
+		                		}else{
+		                			result = result + '<option>3</option>';
+		                		}
+		                		if(opt.totalExperience == "4"){
+		                			result = result + '<option selected>4</option>';   
+		                		}else{
+		                			result = result + '<option>4</option>';
+		                		}
+		                		if(opt.totalExperience == "5"){
+		                			result = result + '<option selected>5</option>';   
+		                		}else{
+		                			result = result + '<option>5</option>';
+		                		}
+		                		if(opt.totalExperience == "6"){
+		                			result = result + '<option selected>6</option>';   
+		                		}else{
+		                			result = result + '<option>6</option>';
+		                		}
 		                		result = result + '              </select></td>';
 		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
 		                		result = result + '          </tr>';
@@ -623,6 +672,32 @@ function removeSkillById(candidateId, skillId){
 				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
+
+
+
+
+<%-- 
+     @author : sarath kumar.
+     this script is for inline edit saving .
+     1.usage     :  used in  skillList(); 
+     2.parameter : csrf token ,name , value.
+     3.ajax url implementation in CandidateListRestController.
+--%>         
+<script type="text/javascript">
+	function fieldUpdateCandidate(candidateSkillId,local) {
+			var sourceleadUrl = '${sourceleadUrl}'; 
+			var value = local.value;
+			var name = local.id;
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/fieldUpdateCandidate?${_csrf.parameterName}=${_csrf.token}&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
+						success : function(result) {
+							 
+						},
+			}); 	 	
+	} 
+</script>
+
            
            
             
