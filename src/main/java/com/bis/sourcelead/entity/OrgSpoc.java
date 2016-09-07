@@ -101,6 +101,9 @@ public class OrgSpoc {
 	@Transient
 	private String spocLastName;
 
+	@Transient
+	private String userState;
+
 	
 	public List<User> getUserList() {
 		return userList;
@@ -292,6 +295,14 @@ public class OrgSpoc {
 
 	public void setSpocLastName(String spocLastName) {
 		this.spocLastName = spocLastName;
+	}
+
+	public String getUserState() {
+		return userState;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
 	}
 	
 }
