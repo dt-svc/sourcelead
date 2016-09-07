@@ -141,4 +141,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
 		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType);
 	}
+
+	@Override
+	public OrgRelations getRespondingPartyDetailsById(Long id) throws Exception {
+		return orgRelationsDao.getRespondingPartyDetailsById(id);
+	}
 }

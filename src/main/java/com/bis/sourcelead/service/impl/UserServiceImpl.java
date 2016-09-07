@@ -177,34 +177,20 @@ public class UserServiceImpl implements UserService {
 			commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
-		 if(!isNullOrEmpty(password)){
 		   //send mail to user
 			if(("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
 					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
 					 && ("Y".equals(jsonObj.getString("isMailSent")))){
 				sendEmail(user,loginuser,password);
 			}
-			if(("Company".equalsIgnoreCase(orgLocations.getOrg().getOrgType())) && ((("Client".equals(responderType) || "Vendor".equals(responderType)) 
+			
+			if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
 					&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
-					&& ("Y".equals(jsonObj.getString("isMailSent")))) ){
-				sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg);
+					&& ("Y".equals(jsonObj.getString("isMailSent")))){
+				sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg,orgLocations.getOrg(),orgLocations);
 			}
 			
-			if(("Guest".equalsIgnoreCase(orgLocations.getOrg().getOrgType())) && ((("Client".equals(responderType) || "Vendor".equals(responderType)) 
-					&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
-					&& ("Y".equals(jsonObj.getString("isMailSent")))) ){
-				sendEmailToGuestClientOrVendor(user,loginuser,password,responderType,loginOrg,orgLocations.getOrg(),orgLocations);
-			}
-			
-		 }else{
-			 
-			   if(("Guest".equalsIgnoreCase(orgLocations.getOrg().getOrgType())) && ((("Client".equals(responderType) || "Vendor".equals(responderType)) 
-						&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
-						&& ("Y".equals(jsonObj.getString("isMailSent")))) ){
-					sendEmailToGuestClientOrVendor(user,loginuser,password,responderType,loginOrg,orgLocations.getOrg(),orgLocations);
-				} 
-			 
-		 }
+		
 		return user1;
 				
 		
@@ -576,66 +562,6 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUserDetailsByUserCode(userCode);
 	}
 
-	@Override
-	public void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg)	throws Exception {
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
-		 emailMessage.setLastName(user.getLastName());
-		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
-		 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if("Client".equals(responderType)){
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
-			 globalVarsMap.put("vendorFirstName", loginUser.getFirstName());
-			 globalVarsMap.put("vendorLastName",loginUser.getLastName());
-			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-			 globalVarsMap.put("clientEmailId",user.getEmail());
-			 globalVarsMap.put("password",password);
-		 }else if("Vendor".equals(responderType)){
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
-			 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
-			 globalVarsMap.put("clientLastName",loginUser.getLastName());
-			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-			 globalVarsMap.put("vendorEmailId",user.getEmail());
-			 globalVarsMap.put("password",password);
-		 }
-		 
-		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
-		 emailRecipientList.add(emailRecipient);
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = null;
-		 if("Client".equals(responderType)){
-			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_CLIENT,Constants.ENTITY_TYPE_EMAIL);
-		 }else if("Vendor".equals(responderType)){
-			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_VENDOR,Constants.ENTITY_TYPE_EMAIL);
-		 }
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
-	}
 
 	@Override
 	public List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long orgLocationsId, Long ownerId, List<Long> ownerListOfSpoc) {
@@ -645,7 +571,7 @@ public class UserServiceImpl implements UserService {
 	
 	
 	@Override
-	public void sendEmailToGuestClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
+	public void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
 		 
 		String actionLink = null; 
 		 EmailMessage emailMessage = new EmailMessage();
