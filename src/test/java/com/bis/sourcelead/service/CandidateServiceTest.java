@@ -128,7 +128,7 @@ public class CandidateServiceTest {
 		//@Test
 		public void findByCandidateEmail() throws Exception{
 		Candidate candidate = new Candidate();
-		candidate = candidateService.findByCandidateEmail("ajith@gmail.com");
+		candidate = candidateService.findByCandidateEmail("ajith@gmail.com",1l);
 		logger.info("findByCandidateEmail "+ candidate.getId());
 				}
 		//@Test

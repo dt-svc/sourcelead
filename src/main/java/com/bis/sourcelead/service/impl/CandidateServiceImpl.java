@@ -244,9 +244,9 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
 	 */
 	@Override
-	public Candidate findByCandidateEmail(String email) throws Exception {
+	public Candidate findByCandidateEmail(String email,Long orgLocationId) throws Exception {
 		logger.debug("In CandidateService class...");
-		return candidateDao.findByCandidateEmail(email);
+		return candidateDao.findByCandidateEmail(email,orgLocationId);
 	}
 	
 	

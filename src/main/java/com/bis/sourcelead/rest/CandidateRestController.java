@@ -2,6 +2,8 @@ package com.bis.sourcelead.rest;
 
 import java.util.Iterator;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,10 +89,11 @@ public class CandidateRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateCandidateEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email) throws Exception {
+	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
-		 	Candidate candidate = candidateService.findByCandidateEmail(email);
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	Candidate candidate = candidateService.findByCandidateEmail(email,orgLocation.getId());
 		 	
 		 	if (candidate != null) {
 				result = "true";

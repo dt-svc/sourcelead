@@ -174,12 +174,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Candidate findByCandidateEmail(String email) throws Exception {
+	public Candidate findByCandidateEmail(String email, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("findByEmail start");
 		try{
-			candidate = session.createQuery("from Candidate where email=:email" ).setString( "email", email ).setCacheable(true).list();
+			candidate = session.createQuery("from Candidate can where can.email=:email and can.orgLocationId.id = :orgLocationId" )
+					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			
 			logger.debug("findByEmail end");
 			if (candidate.size() > 0) {

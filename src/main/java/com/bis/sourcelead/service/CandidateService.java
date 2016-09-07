@@ -60,7 +60,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Candidate findByCandidateEmail(String email) throws Exception;
+	public Candidate findByCandidateEmail(String email,Long orgLocationId) throws Exception;
 	
 	/**
 	 * @param candidate
