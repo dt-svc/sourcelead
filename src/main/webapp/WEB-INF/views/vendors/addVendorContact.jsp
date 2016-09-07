@@ -99,14 +99,14 @@
             <label class="col-md-3">Select Vendor <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required">
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required" onchange="getSpocUserDetails();">
                   <option>Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id}">${report.responderLocationId.org.orgName}</option>
+                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -115,6 +115,15 @@
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          
+            <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					
+			        	<div class="col-md-9">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+			     	</div>
+					</div>
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
@@ -129,14 +138,7 @@
 	              </div>
 	            </div>
 	            
-	              <div class="form-group" id="EmailIdDiv">
-					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
-	                            <span class="hidden">Valid Email</span>
-			     	</div>
-					</div>
+	            
                 <%-- <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
@@ -249,6 +251,10 @@ function getOrgName(){
 	$("#webSite").attr("disabled", false);
 	$("#webSite" ).val('');
 	
+	$("#role" ).val('');
+	$("#role").attr("data-validation", "required");
+	document.getElementById("roleDiv").style.display="";
+	document.getElementById("userRoleDiv").style.display="none";
 	
 	$.ajax({                           
     	type: "POST",
@@ -318,18 +324,6 @@ function getOrgDetails()
 	
 }
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <script type="text/javascript">
@@ -556,11 +550,12 @@ function validateClientName(){
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	var orgLocationId = document.getElementById("orgLocationId").value;
+	var vendorName = document.getElementById("vendorName").value;
+	var orgLocationId = vendorName.split(',');
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId[1],
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {

@@ -197,6 +197,15 @@ function getOrgDetails()
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          
+           <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					
+			        	<div class="col-md-9">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+			     	</div>
+					</div>
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
@@ -210,19 +219,6 @@ function getOrgDetails()
 	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
 	              </div>
 	            </div>
-                <div class="form-group" id="EmailIdDiv">
-					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
-	                            <span class="hidden">Valid Email</span>
-			     	</div>
-					</div>
-					
-					<%-- <div class="col-md-9">
-						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
-		                    <span class="hidden">Valid Email</span>
-					</div> --%>
 				
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
@@ -241,18 +237,6 @@ function getOrgDetails()
 	                </select>
 	              </div>
 	            </div>
-                <!--  <div class="form-group">
-                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
-		                        <option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="3">Approver/Project Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
-			              </select>
-                  </div>
-                </div> -->
                 <!-- These are the default sourelead roles we are providing for spoc in client creation -->
               <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
@@ -275,27 +259,6 @@ function getOrgDetails()
 					
 				   </div>
 		        </div>
-                <!--  <div class="form-group" id="roleDiv" style="display: block;">
-                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
-		                        <option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="3">Approver/Project Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
-			              </select>
-                  </div>
-                </div>
-                
-                <div class="form-group" id="userRoleDiv" style="display: none;">
-					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-					<div class="col-md-9">
-					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
-					<input type="hidden" id="userRole" name="roleTypeId" value="" />
-					
-				   </div>
-		        </div> -->
                 
                 <div class="form-group">
 	              <label class="col-md-3">Status</label>
