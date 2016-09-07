@@ -31,6 +31,7 @@
        
        
 		<!-- Project -->
+		 <div id="loading"></div>
 <div class="timesheet_out">
 
 <div class="vendor_wrap">
@@ -159,7 +160,7 @@ function getVendorLists(){
 	       		result = result +'<td><div>20</div></td>';
 	       		result = result +' <td><div>10</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
-	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
+	       		result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
    	        		result = result +'</tr>';
    				}
    	        	
@@ -331,6 +332,7 @@ function resendVendorSpocInvitation(spocUserId,orgRelationId){
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
 			        	getVendorContactLists();
 			        },
 			    });

@@ -12,6 +12,7 @@
 
 
 <body>
+ <div id="loading"></div>
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -409,10 +410,11 @@ function resendClientSpocInvitation(spocUserId,orgRelationId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-			 $.ajax({
+		$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Client&orgRelationID="+orgRelationId, 
 			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
 			        	getVendorContactLists();
 			        },
 			    });
