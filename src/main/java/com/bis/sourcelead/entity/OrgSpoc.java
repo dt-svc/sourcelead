@@ -105,6 +105,9 @@ public class OrgSpoc {
 	@Transient
 	private Long orgRelationId;
 
+	@Transient
+	private String userState;
+
 	
 	public List<User> getUserList() {
 		return userList;
@@ -298,6 +301,7 @@ public class OrgSpoc {
 		this.spocLastName = spocLastName;
 	}
 
+<<<<<<< HEAD
 	public Long getOrgRelationId() {
 		return orgRelationId;
 	}
@@ -305,4 +309,14 @@ public class OrgSpoc {
 	public void setOrgRelationId(Long orgRelationId) {
 		this.orgRelationId = orgRelationId;
 	}
+=======
+	public String getUserState() {
+		return userState;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
+	}
+	
+>>>>>>> remotes/origin/Recruiting_ATS_VMS
 }

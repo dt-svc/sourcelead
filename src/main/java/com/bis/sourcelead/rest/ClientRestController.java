@@ -380,6 +380,7 @@ public class ClientRestController {
 		     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
 		     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 		     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+		     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
 		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
