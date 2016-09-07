@@ -29,7 +29,6 @@
 						var json = JSON.parse(data);
 						var result = "";
 						
-						
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
 						
@@ -38,33 +37,25 @@
 							result = result + ' </div>'; 
 							
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>First Name:</strong>';
-								if(json.spocUser.firstName !=null && json.spocUser.firstName !='' && json.spocUser.firstName !='undefined'){
-									result = result + '<span>'+json.spocUser.firstName+'</span>';
+								result = result + '<strong>Spoc Name:</strong>';
+								if(json.spocName !=null && json.spocName !='' && json.spocName !='undefined'){
+									result = result + '<span>'+json.spocName+'</span>';
 								}
 								result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Last Name:</strong>';
-							if(json.lastName !=null && json.spocUser.lastName !='' && json.spocUser.lastName !='undefined'){
-								result = result + '<span>'+json.spocUser.lastName+'</span>';
-							}
-							result = result + '<div class="clearfix"></div>';
-							result = result + '</div>';
-							
-							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>EmailId:</strong>';
-							if(json.spocUser.email !=null && json.spocUser.email !='' && json.spocUser.email !='undefined'){
-								result = result + '<span>'+json.spocUser.email+'</span>';
+							if(json.spocEmail !=null && json.spocEmail !='' && json.spocEmail !='undefined'){
+								result = result + '<span>'+json.spocEmail+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Phone No:</strong>';
-							if(json.spocUser.mobilePhone !=null && json.spocUser.mobilePhone !='' && json.spocUser.mobilePhone !='undefined'){
-								result = result + '<span>'+json.spocUser.mobilePhone+'</span>';
+							if(json.spocMobilePhone !=null && json.spocMobilePhone !='' && json.spocMobilePhone !='undefined'){
+								result = result + '<span>'+json.spocMobilePhone+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -163,23 +154,23 @@
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
 						result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 						result = result + '<label>First Name:<span class="text-danger">*</span></label>';
-						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocUser.firstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
+						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 						result = result + '<label>Last Name:</label>';
-						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocUser.lastName+'" placeholder="Last name" field-name="Last name">';
+						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
 						result = result + '<label>EmailId :</label>';
-						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocUser.email+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
+						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocUser.mobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
