@@ -107,7 +107,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	 * 
 	 * @param candidateId
 	 * 
-	 * @param candidateCertificateId
+	 * @param candidateEducationId
 	 * 
 	 * @return {@link CandidateEducation}
 	 * 

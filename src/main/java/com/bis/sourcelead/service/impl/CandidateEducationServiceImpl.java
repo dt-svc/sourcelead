@@ -104,7 +104,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			candidateEducation.setAddress(jsonObject.getString("address"));
 		}
 		candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidateEducation.setCreatedBy(user.getUserCode());
 		candidateEducation.setCreatedDate(commonUtil.currentDate());
 		candidateEducation.setUpdatedBy(user.getUserCode());
@@ -202,8 +201,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 */
 	@Override
 	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,
-			Long candidateCertificateId) throws Exception {
-		  return candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateCertificateId);
+			Long candidateEducationId) throws Exception {
+		  return candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 	}
 
 
