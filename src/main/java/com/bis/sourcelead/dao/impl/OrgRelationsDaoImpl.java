@@ -214,5 +214,19 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
         }
 		return spocsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getRespondingPartyDetailsById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+   	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org org where orgrelation.id = :id ");
+      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+      OrgRelations orgRelation = null;
+		if(orgRelations != null && !orgRelations.isEmpty())
+		{
+			orgRelation = orgRelations.iterator().next();
+		}
+		return orgRelation;
+}
 	
 }

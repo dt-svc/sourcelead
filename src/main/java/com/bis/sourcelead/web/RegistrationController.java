@@ -111,9 +111,6 @@ public class RegistrationController {
 	 
 	 
 	 
-	 
-	 
-	 
 	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
 		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
@@ -126,7 +123,7 @@ public class RegistrationController {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
 		    	
-		    	if(null != org && "Guest".equalsIgnoreCase(org.getOrgType())){
+		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	if("VMS".equalsIgnoreCase(respondingOrgType)){
 			    		org.setVms(Status.Y);
@@ -139,18 +136,21 @@ public class RegistrationController {
 					 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId,org);
 					 if(actionRolesList != null){
 						 for(ActionRoles actionRoles : actionRolesList){
-							 ActionRoles userActionroles = new ActionRoles();
-							 userActionroles.setTabActions(actionRoles.getTabActions());
-							 userActionroles.setRoles(actionRoles.getRoles());
-							 userActionroles.setIsNotify(actionRoles.getIsNotify());
-							 userActionroles.setOrg(org);
-							 userActionroles.setOrgLocations(orgLocations);
-							 userActionroles.setCreatedDate(new Date());
-							 actionRolesService.addActionRoles(userActionroles);
+							 ActionRoles userActionroles = actionRolesService.getActionRolesByActionIdAndRoleIdAndLocationId(actionRoles.getTabActions().getId(), actionRoles.getRoles().getId(), org.getId());
+							 if(null == userActionroles){
+								 userActionroles = new ActionRoles();
+								 userActionroles.setTabActions(actionRoles.getTabActions());
+								 userActionroles.setRoles(actionRoles.getRoles());
+								 userActionroles.setIsNotify(actionRoles.getIsNotify());
+								 userActionroles.setOrg(org);
+								 userActionroles.setOrgLocations(orgLocations);
+								 userActionroles.setCreatedDate(new Date());
+								 actionRolesService.addActionRoles(userActionroles);
+							 }
+							 
 						 }
 					 }
 		    	}
-		    	
 				 
 				
 			} catch (Exception e) {

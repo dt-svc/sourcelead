@@ -188,7 +188,7 @@ public class VendorRestController {
 			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
 			 return resultJson;
 		}
-	   
+	
 	   
 	   // this method is used to re-send email to Spoc
 	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
@@ -196,12 +196,13 @@ public class VendorRestController {
 			    
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(orgRelationID);
 			    //get user by userId
 			    User user = userService.getUserById(Long.parseLong(spocUserId));
 			    
 			    //generate random password
 			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		 		if(user != null){
+		 		if(null != user  && null != orgRelations){
 		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		 			user.setIsMailSent(Status.Y);
 		 			userService.addUser(user);
@@ -211,7 +212,7 @@ public class VendorRestController {
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);*/
 		 			
-		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg);
+		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
 		 		}
 			
 		 	  return "success";
