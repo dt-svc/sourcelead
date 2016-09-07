@@ -58,7 +58,7 @@
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table ">
+				<div class="clients_wrap_table " id ="vendorListFilter">
 			
 		     	<table id="clientList" class="display" cellspacing="0" width="100%"> </table>
 		     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
@@ -272,6 +272,7 @@ function getVendorContactLists(){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	if(json.length != null && json.length != ''){
+   	        		alert("if cond"+json.length);
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Name</th>';
@@ -369,12 +370,15 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="#";></i></div></td>';
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
    	        		
    	        		
    	        		result = result +'</tr>';
    				}
    	        	result = result +'</tbody>';
+   	    	    $("#vendorContactList").empty();  
+   	    	    $("#vendorContactList").append(result)
+   	    	    pagination1(); 
    	        	}else{
    	        		result = result +'<div class="row mt">';
    	        		result = result +'<div class="col-lg-12">';
@@ -388,10 +392,10 @@ function getVendorContactLists(){
    	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        		result = result +'</div>';
+   	        	    $("#vendorContactList").empty();  
+    	    	    $("#vendorContactList").append(result)
    	        	}
-   	    	    $("#vendorContactList").empty();  
-   	    	    $("#vendorContactList").append(result)
-   	    	    pagination1(); 
+   	        	
    	    	    
    		    }
 	 });
@@ -663,7 +667,7 @@ function  inlineEditClientProjects(projectId,localFieldName){
 	 }); 
 }
 </script> 
-
+<div id="popUp"></div>
 <script> 
 function  inlineEditForProjects(orgRelationId,localFieldName){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -756,6 +760,45 @@ function acceptInvitation(spocId){
 }
 </script>
 
+<script>
+function terminateSpoc1(spocId, orgRelationID){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reasonForSpocDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function saveReason1(spocId, orgRelationID){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForSpoc").value;
+	if(reason){
+		$("#reasonForSpocDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			 	alert("giiii");
+   			    //vendorContactList(orgRelationID);
+   			 getVendorContactLists();
+		    }
+	   });
+	}else{
+		$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	  
+}
+</script>
 <script>
 function rejectInvitation(spocId){
 	 var sourceleadUrl ='${sourceleadUrl}';

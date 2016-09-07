@@ -95,11 +95,13 @@ public class OrgSpoc {
 	@Transient
 	private List<User> userList;
 	
+
 	@Transient
 	private String spocFirstName;
 	
 	@Transient
 	private String spocLastName;
+
 
 	
 	public List<User> getUserList() {
