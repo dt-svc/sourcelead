@@ -130,7 +130,6 @@
 						var selected3 = '';
 						var selected4 = '';
 						var selected5 = '';
-						
 					
 						
 						if(json.spocStatus == 'Active'){
@@ -152,7 +151,42 @@
 							selected5 = 'selected';
 						} 
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
-						result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+						/* readonly="readonly" */
+				     	if(json.userState == 'ACTIVE'){
+				     		
+				     		result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" readonly="readonly">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
+							result = result + '<label>Last Name:</label>';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+							result = result + '<label>Email:</label>';
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+							result = result + '</div>';
+					   }else{
+						   result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
+							result = result + '<label>Last Name:</label>';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+							result = result + '<label>Email:</label>';
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
+							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+							result = result + '</div>';
+					   }
+						/* result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 						result = result + '<label>First Name:<span class="text-danger">*</span></label>';
 						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
 						result = result + '</div>';
@@ -163,10 +197,10 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
-						result = result + '<label>EmailId :</label>';
+						result = result + '<label>Email:</label>';
 						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
-						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
-						result = result + '</div>';
+						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+						result = result + '</div>'; */
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
@@ -292,8 +326,8 @@
            }
 		
     }
-	$('body').on('blur', '#editClient_form', function() {
-        $("#editClient_form").showHelpOnFocus();
-        $("#editClient_form").validateOnBlur(false, validationSettings);  
+	$('body').on('blur', '#editVendorContact_form', function() {
+        $("#editVendorContact_form").showHelpOnFocus();
+        $("#editVendorContact_form").validateOnBlur(false, validationSettings);  
     });
 </script>    
