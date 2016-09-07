@@ -66,6 +66,11 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		if(jsonObject.has("name")){
 			candidateEducation.setName(jsonObject.getString("name"));
+			String educationName = jsonObject.getString("name");
+			String[] educations = educationName.split(",");
+			for(String edu : educations){
+				candidateEducation.setName(edu);
+			}
 		}
 		if(jsonObject.has("specialization")){
 			candidateEducation.setSpecialization(jsonObject.getString("specialization"));

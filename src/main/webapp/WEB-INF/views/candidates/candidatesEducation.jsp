@@ -1,3 +1,18 @@
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+
+<!-- these files for autocomplete with tagit -->
+
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <%-- 
      @author : sarath kumar.
      this script is for display candidate education tab data.
@@ -184,9 +199,11 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result  +'                    <div class="col-md-12">';
-	result = result  +'                      <input type="text" name="name" field-name="name" data-validation="required validate_AlphaNumber validate_length length2-100" class="form-control input-sm" value="" placeholder="Education *" required>                                    ';
-	result = result  +'                    </div>                                                                                                                             ';
+	result = result + '<select multiple class="chosen-select form-control" name="name" id="name" data-validation="validate_Space" data-validation-optional="true">';
+	    <c:forEach var="edu" items="${educationsList}">
+	  			  result = result + ' <option value="${edu.name}">${edu.name}</option>';
+	    </c:forEach>
+    result = result + '</select>';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
@@ -267,7 +284,22 @@ function addEducation(candidateId) {
 	 $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
 	   });	
-	   
+	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
+	 var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 	}
 </script>
 
@@ -324,6 +356,8 @@ $('body').on('blur', '#education_form', function() {
 	$("#education_form").showHelpOnFocus();
 	$("#education_form").validateOnBlur(false, validationSettings);
 });
+
+
 </script>            
           
 
@@ -385,7 +419,5 @@ function removeEducation(candidateEducationId,candidateId){
 }
 </script> 
 
-       <!-- this script is for removing the Education  Ends -->       
-            
-
+ <!-- this script is for removing the Education  Ends -->       
  
