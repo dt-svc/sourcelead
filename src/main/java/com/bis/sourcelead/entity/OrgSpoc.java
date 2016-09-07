@@ -94,6 +94,7 @@ public class OrgSpoc {
 
 	@Transient
 	private List<User> userList;
+	
 
 	
 	public List<User> getUserList() {
