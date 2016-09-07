@@ -537,7 +537,7 @@ function pagination1(){
 		result = result
 				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
 				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
-		result = result + '<li><a href="#tab-2" onclick="vendorContactList('+ orgRelationId + ');">Contacts</a></li>'; 
+		result = result + '<li><a href="#tab-2" onclick="vendorContactList('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
 		result = result + '<li><a href="#tab-3">Documents</a></li>'; 
 		result = result + '<li><a href="#tab-4">Activity</a></li>'; 
 		result = result + '<div class="clearfix"></div>'
