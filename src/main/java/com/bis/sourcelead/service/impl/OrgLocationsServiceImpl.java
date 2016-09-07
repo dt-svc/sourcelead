@@ -116,15 +116,21 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				clientOrgLocations.setEmail(jsonObj.getString("emailId"));
 			}
 			
-			if(jsonObj.has("country")){
+			if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 				clientOrgLocations.setCountry(jsonObj.getString("country"));
+			}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
+				clientOrgLocations.setCountry(jsonObj.getString("orgCountry"));
 			}
-			if(jsonObj.has("state")){
+			if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 				clientOrgLocations.setState(jsonObj.getString("state"));
+			}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
+				clientOrgLocations.setCountry(jsonObj.getString("orgState"));
 			}
 			
-			if(jsonObj.has("city")){
+			if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 				clientOrgLocations.setCity(jsonObj.getString("city"));
+			}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
+				clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
 			}
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
@@ -143,4 +149,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		return orgLocationsDao.getOrgsListForClientAndVendorOrgSearch(orgCode);
 	}
 	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 }
