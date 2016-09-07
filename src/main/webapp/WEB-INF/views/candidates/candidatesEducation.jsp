@@ -199,10 +199,10 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + '<select multiple class="chosen-select form-control" name="name" id="name" data-validation="validate_Space" data-validation-optional="true">';
-	    <c:forEach var="edu" items="${educationsList}">
-	  			  result = result + ' <option value="${edu.name}">${edu.name}</option>';
-	    </c:forEach>
+	result = result + '<select  class="chosen-select form-control" name="name" id="name" data-validation="validate_Space" data-validation-optional="true">';
+	                <c:forEach var="edu" items="${educationsList}">
+	result = result + ' <option value="${edu.name}">${edu.name}</option>';
+	                 </c:forEach>
     result = result + '</select>';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
