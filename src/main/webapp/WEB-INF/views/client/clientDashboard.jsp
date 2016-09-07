@@ -131,6 +131,15 @@ function getClientDetails(){
    				{  
    	        		
    	        		var report = json[i];
+   	        		var location = "";
+   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+   	        			location = report.country+", "+report.state+", "+report.city;
+   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+   	        			location = report.country+", "+report.state;
+   	        		}else{
+   	        			location = report.country;
+   	        		}
+   	        		
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
@@ -149,10 +158,10 @@ function getClientDetails(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		
-   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        		if(location != null && location  != '' && location  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
-   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		}else{
@@ -219,7 +228,7 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		//for client contatcs tab
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+');">Contacts</a></li>';
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 				
 				
 		result = result + '<div class="clearfix"></div>'
@@ -434,7 +443,7 @@ function updateSpocStatus(spocId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
-	    	clientContactList(orgRelationID);
+	    	//clientContactList(orgRelationID);
 	    }
    });
 }

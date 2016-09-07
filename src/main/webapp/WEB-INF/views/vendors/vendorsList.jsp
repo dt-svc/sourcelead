@@ -119,6 +119,16 @@ function getVendorLists(){
    				{  
    	        		
    	        		var report = json[i];
+   	        		
+   	        		var location = "";
+   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+   	        			location = report.country+", "+report.state+", "+report.city;
+   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+   	        			location = report.country+", "+report.state;
+   	        		}else{
+   	        			location = report.country;
+   	        		}
+   	        		
    	        		result = result +'<tr>';
    	        			
    	        			result = result +'<td>';
@@ -136,10 +146,10 @@ function getVendorLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		
-   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        		if(location != null && location  != '' && location  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
-   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'}">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		}else{
@@ -409,6 +419,17 @@ function getClientDetails(){
    				{  
    	        		
    	        		var report = json[i];
+   	        		
+   	        		var location = "";
+   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+   	        			location = report.country+", "+report.state+", "+report.city;
+   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+   	        			location = report.country+", "+report.state;
+   	        		}else{
+   	        			location = report.country;
+   	        		}
+   	        		
+   	        		
    	        		result = result +'<tr>';
    	        		if(report.locationID == loginOrgLocId){
    	        			result = result +'<td>';
@@ -427,10 +448,10 @@ function getClientDetails(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		
-   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        		if(location != null && location  != '' && location  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
-   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'}">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		}else{
@@ -566,7 +587,7 @@ function pagination1(){
 		result = result
 				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
 				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
-		result = result + '<li><a href="#tab-2" onclick="vendorContactList('+ orgRelationId + ');">Contacts</a></li>'; 
+		result = result + '<li><a href="#tab-2" onclick="vendorContactList('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
 		result = result + '<li><a href="#tab-3">Documents</a></li>'; 
 		result = result + '<li><a href="#tab-4">Activity</a></li>'; 
 		result = result + '<div class="clearfix"></div>'

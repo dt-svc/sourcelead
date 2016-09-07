@@ -110,6 +110,14 @@ public class RegistrationController {
 		}
 	 
 	 
+	 /**
+	  * @author Venkat I
+	  * This method calls when client or vendor accept the invitation or accept the notification.
+	  * @param respondingOrgType
+	  * @param actionLink
+	  * @param respondingPartyOrgLocationId
+	  * @return
+	  */
 	 
 	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
 		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,

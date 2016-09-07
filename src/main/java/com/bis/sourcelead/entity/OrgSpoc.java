@@ -96,6 +96,13 @@ public class OrgSpoc {
 	private List<User> userList;
 	
 
+	@Transient
+	private String spocFirstName;
+	
+	@Transient
+	private String spocLastName;
+
+
 	
 	public List<User> getUserList() {
 		return userList;
@@ -271,6 +278,22 @@ public class OrgSpoc {
 
 	public void setOwnerUserId(String ownerUserId) {
 		this.ownerUserId = ownerUserId;
+	}
+
+	public String getSpocFirstName() {
+		return spocFirstName;
+	}
+
+	public void setSpocFirstName(String spocFirstName) {
+		this.spocFirstName = spocFirstName;
+	}
+
+	public String getSpocLastName() {
+		return spocLastName;
+	}
+
+	public void setSpocLastName(String spocLastName) {
+		this.spocLastName = spocLastName;
 	}
 	
 }
