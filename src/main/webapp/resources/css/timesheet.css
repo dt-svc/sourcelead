@@ -16,7 +16,7 @@ body {
 	height:auto;
 	}
 .timesheet_head ul {
-	margin:0px 0px; padding: 2px 245px 2px 0px; float:right; height:40px;
+	margin:0px 0px; padding: 2px 245px 2px 0px; float:right; height:auto;
 	}
 .timesheet_head ul.no_search {
 	padding: 2px 15px 2px 0px;
@@ -667,7 +667,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 	}
 .project-tabs-menu li {
     float:left; margin-right:-1px; background-color:#eef1fc; border:1px solid #d4d4d1; border-bottom:none; list-style-type:none; 
-	border-radius:15px 15px 0px 0px; border-top:2px solid #d4d4d1;
+	border-radius:10px 10px 0px 0px; border-top:2px solid #d4d4d1;
 	}
 .project-tabs-menu li.current {
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
@@ -1114,7 +1114,10 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summary_edit_cta select {
 	width:100%; box-shadow:0px 0px 1px rgba(0,0,0,0.4); height:32px; border:none; padding:0px 10px; border-radius:2px;
 	box-sizing:border-box; -webkit-appearance:none; appearance:none; background: url("../images/arrow-d-g.png") no-repeat 95% center;
-	background-size: 10px;
+	background-size: 10px; -moz-appearance:none; -webkit-appearance:none;
+}
+.user_summary_edit_cta select::-ms-expand{
+  display:none;
 }
 .user_summary_edit_cta select.rate_sele {
 	width:50%; margin:0px 0px 0px 1%;
@@ -1811,18 +1814,22 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .paginate_button.previous {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background-color: #FFF !important; margin-left: -1px !important; position: relative !important; top: -11px !important;
+    color: #337ab7 !important; background-color: #FFF !important; margin-left: -1px !important; position: relative !important; top:0px !important;
     border-radius: 5px 0px 0px 5px !important;
     }
 .paginate_button.next {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
     color: #337ab7 !important; background-color: #FFF !important;
-    margin-left: -1px !important; position: relative !important; top: -11px !important; border-radius: 0px 5px 5px 0px !important;
+    margin-left: -1px !important; position: relative !important; top:0px !important; border-radius: 0px 5px 5px 0px !important;
     }
 .dataTables_wrapper .dataTables_paginate {
     color: #333 !important; padding: 8px 15px 8px 0px !important;
-    }  					
-
-					
+    }  	
+.clients_wrap_table .fa-check, .vendor_wrap_inn_table .fa-check  {
+	font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#30c453;
+	}
+.clients_wrap_table .fa-times, .vendor_wrap_inn_table .fa-times {
+	font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#f04d4d;
+	}					
 
 		

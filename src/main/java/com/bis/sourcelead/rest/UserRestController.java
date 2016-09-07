@@ -424,14 +424,13 @@ public class UserRestController {
 					  	  projectMembers.setTerminateReason(reason);
 						  projectMembers.setUpdatedDate(new Date());
 						  projectMembers.setUpdatedBy(user.getUserCode());
-					  	  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
 					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						  if(pmh != null){
 							  pmh.setProjectTerminationDate(new Date());
 							  pmh.setUpdatedDate(new Date());
 							  pmh.setUpdatedBy(user.getUserCode());
-							  memberHistoryList.add(pmh);
-							  projectMembers.setMemberHistoryList(memberHistoryList);
+							  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 						  }
 						  projectMembers.setStatus(status);
 						  projectMembersService.saveProjectMember(projectMembers);
@@ -539,8 +538,10 @@ public class UserRestController {
 		    	    	
 					  pmh.setUpdatedDate(commonUtil.currentDate());
 					  pmh.setUpdatedBy(user.getUserCode());
-					  memberHistoryList.add(pmh);
-					  projectMembers.setMemberHistoryList(memberHistoryList);
+					/*  memberHistoryList.add(pmh);
+					  projectMembers.setMemberHistoryList(memberHistoryList);*/
+					  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+					  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 					  
 					  projectMembers.setStatus(status);
 					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);

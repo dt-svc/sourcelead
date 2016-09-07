@@ -561,7 +561,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		   }
 		   		
 	         sb.append("  <td><div class='time_appr_user'>");
-	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this,"+ts.getProjectMembers().getEmployee().getUser().getId()+");' src='/displayUserImage/"+ts.getProjectMembers().getEmployee().getUser().getId()+"' alt='Profile Image' class='img-circle img-responsive'>");
+	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='"+request.getContextPath()+"/displayUserImage/"+ts.getProjectMembers().getEmployee().getUser().getId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
 	         sb.append(" <div></td>");
 	         
