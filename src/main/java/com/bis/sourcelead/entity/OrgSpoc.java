@@ -102,6 +102,8 @@ public class OrgSpoc {
 	@Transient
 	private String spocLastName;
 
+	@Transient
+	private Long orgRelationId;
 
 	
 	public List<User> getUserList() {
@@ -295,5 +297,12 @@ public class OrgSpoc {
 	public void setSpocLastName(String spocLastName) {
 		this.spocLastName = spocLastName;
 	}
-	
+
+	public Long getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
 }

@@ -272,7 +272,6 @@ function getVendorContactLists(){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	if(json.length != null && json.length != ''){
-   	        		alert("if cond"+json.length);
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Name</th>';
@@ -345,7 +344,7 @@ function getVendorContactLists(){
      	        		}
      	        		
      	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-     	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Send</a></b></div></td>';
      	        		}
      	        		
      	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
@@ -357,7 +356,7 @@ function getVendorContactLists(){
      	        		}
      	        		
      	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-     	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
      	        		}
      	        		
      	        		if(report.invitationStatus == 'Accepted'){ 
@@ -403,6 +402,25 @@ function getVendorContactLists(){
 	
 }	
 </script> 
+
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript">
+function resendClientSpocInvitation(spocUserId,orgRelationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        success: function(result) {
+			        	getVendorContactLists();
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
 <script>
 function pagination1(){  
     $('#vendorContactList').DataTable( { 
@@ -788,7 +806,6 @@ function saveReason1(spocId, orgRelationID){
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			 	alert("giiii");
    			    //vendorContactList(orgRelationID);
    			 getVendorContactLists();
 		    }

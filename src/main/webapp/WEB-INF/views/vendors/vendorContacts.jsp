@@ -251,7 +251,7 @@ function resendSpocInvitation(spocUserId,orgRelationID){
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
 			        success: function(result) {
-			        	vendorContactList(orgRelationID)
+			        	vendorContactList(orgRelationID);
 			        },
 			    });
 		 }

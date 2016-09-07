@@ -676,7 +676,7 @@ public class ClientRestController {
 			}
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-			
+			orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
 		}
 		
 		 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);

@@ -311,7 +311,7 @@ function resendSpocInvitation(spocUserId,orgRelationID){
 function addContact(orgRelationID,clientLocationId) {	  
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
-	result = result  +'	<div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result  +'	<div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
 	result = result  +'	<div class="form-horizontal clearfix">';
                               
 	
@@ -420,23 +420,20 @@ function addContact(orgRelationID,clientLocationId) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	
-	$(".addcon-pop").click(function(){
+	/* $(".addcon-pop").click(function(){
 		 $(".collapse-div-adduser").toggleClass("show-div");
 		 $(".collapse-div").removeClass("show-div");
-	 });
+	 }); */
+	 
+	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){
-		 $(this).parent().removeClass("show-div");
+		 $(this).closest('.edit-details').removeClass("edit-details-active");
 		 });
-	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
-	    $(".collapse-div-adduser").removeClass("show-div");
-		$(".collapse-div").removeClass("show-div");
-	   });	
-	   
-	}
+	 
+	};
 </script>
  <!-- This Script is For Popup Div Ends --> 
 

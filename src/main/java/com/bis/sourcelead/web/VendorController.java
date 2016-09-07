@@ -63,6 +63,9 @@ public class VendorController {
 			orgRelation.setNoOfContatcs(orgSpocs.size());
 		}*/
 		
+		//for get the owners list for spocs
+		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		model.addObject("userList", userList);
 	
 		model.addObject("loginOrgLocId",orgLoc.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
