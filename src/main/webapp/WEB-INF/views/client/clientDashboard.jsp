@@ -312,7 +312,11 @@ function getVendorContactLists(){
    	        		result = result +'<tr>';
    	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
+   	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
    	        		
@@ -325,24 +329,24 @@ function getVendorContactLists(){
 					result = result + ' <option '+selected5+'>Contracted</option>';
 					result = result + ' </select>';
 					result = result + ' </div></td>';
-   	        		
+					
    	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
      	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
      	        		}
      	        		
-     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
      	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
      	        		}
      	        		
-     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
      	        			result = result +' <td><div>---</div></td>';
      	        		}
      	        		
-     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
      	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
      	        		}
      	        		
-     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
      	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
      	        		}
      	        		
@@ -401,6 +405,7 @@ function pagination1(){
     } );
 }
 </script>
+
 <script>
 function contactPagination(){ 
     $('#tab-2').DataTable( {
@@ -430,6 +435,7 @@ function updateSpocStatus(spocId){
    });
 }
 </script>
+
 
 
 <script>

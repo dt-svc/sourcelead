@@ -103,9 +103,7 @@ public class ClientRestController {
 	    public @ResponseBody String getOrgs(@RequestParam(value="orgCode", required=false) String orgCode,
 	    		@RequestParam(value="json", required=false) String json) {
 	    	
-	    	ArrayList<String> orgList = new ArrayList<String>();
-			
-			List<OrgLocations> orgLocationsList = null;
+	    	List<OrgLocations> orgLocationsList = null;
 			try {
 				orgLocationsList = orgLocationService.getOrgsListForClientAndVendorOrgSearch(orgCode);
 			} catch (Exception e) {
@@ -404,7 +402,6 @@ public class ClientRestController {
 		
 	       json = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json);
-	
 	       //clientService.updateClientDetails(jsonObj, orgRelationId);
 	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
 
@@ -449,7 +446,6 @@ public class ClientRestController {
 	@RequestMapping(value = "/getVendorClientEmailVerification", method = RequestMethod.POST)
 	@ResponseBody String getVendorClientEmailVerification(@RequestParam(value = "EmailId", required = false) String emailId,@RequestParam(value = "spocId", required = false) Long spocId)
 			throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String result = null;
 	//	OrgLocations orgLocations = orgLocationService.findByEmail(EmailId,orgLocation.getId());
 
@@ -634,20 +630,47 @@ public class ClientRestController {
 	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-			if(orgSpoc.getSpocUser() != null){
-				orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-				orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-				orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			
+			if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+				
+				//if login user is spoc
+				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				}
+				//if login user is Owner
+				else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					}
+					
+				 
+			}else{
+				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+					 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+				 }
+				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				}
 			}
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-			if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
-				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 			}
-			if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLocations.getId()){
-				orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 			}
+			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+			
 		}
 		
 		 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
