@@ -87,11 +87,10 @@ public interface UserService  {
 	 */
 	User getUserDetailsByUserCode(String userCode);
 
-	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg) throws Exception;
 
 	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
 	
-	void sendEmailToGuestClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
+	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
 
 }	
 		
