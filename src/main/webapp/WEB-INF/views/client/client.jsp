@@ -481,21 +481,18 @@ function getSpocUserDetails(){
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			$("#role").removeAttr("data-validation");
-	        			$("#role" ).val('');
-        			    document.getElementById("roleDiv").style.display="none";
-   	        			document.getElementById("userRoleDiv").style.display="";
-   	        			$("#userRole").val(json[3]);
-   	        			$("#userRoleText").val(json[4]);
-	        		 }else{
-	        			 $("#role").attr("data-validation", "required");
-	        			 $("#userRole" ).val('');
-	        			 document.getElementById("roleDiv").style.display="";
-	        			 document.getElementById("userRoleDiv").style.display="none";
-	        		 }
-	        		
-	        		
-			      	 
+		        			$("#role").removeAttr("data-validation");
+		        			$("#role" ).val('');
+	        			    document.getElementById("roleDiv").style.display="none";
+	   	        			document.getElementById("userRoleDiv").style.display="";
+	   	        			$("#userRole").val(json[3]);
+	   	        			$("#userRoleText").val(json[4]);
+		        		 }else{
+		        			 $("#role").attr("data-validation", "required");
+		        			 $("#userRole" ).val('');
+		        			 document.getElementById("roleDiv").style.display="";
+		        			 document.getElementById("userRoleDiv").style.display="none";
+		        		 }
 	        	}
 			 },
 	        error: function(e){
