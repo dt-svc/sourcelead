@@ -230,8 +230,10 @@ function pagination(){
 		result = result + '</div>';
 		
 		//for client contatcs tab
-		result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>';
+		result = result + '<div class="clients_wrap_table " >';
+	   	result = result + '<div id="tab-2-addContact"> </div>';
+        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
+        result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -310,12 +312,16 @@ function getVendorContactLists(){
    	        		result = result +'<tr>';
    	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
+   	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
    	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
    	        		
    	        		result = result + ' <td><div>';
-					result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus(\''+report.id+'\');">';
+					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 					result = result + ' <option '+selected1+'>Active</option>';
 					result = result + ' <option '+selected2+'>In-Active</option>';
 					result = result + ' <option '+selected3+'>New</option>';
@@ -323,24 +329,24 @@ function getVendorContactLists(){
 					result = result + ' <option '+selected5+'>Contracted</option>';
 					result = result + ' </select>';
 					result = result + ' </div></td>';
-   	        		
+					
    	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
      	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
      	        		}
      	        		
-     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
      	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
      	        		}
      	        		
-     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
      	        			result = result +' <td><div>---</div></td>';
      	        		}
      	        		
-     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUser.id != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
      	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
      	        		}
      	        		
-     	        		if(report.ownerUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
      	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
      	        		}
      	        		
@@ -399,6 +405,39 @@ function pagination1(){
     } );
 }
 </script>
+
+<script>
+function contactPagination(){ 
+    $('#tab-2').DataTable( {
+        "scrollCollapse": false,
+        "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+        "bLengthChange": false,
+        "bDestroy": true,
+        "ordering": false,
+        "oLanguage": {
+             "sSearch": ""
+         }
+       
+    } );
+}
+</script>
+
+<script>
+function updateSpocStatus(spocId){
+    var spocStatus = $('#spocState'+spocId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    success: function(data) {
+	    	clientContactList(orgRelationID);
+	    }
+   });
+}
+</script>
+
+
+
 <script>
 	function clientSpocSideBar(spocId,ownerId,spocUserId,spocName) {
 		var result = "";

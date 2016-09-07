@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.NotificationsDao;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -47,7 +49,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
 			if(notification != null){
-				session.save(notification);
+				session.saveOrUpdate(notification);
 			}
 		}catch(Exception exception){
 			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Notifications"));
@@ -147,5 +149,21 @@ public class NotificationsDaoImpl implements NotificationsDao{
 				   													.setString("locationCode", locationCode).setCacheable(true).list();
 		return notificationList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Notifications getNotificationsById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Notifications> notifications = new ArrayList<Notifications>();
+		logger.debug("getNotificationsById start");
+		notifications = session.createQuery("from Notifications where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		logger.debug("getNotificationsById end");
+		if (notifications.size() > 0) {
+			return notifications.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 }

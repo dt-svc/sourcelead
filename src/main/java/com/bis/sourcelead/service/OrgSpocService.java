@@ -55,5 +55,13 @@ public interface OrgSpocService {
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
-
+	
+	
+	/**To get Spoc user
+	 * @author Prasad Salina
+	 * @param spocUserId
+	 * @return
+	 */
+	OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception;
+	
 }

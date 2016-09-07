@@ -14,13 +14,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
@@ -44,6 +50,12 @@ public class VendorRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	/**
 	 * Handles Vendor Contacts 
@@ -88,7 +100,6 @@ public class VendorRestController {
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
 				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
-					
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -98,12 +109,6 @@ public class VendorRestController {
 				}
 				
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-					/*orgRelation.setLocationOrgname(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setLocationWebsite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setLocationCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setLocationState(orgRelation.getLocationId().getState());
-					orgRelation.setLocationCity(orgRelation.getLocationId().getCity());*/
-					
 					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
@@ -111,15 +116,6 @@ public class VendorRestController {
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
 				}
-				/*orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-				orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-				orgRelation.setState(orgRelation.getResponderLocationId().getState());
-				orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-				
-				
-				orgRelation.setResponderId(orgRelation.getResponderLocationId().getId().toString());
-				orgRelation.setLocationID(orgRelation.getLocationId().getId().toString());*/
 				
 			}
 		    
@@ -149,25 +145,76 @@ public class VendorRestController {
 		
 			
 			for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-				if(orgSpoc.getSpocUser() != null){
-					orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-					orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-					orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-					orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-					orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+				if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+					//if login user is spoc
+					if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+	    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+	    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+	    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+	    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					}
+					//if login user is Owner
+					else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+							 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+							 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						}
+						
+					 
+				}else{
+					if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 }
+					if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+					 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+					 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					}
 				}
-				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-				if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
-					orgSpoc.setOrgName(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+					 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 				}
-				if(orgSpoc.getOrgRelations().getResponderLocationId().getId() == orgLocations.getId()){
-					orgSpoc.setOrgName(orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 				}
+				
 			}
 			
 			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
 			 return resultJson;
 		}
 	   
+	   
+	   // this method is used to re-send email to Spoc
+	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
+		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    //get user by userId
+			    User user = userService.getUserById(Long.parseLong(spocUserId));
+			    
+			    //generate random password
+			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		 		if(user != null){
+		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		 			user.setIsMailSent(Status.Y);
+		 			userService.addUser(user);
+		 			
+		 			//to update spoc invitation status
+		 			/*OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(spocUserId));
+		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
+		 			orgSpocService.addOrgSpoc(spoc);*/
+		 			
+		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg);
+		 		}
+			
+		 	  return "success";
+		    }
 	   
 }

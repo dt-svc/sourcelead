@@ -215,6 +215,7 @@
 							name="isMailSent" checked="checked">Send Invitation</label>
                   </div>
                 </div>
+                 <input type="hidden" name="vendorContact" value="vendorContact"/>
                 </div>
                 </div>
                 </div>

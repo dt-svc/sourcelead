@@ -36,25 +36,21 @@ window.onload = function () {
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
-	        	var result = "";
 	        	
-	        	var selected1 = '';
-				var selected2 = '';
-				var selected3 = '';
-				var selected4 = '';
-				var selected5 = '';
+	        	var res = "";
+				res = res + '<div class="timesheet_head">';
+				res = res + '<ul>';
+				res = res + '<li><a href="javascript:void(0)" onClick="addContact('+orgRelationID+');" class="addcon-pop">';
+				res = res + '<i class="glyphicon glyphicon-plus"></i>Add Contact</a>';
+				res = res + '<div class="clearfix"></div>';
+				res = res + '</ul>';
+				res = res + '<div id="popUpDivContact"> ';
+				res = res + '</div>  ';
+				res = res + '</div>';
 				
-				result = result + '    	<div class="project_tabs_inn_head">';
-	    		result = result + '		<input class="vendorfild" type="text"><i class="fa fa-search"></i> | <a href="javascript:void(0)" onClick="addContact('+orgRelationID+');">';
-	    		result = result + '		<i class="glyphicon glyphicon-plus"></i>Add Contact</a>';
-	    		result = result  +'     <div id="popUpDivContact"> ';
-	    		result = result  +'     </div>  ';
-	    		result = result + '		</div>';
-	    		
-	    		result = result + '        <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	    		if(json.length != null && json.length != ''){
-		    	    result = result + '	<table>';
-		    		result = result + '	<tbody>';
+	    			var result = "";
+		    	    result = result +'<thead>';
 		    		result = result + '		<tr>';
 		            result = result + '	 	<th>Name</th>';
 		            result = result + '	     <th>Email</th>';
@@ -64,10 +60,17 @@ window.onload = function () {
 		            result = result + '	     <th>Invitation status</th>';
 		            result = result + '	     <th>Action</th>';
 		            result = result + '	 </tr>';
+		            result = result +'</thead>';
+		            result = result + '<tbody>';
 		            
 			          for (var i=0; i<json.length; i++)
 					  {        
 				        		var opt = json[i];
+				        		var selected1 = '';
+								var selected2 = '';
+								var selected3 = '';
+								var selected4 = '';
+								var selected5 = '';
 				        		
 				        		if(opt.spocStatus == 'Active'){
 									selected1 = 'selected';
@@ -103,7 +106,7 @@ window.onload = function () {
 				                result = result + '	     <td><div>'+opt.ownerName+'</div></td>';
 				                
 				                result = result + ' <td><div>';
-								result = result + ' <select id="spocStatus" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\);">';
+								result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\);">';
 								result = result + ' <option '+selected1+'>Active</option>';
 								result = result + ' <option '+selected2+'>In-Active</option>';
 								result = result + ' <option '+selected3+'>New</option>';
@@ -113,21 +116,32 @@ window.onload = function () {
 								result = result + ' </div></td>';
 				                
 				                result = result +'<td data-title="Invitation Status"><div>';
-				                if(opt.invitationStatus == 'Accepted'){
-				  	    			  result = result +'<b class="proj_active">'+opt.invitationStatus+'</b>';
-			  	    			}
-			   		    		if(opt.invitationStatus == 'Rejected'){
-			  	    			  result = result +'<b class="proj_deactivate">'+opt.invitationStatus+'</b>';
-			  	    			}
-			   		    		if(opt.invitationStatus == 'New'){
-				  	    			  result = result +'<b class="proj_process">'+opt.invitationStatus+'</b>';
-			  	    			}
-			   		    		if(opt.invitationStatus == 'Sent'){
-			  	    			  result = result +'<b class="proj_process">'+opt.invitationStatus+'</b>';
-			  	    			}
-			   		    		if(opt.invitationStatus == 'Resend'){
-				  	    			  result = result +'<b class="proj_process">'+opt.invitationStatus+'</b>';
-				  	    			}
+				                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
+				   	        		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+opt.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+opt.id+');"></i>';
+				   	        		}
+				   	        		
+				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
+				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+');">Send</a></b>';
+				   	        		}
+				   	        		if(opt.spocUserId != "${SourceLeadWeb_userId}" && opt.ownerUserId != "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
+				   	        			result = result +' ---';
+				   	        		}
+				   	        		
+				   	        		if(opt.spocUserId != "${SourceLeadWeb_userId}" && opt.ownerUserId != "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){ 
+				   	        			result = result +' <b class="proj_process">Received</b>';
+				   	        		}
+				   	        		
+				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
+				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+');">Resend</a></b>';
+				   	        		}
+				   	        		
+				   	        		if(opt.invitationStatus == 'Accepted'){ 
+				   	        			result = result +' <b class="proj_active">'+opt.invitationStatus+'</b>';
+				   	        		}
+				             		
+				             		if(opt.invitationStatus == 'Rejected'){
+				             			result = result +' <b class="proj_closed">'+opt.invitationStatus+'</b>';
+				             		}
 			   		    		result = result +'</div></td>';
 				                
 				                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
@@ -141,7 +155,6 @@ window.onload = function () {
 				                result = result + '	 </tr>';
 						} 
 			        	result = result + '	     </tbody>';
-			    	    result = result + '	 </table>   ';
 			    	    
 			    	    result = result + '<div class="project_inn_mask"></div>';
 					    result = result + '<div class="project_error">';
@@ -159,18 +172,12 @@ window.onload = function () {
    			 result = result + '</div>';
    			 result = result + '</div>';
    		 }
-    		result = result + '	     </div>';
+    		$("#tab-2-addContact").empty();  
+    	    $("#tab-2-addContact").append(res);
     		$("#tab-2").empty();  
     	    $("#tab-2").append(result);  
-    	    $("#tab-2").show();
-    		$(".project-tabs-menu a").click(function(event) {
-    		     event.preventDefault();
-    		     $(this).parent().addClass("current");
-    		     $(this).parent().siblings().removeClass("current");
-    		     var tab = $(this).attr("href");
-    		     $(".project_tabs_inn").not(tab).css("display", "none");
-    		     $(tab).fadeIn();
-    		 });
+    	    contactPagination();
+    		
 	        },
 	    });
 	}
@@ -178,7 +185,7 @@ window.onload = function () {
 <!--  vendor details ends -->
 <script>
 function changeSpocStatus(spocId){
-	var spocStatus = document.getElementById("spocStatus").value;
+	var spocStatus = $('#spocStatus'+spocId).val();
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
@@ -231,6 +238,25 @@ function cancelTermination(){
 $("#popUp").empty();
 $(".project_inn_mask").fadeOut(200);
 }
+</script>
+
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript">
+function resendSpocInvitation(spocUserId,orgRelationID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
+			        success: function(result) {
+			        	vendorContactList(orgRelationID)
+			        },
+			    });
+		 }
+	}
+  
 </script>
 
  <!-- This Script is For Popup Div Starts-->  
@@ -368,7 +394,7 @@ $('html').click(function(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
-			
+			alert("hii");
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
