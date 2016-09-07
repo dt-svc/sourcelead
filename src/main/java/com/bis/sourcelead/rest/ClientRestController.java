@@ -200,14 +200,14 @@ public class ClientRestController {
 					e.printStackTrace();
 				}
 				
-				if(user != null)
+				if(null != user)
 				{
 					userList.add(user.getFirstName());
 					userList.add(user.getLastName());
 					userList.add(user.getMobilePhone());
 				}
 				
-				if(orgLocationId != null && user != null){
+				if(null != orgLocationId && null != user ){
 					try {
 						userRole = userRoleService.getUserDetailsByEmailAndLocationId(email,orgLocationId);
 					} catch (Exception e) {
@@ -375,6 +375,11 @@ public class ClientRestController {
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
 		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
 		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+		     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+		     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+		     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+		     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+		     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
@@ -670,6 +675,7 @@ public class ClientRestController {
 				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 			}
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 			
 		}
 		
