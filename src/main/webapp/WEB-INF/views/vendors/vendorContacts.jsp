@@ -28,7 +28,7 @@ window.onload = function () {
 <div id="popUp"></div>	
 
 <script type="text/javascript">
-	function vendorContactList(orgRelationID) {
+	function vendorContactList(orgRelationID,vendorLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
@@ -40,7 +40,7 @@ window.onload = function () {
 	        	var res = "";
 				res = res + '<div class="timesheet_head">';
 				res = res + '<ul>';
-				res = res + '<li><a href="javascript:void(0)" onClick="addContact('+orgRelationID+');" class="addcon-pop">';
+				res = res + '<li><a href="javascript:void(0)" onClick="addContact('+orgRelationID+','+vendorLocationId+');" class="addcon-pop">';
 				res = res + '<i class="glyphicon glyphicon-plus"></i>Add Contact</a>';
 				res = res + '<div class="clearfix"></div>';
 				res = res + '</ul>';
@@ -261,7 +261,7 @@ function resendSpocInvitation(spocUserId,orgRelationID){
 
  <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID) {	
+function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
 	result = result  +'	<div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
@@ -339,7 +339,7 @@ function addContact(orgRelationID) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	  <div class="clearfix mr">';
-	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+');" class="btn btn-sm btn-primary pull-right"/>';
+	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
 	result = result  +'	  </div>';
 	
 	result = result  +'	 </div>';
@@ -385,7 +385,7 @@ $('html').click(function(){
  <!-- This Script is For Popup Div Ends --> 
  <!-- to add new contact -->
 <script type="text/javascript">
-	function check(orgRelationId) {
+	function check(orgRelationId,clientLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
 			var frm = $('#clinetContact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -397,7 +397,7 @@ $('html').click(function(){
 			alert("hii");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId,
 						success : function(result) {
 							vendorContactList(orgRelationId);
 						},

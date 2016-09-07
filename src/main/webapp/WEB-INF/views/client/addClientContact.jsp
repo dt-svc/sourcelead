@@ -561,7 +561,6 @@ function getSpocUserDetails(){
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
-	        			 alert("Hai");
 	        			 $("#role").attr("data-validation", "required");
 	        			 $("#userRole" ).val('');
 	        			 document.getElementById("roleDiv").style.display="";
