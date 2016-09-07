@@ -154,6 +154,23 @@
 							selected5 = 'selected';
 						} 
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
+						if(json.userState == 'ACTIVE'){
+							result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250"  readonly="readonly">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
+							result = result + '<label>Last Name:</label>';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name"  readonly="readonly">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+							result = result + '<label>EmailId :</label>';
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email"  readonly="readonly">';
+							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
+							result = result + '</div>';
+						}else{
 						result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 						result = result + '<label>First Name:<span class="text-danger">*</span></label>';
 						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
@@ -169,7 +186,7 @@
 						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
 						result = result + '</div>';
-						
+						}
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
 						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
