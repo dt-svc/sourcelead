@@ -112,65 +112,8 @@ public class UserRestController {
 	@RequestMapping(value = "/addProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	
-		    json = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json);
-		 	
-		 	String resultJson = null;
-		 	
-	    	Projects projects = new Projects();
-	    	OrgLocations ol = new OrgLocations();
-			ol.setId(orgLocations.getId());
-			projects.setOrgLocationsId(ol);
-			
-	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
-	    	projects.setProjectName(jsonObj.getString("ProjectName"));
-	    	projects.setProjectStatus(Project_Status.STARTED);
-	    	
-	    	if(jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))){
-				try {
-					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					   projects.setStartDate(sdf.parse(jsonObj.getString("StartDate")));
-					} catch (Exception e) {
-					  e.printStackTrace();
-					}
-			}
-	    	
-	    	if(jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))){
-				try {
-					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					   projects.setEndDate(sdf.parse(jsonObj.getString("EndDate")));
-					} catch (Exception e) {
-					  e.printStackTrace();
-					}
-			}
-	    	
-	    	projects.setCreatedDate(new Date());
-	    	projects.setUpdatedDate(new Date());
-	    	Projects updatedProjects = projectsService.saveProject(projects);
-	    	
-	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	    	commonUtil.storeSourceleadTasks(user, updatedProjects);
-	    	
-	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
-	    	pah1.setProjectId(updatedProjects);
-	    	User approverUserId1 = new User();
-	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
-	    	pah1.setApproverUserId(approverUserId1);
-	    	pah1.setLevel(1);
-	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-	    	
-		if(!jsonObj.getString("level2Manager").isEmpty()){
-			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
-			pah2.setProjectId(updatedProjects);
-			User approverUserId2 = new User();
-			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-			pah2.setApproverUserId(approverUserId2);
-			pah2.setLevel(2);
-			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
-		}
-	    	
+	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson = null;
 			
 		 List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		
