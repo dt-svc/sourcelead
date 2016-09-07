@@ -381,11 +381,13 @@ function getAllCountries(sourceleadUrl){
     	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#country').tagit({
-        		allowSpaces: false,
-        		availableTags: json
-        		
-	       	 	});
+      		$('#country').tagit({
+          		allowSpaces: false,
+          		availableTags: json
+  	       	});
+        	
+        	
+        	
         },
         error: function(e){
         }

@@ -1,3 +1,8 @@
+<script>
+		$(document).ready(function() {
+			cscInit();
+		});
+</script>
 
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
@@ -22,6 +27,8 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
+
+
 <style type="text/css">
 .require_wrap_details{
 text-align:left;
@@ -30,6 +37,7 @@ text-align:left;
 <script>
 function editCandidate(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var loginCountryName = '${loginCountryName}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -64,32 +72,39 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
+							
+						    /* 	  
+							result = result + '  <div class="col-md-9">';
+							result = result + '    <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
+							result = result + '				name="country" field-name="Country" value="'+loginCountryName+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
+							result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries('+sourceleadUrl+');"></ul>';
+							result = result + '  </div>'; */
+					        
+					        
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6 custom-fields">';
-							result = result + '		            <select class="form-control select-arrow select-bg">';
-							result = result + '		              <option>India</option>';
-							result = result + '		              <option>United States</option>';
-							result = result + '		              <option>UK</option>';
-							result = result + '		            </select>';
+								result = result + '    <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
+								result = result + '				name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
+								result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6 custom-fields select-arrow">';
-							result = result + '		            <select class="form-control input-sm">';
-							result = result + '		              <option>India</option>';
-							result = result + '		              <option>United States</option>';
-							result = result + '		              <option>UK</option>';
-							result = result + '		            </select>';
+								result = result + '	<input type="hidden" id="stateAutoComplete" name="state"';
+								result = result + '	field-name="State" class="form-control" value="'+json.state+'" data-validation="validate_Space" data-validation-optional="true">';
+								result = result + '	 <ul id="state"  onkeypress="getStates(\''+sourceleadUrl+'\');"></ul>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="hidden"  name="candidateId" value="'+candidateId+'" >';
-							result = result + '		            <input type="text" class="form-control input-sm"  name="city" value="'+json.city+'" placeholder="City">';
+							/* result = result + '		            <input type="text" class="form-control input-sm"  name="city" value="'+json.city+'" placeholder="City">'; */
+								result = result + '	 <input type="hidden" id="cityAutoComplete" name="city" field-name="State" class="form-control" value="'+json.city+'" data-validation="validate_Space" data-validation-optional="true">';
+								result = result + '	   <ul id="city"  onkeypress="getCities(\''+sourceleadUrl+'\');"></ul>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-12">';
-							result = result + '		            <textarea class="form-control input-sm" placeholder="Summary"  name="summary" value="'+json.summary+'" rows="2" cols="0">';
-							result = result + '		                  </textarea>';
+							result = result + '		            <textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0">';
+							result = result + '		                 '+json.summary+'</textarea>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mr">';
@@ -109,6 +124,41 @@ function editCandidate(candidateId){
 							
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
+							
+							
+							 $('#country').tagit({
+							       singleField: true,
+							       singleFieldNode: $('#CountryAutocomplete')
+							       ,tagLimit:1
+							       ,placeholderText:""
+						           ,afterTagRemoved: function(evt, ui){
+						                   $('#multiState').tagit('removeAll');
+						                   $('#multiCity').tagit('removeAll');
+						                   $('#state').tagit('removeAll');
+						                   $('#city').tagit('removeAll');
+						                   return false;
+						           }
+							   });
+							 
+							  $('#state').tagit({
+							       singleField: true,
+							       singleFieldNode: $('#stateAutoComplete')
+							       ,tagLimit:1
+							       ,placeholderText:""
+							       ,afterTagRemoved: function(evt, ui){
+						                 $('#city').tagit('removeAll');
+						                 return false;
+						         }
+							   });
+							 
+							  $('#city').tagit({
+							       singleField: true,
+							       singleFieldNode: $('#cityAutoComplete')
+							       ,tagLimit:1
+							       ,placeholderText:""
+							  });
+							 
+							  
             		 }
                 }else{
          	    	         var result ="";
@@ -130,6 +180,75 @@ function editCandidate(candidateId){
               }); 
 }
 </script> 
+
+<!-- Country,State,City Script Starts Here -->
+
+<script>
+function getAllCountries(sourceleadUrl){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').tagit({
+        		  allowSpaces: false,
+        		  availableTags: json
+	       	}); 
+        },
+        error: function(e){
+        }
+    }); 
+}
+</script> 
+
+<script>
+function getStates(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+</script> 
+
+
+<script>
+function getCities(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	var stateName = document.getElementById("stateAutoComplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+  
 
 
 <%-- 
@@ -700,4 +819,4 @@ function removeSkillById(candidateId, skillId){
 
            
            
-            
+  
