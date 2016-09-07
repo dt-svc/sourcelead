@@ -39,4 +39,10 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 		return actionRolesDao.getOrgActionRolesByRoleAndOrgLocationId(roleId, orgLocationId);
 	}
 
+	@Override
+	public ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId)
+			throws Exception {
+		return actionRolesDao.getActionRolesByActionIdAndRoleIdAndLocationId(actionId, roleId, orgId);
+	}
+
 }
