@@ -528,10 +528,10 @@ public class ClientServiceImpl implements ClientService{
 					user.setFirstName(jsonObj.getString(vendorContactFirstName));
 				}
 				if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
-					user.setLastName(jsonObj.getString(vendorContactFirstName));
+					user.setLastName(jsonObj.getString(vendorContactLastName));
 				}
 				if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
-					user.setMobilePhone(jsonObj.getString(vendorContactFirstName));
+					user.setMobilePhone(jsonObj.getString(mobilePhone));
 				}
 				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
 					user.setEmail(jsonObj.getString(emailId));

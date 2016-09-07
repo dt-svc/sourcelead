@@ -95,6 +95,7 @@ public class OrgSpoc {
 	@Transient
 	private List<User> userList;
 	
+
 	@Transient
 	private String spocFirstName;
 	
@@ -103,6 +104,7 @@ public class OrgSpoc {
 
 	@Transient
 	private String userState;
+
 
 	
 	public List<User> getUserList() {
