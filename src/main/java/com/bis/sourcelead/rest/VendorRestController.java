@@ -184,6 +184,9 @@ public class VendorRestController {
 					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 				}
 				
+				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+				
 			}
 			
 			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
