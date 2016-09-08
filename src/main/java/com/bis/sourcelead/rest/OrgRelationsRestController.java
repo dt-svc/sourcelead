@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -64,7 +65,7 @@ public class OrgRelationsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.storeClient(jsonObj, user, orgLocation);
+		clientService.storeClient(jsonObj, user, orgLocation,"",new Org());
 		
 		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId()); 
 		for(OrgRelations ocl :orgClientList){

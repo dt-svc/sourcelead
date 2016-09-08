@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -258,7 +259,7 @@ public class ProjectsDashboardRestController {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS");
+		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
 			return "SUCCESS";
 		}
 		 

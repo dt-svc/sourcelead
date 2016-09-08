@@ -18,4 +18,7 @@ public interface NotificationsDao {
 
 	List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode);
 	
+	Notifications getNotificationsById(Long Id) throws Exception;
+	
+	Notifications getNotificationsByUUID(String UUID) throws Exception;
 }

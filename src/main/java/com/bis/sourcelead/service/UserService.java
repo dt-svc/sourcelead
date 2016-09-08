@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
@@ -35,19 +36,62 @@ public interface UserService  {
 	
 	public User saveUserProfile(UserProfile userProfile,MultipartFile multiFile,User user) throws Exception;
 	
+	/**
+	 * This method to fetch only Admin role users
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
 	public Collection<User> getUsersByUserRoles(Long orgLocationsId) throws Exception;
 	
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	
+	
+	/**
+	 * This method to fetch only Approver role users
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	List<User> getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(Long roleId,Long orgLocationsId,Long userId) throws Exception;
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 	
-	void storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType)  throws Exception;
-
+	User storeUser(JSONObject jsonObj,User users,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg)  throws Exception;
 	
+	/**
+	 * This method to fetch Owner used in Client and vendor
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
+
+	//Prasad Salina to get managers list baded on role type
+	List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
+			
+	//Prasad Salina to get managers list baded on role type and except current user
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
+
+	//Prasad Salina to get all the user ids baded on reportingManager userid
+	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
+	
+	
+	/**
+	 * @author Prasanna vadla
+	 * to fetch user details by usercode
+	 * @param createdBy
+	 * @return
+	 */
+	User getUserDetailsByUserCode(String userCode);
+
+
+	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
+	
+	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
+
 }	
 		
 	

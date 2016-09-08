@@ -94,6 +94,7 @@ public class SecurityConfig  {
     			.antMatchers("/resetPassword").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 
+    			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
     			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ") 
     			.anyRequest().authenticated()                                                   

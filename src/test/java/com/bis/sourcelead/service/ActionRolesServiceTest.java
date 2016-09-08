@@ -65,7 +65,7 @@ public class ActionRolesServiceTest {
 		Org org = new Org();
 		org.setId(2L);
 		List<Long> modulesid = modulesService.getModulesIdByModuleName("SOURCELEAD_DEFAULT_MODULE");
-		List<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(org.getId(), modulesid);
+		List<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(org.getId(), modulesid,org);
 		if(actionRolesList != null)
 		{
 			logger.info("getSourceLeadActionRolesListByOrgId "+actionRolesList.size());

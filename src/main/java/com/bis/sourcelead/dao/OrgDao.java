@@ -27,6 +27,7 @@ public interface OrgDao {
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
 	/**
 	 * Handles whether the given client is duplicate or not
+	 * @param orgRelationId 
 	 * @param clienName
 	 * @return boolean
 	 * @throws Exception

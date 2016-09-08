@@ -128,6 +128,7 @@
             }
 
             if(!jQueryFormUtils.ignoreInput($element.attr('name'), elementType, config)) {
+            	
                 var validation = jQueryFormUtils.validateInput($element, language, config);
 
                 if(validation === true) {
@@ -797,15 +798,15 @@ jQueryFormUtils.attrInt = function(attrValue, attrName) {
  * @return {String}|{Boolean}
  */
 jQueryFormUtils.validateInput = function(el, language, config, form) {
+	
     var values = el.val();
     values = values || '';	// coerce to empty string if null
-
     if( !(values instanceof Array) ) {
         values = [values];
     }
 
     // Validate select with multiple values
-    if( el.get(0).nodeName == 'SELECT' && el.attr('multiple') ) {
+    if( el.get(0).nodeName == 'select' && el.attr('multiple') ) {
         var validationRules = el.attr(config.validationRuleAttribute);
         var validationErrorMsg = el.attr(config.validationErrorMsgAttribute);
         if(validationRules.indexOf('validate_num_answers') > -1) {
