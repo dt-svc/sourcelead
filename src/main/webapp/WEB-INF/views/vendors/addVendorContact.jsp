@@ -488,7 +488,7 @@ function validateClientName(){
 	if (clientName != null && clientName != '') {
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
