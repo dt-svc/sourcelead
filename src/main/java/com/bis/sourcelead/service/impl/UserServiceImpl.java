@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +49,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * This Service Class is used to get User Object
@@ -196,7 +196,6 @@ public class UserServiceImpl implements UserService {
 		 * @throws Exception 
 		 * 
 		 */
-		System.out.println(userRole.getRoles().getRoleName());
 		if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 			commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
 		}
