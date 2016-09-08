@@ -297,7 +297,6 @@
 	<jsp:include page="../masterFooter.jsp" />
 	<!-- Footer Area -->
 	
-	
 	<%-- 
      @author : prasad k.
      this script is for save/store candidate.
