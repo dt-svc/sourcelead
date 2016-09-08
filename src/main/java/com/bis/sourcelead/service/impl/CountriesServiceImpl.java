@@ -31,6 +31,13 @@ public class CountriesServiceImpl implements CountriesService{
 		List<Countries> countriesList = countriesDao.getAllCountries();
 		return countriesList;
 	}
+	
+	@Override
+	public List<Countries> getAllSourceLeadCountries() throws Exception {
+		logger.debug("In CountriesServiceImpl class getAllSourceLeadCountries method...");
+		List<Countries> countriesList = countriesDao.getAllSourceLeadCountries();
+		return countriesList;
+	}
 
 	@Override
 	public List<String> getAllStatesAndCitiesByCountryName(String countryName) throws Exception {
