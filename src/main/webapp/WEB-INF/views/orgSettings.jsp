@@ -209,19 +209,12 @@ function cancel(){
 							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
 							</div>
 							</div>
-
 							
 							<div class="form-group">
 								<label class="col-md-3">Country</label>
 								<div class="col-md-9">
 									 <input type="text" class="form-control" id="CountryAutocomplete" name="country" field-name="Client Country" value="${SourceLeadWeb_country}" readonly="readonly"/> 
 								</div>
-
-							<div class="form-group comp-textarea">
-							<label class="col-md-3">About</label>
-							<div class="col-md-9">
-							<textarea rows="2" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
-
 							</div>
 							
 							
