@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 
@@ -19,6 +18,9 @@
 .side-bar .side-nav ul li span{
   display: inline-block;
   float: none;
+}
+.project_wrap_table span{
+display: inline;
 }
  </style>
 

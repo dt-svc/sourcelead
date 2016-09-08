@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -71,6 +72,16 @@ public class CandidateEducation {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
+	@Column(name = " STATUS")
+	private String status;
+	
+	@Transient
+    private String startDateStr;
+	
+	@Transient
+	private String endDateStr;
+	
+	 
 	public Long getId() {
 		return id;
 	}
@@ -189,6 +200,31 @@ public class CandidateEducation {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 	
 }

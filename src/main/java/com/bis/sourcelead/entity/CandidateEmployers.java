@@ -53,8 +53,20 @@ public class CandidateEmployers {
 	@Column(name = "ADDRESS")
 	private String address;
 	
+	@Column(name = " STARTMONTH ")
+	private String startMonth;
+	
 	@Column(name = " STARTDATE ")
 	private Date startDate;
+	
+	@Column(name = " ENDMONTH ")
+	private String endMonth;
+	
+	@Column(name = " STARTYEAR ")
+	private String startYear;
+	
+	@Column(name = " ENDYEAR ")
+	private String endYear;
 	
 	@Column(name = " ENDDATE  ")
 	private Date endDate;
@@ -75,6 +87,7 @@ public class CandidateEmployers {
 	@Column(name = " UPDATED_BY")
 	private String updatedBy;
 
+	
 	public Long getId() {
 		return id;
 	}
@@ -133,12 +146,44 @@ public class CandidateEmployers {
 		this.address = address;
 	}
 
+	public String getStartMonth() {
+		return startMonth;
+	}
+
+	public void setStartMonth(String startMonth) {
+		this.startMonth = startMonth;
+	}
+
+	public String getEndMonth() {
+		return endMonth;
+	}
+
+	public void setEndMonth(String endMonth) {
+		this.endMonth = endMonth;
+	}
+
 	public Date getStartDate() {
 		return startDate;
 	}
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+
+	public String getStartYear() {
+		return startYear;
+	}
+
+	public void setStartYear(String startYear) {
+		this.startYear = startYear;
+	}
+
+	public String getEndYear() {
+		return endYear;
+	}
+
+	public void setEndYear(String endYear) {
+		this.endYear = endYear;
 	}
 
 	public Date getEndDate() {

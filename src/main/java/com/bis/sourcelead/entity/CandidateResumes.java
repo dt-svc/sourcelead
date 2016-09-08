@@ -54,7 +54,7 @@ public class CandidateResumes {
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
-	@Column(name = "FILE_NAME")
+	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
 	@Column(name = "  RESUME_STATUS ")

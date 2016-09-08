@@ -2,7 +2,13 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 /**
  * @author Shivayogi
@@ -12,35 +18,43 @@ public interface CandidateCertificationsService {
 
 	/**
 	 * This method is used to save candidate certifications
-	 * @param candidateCertifications
+	 * @param JSONObject
 	 * @return CandidateCertifications
 	 * @throws Exception
 	 */
-	public CandidateCertifications storeCandidateCertifications(CandidateCertifications candidateCertifications)
-			throws Exception;
-
 	/**
-	 * This method is used to update candidate certifications
-	 * @param candidateCertifications
-	 * @return CandidateCertifications
+	 * @param jsonObject
+	 * @param user
+	 * @param orgLocationId
+	 * @param candidateId
+	 * @return
 	 * @throws Exception
 	 */
-	public CandidateCertifications updateCandidateCertifications(CandidateCertifications candidateCertifications)
-			throws Exception;
-
+	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject, User user, OrgLocations orgLocationId,Long candidateId)throws Exception;
+	
 	/**
-	 * This method is used to delete candidate certifications
-	 * @param id
-	 * @return Boolean
+	 * @param candidateId
+	 * @param orgLocationId
+	 * @return
 	 * @throws Exception
 	 */
-	public Boolean deleteCandidateCertifications(Long id) throws Exception;
-
+	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
+	
+	
 	/**
-	 * This method is used to get all candidate certifications
-	 * @return List<CandidateCertifications>
+	 * @param candidateId
+	 * @param candidateCertificateId
+	 * @return
 	 * @throws Exception
 	 */
-	public List<CandidateCertifications> getAllCandidateCertifications() throws Exception;
+	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
 
+	/**
+	 * @param candidateId
+	 * @param candidateCertificateId
+	 * @return
+	 * @throws Exception
+	 */
+	public CandidateCertifications getCandidateCertificateBycandidateIdandCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
+	
 }

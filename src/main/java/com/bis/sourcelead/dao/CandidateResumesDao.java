@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 
 /**
@@ -9,5 +12,11 @@ import com.bis.sourcelead.entity.CandidateResumes;
 public interface CandidateResumesDao {
 	
 	public CandidateResumes storeCandidateResumes(CandidateResumes candidateResumes) throws Exception; 
+	
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception;
+	
+	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception;
+	
+	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception;
 
 }
