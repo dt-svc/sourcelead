@@ -189,9 +189,19 @@ public class UserServiceImpl implements UserService {
 					&& ("Y".equals(jsonObj.getString("isMailSent")))){
 				sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg,orgLocations.getOrg(),orgLocations);
 			}
-			
 		
-		return user1;
+		/**
+		 * This method is used to newly added admin as a level2 manager for all existing projectmembers
+		 * @author: Naresh Bolisetty
+		 * @throws Exception 
+		 * 
+		 */
+		System.out.println(userRole.getRoles().getRoleName());
+		if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
+			commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
+		}
+		 
+        return user1;
 				
 		
 	}

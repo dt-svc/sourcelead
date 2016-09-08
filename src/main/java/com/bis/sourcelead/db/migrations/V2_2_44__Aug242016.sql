@@ -8,7 +8,6 @@ INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`, `DISPLAY_NAME`) VALUES ('7'
 INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`, `DISPLAY_NAME`) VALUES ('8', 'ROLE_RECRUITER', 'Recruiter');
 
 
-
 #Dashboard Tab
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('1', '5', 'Y', '1');
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('1', '6', 'Y', '1');

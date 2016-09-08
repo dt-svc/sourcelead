@@ -6,6 +6,7 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="content-area mt clearfix">
+              <exception></exception>
               <div class="blank-pages-tech">
                 <p class="text-center">
                 	<img src="resources/images/alertone.png" alt="Alert Tone">
