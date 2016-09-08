@@ -243,18 +243,18 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-8" positionRelative>';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore"';
-		result  = result + '                     data-validation-optional="true" data-validation="required validate_Alphabet validate_length length1-5" field-name="score">';
-		result  = result + '                 	 </div>';
 		result = result  +'	                     <div class="col-md-4" positionRelative>';
-		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onClick="selectScoreType();">';
+		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onselect="selectScoreType();">';
 		result = result  +' 					   <option value="" disabled="disabled" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">%</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
+		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+		result  = result + '                 	 </div>';
 		result = result  +'	                   </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
@@ -372,4 +372,51 @@ function removeCertification(candidateCertificationId,candidateId){
 		$(".error").removeClass("error");
 		$('#newCandidate').find('p.jquery_form_error_message').remove();
 	}
+</script>
+
+
+<script type="text/javascript">
+function selectScoreType(){
+	
+	var selectedText = document.getElementById("scoreType").value;
+	 var canScore = document.getElementById("candidateScore").value;
+	  $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	  
+	 if(selectedText =='Percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(canScore.match(floatNum)){
+			  $("#addCandidate").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
+				 $("#addCandidate").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }
+	 else if(selectedText =='CGPA'){
+		  var cgpanum = /^([1-9]|10)$/
+			  if(canScore.match(cgpanum)){
+				  $("#addCandidate").removeAttr("disabled");
+				   return true;
+			  }		  
+			 else{
+				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
+				 $("#addCandidate").attr("disabled", "disabled");
+			return false; 
+			 }
+	  } 
+	 else if(selectedText =='GRADE'){
+		 var grades = /^([A-E]?[-+]{0,2})$/
+			 if (canScore.match(grades)) {
+				 $("#addCandidate").removeAttr("disabled");
+				 return true;
+			}else{
+				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
+				 $("#addCandidate").attr("disabled", "disabled");
+	    		return false;
+	    		
+			}
+   		}
+	  } 
 </script>
