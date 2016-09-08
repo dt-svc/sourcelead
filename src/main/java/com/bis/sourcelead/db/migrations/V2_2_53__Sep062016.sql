@@ -9,3 +9,5 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{InviteClient.FirstName}}
 
 UPDATE `sourcelead`.`ACTION_ROLES` SET `IS_NOTIFY`='Y' WHERE `ID`='54';
 UPDATE `sourcelead`.`ACTION_ROLES` SET `IS_NOTIFY`='Y' WHERE `ID`='62';
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','NOTIFICATIONS','UUID','VARCHAR(50) NULL');

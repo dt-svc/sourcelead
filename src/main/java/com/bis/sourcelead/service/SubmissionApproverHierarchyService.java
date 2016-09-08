@@ -8,6 +8,8 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 public interface SubmissionApproverHierarchyService {
 	
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(SubmissionApproverHierarchy submissionApproverHierarchy)throws Exception;
+	
+	public void saveAllSubmissionApproverHierarchy(List<SubmissionApproverHierarchy> submissionApproverHierarchyList)throws Exception;
 	   
 	public SubmissionApproverHierarchy updateSubmissionApproverHierarchy(SubmissionApproverHierarchy submissionApproverHierarchy)throws Exception;
    
@@ -19,9 +21,13 @@ public interface SubmissionApproverHierarchyService {
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployee(Long submissionId);
 	
+	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId);
+	
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyBySubmissionId(Long submissionId);
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,Long approverUserId);
+	
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByApproverUserId(Long approverUserId);
 
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,Long approverUserId,Date startDate);
     

@@ -48,7 +48,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 			Session session = this.sessionFactory.getCurrentSession();
 			try{
 				if(projectApproverHierarchy != null){
-					session.save(projectApproverHierarchy);
+					session.saveOrUpdate(projectApproverHierarchy);
 				}
 			}catch(Exception exception){
 				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_APPROVER_HIERARCHY"));

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -458,7 +460,99 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				    }
 			 }
 	    }
+		
+		if(jsonObj.has("level1Manager")){
+	    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+	    		String levelManager = jsonObj.getString("level1Manager");
+				projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+	    	}
+    	}
+		
+		if(jsonObj.has("level2Manager")){ 	
+			if(!jsonObj.getString("level2Manager").isEmpty()){
+				String levelManager = jsonObj.getString("level2Manager");
+				projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+			}
+		 }
 		return projectMemberList;
+	}
+	
+	/**
+	* This method for Save Manager As ProjectMember
+	* @return
+	* @throws Exception
+	* @author  venkatKesav
+	* @since   2016-07-25
+	*/
+	public ProjectMembers saveManagersAsProjectMembers(JSONObject jsonObj,Projects projects, User user, String levelManager){
+			String pattern = "yyyy-MM-dd";
+	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
+			ProjectMembers pm = new ProjectMembers();
+			HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+			ProjectMembersHistory pmh = new ProjectMembersHistory();
+			
+			pmh.setProjectMemberId(pm);
+			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+	        try {
+				if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
+					Date startDate = format.parse(jsonObj.getString("StartDate"));
+					pmh.setProjectAssignedDate(startDate);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        try {
+				if(!jsonObj.getString("EndDate").isEmpty()){
+				    Date endDate = format.parse(jsonObj.getString("EndDate"));
+				    pmh.setProjectTerminationDate(endDate);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        pmh.setCreatedDate(new Date());
+			pmh.setCreatedBy(user.getUserCode());
+			pmh.setUpdatedDate(new Date());
+			pmh.setUpdatedBy(user.getUserCode());
+			pmhList.add(pmh);
+			
+	    	User approverUserId = new User();
+			try {
+				approverUserId.setId(Long.parseLong(levelManager));
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Employees emp = null;
+			try {
+				emp = employeesService.getEmployeeByUserId(approverUserId.getId());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	
+	    	pm.setProjects(projects);
+	    	pm.setEmployee(emp);
+			pm.setStatus(Constants.MEMBER_ACTIVE);
+			pm.setCreatedDate(new Date());
+			pm.setUpdatedDate(new Date());
+			pm.setCreatedBy(user.getUserCode());
+			pm.setUpdatedBy(user.getUserCode());
+			pm.setMemberHistoryList(pmhList);
+			return pm;
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId) {
+		return projectMembersDao.getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(projectId);
 	}
 	
 }
