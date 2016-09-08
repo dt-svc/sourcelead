@@ -166,4 +166,20 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		}
    	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Notifications getNotificationsByUUID(String UUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Notifications> notifications = new ArrayList<Notifications>();
+		logger.debug("getNotificationsById start");
+		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID and ns.userNotificationStatus <> 'Accepted' " ).setCacheable(true).setString( "UUID", UUID ).setCacheable(true).list();
+		logger.debug("getNotificationsById end");
+		if (notifications.size() > 0) {
+			return notifications.get(0);
+		} else {
+			return null;
+		}
+   	}
+
 }

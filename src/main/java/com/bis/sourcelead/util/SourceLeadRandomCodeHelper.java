@@ -22,4 +22,9 @@ public class SourceLeadRandomCodeHelper {
 		String password = RandomStringUtils.randomAlphabetic(6);
 		return password;
 	}
+	
+	public static String generateUUID() {
+		String UUID = RandomStringUtils.randomAlphabetic(15);
+		return UUID;
+	}
 }

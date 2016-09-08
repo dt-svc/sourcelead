@@ -128,7 +128,11 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
 	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
 	
 	Notifications notification1 = notificationsService.saveNotification(notification);
 	

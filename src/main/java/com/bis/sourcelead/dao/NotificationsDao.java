@@ -20,4 +20,5 @@ public interface NotificationsDao {
 	
 	Notifications getNotificationsById(Long Id) throws Exception;
 	
+	Notifications getNotificationsByUUID(String UUID) throws Exception;
 }

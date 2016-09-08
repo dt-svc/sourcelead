@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.management.Notification;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ActionRoles;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.enums.Status;
@@ -122,6 +124,7 @@ public class RegistrationController {
 	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
 		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
+				@RequestParam(value = "UUID", required = false) String UUID,
 				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId) {
 			
 		    Org org = null;
@@ -157,6 +160,12 @@ public class RegistrationController {
 							 }
 							 
 						 }
+					 }
+					 
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
 					 }
 		    	}
 				 
