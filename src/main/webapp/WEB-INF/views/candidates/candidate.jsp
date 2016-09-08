@@ -108,8 +108,6 @@
           <span class="hidden">Valid Email</span>
           </div>
         </div>
-        
-        
 						
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
