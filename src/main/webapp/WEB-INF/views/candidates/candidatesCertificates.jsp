@@ -381,7 +381,6 @@ function selectScoreType(){
 	var selectedText = document.getElementById("scoreType").value;
 	 var canScore = document.getElementById("candidateScore").value;
 	  $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	  
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
