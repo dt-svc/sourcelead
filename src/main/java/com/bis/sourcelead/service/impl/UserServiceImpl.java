@@ -482,6 +482,12 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public User getUserByUserCode(String userCode) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.getUserByUserCode(userCode);
+	}
+	
+	@Override
 	public User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception {
 		logger.debug("In UserService class...");
 		return userDao.getUserByIdAndOrgLocationsId(Id,orgLocationsId);

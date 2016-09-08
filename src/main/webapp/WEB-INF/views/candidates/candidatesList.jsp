@@ -1,12 +1,614 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
 
-<!-- Content Area -->
+<jsp:include page="candidatesProfile.jsp"></jsp:include>
+<jsp:include page="candidatesResumes.jsp"></jsp:include>
+<jsp:include page="candidatesExperience.jsp"></jsp:include>
+<jsp:include page="candidatesEducation.jsp"></jsp:include>
+<jsp:include page="candidatesCertificates.jsp"></jsp:include>
+<jsp:include page="candidatesActivities.jsp"></jsp:include>
+
+<script>
+ window.onload = function() {
+ 	 candidateList();
+};
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for get candidate list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
+<script>
+  function candidateList(){ 	 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+           type : "POST",
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",        
+            success :function(data) {
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+			    	     $("#candidateList").removeAttr("style");
+	                	 $("#candidateList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th><input type='checkbox' id='checkbox1'/></th>"; 
+	                     result = result +"    <th>Name</th>"; 
+	                     result = result +"    <th>Designation</th>"; 
+	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Email</th>"; 
+	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"    <th>Address</th>"; 
+	                     result = result +"    <th>Last Update</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 var mobilePhone = "";
+	                    	 var designation ="";
+	                    	 var address="";
+	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+	                    		 mobilePhone = opt.mobilePhone;
+				            	}else{
+				            		mobilePhone = "NO DATA";
+				            	}
+				            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+				            		designation = opt.designation;
+				            	}else{
+				            		designation = "NO DATA";
+				            	}
+				            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
+				            		address = opt.address;
+				            	}else{
+				            		address = "NO DATA";
+				            	}
+				            	
+		                     result = result +"<tr>";
+			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
+			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.designationType+"</div></td>";
+			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
+			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
+			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
+			                 result = result +"  <td><div>"+opt.candidateUpdateDateToString+"</div></td>";
+			                 result = result +"</tr>"; 
+	                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>";
+	                     $("#candidateList").append(result); 
+	                     pagination(); 
+			    	} 
+                 }else{
+                	 $("#candidateList").removeAttr("style");
+  	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Candidates Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#candidateList").empty();
+				    $("#candidateList").append(result); 
+                 }
+          },
+            
+       }); 
+  } 
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for prepare pagination to candidateList.
+     1.usage     : used in candidateList() function.
+--%>
+
+<script>
+function pagination(){  
+    $('#candidatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for show side bar when you click on the candidate name.
+     1.usage     : called at candidateList() function.
+     2.parameter : csrf token , candidateId .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
+<script>
+function clientSideBar(candidateId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+          type : "POST",
+           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           success :function(data) {  
+                if(data != null && data != 'undefined' && data != ""){  
+                	 var json = JSON.parse(data);
+              		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+              		 else if (data.indexOf('exception') >= 0) {
+              			 location.replace(sourceleadUrl+"/errorPage");
+              		 }
+              		 else{
+	                	 $("#candidateSideDiv").empty();
+	                	 var skillsList = json.skillsList;
+			             var skills = [];
+			             skills = skillsList.split(",");
+			             
+	                	 var result = "";
+	                	 
+	                	 result = result+'<div id="popUp" ></div>  ';
+	                	
+	                	 
+	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
+			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+			             result = result+'               <div class="col-md-6">';
+			             result = result+'                   <div class="media">';
+			             
+			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
+			             result = result+'<div id="candidateImageId">';
+			             result = result+'<div class="well text-center clearfix">';
+						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <label class="btn btn-sm btn-primary">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  </label>';
+					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+							 result = result+'  <i class="fa fa-trash"></i></button>';
+					     } 
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
+						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
+						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
+						 result = result+'  </div>'; */
+						 result = result+'  </div>';
+						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' </div>';
+						 result = result+' </div>';
+						 result = result+'</form>';
+						  
+						  
+			             /*  result = result+'                     <div class="media-left image-parent">';
+			             result = result+'                     <div class="imageParent">'; */
+			             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
+			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
+			             result = result+'                     </div>';
+			             result = result+'                     </div>'; */
+			             result = result+'                     <div class="media-body candidate-details">';
+			             
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			            
+			             result = result+'                       <ul class="list-unstyled">';
+			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
+              		                                                  }else{
+              		                                                	  
+              		     result = result+'                          <li>Experience - No Data </li>';  
+              		                                                  }
+			             result = result+'                       </ul>';
+			             
+			             
+			             result = result+'                 <div class="clearfix">';
+			             result = result+'                 <div class="professinal-details">';
+			             
+			            
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+			             for (i=0;i < skills.length;i++)
+			             {
+			            	 result = result+'<li>'+skills[i]+'</li>';
+			             }
+			             }
+			             result = result+'</ul>';
+			             
+			             result = result+'                 </div>';
+			             result = result+'                 <div class="socialnetwork-details">';
+			             result = result+'                 <ul class="list-inline list-unstyled">';
+			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             result = result+'                               </ul>';
+			             result = result+'                 </div>';
+			             result = result+'                 </div>';
+			             result = result+'               </div>';
+			             result = result+'                   </div>';
+			             result = result+'                 </div>';
+			             result = result+'               <div class="col-md-6">';
+			             result = result+'                 <ul class="list-unstyled can-perdt">';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
+			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
+			                                                  }else{
+			                                                	  
+			             result = result+'                   <li><i class="fa fa-phone"></i>No Data</li>';         	  
+			                                                  }
+			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
+			                                                  }else{
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>No Data</li>';                                  	  
+			                                                  }
+			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
+			                                                  }else{
+			             result = result+'                   <li><i class="fa fa-rupee"></i>No Data </li>';                                    
+			                                                  }
+			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
+			                                                  }else{
+			             result = result+'                   <li><i class="fa fa-rupee"></i>No Data </li>';                                  	  
+			                                                  }
+			             result = result+'                 </ul>';
+			             result = result+'               </div>';
+			             result = result+'			</div>';
+			             result = result+'   <div class="proj_close"></div>';
+			             result = result+'   <div class="project_side_wrap_inn_tabs">';
+			             result = result+'     <ul class="project-tabs-menu">';
+			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
+			             result = result+'       <div class="clearfix"></div>';
+			             result = result+'     </ul>';
+			             result = result+'     <div class="project_tabs">';
+				         result = result + ' <div id="tab-1" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-2" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-3" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + ' <div id="tab-4" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-5" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-6" class="project_tabs_inn">';
+						 result = result + '</div>';
+			             result = result+'     </div>';
+			             result = result+'   </div>';
+			             
+			             $("#candidateSideDiv").empty();  
+			 		     $("#candidateSideDiv").append(result);  
+				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+						 $(".side_mask").fadeIn(200);
+						 $("body").css('overflow-y', 'hidden');
+						 candidateProfile(candidateId);
+			 			 
+			    	} 
+                }else{
+               	 $("#candidateSideDiv").removeAttr("style");
+ 	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Candidates Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#candidateSideDiv").empty();
+				    $("#candidateSideDiv").append(result); 
+                }
+         },
+           
+      }); 
+				
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for show side bar when you click on the candidate name.
+     1.usage     : called at saveOrCancel() function. line number 595.
+     2.parameter : csrf token , candidateId .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+
+<script>
+function saveCandidateImage(candidateId){
+	            		
+          		var frm = $('#candidate_form').serializeFormJSON();
+              	var con = JSON.stringify(frm);
+  			    con = con.replace(/[{}]/g, ""); 
+  			    
+  		        var jsonData = encodeURIComponent(con);
+          		
+          		var sourceleadUrl ='${sourceleadUrl}';
+          		var form = $('#candidate_form')[0];
+           		var formData = new FormData(form);
+	            		
+	            $.ajax({
+	                	      type: "POST",
+	                	      data: formData,
+	                	      contentType : 'application/json; charset=utf-8',
+	                	      enctype: 'multipart/form-data',
+	            	          processData: false,
+	            	          contentType:false,
+	                	      dataType : 'json',
+	                	      
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                          success: function(result) {
+	                        	  cancel(candidateId);
+	    			          },  
+	            });
+}
+</script> 
+
+
+<%-- 
+     @author : sarath kumar.
+     this script is for hide side bar when you click on the cross button on popup.
+--%>
+
+<script> 
+$(document).ready(function() {
+    $(".proj_show").click(function(){  
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+}); 
+</script> 
+
+<%-- 
+     @author : sarath kumar.
+     this script is for load predefined image for candidate.
+     1.usage     : called at clientSideBar() function. line number 166.
+--%>
+
+<script>
+	function predefineProfileImage(imageId){   
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+
+
+
+<%-- 
+     @author : sarath kumar.
+     this script is for delete image for candidate.
+     1.usage     : this script is used to delete image
+--%>
+<script type="text/javascript">
+function deleteImage(candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for delete image for candidate.
+     1.usage : this script is used to delete image
+--%>
+<script type="text/javascript">
+function deleteProfileImage(candidateId){   
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+	        success: function(data) {
+	        	 var result = data;
+	        	 $("#popUp").empty();
+	        	 $(".project_inn_mask").fadeOut(200);
+	        	 refreshImageBlock(candidateId);
+	       },
+	        
+     }); 
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for refresh image block
+     1.usage     : 
+--%>
+<script>
+function refreshImageBlock(candidateId){   
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+          type : "POST",
+           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           success :function(data) {   
+                if(data != null && data != 'undefined' && data != ""){  
+                	 var json = JSON.parse(data);
+              		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+              		 else if (data.indexOf('exception') >= 0) {
+              			 location.replace(sourceleadUrl+"/errorPage");
+              		 }
+              		 else{
+	                	 $("#candidateImageId").empty();
+	                	 var result = '';
+			             result = result+'<div class="well text-center clearfix">';
+						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <label class="btn btn-sm btn-primary">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  </label>';
+					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+							 result = result+'  <i class="fa fa-trash"></i></button>';
+					     } 
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 
+						 
+						 result = result+'  </div>';
+						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' </div>';
+						 $("#candidateImageId").append(result);
+						 
+			    	} 
+                } 
+         },
+           
+      }); 
+				
+}
+</script>
+
+
+<%-- 
+     @author : sarath kumar.
+     this script is for validate image for candidate.
+     1.usage     : used in clientSideBar() function line number :171.
+--%>
+<script type="text/javascript">
+function loadFile(event,candidateId){
+	    var output = document.getElementById('userImage');
+	    var uploadedImage = document.getElementById('uploadedImage').value;
+	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+	    document.getElementById("errorImage").style.display="none"; 
+	    
+	    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	
+	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+	 		var msg = "."+extensionName+" extension not allowed";
+	 		alertMessage(msg,candidateId);
+	    }else if(sizeinbytes > 200000){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	 		var msg = "Image size should be less than 200 KB";
+	 		alertMessage(msg,candidateId);
+	    }else{
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	var msg = "Do you want to save the picture.";
+	    	saveOrCancel(msg,candidateId);
+	   } 
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for show  alert message for candidate image format.
+     1.usage     : used in loadFile() function line number :422.
+--%>
+
+<script type="text/javascript">
+function alertMessage(message,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	refreshImageBlock(candidateId);
+
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for conformation message to save file / not .
+     1.usage     : used in loadFile() function line number :439.
+--%>
+<script type="text/javascript">
+function saveOrCancel(message,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='saveCandidateImage("+candidateId+");' ><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for close alert popup.
+     1.usage     : used in saveOrCancel() / alertMessage function line number : 435 / 439.
+--%>
+<script type="text/javascript">
+function cancel(candidateId){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	refreshImageBlock(candidateId);
+}
+</script>
+
+
+<!--HTML CONTENT -->
+
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -27,7 +629,7 @@
               </ul>
             </div>
           </li>
-         <!--  <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>
+          <!--  <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>
           <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li> -->
@@ -35,1032 +637,36 @@
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        
-            <div class="remove_search">
-            	<input type="text" placeholder="search" />
-            </div>          
-        
       </div>
       <div class="candidate_wrap_table">
-        <table>
-          <tbody>
-          <thead>
-            <tr>
-              <th><input type="checkbox" id="checkbox1"/></th>
-              <th>Name</th>
-              <th>Designation</th>
-              <th>Position type</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Address</th>
-              <th>Last Update</th>
-            </tr>
-          </thead>
-          <tr>
-            <td><input type="checkbox" id="checkbox12"/></td>
-            <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div ><span>vannam@domain.com</span></div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="checkbox1"/></td>
-            <td><div class="proj_show"><span class="td_overflow">Broadridge</span><i class="fa fa-binoculars"></i></div></td>
-            <td><div><span>Web designer</span></div></td>
-            <td><div>Full Time</div></td>
-            <td><div>domain.com</div></td>
-            <td><div>9000 000 000</div></td>
-            <td><div><span title="Hyderabad, Hyderabad, Hyderabad" class="td_overflow">Hyderabad, Hyderabad, Hyderabad</span></div></td>
-            <td><div>11/08/2016</div></td>
-          </tr>
-            </tbody>
-          
-        </table>
+        <div id="candidateList"></div>
       </div>
-      <nav>
-        <ul id="paging" class="pagination">
-          <li><a href="#">Previous</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">6</a></li>
-          <li data-page="last"><a href="#">Next</a></li>
-        </ul>
-        <div class="clearfix"></div>
-      </nav>
     </div>
     
     <!-- Compnay details -->
     <div class="side_mask">
-      <div class="proj_close"></div>
+       <div class="proj_close"></div>
     </div>
     <div class="clients_side_wrap">
-      <div class="clients_side_wrap_inn">
-       <div class="profile_details clearfix" style="margin-bottom:20px;">
-                    <div class="col-md-6">
-                        <div class="media">
-                          <div class="media-left image-parent">
-                          <div class="imageParent">
-                          	<img src="./images/24.jpg" alt="candidate" title="Candidate">
-                          </div>
-                          </div>
-                          <div class="media-body candidate-details">
-                            <h4 class="media-heading">Jaden Smith</h4>
-                            <ul class="list-unstyled">
-                              <li><strong>Business Analyst - Full Time</strong></li>
-                              <li>Experience - 4 years</li>
-                            </ul>
-                        </div>
-                      </div>
-                      <div class="other-detials">
-                      <div class="professinal-details">
-                      	<ul class="list-inline list-unstyled"><li>BA</li><li>BRS</li><li>SRS</li><li>Agile</li><li>SDLC</li></ul>
-                      </div>
-                      <div class="socialnetwork-details">
-                      <ul class="list-inline list-unstyled">
-                                      <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>
-                                      <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>
-                                      <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>
-                                      <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>
-                                      <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>
-                                    </ul>
-                      </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <ul class="list-unstyled can-perdt">
-                        <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">jadensmith@hotmail.com</a></li>
-                        <li><i class="fa fa-phone"></i>+91 9900223355</li>
-                        <li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>
-                        <li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>
-                        <li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>
-                      </ul>
-                    </div>
-				</div>
-        <div class="proj_close"></div>
-        <div class="project_side_wrap_inn_tabs">
-          <ul class="project-tabs-menu">
-            <li class="current"><a href="#tab-1">Profile</a></li>
-            <li><a href="#tab-2">Resume</a></li>
-            <li><a href="#tab-3">Experience</a></li>
-            <li><a href="#tab-4">Education</a></li>
-            <li><a href="#tab-5">Certificate</a></li>
-            <li><a href="#tab-6">Activities</a></li>
-            <div class="clearfix"></div>
-          </ul>
-          <div class="project_tabs">
-            <div id="tab-1" class="project_tabs_inn">
-<div class="require_wrap_details">
-            	<h1>Summary:</h1>
-                <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
-            	<h2>Skills:</h2>
-                <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>               
-            </div>
-            </div>
-            <div id="tab-2" class="project_tabs_inn">
-              <div class="project_tabs_inn_head">
-              	<a href="#" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>
-				<!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Title">
-                              </div>
-                            </div>
-
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <textarea rows="2" placeholder="Description" class="form-control"></textarea>
-                              </div>
-                            </div>
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-								<div class="input-group">
-                                    <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                                      <input type="file" style="display: none;" multiple="" id="uploadBtn" class="upload">
-                                      </span> </label>
-                                    <input type="text" class="form-control" readonly="" id="uploadFile" placeholder="Files are not selected...">
-                                  </div>
-                              </div>    
-                                                            
-                            </div>                            
-
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-				<!-- Popup Div -->
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Title</th>
-                      <th>Attachment</th>
-                      <th>Description</th>
-                      <th>Created By</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>                     
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            <div id="tab-3" class="project_tabs_inn">
-              <div class="project_tabs_inn_head">
-                  <a href="#" class="addUser-org">
-                        <i class="glyphicon glyphicon-plus"></i>Add Experince
-                  </a>
-                  	<!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Employer *">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12 checkbox">
-                                <label>
-                                <input type="checkbox" name="Position" id="endDate">Is Current Position</label>
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Designation">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Address">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <p class="ml">Start Date</p>
-                              <div class="col-md-6">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="April">May</option>
-                                    <option value="April">June</option>
-                                    <option value="April">Jully</option>
-                                    <option value="April">August</option>
-                                    <option value="April">September</option>
-                                    <option value="April">October</option>
-                                    <option value="April">November</option>
-                                    <option value="April">December</option>
-                                </select>
-                                </div>
-                                <div class="col-md-6">
-                                <input type="text" max class="form-control" value="" placeholder="Enter Year">
-                              </div>
-                              </div>
-                              <div class="clearfix mb10 endDate">
-                              <p class="ml">End Date</p>
-                              <div class="col-md-6">
-                                <select class="chosen-select">
-                                    <option value="Select Month">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="April">May</option>
-                                    <option value="April">June</option>
-                                    <option value="April">Jully</option>
-                                    <option value="April">August</option>
-                                    <option value="April">September</option>
-                                    <option value="April">October</option>
-                                    <option value="April">November</option>
-                                    <option value="April">December</option>
-                                </select>
-                                </div>
-                                <div class="col-md-6">
-                                <input type="text" max class="form-control" value="" placeholder="Enter Year">
-                              </div>
-                              </div>
-                              <div class="clearfix mb10 hidden">
-                              <div class="col-md-12">
-                              <label>End Date</label>
-                              <select class="chosen-select">
-	                               <option value="Select Month">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="April">May</option>
-                                    <option value="April">June</option>
-                                    <option value="April">Jully</option>
-                                    <option value="April">August</option>
-                                    <option value="April">September</option>
-                                    <option value="April">October</option>
-                                    <option value="April">November</option>
-                                    <option value="April">December</option>
-                                </select>
-                                <input type="text" class="form-control input-sm mt10" value="" placeholder="Enter Year">
-                                <span class="input-group-addon input-groupAddon hidden"><i class="fa fa-calendar"></i></span>
-                              </div>
-                            </div>
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-					<!-- Popup Div -->
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Employer</th>
-                      <th>Designation</th>
-                      <th>Address</th>
-                      <th>Start date</th>
-                      <th>End date</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>                    
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingdg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            
-			<div id="tab-4" class="project_tabs_inn">
-              <div class="project_tabs_inn_head addUser-org">
-              	<a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a>
-                <!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4">
-                    <form role="form">
-                    <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                          
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Education *" required>
-                              </div>
-                            </div>
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Specialization">
-                              </div>
-                            </div>   
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-6 positionRelative">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">
-                                <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-                              </div>
-                              <div class="col-md-6 positionRelative">
-                                <input type="text" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">
-                                <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-                              </div>
-                            </div>   
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Grade">
-                              </div>
-                            </div>                                                                              
-                            
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Institute">
-                              </div>
-                            </div>
-
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Address">
-                              </div>
-                            </div>
-
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                          </form>
-                        </div>
-					<!-- Popup Div -->
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Education</th>
-                      <th>Specilization</th>                      
-                      <th>Start date</th>
-                      <th>End date</th>            
-                      <th>Grade %</th>                                
-                      <th>Institute/University</th>
-                      <th>Address</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>                      
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>         
-                      <td><div><span>65%</span></div></td>                                   
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>                   
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            
-<div id="tab-5" class="project_tabs_inn">
-              <div class="project_tabs_inn_head">
-              	<a href="#" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a>
-                <!-- Popup Div -->
-                    <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-                          <div class="form-horizontal clearfix">
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Provider *">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Score">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12">
-                                <textarea class="form-control" rows="1" placeholder="Description"></textarea>
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-6 positionRelative">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Valid From" id="validFrom">
-                                <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-                              </div>
-                              <div class="col-md-6 positionRelative">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Validate To" id="validTo">
-                                <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-                              </div>
-                            </div>
-                            <div class="clearfix mr">
-                              <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </div>
-                        </div>
-					<!-- Popup Div -->
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Name</th>
-                      <th>Provider</th>
-                      <th>Score</th>
-                      <th>Description</th>
-                      <th>Valid from</th>
-                      <th>Valid to</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>                    
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>  
-            
-<div id="tab-6" class="project_tabs_inn">
-<div class="project_tabs_inn_head">
-              <input class="vendorfild" type="text"><i class="fa fa-search"></i> </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>By</th>
-                      <th>To</th>
-                      <th>Date & Time</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>                  
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>                                  
-            
-          </div>
-        </div>
-      </div>
+	    <div class="clients_side_wrap_inn">
+		             <div id="candidateSideDiv">
+				     </div>  
+	    </div>			     
     </div>
     <!-- Compnay details Ends --> 
-    <!-- Project --> 
   </div>
 </section>
 
-
 <!--   Error Message   -->
-<div class="vendor_wrap_mask"></div>
-<div class="vendor_error">
+  <div class="vendor_wrap_mask"></div>
+  <div class="vendor_error">
   <p>Delete conformation message....</p>
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-
 <!--   Error Message   --> 
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/jquery-ui.min.js"></script> 
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-});
- 		</script> 
+ 
+<!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
-
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
@@ -1099,19 +705,6 @@ $(document).ready(function() {
     });	
 });	
 	
-// project side bar
-$(document).ready(function() {
-    $(".proj_show").click(function(){
-		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".side_mask").fadeIn(200);
-		$("body").css('overflow-y', 'hidden');
-	});
-    $(".proj_close, .side_mask").click(function(){
-		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-		$(".side_mask").fadeOut(200);
-		$("body").css('overflow-y', 'auto');
-	});	
-});
 
 // project side bar tabs
 $(document).ready(function() {
@@ -1124,48 +717,31 @@ $(document).ready(function() {
         $(".project_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
     });
-	
-	
-	// Levels adding script
-$(".addUser-org").click(function(){
-	 $(".collapse-div-adduser").toggleClass("show-div");
-	 $(".collapse-div").removeClass("show-div");
- });
- $(".close-div").click(function(){
-	 $(this).parent().toggleClass("show-div");
-	 });
- $(".assign-org").click(function(){
-	 $(".collapse-div").toggleClass("show-div");
-	 $(".collapse-div-adduser").removeClass("show-div");
- });
- $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
-	 e.stopPropagation();
- });
- $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   });	
-   $("#endDate").click(function(){
-	   $(".endDate").toggle(200);
-   });
-});
-</script>
-<script>
-  $(function() {
-    $("#validFrom, #edu-endDate, #edu-startDate, #validTo").datepicker();
-  } );
-  </script>
-  
-	<div class="theme-color">
-        <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-        <ul class="list-unstyled">
-            <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-            <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-            <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-        </ul>
-	</div>  
-  
-</body>
-</html>
 
+	// Levels adding script
+	/*  $(".addUser-org").click(function(event){  
+		 $(".collapse-div-adduser").toggleClass("showMydiv");
+		 $(".collapse-div").removeClass("showMydiv");
+		 event.preventDefault();
+	 }); */
+	/*  $(".close-div").click(function(){
+		 $(this).parent().toggleClass("showMydiv");
+		 }); */
+	/*  $(".assign-org").click(function(){
+		 $(".collapse-div").toggleClass("show-div");
+		 $(".collapse-div-adduser").removeClass("show-div");
+	 }); */
+	/*  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
+		 e.stopPropagation();
+	 }); */
+	 /* $('html').click(function(){
+	    $(".collapse-div-adduser").removeClass("show-div");
+		$(".collapse-div").removeClass("show-div");
+	   });	
+	   $("#endDate").click(function(){
+		   $(".endDate").toggle(200);
+	   }); */
+});
+</script>	
+ 
 <jsp:include page="../masterFooter.jsp" />

@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,10 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
@@ -98,6 +105,12 @@ public class Candidate {
 	
 	@Column(name="INVITATION_STATUS")
 	private String invitationstatus;
+	
+	@Column(name="STATUS")
+	private String status;
+	
+	@Column(name="TERMINATE_REASON")
+	private String terminateReason;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -111,24 +124,32 @@ public class Candidate {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	/*@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
 	
 	
-	@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidate",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);*/
-
+	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
+	
+	@Transient
+	private String skillsList;
+	
+	@Transient
+	private Long candidateId;
+	
+	@Transient
+	private String candidateUpdateDateToString;
 
 	public Long getId() {
 		return id;
@@ -380,6 +401,26 @@ public class Candidate {
 	}
 
 
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
+	}
+
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -420,7 +461,7 @@ public class Candidate {
 	}
 
 
-	/*public Set<CandidateEducation> getCandidateEducation() {
+	public Set<CandidateEducation> getCandidateEducation() {
 		return candidateEducation;
 	}
 
@@ -457,7 +498,38 @@ public class Candidate {
 
 	public void setCandidateEmployers(Set<CandidateEmployers> candidateEmployers) {
 		this.candidateEmployers = candidateEmployers;
-	}*/
+	}
+
+
+	public String getSkillsList() {
+		return skillsList;
+	}
+
+
+	public void setSkillsList(String skillsList) {
+		this.skillsList = skillsList;
+	}
+
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+
+	public String getCandidateUpdateDateToString() {
+		return candidateUpdateDateToString;
+	}
+
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
 	
 	
 }

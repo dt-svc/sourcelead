@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bis.sourcelead.entity.CandidateEducation;
 
 	/**
@@ -12,39 +14,14 @@ import com.bis.sourcelead.entity.CandidateEducation;
 	 */
 public interface CandidateEducationDao {
 
-	/**
-	 * This method is used to save candidate education
-	 * 
-	 * @param candidateEducation
-	 * @return CandidateEducation
-	 * @throws Exception
-	 */
+	
+	
 	public CandidateEducation storeCandidateEducation(CandidateEducation candidateEducation) throws Exception;
 
-	/**
-	 * This method is used to Update candidate certifications
-	 * 
-	 * @param candidateEducation
-	 * @return CandidateEducation
-	 * @throws Exception
-	 */
-	public CandidateEducation updateCandidateEducation(CandidateEducation candidateEducation) throws Exception;
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
-	/**
-	 * This method is used to Delete candidate certifications
-	 * 
-	 * @param id
-	 * @return Boolean
-	 * @throws Exception
-	 */
-	public Boolean deleteCandidateEducation(Long id) throws Exception;
+	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,Long candidateCertificateId)  throws Exception;
 
-	/**
-	 * This method is used to get all candidate certifications
-	 * 
-	 * @return List<CandidateCertifications>
-	 * @throws Exception
-	 */
-	public List<CandidateEducation> getAllCandidateEducation() throws Exception;
+	
 
 }
