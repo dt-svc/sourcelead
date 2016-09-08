@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionRoles;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.ActionRolesService;
 
 @Service
@@ -26,9 +27,9 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 	}
 
 	@Override
-	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId) throws Exception {
+	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId,Org org) throws Exception {
 		logger.debug("In ActionRolesService class...");
-		return actionRolesDao.getSourceLeadActionRolesListByOrgId(orgId,modulesId);
+		return actionRolesDao.getSourceLeadActionRolesListByOrgId(orgId,modulesId,org);
 	}
 
 	@Override
@@ -36,6 +37,12 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 			throws Exception {
 		logger.debug("In ActionRolesService class...");
 		return actionRolesDao.getOrgActionRolesByRoleAndOrgLocationId(roleId, orgLocationId);
+	}
+
+	@Override
+	public ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId)
+			throws Exception {
+		return actionRolesDao.getActionRolesByActionIdAndRoleIdAndLocationId(actionId, roleId, orgId);
 	}
 
 }

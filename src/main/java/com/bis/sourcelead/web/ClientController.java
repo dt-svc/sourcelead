@@ -1,10 +1,10 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,16 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Client service.
@@ -55,6 +58,9 @@ public class ClientController {
 	ProjectMembersService projectMembersService;
 	
 	@Autowired
+	OrgSpocService orgSpocService;
+	
+	@Autowired
 	CommonUtil commonUtil;
 
 	@Autowired
@@ -73,15 +79,14 @@ public class ClientController {
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-			model.addObject("user_List", userList);
+			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			model.addObject("userList", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			model.addObject("loginCountryName", countries.getName());
 			return model;
 	    }
-	 
 	 /**
 	  * Handles to display clientdash board
 	  * @param request
@@ -92,14 +97,32 @@ public class ClientController {
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			/*for(OrgRelations orgRelation : clientsList){
-				Long count =orgRelationsService.getProjectsCountByOrgRelationIdAndOrgLocationId(orgRelation.getId(), orgLocations.getId());
-				orgRelation.setProjectsCont(count);
-			}*/
+			
+			
+			for (OrgRelations orgRelation : clientsList) {
+				 //to fetch user details by usercode 
+				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+
+				if(user != null){
+					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+				}
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
+
+				orgRelation.setNoOfContatcs(orgSpocs.size());
+
+			}
+		
+			
+			model.addObject("loginOrgLocId",orgLocations.getId());
 			model.addObject("clientsList", clientsList);
+			
+			//for get the owners list for spocs
+			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			model.addObject("userList", userList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			
@@ -114,6 +137,39 @@ public class ClientController {
 	    }
 	    
 	 
+	    /**
+		 * Handles to display client jsp
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		 @RequestMapping(value = "/addClientContact")
+		 public ModelAndView addClientContact(HttpServletRequest request) throws Exception {
+			 ModelAndView model = new ModelAndView();
+				try{
+					
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+					model.addObject("userList", userList);
+					model.setViewName("client/addClientContact");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					
+					List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+					model.addObject("loginOrgLocId", orgLocations.getId());
+					model.addObject("clientContactList", vandorsListByOrgLocationId);
+					
+					SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.Clients);
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+				}catch(Exception e){
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+				return model;
+		    }
 		
 		
 }

@@ -26,6 +26,12 @@
 
 
 <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
+</script>
+
+<script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','resources/images/userprofile-img.png');
 	}
@@ -36,11 +42,25 @@
 			document.getElementById("logoutForm").submit();
 		}
 </script>
+
+<script>
+		function linkFormSubmit(orgLocationId) {
+			document.getElementById("logoutForm").action="${sourceleadUrl}/dashboard/"+orgLocationId
+			document.getElementById("logoutForm").submit();
+		}
+</script>
+
+
 <body>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
+
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
@@ -96,6 +116,34 @@
 	            </div>
 	          </li>
             </c:if>
+            
+            <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks"> <i class="fa fa-globe"></i> </a>
+	              <div class="spoclinks-area">
+	              <ul class="list-unstyled">
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="${sourceleadUrl}/dashboard/${links.orgLocations.id}">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent">
+				                   <div class="imageParent org-imagelink">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     </div>
+				                   </div>
+				                   <div class="pull-left">
+				                     <p><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
+	              </ul>
+	            </div>
+	          </li>
+	          </c:if>
+           
           <!-- <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
             <div class="header-widget note-area">
               <ul class="list-unstyled">

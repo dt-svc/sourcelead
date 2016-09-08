@@ -46,5 +46,15 @@ public class NotificationsServiceImpl implements NotificationsService{
 		return notificationDao.getAllNotificationsListByUserId(userId,orgCode,locationCode);
 	}
 
+	@Override
+	public Notifications getNotificationsById(Long Id) throws Exception {
+		return notificationDao.getNotificationsById(Id);
+	}
+
+	@Override
+	public Notifications getNotificationsByUUID(String UUID) throws Exception {
+		return notificationDao.getNotificationsByUUID(UUID);
+	}
+
 
 }

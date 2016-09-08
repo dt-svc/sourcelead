@@ -74,7 +74,7 @@ public class User {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
-	private User user;
+	private User reportingManager;
 	
 	@Column(name = "IS_MAIL_SENT")
 	@Enumerated(EnumType.STRING)
@@ -349,11 +349,11 @@ public class User {
 		this.fullName = fullName;
 	}
 
-	public User getUser() {
-		return user;
+	public User getReportingManager() {
+		return reportingManager;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setReportingManager(User reportingManager) {
+		this.reportingManager = reportingManager;
 	}
 }

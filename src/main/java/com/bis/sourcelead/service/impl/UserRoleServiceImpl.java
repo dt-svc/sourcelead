@@ -71,6 +71,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 			throws Exception {
 		return userRoleDao.getApproverAssignedUsers(projectIds,userState,searchByName);
 	}
+
+	@Override
+	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception {
+		return userRoleDao.getUserDetailsByEmailAndLocationId(email,locationId);
+	}
+
+	@Override
+	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
+		return userRoleDao.getUserSpocsListByUserId(userId);
+	}
 	
 	
 

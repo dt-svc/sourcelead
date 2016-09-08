@@ -34,4 +34,16 @@ public class RolesServiceImpl implements RolesService{
 		return rolesDao.getRolesByDisplayName(displayName);
 	}
 
+
+	@Override
+	public List<Roles> getMoudleRoles(Long orgId) throws Exception {
+		return rolesDao.getMoudleRoles(orgId);
+	}
+
+
+	@Override
+	public Roles getRolesById(Long id) throws Exception {
+		return rolesDao.getRolesById(id);
+	}
+
 }

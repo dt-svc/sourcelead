@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -72,6 +73,9 @@ public class EmailScenario {
 	
 	@Column(name="DISCLAIMER_TEXT", columnDefinition = "TEXT default NULL")
 	private String disclaimerText;
+	
+	@Transient
+	private String UUID;
 
 	public Long getId() {
 		return id;
@@ -215,5 +219,13 @@ public class EmailScenario {
 
 	public void setDisclaimerText(String disclaimerText) {
 		this.disclaimerText = disclaimerText;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 }

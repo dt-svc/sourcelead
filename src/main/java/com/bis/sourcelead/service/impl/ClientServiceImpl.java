@@ -15,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -27,9 +29,11 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -63,6 +67,12 @@ public class ClientServiceImpl implements ClientService{
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -152,13 +162,72 @@ public class ClientServiceImpl implements ClientService{
 	 * @throws NullPointer
 	 */
 	@Override
-	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
-		
-		Org org = populateOrg(jsonObj, user.getUserCode());
-		Set<OrgLocations> orgLocationList =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode());
-		org.setOrgLocationsList(orgLocationList);
-		orgService.addOrganization(org);
-	}
+	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
+			
+			HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
+			OrgLocations clientOrgLocations = null;
+			Set<OrgRelations> orgRelationsList = null;
+			User spocUser = null;
+			if(jsonObj.has("orgLocationId")){
+				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+			}
+			
+			if(clientOrgLocations == null){
+				Org org = populateOrg(jsonObj, user.getUserCode());
+				clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
+				
+				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
+				clientOrgLocations.setOrgRelationsList(orgRelationsList);
+				orgLocationsList.add(clientOrgLocations);
+				org.setOrgLocationsList(orgLocationsList);
+				orgService.addOrganization(org);
+			}else{
+				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
+				clientOrgLocations.setOrgRelationsList(orgRelationsList);
+				orgLocationsList.add(clientOrgLocations);
+				Org org = clientOrgLocations.getOrg();
+				org.setOrgLocationsList(orgLocationsList);
+				orgService.addOrganization(org);
+			}
+
+			if(jsonObj.has("email")){
+				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+			}
+			if(jsonObj.has("owner")){
+				String ownersId = jsonObj.getString("owner");
+				ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
+				String[] owners = ownersId.split(",");
+				
+				for(int i=0 ;i<owners.length;i++ ){
+					OrgSpoc orgSpoc = new OrgSpoc();
+					for(OrgLocations orl :orgLocationsList){
+						Set<OrgRelations> orgr = orl.getOrgRelationsList();
+						for (OrgRelations orgRelations : orgr) {
+							orgSpoc.setOrgRelations(orgRelations);
+						}
+					}
+				
+				orgSpoc.setSpocUser(spocUser);
+				orgSpoc.setResponderLocationId(clientOrgLocations);
+				orgSpoc.setInitiatorLocationId(orgLocations);
+				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				orgSpoc.setOwnerUser(ownerUser);
+				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if(jsonObj.has("isMailSent")){
+					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+				}else{
+					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+				}
+				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+				orgSpoc.setCreatedDate(commonUtil.currentDate());
+				orgSpoc.setCreatedBy(user.getUserCode());
+				orgSpoc.setUpdatedDate(commonUtil.currentDate());
+				orgSpoc.setUpdatedBy(user.getUserCode());
+				orgSpocService.addOrgSpoc(orgSpoc);
+				}
+			}
+		}
+	
 	
 	/**
 	 * populating Org data
@@ -303,12 +372,28 @@ public class ClientServiceImpl implements ClientService{
 
 
 		@Override
-		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId) throws Exception {
+		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId,Long loginLocationId) throws Exception {
 			
-			OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			//OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
+			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
 			
 			if(null != orgRelation){
-				OrgLocations orgLocations = orgRelation.getResponderLocationId();
+				//OrgLocations orgLocations = orgRelation.getResponderLocationId();
+				
+				 OrgLocations orgLocations = null;
+					//if login user org id is equals to client location id then we get vendor list of ResponderLocationId Org details 
+					 if(orgRelation.getLocationId().getId() == loginLocationId){ 
+						 orgLocations = orgRelation.getResponderLocationId();
+					 }
+					 if(orgRelation.getResponderLocationId().getId() == loginLocationId){ 
+						 orgLocations = orgRelation.getLocationId();
+					 }
+					if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
+						orgRelation.setLevel(jsonObj.getString("level"));
+				     }
+				 orgRelationsService.addOrgRelations(orgRelation);
+				
+				
 				Org org = orgLocations.getOrg();
 				if(null != org){
 				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
@@ -337,22 +422,135 @@ public class ClientServiceImpl implements ClientService{
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
-				if(jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
+				/*if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
 				}else{
 					
 					orgLocations.setEmail("");
-				}
-				if(jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
+				}*/
+				/*if(jsonObj.has("clientPhoneNumber") && jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
 					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
 				}else{
 					orgLocations.setPhone("");
-				}
+				}*/
 				orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
 			
+		}
+
+		
+		@Override
+		public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId,Long loginOrgId) throws Exception {
+			
+			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
+			String vendorName = "vendorName";
+			String companyWebsite = "companyWebsite";
+			String vendorCity = "vendorCity";
+			String vendorState = "vendorState";
+			String vendorCountry = "vendorCountry" ;
+			//String emailId = "EmailId";
+			String level = "level";
+			
+			if(null != orgRelation){
+				 OrgLocations orgLocations = null;
+				//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
+				 if(orgRelation.getLocationId().getId()== loginOrgId){ 
+					 orgLocations = orgRelation.getResponderLocationId();
+				 }
+				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
+					 orgLocations = orgRelation.getLocationId();
+				 }
+				orgRelation.setLevel(jsonObj.getString(level));
+			 orgRelationsService.addOrgRelations(orgRelation);		
+				 
+				Org org = orgLocations.getOrg();
+				if(null != org){
+					if(jsonObj.getString(vendorName) != null && !jsonObj.getString(vendorName).isEmpty()){
+						org.setOrgName(jsonObj.getString(vendorName));
+					}
+					
+					if(jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
+						org.setWebSite(jsonObj.getString(companyWebsite));
+					}
+				orgService.updateOrg(org);
+				}	
+				if(jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
+					orgLocations.setCity(jsonObj.getString(vendorCity));
+				}else{
+					orgLocations.setCity("");
+				}
+				if(jsonObj.getString(vendorState) != null && !jsonObj.getString(vendorState).isEmpty()){
+					orgLocations.setState(jsonObj.getString(vendorState));
+				}else{
+					
+					orgLocations.setState("");
+				}
+				if(jsonObj.getString(vendorCountry) != null && !jsonObj.getString(vendorCountry).isEmpty()){
+					orgLocations.setCountry(jsonObj.getString(vendorCountry));
+			     }else{
+			    	 
+			    	 orgLocations.setCountry("");
+			     }
+				/*if(jsonObj.getString(emailId) !=null && !jsonObj.getString(emailId).isEmpty()){
+					orgLocations.setEmail(jsonObj.getString(emailId));
+				}else{
+					orgLocations.setEmail("");
+				}*/
+				orgLocationService.updateOrgLocations(orgLocations);
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+
+		}
+		
+		@Override
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId) throws Exception {
+			
+			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
+			
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+			
+			String vendorContactFirstName = "vendorContactFirstName";
+			String vendorContactLastName = "vendorContactLastName";
+			String mobilePhone = "mobilePhone";
+			String spocStatus = "spocStatus";
+			String emailId = "email";
+			String owner = "owner";
+			
+			if(null != orgSpoc){
+				User user = orgSpoc.getSpocUser();
+				
+				if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
+					user.setFirstName(jsonObj.getString(vendorContactFirstName));
+				}
+				if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
+					user.setLastName(jsonObj.getString(vendorContactLastName));
+				}
+				if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
+					user.setMobilePhone(jsonObj.getString(mobilePhone));
+				}
+				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
+					user.setEmail(jsonObj.getString(emailId));
+				}
+				userService.addUser(user);
+				
+				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
+					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
+				}
+				if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+					User ownerUser = new User();
+					ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
+					orgSpoc.setOwnerUser(ownerUser);
+				}
+				orgSpocService.addOrgSpoc(orgSpoc);
+			}else{
+				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
+				throw new SourceLeadObjectNotFoundException(message.toString());
+			}
+
 		}
 }
