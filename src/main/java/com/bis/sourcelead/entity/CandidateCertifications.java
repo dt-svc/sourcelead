@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -39,6 +40,47 @@ public class CandidateCertifications {
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "PROVIDER")
+	private String provider;
+
+	@Column(name = "SCORE")
+	private String score;
+
+	@Column(name = "SCORE_TYPE")
+	private String scoreType;
+
+	@Column(name = "DESCRIPTION")
+	private String description;
+	
+	
+	@Column(name = "VALIDFROM")
+	private Date validFrom;
+
+	@Column(name = "VALIDTO")
+	private Date validTo;
+	
+	@Transient
+	private String candidatevalidFromDateToString;
+    
+	@Transient
+	private String candidatevalidToDateToString;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+
+	@Column(name = " CREATED_BY")
+	private String createdBy;
+
+	@Column(name = " UPDATED_DATE")
+	private Date updatedDate;
+
+	@Column(name = " UPDATED_BY")
+	private String updatedBy;
+	
+	@Column(name = " STATUS")
+	private String status;
+	
+
 	public Long getId() {
 		return id;
 	}
@@ -47,7 +89,6 @@ public class CandidateCertifications {
 		this.id = id;
 	}
 
-	
 	public OrgLocations getOrgLocationId() {
 		return orgLocationId;
 	}
@@ -96,6 +137,14 @@ public class CandidateCertifications {
 		this.scoreType = scoreType;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public Date getValidFrom() {
 		return validFrom;
 	}
@@ -110,6 +159,22 @@ public class CandidateCertifications {
 
 	public void setValidTo(Date validTo) {
 		this.validTo = validTo;
+	}
+	
+	public String getCandidatevalidFromDateToString() {
+		return candidatevalidFromDateToString;
+	}
+
+	public void setCandidatevalidFromDateToString(String candidatevalidFromDateToString) {
+		this.candidatevalidFromDateToString = candidatevalidFromDateToString;
+	}
+
+	public String getCandidatevalidToDateToString() {
+		return candidatevalidToDateToString;
+	}
+
+	public void setCandidatevalidToDateToString(String candidatevalidToDateToString) {
+		this.candidatevalidToDateToString = candidatevalidToDateToString;
 	}
 
 	public Date getCreatedDate() {
@@ -144,31 +209,13 @@ public class CandidateCertifications {
 		this.updatedBy = updatedBy;
 	}
 
-	@Column(name = "PROVIDER")
-	private String provider;
+	public String getStatus() {
+		return status;
+	}
 
-	@Column(name = "SCORE")
-	private String score;
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-	@Column(name = "SCORE_TYPE")
-	private String scoreType;
-
-	@Column(name = "VALIDFROM")
-	private Date validFrom;
-
-	@Column(name = "VALIDTO")
-	private Date validTo;
-
-	@Column(name = "CREATED_DATE")
-	private Date createdDate;
-
-	@Column(name = " CREATED_BY")
-	private String createdBy;
-
-	@Column(name = " UPDATED_DATE")
-	private Date updatedDate;
-
-	@Column(name = " UPDATED_BY")
-	private String updatedBy;
-
+	
 }

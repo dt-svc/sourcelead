@@ -165,7 +165,7 @@ public class ClientRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
+				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId(),responderType);
 				
 				if(flag == false){
 					if(null != orgLocationId){
@@ -426,7 +426,7 @@ public class ClientRestController {
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId());
+		return orgService.isClientNameValid(clientName,orgLocation.getId(),"Client");
 	}
 /**
  * Verifies Client Email

@@ -14,6 +14,8 @@ public interface UserDao {
 	
 	User getUserById(Long Id) throws Exception;
 	
+	User getUserByUserCode(String userCode) throws Exception;
+	
 	User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception;
 
 	String validateEmailandCandidate(String website, String email, String sourceleadBLockedwebsites) throws Exception;
