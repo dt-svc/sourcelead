@@ -252,6 +252,21 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public User getUserByUserCode(String userCode) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<User> users = new ArrayList<User>();
+			logger.debug("getUserBy user code start");
+			users = session.createQuery("from User user where user.userCode =:userCode" ).setCacheable(true).setString( "userCode", userCode ).setCacheable(true).list();
+			logger.debug("getUserBy user code end");
+			if (users.size() > 0) {
+				return users.get(0);
+			} else {
+				return null;
+			}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception {
 		
 	 Session session = this.sessionFactory.getCurrentSession();

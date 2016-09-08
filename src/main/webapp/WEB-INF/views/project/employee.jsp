@@ -1,0 +1,514 @@
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<script src="resources/js/formvalidator.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+ 
+ 
+ 
+ 
+      <!-- Modal content Assign Team-->
+           <div role="dialog" id="assignTeam" class="modal fade">
+             <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                 <div class="modal-header">
+                   <button data-dismiss="modal" class="close" type="button">X</button>
+                   <h4 class="modal-title">Assign Employees</h4>
+                 </div>
+                 <div class="modal-body clearfix">
+                   <div class="form-horizontal row custom-form">
+                     <div class="col-xs-12 col-md-12 col-lg-12">
+                       <div class="input-group">
+                         <input type="search" class="form-control" value="">
+                         <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
+                     </div>
+                   </div>
+                   <div class="modal-body-custom mt clearfix" id="employeesList">
+                   </div>
+                   <div class="col-md-9">
+					<div class="checkbox">
+						<label> <input type="checkbox" id="membermailCheckbox" value="Y"
+							name="isMailToTeamMembers"> Mail to Team Members
+						</label>
+					</div>
+				</div>
+                 </div>
+                 <div class="modal-footer">
+                   <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
+                   <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+           <!-- Assign Team modal popup ends -->
+           <!-- Modal content Add Team-->
+           <div role="dialog" id="addTeam" class="modal fade">
+             <div class="modal-dialog">
+               <div class="modal-content" id="newEmployee">
+                <form name="employee_form" id="employee_form" method="post">
+                  <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">X</button>
+                    <h4 class="modal-title">Add Employees</h4>
+                  </div>
+                  <div class="modal-body clearfix">
+                    <div class="form-horizontal custom-form clearfix">
+                      <div class="col-xs-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                        <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
+                        <div class="col-lg-9">
+                          <input type="text" class="form-control" value="" name="firstName" id="firstName" field-name="Frist Name" data-validation="required">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3">Last Name</label>
+                        <div class="col-lg-9">
+                          <input type="text" class="form-control" value="" name="lastName" id="lastName">
+                          </div>
+                        </div>
+                        <div class="form-group" id="EmailIdDiv">
+                        <label class="col-lg-3">Email <span class="text-danger">*</span></label>
+                        <div class="col-lg-9">
+                          <input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
+                        <div class="col-lg-9">
+                          <select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
+                      <option value="">-Select Frequency-</option>
+                      <option>Weekly</option>
+                      <option>Bi-Weekly</option>
+                      <option>Semi-Monthly</option>
+                      <option>Monthly</option>
+                    </select>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3"></label>
+                        <div class="col-lg-9">
+                          <div class="checkbox">
+                          <label>
+                            <input type="checkbox" value="Y" name="isMailSent" checked="checked">
+                            Send Invitation</label>
+           					 </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" id="add_employee" onclick="addEmployee();">Save</button>
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                  </form>
+               </div>
+             </div>
+           </div>
+           <!-- Add Team modal popup ends --> 
+ 
+ 
+ 
+ 
+ <!-- this script is for Emplyee Listfunctionality at Projects screen -->
+<script>
+function projectEmployee(projectId,startDateStr,endDateStr,status){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+    $.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+        success: function(data) {
+        	
+        	var json = JSON.parse(data);
+        	var projectStatus =  json.status;
+        	
+        	var result = "";
+        	result = result + '    	<div class="project_tabs_inn_head">';
+    		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
+    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+        	}
+    		result = result + '		</div>';
+    		  result = result + '        <div class="project_tabs_inn_table">';
+    		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
+    	    result = result + '	<table>';
+    		result = result + '	<tbody>';
+    		result = result + '		<tr>';
+            result = result + '	 	<th>Emp name</th>';
+            result = result + '	     <th>Start Date</th>';
+            result = result + '	     <th>End Date</th>';
+            result = result + '	     <th>Approved hrs</th>';
+            result = result + '	     <th>Rejected hrs</th>';
+            result = result + '	     <th>Wait for approval </th>';
+            result = result + '	     <th>Saved hrs</th>';
+            result = result + '	     <th>Action</th>';
+            result = result + '	 </tr>';
+        	for (var i=0; i<json.projectMembersList.length; i++)
+			{      
+	        		var opt = json.projectMembersList[i];
+	        		var projectEndDateStr = "";
+	        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
+	        			projectEndDateStr = opt.projectEndDateStr;
+	        		}else{
+	        			projectEndDateStr = "--"
+	        		}
+	        		
+	        		result = result + '	 <tr>';
+	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+opt.empName+' </a></div></td>';
+	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
+	                if(status == 'COMPLETED'){
+	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
+	                }else{
+	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
+		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+		                }
+		                else{
+		                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
+		                }
+	                }
+	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
+	                	result = result + '	<td><div>';
+	                	if(status != 'COMPLETED'){
+	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+	                	}
+	                	result = result +'</div></td>';
+                     }
+                     else{
+                          result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                     }
+	                
+	                
+	                
+	                result = result + '	 </tr>';
+			}
+        	result = result + '	     </tbody>';
+    	    result = result + '	 </table>   ';
+    		 }else{
+    		
+    			 result = result + '<div class="table_nodata">';
+    			 result = result + '<div class="table_nodata_inn">';
+    			 result = result + '<img src="resources/images/no-data.png" />';
+    			 result = result + '<span>Nothing is here to show <b>Click on Add Emp btn to add employess... </b>';
+    			 result = result + '</span>';
+    			 result = result + '<div class="clearfix"></div>';
+    			 result = result + '</div>';
+    			 result = result + '</div>';
+    		 }
+    		result = result + '	     </div>';
+    		$("#tab-3").empty();  
+    		$("#tab-2").empty();  
+    	    $("#tab-1").empty();
+    	    $("#tab-1").append(result);  
+    	    
+    	    $("#tab-1").show();
+    		$(".project-tabs-menu a").click(function(event) {
+    		     event.preventDefault();
+    		     $(this).parent().addClass("current");
+    		     $(this).parent().siblings().removeClass("current");
+    		     var tab = $(this).attr("href");
+    		     $(".project_tabs_inn").not(tab).css("display", "none");
+    		     $(tab).fadeIn();
+    		 });
+    		
+    		if(json.length > 0)
+	   		{
+    			 for(var i=0; i<json.length; i++){
+					 var jsonData = json[i];
+					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == "IN-ACTIVE")
+						   continue;
+					 //Assign date of project member
+					 var selected = jsonData.projectAssignedDateStr;
+					 var dt = new Date(selected);
+ 		             dt.setDate(dt.getDate());
+ 		             
+ 		             //Main project end date
+ 		             var projectEndDate = jsonData.endDate;
+ 		             var endDate = "";
+ 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+ 		            	 endDate = new Date(projectEndDate);
+ 	 		             endDate.setDate(endDate.getDate()); 
+ 		             }
+ 		             
+					 $('#endDate'+jsonData.id).datepicker({
+			    		      dateFormat: 'yy-mm-dd',
+			    		      minDate: dt,
+			    		      maxDate: endDate,
+			    		      onClose: function() {
+			    		        	 var id = $(this).attr('id');
+									 var projectMemberId = $(this).attr('id').split('endDate')[1];
+			    		        	 inlineEditForEndDate(id,projectMemberId);
+			    		      }
+			    		  }); 
+    			 }
+	   		}
+        }, 
+    });
+    
+    
+    }	
+</script>
+<!-- this script is for Employee EndDate Inline functionality at Projects screen -->
+<script> 
+function inlineEditForEndDate(id,projectMemberId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 var endDate = document.getElementById(id).value;
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+   		    success: function(data) {
+   			   
+   		    }
+	 });  
+}
+</script>
+
+<!-- this script is for Employee Terminate functionality at Projects screen -->
+<script>
+function deleteProject(projectMemberId, projectId,startDateStr,endDateStr){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Project delete message here</p>";
+	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Terminate' onclick='saveReason("+projectMemberId+", "+projectId+","+startDateStr+","+endDateStr+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForProject").value;
+	if(reason.match(/^[^\s-](.*)*$/) !== null){
+	if(reason){
+		$("#reasonForProjectDiv").empty();
+		
+		var r = confirm("Do you want terminate the user from Project");
+		if (r == true) {
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+   		    success: function(data) {
+   		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			 	projectEmployee(projectId,startDateStr,endDateStr,status);
+   		    }
+	     }); 
+		}
+	  }
+	}
+	else{
+		$("#reasonForProjectDiv").empty().append("<font class='jquery_form_error_message'>Reason is required</font>") ;
+	}
+}
+</script>
+
+
+<!-- this script is for TeamMembers List functionality at Projects screen -->
+<script type="text/javascript">
+function getTeamMembers(projectId,startDateStr,endDateStr) {
+	var sourceleadUrl ='${sourceleadUrl}';
+	var startDateStr = startDateStr;
+	var endDateStr = endDateStr;
+    $.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output+' <table cols="0" class="table table-bordered table-striped  clearfix">';
+            output = output+' <tbody>';
+            output = output+' <tr>';
+            output = output+' <th>&nbsp;&nbsp;</th>';
+            output = output+' <th>Name</th>';
+            output = output+' <th>Email</th>';
+            output = output+' <th>Role</th>';
+            output = output+' <th>Start Date</th>';
+            output = output+' <th>End Date</th>';
+            output = output+' </tr>';
+        	for (var i=0; i<json.length; i++)
+			{
+     	       // var projectEndDate = $('#EndDate').val();
+	        		var opt = json[i];
+	        		var role = '';
+	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
+	        			role = opt.user.userType; 
+	        		}else{
+	        			role = 'Employee';
+	        		}
+	        		output = output + "<tr>";
+	        		output = output + "<td><input type='hidden' id='projectStartDateStr'  value="+startDateStr+"><input type='hidden' id='projectEndDateStr'  value="+endDateStr+"><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+startDateStr+"' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output + "</tr>";
+			}
+        	output = output+' </tbody>';
+	        output = output+' </table>';
+        	$("#employeesList").empty();
+	        $("#employeesList").append(output);
+	        
+	        //StartDate And EndDate Pickers
+		       if(json.length > 0){
+			    	for (var i = 0; i <json.length; i++) {
+						var opt = json[i];
+						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
+							$('#startDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								minDate:startDateStr,
+								maxDate:endDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('startDate')[1];
+									dt.setDate(dt.getDate() + 1);
+									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									
+								}
+							});
+
+							$('#endDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								maxDate:endDateStr,
+								minDate:startDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('endDate')[1];
+									dt.setDate(dt.getDate() - 1);
+									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+								}
+							});
+							
+						}else{
+							$('#startDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								minDate:startDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('startDate')[1];
+									dt.setDate(dt.getDate() + 1);
+									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									
+								}
+							});
+
+							$('#endDate'+opt.id).datepicker({
+								dateFormat : 'yy-mm-dd',
+								minDate:startDateStr,
+								onSelect : function(selected) {
+									var dt = new Date(selected);
+									var id = $(this).attr('id');
+									var actualId = $(this).attr('id').split('endDate')[1];
+									dt.setDate(dt.getDate() - 1);
+									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+								}
+							});
+						}
+						
+						
+					}
+		      }
+        },
+        error: function(e){
+        }
+    });
+	$('#firstName').val('');
+	$('#lastName').val('');}
+	$('#employeeEmail').val('');
+</script>
+
+<!-- this script is for Assign Employee functionality at Projects screen -->
+<script>
+function assignEmployee(){
+	 	var projectId = $("#projectId").val();
+	 	var projectStartDateStr =  $("#projectStartDateStr").val();
+	 	var projectEndDateStr =  $("#projectEndDateStr").val(); 
+	 	
+	    var result = "";
+	    var mailtoMembers = "NO";
+	    if(document.getElementById('membermailCheckbox').checked) {
+	    	mailtoMembers = "YES";
+	    }
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    $(".myCheckbox").each(function(){
+	        var employeeId =this.id;
+	        if($(this).is(':checked')){
+		        var startDate = $("#startDate"+employeeId).val();
+		        var endDate = $("#endDate"+employeeId).val();
+				$.ajax({
+		        	type: "POST",
+		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
+		            success: function(data) {
+		            	projectEmployee(projectId,projectStartDateStr,projectEndDateStr,status);
+		            }
+				})
+	        }
+	    });
+}
+</script>
+
+<script type="text/javascript">
+function flushEmployee(){
+	 $("#add_employee").removeAttr("disabled");
+     $('#firstName').val('');
+     $('#lastName').val('');
+	 $('#EmailId').val('');
+	 $('#invoiceFrequency').val('');
+	 $(".error").removeClass("error");
+	 $('#newEmployee').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+
+<!-- this script is for Add Employee functionality at Projects screen -->
+<script type="text/javascript">
+	function addEmployee() {
+		 if ($('#employee_form').validate(false, validationSettings)){
+			var sourceleadUrl ='${sourceleadUrl}';
+			var frm = $('#employee_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+		    var jsonData = encodeURIComponent(con);
+		    $("#add_employee").attr("disabled", "disabled");
+			$.ajax({
+			type: "POST",
+			url: sourceleadUrl+"/addEmployeeForProjectDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+				success: function(data) {
+					 $('#addTeam').modal('hide');
+				},
+			});
+			  return true;
+			 }else{
+			  return false;
+			 }
+	}
+	$('body').on('blur', '#employee_form', function() {
+		$("#employee_form").showHelpOnFocus();;
+		$("#employee_form").validateOnBlur(false, validationSettings);  
+	});
+</script>

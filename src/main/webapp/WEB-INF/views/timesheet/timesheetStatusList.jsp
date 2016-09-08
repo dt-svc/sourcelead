@@ -1,142 +1,135 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="icon" type="resources/image/png"
+	href="resources/images/fav.png" />
+<link
+	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
+	rel="stylesheet" type="text/css">
+<link rel="stylesheet"
+	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
- <style>
- 
- .clsDatePicker {
-   z-index: 100000 !important;
-}
- </style>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<div class="wraper">
+	<!-- Content Area -->
+	<section class="content-wraper">
+		<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>Timesheet Submissions List</h2>
+			</div>
+		</section>
 
-<!-- Content Area -->
-      <section class="content-wraper">
-        <section class="content-header clearfix">
-          <div class="pull-left">
-            <h2>Timesheet Status</h2>
-          </div>
-          <div class="pull-right brud-crum"><a href="/sourcelead/dashboard">Home</a> &raquo;
-          <c:if test="${status =='NEW'}">Saved</c:if>
-          <c:if test="${status =='SUBMITTED'}">Waiting</c:if>
-          <c:if test="${status =='APPROVED'}">Approved</c:if>
-          <c:if test="${status =='REJECTED'}">Rejected</c:if>
-          </div>
-        </section>
-        
-		<!-- Project -->
-<div class="timesheet_out">
-	
-	
-		 <c:if test="${empty Timesheet_Submissions}">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="content-area clearfix">
-						<div class="blank-pages">
-						        <p><i class="fa fa-5x fa-bar-chart"></i></p>
-						        <p>No Submissions </p>
-						 </div>
-					</div>
-				</div>
-			</div> 
-		</c:if>
-		<c:if test="${!empty Timesheet_Submissions}">
-		
-		<div class="timesheet_status_wrap">
-		<div class="timesheet_head">
-        	<ul>								
-                <li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c13"><label for="c13">All</label><b>10</b></li>
-							<li><input type="checkbox" id="c14"><label for="c14">Approved</label><b>10</b></li>
-							<li><input type="checkbox" id="c15"><label for="c15">Draft</label><b>10</b></li>
-							<li><input type="checkbox" id="c16"><label for="c16">Rejected</label><b>10</b></li>
-                        </ul>
-                    </div>                	
-                </li>				               
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
-		<div class="timesheet_appr_table">
-    	<table>
-        	<tbody>
-			<thead>
-            	<tr>
-                	<th>Project name</th>
-                    <th>Frequency</th>
-                    <th>Employee</th>
-                    <th>Appprovers</th>
-                    <th>Total Hours</th>
-                    <th>Status</th>
-                </tr>
-			</thead>
-				<c:forEach var="report" items="${Timesheet_Submissions}" varStatus="raId">   	
-                <tr>
-                	<td><div>${report.submissionId.projectMembers.projects.projectName}</div></td>
-                	<td><div><fmt:formatDate type="date"  value="${report.submissionId.startDate}" pattern="dd-MM-yyyy"/>   &nbsp; <c:if test="${!empty report.submissionId.endDate}">  - &nbsp;<fmt:formatDate type="date" value="${report.submissionId.endDate}" pattern="dd-MM-yyyy"/></c:if></div></td>
-                    <td><div>${report.submissionId.projectMembers.employee.user.firstName}</div></td>
-                    <td><div>
-                    	<c:if test="${!empty report.managerLevel1}">
-                    	${report.managerLevel1}
-                    	</c:if>
-                    	<c:if test="${!empty report.managerLevel2}">
-                    	, ${report.managerLevel2}
-                    	</c:if>
-                    </div></td>
-                      <td><div>${report.submissionId.totalHours}</div></td>
-                         <c:if test="${status =='APPROVED' || status ==' REJECTED'}">
-                          <td><div><h3>${report.submissionApprovalStatus}</h3></div>
-                         </c:if>
-                         <c:if test="${status =='NEW'  || status =='SUBMITTED'}">
-                          <td><div><h3>${report.submissionStatus}</h3></div>
-                         </c:if>
-                   
-					</td>
-                </tr>
-                </c:forEach>
-            </tbody>
-        </table>
-	</div>
-	
-	<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>
-	</c:if>
 		
 		
-		
-	</div>
-	
+		  <div id="projectFilterList"></div>
+		    <div class="timesheet_appr_table">
+		    				<table id="example" class="display" cellspacing="0" width="100%">
+							</table>
+			</div>	  
+
+</section>
 </div>
+<div id="TimeshgeetStatusListId"></div>
+<script type="text/javascript">
+window.onload = function () {
+	filter();
+ };
+</script>
 
+
+
+ <script type="text/javascript">
+function filter(){
+	var status = '${status}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
+		        success: function(data) {
+		        
+		        	var json = JSON.parse(data);
+		         	var result = "";
+		         	
+		         	result = result +'<thead>';
+	            	result = result +'<tr>';
+	                result = result +'<th>Project name</th>';
+	                result = result +'<th>Frequency</th>';
+	                result = result +'<th>Employee</th>';
+	                result = result +'<th>Appprovers</th>';
+	                result = result +'<th>Total Hours</th>';
+	                result = result +'<th>Status</th>';
+	                result = result +'</tr>';
+				    result = result +'</thead>';
+				    
+			         	for (var i=0; i<json.length; i++){
+			         		var report = json[i];
+			         					result = result +'<tr>';
+			         					result = result +'<td><div>'+report.projectName+'</div></td>';
+			         					result = result +'<td data-title="Date"><div>'+report.startDate+' ';
+			           	   		    	result = result +'- '+report.endDate+' </div></td>';
+			         					result = result +'<td><div>'+report.employeeName+'</div></td>';
+			         					result = result +'<td><div>';
+			         					if(report.managerLevel1 != null && report.managerLevel1 !=''){
+		         	                    	result = result + ''+report.managerLevel1+'';
+			         					}
+			         					if(report.managerLevel2 != null && report.managerLevel2 !='' && report.managerLevel1 != null && report.managerLevel1 !=''){
+			         						result = result + ',';
+			         					}
+			         					if(report.managerLevel2 != null && report.managerLevel2 !=''){
+		         	                    	result = result +''+report.managerLevel2+'';
+			         					}
+			         					result = result +'</div></td>';
+			         					if(report.totalHours != null && report.totalHours !=''){
+			         						result = result +'<td><div>'+report.totalHours+'</div></td>';
+			         					}else{
+			         						
+			         						result = result +'<td><div>'+0.0+'</div></td>';
+			         					}
+			         					if(report.submissionApprovalStatus == 'APPROVED' || report.submissionApprovalStatus == 'REJECTED' ){
+			         						 result = result +'<td><div><h3>'+report.submissionApprovalStatus+'</h3></div>';
+			         					}
+			         					if(report.submissionStatus == 'NEW' || report.submissionStatus == 'SUBMITTED' || report.submissionStatus == 'DRAFT'){
+			         					   result = result +'<td><div><h3>'+report.submissionStatus+'</h3></div>';
+			         					}
+			         					 result = result +'</td>';
+			         					 result = result +' </tr>';
+			         	                   
+			         					}
+		         	                result = result +' </tbody>';
+		         	                result = result +'</table>';
+
+		        $("#example").empty();  
+		   	    $("#example").append(result);
+		    	 pagination()
+		        },
+		    });
+} 
+</script>
+ 
+ <script>
+function pagination(){  
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	 "ordering": false
 		
-		<!-- Project -->
-		
-      </section>
-      <!-- Content Area Ends--> 
-
-
-<jsp:include page="../masterFooter.jsp" />
-
+    } );
+}
+</script> -->
+ 

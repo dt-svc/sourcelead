@@ -33,7 +33,7 @@ public interface OrgService {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public boolean isClientNameValid(String clientName ,Long orgLocationId) throws Exception;
+	public boolean isClientNameValid(String clientName ,Long orgLocationId,String responderType) throws Exception;
 	
 	
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;

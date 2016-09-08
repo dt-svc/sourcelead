@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -39,6 +41,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mysql.jdbc.log.Log;
 
 /**
  * 
@@ -234,11 +237,12 @@ public class ProjectsDashboardRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
-		 
-		 String employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
-		 	
-		 return employeeList;
+	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+		 String resultJson;
+		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
+		
+		 resultJson = commonUtil.toJSON(employeeList);
+		 return resultJson;
 	  }
 	 
 	 /**
@@ -272,9 +276,11 @@ public class ProjectsDashboardRestController {
 		 	String resultJson;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-			Collection<Employees> employeeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
-			resultJson = commonUtil.toJSON(employeeList);
-			return resultJson;
+			
+			 List<Employees>  employeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
+			 
+			 resultJson = commonUtil.toJSON(employeList);
+			 return resultJson;
 		}
 	/**
 	 * Assign Employee to project by  project id	 

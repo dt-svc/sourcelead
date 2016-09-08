@@ -12,7 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -133,10 +134,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		Date previousMondayDate = previousMonday.getTime();
 		
-		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
+		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
 		Date nextSundayDate = nextSunday.getTime();
 		
 		
@@ -216,20 +217,21 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 		
 		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
-		if(leftNavStartDate != null && leftNavStartDate.after(employeeStartDate)){
+		if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || leftNavStartDate.equals(employeeStartDate))){
 			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
 		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
-		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		if(rightNavStartDate != null){
+	    Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);	
 		rightCal.setLenient(false);
 		rightCal.setTime(rightNavStartDate);
 		Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
-		if(rightNavStartDate != null && rightNavEndDate.getTime().before(employeeEndDate)){
+		if((rightNavEndDate.getTime().before(employeeEndDate) || employeeEndDate.equals(rightNavEndDate.getTime()))){
 			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
 		}
-		               
+		}               
 		sb.append("           </li><div class='clearfix'></div>");
 		sb.append("       </ul>");
 		sb.append("       <div class='clearfix'></div>");
@@ -250,6 +252,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("</tr>");
         
         String approvalStatus = null;
+        HashSet<String> combinedApprovalStatus = new HashSet<String>();
         ArrayList<Boolean> isThereAnyApproverApproved = null;
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			isThereAnyApproverApproved = new ArrayList<Boolean>();
@@ -315,13 +318,20 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
 			}*/
             
+            
             if(sah.getSubmissionApprovalStatus() != null){
 				approvalStatus = sah.getSubmissionApprovalStatus().getValue();
 			}
 			else{
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
 			}
-			
+            
+            if(isSah != null && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())){
+            	combinedApprovalStatus.add(Submission_ApprovalStatus.getNameByValue("approved").getValue());
+            }
+            else{
+            	combinedApprovalStatus.add(approvalStatus);
+            }
 		   	
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
@@ -474,7 +484,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
 							        	if(isSah == null ){
-							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
+							                String startDateStr = format.format(ts.getStartDate());
+							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >withdraw</b>");
 							        	}
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -592,7 +603,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
 								        	if(isSah == null ){
-								        	sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet("+ts.getId()+");' >withdraw</b>");
+								        		String startDateStr = format.format(ts.getStartDate());
+								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >withdraw</b>");
 								        	}
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -681,28 +693,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </div>");
 			
 			
-			if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()) && (isThereAnyApproverApproved != null && !isThereAnyApproverApproved.isEmpty() && isThereAnyApproverApproved.contains(new Boolean("false")))){
+			if(combinedApprovalStatus == null || (combinedApprovalStatus != null && (combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("rejected").getValue()) || combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("new").getValue())))){
 				   sb.append("	<div class='timesheet_button'>");
-				   /*sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");*/
-				   sb.append("  </div>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"user\");' value='Save' class='time_btn time_dra'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"user\");' value='Submit' class='time_btn'>");
+				   sb.append("        <input type='button' onClick='clearTimesheet();'  value='Clear' class='time_btn time_cancel'>");
+				   sb.append("");
+				   sb.append("    </div>");
 				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");
-			}
-			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");
+				   sb.append("</div>");   
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Save' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
-				   sb.append("        <input type='button' onClick='clearTimesheet();'  value='Clear' class='time_btn time_cancel'>");
-				   
-				   sb.append("");
-				   
-				   sb.append("    </div>");
+				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
@@ -863,7 +866,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append("                      <div> ");
 						              
 						              if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
-							              sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							              if(timesheetEntries.getProjectTask() != null){
+							            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							              }
+							              else{
+							            	  sb.append("<p>No Data</p>");
+							              }
 						              }
 						              else{
 						              
@@ -1166,7 +1174,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Update' class='time_btn'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 				   sb.append("    </div>");
 				   sb.append("	<div class='clearfix'></div>");
@@ -1180,8 +1188,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			}
 			else{
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\");' value='Save' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\");' value='Submit' class='time_btn'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\");' value='Save' class='time_btn time_dra'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();' value='Clear' class='time_btn time_cancel'>");
 				   
 				   sb.append("");
@@ -1226,7 +1234,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 	@Override
 	public String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm, String json,
-			MultipartHttpServletRequest request, String status) throws Exception {
+			MultipartHttpServletRequest request, String status,String savingType) throws Exception {
 		// TODO Auto-generated method stub
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1252,16 +1260,18 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				                Long total = 0l;
 				                TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 				                startDate = timesheetSubmissions.getStartDate();
-				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);
-					    		/*if(status.equalsIgnoreCase("Draft")){
-					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.DRAFT);
+				                
+				               /* if(status.equalsIgnoreCase("Draft")){
+				                	sah.setSubmissionStatus(Submission_Status.DRAFT);
 					    		}
 					    		if(status.equalsIgnoreCase("Submit")){
-					    			timesheetSubmissions.setSubmissionStatus(Submission_Status.SUBMITTED);
-					    			timesheetSubmissions.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+					    			sah.setSubmissionStatus(Submission_Status.SUBMITTED);
+					    			sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 					    		}*/
 					    		
-					    		
+				                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionLowLevelApproverHierarchyForEmployee(timesheetSubmissions.getId());
+				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft"))  || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected")) || (sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("submitted")) && "approver".equalsIgnoreCase(savingType)  ) ){
+				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
 								Iterator<String> itrator = request.getFileNames();
 								while (itrator.hasNext()) {
@@ -1443,7 +1453,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								if(total != null){
 						            int actualHours = (int) (total / 60);
 						            int actualMinutes =   (int)(total % 60);
-						            String actualTimeString =  actualHours+"."+actualMinutes;
+						            String actualMinutesStr = ""+actualMinutes;
+						            String startWithZero = "";
+						            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
+						            	startWithZero ="0";	
+						            	
+						            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
 						            
 									timesheetSubmissions.setTotalHours(actualTimeString);
 									timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
@@ -1454,6 +1469,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									}
 								}
 								
+			          }	
 								
 					    	}
 		} 

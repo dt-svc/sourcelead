@@ -1,13 +1,18 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 
@@ -17,6 +22,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Autowired
 	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
 	
+	@Autowired
+    ProjectApproverHierarchyDao projectApproverHierarchyDao;
 
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
@@ -55,6 +62,13 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployee(submissionId);
 	}
+	
+	@Override
+	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId) {
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchyDao.getSubmissionLowLevelApproverHierarchyForEmployee(submissionId);
+	}
+	
 	
 	@Override
 	public List<SubmissionApproverHierarchy>getSubmissionApproverHierarchyBySubmissionId(Long submissionId) {
@@ -220,8 +234,53 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  			}
  			
  		}
+        
+         if(list!=null && !list.isEmpty()){
+				for(SubmissionApproverHierarchy submissionApproverHierarchy:list){
+			       
+					submissionApproverHierarchy.setProjectName(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					
+					 String pattern = "yyyy-MM-dd";
+		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+					 submissionApproverHierarchy.setStartDate( Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate()));
+					 submissionApproverHierarchy.setEndDate(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate()));
+					 submissionApproverHierarchy.setEmployeeName(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getFirstName()+""+submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getLastName());
+					if(submissionApproverHierarchy.getSubmissionId().getTotalHours() != null){
+						 submissionApproverHierarchy.setTotalHours(Float.valueOf(submissionApproverHierarchy.getSubmissionId().getTotalHours()));
+					}
+					 
+					Collection<ProjectApproverHierarchy> projectApproverHierarchies = null;
+					try {
+						projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					for(ProjectApproverHierarchy pah : projectApproverHierarchies){
+						if(pah.getLevel() == 1){
+							submissionApproverHierarchy.setManagerLevel1(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
+						}else if(pah.getLevel() == 2){
+							submissionApproverHierarchy.setManagerLevel2(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
+						}
+					}
+				}
+			}
+         
+         
          return list;
 	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByApproverUserId(Long approverUserId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByApproverUserId(approverUserId);
+	}
+
+	@Override
+	public void saveAllSubmissionApproverHierarchy(List<SubmissionApproverHierarchy> submissionApproverHierarchyList)
+			throws Exception {
+		submissionApproverHierarchyDao.saveAllSubmissionApproverHierarchy(submissionApproverHierarchyList);
+		
+	}
+
 	
 	
 	
