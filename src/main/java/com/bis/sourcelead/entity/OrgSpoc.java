@@ -94,6 +94,19 @@ public class OrgSpoc {
 
 	@Transient
 	private List<User> userList;
+	
+
+	@Transient
+	private String spocFirstName;
+	
+	@Transient
+	private String spocLastName;
+
+	@Transient
+	private Long orgRelationId;
+
+	@Transient
+	private String userState;
 
 	
 	public List<User> getUserList() {
@@ -270,6 +283,37 @@ public class OrgSpoc {
 
 	public void setOwnerUserId(String ownerUserId) {
 		this.ownerUserId = ownerUserId;
+	}
+
+	public String getSpocFirstName() {
+		return spocFirstName;
+	}
+
+	public void setSpocFirstName(String spocFirstName) {
+		this.spocFirstName = spocFirstName;
+	}
+
+	public String getSpocLastName() {
+		return spocLastName;
+	}
+
+	public void setSpocLastName(String spocLastName) {
+		this.spocLastName = spocLastName;
+	}
+
+	public Long getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+	public String getUserState() {
+		return userState;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
 	}
 	
 }

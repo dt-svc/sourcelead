@@ -23,8 +23,7 @@ width: 100% !important;
 
 <!-- client details View starts-->
 <script type="text/javascript">
-	function clientContactList(orgRelationID) {
-		alert("Hi");
+	function clientContactList(orgRelationID,clientLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
@@ -36,7 +35,7 @@ width: 100% !important;
     		var res = "";
 			res = res + '<div class="timesheet_head">';
 			res = res + '<ul>';
-			res = res + '<li><a href="javascript:void(0)" onClick="addContact('+orgRelationID+');" class="addcon-pop">';
+			res = res + '<li><a href="javascript:void(0)" onClick="addContact('+orgRelationID+','+clientLocationId+');" class="addcon-pop">';
 			res = res + '<i class="glyphicon glyphicon-plus"></i>Add Contact</a>';
 			res = res + '<div class="clearfix"></div>';
 			res = res + '</ul>';
@@ -294,7 +293,7 @@ function changeSpocStatus(spocId){
 function resendSpocInvitation(spocUserId,orgRelationID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Client&orgRelationID="+orgRelationID, 
@@ -309,33 +308,35 @@ function resendSpocInvitation(spocUserId,orgRelationID){
 
    <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID) {	  
+function addContact(orgRelationID,clientLocationId) {	  
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
-	result = result  +'	<div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result  +'	<div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
 	result = result  +'	<div class="form-horizontal clearfix">';
                               
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	<input type="text" class="form-control input-sm" value="" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length2-100">';
-	result = result  +'	</div>';
-	result = result  +'	</div>';
-	
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
-	result = result  +'	   </div>';
-	result = result  +'	 </div>';
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email" onKeyUp="validateSpocEmail('+orgRelationID+');" value="" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email" onKeyUp="validateSpocEmail('+orgRelationID+');" value="" field-name="Email" placeholder="Email Id *" onblur="getSpocUserDetails('+clientLocationId+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
+	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length2-100">';
+	result = result  +'	</div>';
+	result = result  +'	</div>';
+	
+	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	  <div class="col-md-12">';
+	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
+	result = result  +'	   </div>';
+	result = result  +'	 </div>';
+	
+	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	   <div class="col-md-12">';
-	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" id="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 	result = result  +'	    </div>';
 	result = result  +'	  </div>';
 	
@@ -365,7 +366,7 @@ function addContact(orgRelationID) {
     result = result  +'	 </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb10" id="roleDiv" style="display: block;" >';
 	result = result  +'	 <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>';
 	result = result  +'	 <div class="col-md-12">';
 	result = result  +'	       <select class="form-control" id="role" name="roleType" field-name="Role" data-validation="required">';
@@ -373,11 +374,20 @@ function addContact(orgRelationID) {
 	result = result  +'	 					<option value="1">Admin</option>';
 	result = result  +'	 					<option value="3">Approver/Project Manager</option>';
 	result = result  +'	 					<option value="5">HR Manager</option>';
-	result = result  +'	 					<option value="6">Account Manager</option>';
 	result = result  +'	 					<option value="8">Recruiter</option>';
 	result = result  +'	        </select>';
 	result = result  +'	 </div>';
 	result = result  +'	 </div>';
+	
+	
+	result = result  +'<div class="clearfix mb10" id="userRoleDiv" style="display: none;">';
+	result = result  +'<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>';
+	result = result  +'<div class="col-md-12">';
+	result = result  +'<input type="text" class="form-control" id="userRoleText"  readonly="readonly">';
+	result = result  +'<input type="hidden" id="userRole" name="roleTypeId" value="" />';
+	result = result  +'</div>';
+	result = result  +'</div>';
+	
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	   <div class="col-md-12 checkbox">';
@@ -387,7 +397,7 @@ function addContact(orgRelationID) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	  <div class="clearfix mr">';
-	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+');" class="btn btn-sm btn-primary pull-right"/>';
+	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
 	result = result  +'	  </div>';
 	
 	result = result  +'	 </div>';
@@ -410,29 +420,26 @@ function addContact(orgRelationID) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	
-	$(".addcon-pop").click(function(){
+	/* $(".addcon-pop").click(function(){
 		 $(".collapse-div-adduser").toggleClass("show-div");
 		 $(".collapse-div").removeClass("show-div");
-	 });
+	 }); */
+	 
+	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){
-		 $(this).parent().removeClass("show-div");
+		 $(this).closest('.edit-details').removeClass("edit-details-active");
 		 });
-	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
-	    $(".collapse-div-adduser").removeClass("show-div");
-		$(".collapse-div").removeClass("show-div");
-	   });	
-	   
-	}
+	 
+	};
 </script>
  <!-- This Script is For Popup Div Ends --> 
 
 <!-- to add new contact -->
 <script type="text/javascript">
-	function check(orgRelationId) {
+	function check(orgRelationId,clientLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
 			var frm = $('#clinetContact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -444,7 +451,7 @@ function addContact(orgRelationID) {
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId,
 						success : function(result) {
 							clientContactList(orgRelationId);
 						},
@@ -519,5 +526,85 @@ function addContact(orgRelationID) {
 			return o;
 		};
 	})(jQuery);
+</script>
+
+
+
+<script type="text/javascript">
+function getSpocUserDetails(orgLocationId){
+	var email = document.getElementById("EmailId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
+	        		 }
+		        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#phoneNumber").attr("disabled", true);
+		        		    $("#phoneNumber").val(json[2]);
+	        		 }else{
+	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").val('');
+	        		 }
+	       
+	        		 if(json[3] != null && json[3] != ''){
+	        			$("#role").removeAttr("data-validation");
+	        			$("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none";
+   	        			document.getElementById("userRoleDiv").style.display="";
+   	        			$("#userRole").val(json[3]);
+   	        			$("#userRoleText").val(json[4]);
+	        		 }else{
+	        			 $("#role").attr("data-validation", "required");
+	        			 $("#userRole" ).val('');
+	        			 document.getElementById("roleDiv").style.display="";
+	        			 document.getElementById("userRoleDiv").style.display="none";
+	        		 }
+			      	 
+	        	}
+			 },
+	        error: function(e){
+	            alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	    $("#phoneNumber").attr("disabled", false);
+	    $("#phoneNumber").val('');
+	    
+	    $("#role").attr("data-validation", "required");
+	    $("#userRole" ).val('');
+	    document.getElementById("roleDiv").style.display="";
+		document.getElementById("userRoleDiv").style.display="none";
+	   
+	} 
+	
+}
 </script>
 

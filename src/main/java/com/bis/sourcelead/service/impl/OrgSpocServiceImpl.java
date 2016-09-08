@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserService;
@@ -38,6 +39,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	
+	
+	
+	
 	/**
 	 * used to add spoc for vendor and client
 	 * @param OrgSpoc
@@ -51,17 +59,22 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId) throws Exception {
-		User spocUser = userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER","",new Org());
+	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId) throws Exception {
+		
 		
 		OrgRelations orgRelation = null;
+		OrgLocations respondingOrgLocation = null;
 		if(orgRelationId != null && !"".equals(orgRelationId) && !"''".equals(orgRelationId)){
 			 orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(orgRelationId));
+			 respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(clientLocationId));
 		}else{
 			String OrRelationId = jsonObj.getString("vendorName");
-			orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(OrRelationId));
+			String [] realtionId = OrRelationId.split(",");
+			orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(realtionId[0]));
+			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
+		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER","",new Org());
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");

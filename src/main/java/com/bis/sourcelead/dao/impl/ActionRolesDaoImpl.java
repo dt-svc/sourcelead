@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -103,6 +104,29 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 					  .setLong("roleId", roleId)
 					  .setLong("orgLocationId", orgLocationId)
 					  .setCacheable(true).list();
+	}
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ActionRoles> actionRoles = new ArrayList<ActionRoles>();
+		logger.debug("getActionRolesByActionIdAndRoleIdAndLocationId start");
+		String query = "from ActionRoles actionRoles left join fetch actionRoles.tabActions actons left join fetch actionRoles.roles roles "
+				+ "left join fetch actionRoles.org org where actons.id = :actionId and roles.id = :roleId and org.id = :orgId ";
+		actionRoles = session.createQuery(query).setLong( "actionId", actionId )
+				.setLong("roleId", roleId).setLong("orgId", orgId).setCacheable(true).list();
+		logger.debug("getActionRolesByActionIdAndRoleIdAndLocationId end");
+		if (actionRoles.size() > 0) {
+			return actionRoles.get(0);
+		} else {
+			return null;
+		}
+   	
 	}
 
 }

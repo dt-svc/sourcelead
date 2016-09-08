@@ -203,7 +203,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		List<OrgSpoc> spocsList;
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
 		if (isadmin) {
-            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType ) and spoc.status <> 'INACTIVE' ");
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> 'INACTIVE' ");
             spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setCacheable(true).list();
         }else if(ids != null && !ids.isEmpty()){
             Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((spoc.ownerUser.id = :loginUserId OR spoc.ownerUser IN (:ids)) OR (spoc.spocUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> 'INACTIVE' ");
@@ -214,5 +214,19 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
         }
 		return spocsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getRespondingPartyDetailsById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+   	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org org where orgrelation.id = :id ");
+      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+      OrgRelations orgRelation = null;
+		if(orgRelations != null && !orgRelations.isEmpty())
+		{
+			orgRelation = orgRelations.iterator().next();
+		}
+		return orgRelation;
+}
 	
 }

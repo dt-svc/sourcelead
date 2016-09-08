@@ -12,6 +12,7 @@
 
 
 <body>
+ <div id="loading"></div>
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -58,7 +59,7 @@
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table ">
+				<div class="clients_wrap_table " id ="vendorListFilter">
 			
 		     	<table id="clientList" class="display" cellspacing="0" width="100%"> </table>
 		     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
@@ -131,6 +132,15 @@ function getClientDetails(){
    				{  
    	        		
    	        		var report = json[i];
+   	        		var location = "";
+   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+   	        			location = report.country+", "+report.state+", "+report.city;
+   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+   	        			location = report.country+", "+report.state;
+   	        		}else{
+   	        			location = report.country;
+   	        		}
+   	        		
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
@@ -149,10 +159,10 @@ function getClientDetails(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		
-   	        		if(report.country != null && report.country  != '' && report.country  != 'undefined'){
+   	        		if(location != null && location  != '' && location  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
-   	        			result = result +'<span class="tbldata-dotdot-me" title="'+report.country+'&nbsp;,'+report.state+'&nbsp;,'+report.state+'">'+report.city+'&nbsp;,'+report.state+'&nbsp;,'+report.country+'</span>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		}else{
@@ -219,7 +229,7 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		//for client contatcs tab
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+');">Contacts</a></li>';
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 				
 				
 		result = result + '<div class="clearfix"></div>'
@@ -335,7 +345,7 @@ function getVendorContactLists(){
      	        		}
      	        		
      	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-     	        			result = result +' <td><div><b class="proj_process">Send</b></div></td>';
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Send</a></b></div></td>';
      	        		}
      	        		
      	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
@@ -347,7 +357,7 @@ function getVendorContactLists(){
      	        		}
      	        		
      	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-     	        			result = result +' <td><div><b class="proj_process">Resend</b></div></td>';
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
      	        		}
      	        		
      	        		if(report.invitationStatus == 'Accepted'){ 
@@ -360,12 +370,15 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="#";></i></div></td>';
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
    	        		
    	        		
    	        		result = result +'</tr>';
    				}
    	        	result = result +'</tbody>';
+   	    	    $("#vendorContactList").empty();  
+   	    	    $("#vendorContactList").append(result)
+   	    	    pagination1(); 
    	        	}else{
    	        		result = result +'<div class="row mt">';
    	        		result = result +'<div class="col-lg-12">';
@@ -379,10 +392,10 @@ function getVendorContactLists(){
    	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        		result = result +'</div>';
+   	        	    $("#vendorContactList").empty();  
+    	    	    $("#vendorContactList").append(result)
    	        	}
-   	    	    $("#vendorContactList").empty();  
-   	    	    $("#vendorContactList").append(result)
-   	    	    pagination1(); 
+   	        	
    	    	    
    		    }
 	 });
@@ -390,6 +403,26 @@ function getVendorContactLists(){
 	
 }	
 </script> 
+
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript">
+function resendClientSpocInvitation(spocUserId,orgRelationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
+			        	getVendorContactLists();
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
 <script>
 function pagination1(){  
     $('#vendorContactList').DataTable( { 
@@ -430,7 +463,7 @@ function updateSpocStatus(spocId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
-	    	clientContactList(orgRelationID);
+	    	//clientContactList(orgRelationID);
 	    }
    });
 }
@@ -654,7 +687,7 @@ function  inlineEditClientProjects(projectId,localFieldName){
 	 }); 
 }
 </script> 
-
+<div id="popUp"></div>
 <script> 
 function  inlineEditForProjects(orgRelationId,localFieldName){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -747,6 +780,44 @@ function acceptInvitation(spocId){
 }
 </script>
 
+<script>
+function terminateSpoc1(spocId, orgRelationID){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reasonForSpocDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function saveReason1(spocId, orgRelationID){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForSpoc").value;
+	if(reason){
+		$("#reasonForSpocDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			    //vendorContactList(orgRelationID);
+   			 getVendorContactLists();
+		    }
+	   });
+	}else{
+		$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	  
+}
+</script>
 <script>
 function rejectInvitation(spocId){
 	 var sourceleadUrl ='${sourceleadUrl}';

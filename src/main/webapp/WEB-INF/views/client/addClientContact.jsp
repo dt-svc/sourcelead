@@ -32,6 +32,10 @@ function getOrgName(){
 	$("#webSite").attr("disabled", false);
 	$("#webSite" ).val('');
 	
+	$("#role" ).val('');
+	$("#role").attr("data-validation", "required");
+	document.getElementById("roleDiv").style.display="";
+	document.getElementById("userRoleDiv").style.display="none";
 	
 	$.ajax({                           
     	type: "POST",
@@ -102,7 +106,7 @@ function getOrgDetails()
    	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
-   	 
+ 	getSpocUserDetails();
 	}
 	
 }
@@ -177,14 +181,14 @@ function getOrgDetails()
             <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required">
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required" onchange="getSpocUserDetails();">
                   <option>Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id}">${report.responderLocationId.org.orgName}</option>
+                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -193,6 +197,15 @@ function getOrgDetails()
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          
+           <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					
+			        	<div class="col-md-9">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+			     	</div>
+					</div>
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
@@ -206,19 +219,6 @@ function getOrgDetails()
 	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
 	              </div>
 	            </div>
-                <div class="form-group" id="EmailIdDiv">
-					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
-	                            <span class="hidden">Valid Email</span>
-			     	</div>
-					</div>
-					
-					<%-- <div class="col-md-9">
-						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
-		                    <span class="hidden">Valid Email</span>
-					</div> --%>
 				
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
@@ -237,19 +237,8 @@ function getOrgDetails()
 	                </select>
 	              </div>
 	            </div>
-                <!--  <div class="form-group">
-                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
-		                        <option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="3">Approver/Project Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
-			              </select>
-                  </div>
-                </div> -->
-                 <div class="form-group" id="roleDiv" style="display: block;">
+                <!-- These are the default sourelead roles we are providing for spoc in client creation -->
+              <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
@@ -526,11 +515,12 @@ function flusAddClint(){
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	var orgLocationId = document.getElementById("orgLocationId").value;
+	var vendorName = document.getElementById("vendorName").value;
+	var orgLocationId = vendorName.split(',');
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId[1],
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -560,9 +550,10 @@ function getSpocUserDetails(){
 	        			    $("#phoneNumber").attr("disabled", false);
 	        			    $("#phoneNumber").val('');
 	        		 }
-	        		 
+	       
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
+	        			
 	        			$("#role").removeAttr("data-validation");
 	        			$("#role" ).val('');
         			    document.getElementById("roleDiv").style.display="none";

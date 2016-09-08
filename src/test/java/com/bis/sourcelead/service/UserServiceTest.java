@@ -299,7 +299,7 @@ public class UserServiceTest {
 		user.setFirstName("Raj");
 		user.setLastName("Krishna");
 		user.setEmail("pavan.jampana@businessintelli.com");
-		userService.sendEmailToClientOrVendor(user, loginUser, "Pwd123", "Client", loginOrg);
+		userService.sendEmailToClientOrVendor(user, loginUser, "Pwd123", "Client", loginOrg,null,null);
 		logger.info(" success fully sent email to client/Vendor");
 	}
 	

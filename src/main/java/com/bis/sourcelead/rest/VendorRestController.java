@@ -66,13 +66,14 @@ public class VendorRestController {
 	 */
 	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId, HttpServletRequest request) throws Exception {
+	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
+			                        @RequestParam(value="clientLocationId", required=false) String clientLocationId , HttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId);
+		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId);
 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
 		return "vendorsList";
 	}
@@ -183,12 +184,15 @@ public class VendorRestController {
 					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 				}
 				
+				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
 			}
 			
 			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
 			 return resultJson;
 		}
-	   
+	
 	   
 	   // this method is used to re-send email to Spoc
 	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
@@ -196,22 +200,23 @@ public class VendorRestController {
 			    
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(orgRelationID);
 			    //get user by userId
 			    User user = userService.getUserById(Long.parseLong(spocUserId));
 			    
 			    //generate random password
 			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		 		if(user != null){
+		 		if(null != user  && null != orgRelations){
 		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		 			user.setIsMailSent(Status.Y);
 		 			userService.addUser(user);
 		 			
 		 			//to update spoc invitation status
-		 			/*OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(spocUserId));
+		 			OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
-		 			orgSpocService.addOrgSpoc(spoc);*/
+		 			orgSpocService.addOrgSpoc(spoc);
 		 			
-		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg);
+		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
 		 		}
 			
 		 	  return "success";
