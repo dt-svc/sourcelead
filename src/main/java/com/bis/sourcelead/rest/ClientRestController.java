@@ -424,9 +424,10 @@ public class ClientRestController {
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
 	@ResponseBody boolean isClientNameValidated(
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId(),"Client");
+		return orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
 	}
 /**
  * Verifies Client Email
