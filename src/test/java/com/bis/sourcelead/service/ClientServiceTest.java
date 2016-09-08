@@ -142,7 +142,7 @@ public class ClientServiceTest {
 		logger.info("Client details Stored Successfully....");
 	}
 	
-	@Test
+	//@Test
 	public void updateVendorDetails() throws Exception {
 		
 		 JSONObject jsonObj = new JSONObject();
@@ -159,5 +159,21 @@ public class ClientServiceTest {
 		 
 		 clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, loginOrgLocationId);
 		 logger.info("Vendor details updated sucessfully sucessfully...");
+	}
+	
+	@Test
+	public void updateVendorContactDetails() throws Exception {
+		JSONObject jsonObj = new JSONObject();
+		 jsonObj.put("vendorContactFirstName", "rajesh");
+		 jsonObj.put("vendorContactLastName", "khanna");
+		 jsonObj.put("mobilePhone", "9876543210");
+		 jsonObj.put("spocStatus", "Active");
+		 jsonObj.put("email", "rajesh@gmail.com");
+		 jsonObj.put("owner", "3");
+		
+		 Long spocId = 5l;
+		 Long loginOrgId = 2l;
+		clientService.updateVendorContactDetails(jsonObj, spocId, loginOrgId);
+		logger.info("Vendor details updated sucessfully...");
 	}
 }
