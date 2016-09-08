@@ -14,8 +14,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 /**
  * 
@@ -28,6 +32,9 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -48,7 +55,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orgRelations != null) {
-				session.save(orgRelations);
+				session.saveOrUpdate(orgRelations);
 			}
 			logger.debug("OrgRelations Added Successfully");
 		} catch (Exception exception) {
@@ -86,7 +93,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgRelations> clientsList = null;
-		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
+		// Prasanna vadla : query changed to get new client list for ATS_VMS  
+		//Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
+		
+		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
 		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return clientsList;
 	}
@@ -133,5 +143,90 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Long count = (Long) session.createQuery(query).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).uniqueResult();
 		return count;
 	}
+	/**
+	 * Prasanna vadla
+	 * To get a Vendors list of the login user by orgLocationId
+	 * @return OrgSpoc List
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId) {
+		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgRelations> vandorsList = null;
+		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
+		
+		vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return vandorsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId) {
+			Session session = this.sessionFactory.getCurrentSession();
+	    	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org org left join fetch org.user where orgrelation.id = :orgRelationId and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId)");
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+	       OrgRelations orgRelation = null;
+			if(orgRelations != null && !orgRelations.isEmpty())
+			{
+				orgRelation = orgRelations.iterator().next();
+			}
+			return orgRelation;
+	}
+	
+	
+/**
+ * @author Rajashekar
+ * find OrgRelation by Id
+ * @return OrgRelations
+ * @throws Exception
+ */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getOrRelationsById(Long id) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+			return session.get(OrgRelations.class, id);
+	}
+	/**
+	 * Prasanna vadla
+	 * 31/8/2016
+	 * To get a spoc list from all clients
+	 * @return OrgSpoc List
+	 */
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,List<Long> ids,Long orgLocationId , String relationType) {
+		logger.debug("In OrgRelations getAllVendorsContactListByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgSpoc> spocsList;
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
+		if (isadmin) {
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> 'INACTIVE' ");
+            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setCacheable(true).list();
+        }else if(ids != null && !ids.isEmpty()){
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((spoc.ownerUser.id = :loginUserId OR spoc.ownerUser IN (:ids)) OR (spoc.spocUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> 'INACTIVE' ");
+            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ids", ids).setCacheable(true).list();
+        }else{
+            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> 'INACTIVE' ");
+            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).setCacheable(true).list();
+        }
+		return spocsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getRespondingPartyDetailsById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+   	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org org where orgrelation.id = :id ");
+      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+      OrgRelations orgRelation = null;
+		if(orgRelations != null && !orgRelations.isEmpty())
+		{
+			orgRelation = orgRelations.iterator().next();
+		}
+		return orgRelation;
+}
 	
 }

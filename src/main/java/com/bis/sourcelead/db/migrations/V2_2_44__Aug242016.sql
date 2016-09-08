@@ -8,7 +8,6 @@ INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`, `DISPLAY_NAME`) VALUES ('7'
 INSERT INTO `sourcelead`.`ROLES` (`ID`, `ROLE_NAME`, `DISPLAY_NAME`) VALUES ('8', 'ROLE_RECRUITER', 'Recruiter');
 
 
-
 #Dashboard Tab
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('1', '5', 'Y', '1');
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('1', '6', 'Y', '1');
@@ -20,7 +19,6 @@ INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `O
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('2', '6', 'Y', '1');
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('2', '7', 'N', '1');
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('2', '8', 'N', '1');
-INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('2', '3', 'Y', '1');
 
 #Projects Tab
 INSERT INTO `sourcelead`.`ACTION_ROLES` (`ACTION_ID`, `ROLE_ID`, `IS_NOTIFY`, `ORG_ID`) VALUES ('3', '5', 'Y', '1');

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -180,7 +181,7 @@ public class ProjectsRestController {
 		    JSONObject jsonObj = new JSONObject(json1);
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS");
+		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
 			return "SUCCESS";
 		}
 	  

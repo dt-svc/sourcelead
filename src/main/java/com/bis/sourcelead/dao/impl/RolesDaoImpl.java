@@ -63,5 +63,34 @@ public class RolesDaoImpl implements RolesDao{
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Roles> getMoudleRoles(Long orgId) throws Exception {
+		
+		String subQuery = "";
+		if(orgId == 1l){
+			subQuery = "and actionRoles.roles.id <> '4' ";
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
+				+ "where actionRoles.org.id = :orgId "+subQuery+") ")
+				.setLong("orgId", orgId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Roles getRolesById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles role where role.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
+	}
+
 
 }

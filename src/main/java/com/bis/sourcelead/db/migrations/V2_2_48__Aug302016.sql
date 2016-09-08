@@ -10,3 +10,6 @@ CREATE TABLE `sourcelead`.`LOOKUP_DATA` (
   UPDATED_BY VARCHAR(10),
   PRIMARY KEY (`ID`) 
 ); 
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_SPOC','TERMINATE_REASON','TEXT NULL AFTER `STATUS`');
+

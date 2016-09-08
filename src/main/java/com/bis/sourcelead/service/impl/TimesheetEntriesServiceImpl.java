@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,10 +134,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-49);
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		Date previousMondayDate = previousMonday.getTime();
 		
-		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,49);
+		Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
 		Date nextSundayDate = nextSunday.getTime();
 		
 		
@@ -251,6 +252,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("</tr>");
         
         String approvalStatus = null;
+        HashSet<String> combinedApprovalStatus = new HashSet<String>();
         ArrayList<Boolean> isThereAnyApproverApproved = null;
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			isThereAnyApproverApproved = new ArrayList<Boolean>();
@@ -316,13 +318,20 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
 			}*/
             
+            
             if(sah.getSubmissionApprovalStatus() != null){
 				approvalStatus = sah.getSubmissionApprovalStatus().getValue();
 			}
 			else{
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
 			}
-			
+            
+            if(isSah != null && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())){
+            	combinedApprovalStatus.add(Submission_ApprovalStatus.getNameByValue("approved").getValue());
+            }
+            else{
+            	combinedApprovalStatus.add(approvalStatus);
+            }
 		   	
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
@@ -684,28 +693,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </div>");
 			
 			
-			if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()) && (isThereAnyApproverApproved != null && !isThereAnyApproverApproved.isEmpty() && isThereAnyApproverApproved.contains(new Boolean("false")))){
-				   sb.append("	<div class='timesheet_button'>");
-				   /*sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");*/
-				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");
-			}
-			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");
-			}
-			else{
+			if(combinedApprovalStatus == null || (combinedApprovalStatus != null && (combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("rejected").getValue()) || combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("new").getValue())))){
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"user\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"user\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();'  value='Clear' class='time_btn time_cancel'>");
-				   
 				   sb.append("");
-				   
 				   sb.append("    </div>");
+				   sb.append("	<div class='clearfix'></div>");
+				   sb.append("</div>");   
+			}
+			else{
+				   sb.append("	<div class='timesheet_button'>");
+				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
@@ -866,7 +866,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append("                      <div> ");
 						              
 						              if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
-							              sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							              if(timesheetEntries.getProjectTask() != null){
+							            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							              }
+							              else{
+							            	  sb.append("<p>No Data</p>");
+							              }
 						              }
 						              else{
 						              
@@ -1448,7 +1453,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								if(total != null){
 						            int actualHours = (int) (total / 60);
 						            int actualMinutes =   (int)(total % 60);
-						            String actualTimeString =  actualHours+"."+actualMinutes;
+						            String actualMinutesStr = ""+actualMinutes;
+						            String startWithZero = "";
+						            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
+						            	startWithZero ="0";	
+						            	
+						            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
 						            
 									timesheetSubmissions.setTotalHours(actualTimeString);
 									timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);

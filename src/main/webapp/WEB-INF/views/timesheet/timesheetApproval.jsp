@@ -11,8 +11,8 @@
 
 
 <script>
-	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+	function predefineProfileImage(imageId,userId){
+			$(imageId).attr('src','resources/images/userprofile-img.png');
 	}
 </script>
 

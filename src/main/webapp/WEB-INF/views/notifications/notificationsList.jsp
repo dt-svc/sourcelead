@@ -106,6 +106,14 @@
 						</div>
                     </td>
                     <td><div class="mailbox-date">${report.calDays} days ago</div></td>
+                    <c:if test="${report.userNotificationStatus != 'Accepted'}">
+                    <td><div class="mailbox-trash"><a href="${report.actionLink}" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></div></td>
+					</c:if>
+					
+					<c:if test="${report.userNotificationStatus == 'Accepted'}">
+                    <td><div class="mailbox-trash"><font color="green">Accepted</font></div></td>
+					</c:if>
+					
 					<td><div class="mailbox-trash"><a href="javascript:void(0);"  onclick="deleteNotification('+${report.id}+');"><i class="text-danger fa fa-trash-o"></i></a></div></td>
                   </tr>
                 </c:forEach>

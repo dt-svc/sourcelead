@@ -338,7 +338,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user,String modules) throws Exception {
 		 
 		 List<Long> modulesId = modulesService.getModulesIdByModuleName(modules);
-		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId);
+		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId,org);
 		 if(actionRolesList != null){
 			 for(ActionRoles actionRoles : actionRolesList){
 				 ActionRoles userActionroles = new ActionRoles();

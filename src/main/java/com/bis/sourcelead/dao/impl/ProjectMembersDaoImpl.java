@@ -304,4 +304,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return idsList;  
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId and pm.id IN( select pmh.projectMemberId.id from ProjectMembersHistory pmh where (pmh.projectTerminationDate IS NULL) OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pm.projects.endDate) OR (pmh.projectAssignedDate > pm.projects.endDate)) " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list(); 
+		return pmList;  
+	}
+
 }
