@@ -146,7 +146,7 @@ function addExperience(candidateId) {
 	result = result  +'	                   </select>';
 	result = result  +'	                   </div>';
 	result = result  +'	                   <div class="col-md-6">';
-	result = result  +'	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+	result = result  +'	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="validate_Space validate_int validate_length length1-4" data-validation-optional="true"  >';
 	result = result  +'	                 </div>';
 	result = result  +'	                 </div>';
 	result = result  +'	                 <div id="endDateDiv">';
@@ -170,7 +170,7 @@ function addExperience(candidateId) {
 	result = result  +'	                   </select>';
 	result = result  +'	                   </div>';
 	result = result  +'	                   <div class="col-md-6" >';
-	result = result  +'	                   <input type="text" max class="form-control" value="" id="endYear" name="mobileOffer" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" >';
+	result = result  +'	                   <input type="text" max class="form-control" value="" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length1-4" data-validation-optional="true" >';
 	result = result  +'	                 </div>';
 	result = result  +'	                 </div> ';
 	result = result  +'	                 </div> ';

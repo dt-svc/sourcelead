@@ -201,9 +201,14 @@
              <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 <option><a href="#">&#x20B9;</a></option>
-                 <option><a href="#">&#x20A0;</a></option>
-                 <option><a href="#">$</a></option>
+                 
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 
              </select>
              </div>
            </div>
@@ -218,9 +223,14 @@
             <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
               <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
-                 <option><a href="#">&#x20B9;</a></option>
-                 <option><a href="#">&#x20A0;</a></option>
-                 <option><a href="#">$</a></option>
+                 
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 
              </select>
              </div>
            </div>

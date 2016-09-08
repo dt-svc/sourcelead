@@ -59,13 +59,13 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	can.setId(candidateId);
         	candidateEmployers.setCandidateId(can);
         	candidateEmployers.setAddress(jsonObject.getString("address"));
-        	if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
-        		candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
-        		candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
-        	}else{
-        		candidateEmployers.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-        	}
         	candidateEmployers.setDesignation(jsonObject.getString("designation"));
+
+        	if(jsonObject.has("isCurrentPosition") && !(jsonObject.getString("isCurrentPosition").isEmpty())){
+	        	if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
+	        		candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
+	        	}
+        	}
         	if(jsonObject.has("startYear") && !(jsonObject.getString("startYear").isEmpty())){
  				   candidateEmployers.setStartYear(jsonObject.getString("startYear"));
  				   candidateEmployers.setStartMonth(jsonObject.getString("startMonth"));
@@ -74,6 +74,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
   				   candidateEmployers.setEndYear(jsonObject.getString("endYear"));
   				   candidateEmployers.setEndMonth(jsonObject.getString("endMonth"));
         	}
+        	candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateEmployers.setCreatedBy(user.getUserCode());
         	candidateEmployers.setOrgLocationId(orgLocationId);
         	candidateEmployers.setCreatedDate(commonUtil.currentDate());

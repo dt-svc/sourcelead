@@ -54,6 +54,7 @@ public class CandidateController {
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
             model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
             
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
