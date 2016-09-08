@@ -102,16 +102,12 @@
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
+		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Candidates Found</p>";
 					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
+					
 					$("#candidateList").empty();
 				    $("#candidateList").append(result); 
                  }

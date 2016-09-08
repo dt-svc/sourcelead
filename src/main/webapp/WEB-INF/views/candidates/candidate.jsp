@@ -5,21 +5,16 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
 <!-- end files for autocomplete with tagit -->
 	
 	<script type="text/javascript">
@@ -43,6 +38,12 @@
 	position: absolute;
 	left:0;
 	bottom:-16px;
+	}
+	.selp-custom-min .btn-default{
+	z-index: -55 !important;
+	}
+	.selp-custom-min .open {
+	z-index: 999999999 !important;
 	}
 	</style>
 
