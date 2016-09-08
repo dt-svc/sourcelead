@@ -115,6 +115,29 @@ public class CommonUtil {
 	}
 	
 	/**
+	 * This method is used to activate timesheet submissions based on projectmemberId and terminationdate
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public void activateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(Long memberId,Date terminationDate){
+		List<TimesheetSubmissions> timesheetSubmissionsList;
+		try {
+			timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId,terminationDate);
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				for(TimesheetSubmissions ts :timesheetSubmissionsList){
+					ts.setStatus(Constants.MEMBER_ACTIVE);
+				}
+			}
+			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+	}
+	
+	
+	/**
 	 * This method is used to terminate project member by project memberId and way of termination
 	 * @author: Naresh Bolisetty
 	 * 
@@ -132,6 +155,32 @@ public class CommonUtil {
 			pm.setIsManuallyTerminated(isManuallyTerminated);
 			projectMembersService.updateProjectMember(pm);
 			
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * This method is used to re-activate project member by project memberId and way of termination
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public void reactivateProjectMemberByProjectMemberId(Long projectMemberId){
+		try {
+			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+			if(pmh != null){
+				pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+				pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
+				
+				activateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, pmh.getProjectTerminationDate());
+				
+				ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+				pm.setStatus(Constants.MEMBER_ACTIVE);
+				pm.setIsManuallyTerminated(null);
+				projectMembersService.updateProjectMember(pm);
+			}
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

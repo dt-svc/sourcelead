@@ -116,23 +116,25 @@
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
 function projectEmployee(projectId,startDateStr,endDateStr,status){
+	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var status  = status;
     $.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
         success: function(data) {
         	
         	var json = JSON.parse(data);
+        	var projectStatus =  json.status;
+        	
         	var result = "";
         	result = result + '    	<div class="project_tabs_inn_head">';
-    		if(status != 'COMPLETED'){
+    		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
         	}
     		result = result + '		</div>';
     		  result = result + '        <div class="project_tabs_inn_table">';
-    		if(json.length!=null && json.length!=''){
+    		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
     	    result = result + '	<table>';
     		result = result + '	<tbody>';
     		result = result + '		<tr>';
@@ -145,23 +147,23 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
             result = result + '	     <th>Saved hrs</th>';
             result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';
-        	for (var i=0; i<json.length; i++)
-			{        
-	        		var opt = json[i];
+        	for (var i=0; i<json.projectMembersList.length; i++)
+			{      
+	        		var opt = json.projectMembersList[i];
 	        		var projectEndDateStr = "";
-	        		if(json[i].projectEndDateStr != null && json[i].projectEndDateStr != ''){
-	        			projectEndDateStr = json[i].projectEndDateStr;
+	        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
+	        			projectEndDateStr = opt.projectEndDateStr;
 	        		}else{
 	        			projectEndDateStr = "--"
 	        		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+json[i].empName+' </a></div></td>';
-	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
+	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+opt.empName+' </a></div></td>';
+	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 	                }else{
-	                	if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
 		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 		                }
 		                else{
@@ -172,10 +174,10 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){
-	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
 	                	}
 	                	result = result +'</div></td>';
                      }
@@ -247,8 +249,10 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 			    		  }); 
     			 }
 	   		}
-        },
+        }, 
     });
+    
+    
     }	
 </script>
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->

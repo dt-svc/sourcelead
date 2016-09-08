@@ -50,7 +50,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		// TODO Auto-generated method stub
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
-		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId and pmh.status='OPEN'");
+		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pmh.projectMemberId.id = :projectMemberId and pmh.status='OPEN'");
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
@@ -163,7 +163,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		// TODO Auto-generated method stub
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
-		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId and pmh.id IN(select Max(subpmh.id) from ProjectMembersHistory subpmh where subpmh.projectMemberId.id = :projectMemberId and subpmh.status = 'CLOSED')");
+		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pmh.projectMemberId.id = :projectMemberId and pmh.id IN(select Max(subpmh.id) from ProjectMembersHistory subpmh where subpmh.projectMemberId.id = :projectMemberId and subpmh.status = 'CLOSED')");
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){

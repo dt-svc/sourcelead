@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 

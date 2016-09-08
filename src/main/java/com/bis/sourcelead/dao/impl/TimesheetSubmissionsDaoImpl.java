@@ -137,7 +137,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
 		Session session = this.sessionFactory.getCurrentSession();
-         String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId ";
+         String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId and ts.status = 'ACTIVE' ";
          List<java.sql.Timestamp>  wtsList = (List<java.sql.Timestamp>)session.createQuery(query).setLong("pojectMemberId", pojectMemberId).list();
          Date date = null;
           if(wtsList != null && !wtsList.isEmpty()){

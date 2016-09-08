@@ -252,6 +252,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("</tr>");
         
         String approvalStatus = null;
+        HashSet<String> combinedApprovalStatus = new HashSet<String>();
         ArrayList<Boolean> isThereAnyApproverApproved = null;
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			isThereAnyApproverApproved = new ArrayList<Boolean>();
@@ -317,13 +318,20 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
 			}*/
             
+            
             if(sah.getSubmissionApprovalStatus() != null){
 				approvalStatus = sah.getSubmissionApprovalStatus().getValue();
 			}
 			else{
 				approvalStatus = Submission_ApprovalStatus.getNameByValue("new").getValue();
 			}
-			
+            
+            if(isSah != null && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())){
+            	combinedApprovalStatus.add(Submission_ApprovalStatus.getNameByValue("approved").getValue());
+            }
+            else{
+            	combinedApprovalStatus.add(approvalStatus);
+            }
 		   	
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
@@ -685,28 +693,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </div>");
 			
 			
-			if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()) && (isThereAnyApproverApproved != null && !isThereAnyApproverApproved.isEmpty() && isThereAnyApproverApproved.contains(new Boolean("false")))){
-				   sb.append("	<div class='timesheet_button'>");
-				   /*sb.append("        <input type='button' onClick='withdrawMyTimesheet();' value='withDraw' class='time_btn'>");*/
-				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");
-			}
-			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("</div>");
-			}
-			else{
+			if(combinedApprovalStatus == null || (combinedApprovalStatus != null && (combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("rejected").getValue()) || combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("new").getValue())))){
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"user\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"user\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();'  value='Clear' class='time_btn time_cancel'>");
-				   
 				   sb.append("");
-				   
 				   sb.append("    </div>");
+				   sb.append("	<div class='clearfix'></div>");
+				   sb.append("</div>");   
+			}
+			else{
+				   sb.append("	<div class='timesheet_button'>");
+				   sb.append("  </div>");
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}

@@ -270,7 +270,7 @@
 												<button data-dismiss="modal" class="btn btn-primary"
 													type="button" onclick="assignEmployee();">Assign</button>
 												<button data-dismiss="modal" class="btn btn-default"
-													type="button">Cancel</button>
+													type="button" onclick="assignEmployee();">Cancel</button>
 											</div>
 										</div>
 									</div>
@@ -793,7 +793,6 @@
 <!-- this script is for Get the TeamMembers functionality Start -->
 <script type="text/javascript">
 	function getTeamMembers() {
-         
 		var level1Manager = $("#level1Manager").val(); 
 		var level2Manager = $("#level2Manager").val();
 		var startDate     =    $("#StartDate").val();
@@ -849,6 +848,7 @@
 								$(".myCheckbox").each(
 												function() {
 													var localId = this.id;
+													
 													if ($(this).is(':checked')) {
 														var startDate = $("#startDate"+ localId).val();
 														var endDate = $("#endDate"+ localId).val();

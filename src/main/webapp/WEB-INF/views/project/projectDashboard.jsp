@@ -20,6 +20,9 @@
   display: inline-block;
   float: none;
 }
+.project_wrap_table span{
+display: inline;
+}
  </style>
 
 <body>
