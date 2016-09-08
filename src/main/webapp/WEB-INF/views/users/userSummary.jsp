@@ -207,6 +207,12 @@ $(document).ready(function(){
 				result = result + '					<strong>Role:</strong><span class="fix">'+json.user.userType+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
+				if(json.user.reportingManager != null && json.user.reportingManager != "" && json.user.reportingManager != 'undefined' && json.user.reportingManager.firstName != null && json.user.reportingManager.firstName != "" && json.user.reportingManager.firstName != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Manager:</strong><span class="fix">'+json.user.reportingManager.firstName+' '+json.user.reportingManager.lastName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
 				if(json.InvoiceFrequency != null && json.InvoiceFrequency != "" && json.InvoiceFrequency != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				<strong>Invoice Frequency:</strong><span class="fix">'+json.InvoiceFrequency+'</span><div class="clearfix"></div>';
@@ -741,7 +747,6 @@ function editUserDetails(userId){
 	        	
 			    var json = JSON.parse(data);
 			    var result = "";
-			    
 			    var selected1 = '';
 				var selected2 = '';
 				var selected3 = '';
@@ -805,7 +810,8 @@ function editUserDetails(userId){
 			    var mobilePhone = "";
 			    var dailyHours = "";
 			    var emailId= "";
-				
+			    var manager = "";
+			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
 				}
@@ -864,6 +870,25 @@ function editUserDetails(userId){
 						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 						result = result + ' </div>';
 					}
+					
+					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Manager</label>';
+						result = result + '  <select id="reportingManager" name="reportingManager" >'+
+			 	     	"<option value=''>-Select-</option>";    
+			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
+	    					{
+	    		 	    	   manager = json.allReportingManagers[i];
+	    		 	    	   var selected = '';
+	    		 	    	  if(json.user.reportingManager != null && json.user.reportingManager != "" && json.user.reportingManager != 'undefined' && json.user.reportingManager.id == manager.id){
+	    		 	    		 selected = 'selected';
+	    		 	    	 }
+	    		 	    	result = result+"<option value='"+manager.id+"' "+selected+">"+manager.firstName+" "+manager.lastName+"&nbsp;("+manager.userType+")</option>"; 
+	    					}
+			 	     	result = result+"</select>"; 
+			 	     	result = result + ' </div>';
+					}
+		 	     	
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';

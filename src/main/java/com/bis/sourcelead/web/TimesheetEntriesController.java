@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,11 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
@@ -37,6 +43,8 @@ public class TimesheetEntriesController {
 	@Autowired
 	public CommonUtil commonUtil;
 	
+	@Autowired
+	private NotificationsService notificationsService;
 	
 	/**
 	 * @author sarath kumar punnana 
@@ -49,7 +57,24 @@ public class TimesheetEntriesController {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
-		 
+			
+			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String orgCode = loginOrgCode;
+			String locationCode = loginOrgLocation;
+			Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
+			SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
+			SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+			
+			
+			Long notificationTo = loginUser.getId();
+			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
+			SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
+			SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheet");
 			return model;

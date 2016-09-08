@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -97,6 +98,9 @@ public class Employees {
 	
 	@Transient
     private String projectEndDate;
+	
+	@Transient
+	List<User> allReportingManagers;
 
 	public Long getId() {
 		return id;
@@ -217,6 +221,14 @@ public class Employees {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public List<User> getAllReportingManagers() {
+		return allReportingManagers;
+	}
+
+	public void setAllReportingManagers(List<User> allReportingManagers) {
+		this.allReportingManagers = allReportingManagers;
 	}
 
 	public String getEmployeeId() {

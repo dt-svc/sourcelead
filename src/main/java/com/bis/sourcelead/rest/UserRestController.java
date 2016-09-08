@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
@@ -86,6 +89,9 @@ public class UserRestController {
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
+	@Autowired
+	RolesService rolesService;
+	
 	
 	/**
 	 * To get All Approvers
@@ -112,65 +118,8 @@ public class UserRestController {
 	@RequestMapping(value = "/addProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	
-		    json = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json);
-		 	
-		 	String resultJson = null;
-		 	
-	    	Projects projects = new Projects();
-	    	OrgLocations ol = new OrgLocations();
-			ol.setId(orgLocations.getId());
-			projects.setOrgLocationsId(ol);
-			
-	    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
-	    	projects.setProjectName(jsonObj.getString("ProjectName"));
-	    	projects.setProjectStatus(Project_Status.STARTED);
-	    	
-	    	if(jsonObj.has("StartDate") && !isNullOrEmpty(jsonObj.getString("StartDate"))){
-				try {
-					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					   projects.setStartDate(sdf.parse(jsonObj.getString("StartDate")));
-					} catch (Exception e) {
-					  e.printStackTrace();
-					}
-			}
-	    	
-	    	if(jsonObj.has("EndDate") && !isNullOrEmpty(jsonObj.getString("EndDate"))){
-				try {
-					   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					   projects.setEndDate(sdf.parse(jsonObj.getString("EndDate")));
-					} catch (Exception e) {
-					  e.printStackTrace();
-					}
-			}
-	    	
-	    	projects.setCreatedDate(new Date());
-	    	projects.setUpdatedDate(new Date());
-	    	Projects updatedProjects = projectsService.saveProject(projects);
-	    	
-	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	    	commonUtil.storeSourceleadTasks(user, updatedProjects);
-	    	
-	    	ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
-	    	pah1.setProjectId(updatedProjects);
-	    	User approverUserId1 = new User();
-	    	approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
-	    	pah1.setApproverUserId(approverUserId1);
-	    	pah1.setLevel(1);
-	    	ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-	    	
-		if(!jsonObj.getString("level2Manager").isEmpty()){
-			ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
-			pah2.setProjectId(updatedProjects);
-			User approverUserId2 = new User();
-			approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-			pah2.setApproverUserId(approverUserId2);
-			pah2.setLevel(2);
-			ProjectApproverHierarchy ProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
-		}
-	    	
+	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson = null;
 			
 		 List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		
@@ -196,7 +145,7 @@ public class UserRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
 	 	 //For Saving of User Details
-	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER");
+	 	 userService.storeUser(jsonObj,user,orgLocations,"CREATEUSER","",new Org());
 	 	
 	 	
 	 	 //For Saving of User Details
@@ -220,7 +169,10 @@ public class UserRestController {
 		 	if(projectId != null && !"".equals(projectId)){
 		 		ph = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(Long.parseLong(projectId));
 		 	}
-		 	ph.setFullName(ph.getApproverUserId().getFirstName() +" "+ph.getApproverUserId().getLastName());
+		 	if(ph.getApproverUserId().getId()!=null){
+		 		ph.setFullName(ph.getApproverUserId().getFirstName() +" "+ph.getApproverUserId().getLastName());
+		 	}
+		 	
 		 	resultJson = toJSON(ph);
 			return resultJson;
 	   }
@@ -478,14 +430,13 @@ public class UserRestController {
 					  	  projectMembers.setTerminateReason(reason);
 						  projectMembers.setUpdatedDate(new Date());
 						  projectMembers.setUpdatedBy(user.getUserCode());
-					  	  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
 					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						  if(pmh != null){
 							  pmh.setProjectTerminationDate(new Date());
 							  pmh.setUpdatedDate(new Date());
 							  pmh.setUpdatedBy(user.getUserCode());
-							  memberHistoryList.add(pmh);
-							  projectMembers.setMemberHistoryList(memberHistoryList);
+							  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 						  }
 						  projectMembers.setStatus(status);
 						  projectMembersService.saveProjectMember(projectMembers);
@@ -518,7 +469,7 @@ public class UserRestController {
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 					
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					if (endDate != null && !"".equals(endDate)) {
+					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
 							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
@@ -593,8 +544,10 @@ public class UserRestController {
 		    	    	
 					  pmh.setUpdatedDate(commonUtil.currentDate());
 					  pmh.setUpdatedBy(user.getUserCode());
-					  memberHistoryList.add(pmh);
-					  projectMembers.setMemberHistoryList(memberHistoryList);
+					/*  memberHistoryList.add(pmh);
+					  projectMembers.setMemberHistoryList(memberHistoryList);*/
+					  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+					  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 					  
 					  projectMembers.setStatus(status);
 					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
@@ -625,6 +578,25 @@ public class UserRestController {
                     userService.addUser(user);
                     return "updated";
                }
+		
+		
+		/**
+		 * To get the reporting managers list based on role type
+		 * @author Prasad salina
+		 * @param role
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getReportingManager", method = RequestMethod.POST)
+		public @ResponseBody String getReportingManager(
+				@RequestParam(value = "role", required = false) String role, HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(role, orgLocations.getId());
+			resultJson = toJSON(userList);
+			return resultJson;
+		}
 		
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

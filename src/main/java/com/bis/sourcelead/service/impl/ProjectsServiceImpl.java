@@ -340,15 +340,27 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}
 		}
 		
-		
-		/*if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
-			if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
-				sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList, loginOrgCode);
+		/*
+		 * This block is for Email To Managers and Project Members
+		 * 
+		 */
+		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+				User  approverUserId1 =new User();
+				approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
+				if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
+					sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, employeesList(jsonObj, updatedProjects, approverUserId1, loginOrgLocation, loginOrgCode), loginOrgCode);
+				}
+				
 			}
-			if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
-				sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, teamMembersList, loginOrgCode);
+			if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
+				User  approverUserId2 =new User();
+				approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
+				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
+					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, employeesList(jsonObj, updatedProjects, approverUserId2, loginOrgLocation, loginOrgCode), loginOrgCode);
+				}
 			}
-		}*/
+		}
 		 
 	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
 	  return "projectDashboard";
@@ -715,10 +727,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	    	 }
 			    	     }
 			    	}
-			    	
 			    }
 		 
-		 return null;
+				/*
+	    	     * Termination Of ProjectMember whose assignDate is greaterthan project endDate /
+	    	     *   in-activate the submissions whose startDate is greaterthan project endDate
+	    	     */
+	    	    if(projects.getEndDate() != null) {
+	    	    	commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
+	    	    }
+		 return "success";
 	}
 
 	 /**
@@ -842,12 +860,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String getProjectEmployeeListByProjectId(Long projectId) throws Exception {
+	public ProjectMembers getProjectEmployeeListByProjectId(Long projectId) throws Exception {
+		
+		ProjectMembers myPM =  new ProjectMembers();
+		
+		 Projects project = projectsDao.getProjectById(projectId) ;
+		
 		
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
-		 ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
+		Projects pr = projectsDao.getProjectById(projectId);
+		
+		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
+			 pm.setProjectStatus(pr.getStatus());
+			 
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
 			 if(pmh == null){
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
@@ -855,45 +882,51 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
 				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
             }
-       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-       		pm.setProjectEndDateStr(Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
-       	 }
-       	 //to set actual project end date
-       	 if(pm.getProjects().getEndDate() != null){
-        		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
-        	 }
-       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
-          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
-          	 }
-       	 if(pm.getEmployee()!=null){
-
-                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
-    	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
-    	        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
-    	        pm.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
-
-    	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
-    	        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
-    	        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
-    	        pm.setSubmittedHrs(submittedTimesheetsSubmissionsCountAsEmployee.toString());
-    			
-    		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
-    		    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
-    	        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
-    	        pm.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
-    			
-    			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
-    		    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
-    		    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
-    		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
-                
-                
-       	 }	
+	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
+	       		pm.setProjectEndDateStr(Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
+	       	 }
+	       	 //to set actual project end date
+	       	 if(pm.getProjects().getEndDate() != null){
+	        		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
+	        	 }
+	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
+	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
+	          	 }
+	       	 
+	       	 if(pm.getEmployee()!=null){
+	
+	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+	    	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+	    	        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
+	
+	    	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+	    	        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+	    	        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setSubmittedHrs(submittedTimesheetsSubmissionsCountAsEmployee.toString());
+	    			
+	    		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+	    		    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+	    	        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
+	    			
+	    			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+	    		    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+	    		    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
+	    		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
+	                
+	                
+	       	 }	
 			 projectMembersArrList.add(pm);
 		 }
 		 ObjectMapper mapper = new ObjectMapper();
 		 String jsonInString = mapper.writeValueAsString(projectMembersArrList);
-		 return jsonInString;
+		 
+		 
+		 myPM.setProjectMembersList(projectMembersArrList);
+		 myPM.setStatus(project.getProjectStatus().getValue());
+		 
+		 return myPM;
 	}
 
 	/**
@@ -1035,7 +1068,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		  }
 		}
 		
-		if (jsonObj.has("employeeMaxCount")){
+		/*if (jsonObj.has("employeeMaxCount")){
 			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 			if(!jsonObj.getString("employeeMaxCount").isEmpty()){
 					int empMaxCount = Integer.parseInt(employeeMaxCount);
@@ -1090,9 +1123,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 								
 								commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 								
-								/**
+								*//**
 							    * This teamMembersList string to store all team members for mail to project manager.
-							    */
+							    *//*
 								String teamMember = "";
 								teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
 								teamMembersList = teamMembersList+teamMember+"<br/>";
@@ -1100,15 +1133,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 						}
 				    }
 			 }
-	    }
+	    }*/
 		
 		//send mail to assigned Project Manager
 		if((jsonObj.has("isMailToProjectManager") && !isNullOrEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+			
+			String  employeesList = employeesList(jsonObj, updatedProjects, approverUserId2, loginOrgLocation, loginOrgCode);
+			
 			if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
-				sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, teamMembersList, loginOrgCode);
+				sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, employeesList, loginOrgCode);
 			}
 			if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
-				sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, teamMembersList, loginOrgCode);
+				sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, employeesList, loginOrgCode);
 			}
 		}
 		
@@ -1248,6 +1284,84 @@ public class ProjectsServiceImpl implements ProjectsService{
 					//String url = null;
 					String actionLink = "";
 					emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+				}
+			  
+			  
+			  private String  employeesList(JSONObject jsonObj, Projects projects,User user, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
+					
+				  String teamMembersList = "";
+					String pattern = "yyyy-MM-dd";
+			        SimpleDateFormat format = new SimpleDateFormat(pattern);
+				  if (jsonObj.has("employeeMaxCount")){
+						String employeeMaxCount = jsonObj.getString("employeeMaxCount");
+						if(!jsonObj.getString("employeeMaxCount").isEmpty()){
+								int empMaxCount = Integer.parseInt(employeeMaxCount);
+								for (int c = 1; c < empMaxCount; c++) {
+									
+									ProjectMembers pm = new ProjectMembers();
+									if(StringUtils.isNotEmpty(jsonObj.getString("employeeId"+c))){
+										Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
+									    if(emp != null){
+									    	pm.setEmployee(emp);
+									    	
+									        HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+												
+											ProjectMembersHistory pmh = new ProjectMembersHistory();
+											pmh.setProjectMemberId(pm);
+											pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+								            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
+								            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
+								            	 pmh.setProjectAssignedDate(currentStartDate);
+								            }else{
+								            	  pmh.setProjectAssignedDate(projects.getStartDate());
+								            }
+								            
+								            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
+								            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
+								            	pmh.setProjectTerminationDate(currentEndDate);
+								            }
+								            else{
+								            	 pmh.setProjectTerminationDate(projects.getEndDate());
+									    	}
+
+								            pmh.setCreatedDate(new Date());
+											pmh.setCreatedBy(user.getUserCode());
+											pmh.setUpdatedDate(new Date());
+											pmh.setUpdatedBy(user.getUserCode());
+											pmhList.add(pmh);
+											
+											pm.setProjects(projects);
+											pm.setStatus(Constants.MEMBER_ACTIVE);
+											pm.setCreatedDate(new Date());
+											pm.setUpdatedDate(new Date());
+											pm.setCreatedBy(user.getUserCode());
+											pm.setUpdatedBy(user.getUserCode());
+											pm.setMemberHistoryList(pmhList);
+											projectMembersService.saveProjectMember(pm);
+											
+											//send mail to assigned team members
+											if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+												
+												User approverUserId1 = new User();
+												approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
+												sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+												
+											}
+											
+											commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+											
+											/**
+										    * This teamMembersList string to store all team members for mail to project manager.
+										    */
+											String teamMember = "";
+											teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
+											teamMembersList = teamMembersList+teamMember+"<br/>";
+									    }
+									}
+							    }
+						 }
+				    }
+				return teamMembersList;
 				}
 			  
 }

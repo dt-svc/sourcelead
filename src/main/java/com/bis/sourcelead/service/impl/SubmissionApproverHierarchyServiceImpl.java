@@ -268,6 +268,19 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
          
          return list;
 	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByApproverUserId(Long approverUserId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByApproverUserId(approverUserId);
+	}
+
+	@Override
+	public void saveAllSubmissionApproverHierarchy(List<SubmissionApproverHierarchy> submissionApproverHierarchyList)
+			throws Exception {
+		submissionApproverHierarchyDao.saveAllSubmissionApproverHierarchy(submissionApproverHierarchyList);
+		
+	}
+
 	
 	
 	

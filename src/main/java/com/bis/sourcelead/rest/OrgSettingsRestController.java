@@ -82,7 +82,7 @@ public class OrgSettingsRestController {
    
    
    @RequestMapping(value = "/displayOrgImage/{orgCode}" , method = RequestMethod.GET)
-   public void displayUserImage(@PathVariable String orgCode,HttpServletResponse response) {
+   public void displayOrgImage(@PathVariable String orgCode,HttpServletResponse response) {
   	 
   	 Org org = null;
 			try {

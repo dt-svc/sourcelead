@@ -28,7 +28,7 @@ public interface TimesheetSubmissionsService {
     
     public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate, Long  userId)throws Exception;
     
-    public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate, Long  userId,Long  memberId,Long employeeId)throws Exception;
+    public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(Date startDate,Date endDate, Long  userId,Long  empUserId,Long employeeId)throws Exception;
     
     public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
     

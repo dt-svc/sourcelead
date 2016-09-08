@@ -2,12 +2,10 @@ package com.bis.sourcelead.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -17,22 +15,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-
-import com.bis.sourcelead.enums.Project_Status;
-
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -42,7 +38,6 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -83,15 +78,50 @@ public class LoginSessionController {
 	
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
-	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws ParseException {
-		
-		commonUtil.highLightMenu(Constants.Dashboard, request);
+	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
+		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		setLoginSession(request, authentication,user,userRole);
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("dashboard");
+	    return model;
+		
+	}
+	
+	
+	
+	@RequestMapping(value = "/dashboardLinks" , method = RequestMethod.GET)
+	   public ModelAndView loginSessionLinks(HttpServletRequest request,Authentication authentication,
+			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		User user = userService.findByUserName(authentication.getName());
+		UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(user.getEmail(), orgLocationId);
+		if(null != userRole){
+			setLoginSession(request, authentication,user,userRole);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("dashboard");
+		}else{
+			model.setViewName("registration/persmissionDenied");
+		}
+		
+	    return model;
+		
+	}
+	
+	
+	
+	private void setLoginSession(HttpServletRequest request,Authentication authentication,User user,UserRole userRole) throws Exception{
+		
+      commonUtil.highLightMenu(Constants.Dashboard, request);
+		
+		
 		setSessionUserAttributes(user,request,sourceleadUrl);
 		
 		try {
-			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
 			Org org = orgLocations.getOrg();
@@ -100,12 +130,18 @@ public class LoginSessionController {
 			User orgPrimaryUser = org.getUser();
 			User orgLocationPrimaryUser = orgLocations.getUser();
 			
-			if(user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId())){
+			if(orgLocationPrimaryUser != null && (user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId()))){
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			
 			if("SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
 				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
+			}
+			
+			
+			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+			if(userSpocRolesList.size() > 1){
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 			}
 			
 			
@@ -118,6 +154,7 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getRoles().getDisplayName());
 			
 			
 		} catch (Exception e) {
@@ -129,7 +166,7 @@ public class LoginSessionController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		ModelAndView model = new ModelAndView();
+		
 		//get notification count
 		String orgCode = loginOrgCode;
 		String locationCode = loginOrgLocation;
@@ -157,9 +194,7 @@ public class LoginSessionController {
 		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("dashboard");
-	    return model;
+		
 		
 	}
 	
@@ -196,12 +231,13 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
-		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
+		
 	}
 	
 	private void setSessionOrgLocationAttributes(OrgLocations orgLocations, HttpServletRequest request)
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+		SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "country", orgLocations.getCountry());
 	}

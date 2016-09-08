@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionRoles;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -56,12 +59,37 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId) throws Exception {
+	public List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId,Org org) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String actionRoles = "";
+		
+		if((Status.Y.equals(org.getVms()) && Status.Y.equals(org.getAts())) || (Status.Y.equals(org.getVms()) && Status.Y.equals(org.getAts()) && Status.Y.equals(org.getTimeSheet()))){
+			actionRoles = "and actionRoles.roles.id <> '4' ";
+		}
+		
+		else if((Status.Y.equals(org.getVms())) || ((Status.Y.equals(org.getVms())) && (Status.Y.equals(org.getTimeSheet())))){
+			actionRoles = "and actionRoles.roles.id <> '4' and actionRoles.roles.id <> '7' and actionRoles.roles.id <> '6' ";
+		}
+		
+		else if(Status.Y.equals(org.getAts()) && Status.Y.equals(org.getTimeSheet())){
+			actionRoles = "and actionRoles.roles.id <> '4'";
+		}
+		
+		else if((Status.Y.equals(org.getAts()))){
+			actionRoles = "and actionRoles.roles.id <> '4' and actionRoles.roles.id <> '3' ";
+		}
+		
+		else if(Status.Y.equals(org.getTimeSheet())){
+			actionRoles = "and actionRoles.roles.id <> '4' and actionRoles.roles.id <> '5' and actionRoles.roles.id <> '6' and actionRoles.roles.id <> '7' and actionRoles.roles.id <> '8'";
+		}
+		
+		
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId "
-				+ "and actionRoles.tabActions.modules.id IN (:modulesId) and actionRoles.roles.id <> '4' ")
+				+ "and actionRoles.tabActions.modules.id IN (:modulesId) "+actionRoles+" ")
 					  .setLong("orgId", orgId).setParameterList("modulesId", modulesId)
 					  .setCacheable(true).list();
+		
 	}
 
 
@@ -76,6 +104,29 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 					  .setLong("roleId", roleId)
 					  .setLong("orgLocationId", orgLocationId)
 					  .setCacheable(true).list();
+	}
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ActionRoles> actionRoles = new ArrayList<ActionRoles>();
+		logger.debug("getActionRolesByActionIdAndRoleIdAndLocationId start");
+		String query = "from ActionRoles actionRoles left join fetch actionRoles.tabActions actons left join fetch actionRoles.roles roles "
+				+ "left join fetch actionRoles.org org where actons.id = :actionId and roles.id = :roleId and org.id = :orgId ";
+		actionRoles = session.createQuery(query).setLong( "actionId", actionId )
+				.setLong("roleId", roleId).setLong("orgId", orgId).setCacheable(true).list();
+		logger.debug("getActionRolesByActionIdAndRoleIdAndLocationId end");
+		if (actionRoles.size() > 0) {
+			return actionRoles.get(0);
+		} else {
+			return null;
+		}
+   	
 	}
 
 }

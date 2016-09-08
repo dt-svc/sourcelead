@@ -1,14 +1,18 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
- 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
+
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 
 <body>
+ <div id="loading"></div>
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -18,7 +22,14 @@
 			</div>
 	     </c:if>
 			<div class="pull-left">
-				<h2>Clients</h2>
+				<h2>Clients
+				<span class="select-fild">
+				    <select id="listOfVendors" onchange="listChange(this);">
+                  		 <option value="listbyVendor">Search by list</option>
+                        <option value="listbyContact" selected="selected">Search by Contact</option> 
+                    </select>
+				</span>
+				</h2>
 			</div>
 
 			<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Client List</div>
@@ -41,14 +52,22 @@
                         </ul>
                     </div>                	
                 </li> -->
-						<li><a href="<c:url value='/client'/>"><i
-								class="fa fa-plus"></i>Create client</a></li>
+                        <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
+						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
 				</div>
+				
+				<div class="clients_wrap_table " id ="vendorListFilter">
+			
+		     	<table id="clientList" class="display" cellspacing="0" width="100%"> </table>
+		     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
+				
+				</div>
+				
 			</div>
-			<c:if test="${empty clientsList}">
+			<%-- <c:if test="${empty clientsList}">
 				<div class="row mt">
 					<div class="col-lg-12">
 						<div class="content-area clearfix">
@@ -61,73 +80,11 @@
 						</div>
 					</div>
 				</div>
-			</c:if>
+			</c:if> --%>
 		</div>
 
-		<c:if test="${!empty clientsList}">
-			<div class="clients_wrap_table ">
-				<table>
-					<tbody>
-					<thead>
-						<tr>
-							<th>Client name</th>
-							<th>Website</th>
-							<th>Location</th>
-							<th>Email</th>
-							<th>Phone</th>
-							<!-- <th>Projects</th> -->
-						</tr>
-					</thead>
-					<c:forEach var="report" items="${clientsList}" varStatus="raId">
-						<tr>
-							<td><div class="proj_show"
-									onclick="clientSideBar('${report.responderLocationId.id}','${report.responderLocationId.org.orgName}');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</span><i
-										class="fa fa-binoculars"></i>
-								</div></td>
-
-							<c:if test="${!empty report.responderLocationId.org.webSite}">
-								<td><div><span class="tbldata-dotdot-sm" title="${report.responderLocationId.org.webSite}">${report.responderLocationId.org.webSite}</span></div></td>
-							</c:if>
-							<c:if test="${empty report.responderLocationId.org.webSite}">
-								<td><div>--</div></td>
-							</c:if>
-
-							<c:if test="${!empty report.responderLocationId.country}">
-								<td><div><span class="tbldata-dotdot-me" title="${report.responderLocationId.country}&nbsp;&nbsp;,${report.responderLocationId.state}&nbsp;&nbsp;,${report.responderLocationId.city}">${report.responderLocationId.country}&nbsp;&nbsp;,${report.responderLocationId.state}&nbsp;&nbsp;,${report.responderLocationId.city}</span></div></td>
-							</c:if>
-							<c:if test="${empty report.responderLocationId.country }">
-								<td><div>--</div></td>
-							</c:if>
-							<c:if test="${!empty report.responderLocationId.email}">
-								<td><div><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.email}">${report.responderLocationId.email}</span></div></td>
-							</c:if>
-							<c:if test="${empty report.responderLocationId.email}">
-								<td><div>--</div></td>
-							</c:if>
-							<c:if test="${!empty report.responderLocationId.phone}">
-								<td><div><span class="tblminwidth-125">${report.responderLocationId.phone}</span></div></td>
-							</c:if>
-
-							<c:if test="${empty report.responderLocationId.phone}">
-								<td><div>--</div></td>
-							</c:if>
-
-							<%-- <c:if test="${!empty report.projectsCont}">
-								<td><div><span class="tblminwidth-50">${report.projectsCont}</span></div></td>
-							</c:if>
-							<c:if test="${empty report.projectsCont}">
-								<td><div>--</div></td>
-							</c:if> --%>
-						</tr>
-					</c:forEach>
-					</tbody>
-				</table>
-			</div>
-
-		</c:if>
 
        <div class="side_mask"><div class="proj_close"></div></div>
-       
 		<div class="clients_side_wrap">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
@@ -136,21 +93,393 @@
 				</div>
 				<div id="clientSideDiv"></div>
 			</div>
-		</div>
+         </div>
 	</section>
 </body>
 
-<script>
-	function clientSideBar(clientId,orgName) {
+<script type="text/javascript">
+window.onload = function () {
+	//getClientDetails();
+	getVendorContactLists();
+ };
+</script>
 
+<script>
+function getClientDetails(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	if(json.length != null && json.length != ''){
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Client name</th>';
+   	        	result = result +'	<th>Website</th>';
+   	        	result = result +'	<th>Location</th>';
+   	        	result = result +'	<th>Level</th>';
+   	        	result = result +'	<th>Created By</th>';
+   	        	result = result +'<th>No.of contacts</th>';
+   	        	result = result +'<th>Action</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'</thead>';
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		
+   	        		var report = json[i];
+   	        		var location = "";
+   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+   	        			location = report.country+", "+report.state+", "+report.city;
+   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+   	        			location = report.country+", "+report.state;
+   	        		}else{
+   	        			location = report.country;
+   	        		}
+   	        		
+   	        		result = result +'<tr>';
+   	        		
+   	        			result = result +'<td>';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+						
+   	        	
+   	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-sm" title='+report.webSite+'>'+report.webSite+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		
+   	        		if(location != null && location  != '' && location  != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		if(report.level != null && report.level != '' && report.level != 'undefined'){
+   	        			result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
+   	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		result = result +'</tr>';
+   	        		
+   				}
+   	        	
+   	        	result = result +'</tbody>';
+   	        	}else{
+   	        		result = result +'<div class="row mt">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p>';
+   	        		result = result +'<i class="fa fa-5x fa-users"></i>';
+   	        		result = result +'</p>';
+   	        		result = result +'<p>No Clients for organisation... Add Clients</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        	}
+   	    	    $("#clientList").empty();  
+   	    	    $("#clientList").append(result)
+   	    	    pagination();
+   	    	    
+   		    }
+	 }); 
+	
+	
+}	
+</script> 
+
+<script>
+function pagination(){  
+    $('#clientList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
+<script>
+	function clientSideBar(clientLocationId,orgName,orgRelationId) {
+		var result = "";
+		result = result + '<div class="project_side_wrap_inn_tabs">';
+		result = result + '<ul class="project-tabs-menu">';
+		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
+		//for client contatcs tab
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+				
+				
+		result = result + '<div class="clearfix"></div>'
+		result = result + '</ul>';
+		result = result + '<div class="project_tabs">';
+
+		result = result + '<div id="tab-1" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for client contatcs tab
+		result = result + '<div class="clients_wrap_table " >';
+	   	result = result + '<div id="tab-2-addContact"> </div>';
+        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
+        result = result + '</div>';
+
+		result = result + '</div>';
+		result = result + '</div>';
+		$("#clientSideDiv").empty();
+		$("#clientSideDiv").append(result);
+		
+		$("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName);
+		
+		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+		 
+ 
+		clientDetails(clientLocationId,orgRelationId);
+	}
+</script>
+
+<script>
+function getVendorContactLists(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}", 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	if(json.length != null && json.length != ''){
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Name</th>';
+   	        	result = result +'  <th>Email</th>';
+   	        	result = result +'  <th>Ph. No</th>';
+   	        	result = result +' <th>Owner</th>';
+   	        	result = result +'  <th>Client</th>';
+   	        	result = result +' <th>Status</th>';
+   	        	result = result +' <th>Invitation</th>';
+   	        	result = result +'<th>Action</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'	</thead>';
+   	        	
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		var report = json[i];
+   	        		var selected1 = '';
+   					var selected2 = '';
+   					var selected3 = '';
+   					var selected4 = '';
+   					var selected5 = '';
+   	        		
+   	        		if(report.spocStatus == 'Active'){
+						selected1 = 'selected';
+					} 
+				
+					if(report.spocStatus == 'In-Active'){
+							selected2 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'New'){
+							selected3 = 'selected';
+						}
+					
+					if(report.spocStatus == 'Negotiation'){
+							selected4 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'Contracted'){
+						selected5 = 'selected';
+					} 
+   	        		
+   	        		
+   	        		
+   	        		result = result +'<tr>';
+   	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
+   	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
+   	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
+   	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
+   	        		
+   	        		result = result + ' <td><div>';
+					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
+					
+   	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div>---</div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.invitationStatus == 'Accepted'){ 
+     	        			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+     	        		}
+               		
+               		if(report.invitationStatus == 'Rejected'){
+               			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+               		}
+   	        		
+   	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
+   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        		
+   	        		
+   	        		result = result +'</tr>';
+   				}
+   	        	result = result +'</tbody>';
+   	    	    $("#vendorContactList").empty();  
+   	    	    $("#vendorContactList").append(result)
+   	    	    pagination1(); 
+   	        	}else{
+   	        		result = result +'<div class="row mt">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p>';
+   	        		result = result +'<i class="fa fa-5x fa-users"></i>';
+   	        		result = result +'</p>';
+   	        		result = result +'<p>No Client Contacts for organisation... Add Client Contacts</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        	    $("#vendorContactList").empty();  
+    	    	    $("#vendorContactList").append(result)
+   	        	}
+   	        	
+   	    	    
+   		    }
+	 });
+	
+	
+}	
+</script> 
+
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript">
+function resendClientSpocInvitation(spocUserId,orgRelationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
+			        	getVendorContactLists();
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
+<script>
+function pagination1(){  
+    $('#vendorContactList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
+<script>
+function contactPagination(){ 
+    $('#tab-2').DataTable( {
+        "scrollCollapse": false,
+        "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+        "bLengthChange": false,
+        "bDestroy": true,
+        "ordering": false,
+        "oLanguage": {
+             "sSearch": ""
+         }
+       
+    } );
+}
+</script>
+
+<script>
+function updateSpocStatus(spocId){
+    var spocStatus = $('#spocState'+spocId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    success: function(data) {
+	    	//clientContactList(orgRelationID);
+	    }
+   });
+}
+</script>
+
+
+
+<script>
+	function clientSpocSideBar(spocId,ownerId,spocUserId,spocName) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="clientDetails('
-				+ clientId + ');">Details</a></li>';
-		/* result = result + '<li><a href="#tab-2" onclick="clientProjectDetails('
-				+ clientId + ');">Projects</a></li>'; */
+				+ '<li class="current"><a href="#tab-1" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+');">Details</a></li>';
+		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
+		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -162,16 +491,45 @@
 		result = result + '</div>'; */
 
 		result = result + '</div>';
-		result = result + '</div>'
+		result = result + '</div>';
+		
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
 		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(orgName);
+		$("#clientNameDiv").append(spocName);
 		
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
 
-		clientDetails(clientId);
+		clientDetailsbySpocId(spocId,ownerId,spocUserId);
 	}
+</script>
+
+
+
+<script>
+function listChange(sel){
+	 if(sel.value=="listbyVendor"){
+		 document.getElementById("clientList").style.display="block";
+		 document.getElementById("clientList").style.display="table";
+		 document.getElementById("vendorContactList").style.display="none";
+		 document.getElementById("vendorContactList_wrapper").style.display="none";
+		 
+		 getClientDetails();
+	 }
+	 if(sel.value=="listbyContact"){
+		 document.getElementById("vendorContactList").style.display="block";
+		 document.getElementById("vendorContactList").style.display="table";
+		 document.getElementById("clientList").style.display="none";
+		 document.getElementById("clientList_wrapper").style.display="none";
+		 document.getElementById("vendorContactList_wrapper").style.display="block";
+		 
+		 getVendorContactLists();
+	 }
+	 
+}
 </script>
 
 <script>
@@ -329,7 +687,7 @@ function  inlineEditClientProjects(projectId,localFieldName){
 	 }); 
 }
 </script> 
-
+<div id="popUp"></div>
 <script> 
 function  inlineEditForProjects(orgRelationId,localFieldName){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -408,333 +766,73 @@ function getEndDatePickerById(projectId,localFieldName){
 <!-- End -->
 
 
-
-
-
-<!-- client details View starts-->
-<script type="text/javascript">
-	function clientDetails(orgRelationID) {
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
-					type : "POST",
-					url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
-					success : function(data) {
-						var json = JSON.parse(data);
-						var result = "";
-						var city = "";
-						var state = "";
-						var country = "";
-						
-						result = result+ '<div class="project_tabs_inn_table">';
-                        
-						result = result + '<div class="project_details">';
-						result = result + ' <div class="useredit useredit_a">';
-						result = result + '<a id="edit-client" href="javascript:editClientDetails('+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-						result = result + ' </div>';
-						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client name:</strong>';
-						
-						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
-						result = result + '<span>'+json.orgName+'</span>';
-						}
-						
-						result = result + '<div class="clearfix"></div>';
-						result = result + '</div>';
-						result = result + '<div class="project_details_cta">';
-						
-						result = result + '<strong>Website:</strong>';
-						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
-						result = result + '<span>'+json.webSite+'</span><div class="clearfix"></div>';
-						}
-						result = result + '</div>';
-					
-					
-						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client City:</strong>';
-						if(json.city != null && json.city !='' && json.city !='undefined'){
-							result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
-						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
-						}
-						result = result + '</div>';
-						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client State:</strong>';
-						if(json.state != null && json.state !='' && json.state !='undefined'){
-							result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
-						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
-						}
-						result = result + '</div>';
-						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client Country:</strong>';
-						if(json.country != null && json.country !='' && json.country !='undefined'){
-							result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
-						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
-						}
-						result = result + '</div>';
-						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Email:</strong>';
-						if(json.email != null && json.email !='' && json.email !='undefined'){
-						result = result + '<span>'+json.email+'</span><div class="clearfix"></div>';
-						}else{
-							
-							result = result + '<span>No Data</span><div class="clearfix"></div>';	
-						}
-						result = result + '</div>';
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Phone number:</strong>';
-						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
-						result = result + '<span>'+json.phone+'</span><div class="clearfix"></div>';
-						}else{
-							
-							result = result + '<span>No Data</span><div class="clearfix"></div>';	
-						}
-						result = result + '</div>';
-						/* result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Projects:</strong>';
-						if(json.projectsCont !=null && json.projectsCont !='' && json.projectsCont !='undefined'){
-						result = result + '<span>'+json.projectsCont+'</span><div class="clearfix"></div>';
-						} */
-						result = result + '<div class="clearfix"></div>';
-						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
-						result = result + '</div>';
-						result = result + '<div class="clearfix"></div>';
-						result = result + '</div>';
-						result = result + '</div>';
-						result = result + '</div>';
-						$("#tab-1").empty();
-						$("#tab-1").append(result);
-						$("#tab-1").show();
-						$(".project-tabs-menu a").click(
-								function(event) {
-									event.preventDefault();
-									$(this).parent().addClass("current");
-									$(this).parent().siblings().removeClass(
-											"current");
-									var tab = $(this).attr("href");
-									$(".project_tabs_inn").not(tab).css(
-											"display", "none");
-									$(tab).fadeIn();
-								});
-
-					}
-				});
-	}
-</script>
-<!--  client details ends -->
-
-
-
-<script type="text/javascript">
-	function editClientDetails(orgRelationID) {
-		var sourceleadUrl = '${sourceleadUrl}';
-		      $.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/getClientDeatilsById?${_csrf.parameterName}=${_csrf.token}&clientId="+ orgRelationID,
-						success : function(data) {
-						var json = JSON.parse(data);
-						
-						var result = "";
-						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Client Name </label>';
-						result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" placeholder="client name" >';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
-						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" onblur="validateWebsite();"  field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>City</label>';
-						if(json.city != null && json.city !='' && json.city !='undefined'){
-							result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" value=""></div>';
-						}
-						result = result + '</div> ';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>State</label>';
-						if(json.state != null && json.state !='' && json.state !='undefined'){
-							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientState" id="clientState" name="clientState" placeholder="client state" ></div>';
-						}
-						result = result + '</div> ';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Country</label>';
-						if(json.country != null && json.country !='' && json.country !='undefined'){
-							result = result + '<input type="text"  id="clientCountry" name="clientCountry" value="'+json.country+'" placeholder="client country" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientCountry" name="clientCountry"  placeholder="client country" ></div>';
-						}
-						result = result + '</div>  ';
-						
-						result = result + '<div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + '	<label>Email</label>';
-						if(json.email != null && json.email !='' && json.email !='undefined'){
-							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  value="'+json.email+'" placeholder="client email" c></div>';
-						}else{
-							result = result + '<input type="text"  id="EmailId" name="EmailId" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();"  placeholder="client email" c></div>';
-						}
-						result = result + '</div> ';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Phone</label>';
-						if(json.phone != null && json.phone !='' && json.phone !='undefined'){
-							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber" value="'+json.phone+'" data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientPhoneNumber" name="clientPhoneNumber"  data-validation="validate_Space validate_length length10-20 validate_phone" data-validation-optional="true" placeholder="client phone" ></div>';
-						}
-						result = result + '</div> ';   
-						
-						result = result + '<div class="clearfix"></div>';
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_client" type="button" value="Save" onclick="storeClientDetails('+orgRelationID+')"/ /> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetails('+orgRelationID+')"/>';
-						result = result + '</div>';		
-						result = result + '<div class="clearfix"></div>';
-						result = result + ' </form>';
-						
-						$(".user_summary_edit").slideToggle(100);
-						$("#editClientDetailsDiv").empty();
-				        $("#editClientDetailsDiv").append(result);
-					}
-				});
-	}
-</script>
-
-<script type="text/javascript">
-	function storeClientDetails(orgRelationId) {
-         if ($('#editClient_form').validate(false, validationSettings)){
-    		 var frm = $('#editClient_form').serializeFormJSON();
-             var con = JSON.stringify(frm);
-             con = con.replace(/[{}]/g, "");
-             //It will escape all the special characters
-             var jsonData = encodeURIComponent(con);
-             var sourceleadUrl ='${sourceleadUrl}';
-	 	 $.ajax({
-			   	type: "POST",
-			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgRelationId="+orgRelationId, 	   
-	   		    success: function(data) {
-	   		    	clientDetails(orgRelationId);
-	   		    }
-		 }); 
-	     	return true;
-         }else{
-             return false;
-           }
-		
-    }
-	$('body').on('blur', '#editClient_form', function() {
-        $("#editClient_form").showHelpOnFocus();
-        $("#editClient_form").validateOnBlur(false, validationSettings);  
-    });
-</script>
-
-<script type="text/javascript">
-	function validateWebsite() {
-		var website = document.getElementById("companyWebsite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		if(website.match(/^[^\s-](.*)*$/) != null){
-		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		
-		if (website != null && website != '') {
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
-				success : function(data) {
-					var result = data;
-					if (result == "Website Duplicated" || result == "Invalid Website") {
-						//existed website
-						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
-						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
-						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
-						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-						$("#save_client").attr("disabled", "disabled");
-						
-					} else {
-						//New WebSite class="form-control"
-						 $("#save_client").removeAttr("disabled");
-						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
-						$('input#companyWebsite').attr('class','valid form-control');
-						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-				
-					}
-				},
-
-			});
-		  }
-		}
-	}
-</script>
-
-<script type="text/javascript">
- function validateClientEmail() {
-	 var EmailId = document.getElementById("EmailId").value; 
-	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+<!-- Scripts for invitations  -->
+<script>
+function acceptInvitation(spocId){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmailId != null && EmailId != ""){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
-						  document.getElementById("EmailId").setAttribute('record-exist','yes');
-						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
-		        	}
-		        },
-		    });
-	 }
- }
- </script> 
- 
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    success: function(data) {
+		    	getVendorContactLists();
+		    }
+	   });
+}
 </script>
-<script type="text/javascript">
-(function ($) {
-   $.fn.serializeFormJSON = function () {
 
-       var o = {};
-       var a = this.serializeArray();
-       $.each(a, function () {
-           if (o[this.name]) {
-               if (!o[this.name].push) {
-                   o[this.name] = [o[this.name]];
-               }
-               o[this.name].push(this.value || '');
-           } else {
-               o[this.name] = this.value || '';
-           }
-       });
-       return o;
-   };
-})(jQuery);
+<script>
+function terminateSpoc1(spocId, orgRelationID){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reasonForSpocDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
 </script>
+
+<script>
+function saveReason1(spocId, orgRelationID){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForSpoc").value;
+	if(reason){
+		$("#reasonForSpocDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			    //vendorContactList(orgRelationID);
+   			 getVendorContactLists();
+		    }
+	   });
+	}else{
+		$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	  
+}
+</script>
+<script>
+function rejectInvitation(spocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
+		    success: function(data) {
+		    	getVendorContactLists();
+		    }
+	   });
+}
+</script>
+<!-- Scripts for invitations  -->	
+
+
 <script>
 // Edit pop
 $(document).ready(function() {	
@@ -745,3 +843,8 @@ $(document).ready(function() {
 		
 });
 </script> 
+<jsp:include page="editClientSpocDetails.jsp" />
+<jsp:include page="clientDetails.jsp" />	
+<jsp:include page="clientContacts.jsp" />	
+<jsp:include page="../masterFooter.jsp" />	
+	
