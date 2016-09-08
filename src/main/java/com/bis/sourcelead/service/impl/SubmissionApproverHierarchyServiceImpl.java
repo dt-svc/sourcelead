@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 
 @Service
@@ -24,6 +26,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 	@Autowired
     ProjectApproverHierarchyDao projectApproverHierarchyDao;
+	
 
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
@@ -244,7 +247,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 					 submissionApproverHierarchy.setStartDate( Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate()));
 					 submissionApproverHierarchy.setEndDate(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate()));
-					 submissionApproverHierarchy.setEmployeeName(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getFirstName()+""+submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getLastName());
+					 if(!submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getUserType().equalsIgnoreCase("Admin")){
+ 
+						 submissionApproverHierarchy.setEmployeeName(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getFirstName()+""+submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getLastName());
+					 }
 					if(submissionApproverHierarchy.getSubmissionId().getTotalHours() != null){
 						 submissionApproverHierarchy.setTotalHours(Float.valueOf(submissionApproverHierarchy.getSubmissionId().getTotalHours()));
 					}

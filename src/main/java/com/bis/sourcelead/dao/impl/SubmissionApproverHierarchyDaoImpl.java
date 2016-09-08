@@ -531,7 +531,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
           Session session = this.sessionFactory.getCurrentSession();
 		
 		//Getting List for which employee  is Assigned
-		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp ";
+		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user";
 		
 		//Getting Max Hierarchy Level for which employee is Assigned
 		String subQueryForUserIdCheckingInMaxLevel = "(subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
@@ -553,7 +553,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId))  ";
-		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId and  sah.submissionStatus = :submissionStatus  GROUP BY sah.submissionId.id)" ;
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId and  sah.submissionStatus = :submissionStatus  GROUP BY sah.submissionId.id)" ;
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		
@@ -570,7 +570,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		//Getting List for which employee  is Assigned
 		String subQueryForUserIdChecking = "(pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId";
+		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId";
 		
 		//Getting Max Hierarchy Level for which employee is Assigned
 		String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId)) ";
@@ -588,7 +588,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			Long userId, Long orgLocationId, String submissionStatus) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where  emp.orgLocations.id = :orgLocationId and hierarchy.approverUserId.id = :userId and  sah.submissionStatus = :submissionStatus    GROUP BY sah.submissionId order by pm.projects.id ASC)" ;
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee  emp  left join fetch emp.user where  emp.orgLocations.id = :orgLocationId and hierarchy.approverUserId.id = :userId and  sah.submissionStatus = :submissionStatus    GROUP BY sah.submissionId order by pm.projects.id ASC)" ;
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		
