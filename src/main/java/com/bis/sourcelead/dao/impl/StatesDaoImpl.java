@@ -35,7 +35,7 @@ public class StatesDaoImpl implements StatesDao{
 	public List<States> getAllStatesByCountryCode(String countryCode) throws Exception {
 		logger.debug("In StatesDaoImpl getAllStatesByCountryCode method");
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query= session.createQuery("from States states where states.countryCode = :countryCode");
+		Query query= session.createQuery("from States states where states.countryCode = :countryCode order by states.stateName ASC");
 		List<States> statesList = query.setString("countryCode", countryCode).setCacheable(true).list();
 		return statesList;
 	}
