@@ -182,17 +182,11 @@ function getClientDetails(){
    	        	
    	        	result = result +'</tbody>';
    	        	}else{
-   	        		result = result +'<div class="row mt">';
-   	        		result = result +'<div class="col-lg-12">';
-   	        		result = result +'<div class="content-area clearfix">';
    	        		result = result +'<div class="blank-pages">';
    	        		result = result +'<p>';
    	        		result = result +'<i class="fa fa-5x fa-users"></i>';
    	        		result = result +'</p>';
    	        		result = result +'<p>No Clients for organisation... Add Clients</p>';
-   	        		result = result +'</div>';
-   	        		result = result +'</div>';
-   	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        	}
    	    	    $("#clientList").empty();  
@@ -380,17 +374,11 @@ function getVendorContactLists(){
    	    	    $("#vendorContactList").append(result)
    	    	    pagination1(); 
    	        	}else{
-   	        		result = result +'<div class="row mt">';
-   	        		result = result +'<div class="col-lg-12">';
-   	        		result = result +'<div class="content-area clearfix">';
    	        		result = result +'<div class="blank-pages">';
    	        		result = result +'<p>';
    	        		result = result +'<i class="fa fa-5x fa-users"></i>';
    	        		result = result +'</p>';
    	        		result = result +'<p>No Client Contacts for organisation... Add Client Contacts</p>';
-   	        		result = result +'</div>';
-   	        		result = result +'</div>';
-   	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        	    $("#vendorContactList").empty();  
     	    	    $("#vendorContactList").append(result)

@@ -54,7 +54,16 @@ public class CountriesDaoImpl implements CountriesDao{
 	public List<Countries> getAllCountries() {
 		logger.debug("In Countries getAllCountries method");
         Session session = this.sessionFactory.getCurrentSession();
-        List<Countries> countriesList= session.createQuery("from Countries " ).setCacheable(true).list();
+        List<Countries> countriesList= session.createQuery("from Countries c where c.name = order by c.name ASC " ).setCacheable(true).list();
+        return countriesList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Countries> getAllSourceLeadCountries() {
+		logger.debug("In Countries getAllCountries method");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Countries> countriesList= session.createQuery("from Countries c where c.name = 'Australia' OR c.name = 'France' OR c.name = 'India' OR c.name = 'Singapore' OR c.name = 'United Kingdom' OR c.name = 'United States' order by c.name ASC " ).setCacheable(true).list();
         return countriesList;
 	}
 
