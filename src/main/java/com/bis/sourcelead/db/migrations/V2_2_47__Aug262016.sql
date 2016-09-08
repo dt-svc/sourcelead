@@ -23,3 +23,10 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Invite Client','Email', 'Invite Client', 'Used for Invite Client', '{{InviteClient.VendorOrgName}} invited you as Client','org', 'Best Regards,\n{{InviteClient.VendorFirstName}} {{InviteClient.VendorLastName}},\n{{InviteClient.VendorOrgName}}.', 'Dear {{InviteClient.FirstName}} {{InviteClient.LastName}},\n\n{{InviteClient.VendorFirstName}} {{InviteClient.VendorLastName}} have invited you as Client for the {{InviteClient.VendorOrgName}}. So login into the system and accept the invitation.\n\n  Username : {{InviteClient.ClientEmailId}}\n  Password : {{InviteClient.Password}}','N', 'SLADMIN', 'slead', 'sleadIN');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','STARTMONTH','VARCHAR(10) NULL AFTER `ADDRESS`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','ENDMONTH',' VARCHAR(10) NULL AFTER `STARTDATE`');
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','STARTYEAR','VARCHAR(10) NULL AFTER `STARTMONTH`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_EMPLOYERS','ENDYEAR',' VARCHAR(10) NULL AFTER `ENDMONTH`');
