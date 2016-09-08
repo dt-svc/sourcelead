@@ -293,7 +293,7 @@ function changeSpocStatus(spocId){
 function resendSpocInvitation(spocUserId,orgRelationID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Client&orgRelationID="+orgRelationID, 
@@ -311,7 +311,7 @@ function resendSpocInvitation(spocUserId,orgRelationID){
 function addContact(orgRelationID,clientLocationId) {	  
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
-	result = result  +'	<div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result  +'	<div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
 	result = result  +'	<div class="form-horizontal clearfix">';
                               
 	
@@ -420,23 +420,20 @@ function addContact(orgRelationID,clientLocationId) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	
-	$(".addcon-pop").click(function(){
+	/* $(".addcon-pop").click(function(){
 		 $(".collapse-div-adduser").toggleClass("show-div");
 		 $(".collapse-div").removeClass("show-div");
-	 });
+	 }); */
+	 
+	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){
-		 $(this).parent().removeClass("show-div");
+		 $(this).closest('.edit-details').removeClass("edit-details-active");
 		 });
-	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
-	    $(".collapse-div-adduser").removeClass("show-div");
-		$(".collapse-div").removeClass("show-div");
-	   });	
-	   
-	}
+	 
+	};
 </script>
  <!-- This Script is For Popup Div Ends --> 
 

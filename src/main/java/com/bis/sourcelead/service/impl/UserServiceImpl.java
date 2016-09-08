@@ -633,7 +633,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Your Registred Password");
+				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
 			 }
 			 
 			 

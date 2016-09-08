@@ -186,7 +186,7 @@ public class VendorRestController {
 				
 				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-				
+				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
 			}
 			
 			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
@@ -212,9 +212,9 @@ public class VendorRestController {
 		 			userService.addUser(user);
 		 			
 		 			//to update spoc invitation status
-		 			/*OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(spocUserId));
+		 			OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
-		 			orgSpocService.addOrgSpoc(spoc);*/
+		 			orgSpocService.addOrgSpoc(spoc);
 		 			
 		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
 		 		}
