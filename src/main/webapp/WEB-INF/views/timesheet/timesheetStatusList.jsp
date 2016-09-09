@@ -81,7 +81,12 @@ function filter(){
 			         					result = result +'<td><div>'+report.projectName+'</div></td>';
 			         					result = result +'<td data-title="Date"><div>'+report.startDate+' ';
 			           	   		    	result = result +'- '+report.endDate+' </div></td>';
-			         					result = result +'<td><div>'+report.employeeName+'</div></td>';
+				           	   		 	if(report.employeeName != null && report.employeeName !=''){
+				           	   			result = result +'<td><div>'+report.employeeName+'</div></td>';
+			         					}else{
+			         						result = result +'<td><div>---</div></td>';
+			         					}
+				           	   		 	
 			         					result = result +'<td><div>';
 			         					if(report.managerLevel1 != null && report.managerLevel1 !=''){
 		         	                    	result = result + ''+report.managerLevel1+'';

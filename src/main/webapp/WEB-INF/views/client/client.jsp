@@ -11,16 +11,14 @@
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
+
 <script type="text/javascript">
 window.onload = function () {
-	cscInit();
+	getAllCountries();
  };
 </script>
  <script>
@@ -78,9 +76,8 @@ window.onload = function () {
 			<div class="form-group" id="countryDiv" style="display: block;">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-					 <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
-						name="country" field-name="Client Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true"/> 
-						<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul> 
+				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+                 </select>
 				</div>
 			</div>
 			
@@ -95,10 +92,8 @@ window.onload = function () {
 		 <div class="form-group" id="stateDiv" style="display: block;">
 			<label class="col-md-3">State</label>
 			<div class="col-md-9">
-				<input type="hidden" id="stateAutoComplete" name="state"
-					field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
-			
-			<ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
+			     <select  class="chosen-select form-control" name="state" id="state" field-name="State"  >
+                 </select>
 			</div>
 		 </div>
 		 
@@ -112,8 +107,8 @@ window.onload = function () {
 		<div class="form-group" id="cityDiv" style="display: block;">
 			<label class="col-md-3">City</label>
 			<div class="col-md-9">
-				<input type="hidden" id="cityAutoComplete" name="city" field-name="Client State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
-			    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
+			     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  >
+                 </select>
 			</div>
 		</div>
 		
@@ -261,8 +256,13 @@ function getOrgName(){
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
-	$("#state").tagit("removeAll");
-	$("#city").tagit("removeAll");
+	
+	getAllCountries();
+	$('#state').empty();
+	$('#state').trigger("chosen:updated"); 
+	$('#city').empty();
+	$('#city').trigger("chosen:updated");
+	
 	$("#webSite" ).val('');
 	
 	document.getElementById("countryDiv").style.display="";
@@ -278,7 +278,6 @@ function getOrgName(){
 	$("#role").attr("data-validation", "required");
 	document.getElementById("roleDiv").style.display="";
 	document.getElementById("userRoleDiv").style.display="none";
-	
 	
 	$.ajax({                           
     	type: "POST",
@@ -310,7 +309,6 @@ function getOrgName(){
              })
         },
         error: function(e){
-           alert('Ajax Error: ' + e.value);
         }
     });
 }
@@ -320,6 +318,7 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
+	validateClientName();
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -336,12 +335,14 @@ function getOrgDetails()
    	        			document.getElementById("countryDiv").style.display="none";
    	        			document.getElementById("orgCountryDiv").style.display="";
    	        		    $("#orgCountry").val(json[0]);
+   	        		     getStates();
    	        		}
    	        		
    	        		if(json[1] != null && json[1] != ''){
    	        			document.getElementById("stateDiv").style.display="none";
    	        			document.getElementById("orgStateDiv").style.display="";
    	        		    $("#orgState").val(json[1]);
+   	        		     getCities();
    	        		}
    	        		
    	        		if(json[2] != null && json[2] != ''){
@@ -358,7 +359,6 @@ function getOrgDetails()
    	        	}
    			 },
    	        error: function(e){
-   	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
    	 
@@ -519,7 +519,7 @@ function getSpocUserDetails(){
 }
 </script>
  
-  <!-- <script type="text/javascript">
+   <script type="text/javascript">
 function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -531,14 +531,14 @@ function validateClientName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
 					
 				}else {
 					//New WebSite class="form-control"
@@ -557,7 +557,7 @@ function validateClientName(){
 	}
   }
 }
-</script>   -->
+</script>   
 
 
 <!-- <script type="text/javascript">
@@ -653,18 +653,26 @@ function validateClientName(){
 </script> 
 
 <script type="text/javascript">
-function getAllCountries(sourceleadUrl){
+function getAllCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#country').tagit({
-        		allowSpaces: false,
-        		availableTags: json
-        		
-	       	 	});
+        	$('#country').empty();
+        	$('#country').append('<option value="">---select---</option>');
+            for(var i=0;i<json.length;i++){
+            	if(json[i] == '${loginCountryName}'){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else{
+            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            }
+            $('#country').trigger("chosen:updated");
+            getStates();
         },
         error: function(e){
         }
@@ -674,20 +682,27 @@ function getAllCountries(sourceleadUrl){
 
 
 <script>
-function getStates(sourceleadUrl){
-	var countryName = document.getElementById("CountryAutocomplete").value;
+function getStates(){
+	var countryName = $("#country").val();
+	if(countryName == 'null' || countryName == 'undefined' || countryName == ''){
+		countryName = $("#orgCountry").val();
+	}
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#state').tagit({
-	        		allowSpaces: false,
-	        		availableTags: json
-	        		
-		       	 	});
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
@@ -698,21 +713,28 @@ function getStates(sourceleadUrl){
 
 
 <script>
-function getCities(sourceleadUrl){
-	var countryName = document.getElementById("CountryAutocomplete").value;
-	var stateName = document.getElementById("stateAutoComplete").value;
+function getCities(){
+	var countryName = $("#country").val();
+	if(countryName == 'null' || countryName == 'undefined' || countryName == ''){
+		countryName = $("#orgCountry").val();
+	}
+	var stateName = $("#state").val();
+	if(stateName == 'null' || stateName == 'undefined' || stateName == ''){
+		stateName = $("#orgState").val();
+	}
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').tagit({
-	        		allowSpaces: false,
-	        		availableTags: json
-	        		
-		       	 	});
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
@@ -729,12 +751,21 @@ $(function(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
+	       $("#country").chosen();
+	       $("#state").chosen();
+	       $("#city").chosen();
+	       $("#owner").chosen();
+	       
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+	      
+	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+		  })
 });
 </script>

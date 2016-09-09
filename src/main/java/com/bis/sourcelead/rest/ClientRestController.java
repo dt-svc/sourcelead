@@ -166,9 +166,7 @@ public class ClientRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId(),responderType);
 				
-				if(flag == false){
 					if(null != orgLocationId){
 						jsonObj.put("orgLocationId", orgLocationId);
 					}
@@ -176,9 +174,7 @@ public class ClientRestController {
 					clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
 					return "clientDashboard";
-				}else{
-					return "invalid";
-				}
+				
 				
 			} 
 		
@@ -422,9 +418,10 @@ public class ClientRestController {
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
 	@ResponseBody boolean isClientNameValidated(
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId(),"Client");
+		return orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
 	}
 /**
  * Verifies Client Email
@@ -479,6 +476,7 @@ public class ClientRestController {
 				orgRelation.setState(orgRelation.getResponderLocationId().getState());
 				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
+				orgRelation.setLevel(orgRelation.getInitiatorLevel());
 				
 		 }
 		 //to fetch user details by usercode 
@@ -494,6 +492,7 @@ public class ClientRestController {
 				orgRelation.setState(orgRelation.getLocationId().getState());
 				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+				orgRelation.setLevel(orgRelation.getResponderLevel());
 		 } 
 		 
 		 resultJson = commonUtil.toJSON(orgRelation);
@@ -508,9 +507,8 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	 
-	   @RequestMapping(value = "/getClientDetails")
-	   @ResponseBody
-		public String getClientDetails(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getClientDetails")
+	   @ResponseBody String getClientDetails(HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -533,6 +531,12 @@ public class ClientRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
 				}
 				
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
@@ -542,6 +546,12 @@ public class ClientRestController {
 					orgRelation.setState(orgRelation.getLocationId().getState());
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
 				}
 				
 			}

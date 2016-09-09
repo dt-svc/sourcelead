@@ -5,13 +5,12 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <!-- these files for autocomplete with tagit -->
 
@@ -19,7 +18,8 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
+<script src="resources/js/bootstrap-select.min.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
 <!-- end files for autocomplete with tagit -->
 	
 	<script type="text/javascript">
@@ -108,8 +108,6 @@
           <span class="hidden">Valid Email</span>
           </div>
         </div>
-        
-        
 						
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
@@ -154,12 +152,10 @@
         <div class="form-group">
          <label class="col-md-3">Designation</label>
          <div class="col-md-9">
-           <div class="row div-padding">
-           <div class="col-xs-8 col-md-8">
+          <div class="input-group">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
-           </div>
-             <div class="col-xs-4 col-md-4">
-             <select class="form-control" id="designationType" name="designationType">
+             <div class="input-group-btn selp-custom-min">
+             <select class="selectpicker" id="designationType" name="designationType">
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
                  <option><a href="#">Part Time</a></option>
@@ -200,12 +196,10 @@
          <div class="form-group">
          <label class="col-md-3">Current Rate</label>
          <div class="col-md-9">
-           <div class="row div-padding">
-           <div class="col-xs-8 col-md-8">
+           <div class="input-group">
              <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-           </div>
-             <div class="col-xs-4 col-md-4">
-             <select class="form-control" id="currentRateCurrency" name="currentRateCurrency">
+             <div class="input-group-btn selp-custom-min">
+             <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  <option><a href="#">&#x20B9;</a></option>
                  <option><a href="#">&#x20A0;</a></option>
                  <option><a href="#">$</a></option>
@@ -214,16 +208,15 @@
            </div>
          </div>
        </div>
+       
         
          <div class="form-group">
          <label class="col-md-3">Expected Rate</label>
          <div class="col-md-9">
-           <div class="row div-padding">
-           <div class="col-xs-8 col-md-8">
+           <div class="input-group">
             <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-           </div>
-             <div class="col-xs-4 col-md-4">
-             <select class="form-control" id="expectedRateCurrencey" name="expectedRateCurrencey">
+              <div class="input-group-btn selp-custom-min">
+             <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  <option><a href="#">&#x20B9;</a></option>
                  <option><a href="#">&#x20A0;</a></option>
                  <option><a href="#">$</a></option>
@@ -303,7 +296,6 @@
 	<!-- Footer Area -->
 	<jsp:include page="../masterFooter.jsp" />
 	<!-- Footer Area -->
-	
 	
 	<%-- 
      @author : prasad k.

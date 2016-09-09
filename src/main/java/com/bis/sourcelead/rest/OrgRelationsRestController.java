@@ -54,7 +54,10 @@ public class OrgRelationsRestController {
 	 */
 	@RequestMapping(value = "/saveClientFromProject", method = RequestMethod.GET)
 	public @ResponseBody  String saveClientFromProject(
-			@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception
+			@RequestParam(value="json", required=false) String json ,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			HttpServletRequest request) throws Exception
 			 
 	{
 		String resultJson;
@@ -64,8 +67,13 @@ public class OrgRelationsRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		if(null != orgLocationId){
+			jsonObj.put("orgLocationId", orgLocationId);
+		}
 
-		clientService.storeClient(jsonObj, user, orgLocation,"",new Org());
+		clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 		
 		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId()); 
 		for(OrgRelations ocl :orgClientList){
@@ -76,10 +84,6 @@ public class OrgRelationsRestController {
 		 resultJson = commonUtil.toJSON(orgClientList);
 		 return resultJson;
 	}
-	
-	
-	
-	
 	
 	
 }
