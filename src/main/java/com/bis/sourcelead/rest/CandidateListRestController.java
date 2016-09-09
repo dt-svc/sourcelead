@@ -367,17 +367,18 @@ public class CandidateListRestController {
 		 * @throws NullPointerException
 		 */ 
 	   @RequestMapping(value = "/deleteCandidateByCandidateId")
-	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,
-			   													@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
+	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 
 			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			if(candidate != null){
-				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-				if(StringUtils.isNotEmpty(reason)){
-					candidate.setTerminateReason(reason);
-				}
+				
+					candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					if(StringUtils.isNotEmpty(reason)){
+						candidate.setTerminateReason(reason);
+					}
+				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
@@ -385,6 +386,32 @@ public class CandidateListRestController {
 			return "success";
 		 }
 	   
+	   
+	   /**
+		 *  This Method is for reActivate Candidate By CandidateId
+		 * @author David Raju
+		 * @param candidateId   This is the first parameter to reActivateCandidateByCandidateId method
+		 * @param  reActivate    This is the second parameter to reActivateCandidateByCandidateId method
+		 * @return String
+		 * @throws NullPointerException
+		 */ 
+	   @RequestMapping(value = "/reActivateCandidateByCandidateId")
+	   public @ResponseBody  String reActivateCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="reActivate", required=false) String  reActivate,
+			                                                          HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
+			if(candidate != null){
+				if(reActivate.equalsIgnoreCase("1")){
+					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+				}
+				candidate.setUpdatedBy(user.getUserCode());
+				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidateService.saveOrUpdateCandidate(candidate);
+			}
+			return "success";
+		 }
 	   
 	   /**
  		 * This Method is for save field Candidate details

@@ -320,6 +320,44 @@ function removeCandidateAlertMessage(candidateId){
 
 
 
+<%-- 
+     @author :Sammeta David Raju
+    
+     1.usage     : used in reActivateCandidateAlertMessage() / candidateProfile Line number 388
+     2.parameters : candidateId
+--%>
+
+<script type="text/javascript">
+function reActivateCandidateAlertMessage(candidateId){
+	var result = "";
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to ReActivate the Candidate");
+	if (message == true) {
+		var reactivate = '1';
+		$.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         success :function(data) {
+	               if(data != null && data != 'undefined' && data != ""){
+	            		 if( data.indexOf('Sign In') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	 }
+	            		 else if (data.indexOf('exception') >= 0) {
+	            			 location.replace(sourceleadUrl+"/errorPage");
+	            		 }
+	            		 else{
+	            			 location.replace(sourceleadUrl+"/candidatesList");
+	            		 }
+	                } 
+	                 },
+	              }); 
+		
+	}
+	
+}
+</script>
+
+
 
 <%-- 
      @author : sarath kumar.
@@ -348,11 +386,13 @@ function candidateProfile(candidateId){
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
-							
-							result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
-							
+							if(json.status == 0){
+								result = result + '<div class="project_tabs_inn_head "> <a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+							}else{
+								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+
+							}
 							result = result + '<div id="profileEditPopup"></div>';
-							
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
 							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
