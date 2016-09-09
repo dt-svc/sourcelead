@@ -93,7 +93,11 @@ public class ClientServiceImpl implements ClientService{
 		orgService.addOrganization(org);
 		OrgLocations clientOrgLocation = populateOrgLocations(jsonObj, org, orgLocations.getLocationCode(), user.getUserCode());
 		orgLocationService.addOrgLocations(clientOrgLocation);
+
 		OrgRelations orgRelations = populateOrgRelations(clientOrgLocation, orgLocations, user.getUserCode());
+		if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
+			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
+	     }
 		orgRelationsService.addOrgRelations(orgRelations);
 		
 		if(jsonObj.has("maxTsRowNum")){
@@ -389,7 +393,7 @@ public class ClientServiceImpl implements ClientService{
 						 orgLocations = orgRelation.getLocationId();
 					 }
 					if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
-						orgRelation.setLevel(jsonObj.getString("level"));
+						//orgRelation.setLevel(jsonObj.getString("level"));
 				     }
 				 orgRelationsService.addOrgRelations(orgRelation);
 				
@@ -463,7 +467,7 @@ public class ClientServiceImpl implements ClientService{
 				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getLocationId();
 				 }
-				orgRelation.setLevel(jsonObj.getString(level));
+				//orgRelation.setLevel(jsonObj.getString(level));
 			 orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();

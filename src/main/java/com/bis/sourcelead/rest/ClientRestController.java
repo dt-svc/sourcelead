@@ -518,7 +518,6 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	 
-	   @RequestMapping(value = "/getClientDetails")
 	   @ResponseBody
 		public String getClientDetails(HttpServletRequest request) throws Exception {
 
@@ -558,6 +557,12 @@ public class ClientRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					if(orgRelation.getResponderLevel()!=null){
+						orgRelation.setLevel(orgRelation.getResponderLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
 				}
 				
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
@@ -573,6 +578,12 @@ public class ClientRestController {
 					orgRelation.setState(orgRelation.getLocationId().getState());
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
 				}
 				
 			}

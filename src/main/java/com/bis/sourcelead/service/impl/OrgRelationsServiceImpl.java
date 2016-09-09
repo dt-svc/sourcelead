@@ -112,9 +112,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				orgRelations.setResponderType("Vendor");
 			}
 		  }
-		
 		if(jsonObj.has("level")){
-			orgRelations.setLevel(jsonObj.getString("level"));
+			//orgRelations.setLevel(jsonObj.getString("level"));
+			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
 		}
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
