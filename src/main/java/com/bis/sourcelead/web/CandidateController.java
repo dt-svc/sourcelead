@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -66,7 +67,7 @@ public class CandidateController {
 	    }
 	
 	@RequestMapping(value = "/candidatesList")
-	public ModelAndView usersList(HttpServletRequest request) throws Exception {
+	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -78,7 +79,7 @@ public class CandidateController {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
         model.addObject("loginCountryName", countries.getName());
 		
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId());
+		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE);
 		model.addObject("candidatesList", candidatesList);
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);

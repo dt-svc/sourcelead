@@ -53,7 +53,11 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         CandidateEmployers candidateEmployers = new CandidateEmployers();
 		
         if(candidateId!=null){
-			
+        	if(jsonObject.has("candidateEmployeeId")){
+	       		 if(jsonObject.getString("candidateEmployeeId")!=null && !jsonObject.getString("candidateEmployeeId").isEmpty()){
+	       			 candidateEmployers.setId(Long.valueOf(jsonObject.getString("candidateEmployeeId")));
+	       	     }
+       	    }
         	candidateEmployers.setName(jsonObject.getString("name"));
         	Candidate can  = new Candidate();
         	can.setId(candidateId);
@@ -182,7 +186,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	@Override
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId, Long candidateEmployerId)
 			throws Exception {
-		  return candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
-	}
+		  return candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerId, candidateId);	}
 
 }

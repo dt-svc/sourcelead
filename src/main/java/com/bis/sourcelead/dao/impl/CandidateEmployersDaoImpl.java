@@ -120,7 +120,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateEmployersId,Long candidateId) {
+	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateEmployersId,Long candidateId) { 
 
 		
 		Session session = this.sessionFactory.getCurrentSession();

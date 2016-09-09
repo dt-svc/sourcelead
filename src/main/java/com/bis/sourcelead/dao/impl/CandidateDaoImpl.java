@@ -101,12 +101,22 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState) throws Exception {
 		 // TODO Auto-generated method stub
-		String status = Constants.CANDIDATE_ACTIVE;
+		String subQuery = null;
+		//String status = Constants.CANDIDATE_ACTIVE;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and (cnadidate.status = :status or cnadidate.status is null)";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString( "status", status ).list();
+		
+		if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_IN_ACTIVE)){
+			 subQuery ="cnadidate.status = '0'";
+		}else if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_ALL)){
+			 subQuery ="cnadidate.status = '1' or cnadidate.status = '0'";
+		}else{
+			subQuery ="cnadidate.status = '1'";
+		}
+		
+		String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
 		return candidateList;
 	}
 	
