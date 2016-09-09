@@ -154,26 +154,28 @@ public class OrgDaoImpl implements OrgDao {
                             host = host.substring("www".length()+1);
                         }else{
                             flag="Website Duplicated";
-                            return flag;
                         }
                     }else{
                         flag ="Invalid Website";
-                        return flag;
                     }
                    
                     //for Blocked Websites Domains
                     String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
                     if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
-                        flag="Website Duplicated";
+                    	 flag ="Invalid Website";
+                    	 
                      }
-                    boolean isFuond = isDuplicateWebsite(host);
+                    
+                    return flag;
+                    
+                   /* boolean isFuond = isDuplicateWebsite(host);
                     if(isFuond){
                          flag ="Website Duplicated";
                          return flag;
                     }else{
                     	flag = "Valid Website";
                     	return flag;
-                    }
+                    }*/
         
     }   
 
@@ -259,6 +261,20 @@ public class OrgDaoImpl implements OrgDao {
 	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
 	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
         return orgsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean isOrgNameExisted(String orgName) throws Exception {
+		boolean isOrgFound = false;
+        Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Org org where org.orgName = :orgName ";
+		 
+		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+		            if (orglist != null && !orglist.isEmpty()) {
+		            	isOrgFound = true;
+		            }
+		            return isOrgFound;
 	}
 
 }
