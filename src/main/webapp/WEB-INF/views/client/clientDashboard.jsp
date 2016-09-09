@@ -130,7 +130,6 @@ function getClientDetails(){
    	        	
    	        	for (var i=0; i<json.length; i++)
    				{  
-   	        		
    	        		var report = json[i];
    	        		var location = "";
    	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -158,7 +157,6 @@ function getClientDetails(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
-   	        		
    	        		if(location != null && location  != '' && location  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
@@ -173,6 +171,7 @@ function getClientDetails(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
+   	        		alert("report.level"+report.level);
    	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
    	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';

@@ -107,12 +107,13 @@ public class VendorRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
-					if(orgRelation.getResponderLevel()!=null){
-						orgRelation.setLevel(orgRelation.getResponderLevel());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}
 					else{
 						orgRelation.setLevel("");
 					}
+					
 				}
 				
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
@@ -122,13 +123,15 @@ public class VendorRestController {
 					orgRelation.setState(orgRelation.getLocationId().getState());
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
-					if(orgRelation.getInitiatorLevel()!=null){
-						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					if(orgRelation.getResponderLevel()!=null){
+						orgRelation.setLevel(orgRelation.getResponderLevel());
 					}
 					else{
 						orgRelation.setLevel("");
 					}
+					
 				}
+				
 				
 			}
 		    

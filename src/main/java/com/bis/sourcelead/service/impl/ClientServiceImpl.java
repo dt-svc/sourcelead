@@ -341,7 +341,6 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setResponderLocationId(clientOrgLocation);
 					orgRelations.setLocationId(orgLocations);
 					orgRelations.setStatus("ACTIVE");
-					//orgRelations.setRelationType("Customer");
 					orgRelations.setInitiatorType("Client");
 					orgRelations.setResponderType("");
 					orgRelations.setCreatedBy(loginUserCode);
@@ -401,23 +400,25 @@ public class ClientServiceImpl implements ClientService{
 		@Override
 		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId,Long loginLocationId) throws Exception {
 			
-			//OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
-			
+			String level = "level";
 			if(null != orgRelation){
-				//OrgLocations orgLocations = orgRelation.getResponderLocationId();
 				
 				 OrgLocations orgLocations = null;
 					//if login user org id is equals to client location id then we get vendor list of ResponderLocationId Org details 
 					 if(orgRelation.getLocationId().getId() == loginLocationId){ 
 						 orgLocations = orgRelation.getResponderLocationId();
+						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+								orgRelation.setInitiatorLevel(jsonObj.getString(level));
+							}
 					 }
 					 if(orgRelation.getResponderLocationId().getId() == loginLocationId){ 
 						 orgLocations = orgRelation.getLocationId();
+						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+								orgRelation.setResponderLevel(jsonObj.getString(level));
+							}
 					 }
-					if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
-						//orgRelation.setLevel(jsonObj.getString("level"));
-				     }
+					
 				 orgRelationsService.addOrgRelations(orgRelation);
 				
 				
@@ -486,9 +487,15 @@ public class ClientServiceImpl implements ClientService{
 				//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
 				 if(orgRelation.getLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getResponderLocationId();
+					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+							orgRelation.setInitiatorLevel(jsonObj.getString(level));
+						}
 				 }
 				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getLocationId();
+					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+							orgRelation.setResponderLevel(jsonObj.getString(level));
+						}
 				 }
 				//orgRelation.setLevel(jsonObj.getString(level));
 			 orgRelationsService.addOrgRelations(orgRelation);		

@@ -486,6 +486,7 @@ public class ClientRestController {
 				orgRelation.setState(orgRelation.getResponderLocationId().getState());
 				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
+				orgRelation.setLevel(orgRelation.getInitiatorLevel());
 				
 		 }
 		 //to fetch user details by usercode 
@@ -501,6 +502,7 @@ public class ClientRestController {
 				orgRelation.setState(orgRelation.getLocationId().getState());
 				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+				orgRelation.setLevel(orgRelation.getResponderLevel());
 		 } 
 		 
 		 resultJson = commonUtil.toJSON(orgRelation);
@@ -531,21 +533,7 @@ public class ClientRestController {
 				}
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
 				orgRelation.setNoOfContatcs(orgSpocs.size());
-				//responderLocationId.org.
-				
-				/*orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-				orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-				orgRelation.setState(orgRelation.getResponderLocationId().getState());
-				orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-				
-				orgRelation.setLocationOrgname(orgRelation.getLocationId().getOrg().getOrgName());
-				orgRelation.setLocationWebsite(orgRelation.getLocationId().getOrg().getWebSite());
-				orgRelation.setLocationCountry(orgRelation.getLocationId().getCountry());
-				orgRelation.setLocationState(orgRelation.getLocationId().getState());
-				orgRelation.setLocationCity(orgRelation.getLocationId().getCity());
-				orgRelation.setResponderId(orgRelation.getResponderLocationId().getId().toString());
-				orgRelation.setLocationID(orgRelation.getLocationId().getId().toString());*/
+			
 				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
 					
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
@@ -554,8 +542,8 @@ public class ClientRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
-					if(orgRelation.getResponderLevel()!=null){
-						orgRelation.setLevel(orgRelation.getResponderLevel());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}
 					else{
 						orgRelation.setLevel("");
@@ -563,11 +551,6 @@ public class ClientRestController {
 				}
 				
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-					/*orgRelation.setLocationOrgname(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setLocationWebsite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setLocationCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setLocationState(orgRelation.getLocationId().getState());
-					orgRelation.setLocationCity(orgRelation.getLocationId().getCity());*/
 					
 					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
