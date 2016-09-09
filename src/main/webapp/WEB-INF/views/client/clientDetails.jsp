@@ -6,7 +6,18 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
+<!-- these files for autocomplete with tagit -->
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
+<!-- end files for autocomplete with tagit -->
+<!-- <script type="text/javascript">
+window.onload = function () {
+	cscInit();
+ };
+</script> -->
 
 <!-- client details View starts-->
 <script type="text/javascript">
@@ -76,7 +87,7 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Created By :</strong>';
-						if(json.country != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
+						if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
 							result = result + '<span>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
 						}else{
 							result = result + '<span>No Data</span><div class="clearfix"></div>';
@@ -85,7 +96,7 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Level :</strong>';
-						if(json.country != null && json.level !='' && json.level !='undefined'){
+						if(json.level != null && json.level !='' && json.level !='undefined'){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 						}else{
 							result = result + '<span>No Data</span><div class="clearfix"></div>';
@@ -159,6 +170,19 @@
 								selected5 = 'selected';
 						}
 						
+						 var country = '';
+						 var state = '';
+						 var city = '';
+						
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							country = json.country;
+						}
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							state = json.state;
+						}
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							city = json.city;
+						}
 						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						result = result + '<div class="user_summary_edit_cta">';
@@ -173,29 +197,20 @@
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Country</label>';
-						if(json.country != null && json.country !='' && json.country !='undefined'){
-							result = result + '<input type="text"  id="clientCountry" name="clientCountry" value="'+json.country+'" placeholder="client country" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientCountry" name="clientCountry"  placeholder="client country" ></div>';
-						}
+						result = result + '<input type="text"  id="CountryAutocomplete" name="clientCountry" value="'+country+'" placeholder="client country" ></div>';
+						/* result = result + '<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>'; */
 						result = result + '</div>  ';
 						
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 						result = result + '<label>State</label>';
-						if(json.state != null && json.state !='' && json.state !='undefined'){
-							result = result + '<input type="text"  id="clientState" name="clientState" value="'+json.state+'" placeholder="client state" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientState" name="clientState" placeholder="client state" ></div>';
-						}
+						result = result + '<input type="text"  id="stateAutoComplete" name="clientState" value="'+state+'" placeholder="client state" ></div>';
+						/* result = result + '<ul id="state"  onkeypress="getStates(\''+sourceleadUrl+'\');"></ul>'; */
 						result = result + '</div> ';
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>City</label>';
-						if(json.city != null && json.city !='' && json.city !='undefined'){
-							result = result + '<input type="text"  id="clientCity" name="clientCity" value="'+json.city+'" placeholder="client city" ></div>';
-						}else{
-							result = result + '<input type="text"  id="clientCity" name="clientCity"  placeholder="client city" value=""></div>';
-						}
+						result = result + '<input type="text"  id="cityAutoComplete" name="clientCity" value="'+city+'" placeholder="client city" ></div>';
+						/* result = result + '<ul id="city"  onkeypress="getCities(\''+sourceleadUrl+'\');"></ul>'; */
 						result = result + '</div> ';
 						
 						
@@ -221,6 +236,7 @@
 						$(".user_summary_edit").slideToggle(100);
 						$("#editClientDetailsDiv").empty();
 				        $("#editClientDetailsDiv").append(result);
+				        cscInit();
 					}
 				});
 	}
@@ -347,4 +363,73 @@
        return o;
    };
 })(jQuery);
+</script>
+
+
+<script type="text/javascript">
+function getAllCountries(sourceleadUrl){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').tagit({
+        		allowSpaces: false,
+        		availableTags: json
+        		
+	       	 	});
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+
+<script>
+function getStates(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').tagit({
+	        		allowSpaces: false,
+	        		tagSource: json
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
+</script> 
+
+
+<script>
+function getCities(sourceleadUrl){
+	var countryName = document.getElementById("CountryAutocomplete").value;
+	var stateName = document.getElementById("stateAutoComplete").value;
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').tagit({
+	        		allowSpaces: false,
+	        		availableTags: json
+	        		
+		       	 	});
+	        },
+	        error: function(e){
+	        }
+	    });
+	}
+}
 </script>

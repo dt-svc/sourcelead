@@ -98,6 +98,11 @@ public class OrgServiceImpl implements OrgService {
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
 		return orgDao.getEnrolledOrgs(orgId, userState, searchByName);
 	}
+
+	@Override
+	public boolean isOrgNameExisted(String orgName) throws Exception {
+		return orgDao.isOrgNameExisted(orgName);
+	}
 	
 	
 }

@@ -47,7 +47,7 @@
             <div class="form-group">
             <label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
-              <input type="text" name="companyName"  value="${companyName}" class="form-control"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
+              <input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName()"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
              <span class="hidden">Company</span>
             </div>
             </div>
@@ -245,6 +245,49 @@ var validationSettings = {
 	</script>
 
 
+
+<script type="text/javascript">
+function validateCompanyName(){
+	var companyName = document.getElementById("companyName").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(companyName != null && companyName != ''){
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+			        success: function(data) {
+			        	 var result = data;
+			        		if(result == "Company Duplicated") {
+		        			//Existed company
+		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#companyName').attr('class','error form-control');
+		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+companyName+" "+result+"</p>");
+		    				$('input#companyName').attr('record-exist','yes');
+		    				$('input#companyName').attr('record-exist-errorMsg',companyName+' '+result+''); 
+		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$("#register_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New company
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#companyName').removeAttr( "class record-exist record-exist-errormsg");
+							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
+							$('input#companyName').attr('class','valid form-control');
+							$( "#register_button" ).removeAttr("style");
+							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+		 
+	 }
+}
+</script>
 
 <script type="text/javascript">
 function validateWebsite(){

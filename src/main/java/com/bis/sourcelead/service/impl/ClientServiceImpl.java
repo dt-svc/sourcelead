@@ -174,6 +174,23 @@ public class ClientServiceImpl implements ClientService{
 			User spocUser = null;
 			if(jsonObj.has("orgLocationId")){
 				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+					clientOrgLocations.setCountry(jsonObj.getString("country"));
+				}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
+					clientOrgLocations.setCountry(jsonObj.getString("orgCountry"));
+				}
+				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+					clientOrgLocations.setState(jsonObj.getString("state"));
+				}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
+					clientOrgLocations.setCountry(jsonObj.getString("orgState"));
+				}
+				
+				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+					clientOrgLocations.setCity(jsonObj.getString("city"));
+				}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
+					clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
+				}
+				
 			}
 			
 			if(clientOrgLocations == null){
@@ -190,6 +207,12 @@ public class ClientServiceImpl implements ClientService{
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
 				orgLocationsList.add(clientOrgLocations);
 				Org org = clientOrgLocations.getOrg();
+				if(jsonObj.has("companyWebsite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+				}
+				if(jsonObj.has("webSite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+				}
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
 			}
