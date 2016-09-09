@@ -213,6 +213,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			else if(registeredModules[0].equalsIgnoreCase("TimeSheet")){
 					org.setTimeSheet(Status.Y);
+					org.setAts(Status.N);
+					org.setVms(Status.N);
 			}else{
 				org.setTimeSheet(Status.N);
 			}
