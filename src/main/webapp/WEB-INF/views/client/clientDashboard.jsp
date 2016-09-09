@@ -171,7 +171,6 @@ function getClientDetails(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
-   	        		alert("report.level"+report.level);
    	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
    	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
