@@ -318,7 +318,6 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
-	validateClientName();
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -611,7 +610,6 @@ function validateClientName(){
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
-						$("#save_client").attr("disabled", "disabled");
 						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
 						document.getElementById("webSite").setAttribute('record-exist', 'yes');
 						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
@@ -619,7 +617,6 @@ function validateClientName(){
 						
 					} else {
 						//New WebSite class="form-control"
-					    $("#save_client").removeAttr("disabled");
 						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
