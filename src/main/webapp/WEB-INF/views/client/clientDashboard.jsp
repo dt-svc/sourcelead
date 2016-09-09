@@ -130,6 +130,7 @@ function getClientDetails(){
    	        	
    	        	for (var i=0; i<json.length; i++)
    				{  
+   	        		
    	        		var report = json[i];
    	        		var location = "";
    	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -157,6 +158,7 @@ function getClientDetails(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
+   	        		
    	        		if(location != null && location  != '' && location  != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
