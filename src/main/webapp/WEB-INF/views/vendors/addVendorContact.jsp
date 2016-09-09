@@ -99,8 +99,8 @@
             <label class="col-md-3">Select Vendor <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required" onchange="getSpocUserDetails();">
-                  <option>Select Vendor</option>
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="getSpocUserDetails();">
+                  <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
                     <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
