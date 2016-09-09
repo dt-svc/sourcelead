@@ -92,11 +92,12 @@ public class CandidateListRestController {
 	   */
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
-	 public String getCandidatesListByOrgLocationID(HttpServletRequest request) throws Exception {
+	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId());
+		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus);
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
