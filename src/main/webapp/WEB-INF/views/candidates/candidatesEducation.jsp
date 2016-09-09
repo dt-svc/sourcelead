@@ -223,11 +223,22 @@ function addEducation(candidateId) {
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="grade" field-name="grade" data-validation="required validate_Space validate_length length1-5" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Grade">                                                   ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
+	
+	result  = result + '                 <div class="clearfix mb10">';
+	result = result  +'	                     <div class="col-md-4" positionRelative>';
+	result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
+	result = result  +'	                       <option value="Percentage">%</option>';
+	result = result  +'	                       <option value="CGPA">CGPA</option>';
+	result = result  +'	                       <option value="GRADE">GRADE</option>';
+	result = result  +'	                      </select>';
+	result = result  +'	                   </div>';
+	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                 	 </div>';
+	result = result  +'	                   </div>';
+	
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
@@ -319,6 +330,15 @@ var validationSettings = {
 </script>
 <script>
 function candidateEducationStore(candidateId){
+		
+	var scoreType = document.getElementById("scoreType").value; 
+	 if(scoreType != null && scoreType != ""){
+		 $('#candidateScore').removeAttr('data-validation-optional');
+		 $('#candidateScore').attr("data-validation","required"); 
+	 }else{
+		 $('#candidateScore').removeAttr('data-validation');
+		 $('#candidateScore').attr("data-validation-optional","true"); 
+	 }
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
@@ -421,3 +441,65 @@ function removeEducation(candidateEducationId,candidateId){
 
  <!-- this script is for removing the Education  Ends -->       
  
+ <%-- 
+     @author : shivayogi , Ajith.
+     this script is to display candidate score validation based on scoreType.
+--%>
+<script type="text/javascript">
+function selectScoreType(){
+	
+	 var selectedText = document.getElementById("scoreType").value;
+	 var canScore = document.getElementById("candidateScore").value;
+	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 if(selectedText =='Percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(canScore.match(floatNum)){
+			  $("#addCandidate").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
+				 $("#addCandidate").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }
+	 else if(selectedText =='CGPA'){
+		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+			  if(canScore.match(cgpanum)){
+				  $("#addCandidate").removeAttr("disabled");
+				   return true;
+			  }		  
+			 else{
+				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
+				 $("#addCandidate").attr("disabled", "disabled");
+			return false; 
+			 }
+	  } 
+	 else if(selectedText =='GRADE'){
+		 var grades = /^([A-E][-+]{0,2})?$/
+			 if (canScore.match(grades)) {
+				 $("#addCandidate").removeAttr("disabled");
+				 return true;
+			}else{
+				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
+				 $("#addCandidate").attr("disabled", "disabled");
+	    		return false;
+	    		
+			}
+   		}
+		 }
+	  
+</script>
+
+
+<%-- 
+     @author : shivayogi , Ajith.
+     this script is to flush candidate value when score type is changed.
+--%>
+<script>
+function clearSearchKey() {
+	   $('#candidateScore').val('');
+	   $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+
+}
+</script>       
