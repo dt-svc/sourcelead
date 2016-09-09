@@ -45,7 +45,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,String candidateStatus) throws Exception;
 	
 	/**
 	 * @param candidateId

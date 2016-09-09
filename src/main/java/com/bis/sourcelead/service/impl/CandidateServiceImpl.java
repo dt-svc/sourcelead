@@ -165,6 +165,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setCreatedBy(user.getUserCode());
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		return savedCandidate;
 	}
@@ -187,8 +188,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,String candidateStatus) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
 			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));

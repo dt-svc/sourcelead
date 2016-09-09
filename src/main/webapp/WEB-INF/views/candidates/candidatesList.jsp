@@ -30,11 +30,26 @@
 
 <script>
   function candidateList(){ 	 
+	  
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var candFilterRadio = $('input[name=candidateStatus]');
+	  var candidateStatus = candFilterRadio.filter(':checked').val();
+	  
+	  if(candidateStatus == 1){
+          $("#canDiv").text("Active Candidates");
+      }else if(candidateStatus == 0){
+    	  $("#canDiv").text("In Active Candidates");
+      }else if(candidateStatus == 'ALL'){
+    	  $("#canDiv").text("All Candidates");
+      }else{
+          $("#canDiv").removeAttr("onClick");
+      }
+	  
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",        
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus,       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -614,7 +629,7 @@ function cancel(candidateId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head candidateHead">
+      <div class="timesheet_head">
         <ul>
           <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             <div class="export_pop">
@@ -625,13 +640,21 @@ function cancel(candidateId){
               </ul>
             </div>
           </li>
-          <!--  <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>
-          <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>
-          <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>
-          <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li> -->
+	      
+           <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+              	<div id="filter2ApprovedPop" class="approved_pop">
+                  	<ul>
+                      	<li><input id="candidateAll" type="radio" name="candidateStatus" value ="ALL" onclick="candidateList();"  ><label for="c5">All</label></li>
+					<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
+					<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
+                      </ul>
+                  </div>                	
+          </li>
+          
           <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
           <div class="clearfix"></div>
         </ul>
+         
         <div class="clearfix"></div>
       </div>
       <div class="candidate_wrap_table">
@@ -739,5 +762,36 @@ $(document).ready(function() {
 	   }); */
 });
 </script>	
- 
+
+<script>
+$(document).ready(function() {
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+  
+    
+}); 
+
+</script>
+
+
+    
 <jsp:include page="../masterFooter.jsp" />
