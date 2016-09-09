@@ -59,7 +59,6 @@ function storeCertificate(candidateId){
 				 $('#candidateScore').removeAttr('data-validation');
 				 $('#candidateScore').attr("data-validation-optional","true"); 
 			 }
-	
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
 			var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
