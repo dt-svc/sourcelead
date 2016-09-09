@@ -318,6 +318,7 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
+	validateClientName();
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -518,7 +519,7 @@ function getSpocUserDetails(){
 }
 </script>
  
-  <!-- <script type="text/javascript">
+   <script type="text/javascript">
 function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -530,14 +531,14 @@ function validateClientName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as vendor</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as vendor");
 					
 				}else {
 					//New WebSite class="form-control"
@@ -556,7 +557,7 @@ function validateClientName(){
 	}
   }
 }
-</script>   -->
+</script>   
 
 
 <!-- <script type="text/javascript">
