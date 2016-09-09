@@ -515,8 +515,8 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	 
-	   @ResponseBody
-		public String getClientDetails(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getClientDetails")
+	   @ResponseBody String getClientDetails(HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
