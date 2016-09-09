@@ -126,7 +126,7 @@ public class UserDaoImpl implements UserDao {
 	    String[] emailHostArray = email.split("@");
 	    if(emailHostArray != null && emailHostArray.length >1 ){
 	    	String emailHost = emailHostArray[1];
-	    	if(emailHost.equalsIgnoreCase(host)){
+	    	/*if(emailHost.equalsIgnoreCase(host)){*/
 	 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
 	 	    		status="Invalid Email";
 	 	    	}else{
@@ -137,10 +137,10 @@ public class UserDaoImpl implements UserDao {
 			 	    		status="Valid Email";
 			 	    	}
 		 	    }
-	 	    }
+	 	    /*}
 	    	else{
 	 	    	status="Invalid Email";
-	 	    }
+	 	    }*/
 	    }
  	    else{
  	    	status="Invalid Email";

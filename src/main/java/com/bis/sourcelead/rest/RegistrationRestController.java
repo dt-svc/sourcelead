@@ -186,6 +186,28 @@ public class RegistrationRestController {
 			
 	    return status;
 	   }
+	   
+	   
+	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
+	   public @ResponseBody String validateCompanyName(
+	   		@RequestParam(value="companyName", required=false) String companyName) {
+			String status = null;
+			if(!isNullOrEmpty(companyName)){
+			    boolean flag;
+				try {
+					flag = orgService.isOrgNameExisted(companyName);
+					if (flag == true) {
+						status = "Company Duplicated";
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+	       return status;
+	   }
+	   
+	   
+	   
 	   @RequestMapping(value = "/ws/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
 	   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,

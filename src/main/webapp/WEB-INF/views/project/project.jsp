@@ -439,40 +439,6 @@
              </div>
           </div>
         </div>
-			
-			
-			
-			
-			
-			<!-- <div class="modal-content" id="newClient">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">x</button>
-					<h4 class="modal-title">Add Client</h4>
-				</div>
-				<div class="modal-body clearfix">
-					<div class="form-horizontal custom-form clearfix">
-						<div class="col-xs-12 col-md-12 col-lg-12">
-							<div class="form-group" id="clientNameDiv">
-								<label class="col-lg-3">Client Name <span
-									class="text-danger">*</span></label>
-								<div class="col-lg-9">
-									<input type="text" id="orgName" name="orgName" value=""  class="form-control" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" onblur="validateClientName();">
-								</div>
-							</div>
-							<div class="form-group" id="companyWebsiteDiv">
-								<label class="col-lg-3">Client Website </label>
-								<div class="col-lg-9">
-									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" id="save_client" class="btn btn-primary" onclick="addclient();">Save</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				</div>
-			</div> -->
 		</form:form>
 	</div>
 </div>
