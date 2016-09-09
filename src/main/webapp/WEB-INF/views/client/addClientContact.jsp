@@ -181,8 +181,8 @@ function getOrgDetails()
             <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required" onchange="getSpocUserDetails();">
-                  <option>Select Client</option>
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="client name" onchange="getSpocUserDetails();" data-validation="required">
+                  <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
                     <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
