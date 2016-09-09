@@ -129,14 +129,14 @@ public class UserDaoImpl implements UserDao {
 	    	/*if(emailHost.equalsIgnoreCase(host)){*/
 	 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
 	 	    		status="Invalid Email";
-	 	    	}else{
+	 	    	}/*else{
 	 	    		    User user = findByEmail(email);
 			 	      	if(user != null &&  user.getEmail().equalsIgnoreCase(email)){
 			 	    		status="Existed Email";
 			 	    	}else{
 			 	    		status="Valid Email";
 			 	    	}
-		 	    }
+		 	    }*/
 	 	    /*}
 	    	else{
 	 	    	status="Invalid Email";

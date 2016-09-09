@@ -14,7 +14,7 @@
 			</c:if>
 			<c:if test="${empty SourceLeadWeb_org.fileContentType}">
 				<div class="text-logo">
-				<span>${SourceLeadWeb_orgName}</span>
+				<span class="tbldata-dotdot">${SourceLeadWeb_orgName}</span>
 				</div>
 			</c:if>
 		 </div>

@@ -56,14 +56,14 @@
                 <div class="form-group">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_Alphabet validate_length length2-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length2-100">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="lastName" data-validation="validate_Space validate_Alphabet validate_length length2-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" value="">
                   </div>
                 </div>
                 

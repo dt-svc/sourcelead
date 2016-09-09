@@ -133,7 +133,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		//For Saving of User Details
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		User user = getUserDetails(registration,password);
+		User user = null;
+		user = userService.findByEmail(registration.getEmail());
+		if(user == null){
+			 user = getUserDetails(registration,password);
+		}
 		try {
 			userService.addUser(user);
 		} catch (Exception e1) {
@@ -308,6 +312,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		
+		UserRole primaryUserRole = null;
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		userRole.setOrgLocations(orgLocations);
@@ -318,7 +323,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		userRole.setRoles(roles);
-		userRole.setIsPrimary(1);
+		try {
+			primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(null == primaryUserRole){
+			userRole.setIsPrimary(1);
+		}else{
+			userRole.setIsPrimary(0);
+		}
+		
 		userRole.setCreatedDate(new Date());
 		userRole.setCreatedBy(user.getUserCode());
 		return userRole;

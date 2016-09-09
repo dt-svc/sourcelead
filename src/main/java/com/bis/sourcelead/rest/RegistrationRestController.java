@@ -21,6 +21,7 @@ import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -205,6 +206,32 @@ public class RegistrationRestController {
 			}
 	       return status;
 	   }
+	   
+	   
+	   @RequestMapping(value = "/getUserDetails",  method = RequestMethod.POST)
+	    public @ResponseBody String getUserDetails(@RequestParam(value="email", required=false) String email,
+	    		@RequestParam(value="json", required=false) String json) {
+			
+		   ArrayList<String> userList = new ArrayList<String>();
+			
+		   User user = null;
+		   
+			try {
+				user = userService.findByEmail(email);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			if(null != user)
+			{
+				userList.add(user.getFirstName());
+				userList.add(user.getLastName());
+				userList.add(user.getMobilePhone());
+			}
+			
+			return commonUtil.toJSON(userList);
+			
+		}
 	   
 	   
 	   
