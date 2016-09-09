@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +42,14 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
-@RestController
-@PropertySource("${propertyLocation:app.properties}")
+
 /**
  * 
  * @author root
- * Handles client requests
+ * Handles all client related operations
  */
+@RestController
+@PropertySource("${propertyLocation:app.properties}")
 public class ClientRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientRestController.class);
@@ -92,7 +94,6 @@ public class ClientRestController {
 	
 	/**
 	 * Handles to get Orgs
-	 * 
 	 * @param json
 	 * @param request
 	 * @return ResponseBody
@@ -100,17 +101,17 @@ public class ClientRestController {
 	 */
 	
 	 @RequestMapping(value = "/getOrgs",  method = RequestMethod.POST)
-	    public @ResponseBody String getOrgs(@RequestParam(value="orgCode", required=false) String orgCode,
+	 @ResponseBody
+	    public  String getOrgs(@RequestParam(value="orgCode", required=false) String orgCode,
 	    		@RequestParam(value="json", required=false) String json) {
-	    	
+		 
+		    HashMap<String, Long> hm = new HashMap<String, Long>();	
 	    	List<OrgLocations> orgLocationsList = null;
 			try {
 				orgLocationsList = orgLocationService.getOrgsListForClientAndVendorOrgSearch(orgCode);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
 			}
-			HashMap<String, Long> hm = new HashMap<String, Long>();
-			
 			if(orgLocationsList != null)
 			{
 				for(OrgLocations orgLocations: orgLocationsList){
@@ -140,7 +141,7 @@ public class ClientRestController {
 			try {
 				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			if(orgLocations != null)
 			{
@@ -165,7 +166,8 @@ public class ClientRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId());
+				
+				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId(),responderType);
 				
 				if(flag == false){
 					if(null != orgLocationId){
@@ -182,6 +184,7 @@ public class ClientRestController {
 					return "invalid";
 				}
 				
+				
 			} 
 		
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
@@ -190,14 +193,12 @@ public class ClientRestController {
 		    		@RequestParam(value="json", required=false) String json) {
 				
 			   ArrayList<String> userList = new ArrayList<String>();
-				
 			   UserRole userRole = null;
 			   User user = null;
-			   
 				try {
 					user = userService.findByEmail(email);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
 				
 				if(null != user)
@@ -211,7 +212,7 @@ public class ClientRestController {
 					try {
 						userRole = userRoleService.getUserDetailsByEmailAndLocationId(email,orgLocationId);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
 					if(userRole != null){
 						userList.add(userRole.getRoles().getId().toString());
@@ -237,11 +238,8 @@ public class ClientRestController {
 	public @ResponseBody Boolean validateProjectSequeneNumberById(
 			@RequestParam(value = "ProjectSequeneNumber", required = false) String ProjectSequeneNumber,
 			HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber, orgLocations.getId());
-
-		return flag;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber, orgLocations.getId());
 	}
 
 	/**
@@ -258,7 +256,6 @@ public class ClientRestController {
 		OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(Long.parseLong(orgLocationId));
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
-		 //to fetch user details by usercode 
 		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
 		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 		return commonUtil.toJSON(orgRelation);
@@ -302,6 +299,7 @@ public class ClientRestController {
 					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
 					orgSpoc.setTerminateReason(reason);
 					orgSpocService.addOrgSpoc(orgSpoc);
+					logger.debug("Spoc was terminated");
 				}
 			
 				return "success";
@@ -345,9 +343,15 @@ public class ClientRestController {
 			return result;
 		}
 
-	 
+	 /**
+	  * Handles Invitation status request
+	  * @param spocId
+	  * @param invitationStaus
+	  * @return
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
-	 public  String saveInvitationStatus(HttpServletRequest request,@RequestParam(value="spocId", required=false) Long spocId,
+	 public  String saveInvitationStatus(@RequestParam(value="spocId", required=false) Long spocId,
 													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
 										             
 	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
@@ -406,9 +410,8 @@ public class ClientRestController {
 		
 		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-	       json = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(json);
-	       //clientService.updateClientDetails(jsonObj, orgRelationId);
+	       String json1 = "{" + json + "}";
+	       JSONObject jsonObj = new JSONObject(json1);
 	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
 
 		return "success";
@@ -424,9 +427,10 @@ public class ClientRestController {
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
 	@ResponseBody boolean isClientNameValidated(
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId());
+		return orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
 	}
 /**
  * Verifies Client Email
@@ -453,14 +457,6 @@ public class ClientRestController {
 	@ResponseBody String getVendorClientEmailVerification(@RequestParam(value = "EmailId", required = false) String emailId,@RequestParam(value = "spocId", required = false) Long spocId)
 			throws Exception {
 		String result = null;
-	//	OrgLocations orgLocations = orgLocationService.findByEmail(EmailId,orgLocation.getId());
-
-		
-		/*if (orgLocations != null) {
-			result = "true";
-		} else {
-			result = "false";
-		}*/
 		return result;
 	}
 	
@@ -489,6 +485,7 @@ public class ClientRestController {
 				orgRelation.setState(orgRelation.getResponderLocationId().getState());
 				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
+				orgRelation.setLevel(orgRelation.getInitiatorLevel());
 				
 		 }
 		 //to fetch user details by usercode 
@@ -504,6 +501,7 @@ public class ClientRestController {
 				orgRelation.setState(orgRelation.getLocationId().getState());
 				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+				orgRelation.setLevel(orgRelation.getResponderLevel());
 		 } 
 		 
 		 resultJson = commonUtil.toJSON(orgRelation);
@@ -518,9 +516,8 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	 
-	   @RequestMapping(value = "/getClientDetails")
-	   @ResponseBody
-		public String getClientDetails(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getClientDetails")
+	   @ResponseBody String getClientDetails(HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -535,21 +532,6 @@ public class ClientRestController {
 				}
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
 				orgRelation.setNoOfContatcs(orgSpocs.size());
-				//responderLocationId.org.
-				
-				/*orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-				orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-				orgRelation.setState(orgRelation.getResponderLocationId().getState());
-				orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-				
-				orgRelation.setLocationOrgname(orgRelation.getLocationId().getOrg().getOrgName());
-				orgRelation.setLocationWebsite(orgRelation.getLocationId().getOrg().getWebSite());
-				orgRelation.setLocationCountry(orgRelation.getLocationId().getCountry());
-				orgRelation.setLocationState(orgRelation.getLocationId().getState());
-				orgRelation.setLocationCity(orgRelation.getLocationId().getCity());
-				orgRelation.setResponderId(orgRelation.getResponderLocationId().getId().toString());
-				orgRelation.setLocationID(orgRelation.getLocationId().getId().toString());*/
 				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
 					
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
@@ -558,21 +540,27 @@ public class ClientRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
 				}
 				
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-					/*orgRelation.setLocationOrgname(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setLocationWebsite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setLocationCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setLocationState(orgRelation.getLocationId().getState());
-					orgRelation.setLocationCity(orgRelation.getLocationId().getCity());*/
-					
 					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 					orgRelation.setState(orgRelation.getLocationId().getState());
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
 				}
 				
 			}
@@ -594,8 +582,8 @@ public class ClientRestController {
 			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		
-	       json = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(json);
+	      String  json1 = "{" + json + "}";
+	       JSONObject jsonObj = new JSONObject(json1);
 	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());

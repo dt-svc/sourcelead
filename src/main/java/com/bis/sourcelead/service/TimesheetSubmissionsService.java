@@ -28,7 +28,7 @@ public interface TimesheetSubmissionsService {
     
     public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate, Long  userId)throws Exception;
     
-    public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate, Long  userId,Long  memberId,Long employeeId)throws Exception;
+    public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(Date startDate,Date endDate, Long  userId,Long  empUserId,Long employeeId)throws Exception;
     
     public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
     
@@ -67,8 +67,6 @@ public interface TimesheetSubmissionsService {
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId) throws Exception;
-	
-	public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(Long userId,String employeeId) throws Exception ;
 	
 	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)throws Exception ;
 	

@@ -126,21 +126,21 @@ public class UserDaoImpl implements UserDao {
 	    String[] emailHostArray = email.split("@");
 	    if(emailHostArray != null && emailHostArray.length >1 ){
 	    	String emailHost = emailHostArray[1];
-	    	if(emailHost.equalsIgnoreCase(host)){
+	    	/*if(emailHost.equalsIgnoreCase(host)){*/
 	 	    	if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
 	 	    		status="Invalid Email";
-	 	    	}else{
+	 	    	}/*else{
 	 	    		    User user = findByEmail(email);
 			 	      	if(user != null &&  user.getEmail().equalsIgnoreCase(email)){
 			 	    		status="Existed Email";
 			 	    	}else{
 			 	    		status="Valid Email";
 			 	    	}
-		 	    }
-	 	    }
+		 	    }*/
+	 	    /*}
 	    	else{
 	 	    	status="Invalid Email";
-	 	    }
+	 	    }*/
 	    }
  	    else{
  	    	status="Invalid Email";
@@ -248,6 +248,21 @@ public class UserDaoImpl implements UserDao {
 		String query = "from Employees emp left join fetch emp.orgLocations orgLocation left join fetch orgLocation.org org where emp.user.id IN(select id from User user where user.id =:userId)"; 
 		List<Employees> empList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		return empList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserByUserCode(String userCode) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<User> users = new ArrayList<User>();
+			logger.debug("getUserBy user code start");
+			users = session.createQuery("from User user where user.userCode =:userCode" ).setCacheable(true).setString( "userCode", userCode ).setCacheable(true).list();
+			logger.debug("getUserBy user code end");
+			if (users.size() > 0) {
+				return users.get(0);
+			} else {
+				return null;
+			}
 	}
 
 	@Override

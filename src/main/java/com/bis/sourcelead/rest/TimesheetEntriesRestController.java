@@ -90,9 +90,9 @@ public class TimesheetEntriesRestController {
  */
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
-				MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
+				MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,String savingType) throws Exception {
 			
-			String result = timesheetEntriesService.saveTimesheet(timesheetEntriesForm, json, request, status);
+			String result = timesheetEntriesService.saveTimesheet(timesheetEntriesForm, json, request, status,savingType);
 			return result;
 			
 	}

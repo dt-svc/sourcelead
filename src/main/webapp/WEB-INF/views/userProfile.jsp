@@ -69,7 +69,7 @@
 		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3">
-			  <div class="well text-center">
+			  <div class="well well-sm text-center">
 			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
 				  <div class="profile-img-container profile-image" style="position:relative;">
 				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
@@ -99,13 +99,13 @@
 					<div class="form-group">
 					<label class="col-md-4">First Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphabet validate_Space validate_length length2-100"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
 					</div>
 					</div>
 				   <div class="form-group">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphabet validate_Space validate_length length2-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length2-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">

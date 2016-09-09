@@ -974,7 +974,7 @@ jQueryFormUtils.validateNumberAlphabet = function(val) {
 };
 //******************Validate Alphanumeric and must start with Alphabet******
 jQueryFormUtils.validateAlphaNumber = function(val) {
-    return val.match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
+	return val.match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
 jQueryFormUtils.validatespace = function(val) {
    // return val.match(/[^\s-]/) !== null;
@@ -1013,6 +1013,10 @@ jQueryFormUtils.validateMaskZipCode = function(val) {
 // Below is REGEX for OrgName
  jQueryFormUtils.validateOrgname = function(val) {
     return val.match(/^[^\s][-_.,&()\w\s]*[0-9a-zA-Z]$/) !== null;
+};
+//Below is REGEX for firstName
+jQueryFormUtils.validateName = function(val) {
+	return val.match(/^[A-Za-z][A-Za-z0-9( \+&$@#!.,?:;"']*$/) !== null;
 };
 // Below is REGEX for SpecialChar
  jQueryFormUtils.validateSpecialChar = function(val) {
@@ -1233,6 +1237,10 @@ else if (validationRules.indexOf('validate_SpecialChar') > -1 && !jQueryFormUtil
 else if (validationRules.indexOf('validate_Tax') > -1 && !jQueryFormUtils.validateTax(value)) {
 	return validationErrorMsg || language.badTax;
 }
+else if (validationRules.indexOf('validate_Name') > -1 && !jQueryFormUtils.validateName(value)) {
+	return validationErrorMsg || language.badName;
+}
+        
 
 //---------------------------Hari-------------------------
 
@@ -1320,7 +1328,8 @@ jQueryFormUtils.LANG =  {
 	badDescription:'Invalid Characters Encountered Please Check',
 	badOrgname: 'Only Alphanumeric Ampersand period and Hyphen Allowed',
 	badSpecialChar: 'Only -_.,&() are allowed',
-	badTax: 'Only - and Alpha Numerics Allowed'
+	badTax: 'Only - and Alpha Numerics Allowed',
+	badName: 'First letter should be Alphabet'
 };
 /**
  * Validate url

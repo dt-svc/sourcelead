@@ -1,3 +1,9 @@
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE','TERMINATE_REASON','VARCHAR(500) NULL AFTER `STATUS`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_SKILLS','STATUS','VARCHAR(20) NULL AFTER `SCALE`');
+
+
+
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('35', 'AcceptVendorInvitation', 'Notification');
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('36', 'AcceptClientInvitation', 'Notification');
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('37', 'AcceptVendorInvitation', 'Email');

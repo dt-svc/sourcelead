@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -117,6 +118,8 @@ public class ProjectMembers {
     @Enumerated(EnumType.STRING)
 	private Status userState;
     
+    @Transient
+    private String projectStatus;
     
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
@@ -127,7 +130,9 @@ public class ProjectMembers {
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
 	
-
+    @Transient
+	private List<ProjectMembers> projectMembersList;
+    
 	public Date getProjectAssignedDate() {
 		return projectAssignedDate;
 	}
@@ -369,6 +374,22 @@ public class ProjectMembers {
 
 	public void setIsManuallyTerminated(Primary isManuallyTerminated) {
 		this.isManuallyTerminated = isManuallyTerminated;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
+	public List<ProjectMembers> getProjectMembersList() {
+		return projectMembersList;
+	}
+
+	public void setProjectMembersList(List<ProjectMembers> projectMembersList) {
+		this.projectMembersList = projectMembersList;
 	}
 
 }
