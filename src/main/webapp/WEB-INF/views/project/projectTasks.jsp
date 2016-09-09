@@ -75,6 +75,10 @@
 <script>
 	function projectTask(projectId, status) {
 		var result = "";
+		
+		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var status = status;
 		$
@@ -90,11 +94,10 @@
 						result = result + '<div class="project_tabs_inn_head">';
 						if (status != 'COMPLETED' && status != ''
 								&& status != 'undefined' && status != null) {
-							result = result
-									+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
+							result = result	+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
 						}
-						result = result
-								+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+						result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+						result = result	+ '<div id="tasksLoadingImg"></div>';
 						result = result + '<table>';
 						result = result + '<tbody>';
 						result = result + '<tr id="projectTaskTableId">';
@@ -130,6 +133,7 @@
 						$("#tab-1").empty();
 						$("#tab-3").empty();
 						$("#tab-2").empty();
+						$("#tasksLoadingImg").empty();
 						$("#tab-2").append(result);
 
 					}
