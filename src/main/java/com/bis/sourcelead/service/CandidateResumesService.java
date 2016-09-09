@@ -29,7 +29,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, MultipartFile multiFile) throws JSONException,Exception;
+	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocation, MultipartFile multiFile) throws JSONException,Exception;
 	
 	/**
 	 * @param orgLocations

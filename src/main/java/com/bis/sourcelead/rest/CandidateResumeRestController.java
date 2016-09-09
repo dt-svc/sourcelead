@@ -36,6 +36,9 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -77,7 +80,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json, String candidateId, MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json, String candidateId, String resumeId, MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
@@ -94,7 +97,7 @@ public class CandidateResumeRestController {
 		if(StringUtils.isNotEmpty(candidateId)){
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 			
-			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, orgLocation, multiFile);
+			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
 					"Successfully you have added");
@@ -161,6 +164,29 @@ public class CandidateResumeRestController {
 			candidateResumesService.updateCandidateResume(candidateResume);
 		}
 		return "success";
+	}
+	
+	
+	/**
+	* @author Venkat Kesav 
+	* 
+	* This method is used to get Resume
+	* 
+	* @param resumeId
+	* @param request
+	* 
+	* @return resultJson
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
+	public @ResponseBody String getResume(String resumeId, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
+		if(candidateResume != null){
+			resultJson = commonUtil.toJSON(candidateResume);
+		}
+		return resultJson;
 	}
 	
 	
