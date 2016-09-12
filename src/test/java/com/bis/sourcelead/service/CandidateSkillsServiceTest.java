@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +93,13 @@ public class CandidateSkillsServiceTest {
 			candidateSkills = candidateSkillsService.getCandidateSkillsDetails(jsonObject,orglocations,candidate,"reddy");
 			logger.info("getCandidateSkillsDetails " + candidateSkills.size());
 			
+		}
+		
+		//@Test
+		public void getCandidateSkillBySkillId() throws Exception{
+			CandidateSkills candidateSkills = new CandidateSkills();
+			candidateSkills = candidateSkillsService.getCandidateSkillBySkillId(1l);
+			logger.info("getCandidateSkillBySkillId " + candidateSkills.getName());
 		}
 		
 		

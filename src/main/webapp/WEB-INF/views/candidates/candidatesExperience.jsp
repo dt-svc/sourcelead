@@ -118,7 +118,7 @@ function closeCertificatePopup(){
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
-		result = result + '	                 <div class="col-md-12 checkbox">';
+		result = result + '	                 <div class="clearfix checkbox">';
 		result = result + '	                   <label>';
 		result = result	+ '	                  <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="iscurrentPosition();"name="isCurrentPosition"> Is Current Position</label>';
 		result = result + '	                 </div>';
@@ -157,7 +157,7 @@ function closeCertificatePopup(){
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
-		result = result + '	                 <div class="clearfix mb10 endDate >';
+		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
 		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth">';

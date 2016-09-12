@@ -65,6 +65,10 @@ public class CandidateCertifications {
 	@Transient
 	private String candidatevalidToDateToString;
 	
+	@Transient
+	private Long candidatecertificateID; 
+	
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -215,6 +219,13 @@ public class CandidateCertifications {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Long getCandidatecertificateID() {
+		return candidatecertificateID;
+	}
+
+	public void setCandidatecertificateID(Long candidatecertificateID) {
+		this.candidatecertificateID = candidatecertificateID;
 	}
 
 	
