@@ -134,20 +134,6 @@
 				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
 				                     <p><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
 				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                     <p>
-				                     <c:if test="${links.orgLocations.org.ats == 'Y'}">
-				                        <i class="fa fa-hand-o-right"></i>ATS
-				                     </c:if>
-				                     <c:if test="${links.orgLocations.org.vms == 'Y'}">
-				                        <i class="fa fa-hand-o-right"></i>VMS
-				                     </c:if>
-				                     <c:if test="${links.orgLocations.org.timeSheet == 'Y'}">
-				                     <i class="fa fa-hand-o-right"></i>ATS&nbsp;&nbsp;
-				                      <i class="fa fa-hand-o-right"></i>VMS&nbsp;&nbsp;
-				                        <i class="fa fa-hand-o-right"></i>Time Sheet&nbsp;&nbsp;
-				                     </c:if>
-				                     
-				                     </p>
 				                   </div>
 				                </div>
 			                </a>
@@ -270,8 +256,13 @@
   <script>
   function navtoggle(elementRef){
 	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
 	 }
   }
   </script>
