@@ -2073,8 +2073,8 @@ input[type="text"].mybtn:after {
 	line-height: 28px;
 }
 .chosen-container-single .chosen-single {
-	height: 34px;
-	line-height: 34px;
+	height: 34px !important;
+	line-height: 34px !important;
 }
 .chosen-container-single .chosen-single div b {
 	background: rgba(0, 0, 0, 0) url("../images/chosen-sprite.png") no-repeat scroll 0 8px;
