@@ -625,7 +625,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate list</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

@@ -57,7 +57,7 @@
     <div class="pull-left">
       <h2>Add Candidate Details</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="candidatesList"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
   <div class="content-area content-new clearfix">
   <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
