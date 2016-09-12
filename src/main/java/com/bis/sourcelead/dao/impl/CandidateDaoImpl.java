@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -17,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -31,6 +33,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -104,16 +109,27 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState) throws Exception {
 		 // TODO Auto-generated method stub
 		String subQuery = null;
+		String subquery1 = null;
 		//String status = Constants.CANDIDATE_ACTIVE;
 		Session session = this.sessionFactory.getCurrentSession();
-		
+		String  dateLimit = "";
 		if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_IN_ACTIVE)){
 			 subQuery ="cnadidate.status = '0'";
+			 
 		}else if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_ALL)){
 			 subQuery ="cnadidate.status = '1' or cnadidate.status = '0'";
 		}else{
 			subQuery ="cnadidate.status = '1'";
 		}
+		
+       if(dateLimit.equalsIgnoreCase("3")){
+    	   
+    	   Date currentDate =  commonUtil.currentDate();
+			 subquery1 =   "BETWEEN(currentDate) AND ('2010-09-29 10:15:55')";
+					 
+		}
+		
+		
 		
 		String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
 		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();

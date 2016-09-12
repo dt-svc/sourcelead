@@ -10,20 +10,23 @@ function closeCertificatePopup(){
 	 $("#popUpDivEmp").removeClass("edit-details-active");
 }
 </script>
+<%-- 
+     @author : Ajith Matta, Shiva yogi.
+     this script is for display candidate education tab data.
+--%>
 
 <script>
 function candidateCertificate(candidateId){
 	 
 	var result = "";
-	result  = result + '   <div class="project_tabs_inn_head">                                                                          ';
+	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
 	result  = result + '   	<a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
-	
-	result = result  +'     <div id="popUpDivCertificates" > ';
+	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
-	
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	result  = result + '   <div id="candidateCertificateList" ></div>';
 	result  = result + '   </div>';
+	result = result+'	    </div>';
 
     $("#tab-1").empty();
     $("#tab-2").empty(); 
@@ -47,7 +50,13 @@ var validationSettings = {
 	};
 </script>
 
-<!-- this script is for saving candidate certification  -->
+<%-- 
+     @author : Ajith Matta, Shiva yogi.
+     this script is to Store  storeCertificate.
+     1.usage     :  used in addCertification function
+     2.parameter : candidateId,csrf.token
+     3.ajax url implementation in CandidateCertificationsRestController.
+--%>
 
 <script>
 function storeCertificate(candidateId){
@@ -123,7 +132,13 @@ function storeCertificate(candidateId){
 
 
 <!-- this script is for serializeFormJSON  End-->
-
+<%-- 
+     @author : Ajith Matta, Shiva yogi.
+     this script is getting candidateCertificate List .
+     1.usage     :  used in candidateCertificate  function
+     2.parameter : candidateId ,csrf.token.
+     3.ajax url implementation in CandidateCertificationsRestController.
+--%>
 <script>
 function candidateCertificateList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -196,7 +211,7 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash" onClick ="removeCertification('+opt.id+','+candidateId+');"></i></div></td>';	                    	 result  = result + '         </tr>';
+	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open" onClick ="editCertification('+ opt.id+ ','+ candidateId+ ');"></i><i class="glyphicon glyphicon-trash" onClick ="removeCertification('+opt.id+','+candidateId+');"></i></div></td>';	                    	 result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -226,12 +241,18 @@ function candidateCertificateList(candidateId){
      }); 
 }
 </script>
+
+<%-- 
+     @author : Ajith Matta,Shiva yogi.
+     this script is for add the  Candidate details Details .
+     1.usage     :  used in candidateCertificate  function 
+     2.parameter : candidateId .
+--%>
 <script>
 function addCertification(candidateId) {	
 	
 	 	var result = '';
 	 	result  = result + '     <!-- Popup Div -->                                                                                         ';
-		result  = result + '         <div  id="popUpDivEmp" class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>                                ';
 		result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
 		result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
 		result  = result + '               <div class="form-horizontal clearfix">';
@@ -286,10 +307,8 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		result  = result + '               </div>';
 		result  = result + '              </form>';
-		result  = result + '             </div>';
-		result  = result + '   </div>';
-		$("#popUpDivCertificates").empty();
-		$("#popUpDivCertificates").append(result);
+		$("#popUpDivEmp").empty();
+		$("#popUpDivEmp").append(result);
 		
 		$(".edit-details").toggleClass("edit-details-active");
 		
@@ -335,8 +354,238 @@ function addCertification(candidateId) {
 	}
 </script>
 
-<!-- this script is for removing the Certification  starts --> 
+<%-- 
+     @author : Ajith Matta.
+     this script is for edit Candidate certification .
+     1.used in  candidateCertificateList function.
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateCertificationsRestController.
+--%>
+<script>
 
+	function editCertification(candidateCertificationId, candidateId) {
+
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl
+							+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
+					success : function(data) {
+
+						var json = JSON.parse(data);
+
+						if (data != null && data != 'undefined' && data != "") {
+
+							if (data.indexOf('Sign In') >= 0) {
+								location.replace(sourceleadUrl);
+							} else if (data.indexOf('exception') >= 0) {
+								location.replace(sourceleadUrl + "/errorPage");
+							} else {
+								var result = '';
+							 	result  = result + '     <!-- Popup Div -->                                                                                         ';
+								result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
+								result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
+								result  = result + '               <div class="form-horizontal clearfix">';
+								result  = result + '                 <div class="clearfix mb10">';
+								result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.name+ '" name="name"  placeholder="Name *" id="candidateName" ';
+								result  = result + '                      data-validation="required validate_Name validate_length length2-100 " field-name="Name" >';
+								result  = result + '                   </div>';
+								result  = result + '                 </div>';
+								result  = result + '                 <div class="clearfix mb10">';
+								result  = result + '                   <div class="col-md-12">';
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
+								result  = result + '                      data-validation="required validate_Name validate_length length2-100" field-name="Provider">';
+								result  = result + '                   </div>';
+								result  = result + '                 </div>';
+								
+								result  = result + '                 <div class="clearfix mb10">';
+								result = result  +'	                     <div class="col-md-4" positionRelative>';
+								result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+								result = result  +' 					   <option value="" selected="selected">Score Type</option>';
+								if (json.scoreType == "Percentage") {
+									result = result + '<option selected>Percentage</option>';
+								} else {
+									result = result	+ '<option>Percentage</option>';
+								}
+								if (json.scoreType == "CGPA") {
+									result = result	+ '<option selected>CGPA</option>';
+								} else {
+									result = result	+ '<option>CGPA</option>';
+								}
+								if (json.scoreType == "GRADE") {
+									result = result	+ '<option selected>GRADE</option>';
+								} else {
+									result = result + '<option>GRADE</option>';
+								}
+								result = result  +'	                      </select>';
+								result = result  +'	                   </div>';
+								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								result  = result + '                 	 </div>';
+								result = result  +'	                   </div>';
+								
+								result  = result + '                 <div class="clearfix mb10">';
+								result  = result + '                   <div class="col-md-12">';
+								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+ json.description+ '"  placeholder="Description" id="candidateDescription"';
+								result  = result + '                     data-validation-optional="true" data-validation="required">';
+								result  = result + '                   </div>';
+								result  = result + '                 </div>';
+								result  = result + '                 <div class="clearfix mb10">';
+								result  = result + '                   <div class="col-md-6 positionRelative">';
+								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
+									
+									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
+									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
+									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+								}else{
+									
+									result  = result + '                     <input type="text" class="form-control input-sm"  value=" " name ="validFrom" placeholder="Valid From" ';
+									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
+									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									
+								}
+								
+								result  = result + '                   </div>';
+								result  = result + '                   <div class="col-md-6 positionRelative">';
+								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
+									
+									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Validate To" ';
+									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
+									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+								}else{
+									
+									result  = result + '                     <input type="text" class="form-control input-sm" value = " " name="validTo" placeholder="Validate To" ';
+									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
+									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+								}
+								
+								
+								result  = result + '                   </div>';
+								result  = result + '                 </div>';
+								result  = result + '                 <div class="clearfix mr">';
+								result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
+								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
+							
+								result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Add</button>';
+								result  = result + '                 </div>';
+								result  = result + '               </div>';
+								result  = result + '              </form>';
+								$("#popUpDivEmp").empty();
+								$("#popUpDivEmp").append(result);
+								
+								$(".edit-details").toggleClass("edit-details-active");
+								
+								$(".close-div").click(function(){
+									 $(this).parent("div.edit-details").removeClass("edit-details-active");
+									 });
+								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+									 e.stopPropagation();
+								 });
+								 
+								 
+								/*  $('html').click(function(){
+									$(".edit-details").removeClass("edit-details-active");
+								   });	
+								 */
+								
+								/*  $(".addUser-org").click(function(){
+									 $(".edit-details").toggleClass("edit-details-active");
+								 });  */
+								/* $(".edit-details").toggleClass("edit-details-active");
+								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+									 e.stopPropagation();
+								 }); */
+							 /* $('html').click(function(){
+								$(".edit-details").removeClass("edit-details-active");
+							   });	 */
+
+							  $('#StartDate').datepicker({
+							      dateFormat: 'yy-mm-dd',
+							      onSelect: function (selected) {
+							            var dt = new Date(selected);
+							            dt.setDate(dt.getDate() + 1);
+							            $("#EndDate").datepicker("option", "minDate", dt);
+							        }
+							  });
+							  
+							  $('#EndDate').datepicker({
+							      dateFormat: 'yy-mm-dd',
+							        onSelect: function (selected) {
+							            var dt = new Date(selected);
+							            dt.setDate(dt.getDate() - 1);
+							            $("#StartDate").datepicker("option", "maxDate", dt);
+							        }
+							  });
+																
+							}
+						
+						}
+					},
+
+				});
+
+	}
+</script>
+
+<%-- 
+     @author : Ajith Matta.
+     this script is for update Candidate certification .
+     1.usage     :  used in editCertification() function 
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateCertificationsRestController.
+--%>
+      
+      <script type="text/javascript">
+	function updateCandidateCertification(candidateId, candidateCertificationId) {
+
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#candidateCertificationEdit_form').validate(false,
+				validationSettings)) {
+
+			var frm = $('#candidateCertificationEdit_form').serializeFormJSON();
+
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			var jsonData = encodeURIComponent(con);
+			//It will escape all the special characters
+			var sourceleadUrl = '${sourceleadUrl}';
+
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
+						success : function(data) {
+							closeCertificatePopup();
+							candidateCertificateList(candidateId);
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
+		$('body').on('blur','#candidateCertificationEdit_form',
+				function() {
+					$("#candidateCertificationEdit_form").showHelpOnFocus();
+					$("#candidateCertificationEdit_form").validateOnBlur(false,
+							validationSettings);
+				});
+	}
+</script>
+  <%-- 
+     @author : David Sammeta.
+     this script is getting removing Certification in the  List .
+     1.usage     :  used in candidateCertificateList  function
+     2.parameter : candidateId ,csrf.token,candidateemployerId
+     3.ajax url implementation in CandidateCertificationRestController.
+--%>    
       
 <script>
 function removeCertification(candidateCertificationId,candidateId){

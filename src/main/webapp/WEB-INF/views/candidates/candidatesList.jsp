@@ -625,7 +625,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate list</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -644,12 +644,25 @@ function cancel(candidateId){
            <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-                      	<li><input id="candidateAll" type="radio" name="candidateStatus" value ="ALL" onclick="candidateList();"  ><label for="c5">All</label></li>
-					<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
-					<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
-                      </ul>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" value ="ALL" onclick="candidateList();"  ><label for="c5">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
+						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
+                    </ul>
                   </div>                	
           </li>
+          
+            <li><i class="fa fa-filter"></i><span id="candidateUpdiv"> UpDated Candidates </span><i class="glyphicon glyphicon-play" id="filter1ApprovedPop"></i>|
+              	<div id="filter1ApprovedPop" class="approved_pop">
+                  	<ul>
+	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="DayAgo" checked onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3DayAgo"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
+						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="1WeekAgo"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="3WeekAgo"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="MonthAgo"  onclick="candidateList();"><label for="c7">Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="3Months"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+                    </ul>
+                  </div>                	
+          </li>  
           
           <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
           <div class="clearfix"></div>
