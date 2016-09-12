@@ -131,7 +131,7 @@ function getClientDetails(){
    	        	result = result +'	<th>Level</th>';
    	        	result = result +'	<th>Created By</th>';
    	        	result = result +'<th>No.of contacts</th>';
-   	        	result = result +'<th>Action</th>';
+   	        	/* result = result +'<th>Action</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
    	        	result = result +'<tbody>';
@@ -181,7 +181,7 @@ function getClientDetails(){
    	        		}
    	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-   	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    	        		
    				}
@@ -246,7 +246,7 @@ function pagination(){
 		result = result + '</div>';
 		
 		//for client contatcs tab
-		result = result + '<div class="clients_wrap_table " >';
+		result = result + '<div class="clients_wrap_table " id="testDiv">';
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';
