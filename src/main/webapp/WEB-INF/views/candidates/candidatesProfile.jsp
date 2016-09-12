@@ -103,9 +103,9 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-12">';
-							result = result + '		            <textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0">';
-							result = result + '		                 '+json.summary+'</textarea>';
-							result = result + '		          </div>';
+							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0">';
+							result = result + ''+json.summary+'</textarea>';
+							result = result + ' </div>';
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mr">';
 							result = result + '		          <div class="pull-right">';
