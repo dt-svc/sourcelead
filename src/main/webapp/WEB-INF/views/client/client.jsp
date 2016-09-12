@@ -69,7 +69,7 @@ window.onload = function () {
 			<div class="form-group " id="companyWebsiteDiv">
 				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="webSite" name="webSite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
 			</div>
 						
@@ -256,6 +256,11 @@ function getOrgName(){
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	$("#orgCountry").val('');
+	$("#orgState").val('');
+	$("#orgCity").val('');
 	
 	getAllCountries();
 	$('#state').empty();
@@ -263,7 +268,7 @@ function getOrgName(){
 	$('#city').empty();
 	$('#city').trigger("chosen:updated");
 	
-	$("#webSite" ).val('');
+	
 	
 	document.getElementById("countryDiv").style.display="";
 	document.getElementById("orgCountryDiv").style.display="none";
@@ -318,7 +323,6 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
-	validateClientName();
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -611,7 +615,6 @@ function validateClientName(){
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
-						$("#save_client").attr("disabled", "disabled");
 						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
 						document.getElementById("webSite").setAttribute('record-exist', 'yes');
 						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
@@ -619,7 +622,6 @@ function validateClientName(){
 						
 					} else {
 						//New WebSite class="form-control"
-					    $("#save_client").removeAttr("disabled");
 						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
@@ -683,9 +685,9 @@ function getAllCountries(){
 
 <script>
 function getStates(){
-	var countryName = $("#country").val();
-	if(countryName == 'null' || countryName == 'undefined' || countryName == ''){
-		countryName = $("#orgCountry").val();
+	var countryName = $("#orgCountry").val();
+	if(countryName == null || countryName == 'undefined' || countryName == ''){
+		countryName = $("#country").val();
 	}
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -707,6 +709,13 @@ function getStates(){
 	        error: function(e){
 	        }
 	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+        $('#city').trigger("chosen:updated");
 	}
 }
 </script> 
@@ -714,14 +723,17 @@ function getStates(){
 
 <script>
 function getCities(){
-	var countryName = $("#country").val();
-	if(countryName == 'null' || countryName == 'undefined' || countryName == ''){
-		countryName = $("#orgCountry").val();
+	
+	var countryName = $("#orgCountry").val();
+	if(countryName == null || countryName == 'undefined' || countryName == ''){
+		countryName = $("#country").val();
 	}
-	var stateName = $("#state").val();
-	if(stateName == 'null' || stateName == 'undefined' || stateName == ''){
-		stateName = $("#orgState").val();
+	
+	var stateName = $("#orgState").val();
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = $("#state").val();
 	}
+	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
@@ -739,6 +751,10 @@ function getCities(){
 	        error: function(e){
 	        }
 	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').trigger("chosen:updated");
 	}
 }
 </script>

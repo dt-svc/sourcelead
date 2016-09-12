@@ -398,7 +398,7 @@ textarea {
 .qlinks-area ul li:last-child, .spoclinks-area ul li:last-child {
 	border-bottom: 0;
 }
-.qlinks-area ul li:hover, .spoclinks-area ul li:hover {
+.qlinks-area ul li:hover, .spoclinks-area ul li:hover, .spoclinksMore ul li:hover  {
 	background: #ddd none repeat scroll 0 0 !important;
 }
 .qlinks-area ul li a, .spoclinks-area ul li a {
@@ -439,6 +439,19 @@ textarea {
     display:block !important;
     padding:0px !important;
 }
+/* spoclinks more that 5 */
+.spoclinksMore {
+	min-width: 955px; padding: 0 0 0 10px;
+}
+.spoclinksMore ul li {
+	border-bottom: 1px solid #d2d2d2; line-height: normal !important; height: auto !important; padding: 10px !important;
+	display: inline; width: 33%; float: left;
+}
+.spoclinksMore li p {
+margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
+}
+/* spoclinks more that 5 ends */
+   
    .imageParent.org-imagelink{
    height:55px;
    }
