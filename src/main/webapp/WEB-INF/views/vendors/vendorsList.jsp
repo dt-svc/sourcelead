@@ -116,7 +116,7 @@ function getVendorLists(){
    	        	result = result +'<th>No.of Contacts</th>';
    	        	result = result +'<th>Released jobs</th>';
    	        	result = result +'<th>Level</th>';
-   	        	result = result +'<th>Actions</th>';
+   	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
    	        	result = result +'<tbody>';
@@ -165,7 +165,7 @@ function getVendorLists(){
 	       		result = result +'<td><div>20</div></td>';
 	       		result = result +' <td><div>10</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
-	       		result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    				}
    	        	
@@ -622,7 +622,7 @@ function pagination1(){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div class="clients_wrap_table " >';
+		result = result + '<div class="clients_wrap_table project_tabs_inn" >';
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';

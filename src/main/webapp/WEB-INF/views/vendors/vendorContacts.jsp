@@ -173,6 +173,9 @@ window.onload = function () {
    			 result = result + '</div>';
    			 result = result + '</div>';
    		 }
+	    	$('.clients_wrap_table ').show();
+	        $('#tab-2-addContact').show();	
+	    		
     		$("#tab-2-addContact").empty();  
     	    $("#tab-2-addContact").append(res);
     		$("#tab-2").empty();  
