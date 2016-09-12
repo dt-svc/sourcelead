@@ -47,8 +47,11 @@ public class OrgRelations {
 	@Column(name="RESPONDER_TYPE")
 	private String responderType;
 	
-	@Column(name="LEVEL")
-	private String level;
+	@Column(name="INITIATOR_LEVEL")
+	private String initiatorLevel;
+	
+	@Column(name="RESPONDER_LEVEL")
+	private String responderLevel;
 	
 	@Column(name="STATUS")
 	private String status;
@@ -122,6 +125,17 @@ public class OrgRelations {
 	@Transient
 	private String locationID;
 	
+	@Transient
+	private String level;
+	
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
 	public Long getVendorlocationId() {
 		return vendorlocationId;
 	}
@@ -306,12 +320,22 @@ public class OrgRelations {
 		this.responderType = responderType;
 	}
 
-	public String getLevel() {
-		return level;
+	
+
+	public String getInitiatorLevel() {
+		return initiatorLevel;
 	}
 
-	public void setLevel(String level) {
-		this.level = level;
+	public void setInitiatorLevel(String initiatorLevel) {
+		this.initiatorLevel = initiatorLevel;
+	}
+
+	public String getResponderLevel() {
+		return responderLevel;
+	}
+
+	public void setResponderLevel(String responderLevel) {
+		this.responderLevel = responderLevel;
 	}
 
 	public Integer getNoOfContatcs() {

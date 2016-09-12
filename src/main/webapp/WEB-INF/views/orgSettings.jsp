@@ -172,7 +172,7 @@ function cancel(){
 			  <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3">
-				 <div class="well text-center">
+				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  <div class="btn-group uploadfile">
@@ -209,19 +209,12 @@ function cancel(){
 							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
 							</div>
 							</div>
-
 							
 							<div class="form-group">
 								<label class="col-md-3">Country</label>
 								<div class="col-md-9">
 									 <input type="text" class="form-control" id="CountryAutocomplete" name="country" field-name="Client Country" value="${SourceLeadWeb_country}" readonly="readonly"/> 
 								</div>
-
-							<div class="form-group comp-textarea">
-							<label class="col-md-3">About</label>
-							<div class="col-md-9">
-							<textarea rows="2" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
-
 							</div>
 							
 							

@@ -27,64 +27,41 @@
       <form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">
-             <div class="form-group">
-	            <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
+             
+            <div class="form-group">
+	            <label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" class="form-control" name="firstName" value="${firstName}" field-name="First Name" data-validation="required validate_Space validate_length length2-100" />
-	              <span class="hidden">First Name</span>
+	              <input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName()"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
+	             <span class="hidden">Company</span>
 	            </div>
-            </div>
-          
-            <div class="form-group">
-            <label class="col-md-3">Last Name </label>
-            <div class="col-md-9">
-               <input type="text" name="lastName"  value="${lastName}" class="form-control" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_length length2-100"  />
-             <span class="hidden">Last Name</span>
-            </div>
-            </div>
-          
-          
-            <div class="form-group">
-            <label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
-              <input type="text" name="companyName"  value="${companyName}" class="form-control"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
-             <span class="hidden">Company</span>
-            </div>
             </div>
             
             <div class="form-group">
-            <label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
-              <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />
-            <span class="hidden">Website</span>
+	            <label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9">
+	              <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />
+	            <span class="hidden">Website</span>
+	            </div>
             </div>
+            
+            
+             
+             <div class="form-group">
+	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9">
+	              <select class="form-control select-bg" name="country" field-name="Country" data-validation="required" value="${country}" >
+	                <option value="" >Select Location</option>
+	                <option value="Australia">Australia</option>
+	                <option value="France">France</option>
+	                <option value="India">India</option>
+	                <option value="Singapore">Singapore</option>
+	                <option value="United Kingdom">United Kingdom</option>
+	                <option value="United States">United States</option>
+	              </select>
+	               <span class="hidden">Country</span>
+	            </div>
             </div>
-          </div>
-          
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <div class="form-group">
-            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
-              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
-            <span class="hidden">Email</span>
-            </div>
-            </div>
-          
-            <div class="form-group">
-            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
-              <select class="form-control select-bg" name="country" field-name="Country" data-validation="required" value="${country}" >
-                <option value="" >Select Location</option>
-                <option value="Australia">Australia</option>
-                <option value="France">France</option>
-                <option value="India">India</option>
-                <option value="Singapore">Singapore</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United States">United States</option>
-              </select>
-               <span class="hidden">Country</span>
-            </div>
-            </div>
+       
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkbox">
@@ -119,6 +96,38 @@
             
             <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 
           </div> 
+          
+          
+          </div>
+          
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            
+            
+            <div class="form-group">
+	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9">
+	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Company Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
+	            <span class="hidden">Email</span>
+	            </div>
+            </div>
+            
+             <div class="form-group">
+	            <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9">
+	              <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100" />
+	              <span class="hidden">First Name</span>
+	            </div>
+            </div>
+          
+            <div class="form-group">
+	            <label class="col-md-3">Last Name </label>
+	            <div class="col-md-9">
+	               <input type="text" name="lastName"  id="lastName"  value="${lastName}" class="form-control" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length2-100"  />
+	             <span class="hidden">Last Name</span>
+	            </div>
+            </div>
+          
+          
 </div>
       </div>
       
@@ -247,6 +256,49 @@ var validationSettings = {
 
 
 <script type="text/javascript">
+function validateCompanyName(){
+	var companyName = document.getElementById("companyName").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(companyName != null && companyName != ''){
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+			        success: function(data) {
+			        	 var result = data;
+			        		if(result == "Company Duplicated") {
+		        			//Existed company
+		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#companyName').attr('class','error form-control');
+		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+companyName+" "+result+"</p>");
+		    				$('input#companyName').attr('record-exist','yes');
+		    				$('input#companyName').attr('record-exist-errorMsg',companyName+' '+result+''); 
+		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$("#register_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New company
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#companyName').removeAttr( "class record-exist record-exist-errormsg");
+							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
+							$('input#companyName').attr('class','valid form-control');
+							$( "#register_button" ).removeAttr("style");
+							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+		 
+	 }
+}
+</script>
+
+<script type="text/javascript">
 function validateWebsite(){
       var website = document.getElementById("companyWebsite").value; 
      var sourceleadUrl ='${sourceleadUrl}';
@@ -291,6 +343,53 @@ function validateWebsite(){
 }
 </script>
 
+
+<script type="text/javascript">
+function getUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
+	        		 }
+	        	}
+			 },
+	        error: function(e){
+	            alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	   
+	}
+}
+</script>
 
 <script type="text/javascript">
 function validateCompanyEmail(){

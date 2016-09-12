@@ -142,6 +142,7 @@ public class LoginSessionController {
 			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
 			if(userSpocRolesList.size() > 1){
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
 			}
 			
 			

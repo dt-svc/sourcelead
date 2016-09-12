@@ -105,6 +105,28 @@ public class AutoCompleteRestController {
         return result;
 	}
     
+    @RequestMapping(value = "/sourceLeadCountryAutoComplete")
+    public String sourceLeadCountryAutoComplete() throws Exception {
+    	
+    	ArrayList<String> countriesList = new ArrayList<>();
+    	
+    	List<Countries> countryList = countriesService.getAllSourceLeadCountries();
+    	 
+    	if(countryList != null && !countryList.isEmpty())
+    	{
+    		for(Countries countries: countryList){
+    			countriesList.add(countries.getName());
+    		}
+    	}
+		
+		String[] temp = (String[]) countriesList.toArray(new String[] {});
+		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
+		
+		String result = mJSONArray.toString();
+		
+        return result;
+	}
+    
     
     @RequestMapping(value = "/locationAutoComplete")
     public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
