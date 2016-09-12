@@ -118,8 +118,8 @@
             </c:if>
             
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks"> <i class="fa fa-globe"></i> </a>
-	              <div class="spoclinks-area">
+            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
@@ -131,9 +131,23 @@
 				                     </div>
 				                   </div>
 				                   <div class="pull-left">
-				                     <p><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
 				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                     <p>
+				                     <c:if test="${links.orgLocations.org.ats == 'Y'}">
+				                        <i class="fa fa-hand-o-right"></i>ATS
+				                     </c:if>
+				                     <c:if test="${links.orgLocations.org.vms == 'Y'}">
+				                        <i class="fa fa-hand-o-right"></i>VMS
+				                     </c:if>
+				                     <c:if test="${links.orgLocations.org.timeSheet == 'Y'}">
+				                     <i class="fa fa-hand-o-right"></i>ATS&nbsp;&nbsp;
+				                      <i class="fa fa-hand-o-right"></i>VMS&nbsp;&nbsp;
+				                        <i class="fa fa-hand-o-right"></i>Time Sheet&nbsp;&nbsp;
+				                     </c:if>
+				                     
+				                     </p>
 				                   </div>
 				                </div>
 			                </a>
@@ -251,6 +265,16 @@
       </div>
     </nav>
   </header>
+  
+  
+  <script>
+  function navtoggle(elementRef){
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  </script>
   
   <script>
 function notificationStatusAsRead(){   

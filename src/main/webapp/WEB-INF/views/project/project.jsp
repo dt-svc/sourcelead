@@ -17,6 +17,10 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -390,35 +394,51 @@
 <div class="modal fade" id="addClient" role="dialog">
 	<div class="modal-dialog">
 		<form:form id="addClient_form" name="addClient_form" method="post">
-			<div class="modal-content" id="newClient">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">x</button>
-					<h4 class="modal-title">Add Client</h4>
-				</div>
-				<div class="modal-body clearfix">
-					<div class="form-horizontal custom-form clearfix">
-						<div class="col-xs-12 col-md-12 col-lg-12">
-							<div class="form-group" id="clientNameDiv">
-								<label class="col-lg-3">Client Name <span
-									class="text-danger">*</span></label>
-								<div class="col-lg-9">
-									<input type="text" id="orgName" name="orgName" value=""  class="form-control" field-name="Client Name" data-validation="required validate_Space validate_length length2-100" onblur="validateClientName();">
-								</div>
-							</div>
-							<div class="form-group" id="companyWebsiteDiv">
-								<label class="col-lg-3">Client Website </label>
-								<div class="col-lg-9">
-									<input type="text" class="form-control" id="companyWebsite" name="companyWebsite" value="" onblur="validateWebsite();" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" id="save_client" class="btn btn-primary" onclick="addclient();">Save</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				</div>
-			</div>
+			
+			<div class="modal-dialog" id="newClient">
+               <div class="modal-content">
+                 <div class="modal-header">
+                   <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
+                   <h4 class="modal-title">Select Client</h4>
+                 </div>
+                 <div class="modal-body clearfix">
+                   <div class="form-horizontal custom-form clearfix">
+                     <div class="col-xs-12 col-md-12 col-lg-12">
+                       <div class="form-group" id="org_dialog">
+                         <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-lg-9" id="clientNameDiv">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="hidden" id="orgLocationId" />
+                         </div>
+                       </div>
+                       <div class="form-group">
+                         <label class="col-lg-3">Website</label>
+                         <div class="col-lg-9">
+                           <input type="text" placeholder="client website" id="companyWebsite"  name="companyWebsite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                         </div>
+                       </div>
+                       
+                       <div class="form-group">
+			              <label class="col-md-3">Level</label>
+			              <div class="col-md-9">
+			                  <select class="form-control selectpicker" id="level" name="level">
+			                    <option value="Level-1">Level-1</option>
+			                    <option value="Level-2">Level-2</option>
+			                    <option value="Level-3">Level-3</option>
+			                    <option value="Level-4">Level-4</option>
+			                    <option selected="selected" value="Level-5">Level-5</option>
+			                  </select>
+			              </div>
+                      </div>
+                    </div>
+                 </div>
+              </div>
+             <div class="modal-footer">
+              <button type="button" id="save_client" class="btn btn-primary" onclick="addclient();">Save</button>
+              <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+             </div>
+          </div>
+        </div>
 		</form:form>
 	</div>
 </div>
@@ -446,6 +466,91 @@
 		};
 	})(jQuery);
 </script>
+
+
+
+
+<script type="text/javascript">
+function getOrgName(){
+	var orgCode = '${SourceLeadWeb_orgCode}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	$( "#orgName" ).val( '' );
+	$( "#orgLocationId" ).val( '' );
+	
+	$("#companyWebsite").attr("disabled", false);
+	$("#companyWebsite" ).val('');
+	
+	$.ajax({                           
+    	type: "POST",
+    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var org = [];
+        	for(var i=0;i<json.length;i++){
+       		 var label = json[i][0]; 
+       		 var value = json[i][1];
+       	     tmp = {
+       	        'label': label,
+       	        'value': value
+       	      };
+       	  	org.push(tmp);
+       		}
+        	$("#orgName").autocomplete({
+                
+                minLength: 0,
+                source: org,
+                appendTo: "#org_dialog",
+                focus: function( event, ui ) {
+                       $( "#orgName" ).val( ui.item.label );
+                       $( "#orgLocationId" ).val( ui.item.value );
+                       return false;
+                   },
+                select: function( event, ui ) {
+                    return false;
+                }  
+             })
+        },
+        error: function(e){
+           alert('Ajax Error: ' + e.value);
+        }
+    });
+}
+</script>
+
+
+<script type="text/javascript">
+function getOrgDetails()
+{
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(orgName && orgLocationId){
+   	 $.ajax({
+   	    	type: "POST",
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	        contentType: "application/json; charset=utf-8",
+   	        dataType: "json",
+   	        success: function(data) {
+   	        	if(data != null && data != ''){
+   	        		var json = JSON.parse(data);
+			      	if(json[3] != null && json[3] != ''){
+			      		$("#companyWebsite").val(json[3]);
+			      		$("#companyWebsite").attr("disabled", true);
+			      	}
+			      	 
+   	        	}
+   			 },
+   	        error: function(e){
+   	            alert('Ajax Error: ' + e.value);
+   	        }
+   	    });
+	}
+	
+}
+</script>
+
 
 <!-- =============================== AddTask Divs  ============================ -->
 <div id="divTaskTd1" style="display: none; float: left;">
@@ -651,10 +756,12 @@
 
 <!-- Add Task Script Ends -->
 
+
 <script type="text/javascript">
 	function addclient() {
 		
 		if ($('#addClient_form').validate(false, validationSettings)) {
+			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#addClient_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -666,7 +773,7 @@
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/saveClientFromProject?json=" + jsonData,
+				url : sourceleadUrl + "/saveClientFromProject?json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
 				success : function(data) {
 					var json = JSON.parse(data);
 					var output = "";
@@ -1206,7 +1313,7 @@ function getChildLevel1Approvers(currentApproverId){
 
 <script type="text/javascript">
 function validateClientName(){
-	var clientName = document.getElementById("orgName").value;
+	 var clientName = document.getElementById("orgName").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
@@ -1235,6 +1342,6 @@ function validateClientName(){
 			},
 
 		});
-	}
+	} 
 }
 </script>
