@@ -20,7 +20,10 @@ body {
 	}
 .timesheet_head ul.no_search {
 	padding: 2px 15px 2px 0px;
-	}	
+	}
+.no_search {
+	padding: 2px 15px 2px 0px;
+	}		
 .timesheet_head ul li {
 	list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 10px; position:relative;
 	font-weight:300; color:#999;
@@ -1631,7 +1634,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 	}
 
 .clients_wrap_table {
-	overflow:auto;
+	width: 100%;
 	}	
 .clients_wrap_table table tr td div b {
 	font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#3186d6;
@@ -1640,6 +1643,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .clients_wrap_table table tr td div b.proj_active { background-color:#34c244;}
 .clients_wrap_table table tr td div b.proj_closed { background-color:#d94747;}
 .clients_wrap_table table tr td div b.proj_process { background-color:#d98f47;}	
+.clients_wrap_table table tr td div b a { color:#FFF;}
 .clients_wrap_table select {
     appearance: none; -webkit-appearance: none; border: none; padding: 3px 20px 3px 0px; width: auto;
     background: url("../images/arrow-d-g.png") no-repeat right center; background-size: 10px;
@@ -1785,7 +1789,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .dataTables_info {
     font-size: 14px; padding: 15px 0px 0px 15px !important; color: #666 !important;
     }   
-#example_filter {
+.dataTables_filter {
     position:absolute !important; right:0px !important; margin:0px 0px; top:-35px !important; padding: 0px 15px 0px 0px !important;
     }   
 .dataTables_wrapper .dataTables_filter input {
@@ -1830,6 +1834,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 	}
 .clients_wrap_table .fa-times, .vendor_wrap_inn_table .fa-times {
 	font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#f04d4d;
-	}					
+	}
+	
+.paging_simple_numbers span { display:inline !important;}	
+						
 
 		

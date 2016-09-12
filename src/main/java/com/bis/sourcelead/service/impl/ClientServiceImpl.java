@@ -171,6 +171,7 @@ public class ClientServiceImpl implements ClientService{
 			HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 			OrgLocations clientOrgLocations = null;
 			Set<OrgRelations> orgRelationsList = null;
+			Org org = null;
 			User spocUser = null;
 			if(jsonObj.has("orgLocationId")){
 				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
@@ -194,7 +195,7 @@ public class ClientServiceImpl implements ClientService{
 			}
 			
 			if(clientOrgLocations == null){
-				Org org = populateOrg(jsonObj, user.getUserCode());
+				org = populateOrg(jsonObj, user.getUserCode());
 				clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
 				
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
@@ -206,7 +207,7 @@ public class ClientServiceImpl implements ClientService{
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
 				orgLocationsList.add(clientOrgLocations);
-				Org org = clientOrgLocations.getOrg();
+				org = clientOrgLocations.getOrg();
 				if(jsonObj.has("companyWebsite")){
 					org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
 				}
@@ -219,6 +220,13 @@ public class ClientServiceImpl implements ClientService{
 
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+				if(!isNullOrEmpty(jsonObj.getString("roleType")) 
+						&& Long.parseLong(jsonObj.getString("roleType")) == 1L && null == clientOrgLocations.getUser() && null == org.getUser()){
+					clientOrgLocations.setUser(spocUser);
+					org.setUser(spocUser);
+					orgLocationService.updateOrgLocations(clientOrgLocations);
+					orgService.addOrganization(org);
+				}
 			}
 			if(jsonObj.has("owner")){
 				String ownersId = jsonObj.getString("owner");

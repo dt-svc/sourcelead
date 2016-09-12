@@ -278,7 +278,7 @@ function getVendorContactLists(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	if(json.length != null && json.length != ''){
+   	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Name</th>';
@@ -385,8 +385,8 @@ function getVendorContactLists(){
    	    	    $("#vendorContactList").empty();  
    	    	    $("#vendorContactList").append(result)
    	    	    pagination1(); 
-   	        	}else{
-   	        		result = result +'<div class="row mt">';
+   	        	/* }else{
+   	        		result = result +'<div class="row">';
    	        		result = result +'<div class="col-lg-12">';
    	        		result = result +'<div class="content-area clearfix">';
    	        		result = result +'<div class="blank-pages">';
@@ -400,7 +400,7 @@ function getVendorContactLists(){
    	        		result = result +'</div>';
    	        	    $("#vendorContactList").empty();  
     	    	    $("#vendorContactList").append(result)
-   	        	}
+   	        	} */
    	        	
    	    	    
    		    }
