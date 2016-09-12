@@ -162,6 +162,7 @@ function pagination(){
 --%>
 
 <script>
+var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -177,6 +178,7 @@ function clientSideBar(candidateId){
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
               		 else{
+              			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skillsList = json.skillsList;
 			             var skills = [];
@@ -625,7 +627,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate list</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Candidate List</div>
+    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
