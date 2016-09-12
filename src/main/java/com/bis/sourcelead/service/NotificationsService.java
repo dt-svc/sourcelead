@@ -22,5 +22,9 @@ public interface NotificationsService {
 	Integer updateNotificationDeleteStatus(Long notificationId, String orgCode, String locationCode);
 
 	List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode);
+	
+	Notifications getNotificationsById(Long Id) throws Exception;
+	
+	Notifications getNotificationsByUUID(String UUID) throws Exception;
 
 }

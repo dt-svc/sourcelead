@@ -64,6 +64,12 @@ public class Notifications {
 	@Column(name="NOTIFICATION_STATUS")
 	private String notificationStatus;
 	
+	@Column(name="USER_NOTIFICATION_STATUS")
+	private String userNotificationStatus;
+	
+	@Column(name="UUID")
+	private String UUID;
+	
 	//to get only time from datetime
 	@Transient
 	private String time;
@@ -209,6 +215,22 @@ public class Notifications {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getUserNotificationStatus() {
+		return userNotificationStatus;
+	}
+
+	public void setUserNotificationStatus(String userNotificationStatus) {
+		this.userNotificationStatus = userNotificationStatus;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 
 }

@@ -188,11 +188,11 @@ public class TimesheetSubmissionsServiceTest {
 		Date startDate = new Date();
 		Date endDate = new Date();
 		Long  userId = 2l;
-		Long  memberId = (long) 1;
+		Long  memberUserId = (long) 1;
 		Long employeeId = (long) 2;
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		
-		timesheetSubmissions = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId(startDate,endDate,userId,memberId,employeeId);
+		timesheetSubmissions = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(startDate,endDate,userId,memberUserId,employeeId);
 		logger.info(" getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId"+timesheetSubmissions);
 	}
 	
@@ -318,13 +318,6 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timeSheetSubmissionsCount);
 	}*/
 	
-	@Test
-	public void getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId() throws Exception{
-		
-		//TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
-		Collection<TimesheetSubmissions>timesheetSubmissions = timesheetSubmissionsService.getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId(3l, "2");
-		logger.info(" getApprovalTimesheetSubmissionsByUserIdAndEmplyeeId "+timesheetSubmissions.size());
-	}
 	
 	@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{

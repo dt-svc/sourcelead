@@ -172,14 +172,14 @@ function cancel(){
 			  <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3">
-				 <div class="well text-center">
+				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				   <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="display: none;">
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
  				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 	                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">

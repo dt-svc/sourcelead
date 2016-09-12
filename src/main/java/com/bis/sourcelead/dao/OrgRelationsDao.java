@@ -33,6 +33,8 @@ public interface OrgRelationsDao {
 	
 	OrgRelations getOrRelationsById(Long orgRelationId) throws Exception;
 
-	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId, List<Long> userIds, Long orgLocationId);
+	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType);
+	
+	OrgRelations getRespondingPartyDetailsById(Long id) throws Exception;
 	
 }

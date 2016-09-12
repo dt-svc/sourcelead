@@ -12,5 +12,8 @@ public interface ActionRolesService {
 	List<ActionRoles> getSourceLeadActionRolesListByOrgId(Long orgId,List<Long> modulesId,Org org) throws Exception;
 	
 	List<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
+	
+	ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId) throws Exception;
+	
 
 }

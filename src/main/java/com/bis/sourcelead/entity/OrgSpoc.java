@@ -31,6 +31,14 @@ public class OrgSpoc {
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
+	@ManyToOne
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
+    private OrgLocations responderLocationId;
+	
+	@ManyToOne
+    @JoinColumn(name="INITIATOR_LOCATION_ID", nullable=false )        
+    private OrgLocations initiatorLocationId;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SPOC_USER_ID")
 	private User spocUser;
@@ -67,6 +75,9 @@ public class OrgSpoc {
 	private String spocName;
 	
 	@Transient
+	private Long spocUserId;
+	
+	@Transient
 	private String ownerName;
 	
 	@Transient
@@ -83,6 +94,19 @@ public class OrgSpoc {
 
 	@Transient
 	private List<User> userList;
+	
+
+	@Transient
+	private String spocFirstName;
+	
+	@Transient
+	private String spocLastName;
+
+	@Transient
+	private Long orgRelationId;
+
+	@Transient
+	private String userState;
 
 	
 	public List<User> getUserList() {
@@ -131,6 +155,22 @@ public class OrgSpoc {
 
 	public void setOwnerUser(User ownerUser) {
 		this.ownerUser = ownerUser;
+	}
+
+	public OrgLocations getResponderLocationId() {
+		return responderLocationId;
+	}
+
+	public void setResponderLocationId(OrgLocations responderLocationId) {
+		this.responderLocationId = responderLocationId;
+	}
+
+	public OrgLocations getInitiatorLocationId() {
+		return initiatorLocationId;
+	}
+
+	public void setInitiatorLocationId(OrgLocations initiatorLocationId) {
+		this.initiatorLocationId = initiatorLocationId;
 	}
 
 	public String getInvitationStatus() {
@@ -196,6 +236,14 @@ public class OrgSpoc {
 	public void setSpocName(String spocName) {
 		this.spocName = spocName;
 	}
+	
+	public Long getSpocUserId() {
+		return spocUserId;
+	}
+
+	public void setSpocUserId(Long spocUserId) {
+		this.spocUserId = spocUserId;
+	}
 
 	public String getOwnerName() {
 		return ownerName;
@@ -235,6 +283,37 @@ public class OrgSpoc {
 
 	public void setOwnerUserId(String ownerUserId) {
 		this.ownerUserId = ownerUserId;
+	}
+
+	public String getSpocFirstName() {
+		return spocFirstName;
+	}
+
+	public void setSpocFirstName(String spocFirstName) {
+		this.spocFirstName = spocFirstName;
+	}
+
+	public String getSpocLastName() {
+		return spocLastName;
+	}
+
+	public void setSpocLastName(String spocLastName) {
+		this.spocLastName = spocLastName;
+	}
+
+	public Long getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+	public String getUserState() {
+		return userState;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
 	}
 	
 }

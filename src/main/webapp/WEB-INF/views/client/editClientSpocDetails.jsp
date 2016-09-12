@@ -19,7 +19,7 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
+	function clientDetailsbySpocId(spocId,ownerId,spocUserId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -29,7 +29,6 @@
 						var json = JSON.parse(data);
 						var result = "";
 						
-						
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
 						
@@ -38,33 +37,25 @@
 							result = result + ' </div>'; 
 							
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>First Name:</strong>';
-								if(json.spocUser.firstName !=null && json.spocUser.firstName !='' && json.spocUser.firstName !='undefined'){
-									result = result + '<span>'+json.spocUser.firstName+'</span>';
+								result = result + '<strong>Spoc Name:</strong>';
+								if(json.spocName !=null && json.spocName !='' && json.spocName !='undefined'){
+									result = result + '<span>'+json.spocName+'</span>';
 								}
 								result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Last Name:</strong>';
-							if(json.lastName !=null && json.spocUser.lastName !='' && json.spocUser.lastName !='undefined'){
-								result = result + '<span>'+json.spocUser.lastName+'</span>';
-							}
-							result = result + '<div class="clearfix"></div>';
-							result = result + '</div>';
-							
-							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>EmailId:</strong>';
-							if(json.spocUser.email !=null && json.spocUser.email !='' && json.spocUser.email !='undefined'){
-								result = result + '<span>'+json.spocUser.email+'</span>';
+							if(json.spocEmail !=null && json.spocEmail !='' && json.spocEmail !='undefined'){
+								result = result + '<span>'+json.spocEmail+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Phone No:</strong>';
-							if(json.spocUser.mobilePhone !=null && json.spocUser.mobilePhone !='' && json.spocUser.mobilePhone !='undefined'){
-								result = result + '<span>'+json.spocUser.mobilePhone+'</span>';
+							if(json.spocMobilePhone !=null && json.spocMobilePhone !='' && json.spocMobilePhone !='undefined'){
+								result = result + '<span>'+json.spocMobilePhone+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -139,7 +130,6 @@
 						var selected3 = '';
 						var selected4 = '';
 						var selected5 = '';
-						
 					
 						
 						if(json.spocStatus == 'Active'){
@@ -161,25 +151,60 @@
 							selected5 = 'selected';
 						} 
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
-						result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+						/* readonly="readonly" */
+				     	if(json.userState == 'ACTIVE'){
+				     		
+				     		result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" readonly="readonly">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
+							result = result + '<label>Last Name:</label>';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+							result = result + '<label>Email:</label>';
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+							result = result + '</div>';
+					   }else{
+						   result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
+							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
+							result = result + '<label>Last Name:</label>';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+							result = result + '<label>Email:</label>';
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
+							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+							result = result + '</div>';
+					   }
+						/* result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 						result = result + '<label>First Name:<span class="text-danger">*</span></label>';
-						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocUser.firstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
+						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 						result = result + '<label>Last Name:</label>';
-						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocUser.lastName+'" placeholder="Last name" field-name="Last name">';
+						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
-						result = result + '<label>EmailId :</label>';
-						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocUser.email+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
-						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
-						result = result + '</div>';
+						result = result + '<label>Email:</label>';
+						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
+						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+						result = result + '</div>'; */
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocUser.mobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
@@ -212,7 +237,7 @@
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -279,7 +304,7 @@
             };
 </script>
  <script type="text/javascript">
-	function storeVendorContactDetails(spocId,ownerId) {
+	function storeClientContactDetails(spocId,ownerId,spocUserId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
     		 var frm = $('#editVendorContact_form').serializeFormJSON();
              var con = JSON.stringify(frm);
@@ -292,7 +317,7 @@
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
 	   		    	alert("data"+data);
-	   		    	vendorDetailsbySpocId(spocId,ownerId);
+	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId);
 	   		    }
 		 }); 
 	     	return true;
@@ -301,8 +326,8 @@
            }
 		
     }
-	$('body').on('blur', '#editClient_form', function() {
-        $("#editClient_form").showHelpOnFocus();
-        $("#editClient_form").validateOnBlur(false, validationSettings);  
+	$('body').on('blur', '#editVendorContact_form', function() {
+        $("#editVendorContact_form").showHelpOnFocus();
+        $("#editVendorContact_form").validateOnBlur(false, validationSettings);  
     });
 </script>    

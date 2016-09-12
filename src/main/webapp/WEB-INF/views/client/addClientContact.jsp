@@ -18,6 +18,100 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 
+
+
+<script type="text/javascript">
+function getOrgName(){
+	var orgCode = '${SourceLeadWeb_orgCode}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	$( "#orgName" ).val( '' );
+	$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	$("#role" ).val('');
+	$("#role").attr("data-validation", "required");
+	document.getElementById("roleDiv").style.display="";
+	document.getElementById("userRoleDiv").style.display="none";
+	
+	$.ajax({                           
+    	type: "POST",
+    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var org = [];
+        	for(var i=0;i<json.length;i++){
+       		 var label = json[i][0]; 
+       		 var value = json[i][1];
+       	     tmp = {
+       	        'label': label,
+       	        'value': value
+       	      };
+       	  	org.push(tmp);
+       		}
+        	$("#orgName").autocomplete({
+                
+                minLength: 0,
+                source: org,
+                appendTo: "#org_dialog",
+                focus: function( event, ui ) {
+                       $( "#orgName" ).val( ui.item.label );
+                       $( "#orgLocationId" ).val( ui.item.value );
+                       return false;
+                   },
+                select: function( event, ui ) {
+                    return false;
+                }  
+             })
+        },
+        error: function(e){
+           alert('Ajax Error: ' + e.value);
+        }
+    });
+}
+</script>
+
+ <script>
+	$(document).ready(function() {
+		document.getElementById("client_form").reset();
+	});
+</script>
+
+<script type="text/javascript">
+function getOrgDetails()
+{
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(orgName && orgLocationId){
+   	 $.ajax({
+   	    	type: "POST",
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	        contentType: "application/json; charset=utf-8",
+   	        dataType: "json",
+   	        success: function(data) {
+   	        	if(data != null && data != ''){
+   	        		var json = JSON.parse(data);
+			      	if(json[3] != null && json[3] != ''){
+			      		$("#webSite").val(json[3]);
+			      		$("#webSite").attr("disabled", true);
+			      	}
+			      	 
+   	        	}
+   			 },
+   	        error: function(e){
+   	            alert('Ajax Error: ' + e.value);
+   	        }
+   	    });
+ 	getSpocUserDetails();
+	}
+	
+}
+</script>
+
  <!-- Save client Model popup  Start-->
          <div role="dialog" id="selectVendor" class="modal fade">
          <form:form id="client_form" name="client_form" method="post">
@@ -30,16 +124,17 @@
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
                      <div class="col-xs-12 col-md-12 col-lg-12">
-                       <div class="form-group">
+                       <div class="form-group" id="org_dialog">
                          <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="clientNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onblur="validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="hidden" id="orgLocationId" />
                          </div>
                        </div>
                        <div class="form-group">
                          <label class="col-lg-3">Website</label>
                          <div class="col-lg-9">
-                           <input type="text" placeholder="client website" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                           <input type="text" placeholder="client website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
                        </div>
                        
@@ -59,7 +154,7 @@
                  </div>
               </div>
              <div class="modal-footer">
-              <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
+              <button  class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
               <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
              </div>
           </div>
@@ -77,7 +172,8 @@
           <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Vendor Contact Details</div>
         </section>
         <div class="content-area content-new clearfix">
-        <form:form id="vendor_contact_form" name="vendor_contact_form" method="post">
+        <div id="loading"></div> 
+        <form:form id="client_contact_form" name="client_contact_form" method="post">
           <div class="clearfix form-horizontal inner-content">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -85,22 +181,31 @@
             <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required">
-                  <option>Select Client</option>
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="client name" onchange="getSpocUserDetails();" data-validation="required">
+                  <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id}">${report.responderLocationId.org.orgName}</option>
+                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
+                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();"></i> </div>
             </div>
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          
+           <div class="form-group" id="EmailIdDiv">
+					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+					
+			        	<div class="col-md-9">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+			     	</div>
+					</div>
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
@@ -114,13 +219,7 @@
 	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
 	              </div>
 	            </div>
-                <div class="form-group" id="EmailIdDiv">
-					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9">
-						<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail();">
-		                    <span class="hidden">Valid Email</span>
-					</div>
-				</div>
+				
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
@@ -138,19 +237,28 @@
 	                </select>
 	              </div>
 	            </div>
-                 <div class="form-group">
+                <!-- These are the default sourelead roles we are providing for spoc in client creation -->
+              <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 		                        <option value="">-Select Role-</option>
-									<option value="Admin">Admin</option>
-									<option value="Approver">Approver/Project Manager</option>
-									<option value="HR Manager">HR Manager</option>
-									<option value="Account Manager">Account Manager</option>
-									<option value="Recruiter">Recruiter</option>
+									<option value="1">Admin</option>
+									<option value="3">Approver/Project Manager</option>
+									<option value="5">HR Manager</option>
+									<option value="8">Recruiter</option>
 			              </select>
                   </div>
                 </div>
+                
+                <div class="form-group" id="userRoleDiv" style="display: none;">
+					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+					<div class="col-md-9">
+					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
+					
+				   </div>
+		        </div>
                 
                 <div class="form-group">
 	              <label class="col-md-3">Status</label>
@@ -218,19 +326,18 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#vendor_contact_form').validate(false, validationSettings)) {
-			var frm = $('#vendor_contact_form').serializeFormJSON();
+		if ($('#client_contact_form').validate(false, validationSettings)) {
+			var frm = $('#client_contact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_vendor_contact").attr("disabled", "disabled");
-			$("#save_vendor_contact").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
 						success : function(result) {
+							$("#loading").removeAttr("style");
 							if (result == 'vendorsList') {
 								location.replace(sourceleadUrl
 										+ "/clientDashboard");
@@ -243,9 +350,9 @@
 			return false;
 		}
 	}
-	$('body').on('blur', '#vendor_contact_form', function() {
-		$("#vendor_contact_form").showHelpOnFocus();
-		$("#vendor_contact_form").validateOnBlur(false, validationSettings);
+	$('body').on('blur', '#client_contact_form', function() {
+		$("#client_contact_form").showHelpOnFocus();
+		$("#client_contact_form").validateOnBlur(false, validationSettings);
 	}); 
 	
 	
@@ -308,15 +415,16 @@
 
 
 <script type="text/javascript">
-	function saveClient() {
+	function saveClient() { 
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#client_form').validate(false, validationSettings)) {
+		if ($('#client_form').validate(false, validationSettings)) {  
 			var frm = $('#client_form').serializeFormJSON();
+			var orgLocationId = document.getElementById("orgLocationId").value;
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
@@ -324,15 +432,15 @@
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
-						success : function(result) {
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
+						success : function(data) {
+							location.replace(sourceleadUrl+ "/addClientContact");
 						},
 					});
 			return true;
-		} else {
+		} else {   
 			return false;
 		}
 	}
@@ -352,14 +460,15 @@ function validateClientName(){
 	if (clientName != null && clientName != '') {
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
+					/* <input type ="hidden" name ="isDuplicateClient" value = "isDuplicateClient"/> */
 					
 				}else {
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
@@ -394,3 +503,92 @@ function validateClientName(){
 	})(jQuery);
 </script>
 
+<script>
+function flusAddClint(){
+	$("#orgName").val('');
+	$("#webSite").val('');
+}
+</script>
+
+
+<script type="text/javascript">
+function getSpocUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var vendorName = document.getElementById("vendorName").value;
+	var orgLocationId = vendorName.split(',');
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId[1],
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
+	        		 }
+		        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#phoneNumber").attr("disabled", true);
+		        		    $("#phoneNumber").val(json[2]);
+	        		 }else{
+	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").val('');
+	        		 }
+	       
+	        		 
+	        		 if(json[3] != null && json[3] != ''){
+	        			
+	        			$("#role").removeAttr("data-validation");
+	        			$("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none";
+   	        			document.getElementById("userRoleDiv").style.display="";
+   	        			$("#userRole").val(json[3]);
+   	        			$("#userRoleText").val(json[4]);
+	        		 }else{
+	        			 $("#role").attr("data-validation", "required");
+	        			 $("#userRole" ).val('');
+	        			 document.getElementById("roleDiv").style.display="";
+	        			 document.getElementById("userRoleDiv").style.display="none";
+	        		 }
+			      	 
+	        	}
+			 },
+	        error: function(e){
+	            alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	    $("#phoneNumber").attr("disabled", false);
+	    $("#phoneNumber").val('');
+	    
+	    $("#role").attr("data-validation", "required");
+	    $("#userRole" ).val('');
+	    document.getElementById("roleDiv").style.display="";
+		document.getElementById("userRoleDiv").style.display="none";
+	   
+	}
+	
+}
+</script>

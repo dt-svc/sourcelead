@@ -112,9 +112,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				orgRelations.setResponderType("Vendor");
 			}
 		  }
-		
 		if(jsonObj.has("level")){
-			orgRelations.setLevel(jsonObj.getString("level"));
+			//orgRelations.setLevel(jsonObj.getString("level"));
+			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
+			orgRelations.setResponderLevel("Level-5");
 		}
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
@@ -137,8 +138,13 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,Long orgLocationId) throws Exception {
+	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,Long orgLocationId, String relationType) throws Exception {
 		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
-		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds,orgLocationId);
+		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType);
+	}
+
+	@Override
+	public OrgRelations getRespondingPartyDetailsById(Long id) throws Exception {
+		return orgRelationsDao.getRespondingPartyDetailsById(id);
 	}
 }

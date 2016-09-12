@@ -37,6 +37,8 @@ public interface OrgRelationsService {
 	
 	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
 
-	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long id, Long orgLocationId) throws Exception;
+	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long id, Long orgLocationId, String relationType) throws Exception;
+	
+	OrgRelations getRespondingPartyDetailsById(Long id) throws Exception;
 
 }

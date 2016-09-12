@@ -23,6 +23,8 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
+	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId);
+	
 	public ProjectMembers getProjectMemberById(Long id) throws Exception;
 	
 	public Boolean deleteProjectMemberById(Long id) throws Exception;

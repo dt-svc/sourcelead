@@ -19,13 +19,14 @@ public interface OrgSpocService {
 	OrgSpoc addOrgSpoc(OrgSpoc orgSpoc)throws Exception;
 	
 /**
+ * @author Rajashekar
  * add Vendor contacts
  * @param jsonObj
  * @param user
  * @param orgLocations
  * @throws Exception
  */
-	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId)throws Exception;
+	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId)throws Exception;
 
 	/**
 	 * @author Prasad Salina 
@@ -54,5 +55,13 @@ public interface OrgSpocService {
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
-
+	
+	
+	/**To get Spoc user
+	 * @author Prasad Salina
+	 * @param spocUserId
+	 * @return
+	 */
+	OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception;
+	
 }

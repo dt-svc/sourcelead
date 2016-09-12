@@ -6,13 +6,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -27,6 +25,8 @@ public interface UserService  {
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
+	
+	User getUserByUserCode(String userCode) throws Exception;
 	
 	User getUserByIdAndOrgLocationsId(Long Id, Long orgLocationsId) throws Exception;
 
@@ -87,9 +87,10 @@ public interface UserService  {
 	 */
 	User getUserDetailsByUserCode(String userCode);
 
-	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg) throws Exception;
 
 	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
+	
+	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
 
 }	
 		

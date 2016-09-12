@@ -93,7 +93,11 @@ public class ClientServiceImpl implements ClientService{
 		orgService.addOrganization(org);
 		OrgLocations clientOrgLocation = populateOrgLocations(jsonObj, org, orgLocations.getLocationCode(), user.getUserCode());
 		orgLocationService.addOrgLocations(clientOrgLocation);
+
 		OrgRelations orgRelations = populateOrgRelations(clientOrgLocation, orgLocations, user.getUserCode());
+		if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
+			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
+	     }
 		orgRelationsService.addOrgRelations(orgRelations);
 		
 		if(jsonObj.has("maxTsRowNum")){
@@ -170,6 +174,23 @@ public class ClientServiceImpl implements ClientService{
 			User spocUser = null;
 			if(jsonObj.has("orgLocationId")){
 				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+					clientOrgLocations.setCountry(jsonObj.getString("country"));
+				}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
+					clientOrgLocations.setCountry(jsonObj.getString("orgCountry"));
+				}
+				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+					clientOrgLocations.setState(jsonObj.getString("state"));
+				}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
+					clientOrgLocations.setCountry(jsonObj.getString("orgState"));
+				}
+				
+				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+					clientOrgLocations.setCity(jsonObj.getString("city"));
+				}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
+					clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
+				}
+				
 			}
 			
 			if(clientOrgLocations == null){
@@ -186,12 +207,19 @@ public class ClientServiceImpl implements ClientService{
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
 				orgLocationsList.add(clientOrgLocations);
 				Org org = clientOrgLocations.getOrg();
+				if(jsonObj.has("companyWebsite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+				}
+				if(jsonObj.has("webSite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+				}
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
 			}
 
+			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-			
+			}
 			if(jsonObj.has("owner")){
 				String ownersId = jsonObj.getString("owner");
 				ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
@@ -207,6 +235,8 @@ public class ClientServiceImpl implements ClientService{
 					}
 				
 				orgSpoc.setSpocUser(spocUser);
+				orgSpoc.setResponderLocationId(clientOrgLocations);
+				orgSpoc.setInitiatorLocationId(orgLocations);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
@@ -311,7 +341,6 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setResponderLocationId(clientOrgLocation);
 					orgRelations.setLocationId(orgLocations);
 					orgRelations.setStatus("ACTIVE");
-					//orgRelations.setRelationType("Customer");
 					orgRelations.setInitiatorType("Client");
 					orgRelations.setResponderType("");
 					orgRelations.setCreatedBy(loginUserCode);
@@ -371,23 +400,25 @@ public class ClientServiceImpl implements ClientService{
 		@Override
 		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId,Long loginLocationId) throws Exception {
 			
-			//OrgRelations orgRelation = orgRelationsService.getClientByOrgLocationId(orgRelationId);
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
-			
+			String level = "level";
 			if(null != orgRelation){
-				//OrgLocations orgLocations = orgRelation.getResponderLocationId();
 				
 				 OrgLocations orgLocations = null;
 					//if login user org id is equals to client location id then we get vendor list of ResponderLocationId Org details 
 					 if(orgRelation.getLocationId().getId() == loginLocationId){ 
 						 orgLocations = orgRelation.getResponderLocationId();
+						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+								orgRelation.setInitiatorLevel(jsonObj.getString(level));
+							}
 					 }
 					 if(orgRelation.getResponderLocationId().getId() == loginLocationId){ 
 						 orgLocations = orgRelation.getLocationId();
+						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+								orgRelation.setResponderLevel(jsonObj.getString(level));
+							}
 					 }
-					if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
-						orgRelation.setLevel(jsonObj.getString("level"));
-				     }
+					
 				 orgRelationsService.addOrgRelations(orgRelation);
 				
 				
@@ -456,11 +487,17 @@ public class ClientServiceImpl implements ClientService{
 				//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
 				 if(orgRelation.getLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getResponderLocationId();
+					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+							orgRelation.setInitiatorLevel(jsonObj.getString(level));
+						}
 				 }
 				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
 					 orgLocations = orgRelation.getLocationId();
+					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
+							orgRelation.setResponderLevel(jsonObj.getString(level));
+						}
 				 }
-				orgRelation.setLevel(jsonObj.getString(level));
+				//orgRelation.setLevel(jsonObj.getString(level));
 			 orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
@@ -525,10 +562,10 @@ public class ClientServiceImpl implements ClientService{
 					user.setFirstName(jsonObj.getString(vendorContactFirstName));
 				}
 				if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
-					user.setLastName(jsonObj.getString(vendorContactFirstName));
+					user.setLastName(jsonObj.getString(vendorContactLastName));
 				}
 				if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
-					user.setMobilePhone(jsonObj.getString(vendorContactFirstName));
+					user.setMobilePhone(jsonObj.getString(mobilePhone));
 				}
 				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
 					user.setEmail(jsonObj.getString(emailId));

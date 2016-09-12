@@ -180,7 +180,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
 		
-		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' ");
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' and usr.userType <>'Admin' ");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
 	}
@@ -198,15 +198,15 @@ public class EmployeesDaoImpl implements EmployeesDao{
         List<Employees> employeeList = null;
         if(level1Manager!=null && level2Manager!=null){
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager");
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE'" );
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
         }else if(level1Manager!=null){
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager");
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE'");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
         }else{
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId");
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and user.userType <>'Admin' and user.userState <> 'INACTIVE'");
     		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
         }
 		return employeeList;

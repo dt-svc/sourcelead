@@ -154,26 +154,28 @@ public class OrgDaoImpl implements OrgDao {
                             host = host.substring("www".length()+1);
                         }else{
                             flag="Website Duplicated";
-                            return flag;
                         }
                     }else{
                         flag ="Invalid Website";
-                        return flag;
                     }
                    
                     //for Blocked Websites Domains
                     String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceleadBLockedwebsites.split(",");
                     if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
-                        flag="Website Duplicated";
+                    	 flag ="Invalid Website";
+                    	 
                      }
-                    boolean isFuond = isDuplicateWebsite(host);
+                    
+                    return flag;
+                    
+                   /* boolean isFuond = isDuplicateWebsite(host);
                     if(isFuond){
                          flag ="Website Duplicated";
                          return flag;
                     }else{
                     	flag = "Valid Website";
                     	return flag;
-                    }
+                    }*/
         
     }   
 
@@ -221,19 +223,19 @@ public class OrgDaoImpl implements OrgDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public boolean isClientNameValid(String clientName,Long orgLocationId) throws Exception {
+	public boolean isClientNameValid(String clientName,Long orgLocationId,String responderType) throws Exception {
 		   boolean isClientFound = false;
 	        Session session = this.sessionFactory.getCurrentSession();
 	        /*String query = "from Org org where org.orgName = :clientName and org.id IN(Select orgRelations.responderLocationId.org.id from OrgRelations orgRelations "
 	        		+ "where orgRelations.locationId.id = :orgLocationId )";*/
 	        
 	     String query ="from Org org where org.orgName = :clientName and (org.id IN(Select orgrelation.responderLocationId.org.id  from OrgRelations orgrelation "
-	    		+"  where orgrelation.locationId.id = :orgLocationId) OR "
+	    		+"  where orgrelation.locationId.id = :orgLocationId and orgrelation.responderType = :responderType) OR "
 	    		+"org.id IN(Select orl.locationId.org.id from OrgRelations orl"
 	    		+" where orl.responderLocationId.id = :orgLocationId))";
 	        
 	        
-	         List<Org> orglist = session.createQuery(query.toString()).setString("clientName", clientName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	         List<Org> orglist = session.createQuery(query.toString()).setString("clientName", clientName).setString("responderType", responderType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	            if (orglist != null && !orglist.isEmpty()) {
 	            	isClientFound = true;
 	            }
@@ -259,6 +261,20 @@ public class OrgDaoImpl implements OrgDao {
 	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
 	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
         return orgsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean isOrgNameExisted(String orgName) throws Exception {
+		boolean isOrgFound = false;
+        Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Org org where org.orgName = :orgName ";
+		 
+		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+		            if (orglist != null && !orglist.isEmpty()) {
+		            	isOrgFound = true;
+		            }
+		            return isOrgFound;
 	}
 
 }

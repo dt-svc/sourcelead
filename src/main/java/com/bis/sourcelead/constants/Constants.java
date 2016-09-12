@@ -40,6 +40,10 @@ public class Constants {
 	public static String INVITE_USER = "Invite User";
 	public static String INVITE_CLIENT = "Invite Client";
 	public static String INVITE_VENDOR = "Invite Vendor";
+	
+	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
+	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
@@ -52,6 +56,13 @@ public class Constants {
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "ACTIVE";
 	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
+	
+	public static String CANDIDATE_ACTIVE = "1";
+	public static String  CANDIDATE_IN_ACTIVE= "0";
+	
+	/** Candidate Skill  constants**/
+	public static String CANDIDATE_SKILL_ACTIVE = "1";
+	public static String CANDIDATE_SKILL_IN_ACTIVE= "0";
 	
 
 	/** projectMemberHistory constants**/
@@ -131,9 +142,19 @@ public class Constants {
 	
 	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
+
+	/**  For LookUpData (Eductions,Skills) **/
+	
+	public static String EDUCATIONS = "Educations";
+	public static String SKILLS = "Skills";
+	
+	
+	
+
 	public static String MAIL_SENT = "Sent";
 	public static String MAIL_NEW = "New";
 	public static String MAIL_RESEND = "Resend";
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
+
 }
