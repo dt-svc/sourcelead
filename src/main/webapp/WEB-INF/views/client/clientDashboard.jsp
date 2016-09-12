@@ -131,7 +131,7 @@ function getClientDetails(){
    	        	result = result +'	<th>Level</th>';
    	        	result = result +'	<th>Created By</th>';
    	        	result = result +'<th>No.of contacts</th>';
-   	        	result = result +'<th>Action</th>';
+   	        	/* result = result +'<th>Action</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
    	        	result = result +'<tbody>';
@@ -181,7 +181,7 @@ function getClientDetails(){
    	        		}
    	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-   	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    	        		
    				}

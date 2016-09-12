@@ -116,7 +116,7 @@ function getVendorLists(){
    	        	result = result +'<th>No.of Contacts</th>';
    	        	result = result +'<th>Released jobs</th>';
    	        	result = result +'<th>Level</th>';
-   	        	result = result +'<th>Actions</th>';
+   	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
    	        	result = result +'<tbody>';
@@ -165,7 +165,7 @@ function getVendorLists(){
 	       		result = result +'<td><div>20</div></td>';
 	       		result = result +' <td><div>10</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
-	       		result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    				}
    	        	
