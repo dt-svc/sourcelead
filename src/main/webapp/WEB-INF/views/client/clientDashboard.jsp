@@ -246,7 +246,7 @@ function pagination(){
 		result = result + '</div>';
 		
 		//for client contatcs tab
-		result = result + '<div class="clients_wrap_table " >';
+		result = result + '<div class="clients_wrap_table " id="testDiv">';
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';

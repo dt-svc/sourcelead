@@ -486,6 +486,7 @@ public class ClientRestController {
 				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 				orgRelation.setLevel(orgRelation.getInitiatorLevel());
+				orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
 				
 		 }
 		 //to fetch user details by usercode 
@@ -502,6 +503,7 @@ public class ClientRestController {
 				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
 				orgRelation.setLevel(orgRelation.getResponderLevel());
+				orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
 		 } 
 		 
 		 resultJson = commonUtil.toJSON(orgRelation);
