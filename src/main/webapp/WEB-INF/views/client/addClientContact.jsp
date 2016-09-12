@@ -181,8 +181,8 @@ function getOrgDetails()
             <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendorName" data-validation="required" onchange="getSpocUserDetails();">
-                  <option>Select Client</option>
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="client name" onchange="getSpocUserDetails();" data-validation="required">
+                  <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
                     <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
@@ -460,14 +460,14 @@ function validateClientName(){
 	if (clientName != null && clientName != '') {
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
 					/* <input type ="hidden" name ="isDuplicateClient" value = "isDuplicateClient"/> */
 					
 				}else {

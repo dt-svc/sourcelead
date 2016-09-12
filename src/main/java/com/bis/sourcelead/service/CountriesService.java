@@ -10,6 +10,13 @@ public interface CountriesService {
 	
 	List<Countries> getAllCountries() throws Exception;
 	
+	/**To get Sourcelead Countries(Australia, France, India, Singapore, United Kingdom, United States)
+	 * @author Prasad Salina
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Countries> getAllSourceLeadCountries() throws Exception;
+	
 	List<String>  getAllStatesAndCitiesByCountryName(String countryName) throws Exception;
 	
 }

@@ -123,6 +123,9 @@ public class ClientController {
 			//for get the owners list for spocs
 			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 			model.addObject("userList", userList);
+			
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			model.addObject("loginCountryName", countries.getName());
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			

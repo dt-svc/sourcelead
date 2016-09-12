@@ -117,6 +117,9 @@
 <script>
 function projectEmployee(projectId,startDateStr,endDateStr,status){
 	
+	
+	$("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
 	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
     	type: "POST",
@@ -133,7 +136,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
         	}
     		result = result + '		</div>';
-    		  result = result + '        <div class="project_tabs_inn_table">';
+    		result = result + '        <div class="project_tabs_inn_table">';
+    	    result = result + '        <div id="employeesLoadingImg"></div>';
     		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
     	    result = result + '	<table>';
     		result = result + '	<tbody>';
@@ -206,6 +210,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
     		$("#tab-3").empty();  
     		$("#tab-2").empty();  
     	    $("#tab-1").empty();
+    	    $("#employeesLoadingImg").empty();
     	    $("#tab-1").append(result);  
     	    
     	    $("#tab-1").show();
