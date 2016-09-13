@@ -62,6 +62,7 @@
                 </li> -->
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
 						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
+						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
