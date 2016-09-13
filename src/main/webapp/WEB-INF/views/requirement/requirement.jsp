@@ -2,9 +2,24 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/country_state_city_choosen.js"></script> -->
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
 
 <jsp:include page="requirementDetails.jsp"></jsp:include>
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
@@ -14,141 +29,16 @@
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			$(".cd").click(function(){  
-		        $(".clientDetails").toggleClass('hidden', 500);
-		    });
+			
 		 };
 </script>
 
-<!-- Eductions and Skills Autocomplete Scripts Starts Here -->
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-		   $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
-		       
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-				
-				
-</script> 
-<!-- Eductions and Skills Autocomplete Scripts End Here -->
+ <script>
+		$(document).ready(function() {
+			document.getElementById("requirement_form").reset();
+		});
+	</script>
 
-<!-- Country,State,City Script Starts Here -->
-
-<script type="text/javascript">
-function getAllCountries(){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-
-<script>
-function getStates(){  
-	var countryName = $("#country").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
 
 
 
@@ -385,6 +275,7 @@ Side Nav Bar
     <div class="pull-right brud-crum">Home &raquo; Requirement &raquo; Requirement Details</div>
   </section>
   <div class="content-area content-new clearfix">
+   <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
@@ -417,58 +308,62 @@ Side Nav Bar
 </div></div>
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
-          <div class="form-group">
-            <label class="col-md-3">Title<span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
-              <div class="input-group">
-                <input type="text" class="form-control" value="" id="place">
-                <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker">
-                    <option value="c2c">C2C</option>
-                    <option value="w2">W-2</option>
-                    <option value="c2c">C2H</option>
-                    <option value="c2c">Part</option>
-                    <option value="c2c">Time</option>
-                    <option value="c2c">Other</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
+           <div class="form-group">
+	         <label class="col-md-3">Title</label>
+	         <div class="col-md-9">
+	          <div class="input-group">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+	             <div class="input-group-btn selp-custom-min">
+	             <select class="selectpicker" id="designationType" name="designationType">
+	                 <option><a href="#">C2C</a></option>
+	                 <option><a href="#">W-2</a></option>
+	                 <option><a href="#">Part Time</a></option>
+	                 <option><a href="#">Full Time</a></option>
+	                 <option><a href="#">Other</a></option>
+	             </select>
+	             </div>
+	           </div>
+	         </div>
+	       </div>
+          
+          
+      
+          
+          
           <div class="form-group">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" name="ID" value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
             </div>
           </div>
+          
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" name="Number of Positions" value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${positions}"  field-name="Positions" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
             </div>
           </div>
+          
           <div class="form-group">
-            <label class="col-md-3">Education</label>
-            <div class="col-md-9">
-              <select multiple class="chosen-select form-control">
-                <option value="Java">Java</option>
-                <option value="Dotnet">Dotnet</option>
-                <option value="Oracle">Oracle</option>
-                <option value="Php">Php</option>
-                <option value="Javascript">Javascript</option>
-                <option value="JMS">JMS</option>
-              </select>
+              <label class="col-md-3">Education</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <c:forEach var="edu" items="${educationsList}">
+	                     <option value="${edu.name}">${edu.name}</option>
+                </c:forEach>
+                </select>
+              </div>
             </div>
-          </div>
+            
           <div class="form-group">
             <label class="col-md-3">Experince</label>
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                  <input type="text" class="form-control" name="Min" value="Min">
+                   <input type="text" class="form-control" id="minExp" name="minExp" value="${minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" name="Max" value="Max">
+                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -488,7 +383,7 @@ Side Nav Bar
                     <option value="c2c">Other</option>
                   </select>
                 </div>
-                <input type="text" class="form-control" value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${rate}" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker">
                     <option value="c2c">Per</option>
@@ -504,19 +399,6 @@ Side Nav Bar
           </div>
           
         
-          <!-- <div class="form-group">
-            <label class="col-md-3">Country</label>
-            <div class="col-md-9">
-              <select class="chosen-select form-control select-bg">
-                    <option>India</option>
-                    <option>USA</option>
-                    <option>UK</option>
-                    <option>Jaipan</option>
-                    <option>China</option>
-                    <option>Austrlia</option>
-                  </select>
-            </div>
-          </div> -->
           
           <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -526,19 +408,7 @@ Side Nav Bar
 				</div>
 		</div>
 			
-          <!--  <div class="form-group">
-            <label class="col-md-3">State</label>
-            <div class="col-md-9">
-               <select multiple class="chosen-select">
-                    <option>India</option>
-                    <option>USA</option>
-                    <option>UK</option>
-                    <option>Jaipan</option>
-                    <option>China</option>
-                    <option>Austrlia</option>
-                  </select>
-            </div>
-          </div> -->
+          
           <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
@@ -554,20 +424,17 @@ Side Nav Bar
                  </select>
 			</div>
 		</div>
-          <div class="form-group">
-            <label class="col-md-3">Skills</label>
-            <div class="col-md-9">
-              <select multiple class="chosen-select form-control select-bg">
-                <option>Select Skills</option>
-                <option>Java</option>
-                <option>jQuery</option>
-                <option>JavaScript</option>
-                <option>Dotnet</option>
-                <option>Springs</option>
-                <option>Hibernet</option>
-              </select>
+		
+         <div class="form-group">
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
             </div>
-          </div>
          
           <div class="form-group">
             <label class="col-md-3">Attachment</label>
@@ -587,7 +454,7 @@ Side Nav Bar
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-              <textarea rows="2" class="form-control"></textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
             </div>
           </div>
         </div>
@@ -672,8 +539,8 @@ Side Nav Bar
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                           <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                           <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                         </div>
                       </div>
                     </div>
@@ -1619,12 +1486,13 @@ Side Nav Bar
         </div>
       </div>
     </div>
+    </form:form>
   <div class="form-footer clearfix">
     <div class="col-lg-12">
       <div class="pull-right">
         <input type="button" value="Release" class="btn btn-danger">
-        <input type="button" value="Save" class="btn btn-primary ml" onClick="formSubmit()">
-        <input type="button" value="Cancel" class="btn btn-default ml">
+        <input type="button" value="Save" id="store_requirement" onclick="storeRequirement();" class="btn btn-primary">
+        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
@@ -1632,37 +1500,171 @@ Side Nav Bar
   <!-- Content Area Ends-->
   </div>
 </section>
-<!-- Footer Area -->
-<!-- <footer class="footer-area clearfix">
-  <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-  <div class="powered-by"> Powered by: businessintelli.com </div>
-</footer> -->
-<!-- <div class="theme-color">
-<span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-	<ul class="list-unstyled">
-    	<li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-    	<li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-    	<li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-    </ul>
-</div>  -->
-<!-- </div> -->
-<!-- Footer Area --> 
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
 <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
+	function storeRequirement() {
+		
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+		
+		  if ($('#requirement_form').validate(false, validationSettings)){  
+			 alert("saasa");
+			var frm = $('#requirement_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			
+			var form = $('#requirement_form')[0];
+      		var formData = new FormData(form); 
+			  //It will escape all the special characters
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						success : function(result) {
+								location.replace(sourceleadUrl+"/requirementList");
+						},
+					});
+			return true;
+		  }else{ 
+				return false;
+		 }  
+	} 
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+<!-- Country,State,City Script Starts Here -->
+
+<script type="text/javascript">
+function getAllCountries(){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').empty();
+        	$('#country').append('<option value="">---select---</option>');
+            for(var i=0;i<json.length;i++){
+            	if(json[i] == '${loginCountryName}'){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else{
+            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            }
+            $('#country').trigger("chosen:updated");
+            getStates();
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+
+
+
+<!-- Country,State,City Script Ends Here -->
+
+
+<!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -1671,42 +1673,31 @@ Side Nav Bar
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
+			
+		  $("#country").chosen();
+	       $("#state").chosen();
+	       $("#city").chosen();
+	       
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+		       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
 			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+				
+				
+</script> 
+<!-- Eductions and Skills Autocomplete Scripts End Here -->
 
-});
 
-
-$(document).ready(function(){
-// append json data
-var populateSelectBox = function (selectbox, dataArray) {
-    dataArray.forEach(function (data) {
-        selectbox.append("<option>" + data + "</option>");
-    });
-};
-
-$(document).ready(function () {
-    var dataArray = ["Javascript", "Java", "DotNet", "HTML", "jQuery"];
-    var selectbox = $('#demoval');
-    populateSelectBox(selectbox, dataArray);
-});	
-	/*$("#demoval").change(function(){
-		$(".selectpicker").selectpicker('refresh');
-		  var d = document.getElementById("demoval").value;
-		  var m = document.getElementById("place");
-		  m.value = d;
-     });*/
-// append json data ends
-});
-function formSubmit(){
-	 var d = document.getElementById("demoval").value;
-alert(d);
-}
-</script>
 <!-- </body>
 </html> -->
 <jsp:include page="../masterFooter.jsp" />

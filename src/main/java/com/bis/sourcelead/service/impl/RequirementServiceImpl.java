@@ -74,6 +74,13 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setJobType(jsonObj.getString("jobType"));
 			}
 			
+			if(jsonObj.has("jobId")){
+			requirement.setJobId(jsonObj.getString("jobId"));
+			}
+			
+			if(jsonObj.has("positions")){
+			requirement.setPositions(jsonObj.getString("positions"));
+			}
 			if(jsonObj.has("country")){
 			requirement.setCountry(jsonObj.getString("country"));
 			}
@@ -85,6 +92,22 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("city")){
 			requirement.setCity(jsonObj.getString("city"));
 			}
+			
+			if(jsonObj.has("maxExp")){
+			requirement.setMaxExp(jsonObj.getString("maxExp"));
+			}
+			
+			if(jsonObj.has("minExp")){
+			requirement.setMinExp(jsonObj.getString("minExp"));
+			}
+			
+			if(jsonObj.has("rate")){
+			requirement.setRate(jsonObj.getString("rate"));
+			}
+			
+			if(jsonObj.has("rateType")){
+			requirement.setRateType(jsonObj.getString("rateType"));
+			} 
 			
 			if(jsonObj.has("description")){
 			requirement.setDescription(jsonObj.getString("description"));
@@ -109,6 +132,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement addRequirement(Requirement requirement) throws Exception {
 		return requirementDao.storeRequirement(requirement);
 	}
+
 
 	/**
 	 * @author sarath kumar

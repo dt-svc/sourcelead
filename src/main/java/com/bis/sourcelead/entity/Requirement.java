@@ -45,13 +45,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String education;
 	
 	@Column(name = "MIN_EXP")
-	private String min_exp;
+	private String minExp;
 	
 	@Column(name = "MAX_EXP")
-	private String max_exp;
+	private String maxExp;
 	
 	@Column(name = "CURRENCY_CODE")
-	private String currency_code;
+	private String currencyCode;
 	
 	@Column(name = "RATE")
 	private String rate;
@@ -96,7 +96,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     private OrgRelations sopc_Id;
 	
 	@Column(name = "CLIENT_CURRENCY_CODE")
-	private String client_currency_code;
+	private String clientCurrencyCode;
 	
 	@Column(name = "CLIENT_RATE")
 	private String clientRate;
@@ -198,29 +198,41 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.education = education;
 	}
 
-	public String getMin_exp() {
-		return min_exp;
+	
+
+	public String getMinExp() {
+		return minExp;
 	}
 
-	public void setMin_exp(String min_exp) {
-		this.min_exp = min_exp;
+	public void setMinExp(String minExp) {
+		this.minExp = minExp;
 	}
 
-	public String getMax_exp() {
-		return max_exp;
+	public String getMaxExp() {
+		return maxExp;
 	}
 
-	public void setMax_exp(String max_exp) {
-		this.max_exp = max_exp;
+	public void setMaxExp(String maxExp) {
+		this.maxExp = maxExp;
 	}
 
-	public String getCurrency_code() {
-		return currency_code;
+	public String getCurrencyCode() {
+		return currencyCode;
 	}
 
-	public void setCurrency_code(String currency_code) {
-		this.currency_code = currency_code;
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
 	}
+
+	public String getClientCurrencyCode() {
+		return clientCurrencyCode;
+	}
+
+	public void setClientCurrencyCode(String clientCurrencyCode) {
+		this.clientCurrencyCode = clientCurrencyCode;
+	}
+
+
 
 	public String getRate() {
 		return rate;
@@ -326,13 +338,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.sopc_Id = sopc_Id;
 	}
 
-	public String getClient_currency_code() {
-		return client_currency_code;
-	}
-
-	public void setClient_currency_code(String client_currency_code) {
-		this.client_currency_code = client_currency_code;
-	}
 
 	public String getClientRate() {
 		return clientRate;
