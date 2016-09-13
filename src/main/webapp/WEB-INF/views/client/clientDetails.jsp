@@ -90,9 +90,12 @@
 						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
+						
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
+						$("#testDiv").hide();
+						
 						$(".project-tabs-menu a").click(
 								function(event) {
 									event.preventDefault();
@@ -163,37 +166,67 @@
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							city = json.city;
 						}
+						
+						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Client Name </label>';
-						result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" placeholder="client name" >';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
-						result = result + '<label>Website</label>';
-						result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Country</label>';
-						result = result + ' <select class="chosen-select form-control" name="clientCountry" id="country" field-name="Country"  >';
-						result = result + '</select>';
-						result = result + '<input type="hidden"  id="existingCountry" value="'+country+'" >';
-						result = result + '</div>  ';
-						
-						result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
-						result = result + '<label>State</label>';
-						result = result + '<select  class="chosen-select form-control" name="clientState" id="state" field-name="State"  > ';
-						result = result + ' </select> ';
-						result = result + '<input type="hidden"  id="existingState" value="'+state+'" >';
-						result = result + '</div> ';
-						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>City</label>';
-						result = result + '<select  class="chosen-select form-control" name="clientCity" id="city" field-name="City"  > ';
-						result = result + ' </select> ';
-						result = result + '<input type="hidden"  id="existingCity" value="'+city+'" >';
-						result = result + '</div> ';
+						if(json.orgType == 'Company'){
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>Client Name<span class="text-danger">&nbsp; *</span> </label>';
+								result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" readonly="readonly" field-name="client name" placeholder="client name">';
+								result = result + '</div>';
+								
+								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
+								result = result + '<label>Website</label>';
+								result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" value="'+json.webSite+'" placeholder="client website" ></div>';
+								result = result + '</div>';
+								
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>Country</label>';
+								result = result + '<input type="text" name="clientCountry" id="existingCountry" value="'+country+'" readonly="readonly">';
+								result = result + '</div>  ';
+								
+								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
+								result = result + '<label>State</label>';
+								result = result + '<input type="text" name="clientState" id="existingState" value="'+state+'" readonly="readonly" >';
+								result = result + '</div> ';
+								
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>City</label>';
+								result = result + '<input type="text" name="clientCity" id="existingCity" value="'+city+'" readonly="readonly">';
+								result = result + '</div> ';
+						}else{
+								result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>Client Name<span class="text-danger">&nbsp; *</span> </label>';
+								result = result + '<input type="text"  id="clientName" name="clientName" value="'+json.orgName+'" data-validation="required validate_Space validate_length length2-250" field-name="client name" placeholder="client name">';
+								result = result + '</div>';
+								
+								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
+								result = result + '<label>Website</label>';
+								result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+								result = result + '</div>';
+								
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>Country</label>';
+								result = result + ' <select class="chosen-select form-control" name="clientCountry" id="country" field-name="Country"  >';
+								result = result + '</select>';
+								result = result + '<input type="hidden"  id="existingCountry" value="'+country+'" >';
+								result = result + '</div>  ';
+								
+								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
+								result = result + '<label>State</label>';
+								result = result + '<select  class="chosen-select form-control" name="clientState" id="state" field-name="State"  > ';
+								result = result + ' </select> ';
+								result = result + '<input type="hidden"  id="existingState" value="'+state+'" >';
+								result = result + '</div> ';
+								
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>City</label>';
+								result = result + '<select  class="chosen-select form-control" name="clientCity" id="city" field-name="City"  > ';
+								result = result + ' </select> ';
+								result = result + '<input type="hidden"  id="existingCity" value="'+city+'" >';
+								result = result + '</div> ';
+						}
 						
 						
 						//level

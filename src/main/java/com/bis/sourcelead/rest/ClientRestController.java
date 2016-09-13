@@ -377,14 +377,31 @@ public class ClientRestController {
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
 	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
-		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
-		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-		     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-		     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
-		     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
-		     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-		     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-		     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     
+		     if(user.getId()==ownerId){
+		    	 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+		    	 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+			     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+			     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		     }
+		     else{
+		    	 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+		    	 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+			     orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
+			     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
+			     orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+		     }
+		     
 		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
@@ -486,6 +503,7 @@ public class ClientRestController {
 				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 				orgRelation.setLevel(orgRelation.getInitiatorLevel());
+				orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
 				
 		 }
 		 //to fetch user details by usercode 
@@ -502,6 +520,7 @@ public class ClientRestController {
 				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
 				orgRelation.setLevel(orgRelation.getResponderLevel());
+				orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
 		 } 
 		 
 		 resultJson = commonUtil.toJSON(orgRelation);

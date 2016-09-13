@@ -116,7 +116,7 @@ function getVendorLists(){
    	        	result = result +'<th>No.of Contacts</th>';
    	        	result = result +'<th>Released jobs</th>';
    	        	result = result +'<th>Level</th>';
-   	        	result = result +'<th>Actions</th>';
+   	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
    	        	result = result +'<tbody>';
@@ -165,7 +165,7 @@ function getVendorLists(){
 	       		result = result +'<td><div>20</div></td>';
 	       		result = result +' <td><div>10</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
-	       		result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    				}
    	        	
@@ -307,7 +307,7 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-   	        	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
    	        		
    	        		
    	        		result = result +'</tr>';
@@ -347,14 +347,14 @@ function resendVendorSpocInvitation(spocUserId,orgRelationId){
 </script>
 
 <script>
-function terminateSpoc(spocId, orgRelationID){
+function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -363,7 +363,7 @@ function terminateSpoc(spocId, orgRelationID){
 </script>
 
 <script>
-function saveReason(spocId, orgRelationID){
+function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason){
@@ -622,7 +622,7 @@ function pagination1(){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div class="clients_wrap_table " >';
+		result = result + '<div class="clients_wrap_table project_tabs_inn" >';
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';

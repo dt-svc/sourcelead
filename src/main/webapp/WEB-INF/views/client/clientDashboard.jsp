@@ -122,7 +122,7 @@ function getClientDetails(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	if(json.length != null && json.length != ''){
+   	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Client name</th>';
@@ -131,7 +131,7 @@ function getClientDetails(){
    	        	result = result +'	<th>Level</th>';
    	        	result = result +'	<th>Created By</th>';
    	        	result = result +'<th>No.of contacts</th>';
-   	        	result = result +'<th>Action</th>';
+   	        	/* result = result +'<th>Action</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
    	        	result = result +'<tbody>';
@@ -181,13 +181,13 @@ function getClientDetails(){
    	        		}
    	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-   	        		result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+   	        		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    	        		
    				}
    	        	
    	        	result = result +'</tbody>';
-   	        	}else{
+   	        	/* }else{
    	        		result = result +'<div class="row mt">';
    	        		result = result +'<div class="col-lg-12">';
    	        		result = result +'<div class="content-area clearfix">';
@@ -200,7 +200,7 @@ function getClientDetails(){
    	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        		result = result +'</div>';
-   	        	}
+   	        	} */
    	    	    $("#clientList").empty();  
    	    	    $("#clientList").append(result)
    	    	    pagination();
@@ -246,7 +246,7 @@ function pagination(){
 		result = result + '</div>';
 		
 		//for client contatcs tab
-		result = result + '<div class="clients_wrap_table " >';
+		result = result + '<div class="clients_wrap_table " id="testDiv">';
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';
@@ -278,7 +278,7 @@ function getVendorContactLists(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	if(json.length != null && json.length != ''){
+   	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Name</th>';
@@ -385,8 +385,8 @@ function getVendorContactLists(){
    	    	    $("#vendorContactList").empty();  
    	    	    $("#vendorContactList").append(result)
    	    	    pagination1(); 
-   	        	}else{
-   	        		result = result +'<div class="row mt">';
+   	        	/* }else{
+   	        		result = result +'<div class="row">';
    	        		result = result +'<div class="col-lg-12">';
    	        		result = result +'<div class="content-area clearfix">';
    	        		result = result +'<div class="blank-pages">';
@@ -400,7 +400,7 @@ function getVendorContactLists(){
    	        		result = result +'</div>';
    	        	    $("#vendorContactList").empty();  
     	    	    $("#vendorContactList").append(result)
-   	        	}
+   	        	} */
    	        	
    	    	    
    		    }
