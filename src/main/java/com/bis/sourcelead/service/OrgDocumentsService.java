@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import java.util.List;
 import com.bis.sourcelead.entity.OrgDocuments;
@@ -18,7 +19,7 @@ import com.bis.sourcelead.entity.OrgDocuments;
  */
 public interface OrgDocumentsService {
 
-	void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId, OrgLocations orgLocation) throws JSONException, IOException, ParseException, SourceLeadConstraintViolationException;
+	void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId, OrgLocations orgLocation, User user) throws JSONException, IOException, ParseException, SourceLeadConstraintViolationException;
 
 	List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId);
 

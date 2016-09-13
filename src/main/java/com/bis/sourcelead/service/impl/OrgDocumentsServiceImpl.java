@@ -4,30 +4,26 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.service.OrgDocumentsService;
-import com.bis.sourcelead.service.OrgService;
 
 
 /**
  *  to handle the documents of the client and vendors
+ *  
  * @author Prasanna Vadla
  *
  */
@@ -38,7 +34,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	private OrgDocumentsDao orgDocumentsDao;
 	
 	@Override
-	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,OrgLocations orgLocation) throws JSONException, IOException, ParseException, SourceLeadConstraintViolationException {
+	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,OrgLocations orgLocation,User user) throws JSONException, IOException, ParseException, SourceLeadConstraintViolationException {
 		
 		OrgDocuments orgDocuments = new OrgDocuments();
 		
@@ -67,15 +63,15 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		if(jsonObj.has("spoc")){
 			User spocUser = new User();
 			spocUser.setId(Long.parseLong(jsonObj.getString("spoc")));
-			orgDocuments.setOwnerUser(spocUser);
+			orgDocuments.setSpocUser(spocUser);
 		}
 		if(jsonObj.has("startDate")){
-			Date startDate = format.parse(jsonObj.getString("EndDate"));
+			Date startDate = format.parse(jsonObj.getString("startDate"));
 			orgDocuments.setStartDate(startDate);
 		}
 		if(jsonObj.has("endDate")){
 			Date endDate = format.parse(jsonObj.getString("endDate"));
-			orgDocuments.setStartDate(endDate);
+			orgDocuments.setEndDate(endDate);
 		}
 		
 		if(jsonObj.has("description")){
@@ -88,8 +84,13 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setResponderLocationId(responderLocation);
 		}
 		if(orgLocation!= null){
-			orgDocuments.setResponderLocationId(orgLocation);
+			orgDocuments.setLocationId(orgLocation);
 		}
+		orgDocuments.setStatus(Constants.MEMBER_ACTIVE);
+		orgDocuments.setCreatedBy(user.getUserCode());
+		orgDocuments.setCreatedDate(new Date());
+		orgDocuments.setUpdatedBy(user.getUserCode());
+		orgDocuments.setUpdatedDate(new Date());
 		
 		orgDocumentsDao.saveDocuments(orgDocuments);
 	}

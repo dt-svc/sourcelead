@@ -44,6 +44,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	 */
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public void saveDocuments(OrgDocuments orgDocuments) throws SourceLeadConstraintViolationException {
 		logger.debug("Storing orgDocuments");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -53,7 +54,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 			}
 			logger.debug("orgDocuments Stored Successfully");
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidateResumes"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"orgDocuments"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 	}

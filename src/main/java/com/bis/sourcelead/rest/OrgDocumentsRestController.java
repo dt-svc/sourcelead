@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -39,7 +40,7 @@ public class OrgDocumentsRestController {
 	
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "clientLocationId", required = false) String responderLocationId,
+			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -50,8 +51,9 @@ public class OrgDocumentsRestController {
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId, orgLocation);
+		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId, orgLocation,user);
 		return null;
 	
 		
