@@ -29,6 +29,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
@@ -58,12 +59,15 @@ public class UserServiceTest {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
 	
 	
-	@Test
+	//@Test
 	public void addUser() throws Exception{
 		User user = new User();
 
@@ -95,7 +99,7 @@ public class UserServiceTest {
 		logger.info("add user details success fully inserted "+ user.getEmail());
 	}
 	
-	@Test
+	//@Test
 	public void createUser() throws Exception{
 	
 		 JSONObject jsonObj = new JSONObject();
@@ -122,7 +126,7 @@ public class UserServiceTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void findByUserName() {	
 
 		String username = "demomail123@gmail.com";
@@ -133,7 +137,7 @@ public class UserServiceTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void sendEmail() throws Exception{
 		User user = new User();
 		user.setId(1l);
@@ -167,7 +171,7 @@ public class UserServiceTest {
 		logger.info(" success fully send email "+user.getStatus());
 	}
 
-	@Test
+	//@Test
 	public void validateEmailandCandidate() throws Exception{
 		String website = "www.bis.com";
 		String email = "info@businessintelli.com"; 
@@ -177,7 +181,7 @@ public class UserServiceTest {
 		logger.info(" success fully validate email "+email);
 	}
 	
-	@Test
+	//@Test
 	public void  getUserById() throws Exception{
 		
 		Long Id=3l;
@@ -188,7 +192,7 @@ public class UserServiceTest {
 		
 	}
 	
-	@Test
+	//@Test
    public void findByEmail() throws Exception{
 		User user = new User();
 		String email = "demomail123@gmail.com";
@@ -197,7 +201,7 @@ public class UserServiceTest {
 		logger.info(" success fully findByEmail "+user.getFirstName());
 	}
 	
-	@Test
+	//@Test
 	public void getUsers() throws Exception{
 		
 		//User user = new User();
@@ -205,7 +209,7 @@ public class UserServiceTest {
 		logger.info(" getUsers successfully updated "+user.size());
 	}
 	
-	@Test
+	//@Test
 	public void saveUserProfile() throws Exception{
 		User user = new User();
 //		user.setId(10l);
@@ -255,41 +259,41 @@ public class UserServiceTest {
 		return multipartFile;
 	}
 	
-	@Test
+	//@Test
 	public void getUsersByUserRoles() throws Exception{
 		Collection<User> user = userService.getUsersByUserRoles(2l);
 		logger.info("getUsersByUserRoles " + user.size());
 	}
 	
-	@Test
+	//@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
 		List<User> user = new ArrayList<User>();
 		user = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(1l,2l);
 		logger.info("getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser " + user.size());
 	}
 	
-	@Test
+	//@Test
 	public void getUsersByUserRolesAndOrgLocationId() throws Exception{
 		List<User> user = new ArrayList<User>();
 		user = userService.getUsersByUserRolesAndOrgLocationId(1l);
 		logger.info("getUsersByUserRolesAndOrgLocationId " + user.size());
 	}
 	
-	@Test
+	//@Test
 	public void getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser() throws Exception{
 		List<User> user = new ArrayList<User>();
 		user = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(1l,2l,1l);
 		logger.info("getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser " + user.size());
 	}
 	
-	@Test
+	//@Test
 	public void getAllUserOrgCodeAndLocationCodeTimeSheetNotification() throws Exception{
 		List<Employees> employee = new ArrayList<Employees>();
 		employee = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(1l);
 		logger.info("getAllUserOrgCodeAndLocationCodeTimeSheetNotification " + employee.size());
 	}
 	
-	@Test
+	//@Test
 	public void sendEmailToClientOrVendor() throws Exception{
 		Org loginOrg = new Org();
 		loginOrg.setOrgName("Source Lead");
@@ -303,7 +307,7 @@ public class UserServiceTest {
 		logger.info(" success fully sent email to client/Vendor");
 	}
 	
-	@Test
+	//@Test
 	public void getUserByIdAndOrgLocationsId() throws Exception{
 		User user = new User();
 		user.setId(3L);
@@ -313,7 +317,7 @@ public class UserServiceTest {
 		logger.info("Retrieved user details are.."+user.getFirstName());
 	}
 	
-	@Test
+	//@Test
 	public void storeUser() throws Exception{
 		 JSONObject jsonObj = new JSONObject();
 		 jsonObj.put("firstName", "Demo_final13");
@@ -347,7 +351,7 @@ public class UserServiceTest {
 		logger.info("User details Stored Successfully....");
 	}
 	
-	@Test
+	//@Test
 	public void getOwnersByOrgLocationId() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
@@ -355,7 +359,7 @@ public class UserServiceTest {
 		logger.info("Owner details retrieved Successfully...."+list.size());
 	}
 	
-	@Test
+	//@Test
 	public void getManagersByUserRolesAndOrgLocationId() throws Exception{
 		String roleType = "2";
 		Long orgLocationsId = 3l;
@@ -363,7 +367,7 @@ public class UserServiceTest {
 		logger.info("Manager details retrieved Successfully...."+list.size());
 	}
 	
-	@Test
+	//@Test
 	public void getManagersByUserIdAndUserRolesAndOrgLocationId() throws Exception{
 		Long userId = 3l;
 		String roleType = "2";
@@ -372,11 +376,24 @@ public class UserServiceTest {
 		logger.info("Manager details retrieved Successfully...."+list.size());
 	}
 	
-	@Test
+	//@Test
 	public void getUserDetailsByUserCode() throws Exception{
 		User user = new User();
 		user.setUserCode("0mkBMphb");
 		user =userService.getUserDetailsByUserCode(user.getUserCode());
 		logger.info("User details retrieved Successfully...."+user.getFirstName());
+	}
+	
+	//@Test
+	public void getOwnersByOrgLocationIdAndNotExistedOwnerId() throws Exception{
+		List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(5l,3l);
+		List<User> list = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(3l, 3l, ownerListOfSpoc);
+		logger.info("getOwners By Org LocationId And Not Existed OwnerId...."+list.size());
+	}
+	
+	@Test
+	public void getAllUserIdsByReportingManagerId() throws Exception{
+		List<Long> list = userService.getAllUserIdsByReportingManagerId(3l);
+		logger.info("getAllUserIdsByReportingManagerId...."+list.size());
 	}
 }

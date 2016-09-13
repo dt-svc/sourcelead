@@ -122,7 +122,7 @@ function getClientDetails(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	if(json.length != null && json.length != ''){
+   	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Client name</th>';
@@ -187,7 +187,7 @@ function getClientDetails(){
    				}
    	        	
    	        	result = result +'</tbody>';
-   	        	}else{
+   	        	/* }else{
    	        		result = result +'<div class="row mt">';
    	        		result = result +'<div class="col-lg-12">';
    	        		result = result +'<div class="content-area clearfix">';
@@ -200,7 +200,7 @@ function getClientDetails(){
    	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        		result = result +'</div>';
-   	        	}
+   	        	} */
    	    	    $("#clientList").empty();  
    	    	    $("#clientList").append(result)
    	    	    pagination();
