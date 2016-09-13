@@ -9,10 +9,11 @@
 function clientDocuments(orgRelationId,clientLocationId){
 	
 	var result = "";
-	result = result  +'    <div class="project_tabs_inn_head addUser-org">                                                                                                    ';
-		result = result  +'    	<a href="javascript:void(0)"  onClick="addDocument('+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+		result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+clientLocationId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
+		result = result  +'  <div class="clearfix"></div> ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div id="clientDocumentsList" ></div>';
 		result  = result + '   </div>';
@@ -34,7 +35,7 @@ function clientDocumentsList(clientLocationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByClientLocationId?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId,        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -50,12 +51,12 @@ function clientDocumentsList(clientLocationId){
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Name</th>';
-	                 	 result  = result + '           <th>Document Type</th>';
+	                 	 result  = result + '           <th>Type</th>';
 	                 	 result  = result + '           <th>Contact Person</th>';
 	                 	 result  = result + '           <th>Attachment</th>';
 	                 	 result  = result + '           <th>Start date</th>';
 	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>Created By</th>';
+	                 	 result  = result + '           <th>Owner</th>';
 	                 	 result  = result + '           <th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -64,43 +65,43 @@ function clientDocumentsList(clientLocationId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
-	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
+	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
+	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
                     	     }else{
                     	    	 result  = result + ' <td><div><span>--</span></div></td>';
-                    	    }
+                    	     }
 	                    	 
-	                    	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.specialization+'</span></div></td>';
+	                    	 if(opt.contractType != null && opt.contractType != '' && opt.contractType != 'undefined'){
+	                    	 result  = result + ' <td><div><span>'+opt.contractType+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
+	                    	 if(opt.spocUser.firstName != null && opt.spocUser.firstName != '' && opt.spocUser.firstName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.spocUser.firstName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+	                    	 }
 	                    	 
+	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	
 	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
+	                    	     result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 
 	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
+	                    	     result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 
-	                    	 if(opt.grade != null && opt.grade != '' && opt.grade != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
-	                    	 }
-	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.institute+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.address+'</span></div></td>';
+	                    	 if(opt.ownerUser.firstName != null && opt.ownerUser.firstName != '' && opt.ownerUser.firstName != 'undefined'){
+	                    	      result  = result + ' <td><div><span>'+opt.ownerUser.firstName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
@@ -112,8 +113,9 @@ function clientDocumentsList(clientLocationId){
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
+	                    
 	                     $("#clientDocumentsList").append(result); 
-	                     pagination(); 
+	                     //pagination(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -191,19 +193,15 @@ function addDocument(clientLocationId) {
 	
 	result = result  +'	                 <div class="clearfix mb10">';
 	result = result  +'	                   <div class="col-md-6">';
-	result = result  +'	                    <select class="chosen-select" name="owner" id="owner" field-name="Client Contact">';
-	result = result  +' 					   <option value="" selected="selected">Client Contact</option>';
-	result = result  +'	                           <c:forEach var="user" items="${userList}">';
-	result = result  +'	                              <option value="${user.id}">${user.firstName} ${user.lastName}</option>';
-	result = result  +'	                           </c:forEach>';
-    result = result  +'	                      </select>';
+    result = result + '                      <select class="chosen-select form-control" name="spoc" id="spoc" field-name="Client Contact"  >';
+	result = result + '                      </select>';
     result = result  +'	                     </div>';
 	
 	result = result  +'	                  <div class="col-md-6">';
 	result = result  +'	                      <select class="chosen-select" name="owner" id="owner" field-name="Owner">';
-	result = result  +' 					      <option value="" selected="selected">Owner</option>';
+	result = result  +' 					      <option value="" selected="selected">-Owner-</option>';
 	result = result  +'	                          <c:forEach var="user" items="${userList}">';
-	result = result  +'	                              <option value="${user.id}">${user.firstName} ${user.lastName}</option>';
+	result = result  +'	                              <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''}>${user.firstName} ${user.lastName}</option>';
 	result = result  +'	                          </c:forEach>';
     result = result  +'	                        </select>';
     result = result  +'	                     </div>';
@@ -317,7 +315,7 @@ function closePopup(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+con+"&clientLocationId="+clientLocationId,
+						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+con+"&responderLocationId="+clientLocationId,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -340,4 +338,29 @@ function closePopup(){
 		$("#document_form").showHelpOnFocus();
 		$("#document_form").validateOnBlur(false, validationSettings);
 	});
+</script>
+
+<script>
+function getSpocsList(orgRelationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output + "<option value=''>-Client Contact-</option>"; 
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+			}
+        	$("#spoc").empty();
+	        $("#spoc").append(output);
+	        $('#spoc').trigger("chosen:updated");
+	        //$('.selectpicker').selectpicker('refresh'); 
+        },
+    });
+}
+
 </script>
