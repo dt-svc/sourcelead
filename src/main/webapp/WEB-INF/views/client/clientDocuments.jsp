@@ -9,16 +9,19 @@
 function clientDocuments(orgRelationId,clientLocationId){
 	
 	var result = "";
+	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+	    result = result + '<ul>';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+clientLocationId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div id="clientDocumentsList" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
-	  
+	result = result+'	    </div>';
 
     $("#tab-1").empty();
     $("#tab-2").empty(); 
@@ -115,7 +118,7 @@ function clientDocumentsList(clientLocationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#clientDocumentsList").append(result); 
-	                     //pagination(); 
+	                     documentpagination(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -139,13 +142,16 @@ function clientDocumentsList(clientLocationId){
 </script>
 
 <script>
-function pagination(){  
+function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
     } );
 }
 </script>
