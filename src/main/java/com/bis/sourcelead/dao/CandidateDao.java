@@ -12,7 +12,7 @@ public interface CandidateDao {
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception;
 	
 
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState) throws Exception;
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
