@@ -79,8 +79,8 @@ function clientDocumentsList(clientLocationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 if(opt.spocUser.firstName != null && opt.spocUser.firstName != '' && opt.spocUser.firstName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.spocUser.firstName+'</span></div></td>';
+	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
 	                    	 }
@@ -103,8 +103,8 @@ function clientDocumentsList(clientLocationId){
 	                    		 result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 
-	                    	 if(opt.ownerUser.firstName != null && opt.ownerUser.firstName != '' && opt.ownerUser.firstName != 'undefined'){
-	                    	      result  = result + ' <td><div><span>'+opt.ownerUser.firstName+'</span></div></td>';
+	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
+	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
@@ -181,8 +181,7 @@ function addDocument(clientLocationId) {
 	result = result  +'	                       <option value="MSA">MSA</option>';
 	result = result  +'	                       <option value="SOW">SOW</option>';
 	result = result  +'	                       <option value="NDA">NDA</option>';
-	result = result  +'	                       <option value="Non Solicitation">Non Solicitation</option>';
-	result = result  +'	                       <option value="Non-Compete">Non-Compete</option>';
+	result = result  +'	                       <option value="NSA">NSA</option>';
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	
@@ -205,7 +204,7 @@ function addDocument(clientLocationId) {
 	
 	result = result  +'	                  <div class="col-md-6">';
 	result = result  +'	                      <select class="chosen-select" name="owner" id="owner" field-name="Owner">';
-	result = result  +' 					      <option value="" selected="selected">-Owner-</option>';
+	result = result  +' 					      <option value="" selected="selected">Owner</option>';
 	result = result  +'	                          <c:forEach var="user" items="${userList}">';
 	result = result  +'	                              <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''}>${user.firstName} ${user.lastName}</option>';
 	result = result  +'	                          </c:forEach>';
@@ -317,6 +316,9 @@ function closePopup(){
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#document_form").attr("disabled", "disabled");
+				
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -325,7 +327,7 @@ function closePopup(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+con+"&responderLocationId="+clientLocationId,
+						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -359,7 +361,7 @@ function getSpocsList(orgRelationId){
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
-        	output = output + "<option value=''>-Client Contact-</option>"; 
+        	output = output + "<option value=''>Client Contact</option>"; 
         	for (var i=0; i<json.length; i++)
 			{
 	        		var opt = json[i];

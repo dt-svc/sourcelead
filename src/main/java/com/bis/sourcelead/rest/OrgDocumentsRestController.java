@@ -54,7 +54,7 @@ public class OrgDocumentsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId, orgLocation,user);
-		return null;
+		return "success";
 	
 		
 		
