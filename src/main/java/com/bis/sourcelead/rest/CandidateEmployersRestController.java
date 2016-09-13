@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -127,6 +129,59 @@ public class CandidateEmployersRestController {
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
 		 return resultJson;
+	}
+	
+	
+	/**
+	 * This Method is to get CandidateEmployer By CandidateId And CandidateEmpoyerId
+	 * 
+	 * @author Sammeta David Raju
+	 * 
+	 * @param candidateemployersId
+	 * @param candidateId This is the first parameter of getCandidateEmployerByCandidateIdAndCandidateEmpoyerId
+	 * @param candidateemployerId  This is the second parameter of getCandidateEmployerByCandidateIdAndCandidateEmpoyerId
+	 * 
+	 * @return String
+	 * 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
+	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+
+		 CandidateEmployers  candidatesEmployersList = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
+		 resultJson = commonUtil.toJSON(candidatesEmployersList);
+		 return resultJson;
+	}
+	
+	
+	
+	/**
+	 * This Method is to get CandidateEmployer By CandidateId And CandidateEmpoyerId
+	 * 
+	 * @author Sammeta David Raju
+	 * 
+	 * @param candidateemployersId
+	 * @param candidateId This is the first parameter of getCandidateEmployerByCandidateIdAndCandidateEmpoyerId
+	 * @param candidateemployerId  This is the second parameter of getCandidateEmployerByCandidateIdAndCandidateEmpoyerId
+	 * 
+	 * @return String
+	 * 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId")
+	public String upDateCandidateEmployerByCandidateIdAndCandidateExperianceId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateExperianceId", required = false) Long candidateExperianceId,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			CandidateEmployers candidateEmp ;
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			candidateEmp = candidateEmployersService.storeCandidateEmployers(jsonObj,user,loginOrgLocation,candidateId);
+			
+			return "success";
 	}
 	
 	

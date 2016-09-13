@@ -249,7 +249,7 @@ function getCities(sourceleadUrl){
 	}
 }
   
-
+</script>
 
 <%-- 
      @author : Venkat Kesav
