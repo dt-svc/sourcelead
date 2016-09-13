@@ -7,5 +7,7 @@ package com.bis.sourcelead.service;
  */
 public interface OrgDocumentsService {
 
+	void saveDocument();
+
 
 }
