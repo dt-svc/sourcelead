@@ -18,29 +18,6 @@ public class RequirementController {
 	private String sourceleadUrl;
 	
 	
-	
-	@RequestMapping(value = "/requirementList")
-	public ModelAndView requirementList(HttpServletRequest request) {
-		
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("requirement/requirementList");
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Requirement);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
-		
-		
-		return model;
-
-	}
-	
-	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request) {
 		
