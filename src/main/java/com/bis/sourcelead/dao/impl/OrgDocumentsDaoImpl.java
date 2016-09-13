@@ -8,6 +8,18 @@ import com.bis.sourcelead.dao.OrgDocumentsDao;
  *
  */
 public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
+
+	/**
+	 *  to save the documents of the client and vendors
+	 * @author Prasanna Vadla
+	 *
+	 */
+	@Override
+	public void saveDocuments() {
+		
+		
+		
+	}
 	
 	
 
