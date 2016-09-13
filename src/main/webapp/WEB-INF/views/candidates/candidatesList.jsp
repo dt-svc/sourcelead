@@ -16,6 +16,8 @@
 
 <script>
  window.onload = function() {
+ 	
+   	 $('#upcandidateStatus').attr('checked', false);
  	 candidateList();
 };
 </script>
@@ -36,6 +38,10 @@
 	  var candFilterRadio = $('input[name=candidateStatus]');
 	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
+	  var upDatecandFilterRadio = $('input[name=upcandidateStatus]');
+	  var updatedDateRange = upDatecandFilterRadio.filter(':checked').val();
+	
+	  
 	  if(candidateStatus == 1){
           $("#canDiv").text("Active Candidates");
       }else if(candidateStatus == 0){
@@ -45,11 +51,28 @@
       }else{
           $("#canDiv").removeAttr("onClick");
       }
+	  if(updatedDateRange == 1){
+          $("#candidateUpdiv").text("1 Day ago Updated Candidates");
+      }else if(updatedDateRange == 3){
+    	  $("#candidateUpdiv").text("3 Day ago Updated Candidates");
+      }else if(updatedDateRange == 7){
+    	  $("#candidateUpdiv").text("1 Week ago Updated Candidates");
+      }else if(updatedDateRange == 14){
+    	  $("#candidateUpdiv").text("2 Week ago Updated Candidates");
+      }else if(updatedDateRange == 30){
+    	  $("#candidateUpdiv").text("Month ago Updated Candidates");
+      }else if(updatedDateRange == 90){
+    	  $("#candidateUpdiv").text("3 Months Updated Candidates");
+      }else{
+          $("#candidateUpdiv").removeAttr("onClick");
+      }
+
 	  
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus,       
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+updatedDateRange,       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -97,7 +120,6 @@
 				            	}else{
 				            		address = "NO DATA";
 				            	}
-				            	
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
 			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
@@ -162,7 +184,6 @@ function pagination(){
 --%>
 
 <script>
-var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -178,7 +199,6 @@ function clientSideBar(candidateId){
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
               		 else{
-              			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skillsList = json.skillsList;
 			             var skills = [];
@@ -653,15 +673,15 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-            <li><i class="fa fa-filter"></i><span id="candidateUpdiv"> UpDated Candidates </span><i class="glyphicon glyphicon-play" id="filter1ApprovedPop"></i>|
+            <li><i class="fa fa-filter"></i><span id="candidateUpdiv"></span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="DayAgo" checked onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3DayAgo"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
-						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="1WeekAgo"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="3WeekAgo"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="MonthAgo"  onclick="candidateList();"><label for="c7">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="3Months"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+	                    <li><input id="upcandidateStatus" type="radio" name="upcandidateStatus"  value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+						<li><input id="upcandidateStatus" type="radio" name="upcandidateStatus"  value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
+						<li><input id="upcandidateStatus" name="upcandidateStatus" type="radio"  value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
+						<li><input id="upcandidateStatus" name="upcandidateStatus" type="radio"  value ="14"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
+						<li><input id="upcandidateStatus" name="upcandidateStatus" type="radio"  value ="30"  onclick="candidateList();"><label for="c7">Month ago</label></li>
+	                    <li><input id="upcandidateStatus"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="c7">3 Months</label></li>
                     </ul>
                   </div>                	
           </li>  

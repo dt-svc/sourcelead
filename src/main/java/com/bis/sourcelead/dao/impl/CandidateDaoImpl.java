@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -106,33 +108,61 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState) throws Exception {
-		 // TODO Auto-generated method stub
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState, String updatedDateRange ) throws Exception {
+
+		
 		String subQuery = null;
-		String subquery1 = null;
-		//String status = Constants.CANDIDATE_ACTIVE;
+		Integer dateRange ;
+		String updatedDate  ="";
+		Date currentDate =  commonUtil.currentDate();
+		List<Candidate> candidateList ;
+		java.sql.Date sqlCurrentDate = null;
+		
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		
+		
+		//Checking for Candidate Status 
 		Session session = this.sessionFactory.getCurrentSession();
 		String  dateLimit = "";
 		if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_IN_ACTIVE)){
-			 subQuery ="cnadidate.status = '0'";
-			 
+			  subQuery ="cnadidate.status = '0'";
 		}else if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_ALL)){
-			 subQuery ="cnadidate.status = '1' or cnadidate.status = '0'";
+			  subQuery ="cnadidate.status = '1' or cnadidate.status = '0'";
 		}else{
-			subQuery ="cnadidate.status = '1'";
+			 subQuery ="cnadidate.status = '1'";
+		}
+    	
+			
+		if(!updatedDateRange.isEmpty() &&  !updatedDateRange.equalsIgnoreCase("") && !updatedDateRange.equalsIgnoreCase("undefined")){
+			
+			// This Code is for  getting the sql enddate based on range
+		     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+	    	 Calendar c = Calendar.getInstance();
+		     c.setTime(new Date()); // Now use today date.
+		     dateRange = Integer.parseInt(updatedDateRange);
+	         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+	         updatedDate     = dateFormat.format(c.getTime());
+	         Date parsed = dateFormat.parse(updatedDate);
+	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+			
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and  cnadidate.updatedDate  between :endDate  and  :sqlCurrentDate";  
+		     candidateList = session.createQuery(query)
+				                    .setDate("sqlCurrentDate", sqlCurrentDate)
+				                    .setDate("endDate", endDate)
+				                    .setLong("orgLocationId", orgLocationId)
+				                    .setLong("orgId", orgId)
+				                    .list();
+		}else{
+			
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
+		    candidateList = session.createQuery(query)
+					               .setLong("orgLocationId", orgLocationId)
+					               .setLong("orgId", orgId).list();
 		}
 		
-       if(dateLimit.equalsIgnoreCase("3")){
-    	   
-    	   Date currentDate =  commonUtil.currentDate();
-			 subquery1 =   "BETWEEN(currentDate) AND ('2010-09-29 10:15:55')";
-					 
-		}
-		
-		
-		
-		String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
 		return candidateList;
 	}
 	
