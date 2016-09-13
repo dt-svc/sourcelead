@@ -1,13 +1,9 @@
 package com.bis.sourcelead.dao;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.bis.sourcelead.entity.OrgDocuments;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgDocuments;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
  *  to handle the documents of the client and vendors

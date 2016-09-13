@@ -256,7 +256,11 @@ function addDocument(clientLocationId) {
 	        }
 	  });
 	
-	
+	  /* upload file script to show selected file name*/
+	    document.getElementById("uploadBtn").onchange = function () {
+	    document.getElementById("uploadFile").value = this.value;
+	    };
+	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");

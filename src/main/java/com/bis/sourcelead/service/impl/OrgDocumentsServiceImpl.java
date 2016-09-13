@@ -4,26 +4,21 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.service.OrgDocumentsService;
-import com.bis.sourcelead.service.OrgService;
 
 
 /**
@@ -70,7 +65,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setOwnerUser(spocUser);
 		}
 		if(jsonObj.has("startDate")){
-			Date startDate = format.parse(jsonObj.getString("EndDate"));
+			Date startDate = format.parse(jsonObj.getString("startDate"));
 			orgDocuments.setStartDate(startDate);
 		}
 		if(jsonObj.has("endDate")){

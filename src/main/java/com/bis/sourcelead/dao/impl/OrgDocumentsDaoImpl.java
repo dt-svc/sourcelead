@@ -2,31 +2,21 @@ package com.bis.sourcelead.dao.impl;
 
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.rest.CandidateResumeRestController;
-import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.bis.sourcelead.dao.OrgDocumentsDao;
-import com.bis.sourcelead.entity.OrgDocuments;
 
 
 /**
@@ -37,8 +27,6 @@ import com.bis.sourcelead.entity.OrgDocuments;
 @Repository
 public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	
-	@Autowired
-	private SessionFactory sessionFactory;
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateResumeRestController.class);
 	
@@ -56,6 +44,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	 */
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public void saveDocuments(OrgDocuments orgDocuments) throws SourceLeadConstraintViolationException {
 		logger.debug("Storing orgDocuments");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -65,7 +54,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 			}
 			logger.debug("orgDocuments Stored Successfully");
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidateResumes"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"orgDocuments"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 	}

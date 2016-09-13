@@ -39,7 +39,7 @@ public class OrgDocumentsRestController {
 	
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "clientLocationId", required = false) String responderLocationId,
+			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
