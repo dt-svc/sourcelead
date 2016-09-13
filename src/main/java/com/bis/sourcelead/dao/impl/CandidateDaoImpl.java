@@ -154,13 +154,14 @@ public class CandidateDaoImpl implements CandidateDao {
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId)
 				                    .setLong("orgId", orgId)
+				                    .setCacheable(true)
 				                    .list();
 		}else{
 			
 			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
-					               .setLong("orgId", orgId).list();
+					               .setLong("orgId", orgId).setCacheable(true).list();
 		}
 		
 		return candidateList;
@@ -182,7 +183,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.id =:candidateId";
-		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty())
@@ -208,7 +209,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty()){
 			candidate = candidateList.iterator().next();
