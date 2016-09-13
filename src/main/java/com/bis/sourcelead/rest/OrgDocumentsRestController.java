@@ -1,15 +1,22 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -27,13 +34,18 @@ public class OrgDocumentsRestController {
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "clientLocationId", required = false) String responderLocationId,
-			HttpServletRequest request) throws Exception {
+			MultipartHttpServletRequest request) throws Exception {
 
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);*/
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
 
-		
-		orgDocumentsService.saveDocument();
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId, orgLocation);
 		return null;
 	
 		
