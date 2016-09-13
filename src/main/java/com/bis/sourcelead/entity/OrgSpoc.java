@@ -108,7 +108,20 @@ public class OrgSpoc {
 	@Transient
 	private String userState;
 
+	@Transient
+	private Long userId;
 	
+	
+	
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public List<User> getUserList() {
 		return userList;
 	}
