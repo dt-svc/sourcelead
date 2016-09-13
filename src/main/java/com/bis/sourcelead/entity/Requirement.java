@@ -69,7 +69,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String city;
 	
 	@Column(name = "SKILLS")
-	private String skiills;
+	private String skills;
 	
 	@Column(name = "DESCRIPTION")
 	private String description;
@@ -274,12 +274,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.city = city;
 	}
 
-	public String getSkiills() {
-		return skiills;
+	public String getSkills() {
+		return skills;
 	}
 
-	public void setSkiills(String skiills) {
-		this.skiills = skiills;
+	public void setSkills(String skiills) {
+		this.skills = skiills;
 	}
 
 	public String getDescription() {

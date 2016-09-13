@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -112,13 +115,24 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("description")){
 			requirement.setDescription(jsonObj.getString("description"));
 			}
+			
 			if(jsonObj.has("skills")){
-			requirement.setSkiills(jsonObj.getString("skills"));
-			}
-			if(jsonObj.has("education")){
-			requirement.setEducation(jsonObj.getString("education"));
+			
+			  String skills = jsonObj.getString("skills");
+			  skills = skills.replaceAll("\\[", "").replaceAll("\\]","");
+			  skills = skills.replaceAll("\"", "");
+		  	  requirement.setSkills(skills);
+			
 			}
 			
+			if(jsonObj.has("education")){
+		      
+		      
+		      String education = jsonObj.getString("education");
+	    	  education = education.replaceAll("\\[", "").replaceAll("\\]","");
+		  	  requirement.setEducation(education);
+			
+			}
 			requirement.setCreatedDate(commonUtil.currentDate());
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
