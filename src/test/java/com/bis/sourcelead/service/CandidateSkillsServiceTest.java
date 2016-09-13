@@ -44,7 +44,7 @@ public class CandidateSkillsServiceTest {
 		
 		private static final Logger logger = LoggerFactory.getLogger(CandidateSkillsServiceTest.class);
 		
-		//@Test
+		@Test
 		public void storeCandidateSkills( ) throws Exception{
 			CandidateSkills candidateSkills = new CandidateSkills();
 			OrgLocations orgLocations = new OrgLocations();
@@ -67,7 +67,7 @@ public class CandidateSkillsServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateSkillsByCandidateId() throws Exception{
 			List<CandidateSkills> candidateSkillsList = new ArrayList<>();
 			candidateSkillsList = candidateSkillsService.getCandidateSkillsByCandidateId("1l");
@@ -75,7 +75,7 @@ public class CandidateSkillsServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateSkillsDetails() throws Exception{
 			
 			HashSet<CandidateSkills> candidateSkills = new HashSet<>();
@@ -95,7 +95,7 @@ public class CandidateSkillsServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateSkillBySkillId() throws Exception{
 			CandidateSkills candidateSkills = new CandidateSkills();
 			candidateSkills = candidateSkillsService.getCandidateSkillBySkillId(1l);

@@ -41,7 +41,7 @@ public class CandidateServiceTest {
 		private static final Logger logger = LoggerFactory.getLogger(CandidateServiceTest.class);
 		
 		
-		//@Test
+		@Test
 		public void storeCandidate() throws Exception{
 			
 			Candidate candidate = new Candidate();
@@ -101,14 +101,14 @@ public class CandidateServiceTest {
 			logger.info("addCandidate successfully " +candidate.getLastName());
 		}*/
 		
-		//@Test
+		@Test
 		public void getCandidateByCandidateId() throws Exception{
 			Candidate candidate = new Candidate();
 			candidate = candidateService.getCandidateByCandidateId(1l);
 			logger.info("getCandidateByCandidateId " + candidate.getFirstName());
 		}
 		
-		//@Test
+		@Test
 		public void getCandidatesListByOrgLocationID() throws Exception{
 			
 			List<Candidate> candidateList = new ArrayList<>();
@@ -118,20 +118,20 @@ public class CandidateServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateByCandidateIdAndOrgLocationId() throws Exception{
 			Candidate candidate = new Candidate();
 			candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(1l,1l);
 			logger.info("getCandidateByCandidateIdAndOrgLocationId " + candidate.getEmail());
 			
 		}
-		//@Test
+		@Test
 		public void findByCandidateEmail() throws Exception{
 		Candidate candidate = new Candidate();
 		candidate = candidateService.findByCandidateEmail("ajith@gmail.com",1l);
 		logger.info("findByCandidateEmail "+ candidate.getId());
 				}
-		//@Test
+		@Test
 		public void saveOrUpdateCandidate() throws Exception{
 			
 			Candidate candidate = new Candidate();

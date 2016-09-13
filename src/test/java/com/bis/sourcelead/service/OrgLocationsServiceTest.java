@@ -63,7 +63,7 @@ public class OrgLocationsServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgLocationsServiceTest.class);
 
-	//@Test
+	@Test
 	public void addOrgLocation() throws Exception {
 		
 		OrgLocations orgLocations = new OrgLocations();
@@ -91,7 +91,7 @@ public class OrgLocationsServiceTest {
 		logger.info("addOrgLocation successfully " + orgLocations.getState());
 	}
 
-	//@Test
+	@Test
 	public void getOrgLocations() throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
 		if(orgLocations != null)
@@ -101,7 +101,7 @@ public class OrgLocationsServiceTest {
 
 	 
 
-	//@Test
+	@Test
 	public void updateOrgLocations() throws Exception {
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
@@ -126,14 +126,14 @@ public class OrgLocationsServiceTest {
 		logger.info("updateOrgLocations " + orgLocations.getId());
 	}
 
-	//@Test
+	@Test
 	public void getAllOrgLocations() throws Exception {
 		
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
 		logger.info("getAllOrgLocations " + orgLocationsList.size());
 	}
 	
-	//@Test
+	@Test
 	public void getOrgLocationsByLocationCode() throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
@@ -144,7 +144,7 @@ public class OrgLocationsServiceTest {
 		logger.info("getOrgLocationsByLocationCode " + orgLocations.getCountry());
 	}}
 	
-	//@Test
+	@Test
 	public void getOrgLocationsByOrgCode() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		Org org = new Org();
@@ -161,7 +161,7 @@ public class OrgLocationsServiceTest {
 		logger.info("getOrgLocationsByOrgCode " + orgLocations.getCountry());
 	}}
 	
-	//@Test
+	@Test
 	public void saveOrgLocations() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		OrgSettings orgsettings = new OrgSettings();
@@ -187,13 +187,13 @@ public class OrgLocationsServiceTest {
 		logger.info("saveOrgLocations " + orgLocations.getId());
 	}
 	
-	//@Test
+	@Test
 	public void findByEmail() throws Exception{
 
 		OrgLocations orgLocations = orgLocationService.findByEmail("vishnu123@hcl.com",1l);
 		logger.info("findByEmail " + orgLocations.getId());
 	}
-	//@Test
+	@Test
 	public void deleteOrgLocations() throws Exception {
 		
 		Boolean deleteOrglocations = orgLocationService.deleteOrgLocations(2l);
@@ -205,7 +205,7 @@ public class OrgLocationsServiceTest {
 	}
 	}
 
-	//@Test
+	@Test
 	public void orgLocationsListByJson() throws Exception {
 		
 		 JSONObject jsonObj = new JSONObject();

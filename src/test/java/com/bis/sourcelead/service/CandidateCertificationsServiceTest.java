@@ -32,7 +32,7 @@ public class CandidateCertificationsServiceTest {
 	@Autowired
 	CandidateCertificationsService candidateCertificationsService;
 
-	//@Test
+	@Test
 	public void storeCandidateCertifications() throws Exception {
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
 
@@ -59,7 +59,7 @@ public class CandidateCertificationsServiceTest {
 		logger.info("CandidateCertificationsServiceTest added successfully");
 	}
 
-	//@Test
+	@Test
 	public void getCandidateCertificationListByCandidateIdAndOrgLocationID() throws Exception {
 		List<CandidateCertifications> candidateCertifications = new ArrayList<CandidateCertifications>();
 		CandidateCertifications candidate = new CandidateCertifications();
@@ -81,14 +81,14 @@ public class CandidateCertificationsServiceTest {
 	}
 	
 	
-	//@Test
+	@Test
 	public void getCandidateCertificateBycandidateIdandCertificateId() throws Exception{
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
 		candidateCertifications = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(1l,1l);
 		logger.info("getCandidateCertificateBycandidateIdandCertificateId " + candidateCertifications.getProvider());
 	}
 	
-	//@Test
+	@Test
 	public void removeCandidateCertificateBycandidateIdandcandidateCertificateId() throws Exception{
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
 		candidateCertifications = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(1l, 1l);

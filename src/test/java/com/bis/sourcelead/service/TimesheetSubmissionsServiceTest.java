@@ -296,7 +296,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}*/
 	
-	//@Test
+	@Test
 	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
 		User user = new User();

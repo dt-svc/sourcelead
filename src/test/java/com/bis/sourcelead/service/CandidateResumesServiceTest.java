@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class CandidateResumesServiceTest {
 		CandidateResumesService candidateResumesService ;
 		private static final Logger logger = LoggerFactory.getLogger(CandidateResumesServiceTest.class);
 		
-		//@Test
+		@Test
 		public void storeCandidateResume() throws Exception{
 			CandidateResumes candidateResumes = new CandidateResumes();
 			Candidate candidate = new Candidate();
@@ -73,7 +74,7 @@ public class CandidateResumesServiceTest {
 			return multipartFile;
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateResumesDetails() throws Exception{
 			HashSet<CandidateResumes> candidateResumes = new HashSet<>();
 			OrgLocations orglocations = new OrgLocations();
@@ -92,7 +93,7 @@ public class CandidateResumesServiceTest {
 			return multipartFile;
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateResumesListByCandidateIdAndStatus() throws Exception{
 			
 			List<CandidateResumes> candidateResumesList = new ArrayList<CandidateResumes>();
@@ -100,7 +101,7 @@ public class CandidateResumesServiceTest {
 			logger.info("getCandidateResumesListByCandidateIdAndStatus " + candidateResumesList.size());
 		}
 		
-		//@Test
+		@Test
 		public void updateCandidateResume() throws Exception{
 			CandidateResumes candidateResumes = new CandidateResumes();
 			OrgLocations orgLocations = new OrgLocations();
@@ -116,7 +117,7 @@ public class CandidateResumesServiceTest {
 			logger.info("candidateResumes " + candidateResumes.getCandidateId());
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateResumeByResumeId() throws Exception{
 			CandidateResumes candidateResumes = new CandidateResumes();
 			candidateResumes = candidateResumesService.getCandidateResumeByResumeId(2l);

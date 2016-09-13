@@ -44,7 +44,7 @@ function candidateCertificate(candidateId){
 </script>
 <%-- 
      @author : Ajith Matta, Shiva yogi.
-     this script is for validations.
+     this script is for validationSettings.
 --%>
 
 <script type="text/javascript">
@@ -299,7 +299,7 @@ function addCertification(candidateId) {
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-12">';
 		result  = result + '                     <textarea class="form-control" rows="1" name ="description"  placeholder="Description" id="candidateDescription"';
-		result  = result + '                     data-validation-optional="true" data-validation="required"></textarea>';
+		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250"></textarea>';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';

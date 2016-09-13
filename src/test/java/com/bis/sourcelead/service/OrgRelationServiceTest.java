@@ -31,7 +31,7 @@ public class OrgRelationServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgRelationServiceTest.class);
 
-	//@Test
+	@Test
 	public void addOrgRelations() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
@@ -50,7 +50,7 @@ public class OrgRelationServiceTest {
 		logger.info("Added Successfully..."+orgRelations.getStatus());
 	}
 	
-	//@Test
+	@Test
 	public void getOrgRelationIdByOrgLocationIdAndClientLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
@@ -64,7 +64,7 @@ public class OrgRelationServiceTest {
 	}
 	}
 	
-	//@Test
+	@Test
 	public void getAllClientsByOrgLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
@@ -77,7 +77,7 @@ public class OrgRelationServiceTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void getClientByOrgLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
@@ -91,7 +91,7 @@ public class OrgRelationServiceTest {
 	}
 	}
 	
-	//@Test
+	@Test
 	public void getNumberOfProjectsPerClient() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		OrgLocations orglocations = new OrgLocations();
@@ -104,7 +104,7 @@ public class OrgRelationServiceTest {
 	}
 	}
 	
-	//@Test
+	@Test
 	public void getProjectsCountByOrgRelationIdAndOrgLocationId() throws Exception {
 		OrgRelations orgRelations = new OrgRelations();
 		orgRelations.setId(1L);
@@ -118,7 +118,7 @@ public class OrgRelationServiceTest {
 	}
 	}
 	
-	//@Test
+	@Test
 	public void orgRelationsListByJson() throws Exception {
 		
 		JSONObject jsonObj = new JSONObject();
@@ -137,25 +137,25 @@ public class OrgRelationServiceTest {
 		logger.info("orgRelationsListByJson "+orgRelations.size());
 	}
 	
-	//@Test
+	@Test
 	public void getAllVendorsListByOrgLocationId() throws Exception {
 		List<OrgRelations> list = orgRelationsService.getAllVendorsListByOrgLocationId(3L);
 		logger.info("getAllVendorsListByOrgLocationId "+list.size());
 	}
 	
-	//@Test
+	@Test
 	public void getClientAndVendorOrgDeatilsById() throws Exception {
 		OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(3l, 2l);
 		logger.info("getClientAndVendorOrgDeatilsById "+orgRelations.getResponderType());
 	}
 	
-	//@Test
+	@Test
 	public void getOrRelationsById() throws Exception {
 		OrgRelations orgRelations = orgRelationsService.getOrRelationsById(2l);
 		logger.info("getOrRelationsById "+orgRelations.getResponderType());
 	}
 	
-	//@Test
+	@Test
 	public void getAllVendorsContactListByOrgLocationId() throws Exception {
 		List<OrgSpoc> list = orgRelationsService.getAllVendorsContactListByOrgLocationId(3l, 3l, "Client");
 		logger.info("getAllVendorsContactListByOrgLocationId "+list.size());
