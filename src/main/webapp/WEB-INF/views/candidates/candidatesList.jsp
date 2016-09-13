@@ -184,6 +184,7 @@ function pagination(){
 --%>
 
 <script>
+var candidateStatusGlobal = "";
 function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -199,6 +200,7 @@ function clientSideBar(candidateId){
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
               		 else{
+              			candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skillsList = json.skillsList;
 			             var skills = [];

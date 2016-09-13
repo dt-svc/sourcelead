@@ -37,7 +37,7 @@
 function candidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
-	if(window.candidateStatusGlobal != 0){
+	if(window.candidateStatusGlobal != '0'){
 		result = result+'	    	<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 	}
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
