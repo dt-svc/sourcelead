@@ -98,7 +98,7 @@ public class Constants {
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	public static  String OrgSettings = "OrgSettings";
 	
-	public static  String Jobs = "Jobs";
+	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";
 	public static  String Candidates = "Candidates";
 	
