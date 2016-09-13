@@ -100,6 +100,12 @@ public class OrgDocuments {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+    private String startDateStr;
+	
+	@Transient
+	private String endDateStr;
 
 	public Long getId() {
 		return id;
@@ -260,7 +266,21 @@ public class OrgDocuments {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
 	
 }

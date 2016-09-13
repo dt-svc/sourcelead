@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.OrgDocuments;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -19,6 +25,9 @@ import com.bis.sourcelead.service.OrgDocumentsService;
 
 @RestController
 public class OrgDocumentsRestController {
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	
 	@Autowired
@@ -39,5 +48,27 @@ public class OrgDocumentsRestController {
 		
 		
 	} 
+	
+	
+	
+	
+	
+	/**To get documents list
+	 * @author Prasad Salina
+	 * @param responderLocationId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
+	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,HttpServletRequest request) throws Exception {
+
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
+		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId());
+		 resultJson = commonUtil.toJSON(clientDocumentsList);
+		 return resultJson;
+	}	
 
 }

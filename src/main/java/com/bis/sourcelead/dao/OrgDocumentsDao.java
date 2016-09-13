@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
+import com.bis.sourcelead.entity.OrgDocuments;
+
 /**
  *  to handle the documents of the client and vendors
  * @author Prasanna Vadla
  *
  */
-@FunctionalInterface
 public interface OrgDocumentsDao{
 
 	/**
@@ -15,5 +18,12 @@ public interface OrgDocumentsDao{
 	 */
 	void saveDocuments();
 
+	/**
+	 * @author Prasad Salina
+	 * @param responderLocationId
+	 * @param orgLocationId
+	 * @return
+	 */
+	List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId);
 
 }
