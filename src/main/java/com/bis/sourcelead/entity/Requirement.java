@@ -125,7 +125,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String status;
 	
 	@Column(name="PARENT_REQUIREMENT_ID")
-	private String parent_requirement_id;
+	private Long parent_requirement_id;
 	
 	@Column(name="PRIORITY")
 	private String priority;
@@ -141,5 +141,304 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getJobTitile() {
+		return jobTitile;
+	}
+
+	public void setJobTitile(String jobTitile) {
+		this.jobTitile = jobTitile;
+	}
+
+	public String getJobType() {
+		return jobType;
+	}
+
+	public void setJobType(String jobType) {
+		this.jobType = jobType;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
+	public String getPositions() {
+		return positions;
+	}
+
+	public void setPositions(String positions) {
+		this.positions = positions;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getMin_exp() {
+		return min_exp;
+	}
+
+	public void setMin_exp(String min_exp) {
+		this.min_exp = min_exp;
+	}
+
+	public String getMax_exp() {
+		return max_exp;
+	}
+
+	public void setMax_exp(String max_exp) {
+		this.max_exp = max_exp;
+	}
+
+	public String getCurrency_code() {
+		return currency_code;
+	}
+
+	public void setCurrency_code(String currency_code) {
+		this.currency_code = currency_code;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getSkiills() {
+		return skiills;
+	}
+
+	public void setSkiills(String skiills) {
+		this.skiills = skiills;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getIsClientJob() {
+		return isClientJob;
+	}
+
+	public void setIsClientJob(String isClientJob) {
+		this.isClientJob = isClientJob;
+	}
+
+	public OrgRelations getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(OrgRelations clientId) {
+		this.clientId = clientId;
+	}
+
+	public OrgRelations getSopc_Id() {
+		return sopc_Id;
+	}
+
+	public void setSopc_Id(OrgRelations sopc_Id) {
+		this.sopc_Id = sopc_Id;
+	}
+
+	public String getClient_currency_code() {
+		return client_currency_code;
+	}
+
+	public void setClient_currency_code(String client_currency_code) {
+		this.client_currency_code = client_currency_code;
+	}
+
+	public String getClientRate() {
+		return clientRate;
+	}
+
+	public void setClientRate(String clientRate) {
+		this.clientRate = clientRate;
+	}
+
+	public String getClientRateType() {
+		return clientRateType;
+	}
+
+	public void setClientRateType(String clientRateType) {
+		this.clientRateType = clientRateType;
+	}
+
+	public SubmissionTemplate getSubmissionTemplateId() {
+		return submissionTemplateId;
+	}
+
+	public void setSubmissionTemplateId(SubmissionTemplate submissionTemplateId) {
+		this.submissionTemplateId = submissionTemplateId;
+	}
+
+	public SubmissionTemplate getClientSubmissionTemplateId() {
+		return clientSubmissionTemplateId;
+	}
+
+	public void setClientSubmissionTemplateId(SubmissionTemplate clientSubmissionTemplateId) {
+		this.clientSubmissionTemplateId = clientSubmissionTemplateId;
+	}
+
+	public User getManagerUserId() {
+		return managerUserId;
+	}
+
+	public void setManagerUserId(User managerUserId) {
+		this.managerUserId = managerUserId;
+	}
+
+	public String getIsTemplate() {
+		return isTemplate;
+	}
+
+	public void setIsTemplate(String isTemplate) {
+		this.isTemplate = isTemplate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	
+
+	public Long getParent_requirement_id() {
+		return parent_requirement_id;
+	}
+
+	public void setParent_requirement_id(Long parent_requirement_id) {
+		this.parent_requirement_id = parent_requirement_id;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
 	
 }

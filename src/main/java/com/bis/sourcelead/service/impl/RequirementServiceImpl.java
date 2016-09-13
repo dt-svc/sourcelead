@@ -58,7 +58,47 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		Requirement requirement = new Requirement();
 		
-
+		
+	        
+			if(orgLocations != null){
+				requirement.setOrgLocationId(orgLocations);
+			}
+			
+			if(jsonObj.has("jobTitle")){
+				requirement.setJobTitile(jsonObj.getString("jobTitle"));
+			}
+			
+			if(jsonObj.has("jobType")){
+				requirement.setJobType(jsonObj.getString("jobType"));
+			}
+			
+			if(jsonObj.has("country")){
+			requirement.setCountry(jsonObj.getString("country"));
+			}
+			
+			if(jsonObj.has("state")){
+			requirement.setState(jsonObj.getString("state"));
+			}
+			
+			if(jsonObj.has("city")){
+			requirement.setCity(jsonObj.getString("city"));
+			}
+			
+			if(jsonObj.has("description")){
+			requirement.setDescription(jsonObj.getString("description"));
+			}
+			if(jsonObj.has("skills")){
+			requirement.setSkiills(jsonObj.getString("skills"));
+			}
+			if(jsonObj.has("education")){
+			requirement.setEducation(jsonObj.getString("education"));
+			}
+			
+			requirement.setCreatedDate(commonUtil.currentDate());
+			requirement.setCreatedBy(user.getUserCode());
+			requirement.setUpdatedBy(user.getUserCode());
+			requirement.setUpdatedDate(commonUtil.currentDate());
+			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		return savedRequirement;
 	}
