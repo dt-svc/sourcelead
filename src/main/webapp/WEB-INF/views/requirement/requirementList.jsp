@@ -10,9 +10,7 @@
 <!-- my scripts -->
 
 <script>
- window.onload = function() {
- 	
-   	 $('#upcandidateStatus').attr('checked', false);
+ window.onload = function() { 
  	 requirementList();
 };
 </script>
@@ -26,13 +24,12 @@
 --%>
 
 <script>
-function requirementList(){ 	 
-	  
+function requirementList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token},       
+            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -48,7 +45,6 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th><input type='checkbox' id='checkbox1'/></th>"; 
 	                     result = result +"    <th>Title</th>"; 
 	                     result = result +"    <th>Client</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -65,7 +61,7 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><div class='proj_show' onclick='SideBar("+opt.id+");'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
+		                     result = result +"<td><div class='proj_show' onclick='sideBar("+opt.id+");'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
 		                     result = result +"<td><div><span>Vannam vannam vannam vannam</span></div></td>";
 		                     result = result +"<td><div>Full Time</div></td>";
 		                     result = result +"<td><div><span><span>Vannam vannam vannam vannam</span></span></div></td>";
@@ -73,7 +69,7 @@ function requirementList(){
 		                     result = result +"<td><div>Name here</div></td>";
 		                     result = result +"<td><div><b class='proj_process'>Process</b></div></td>";
 		                     result = result +"<td><div><a href='javascript:void(0)'><i class='fa fa-bullhorn'></i></a></div></td>";
-		                     result = result +"</tr>
+		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -91,7 +87,7 @@ function requirementList(){
 					
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
-                 }
+                }
           },
             
        }); 
@@ -128,11 +124,11 @@ function pagination(){
 --%>
 
 <script>
-function SideBar(requirementId){
+function sideBar(requirementId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+           url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
            success :function(data) {  
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
@@ -218,21 +214,24 @@ function SideBar(requirementId){
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
-						    result = result+'      <div id="tab-1" class="project_tabs_inn">';
+						    result = result+' <div id="tab-1" class="project_tabs_inn">';
 						    result = result+'</div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
 					    result = result+'</div>';
 					    result = result+'</div>';
-				            
-			           
-			             
+					    
 			             $("#requirementSideDiv").empty();  
 			 		     $("#requirementSideDiv").append(result);  
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
+						 requirementDetails(requirementId);
+						 $(".proj_close, .side_mask").click(function(){
+								$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+								$(".side_mask").fadeOut(200);
+								$("body").css('overflow-y', 'auto');
+						 });	
 			 			 
 			    	} 
                 }else{
@@ -269,11 +268,11 @@ function SideBar(requirementId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>  
-function requirementDetails(requirementId){
+function requirementDetails(requirementId){ 
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&candidateId="+requirementId,        
+         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -283,10 +282,8 @@ function requirementDetails(requirementId){
             		 else if (data.indexOf('exception') >= 0) {
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
-            		 else{ 
+            		 else{   
 							var result ="";
-							
-							result = result +'<div id="tab-1" class="project_tabs_inn">';
 				            result = result +' <div class="require_wrap_details">';
 				            result = result +'   <h1>Description:</h1>';
 				            result = result +'   <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>';
@@ -354,11 +351,9 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +' </div>';
-				            result = result +'/div>';
-				            
 							$("#tab-1").empty();
 							$("#tab-2").empty(); 
-							$("#tab-1").append(result);  
+							$("#tab-1").append(result); 
 							    
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
@@ -385,7 +380,7 @@ function requirementDetails(requirementId){
       					 result = result+"  </div> "; 
       					$("#requirementSideDiv").empty();
       				    $("#requirementSideDiv").append(result); 
-                      }
+               }
                },
                  
             }); 
@@ -400,11 +395,11 @@ function requirementDetails(requirementId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>  
-function requirementDetails(requirementId){
+function requirementPipeline(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&candidateId="+requirementId,        
+         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -417,7 +412,6 @@ function requirementDetails(requirementId){
             		 else{ 
 							var result ="";
 							
-							result = result +'div id="tab-2" class="project_tabs_inn">';
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -760,7 +754,6 @@ function requirementDetails(requirementId){
 				           result = result + '     </ul>';
 				           result = result + '     <div class="clearfix"></div>';
 				           result = result + '   </nav>';
-				           result = result + ' </div>';
 				            
 				            
 							$("#tab-1").empty();
@@ -854,8 +847,7 @@ Bootstrap
       <div class="require_wrap_table">
           <div id="requirementList"></div>
       </div>
-      
-      <nav>
+     <!--  <nav>
         <ul id="paging" class="pagination">
           <li><a href="#">Previous</a></li>
           <li><a href="#">2</a></li>
@@ -866,7 +858,7 @@ Bootstrap
           <li data-page="last"><a href="#">Next</a></li>
         </ul>
         <div class="clearfix"></div>
-      </nav>
+      </nav> -->
     </div>
     <div class="side_mask">
       <div class="proj_close"></div>

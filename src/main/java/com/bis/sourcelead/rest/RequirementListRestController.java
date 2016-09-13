@@ -7,11 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementService;
@@ -74,6 +78,35 @@ public class RequirementListRestController {
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
+	 
+	 
+	 /**
+	 * @author sarath kumar
+	 * @since  sep 13 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get Requirement by requirementId .
+	 *  
+	 * @param requirementId This is the first paramter to getRequirementByRequirementId method
+	 * 
+	 * @return Requirement 
+	 * 
+	 * @throws NullPointer
+	 */
+	 
+	 @RequestMapping(value = "/getRequirementById" , method = RequestMethod.POST)
+	 public @ResponseBody  String getCandidateById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+			String resultJson;
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			 
+			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
+			resultJson = commonUtil.toJSON(requirement);
+			return resultJson;
+			
+     }
+	 
 	 	   
 		
 }

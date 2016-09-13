@@ -129,6 +129,26 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
 	}
 
+	
+	/**
+	 * @author sarath kumar
+	 * @since  sep 13 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get Requirement by requirementId .
+	 *  
+	 * @param requirementId This is the first paramter to getRequirementByRequirementId method
+	 * 
+	 * @return Requirement 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
+		return requirementDao.getRequirementByRequirementId(requirementId);
+	}
+
 
 	
 	

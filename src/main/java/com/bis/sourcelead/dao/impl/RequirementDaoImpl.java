@@ -100,12 +100,43 @@ public class RequirementDaoImpl implements RequirementDao {
 	 */
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId) throws Exception {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
+	}
+
+	/**
+	 * @author sarath kumar
+	 * @since  sep 13 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get Requirement by requirementId .
+	 *  
+	 * @param requirementId This is the first paramter to getRequirementByRequirementId method
+	 * 
+	 * @return Requirement 
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement where requirement.id =:requirementId";
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			requirement = (Requirement) requirementList.iterator().next();
+		}
+		return requirement;
+	
 	}
 	
 
