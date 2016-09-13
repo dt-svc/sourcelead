@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -136,7 +137,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
     	
 			
-		if(!updatedDateRange.isEmpty() &&  !updatedDateRange.equalsIgnoreCase("") && !updatedDateRange.equalsIgnoreCase("undefined")){
+		if(StringUtils.isNotEmpty(updatedDateRange) &&  updatedDateRange != null && !updatedDateRange.isEmpty()  && !updatedDateRange.equalsIgnoreCase("undefined")){
 			
 			// This Code is for  getting the sql enddate based on range
 		     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
