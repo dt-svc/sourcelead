@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 
@@ -27,8 +30,10 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -37,10 +42,13 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 /**
@@ -90,6 +98,9 @@ public class ClientRestController {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	SubmissionTemplateService submissionTemplateService;
 	
 	
 	/**
@@ -284,6 +295,21 @@ public class ClientRestController {
 		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
+	
+	
+	
+	@RequestMapping(value = "/getSubmissionTemplatesList", method = RequestMethod.POST)
+	@ResponseBody String getSubmissionTemplatesList(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocations.getId());
+		
+		return commonUtil.toJSON(submissiontTemplateList);
+	}
+	
+	
+	
+	
+	
 
 	/** To Terminate Spoc soft deletion only)
 	 * @author Prasad Salina
@@ -673,6 +699,40 @@ public class ClientRestController {
 		 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
 		 return resultJson;
 	}
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/saveClientSubmissionTemplate" , method = RequestMethod.POST)
+	   public String saveClientSubmissionTemplate(@RequestParam(value="json", required=false) String json,
+			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+		   try {
+			   SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setDescription(jsonObj.getString("description"));
+			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
+			   submissionTemplate.setClientLocationId(clientOrgLocation);
+			   submissionTemplate.setOrgLocationId(orgLocations);
+			   submissionTemplate.setCreatedBy(user.getUserCode());
+			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+			}
+			   return "home";
+	    
+	   }
 	/**
 	 * check given string empty or null
 	 * @param str

@@ -185,6 +185,8 @@ width: 100% !important;
        			 result = result + '</div>';
        			 result = result + '</div>';
        		 }
+    		$("#tab-3-addTemplate").empty();
+    		$("#tab-3").empty();  
     		$("#tab-2-addContact").empty();  
     	    $("#tab-2-addContact").append(res);
     		$("#tab-2").empty();  
