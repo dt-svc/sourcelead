@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -82,6 +83,29 @@ public class RequirementDaoImpl implements RequirementDao {
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirement;
+	}
+
+	/**
+	 * @author sarath kumar
+	 * @since  sep 13 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get RequirementList by orgLocationId .
+	 *  
+	 * @param orgLocationId This is the first paramter to getRequirementListByOrgLocationID method
+	 * 
+	 * @return Requirement 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId) throws Exception {
+		 
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		
 	}
 	
 

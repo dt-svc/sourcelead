@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +108,25 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
 		return requirementDao.storeRequirement(requirement);
+	}
+
+	/**
+	 * @author sarath kumar
+	 * @since  sep 13 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get RequirementList by orgLocationId .
+	 *  
+	 * @param orgLocationId This is the first paramter to getRequirementListByOrgLocationID method
+	 * 
+	 * @return Requirement 
+	 * 
+	 * @throws NullPointer
+	*/
+
+	@Override
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
 	}
 
 
