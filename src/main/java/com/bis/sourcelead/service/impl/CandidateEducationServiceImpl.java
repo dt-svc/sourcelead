@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -54,7 +55,12 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public CandidateEducation storeCandidateEducation(JSONObject jsonObject,Long candidateId, Long orgLocationId,User user) throws Exception {
 		
 		CandidateEducation candidateEducation =new CandidateEducation();
-		
+		if(candidateId!=null){
+        	if(jsonObject.has("candidateEduId")){
+	       		 if(jsonObject.getString("candidateEduId")!=null && !jsonObject.getString("candidateEduId").isEmpty()){
+	       			candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
+	       	     }
+       	    }
 		Candidate candidate = new Candidate();
 		candidate.setId(candidateId);
 		candidateEducation.setCandidateId(candidate);
@@ -83,14 +89,18 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				e.printStackTrace();
 			}
 		}
-		if(jsonObject.has("endDate")){
+		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty())) {
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-				candidateEducation.setEndDate(sdf.parse(jsonObject.getString("endDate")));
+				String pattern = "yyyy-MM-dd";
+                SimpleDateFormat format = new SimpleDateFormat(pattern);
+                Date validTo = format.parse(jsonObject.getString("endDate"));
+                candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		
 		if(jsonObject.has("grade")){
 			candidateEducation.setGrade(jsonObject.getString("grade"));
 		}
@@ -108,7 +118,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		candidateEducation.setCreatedDate(commonUtil.currentDate());
 		candidateEducation.setUpdatedBy(user.getUserCode());
 		candidateEducation.setUpdatedDate(commonUtil.currentDate());
-		
+		}
 		return candidateEducationDao.storeCandidateEducation(candidateEducation);
 	}
 	
@@ -131,10 +141,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		for(CandidateEducation education :edulist){
 			if(education.getStartDate() != null){
-			education.setStartDateStr(Constants.DF_DMY.format(education.getStartDate()));
+			education.setStartDateStr(Constants.DF_YMD.format(education.getStartDate()));
 			}
 			if(education.getEndDate() != null){
-			education.setEndDateStr(Constants.DF_DMY.format(education.getEndDate()));
+			education.setEndDateStr(Constants.DF_YMD.format(education.getEndDate()));
 			}
 		}
 		return edulist;
@@ -178,8 +188,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	@Override
 	public CandidateEducation removeCandidateEducationBycandidateIdandcandidateEducationId(Long candidateId,
 			Long candidateEducationId) throws Exception {
-	
-		CandidateEducation can = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+			CandidateEducation can = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 		     return candidateEducationDao.storeCandidateEducation(can);
 	}

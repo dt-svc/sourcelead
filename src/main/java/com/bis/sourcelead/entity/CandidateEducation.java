@@ -76,12 +76,22 @@ public class CandidateEducation {
 	private String status;
 	
 	@Transient
+    private long candidateEduId;
+	
+	@Transient
     private String startDateStr;
 	
 	@Transient
 	private String endDateStr;
 	
-	 
+	public long getCandidateEduId() {
+		return candidateEduId;
+	}
+
+	public void setCandidateEduId(long candidateEduId) {
+		this.candidateEduId = candidateEduId;
+	}
+
 	public Long getId() {
 		return id;
 	}
