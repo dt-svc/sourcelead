@@ -72,6 +72,9 @@ public class OrgRelations {
     private String orgName;
 	
 	@Transient
+    private String orgType;
+	
+	@Transient
     private Long orgid;
 	
 	@Transient
@@ -282,6 +285,14 @@ public class OrgRelations {
 
 	public String getOrgName() {
 		return orgName;
+	}
+	
+	public String getOrgType() {
+		return orgType;
+	}
+
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
 	}
 
 	public void setOrgName(String orgName) {

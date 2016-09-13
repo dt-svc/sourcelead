@@ -51,8 +51,14 @@ var validationSettings = {
 
 <script>
 function storeCertificate(candidateId){
-	
-	
+			 var scoreType = document.getElementById("scoreType").value; 
+			 if(scoreType != null && scoreType != ""){
+				 $('#candidateScore').removeAttr('data-validation-optional');
+				 $('#candidateScore').attr("data-validation","required"); 
+			 }else{
+				 $('#candidateScore').removeAttr('data-validation');
+				 $('#candidateScore').attr("data-validation-optional","true"); 
+			 }
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
 			var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -244,8 +250,8 @@ function addCertification(candidateId) {
 		
 		result  = result + '                 <div class="clearfix mb10">';
 		result = result  +'	                     <div class="col-md-4" positionRelative>';
-		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onselect="selectScoreType();">';
-		result = result  +' 					   <option value="" disabled="disabled" selected="selected">Score Type</option>';
+		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">%</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
@@ -329,7 +335,8 @@ function addCertification(candidateId) {
 	}
 </script>
 
-     <!-- this script is for removing the Certification  starts --> 
+<!-- this script is for removing the Certification  starts --> 
+
       
 <script>
 function removeCertification(candidateCertificationId,candidateId){
@@ -358,8 +365,12 @@ function removeCertification(candidateCertificationId,candidateId){
      }); 
 }
 </script> 
- <!-- this script is for removing the Certification  Ends -->       
-            
+ <!-- this script is for removing the Certification  Ends -->  
+      
+<%-- 
+     @author : 
+     this script is to flush candidate.
+--%>
 <script type="text/javascript">
 	function flushCandiadate() {
 		$("#addCandidate").removeAttr("disabled");
@@ -375,12 +386,16 @@ function removeCertification(candidateCertificationId,candidateId){
 </script>
 
 
+<%-- 
+     @author : shivayogi , Ajith.
+     this script is to display candidate score validation based on scoreType.
+--%>
 <script type="text/javascript">
 function selectScoreType(){
 	
-	var selectedText = document.getElementById("scoreType").value;
+	 var selectedText = document.getElementById("scoreType").value;
 	 var canScore = document.getElementById("candidateScore").value;
-	  $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
@@ -394,7 +409,7 @@ function selectScoreType(){
 		 	 }
 	  }
 	 else if(selectedText =='CGPA'){
-		  var cgpanum = /^([1-9]|10)$/
+		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
 			  if(canScore.match(cgpanum)){
 				  $("#addCandidate").removeAttr("disabled");
 				   return true;
@@ -406,7 +421,7 @@ function selectScoreType(){
 			 }
 	  } 
 	 else if(selectedText =='GRADE'){
-		 var grades = /^([A-E]?[-+]{0,2})$/
+		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
 				 $("#addCandidate").removeAttr("disabled");
 				 return true;
@@ -417,5 +432,19 @@ function selectScoreType(){
 	    		
 			}
    		}
-	  } 
+		 }
+	  
 </script>
+
+
+<%-- 
+     @author : shivayogi , Ajith.
+     this script is to flush candidate value when score type is changed.
+--%>
+<script>
+function clearSearchKey() {
+	   $('#candidateScore').val('');
+	   $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+
+}
+</script>                     
