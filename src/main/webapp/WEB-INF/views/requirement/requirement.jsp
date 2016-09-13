@@ -14,8 +14,44 @@
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
+			$(".cd").click(function(){  
+		        $(".clientDetails").toggleClass('hidden', 500);
+		    });
 		 };
 </script>
+
+<!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			
+		   $("#country").chosen();
+	       $("#state").chosen();
+	       $("#city").chosen();
+	       
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+		       
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+				
+				
+</script> 
+<!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 <!-- Country,State,City Script Starts Here -->
 
@@ -1646,10 +1682,6 @@ Side Nav Bar
 
 
 $(document).ready(function(){
-    $(".cd").click(function(){
-        $(".clientDetails").toggleClass('hidden', 500);
-    });
-
 // append json data
 var populateSelectBox = function (selectbox, dataArray) {
     dataArray.forEach(function (data) {
