@@ -137,7 +137,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
     	
 			
-		if(StringUtils.isNotEmpty(updatedDateRange) &&  updatedDateRange != null && !updatedDateRange.isEmpty()  && !updatedDateRange.equalsIgnoreCase("undefined")){
+		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
 			
 			// This Code is for  getting the sql enddate based on range
 		     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
