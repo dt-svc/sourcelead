@@ -39,6 +39,9 @@ public class Countries {
 	@Column(name = "Code2")
 	private String code2;
 	
+	@Column(name = "currency")
+	private String currency;
+	
 	@Column(name = "flagPath")
 	private String flagPath;
 	
@@ -100,6 +103,15 @@ public class Countries {
 
 	public void setCode2(String code2) {
 		this.code2 = code2;
+	}
+
+	
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 	public String getFlagPath() {

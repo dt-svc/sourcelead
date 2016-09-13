@@ -5,21 +5,16 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
 <!-- end files for autocomplete with tagit -->
 	
 	<script type="text/javascript">
@@ -43,6 +38,12 @@
 	position: absolute;
 	left:0;
 	bottom:-16px;
+	}
+	.selp-custom-min .btn-default{
+	z-index: -55 !important;
+	}
+	.selp-custom-min .open {
+	z-index: 999999999 !important;
 	}
 	</style>
 
@@ -200,9 +201,14 @@
              <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 <option><a href="#">&#x20B9;</a></option>
-                 <option><a href="#">&#x20A0;</a></option>
-                 <option><a href="#">$</a></option>
+                 
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 
              </select>
              </div>
            </div>
@@ -217,9 +223,14 @@
             <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
               <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
-                 <option><a href="#">&#x20B9;</a></option>
-                 <option><a href="#">&#x20A0;</a></option>
-                 <option><a href="#">$</a></option>
+                 
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 
              </select>
              </div>
            </div>
