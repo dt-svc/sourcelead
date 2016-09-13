@@ -1,5 +1,22 @@
 package com.bis.sourcelead.dao.impl;
 
+
+import java.text.MessageFormat;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.bis.sourcelead.dao.OrgDocumentsDao;
+import com.bis.sourcelead.entity.OrgDocuments;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.rest.CandidateResumeRestController;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -10,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.entity.OrgDocuments;
+
 
 /**
  *  to handle the documents of the client and vendors
@@ -22,16 +40,34 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	private static final Logger logger = LoggerFactory.getLogger(CandidateResumeRestController.class);
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
 	/**
 	 *  to save the documents of the client and vendors
 	 * @author Prasanna Vadla
+	 * @throws SourceLeadConstraintViolationException 
 	 *
 	 */
+
 	@Override
-	public void saveDocuments() {
-		
-		
-		
+	public void saveDocuments(OrgDocuments orgDocuments) throws SourceLeadConstraintViolationException {
+		logger.debug("Storing orgDocuments");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (orgDocuments != null) {
+				session.save(orgDocuments);
+			}
+			logger.debug("orgDocuments Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidateResumes"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
 	}
 
 	@Override
