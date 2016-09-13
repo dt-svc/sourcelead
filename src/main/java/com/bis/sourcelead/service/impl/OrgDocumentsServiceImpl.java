@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,21 +56,21 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setFileType(multiFile.getContentType());
 		 }
 		
-		if(jsonObj.has("owner")){
+		if(jsonObj.has("owner") && StringUtils.isNotBlank(jsonObj.getString("owner")) && StringUtils.isNotEmpty(jsonObj.getString("owner"))){
 			User ownerUser = new User();
 			ownerUser.setId(Long.parseLong(jsonObj.getString("owner")));
 			orgDocuments.setOwnerUser(ownerUser);
 		}
-		if(jsonObj.has("spoc")){
+		if(jsonObj.has("spoc") && StringUtils.isNotBlank(jsonObj.getString("spoc")) && StringUtils.isNotEmpty(jsonObj.getString("spoc"))){
 			User spocUser = new User();
 			spocUser.setId(Long.parseLong(jsonObj.getString("spoc")));
 			orgDocuments.setSpocUser(spocUser);
 		}
-		if(jsonObj.has("startDate")){
+		if(jsonObj.has("startDate") && StringUtils.isNotBlank(jsonObj.getString("startDate")) && StringUtils.isNotEmpty(jsonObj.getString("startDate"))){
 			Date startDate = format.parse(jsonObj.getString("startDate"));
 			orgDocuments.setStartDate(startDate);
 		}
-		if(jsonObj.has("endDate")){
+		if(jsonObj.has("endDate") && StringUtils.isNotBlank(jsonObj.getString("endDate")) && StringUtils.isNotEmpty(jsonObj.getString("endDate"))){
 			Date endDate = format.parse(jsonObj.getString("endDate"));
 			orgDocuments.setEndDate(endDate);
 		}
@@ -102,16 +103,19 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
-			documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+			    documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
 			}
 			if(documents.getEndDate() != null){
-			documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+			   documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+			}
+			if(documents.getSpocUser() != null){
+				documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
+			}
+			if(documents.getSpocUser() != null){
+				documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
 			}
 		}
 		return documentsList;
 	}
 	
-	
-
-
 }
