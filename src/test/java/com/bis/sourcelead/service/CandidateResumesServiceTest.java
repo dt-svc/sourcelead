@@ -66,7 +66,7 @@ public class CandidateResumesServiceTest {
 						
 			MultipartFile multipartFile = getMultiPartFile();
 						
-			candidateResumes = candidateResumesService.storeCandidateResume(jsonObj,user,candidate,orgLocationId,multipartFile);
+			candidateResumes = candidateResumesService.storeCandidateResume(jsonObj,user,candidate,"1",orgLocationId,multipartFile);
 			logger.info("success fully store " +candidateResumes.getStatus());
 			
 		}

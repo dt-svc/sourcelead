@@ -129,10 +129,10 @@ public class CandidateCertificationsRestController {
 			CandidateCertifications  candidateCertificationsList = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
 			
 			if(candidateCertificationsList.getValidFrom() != null){
-				candidateCertificationsList.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidFrom())); 
+				candidateCertificationsList.setCandidatevalidFromDateToString(Constants.DF_YMD.format(candidateCertificationsList.getValidFrom())); 
 			 }
 			 if(candidateCertificationsList.getValidTo() != null){
-				 candidateCertificationsList.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidTo())); 
+				 candidateCertificationsList.setCandidatevalidToDateToString(Constants.DF_YMD.format(candidateCertificationsList.getValidTo())); 
 			 }
 			resultJson = commonUtil.toJSON(candidateCertificationsList);
 			 return resultJson;

@@ -40,6 +40,10 @@ function candidateCertificate(candidateId){
     
 }
 </script>
+<%-- 
+     @author : Ajith Matta, Shiva yogi.
+     this script is for validations.
+--%>
 
 <script type="text/javascript">
 var validationSettings = {
@@ -60,6 +64,7 @@ var validationSettings = {
 
 <script>
 function storeCertificate(candidateId){
+	
 			 var scoreType = document.getElementById("scoreType").value; 
 			 if(scoreType != null && scoreType != ""){
 				 $('#candidateScore').removeAttr('data-validation-optional');
@@ -68,6 +73,8 @@ function storeCertificate(candidateId){
 				 $('#candidateScore').removeAttr('data-validation');
 				 $('#candidateScore').attr("data-validation-optional","true"); 
 			 }
+		 
+		 
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
 			var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -181,27 +188,27 @@ function candidateCertificateList(candidateId){
 				            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score = opt.score;
 				            	}else{
-				            		score = "NO DATA";
+				            		score = "--";
 				            	}
 				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
 				            		scoreType = opt.scoreType;
 				            	}else{
-				            		scoreType = "NO DATA";
+				            		scoreType = "--";
 				            	}
 				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
 				            		description = opt.description;
 				            	}else{
-				            		description = "NO DATA";
+				            		description = "--";
 				            	}
 				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
 				            	}else{
-				            		candidatevalidFromDateToString = "NO DATA";
+				            		candidatevalidFromDateToString = "--";
 				            	}
 				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
 				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
 				            	}else{
-				            		candidatevalidToDateToString = "NO DATA";
+				            		candidatevalidToDateToString = "--";
 				            	}
 	                    	 result  = result + '         <tr>';
 	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
@@ -211,7 +218,8 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><i class="glyphicon glyphicon-eye-open" onClick ="editCertification('+ opt.id+ ','+ candidateId+ ');"></i><i class="glyphicon glyphicon-trash" onClick ="removeCertification('+opt.id+','+candidateId+');"></i></div></td>';	                    	 result  = result + '         </tr>';
+	                    	 result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a><i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');"></i></div></td>';
+	                    	 result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -279,7 +287,7 @@ function addCertification(candidateId) {
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
 		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" readonly="readonly" onkeyup="selectScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
 		result = result  +'	                   </div>';
@@ -438,12 +446,12 @@ function addCertification(candidateId) {
 								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
 									
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
-									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
+									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 								}else{
 									
 									result  = result + '                     <input type="text" class="form-control input-sm"  value=" " name ="validFrom" placeholder="Valid From" ';
-									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
+									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 									
 								}
@@ -453,12 +461,12 @@ function addCertification(candidateId) {
 								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
 									
 									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Validate To" ';
-									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
+									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 								}else{
 									
 									result  = result + '                     <input type="text" class="form-control input-sm" value = " " name="validTo" placeholder="Validate To" ';
-									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
+									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 								}
 								
@@ -502,21 +510,21 @@ function addCertification(candidateId) {
 								$(".edit-details").removeClass("edit-details-active");
 							   });	 */
 
-							  $('#StartDate').datepicker({
+							  $('#StartDateEdit').datepicker({
 							      dateFormat: 'yy-mm-dd',
 							      onSelect: function (selected) {
 							            var dt = new Date(selected);
 							            dt.setDate(dt.getDate() + 1);
-							            $("#EndDate").datepicker("option", "minDate", dt);
+							            $("#EndDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
-							  $('#EndDate').datepicker({
+							  $('#EndDateEdit').datepicker({
 							      dateFormat: 'yy-mm-dd',
 							        onSelect: function (selected) {
 							            var dt = new Date(selected);
 							            dt.setDate(dt.getDate() - 1);
-							            $("#StartDate").datepicker("option", "maxDate", dt);
+							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 							        }
 							  });
 																
@@ -547,6 +555,16 @@ function addCertification(candidateId) {
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		
+		var scoreType = document.getElementById("scoreType").value; 
+		 if(scoreType != null && scoreType != ""){
+			 $('#candidateScore').removeAttr('data-validation-optional');
+			 $('#candidateScore').attr("data-validation","required"); 
+		 }else{
+			 $('#candidateScore').removeAttr('data-validation');
+			 $('#candidateScore').attr("data-validation-optional","true"); 
+		 }
+		
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
 
@@ -643,6 +661,11 @@ function removeCertification(candidateCertificationId,candidateId){
 function selectScoreType(){
 	
 	 var selectedText = document.getElementById("scoreType").value;
+	if(selectedText != null && selectedText !='' && selectedText !='undefined'){
+		 $("#candidateScore").removeAttr("readonly");
+	}else{
+		 $("#candidateScore").attr("readonly", "readonly");
+	}
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
@@ -652,7 +675,7 @@ function selectScoreType(){
 			   return true;
 		  }		  
 		 else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
+				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
 				 $("#addCandidate").attr("disabled", "disabled");
 				return false; 
 		 	 }
@@ -664,7 +687,7 @@ function selectScoreType(){
 				   return true;
 			  }		  
 			 else{
-				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
+				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
 				 $("#addCandidate").attr("disabled", "disabled");
 			return false; 
 			 }
@@ -675,7 +698,7 @@ function selectScoreType(){
 				 $("#addCandidate").removeAttr("disabled");
 				 return true;
 			}else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
+				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
 				 $("#addCandidate").attr("disabled", "disabled");
 	    		return false;
 	    		
