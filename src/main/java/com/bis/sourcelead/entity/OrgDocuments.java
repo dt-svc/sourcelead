@@ -106,6 +106,12 @@ public class OrgDocuments {
 	
 	@Transient
 	private String endDateStr;
+	
+	@Transient
+	private String spocName;
+	
+	@Transient
+	private String ownerName;
 
 	public Long getId() {
 		return id;
@@ -281,6 +287,22 @@ public class OrgDocuments {
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public String getSpocName() {
+		return spocName;
+	}
+
+	public void setSpocName(String spocName) {
+		this.spocName = spocName;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
 	}
 	
 }
