@@ -29,7 +29,9 @@
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			
+			$(".cd").click(function(){  
+		        $(".clientDetails").toggleClass('hidden', 500);
+		    });
 		 };
 </script>
 
