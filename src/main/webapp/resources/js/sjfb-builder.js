@@ -103,7 +103,7 @@ function addField(fieldType) {
         '<button type="button"  class="delete">Delete Field</button>' +
         '<h3>' + fieldType + '</h3>' +
         '<label>Label:' +
-        '<input type="text" class="field-label">' +
+        '<input type="text" data-validation="required" field-name="Label" class="field-label">' +
         '</label>' +
         includeRequiredHTML +
         includeChoicesHTML +
@@ -151,7 +151,7 @@ function addChoice() {
     return '' +
         '<li>' +
         '<label>Choice: ' +
-        '<input type="text" class="choice-label">' +
+        '<input type="text" data-validation="required" field-name="Choice Label" class="choice-label">' +
         '</label>' +
         '<label>Selected? ' +
         '<input class="toggle-selected" type="checkbox">' +

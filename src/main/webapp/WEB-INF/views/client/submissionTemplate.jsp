@@ -19,35 +19,43 @@
 		
 		var result = "";
 		
-		result = result + '<section class="content-wraper">';
-		result = result + '<div class="content-dashboard clearfix">';
-		result = result + '<div id="loading"></div>';
-		result = result + '<section class="content-header clearfix">';
-		result = result + '<div class="pull-left">';
-		result = result + '<h2>Submission Template</h2>';
+		result = result + '<section class="clearfix createTemplate">';
+		
+		result = result + '<div class="clearfix">';
+		result = result + '<h2>Template Details</h2>';
 		        result = result + '</div>';
 		        result = result + '<div id="sjfb-wrap">';
 
 		           result = result + '<form id="sjfb" novalidate>';
 		           result = result + '<input type="hidden" id="clientLocationId" value="'+clientLocationId+'">';
 		           
-		            result = result  +'	<div class="clearfix mb10">';
-		            result = result  +'<label class="col-md-3">Template Name<span class="text-danger">&nbsp;*</label>';
-			    	result = result  +'	<div class="col-md-12">';
+		           result = result  +'	<div class="row mb">';
+		            result = result  +'	<div class="col-xs-12 col-md-6">';
+		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
+			    	result = result  +'	<div class="mt10">';
 			    	result = result  +'	<input type="text" class="form-control input-sm" value="" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	result = result  +'	</div>';
 			    	result = result  +'	</div>';
 			    	
-			    	result = result  +'	<div class="clearfix mb10">';
-			    	 result = result  +'<label class="col-md-3">Description<span class="text-danger">&nbsp;*</label>';
-			    	result = result  +'	  <div class="col-md-12">';
-			    	result = result  +'	     <textarea rows="5" name="description" field-name="Description" data-validation="required" placeholder="Description *" class="form-control"></textarea>';
+			    	result = result  +'	<div class="col-xs-12 col-md-6">';
+			    	 result = result  +'<label>Description<span class="text-danger">&nbsp;*</label>';
+			    	result = result  +'	  <div class="mt10">';
+			    	result = result  +'	     <textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>';
 			    	result = result  +'	   </div>';
 			    	result = result  +'	</div>';
+			    	result = result  +'	</div>';
 			    	
-			    	result = result + '<div class="add-wrap">';
-			        result = result + '<h3>Add Field:</h3>';
-			        result = result + '<ul id="add-field">';
+			    	result = result + '<div class="clearfix mb row">';
+			    	
+			    	result = result + '<div class="col-md-10">';
+			    	result = result + '<h2>Template Fields</h2>';
+			    	result = result + '</div>';
+			    	
+			    	result = result + '<div class="col-md-2">';
+			        result = result + '<div class="dropdown">';
+			        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown">Add Field &nbsp;&nbsp;';
+			        result = result + '<span class="caret"></span></button>';
+			        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
 			        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
 			        result = result + '<li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>';
 			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
@@ -55,13 +63,23 @@
 			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
 		            result = result + '</ul>';
 			        result = result + '</div>';
+			        result = result + '</div>';
+			        
+			        result = result + '</div>';
 		           
 		           result = result + '<div id="form-fields">';
 		           result = result + '</div>';
+		           result = result + '<div class="form-footer clearfix row mt">';
+		           
+		           result = result + '<div class="pull-right mr">';
 		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
-		           result = result + '</form>';
+		           result = result + ' <input type="button" value="Cancel" class="btn btn-default" >';
+		           result = result + '</div>';
 
 		           result = result + '</div>';
+		           result = result + '</form>';
+
+		      
 		           result = result + '</section>';
 		           
 		           
