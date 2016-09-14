@@ -70,7 +70,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("jobTitle")){
-				requirement.setJobTitile(jsonObj.getString("jobTitle"));
+				requirement.setJobTitle(jsonObj.getString("jobTitle"));
 			}
 			
 			if(jsonObj.has("jobType")){
@@ -123,6 +123,10 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("rateType")){
 			requirement.setRateType(jsonObj.getString("rateType"));
+			}
+			
+			if(jsonObj.has("isTemplate")){
+			requirement.setIsTemplate(jsonObj.getString("isTemplate"));
 			}
 			
 			if(jsonObj.has("skills")){
@@ -201,6 +205,26 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		return requirementDao.getRequirementByRequirementId(requirementId);
+	}
+	
+	
+	/**
+	 * @author prasad k
+	 * @since  sep 14 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get template status by orgLocationId .
+	 *  
+	 * @param requirementId This is the first paramter to getJobTemplateStatusByJobTitleAndRequirementId method
+	 * 
+	 * @return Requirement 
+	 * 
+	 * @throws NullPointer
+	 */
+
+	@Override
+	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId) throws Exception {
+		return requirementDao.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocationId);
 	}
 
 

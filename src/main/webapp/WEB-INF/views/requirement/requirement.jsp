@@ -32,6 +32,11 @@
 			$(".cd").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
+			
+			$(".cd1").click(function(){  
+		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
+		    });
+			
 		 };
 </script>
 
@@ -61,13 +66,14 @@
             <label class="input-group-btn">
             	<span class="btn btn-primary">Select Template
               </span> </label>
-            <select class="selectpicker form-control">
-                    <option value="w2" disabled>Select Tempalte</option>
-                    <option value="C2H">C2H</option>
-                    <option value="Part">Part</option>
-                    <option value="Time">Time</option>
-                    <option value="Other">Other</option>
+            
+                 <select class="selectpicker form-control" id="template" onchange="setValues();">
+                  <c:forEach var="title" items="${jobsTemplateList}">
+	                    <option value="${title.id}">${title.jobTitle}</option>
+                     </c:forEach>   
                   </select>
+                  
+                
           </div>
           <div class="text-center clearfix mt text-muted">
           	<div class="clearfix text-center mb">
@@ -233,7 +239,15 @@
              <textarea rows="2" class="form-control" id="description" name="description" value="${description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
             </div>
           </div>
+          
+          <div class="form-group">
+            
+            <label class="col-md-3">Is Template</label>
+            <div class="col-md-9">
+            <input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+		    </div>
         </div>
+        
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
@@ -1479,6 +1493,59 @@ function getCities(){
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 
-<!-- </body>
-</html> -->
+<script>
+function getTemplateVal(){
+	
+    if(document.getElementById('isTemplate').checked) {
+        $("#isTemplate").val('Y');
+       
+    }else{
+        $("#isTemplate").val('N');
+    }
+}
+
+</script>
+
+
+<script>
+function setValues(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var requirementId = document.getElementById('template').value;
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+		    success: function(data) {
+		    	var json = JSON.parse(data);
+		    	
+		    	$("#jobTitle").val(json.jobTitle);
+		    	$("#jobType").val(json.jobType);
+		    	$("#jobId").val(json.jobId);
+		    	$("#positions").val(json.positions);
+		    	$("#education_chosen").val(json.education);
+		    	$("#minExp").val(json.minExp);
+		    	$("#maxExp").val(json.minExp);
+		    	$("#country").val(json.country);
+		    	$("#state").val(json.state);
+		    	$("#city").val(json.city);
+		    	$("#skills").val(json.skills);
+		    	$("#description").val(json.description);
+		    	$("#rate").val(json.rate);
+		    	$("#currencyCode").val(json.currencyCode);
+		    	$("#rateType").val(json.rateType);
+		    	$("#fileName").val(json.fileName);
+		    	
+		    	
+		    }
+     });
+}
+
+
+</script>
+
+
+
+
+
+
+
 <jsp:include page="../masterFooter.jsp" />

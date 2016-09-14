@@ -30,7 +30,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     private OrgLocations orgLocationId;
 	
 	@Column(name = "JOB_TITLE")
-	private String jobTitile;
+	private String jobTitle;
 	
 	@Column(name = "JOB_TYPE")
 	private String jobType;
@@ -158,12 +158,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.orgLocationId = orgLocationId;
 	}
 
-	public String getJobTitile() {
-		return jobTitile;
+	public String getJobTitle() {
+		return jobTitle;
 	}
 
-	public void setJobTitile(String jobTitile) {
-		this.jobTitile = jobTitile;
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
 	}
 
 	public String getJobType() {

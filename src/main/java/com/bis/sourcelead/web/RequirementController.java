@@ -14,9 +14,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -32,6 +33,8 @@ public class RequirementController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	RequirementService requirementService;
 	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
@@ -53,6 +56,8 @@ public class RequirementController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		
+		List<Requirement> jobsTemplateList = requirementService.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocations.getId());
+		model.addObject("jobsTemplateList", jobsTemplateList);		
 		return model;
 
 	}

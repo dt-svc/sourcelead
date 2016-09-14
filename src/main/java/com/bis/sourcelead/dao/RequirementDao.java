@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Requirement;
 
 public interface RequirementDao {
@@ -13,5 +12,7 @@ public interface RequirementDao {
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
+	
+	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 	
 }
