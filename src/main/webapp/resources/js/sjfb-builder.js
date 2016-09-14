@@ -6,11 +6,12 @@
  */
 
 function customizeFields(){
+	
 
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
-    $("#add-field a").click(function() {
-        event.preventDefault();
+    $("#add-field a").click(function(e) {
+        e.preventDefault();
         $(addField($(this).data('type'))).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
