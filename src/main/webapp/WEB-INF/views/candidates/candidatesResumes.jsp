@@ -196,6 +196,8 @@ function addResume(candidateId) {
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#candidateResume_form").attr("disabled", "disabled");
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -204,7 +206,7 @@ function addResume(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId+"&resumeId="+resumeId,
+						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
