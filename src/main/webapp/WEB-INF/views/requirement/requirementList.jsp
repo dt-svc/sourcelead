@@ -73,7 +73,7 @@ function requirementList(){
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
-	                     result = result +"</table>";
+	                     result = result +"</table>"; 
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -146,7 +146,7 @@ function sideBar(requirementId){
 				        result = result+'      <div class="row">';
 				        result = result+'        <div class="col-md-3">';
 				        result = result+'          <div class="company-logo">';
-				        result = result+'            <div class="imageParent"> <img src="./images/dell-logo.png" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				        result = result+'            <div class="imageParent"> <img onerror="predefineOrgImage(this);" src="${sourceleadUrl}/displayOrgImage/'+json.orgLocationId.org.orgCode+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				        result = result+'            <span class="hidden"> TATA Consulting Private Limited, Hyderebad. </span> </div>';
 				        result = result+'        </div>';
 				        result = result+'        <div class="col-md-9">';
@@ -155,9 +155,9 @@ function sideBar(requirementId){
 				        result = result+'            <div class="row">';
 				        result = result+'              <div class="col-md-6">';
 				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience - 4 years</span></li>';
-				        result = result+'                  <li><i class="fa fa-rupee"></i><span>200 Per Hour</span></li>';
-				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>Hyderabad, TS, India</span></li>';
+				        result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience - '+json.maxExp+' years</span></li>';
+				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+' '+json.rateType+'</span></li>';
+				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+','+json.state+','+json.city+'</span></li>';
 				        result = result+'                </ul>';
 				        result = result+'              </div>';
 				        result = result+'              <div class="col-md-6">';
@@ -184,11 +184,13 @@ function sideBar(requirementId){
 				        result = result+'          <div class="pro-detials">';
 				        result = result+'            <div class="professinal-details">';
 				        result = result+'              <ul class="list-inline list-unstyled">';
-				        result = result+'                <li>BA</li>';
-				        result = result+'                <li>BRS</li>';
-				        result = result+'                <li>SRS</li>';
-				        result = result+'                <li>Agile</li>';
-				        result = result+'                <li>SDLC</li>';
+				        var skills = [];
+			            skills = json.skiills.split(",");
+				        result = result+'                <li>'+skills[0]+'</li>';
+				        result = result+'                <li>'+skills[1]+'</li>';
+				        result = result+'                <li>'+skills[2]+'</li>';
+				        result = result+'                <li>'+skills[3]+'</li>';
+				        result = result+'                <li>'+skills[4]+'</li>';
 				        result = result+'              </ul>';
 				        result = result+'            </div>';
 				        result = result+'          </div>';
@@ -258,7 +260,11 @@ function sideBar(requirementId){
 }
 </script>
 
-
+<script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
+</script>
 
 
 <%-- 
@@ -287,7 +293,7 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				            result = result +'   <h1>Description:</h1>';
-				            result = result +'   <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>';
+				            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
 				            result = result +'   <h2>Other details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>10</span>';
@@ -1533,13 +1539,13 @@ Bootstrap
 <!--   Error Message   --> 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
 <script src="js/moment.min.js"></script>
 <script src="js/bootstrap-datetimepicker.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
 <script src="js/masterHeaderAction.js"></script> 
 <script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
+<script src="js/chosen.jquery.min.js"></script>  -->
 
 <script type="text/javascript">
             $(function () {
