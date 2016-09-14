@@ -18,12 +18,34 @@ function customizeFields(){
 
     //Removes fields and choices with animation
     $("#sjfb").on("click", ".delete", function() {
-        if (confirm('Are you sure?')) {
-            var $this = $(this);
-            $this.parent().slideUp( "slow", function() {
-                $this.parent().remove()
-            });
-        }
+    	
+    	var $this = $(this);
+    	var result = "";
+    	result = result +"<div class='project_inn_mask'></div>";
+    	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+    	result = result +"<p>Are you sure ?</p>";
+    	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+    	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Ok' /><input class='u_can_color' type='button' id='cancelDelete' value='Cancel'></b>";
+    	result = result +"</div>";
+    	$("#popUp").append(result);
+    	$("#remove_user_pop").slideDown(200);
+    	$(".project_inn_mask").fadeIn(200);
+    	
+    	$("#deleteCustomField").on("click", function() {
+             $this.parent().slideUp( "slow", function() {
+                 $this.parent().remove()
+             });
+            $("#popUp").empty();
+         	$(".project_inn_mask").fadeOut(200);
+    	});
+    	
+    	$("#cancelDelete").on("click", function() {
+           $("#popUp").empty();
+           $(".project_inn_mask").fadeOut(200);
+   	});
+   	
+    	
+      
     });
 
     //Makes fields required

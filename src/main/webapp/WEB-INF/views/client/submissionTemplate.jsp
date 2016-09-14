@@ -83,6 +83,8 @@
 		      
 		           result = result + '</section>';
 		           
+		           result = result + '<div id="popUp"></div>'; 
+		           
 		           
 		           $("#tab-3").empty();  
 		           $("#tab-3-addTemplate").empty();
