@@ -652,6 +652,7 @@ public class ClientRestController {
     				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
     				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
     				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 				}
 				//if login user is Owner
 				else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
@@ -659,6 +660,7 @@ public class ClientRestController {
 						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 					}
 					
 				 
@@ -668,18 +670,23 @@ public class ClientRestController {
 					 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+					 
 				 }
 				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
 				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
 				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 				}
 			}
 			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 				 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 			}
 			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+				 orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
 				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 			}
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());

@@ -93,7 +93,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		orgDocuments.setUpdatedBy(user.getUserCode());
 		orgDocuments.setUpdatedDate(new Date());
 		
-		orgDocumentsDao.saveDocuments(orgDocuments);
+		//orgDocumentsDao.saveDocuments(orgDocuments);
 	}
 
 	@Override
