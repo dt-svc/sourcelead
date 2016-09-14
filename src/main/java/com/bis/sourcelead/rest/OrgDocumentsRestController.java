@@ -17,8 +17,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.entity.OrgDocuments;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -55,15 +53,7 @@ public class OrgDocumentsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId, orgLocation,user);
 		return "success";
-	
-		
-		
-	} 
-	
-	
-	
-	
-	
+	} 	
 	/**To get documents list
 	 * @author Prasad Salina
 	 * @param responderLocationId

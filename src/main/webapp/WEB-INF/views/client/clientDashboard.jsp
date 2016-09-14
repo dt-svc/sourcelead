@@ -454,8 +454,7 @@ function pagination1(){
 
 
 
-<script>
-function updateSpocStatus(spocId){
+<script>xteSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -486,8 +485,8 @@ function updateSpocStatus(spocId){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>'; */
+		result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -746,6 +745,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	//project side bar tabs
 	$(document).ready(function() {
 		$("#tab-1").show();
+		
 		$(".project-tabs-menu a").click(function(event) {
 			event.preventDefault();
 			$(this).parent().addClass("current");
