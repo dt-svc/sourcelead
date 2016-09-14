@@ -41,5 +41,8 @@ public interface OrgDocumentsService {
      */
 	OrgDocuments updateDocumnet(OrgDocuments orgDocument) throws Exception;
 
+	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long valueOf, Long id,
+			Long spocUserId);
+
 
 }

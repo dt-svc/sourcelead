@@ -1,0 +1,378 @@
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<script>
+function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
+	var result = "";
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+	    result = result + '<ul>';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="spocDocumentsList" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+   // $("#tab-3").empty();  
+    $("#tab-2").append(result);  
+	
+    spocDocumentsList(clientLocationId,userId);
+    
+}
+</script>
+
+<script>
+function spocDocumentsList(clientLocationId,userId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
+          success :function(data) {
+               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+             		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+             		 else if (data.indexOf('exception') >= 0) {
+             			 location.replace(sourceleadUrl+"/errorPage");
+             		 }
+             		 else{
+	                	 $("#spocDocumentsList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result  = result + '           <th>Name</th>';
+	                 	 result  = result + '           <th>Type</th>';
+	                 	 result  = result + '           <th>Contact Person</th>';
+	                 	 result  = result + '           <th>Attachment</th>';
+	                 	 result  = result + '           <th>Start date</th>';
+	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Owner</th>';
+	                 	 result  = result + '           <th>Action</th>';
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i];  
+	                    	 result  = result + '         <tr>';
+	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
+	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
+                    	     }else{
+                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
+                    	     }
+	                    	 
+	                    	 if(opt.contractType != null && opt.contractType != '' && opt.contractType != 'undefined'){
+	                    	 result  = result + ' <td><div><span>'+opt.contractType+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+	                    	 }
+	                    	 
+	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    	     result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 
+	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	     result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 
+	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
+	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 
+	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+	                    	   result  = result + ' <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash" onClick ="removeEducation('+opt.id+','+clientLocationId+');"></i></div></td>';
+	                    	 }
+	                    	 result  = result + '</tr>';
+	                      } 
+	                     result = result +" </tbody>";
+	                     result = result +"</table>";
+	                     $("#spocDocumentsList").append(result); 
+	                     documentpagination(); 
+			    	} 
+               }else{
+	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Documents Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#spocDocumentsList").empty();
+				    $("#spocDocumentsList").append(result); 
+               }
+        },
+          
+     }); 
+}
+</script>
+
+<script>
+function documentpagination(){  
+    $('#clientDocumentsPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<script>
+function addDocumentForSpoc(clientLocationId,spocName,userId) {	
+	
+	var result = "";
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'          <form role="form"  id="document_form_spoc" name="document_form_spoc" method="post" > ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result  +'   ';
+	
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
+	result = result  +'                      <input type="text" name="docName" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">                                          ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	
+	result  = result + '                 <div class="clearfix mb10">';
+	result = result  +'	                     <select style="width: 100%;" class="chosen-select" name="contractType" id="contractType">';
+	result = result  +' 					   <option value="" selected="selected">Contract Type</option>';
+	result = result  +'	                       <option value="MSA">MSA</option>';
+	result = result  +'	                       <option value="SOW">SOW</option>';
+	result = result  +'	                       <option value="NDA">NDA</option>';
+	result = result  +'	                       <option value="NSA">NSA</option>';
+	result = result  +'	                      </select>';
+	result = result  +'	                   </div>';
+	
+	result = result+'	                  <div class="clearfix mb10">';
+	result = result+'	                    <div class="col-md-12">';
+	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'	                            </span> </label>';
+	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Document" data-validation="required validate_Space validatedoc">';
+	result = result+'	                        </div>';
+	result = result+'	                    </div>  ';  
+	result = result+'	                  </div>   ';  
+	
+	result = result  +'	                 <div class="clearfix mb10">';
+	result = result  +'	                   <div class="col-md-6">';
+	result = result  +'                      <input type="text" name="spocName" field-name="spocName" readonly class="form-control input-sm" value="'+spocName+'" >                                          ';
+	result = result + '							<input type="hidden" name="userId" id="userId" value="'+userId+'" >';
+	//result = result + '                      <select class="chosen-select form-control" name="spoc" id="spoc" field-name="Client Contact"  >';
+	//result = result + '                      </select>';
+    result = result  +'	                     </div>';
+	
+	result = result  +'	                  <div class="col-md-6">';
+	result = result  +'	                      <select class="chosen-select" name="owner" id="owner" field-name="Owner">';
+	result = result  +' 					      <option value="" selected="selected">Owner</option>';
+	result = result  +'	                          <c:forEach var="user" items="${userList}">';
+	result = result  +'	                              <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''}>${user.firstName} ${user.lastName}</option>';
+	result = result  +'	                          </c:forEach>';
+    result = result  +'	                        </select>';
+    result = result  +'	                     </div>';
+    result = result  +'	                   </div>';
+	
+	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
+	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result = result  +'                    </div>                                                                                                                             ';
+	
+	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
+	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result = result  +'                    </div>                                                                                                                             ';
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                                                                                                                                                       ';
+	
+	result = result+'	                  <div class="clearfix mb10">';
+	result = result+'	                    <div class="col-md-12">';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_Space validate_Description validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'	                    </div>';
+	result = result+'	                  </div>';
+	
+	
+	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="storeClientDocument('+clientLocationId+');" />'; 
+	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                </div>                                                                                                                                 ';
+	result = result  +'                </form>                                                                                                                                ';
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	
+	function educationStartDate(){
+	}
+	
+	$('#startDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#endDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#endDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	
+	  /* upload file script to show selected file name*/
+	    document.getElementById("uploadBtn").onchange = function () {
+	    document.getElementById("uploadFile").value = this.value;
+	    };
+	  
+	$(".edit-details").toggleClass("edit-details-active");
+	 $(".close-div").click(function(){ 
+		 $(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		 e.stopPropagation();
+	 });
+	 $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	   });	
+	 
+	 var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+	}
+</script>
+
+<script>
+function closePopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
+
+<script type="text/javascript">
+	function storeClientDocument(clientLocationId){
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		        borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+		 if ($('#document_form_spoc').validate(false, validationSettings)){
+			var frm = $('#document_form_spoc').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			var form = $('#document_form_spoc')[0];
+      		var formData = new FormData(form); 
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#document_form_spoc").attr("disabled", "disabled");
+			
+			//It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			$.ajax({
+					type : "POST",
+	        	    data: formData,
+	        	    contentType : 'application/json; charset=utf-8',
+	        	    enctype: 'multipart/form-data',
+	    	        processData: false,
+	    	        contentType:false,
+	        	    dataType : 'json',
+					url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId,
+					success : function(result) {
+						 if( result.indexOf('Sign In') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	 }
+	            		 else if (result.indexOf('exception') >= 0) {
+	            			 location.replace(sourceleadUrl+"/errorPage");
+	            		 }
+	            		 else{
+	            			$("#popUpDiv").removeClass("edit-details-active");
+	            			spocDocumentsList(clientLocationId);
+	            		 }
+					},
+				});
+				return true;
+		 }else{ 
+				return false;
+		 } 
+	}
+	$('body').on('blur', '#document_form_spoc', function() {
+	$("#document_form_spoc").showHelpOnFocus();
+	$("#document_form_spoc").validateOnBlur(false, validationSettings);
+});
+</script>
+
+<script>
+function getSpocsList(orgRelationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output + "<option value=''>Client Contact</option>"; 
+        	for (var i=0; i<json.length; i++)
+			{
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+			}
+        	$("#spoc").empty();
+	        $("#spoc").append(output);
+	        $('#spoc').trigger("chosen:updated");
+	        //$('.selectpicker').selectpicker('refresh'); 
+        },
+    });
+}
+
+</script>

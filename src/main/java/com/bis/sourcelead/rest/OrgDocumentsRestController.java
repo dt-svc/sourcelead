@@ -141,7 +141,26 @@ public class OrgDocumentsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 		}
-	
+		
+	/**To get Org spoc Documnet List by spoc userId
+	 * @author Prasanna Vadla
+	 * @param spocUserId
+	 * @param responderLocationId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getclientDocumentsListByResponderLocationIdAndSpocUserId")
+	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
+
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
+		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId(),Long.valueOf(spocUserId));
+		 resultJson = commonUtil.toJSON(clientDocumentsList);
+		 return resultJson;
+	}	
+
 	/**To terminate OrgDocumnet by using Id
 	 * @author Prasad Salina
 	 * @param docId
@@ -167,5 +186,6 @@ public class OrgDocumentsRestController {
 		}
 		return "success";
 	}
+
 
 }

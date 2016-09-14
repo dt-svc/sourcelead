@@ -44,4 +44,7 @@ public interface OrgDocumentsDao{
      */
 	OrgDocuments updateDocumnet(OrgDocuments orgDocument) throws Exception;
 
+	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
+			Long orgLocationId, Long spocUserId);
+
 }
