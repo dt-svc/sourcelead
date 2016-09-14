@@ -67,7 +67,7 @@
             	<span class="btn btn-primary">Select Template
               </span> </label>
             
-                 <select class="selectpicker form-control" id="template" onchange="setValues();">
+                 <select class="selectpicker form-control" id="template" onchange="setTemplateValues();">
                   <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
                      </c:forEach>   
@@ -120,7 +120,7 @@
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-               <input type="text" class="form-control" id="positions" name="positions" value="${positions}"  field-name="Positions" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
             </div>
           </div>
           
@@ -140,10 +140,10 @@
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                   <input type="text" class="form-control" id="minExp" name="minExp" value="${minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
+                   <input type="text" class="form-control" id="minExp" name="minExp" value="${minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2" data-validation-optional="true"  value="">
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
+                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -1302,7 +1302,6 @@
 	         }; 
 		
 		  if ($('#requirement_form').validate(false, validationSettings)){  
-			 alert("saasa");
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -1508,7 +1507,7 @@ function getTemplateVal(){
 
 
 <script>
-function setValues(){
+function setTemplateValues(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	$.ajax({
@@ -1541,11 +1540,5 @@ function setValues(){
 
 
 </script>
-
-
-
-
-
-
 
 <jsp:include page="../masterFooter.jsp" />
