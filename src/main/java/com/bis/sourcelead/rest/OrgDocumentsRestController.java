@@ -67,12 +67,9 @@ public class OrgDocumentsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user);
 		return "success";
-	
-		
-		
-	} 
-	
-	
+
+	} 	
+
 	/**To get documents list
 	 * @author Prasad Salina
 	 * @param responderLocationId

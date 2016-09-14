@@ -19,8 +19,8 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
-		alert("spocid"+spocId+"ownerId"+ownerId+"spocUserId"+spocUserId);
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId)
+	{
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -134,8 +134,7 @@
 						var selected2 = '';
 						var selected3 = '';
 						var selected4 = '';
-						var selected5 = '';
-						
+						var selected5 = '';				
 					
 						
 						if(json.spocStatus == 'Active'){
