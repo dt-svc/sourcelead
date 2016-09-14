@@ -194,7 +194,17 @@
         <persistence strategy="localTempSwap" />
     </cache> 
     
+    <cache name="submissionTemplate" 
+    	maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU" >
+   		 <persistence strategy="localTempSwap" />
+    </cache>
+    
     <cache name="orgSpoc"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="orgDocuments"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
     </cache>

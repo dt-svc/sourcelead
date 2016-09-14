@@ -19,7 +19,8 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId)
+	{
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -120,6 +121,8 @@
 </script>
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId) {
+		alert("ownerId"+ownerId+"spocId"+spocId);
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
@@ -131,8 +134,7 @@
 						var selected2 = '';
 						var selected3 = '';
 						var selected4 = '';
-						var selected5 = '';
-						
+						var selected5 = '';				
 					
 						
 						if(json.spocStatus == 'Active'){
@@ -217,7 +219,9 @@
 					    
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							   if(user.id == ownerId){
+							
+							alert("user.id"+json.userId);
+							   if(json.userId == ownerId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
 							  }else{

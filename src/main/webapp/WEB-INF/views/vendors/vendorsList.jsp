@@ -167,17 +167,14 @@ function getVendorLists(){
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
-   				}
-   	        	
+   				}   	        	
    	        	result = result +'</tbody>';
    	    	    $("#vendorList").empty();  
    	    	    $("#vendorList").append(result)
    	    	    pagination1();
    	    	    
    		    }
-	 });
-	
-	
+	 });	
 }	
 </script> 
 
@@ -609,12 +606,14 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
-				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		//for Vendor details tab
+		result = result	+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		//for Vendor Contacts tab	
 		result = result + '<li><a href="#tab-2" onclick="vendorContactList('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
-		result = result + '<li><a href="#tab-3">Documents</a></li>'; 
-		result = result + '<li><a href="#tab-4">Activity</a></li>'; 
+		//for Vendor Documents tab
+		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
+		/*result = result + '<li><a href="#tab-4">Activity</a></li>';*/
+		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -626,6 +625,11 @@ function pagination1(){
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';
+        
+        
+      //for client documents tab
+        result = result + '<div id="tab-3" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -897,7 +901,7 @@ $(".addcon-pop").click(function(){
 <jsp:include page="editVendor.jsp" />
 <jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
-
+<jsp:include page="vendorDocuments.jsp" />
 
 
 
