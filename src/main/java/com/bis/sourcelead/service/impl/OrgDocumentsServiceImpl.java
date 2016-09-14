@@ -145,7 +145,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			if(documents.getSpocUser() != null){
 				documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
 			}
-			if(documents.getSpocUser() != null){
+			if(documents.getOwnerUser() != null){
 				documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
 			}
 		}
@@ -167,7 +167,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 				if(documents.getSpocUser() != null){
 					documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
 				}
-				if(documents.getSpocUser() != null){
+				if(documents.getOwnerUser() != null){
 					documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
 				}
 			}
@@ -187,7 +187,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         if(documents.getSpocUser() != null){
             documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
         }
-        if(documents.getSpocUser() != null){
+        if(documents.getOwnerUser() != null){
             documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
         }
         return documents;
