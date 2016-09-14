@@ -43,6 +43,9 @@ float:none;
 	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
 	}
 </style>
+
+<div id="deleteDocpopUp"></div>
+
 <script>
 function clientDocuments(orgRelationId,clientLocationId){
 	
@@ -149,7 +152,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteResume('+clientLocationId+','+opt.id+');"></i>';
+					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 result  = result + '</tr>';
@@ -227,7 +230,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	result = result  +'	                   </div>';
 	result = result  +'	                   </div>';
 	
-	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
+	result = result+'	                  <div class="clearfix mb10" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -273,17 +276,17 @@ function addDocument(clientLocationId,orgRelationId) {
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
-	result = result+'	                  <div class="clearfix mb10" id="resumeNameDiv" style="display: none;">';
+	result = result+'	                  <div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
-	result = result+'	                      <label id="resumeName" name="resumeName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
-	result = result+'	                  <div class="clearfix mr mt" id="resumeUpdateButton" style="display: none;">';
-	result = result+'	                    <button type="button" id="update_resume" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result+'	                  <div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
+	result = result+'	                    <button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
 	result = result+'	                  </div>';
 	
-	result = result  +'                  <div class="clearfix mr" id="resumeAddButton">                                                                                                            ';
+	result = result  +'                  <div class="clearfix mr" id="docAddButton">                                                                                                            ';
     result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="storeClientDocument('+clientLocationId+','+orgRelationId+', null);" />'; 
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
@@ -444,12 +447,12 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     			 location.replace(sourceleadUrl+"/errorPage");
     		 }
     		 else{
-    			 $("#uploadResumeDiv").hide();
-    			 $("#resumeAddButton").hide();
+    			 $("#uploadDocumentDiv").hide();
+    			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
-    			 $("#resumeNameDiv").show();
-    			 $("#resumeName").append(json.fileName);
-    			 $("#resumeUpdateButton").show();
+    			 $("#docNameDiv").show();
+    			 $("#documentName").append(json.fileName);
+    			 $("#docUpdateButton").show();
     			 
     			 
     			 if(json.docName != null && json.docName != "undefined" && json.docName != ""){
@@ -483,7 +486,7 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     				 document.getElementById("description").value = json.description;
     			 }
     			 
-    			 $("#update_resume").attr("onclick", "storeClientDocument("+clientLocationId+","+orgRelationId+","+json.id+");");
+    			 $("#update_doc").attr("onclick", "storeClientDocument("+clientLocationId+","+orgRelationId+","+json.id+");");
     		 }
 		    }
      });
@@ -492,8 +495,59 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 
 <script>
 function removeResumeNameDiv(){
-	$("#resumeNameDiv").hide();
-	$("#uploadResumeDiv").show();
+	$("#docNameDiv").hide();
+	$("#uploadDocumentDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+}
+</script>
+
+<script>
+function deleteDocument(clientLocationId,orgRelationId,docId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>User delete message here</p>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="terminateReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+clientLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
+	result = result +"	</div>";
+	$("#deleteDocpopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function cancelDocTermination(){
+$("#deleteDocpopUp").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function saveReason(clientLocationId,orgRelationId,docId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var terminateReason = document.getElementById("terminateReason").value;
+	if (terminateReason) {
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
+   		    success: function(data) {
+   		    	if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (data.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+        			 $("#deleteDocpopUp").empty();
+        			 $(".project_inn_mask").fadeOut(200);
+        			 clientDocumentsList(clientLocationId,orgRelationId);
+        		 }
+   		    }
+	     });
+	}else{
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
 }
 </script>

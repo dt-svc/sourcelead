@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -140,9 +141,15 @@ public class OrgDocumentsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 		}
-	
-	
-	
+		
+	/**To get Org spoc Documnet List by spoc userId
+	 * @author Prasanna Vadla
+	 * @param spocUserId
+	 * @param responderLocationId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationIdAndSpocUserId")
 	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
@@ -153,5 +160,32 @@ public class OrgDocumentsRestController {
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
+
+	/**To terminate OrgDocumnet by using Id
+	 * @author Prasad Salina
+	 * @param docId
+	 * @param terminateReason
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/terminateOrgDocumnet", method = RequestMethod.POST)
+	public @ResponseBody String terminateOrgDocumnet(@RequestParam(value="docId", required=false) String docId ,
+			                                         @RequestParam(value = "terminateReason", required = false) String terminateReason,
+			                                         HttpServletRequest request) throws Exception {
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		OrgDocuments orgDocument =  orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
+		if(orgDocument != null){
+			orgDocument.setTerminateReason(terminateReason);
+			orgDocument.setStatus(Constants.MEMBER_IN_ACTIVE);
+			orgDocument.setUpdatedBy(user.getUserCode());
+			orgDocument.setUpdatedDate(commonUtil.currentDate());
+			orgDocumentsService.updateDocumnet(orgDocument);
+		}
+		return "success";
+	}
+
 
 }

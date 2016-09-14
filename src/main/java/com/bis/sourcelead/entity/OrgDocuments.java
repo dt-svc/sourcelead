@@ -101,6 +101,9 @@ public class OrgDocuments {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
+	
 	@Transient
     private String startDateStr;
 	
@@ -271,6 +274,14 @@ public class OrgDocuments {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+	
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
 	}
 
 	public String getStartDateStr() {

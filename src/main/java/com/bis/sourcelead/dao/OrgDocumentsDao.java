@@ -36,6 +36,13 @@ public interface OrgDocumentsDao{
 	 * @throws Exception
 	 */
 	OrgDocuments getOrgDocumentsById(Long Id) throws Exception;
+	
+	 /**To update Org Document Using OrgDocuments pojo only
+     * @author Prasad Salina
+     * @param orgDocument
+     * @throws Exception
+     */
+	OrgDocuments updateDocumnet(OrgDocuments orgDocument) throws Exception;
 
 	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
 			Long orgLocationId, Long spocUserId);
