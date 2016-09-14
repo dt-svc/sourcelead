@@ -50,7 +50,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orgDocuments != null) {
-				session.save(orgDocuments);
+				session.saveOrUpdate(orgDocuments);
 			}
 			logger.debug("orgDocuments Stored Successfully");
 		} catch (Exception exception) {
@@ -66,6 +66,20 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId ";  
 		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return orgDocuments;	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
+		logger.debug("In getOrgDocumentsById");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from OrgDocuments od where od.id = :Id" ;
+		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).setCacheable(true).list(); 
+		OrgDocuments orgDocuments = null;
+		if(orgDocumentsList != null && !orgDocumentsList.isEmpty()){
+			orgDocuments = orgDocumentsList.iterator().next();
+		}
+		return orgDocuments;
 	}
 	
 	
