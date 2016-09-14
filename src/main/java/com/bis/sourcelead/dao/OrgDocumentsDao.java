@@ -19,14 +19,22 @@ public interface OrgDocumentsDao{
 	 * @throws SourceLeadConstraintViolationException 
 	 *
 	 */
-	void saveDocuments(OrgDocuments orgDocuments) throws SourceLeadConstraintViolationException;
+	void saveDocuments(OrgDocuments orgDocuments) throws Exception;
 
-	/**
+	/** to get OrgDocumnets list
 	 * @author Prasad Salina
 	 * @param responderLocationId
 	 * @param orgLocationId
 	 * @return
 	 */
-	List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId);
+	List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId) throws Exception;
+	
+	/**to get org document by Id
+	 * @author Prasad Salina
+	 * @param Id
+	 * @return
+	 * @throws Exception
+	 */
+	OrgDocuments getOrgDocumentsById(Long Id) throws Exception;
 
 }
