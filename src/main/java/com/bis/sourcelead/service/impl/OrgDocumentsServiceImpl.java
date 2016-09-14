@@ -1,13 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgDocumentsService;
 
 
@@ -157,6 +153,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
 		}
 		return documents;
+	}
+
+	@Override
+	public OrgDocuments updateDocumnet(OrgDocuments orgDocument) throws Exception {
+		logger.debug("In OrgDocumentsServiceImpl class updateDocumnet method...");
+		return orgDocumentsDao.updateDocumnet(orgDocument);
 	}
 	
 }

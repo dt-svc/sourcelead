@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId ";  
+		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.status = 'ACTIVE' ";  
 		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return orgDocuments;	
 	}
@@ -83,6 +84,23 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	}
 	
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgDocuments updateDocumnet(OrgDocuments orgDocuments) throws Exception {
+		logger.debug("In Terminate OrgDocument Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(orgDocuments != null){
+				session.saveOrUpdate(orgDocuments);
+				logger.info("Record updated successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_DOCUMENTS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return orgDocuments;
+	}
 
 
 }
