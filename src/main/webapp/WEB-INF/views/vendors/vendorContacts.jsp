@@ -28,6 +28,34 @@ window.onload = function () {
 
 <div id="popUp"></div>	
 
+<script>
+function vendorContacts(orgRelationID,clientLocationId){
+	
+	var result = "";
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+	    result = result + '<ul>';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addContact('+orgRelationID+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Contact</a>                                                            ';
+		result = result  +'     <div id="popUpDivContact" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="vendorContactListDiv" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-2").append(result);  
+	
+    vendorContactList(orgRelationID,clientLocationId);
+    
+}
+</script>
+
 <script type="text/javascript">
 	function vendorContactList(orgRelationID,vendorLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -37,20 +65,10 @@ window.onload = function () {
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
-	        	
-	        	var res = "";
-				res = res + '<div class="timesheet_head">';
-				res = res + '<ul>';
-				res = res + '<li><a href="javascript:void(0)" onClick="addContact('+orgRelationID+','+vendorLocationId+');" class="addcon-pop">';
-				res = res + '<i class="glyphicon glyphicon-plus"></i>Add Contact</a>';
-				res = res + '<div class="clearfix"></div>';
-				res = res + '</ul>';
-				res = res + '<div id="popUpDivContact"> ';
-				res = res + '</div>  ';
-				res = res + '</div>';
-				
+	        	$("#vendorContactListDiv").empty();
 	    		if(json.length != null && json.length != ''){
 	    			var result = "";
+	    			result = result +"<table id='vendorContactsPagination' class='display' cellspacing='0' width='100%' >"; 
 		    	    result = result +'<thead>';
 		    		result = result + '		<tr>';
 		            result = result + '	 	<th>Name</th>';
@@ -118,8 +136,12 @@ window.onload = function () {
 				                
 				                result = result +'<td data-title="Invitation Status"><div>';
 				                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
-				   	        		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+opt.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+opt.id+');"></i>';
+				   	        		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptSpocInvitation('+opt.id+','+orgRelationID+','+vendorLocationId+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectSpocInvitation('+opt.id+','+orgRelationID+','+vendorLocationId+');"></i>';
 				   	        		}
+				                
+					                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
+				                        result = result +' <td><div>---</div></td>';
+				                  	}
 				   	        		
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+');">Send</a></b>';
@@ -154,34 +176,33 @@ window.onload = function () {
 			                          result = result + '<td><div><font color="red">Terminated</font></div></td>';
 			                     }
 				                result = result + '	 </tr>';
-						} 
+						}   
 			        	result = result + '	     </tbody>';
+			        	result = result +"</table>";
 			    	    
 			    	    result = result + '<div class="project_inn_mask"></div>';
 					    result = result + '<div class="project_error">';
 					    result = result + '	<p>User delete message here ....</p>';
 					    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 					    result = result + '</div>';
+					    $("#vendorContactListDiv").append(result);
+			    	    contactPagination();
 			    	    
 	        }else{
-   			 result = result + '<div class="table_nodata">';
-   			 result = result + '<div class="table_nodata_inn">';
-   			 result = result + '<img src="resources/images/no-data.png" />';
-   			 result = result + '<span>Nothing is here to show </b>';
-   			 result = result + '</span>';
-   			 result = result + '<div class="clearfix"></div>';
-   			 result = result + '</div>';
-   			 result = result + '</div>';
+	        	var result ="";
+	    	     result = result+"   <div class='row'>"; 
+				 result = result+"	<div class='col-lg-12'>"; 
+				 result = result+"		<div class='content-area clearfix'>"; 
+				 result = result+"			<div class='blank-pages'>";
+				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				 result = result+"			        <p>No Contacts Found</p>";
+				 result = result+"			 </div>";
+				 result = result+"		</div>"; 
+				 result = result+"	</div>"; 
+				 result = result+"  </div> "; 
+   			$("#vendorContactListDiv").empty();
+		    $("#vendorContactListDiv").append(result); 
    		 }
-	    	$('.clients_wrap_table ').show();
-	        $('#tab-2-addContact').show();	
-	    		
-    		$("#tab-2-addContact").empty();  
-    	    $("#tab-2-addContact").append(res);
-    		$("#tab-2").empty();  
-    	    $("#tab-2").append(result);  
-    	    contactPagination();
-    		
 	        },
 	    });
 	}
@@ -263,14 +284,30 @@ function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId){
   
 </script>
 
+<script>
+function contactPagination(){  
+    $('#vendorContactsPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
  <!-- This Script is For Popup Div Starts-->  
 <script>
 function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
-	result = result  +'	<div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopupDiv();"></i> ';
 	result = result  +'	<div class="form-horizontal clearfix">';
-                              
+	result = result  +'                  </div>  ';      
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	  <div class="col-md-12">';
@@ -299,9 +336,9 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	
 	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-3">Status</label>';
+	result = result  +'	 <label class="col-md-12">Status</label>';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	  <select class="form-control selectpicker" id="spocStatus" name="spocStatus">';
+	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
 	result = result  +'	   <option value="New">New</option>';
@@ -361,7 +398,18 @@ function addContact(orgRelationID,clientLocationId) {
 	$("#popUpDivContact").empty();
 	$("#popUpDivContact").append(result);
 	
-	var config = {
+	$(".edit-details").toggleClass("edit-details-active");
+	 $(".close-div").click(function(){ 
+		 $(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		 e.stopPropagation();
+	 });
+	 $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	   });	
+	 
+	 var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -375,21 +423,16 @@ function addContact(orgRelationID,clientLocationId) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	/* $(".addcon-pop").click(function(){
-		 $(".collapse-div-adduser").toggleClass("show-div");
-		 $(".collapse-div").removeClass("show-div");
-	 }); */
 	 
-	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){
-		 $(this).closest('.edit-details').removeClass("edit-details-active");
-		 });
-	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
-	 
-	};
+	}
 </script>
+
+<script>
+function closePopupDiv(){
+	 $("#popUpDivContact").removeClass("edit-details-active");
+}
+</script>
+
 <!-- <script>
 $('html').click(function(){
     $(".edit-details").removeClass("edit-details-active");
@@ -407,11 +450,11 @@ $('html').click(function(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
-			alert("hii");
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId,
 						success : function(result) {
+							$("#popUpDivContact").removeClass("edit-details-active");
 							vendorContactList(orgRelationId,vendorLocationId);
 						},
 			});
@@ -543,5 +586,31 @@ function getSpocUserDetails(orgLocationId){
 	   
 	} 
 	
+}
+</script>
+
+<script>
+function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    success: function(data) {
+		    	vendorContactList(orgRelationId,vendorLocationId);
+		    }
+	   });
+}
+</script>
+
+<script>
+function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
+		    success: function(data) {
+		    	vendorContactList(orgRelationId,vendorLocationId);
+		    }
+	   });
 }
 </script>
