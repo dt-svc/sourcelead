@@ -152,24 +152,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		return documentsList;
 	}
 
-	@Override
-	public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
-		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
-		OrgDocuments documents = orgDocumentsDao.getOrgDocumentsById(Id);
-		if(documents.getStartDate() != null){
-		    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
-		}
-		if(documents.getEndDate() != null){
-		   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
-		}
-		if(documents.getSpocUser() != null){
-			documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
-		}
-		if(documents.getSpocUser() != null){
-			documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
-		}
-		return documents;
-	}
 
 	@Override
 	public List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
