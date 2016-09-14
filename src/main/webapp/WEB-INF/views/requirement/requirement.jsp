@@ -311,12 +311,12 @@ Side Nav Bar
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
            <div class="form-group">
-	         <label class="col-md-3">Title</label>
+	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
 	             <input type="text" id="jobTitle" name="jobTitle" value="${jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
-	             <select class="selectpicker" id="designationType" name="designationType">
+	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option><a href="#">C2C</a></option>
 	                 <option><a href="#">W-2</a></option>
 	                 <option><a href="#">Part Time</a></option>
@@ -376,18 +376,20 @@ Side Nav Bar
             <div class="col-md-9">
               <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker">
-                    <option value="c2c">INR</option>
-                    <option value="w2">200</option>
-                    <option value="c2c">300</option>
-                    <option value="c2c">350</option>
-                    <option value="c2c">400</option>
-                    <option value="c2c">Other</option>
-                  </select>
+                  
+                  <select class="selectpicker" id="currencyCode" name="currencyCode">
+	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                </select>
+                
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${rate}" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker">
+                  <select class="selectpicker" id="rateType" name="rateType">
                     <option value="c2c">Per</option>
                     <option value="w2">1hr</option>
                     <option value="c2c">2hr</option>
@@ -445,10 +447,10 @@ Side Nav Bar
               <div class="input-group">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                      <input type="file" style="visibility:hidden;height:0;width:10px;overflow:hidden" multiple id="uploadBtn"  class="upload">
+                       <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
-                <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
               </div>
             </div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
@@ -1694,6 +1696,11 @@ function getCities(){
 			var $this = $(this);
 			$this.next().css({'width': '100%'});
 			})
+			
+			/* upload file script */
+			document.getElementById("uploadBtn").onchange = function () {
+			document.getElementById("uploadFile").value = this.value;
+			};
 				
 				
 </script> 

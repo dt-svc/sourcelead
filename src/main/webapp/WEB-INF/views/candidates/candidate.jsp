@@ -121,14 +121,6 @@
           </div>
         </div>
         
-        <%-- <div class="form-group">
-          <label class="col-md-3">Country</label>
-          <div class="col-md-9">
-            <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"
-						name="country" field-name="Country" value="${loginCountryName}" data-validation="validate_Space" data-validation-optional="true" disabled="disabled" readonly="readonly"/> 
-			<ul id="country" class="form-control" onkeypress="getAllCountries('${sourceleadUrl}');"></ul>
-          </div>
-        </div> --%>
         
         <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -153,23 +145,6 @@
                  </select>
 			</div>
 		</div>
-        
-        <%-- <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-            <input type="hidden" id="stateAutoComplete" name="state"
-					field-name="State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
-			<ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">City</label>
-          <div class="col-md-9">
-           <input type="hidden" id="cityAutoComplete" name="city" field-name="State" class="form-control" value="" data-validation="validate_Space" data-validation-optional="true">
-			    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
-          </div>
-        </div>   --%>
         
         <div class="form-group">
           <label class="col-md-3">Address</label>

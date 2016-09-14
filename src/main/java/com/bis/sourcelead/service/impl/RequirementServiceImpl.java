@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
-import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -116,6 +116,15 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setDescription(jsonObj.getString("description"));
 			}
 			
+			
+			if(jsonObj.has("currencyCode")){
+			requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+			}
+			
+			if(jsonObj.has("rateType")){
+			requirement.setRateType(jsonObj.getString("rateType"));
+			}
+			
 			if(jsonObj.has("skills")){
 			
 			  String skills = jsonObj.getString("skills");
@@ -127,12 +136,19 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("education")){
 		      
-		      
 		      String education = jsonObj.getString("education");
 	    	  education = education.replaceAll("\\[", "").replaceAll("\\]","");
+	    	  education = education.replaceAll("\"", "");
 		  	  requirement.setEducation(education);
 			
-			}
+			 }
+			
+			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+				 requirement.setDocFile(multiFile.getBytes());
+				 requirement.setFileName(multiFile.getOriginalFilename());
+				 requirement.setFileContentType(multiFile.getContentType());
+			 }
+			
 			requirement.setCreatedDate(commonUtil.currentDate());
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
