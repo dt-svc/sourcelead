@@ -92,7 +92,7 @@ public class ClientUploadController {
 	 * @return
 	 */
 	@RequestMapping("/clientFileUpload")
-	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile, BindingResult result,Model model, HttpServletRequest request)throws IOException,JSONException {
+	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws IOException,JSONException {
 				
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -102,7 +102,7 @@ public class ClientUploadController {
 		String fileName = multipartFile.getOriginalFilename();
 		
 		
-		String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail());
+		String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 		
 		if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
 			model.addAttribute("errorMessage", "Please download Error file here");
@@ -115,6 +115,41 @@ public class ClientUploadController {
 		}
 		
 		return "redirect:/clientDashboard";
+		
+	}
+	
+	/**
+	 * Handles download templates for vendor and  contacts
+	 * @author Rajashekar
+	 * @param response
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	@RequestMapping(value = "/downloadVendorTemplate", method = RequestMethod.GET)
+	public void downloadVendorTemplate(HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws IOException, URISyntaxException{
+		logger.debug("download template is for : "+ name);
+		String fn;	
+		    if("Vendor".equalsIgnoreCase(name)){
+	    		fn = "/templates/Vendors_import_template.xls";
+	    	}else{
+	    		fn = "/templates/Vendor contacts_Import.xls";
+	    	}
+			
+			URL url = getClass().getResource(fn);
+			File file = new File(url.toURI());
+
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
 		
 	}
 }

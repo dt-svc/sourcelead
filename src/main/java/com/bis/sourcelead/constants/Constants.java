@@ -37,6 +37,7 @@ public class Constants {
 	public static final String SATATE = "State";
 	public static final String CITY = "City";
 	public static final String LEVEL = "Level";
+	public static final String VENDOR_NAME = "Vendor Name*";
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");

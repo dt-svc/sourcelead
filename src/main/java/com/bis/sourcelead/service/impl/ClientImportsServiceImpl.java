@@ -65,7 +65,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	OrgService orgService;
 	
 	@Override
-	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailCheck) throws IOException, JSONException {
+	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws IOException, JSONException {
 		
 		  boolean isValidated = false;
 		  boolean isUserFound = false;
@@ -106,9 +106,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			       ClientImportObject client = new ClientImportObject();
 			       Row row = (Row) rows.next();
 			       if(fname.contains("contacts")){
-			    	   createExcelsheet = setContactExcelHeader(createExcelsheet);
+			    	   createExcelsheet = setContactExcelHeader(createExcelsheet,responderType);
 			    	   if (row.getRowNum() > 0) {
-							isValidated = validateContactsExeclData(row,fname,client);
+							isValidated = validateContactsExeclData(row,fname,client,orgLocation,responderType);
 						}
 			    	   if(isValidated){
 			    		   if(row.getRowNum() > 0){
@@ -145,9 +145,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 											createContactXlsSheet(row, createExcelsheet,count, fname,client);
 										}
 						    	   }else{
-						    		   JSONObject jsonObj = populateJsonObject(client,isMailCheck);
+						    		   JSONObject jsonObj = populateJsonObject(client,isMailSent);
 						    			try {
-											clientService.storeClient(jsonObj, user, orgLocation,"Client",org);
+											clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 										} catch (Exception e) {
 											e.printStackTrace();
 										}
@@ -160,7 +160,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 							}
 			    	   }
 			         }else{
-			        	 createExcelsheet = setClientExcelHeader(createExcelsheet);
+			        	 createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
 			        	 if (row.getRowNum() > 0) {
 								isValidated = validateClientExeclData(row,fname,client);
 							}
@@ -184,7 +184,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
 										   client.setLevel(row.getCell(5).toString());
 									   }  
-									   isUserFound = validateClient(row.getCell(0).toString(), client,orgLocation);
+									   isUserFound = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
 									   
 									   if(isUserFound){
 							    		   if (row.getRowNum() > 0) {
@@ -192,9 +192,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												createClientXlsSheet(row, createExcelsheet,count, fname,client);
 											}
 							    	   }else{
-							    		   JSONObject jsonObj = populateJsonObject(client,isMailCheck);
+							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent);
 							    			try {
-												clientService.storeClient(jsonObj, user, orgLocation,"Client",org);
+												clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 											} catch (Exception e) {
 												e.printStackTrace();
 											}
@@ -240,13 +240,14 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	 * check Clinet is duplicate or not 
 	 * @param email
 	 * @param client
+	 * @param responderType 
 	 * @return boolean
 	 */
-	private boolean validateClient(String clientName, ClientImportObject client,OrgLocations orgLocation) {
+	private boolean validateClient(String clientName, ClientImportObject client,OrgLocations orgLocation, String responderType) {
 		
 	    boolean isCLientExist = false;
 		try {
-			isCLientExist =  orgService.isClientNameValid(clientName,orgLocation.getId(),"Client");
+			isCLientExist =  orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
 			if(isCLientExist){
 				client.setReason("duplicate client");
 				isCLientExist = true;
@@ -385,9 +386,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	  * @param row
 	  * @param fname
 	  * @param client
+	 * @param responderType 
+	 * @param orgLocation 
 	  * @return boolean
 	  */
-	  private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client) {
+	  private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client, OrgLocations orgLocation, String responderType) {
 		  boolean isValidated; 
 		  if (row.getRowNum() > 0) { 
 			  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -395,7 +398,13 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					return false;
 				}else if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
 					isValidated = isFnameLnameValid(row.getCell(0).toString());
-					if(isValidated == false){
+					if(isValidated){
+						boolean found = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
+						if(found == false){
+							client.setReason(responderType+" does not exist");
+							return false;
+						}
+					}else{
 						client.setReason("should contain above 2 char");
 						return isValidated;
 					}
@@ -437,17 +446,28 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					}
 				}
 			  
-			  if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString()) || !validateEmail(row.getCell(7).toString())) {
+			  if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
 					client.setReason("Required fields is not filled");
 					return false;
-				}else if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString()) && !validateEmail(row.getCell(7).toString())){
-					client.setReason("Invalid Email");
-					return false;
+				}else if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
+					boolean isUserFound = false;
+					String email = row.getCell(7).toString();
+					String emails [] = email.split(",");
+					for(int i=0;i<emails.length;i++){
+						if(!validateEmail(emails[i])){
+							client.setReason("Invalid Email");
+							return false;
+						}
+						 isUserFound = validateContactPerson(emails[i],client);
+						 if(isUserFound == false){
+								client.setReason("Owner doesn't exist with email "+emails[i]);
+					            return false;
+							}
 				}
 			  
-			  
 		  }
-			return true;
+		  }
+		return true;
 		}
 	  
 	  
@@ -529,10 +549,14 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	  		 * @param createExcelsheet
 	  		 * @return
 	  		 */
-		private Sheet setContactExcelHeader(Sheet createExcelsheet) {
+		private Sheet setContactExcelHeader(Sheet createExcelsheet,String responderType) {
 			
 			Row excelHeader = createExcelsheet.createRow(0);
-			excelHeader.createCell(0).setCellValue(Constants.CLIENT_NAME);
+			if("Client".equalsIgnoreCase(responderType)){
+				excelHeader.createCell(0).setCellValue(Constants.CLIENT_NAME);	
+			}else{
+				excelHeader.createCell(0).setCellValue(Constants.VENDOR_NAME);	
+			}
 			excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
 			excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
 			excelHeader.createCell(3).setCellValue(Constants.EMAIL);
@@ -550,12 +574,17 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		/**
   		 * prepares Client columns (Headers) for excel
   		 * @param createExcelsheet
+		 * @param responderType 
   		 * @return
   		 */
-	private Sheet setClientExcelHeader(Sheet createExcelsheet) {
+	private Sheet setClientExcelHeader(Sheet createExcelsheet, String responderType) {
 		
 		Row excelHeader = createExcelsheet.createRow(0);
-		excelHeader.createCell(0).setCellValue(Constants.CLIENT_NAME);
+		if("Client".equalsIgnoreCase(responderType)){
+			excelHeader.createCell(0).setCellValue(Constants.CLIENT_NAME);
+		}else{
+			excelHeader.createCell(0).setCellValue(Constants.VENDOR_NAME);	
+		}
 		excelHeader.createCell(1).setCellValue(Constants.WEBSITE);
 		excelHeader.createCell(2).setCellValue(Constants.COUNTRY);
 		excelHeader.createCell(3).setCellValue(Constants.SATATE);

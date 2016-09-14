@@ -11,5 +11,5 @@ import com.bis.sourcelead.entity.User;
 
 public interface ClientImportsService {
 
-	String  clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailCheck)throws IOException ,JSONException;
+	String  clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailCheck, String responderType)throws IOException ,JSONException;
 }
