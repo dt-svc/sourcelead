@@ -140,5 +140,18 @@ public class OrgDocumentsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 		}
+	
+	
+	
+	@RequestMapping(value = "/getclientDocumentsListByResponderLocationIdAndSpocUserId")
+	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
+
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
+		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId(),Long.valueOf(spocUserId));
+		 resultJson = commonUtil.toJSON(clientDocumentsList);
+		 return resultJson;
+	}	
 
 }

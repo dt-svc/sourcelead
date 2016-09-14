@@ -34,5 +34,8 @@ public interface OrgDocumentsService {
 	 */
 	OrgDocuments getOrgDocumentsById(Long Id) throws Exception;
 
+	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long valueOf, Long id,
+			Long spocUserId);
+
 
 }

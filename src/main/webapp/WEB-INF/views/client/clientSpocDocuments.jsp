@@ -11,13 +11,13 @@ function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
-		result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+clientLocationId+',\''+spocName+'\','+userId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientDocumentsList" ></div>';
+		result  = result + '   <div id="spocDocumentsList" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -27,17 +27,17 @@ function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
    // $("#tab-3").empty();  
     $("#tab-2").append(result);  
 	
-    clientDocumentsList(clientLocationId);
+    spocDocumentsList(clientLocationId,userId);
     
 }
 </script>
 
 <script>
-function clientDocumentsList(clientLocationId){
+function spocDocumentsList(clientLocationId,userId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId,        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -47,7 +47,7 @@ function clientDocumentsList(clientLocationId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
-	                	 $("#clientDocumentsList").empty();
+	                	 $("#spocDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
@@ -115,7 +115,7 @@ function clientDocumentsList(clientLocationId){
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
-	                     $("#clientDocumentsList").append(result); 
+	                     $("#spocDocumentsList").append(result); 
 	                     documentpagination(); 
 			    	} 
                }else{
@@ -130,8 +130,8 @@ function clientDocumentsList(clientLocationId){
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
 					 result = result+"  </div> "; 
-					$("#clientDocumentsList").empty();
-				    $("#clientDocumentsList").append(result); 
+					$("#spocDocumentsList").empty();
+				    $("#spocDocumentsList").append(result); 
                }
         },
           
@@ -155,11 +155,11 @@ function documentpagination(){
 </script>
 
 <script>
-function addDocument(clientLocationId,spocName,userId) {	
+function addDocumentForSpoc(clientLocationId,spocName,userId) {	
 	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
-	result = result  +'          <form role="form"  id="document_form" name="document_form" method="post" > ';
+	result = result  +'          <form role="form"  id="document_form_spoc" name="document_form_spoc" method="post" > ';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
@@ -196,8 +196,8 @@ function addDocument(clientLocationId,spocName,userId) {
 	
 	result = result  +'	                 <div class="clearfix mb10">';
 	result = result  +'	                   <div class="col-md-6">';
-	result = result  +'                      <input type="text" name="spoc" field-name="spoc" readonly class="form-control input-sm" value="'+spocName+'" >                                          ';
-	result = result + '<input type="hidden" name="userId" id="userId" value="'+userId+'" >';
+	result = result  +'                      <input type="text" name="spocName" field-name="spocName" readonly class="form-control input-sm" value="'+spocName+'" >                                          ';
+	result = result + '							<input type="hidden" name="userId" id="userId" value="'+userId+'" >';
 	//result = result + '                      <select class="chosen-select form-control" name="spoc" id="spoc" field-name="Client Contact"  >';
 	//result = result + '                      </select>';
     result = result  +'	                     </div>';
@@ -308,14 +308,14 @@ function closePopup(){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		 if ($('#document_form').validate(false, validationSettings)){
-			var frm = $('#document_form').serializeFormJSON();
+		 if ($('#document_form_spoc').validate(false, validationSettings)){
+			var frm = $('#document_form_spoc').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			var form = $('#document_form')[0];
+			var form = $('#document_form_spoc')[0];
       		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#document_form").attr("disabled", "disabled");
+			$("#document_form_spoc").attr("disabled", "disabled");
 			
 			//It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
@@ -337,7 +337,7 @@ function closePopup(){
 	            		 }
 	            		 else{
 	            			$("#popUpDiv").removeClass("edit-details-active");
-	            			clientDocumentsList(clientLocationId);
+	            			spocDocumentsList(clientLocationId);
 	            		 }
 					},
 				});
@@ -346,9 +346,9 @@ function closePopup(){
 				return false;
 		 } 
 	}
-	$('body').on('blur', '#document_form', function() {
-	$("#document_form").showHelpOnFocus();
-	$("#document_form").validateOnBlur(false, validationSettings);
+	$('body').on('blur', '#document_form_spoc', function() {
+	$("#document_form_spoc").showHelpOnFocus();
+	$("#document_form_spoc").validateOnBlur(false, validationSettings);
 });
 </script>
 

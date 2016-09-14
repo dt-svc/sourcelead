@@ -37,4 +37,7 @@ public interface OrgDocumentsDao{
 	 */
 	OrgDocuments getOrgDocumentsById(Long Id) throws Exception;
 
+	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
+			Long orgLocationId, Long spocUserId);
+
 }

@@ -43,7 +43,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
 		OrgDocuments orgDocuments = null;
 		
-		if(!docId.equalsIgnoreCase("null")){
+		if(!"null".equalsIgnoreCase(docId) && docId != null){
 			orgDocuments = orgDocumentsDao.getOrgDocumentsById(Long.parseLong(docId));
 			if(!jsonObj.getString("docFile").equalsIgnoreCase("")){
 				if(multiFile != null){
@@ -83,12 +83,24 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}else{
 			orgDocuments.setOwnerUser(null);
 		}
-		if(jsonObj.has("spoc") && StringUtils.isNotBlank(jsonObj.getString("spoc")) && StringUtils.isNotEmpty(jsonObj.getString("spoc"))){
-			User spocUser = new User();
-			spocUser.setId(Long.parseLong(jsonObj.getString("spoc")));
-			orgDocuments.setSpocUser(spocUser);
-		}else{
-			orgDocuments.setSpocUser(null);
+		String userId="userId";
+		if(jsonObj.getString(userId)!=null){
+			if(jsonObj.has(userId) && StringUtils.isNotBlank(jsonObj.getString(userId)) && StringUtils.isNotEmpty(jsonObj.getString(userId))){
+				User spocUser = new User();
+				spocUser.setId(Long.parseLong(jsonObj.getString(userId)));
+				orgDocuments.setSpocUser(spocUser);
+			}else{
+				orgDocuments.setSpocUser(null);
+			}
+		}
+		else{
+			if(jsonObj.has("spoc") && StringUtils.isNotBlank(jsonObj.getString("spoc")) && StringUtils.isNotEmpty(jsonObj.getString("spoc"))){
+				User spocUser = new User();
+				spocUser.setId(Long.parseLong(jsonObj.getString("spoc")));
+				orgDocuments.setSpocUser(spocUser);
+			}else{
+				orgDocuments.setSpocUser(null);
+			}
 		}
 		if(jsonObj.has("startDate") && StringUtils.isNotBlank(jsonObj.getString("startDate")) && StringUtils.isNotEmpty(jsonObj.getString("startDate"))){
 			Date startDate = format.parse(jsonObj.getString("startDate"));
@@ -115,7 +127,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		orgDocuments.setUpdatedBy(user.getUserCode());
 		orgDocuments.setUpdatedDate(new Date());
 		
-		//orgDocumentsDao.saveDocuments(orgDocuments);
+		orgDocumentsDao.saveDocuments(orgDocuments);
 	}
 
 	@Override
@@ -157,6 +169,27 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
 		}
 		return documents;
+	}
+
+	@Override
+	public List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
+			Long orgLocationId, Long spocUserId) {
+		 List<OrgDocuments> documentsList = orgDocumentsDao.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(responderLocationId, orgLocationId,spocUserId);
+		 for(OrgDocuments documents :documentsList){
+				if(documents.getStartDate() != null){
+				    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
+				}
+				if(documents.getEndDate() != null){
+				   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
+				}
+				if(documents.getSpocUser() != null){
+					documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
+				}
+				if(documents.getSpocUser() != null){
+					documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
+				}
+			}
+		 return documentsList;
 	}
 	
 }

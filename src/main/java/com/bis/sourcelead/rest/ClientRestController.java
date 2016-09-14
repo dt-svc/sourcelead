@@ -682,11 +682,11 @@ public class ClientRestController {
 				}
 			}
 			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
-				orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+				orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
 				 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 			}
 			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
-				 orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+				 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 			}
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
