@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +32,38 @@ import com.bis.sourcelead.service.OrgDocumentsService;
  */
 @Service
 public class OrgDocumentsServiceImpl implements OrgDocumentsService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(OrgDocumentsServiceImpl.class);
 
 	@Autowired
 	private OrgDocumentsDao orgDocumentsDao;
 	
 	@Override
-	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,OrgLocations orgLocation,User user) throws JSONException, IOException, ParseException, SourceLeadConstraintViolationException {
+	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user) throws  Exception {
 		
-		OrgDocuments orgDocuments = new OrgDocuments();
+		OrgDocuments orgDocuments = null;
+		
+		if(!docId.equalsIgnoreCase("null")){
+			orgDocuments = orgDocumentsDao.getOrgDocumentsById(Long.parseLong(docId));
+			if(!jsonObj.getString("docFile").equalsIgnoreCase("")){
+				if(multiFile != null){
+					orgDocuments.setDocFile(multiFile.getBytes());
+					orgDocuments.setFileName(multiFile.getOriginalFilename());
+					orgDocuments.setFileType(multiFile.getContentType());
+				 }
+			}
+		}else{
+			orgDocuments = new OrgDocuments();
+			orgDocuments.setStatus(Constants.MEMBER_ACTIVE);
+			orgDocuments.setCreatedBy(user.getUserCode());
+			orgDocuments.setCreatedDate(new Date());
+			if(multiFile != null){
+				orgDocuments.setDocFile(multiFile.getBytes());
+				orgDocuments.setFileName(multiFile.getOriginalFilename());
+				orgDocuments.setFileType(multiFile.getContentType());
+			 }
+		}
+		
 		
 		String pattern = "yyyy-MM-dd";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -50,21 +76,19 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setContractType(jsonObj.getString("contractType"));
 		}
 		
-		if(multiFile != null){
-			orgDocuments.setDocFile(multiFile.getBytes());
-			orgDocuments.setFileName(multiFile.getOriginalFilename());
-			orgDocuments.setFileType(multiFile.getContentType());
-		 }
-		
 		if(jsonObj.has("owner") && StringUtils.isNotBlank(jsonObj.getString("owner")) && StringUtils.isNotEmpty(jsonObj.getString("owner"))){
 			User ownerUser = new User();
 			ownerUser.setId(Long.parseLong(jsonObj.getString("owner")));
 			orgDocuments.setOwnerUser(ownerUser);
+		}else{
+			orgDocuments.setOwnerUser(null);
 		}
 		if(jsonObj.has("spoc") && StringUtils.isNotBlank(jsonObj.getString("spoc")) && StringUtils.isNotEmpty(jsonObj.getString("spoc"))){
 			User spocUser = new User();
 			spocUser.setId(Long.parseLong(jsonObj.getString("spoc")));
 			orgDocuments.setSpocUser(spocUser);
+		}else{
+			orgDocuments.setSpocUser(null);
 		}
 		if(jsonObj.has("startDate") && StringUtils.isNotBlank(jsonObj.getString("startDate")) && StringUtils.isNotEmpty(jsonObj.getString("startDate"))){
 			Date startDate = format.parse(jsonObj.getString("startDate"));
@@ -87,9 +111,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		if(orgLocation!= null){
 			orgDocuments.setLocationId(orgLocation);
 		}
-		orgDocuments.setStatus(Constants.MEMBER_ACTIVE);
-		orgDocuments.setCreatedBy(user.getUserCode());
-		orgDocuments.setCreatedDate(new Date());
+		
 		orgDocuments.setUpdatedBy(user.getUserCode());
 		orgDocuments.setUpdatedDate(new Date());
 		
@@ -98,15 +120,15 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 
 	@Override
 	public List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId,
-			Long orgLocationId) {
+			Long orgLocationId) throws Exception {
          List<OrgDocuments> documentsList = orgDocumentsDao.getClientDocumentsListByResponderLocationIdAndOrgLocationID(responderLocationId, orgLocationId);
 		
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
-			    documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+			    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
 			}
 			if(documents.getEndDate() != null){
-			   documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+			   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
 			}
 			if(documents.getSpocUser() != null){
 				documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
@@ -116,6 +138,25 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			}
 		}
 		return documentsList;
+	}
+
+	@Override
+	public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
+		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
+		OrgDocuments documents = orgDocumentsDao.getOrgDocumentsById(Id);
+		if(documents.getStartDate() != null){
+		    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
+		}
+		if(documents.getEndDate() != null){
+		   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
+		}
+		if(documents.getSpocUser() != null){
+			documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
+		}
+		if(documents.getSpocUser() != null){
+			documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
+		}
+		return documents;
 	}
 	
 }
