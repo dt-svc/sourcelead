@@ -2,17 +2,23 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -27,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.beans.ClientImportObject;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -34,8 +41,8 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.web.ClientUploadController;
 /**
  * 
  * @author Rajashekar
@@ -54,22 +61,28 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	@Autowired
 	RolesService rolesService;
 	
+	@Autowired
+	OrgService orgService;
+	
 	@Override
-	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org) throws IOException, JSONException {
+	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailCheck) throws IOException, JSONException {
 		
-//		  String fname = "/root/Downloads/Clients_import_template.xls"; // or  "C:\\Test.xls" C:\\SDI-XL.xls
+		  boolean isValidated = false;
+		  boolean isUserFound = false;
+		  
+		  String isFileCreated = "failure";
 		 String fname = multipartFile.getOriginalFilename();
 		  File file = new File(multipartFile.getOriginalFilename());
 		  multipartFile.transferTo(file);
-//		 FileInputStream fis = new FileInputStream(file);
-		  
-		  
 		  
 		  InputStream inp = new FileInputStream(file);
 	      String fileExtn = GetFileExtension(fname);
 	      Workbook wb_xssf; //Declare XSSF WorkBook
-	      Workbook wb_hssf; //Declare HSSF WorkBook
+	      Workbook wb_hssf = null ; //Declare HSSF WorkBook
 	      Sheet sheet = null; // sheet can be used as common for XSSF and HSSF
+	      
+	 
+			
 	      if (fileExtn.equalsIgnoreCase("xlsx"))
 	      {
 		       wb_xssf = new XSSFWorkbook(inp);
@@ -83,82 +96,172 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	    	  logger.info("xls="+wb_hssf.getSheetName(0));
 	    	  sheet = wb_hssf.getSheetAt(0);
 	      }
+	      Sheet createExcelsheet = wb_hssf.createSheet("createContact");
+	 			
 	      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
-	      int i = sheet.getPhysicalNumberOfRows();
-	      logger.info("================="+i);
+	      int count = 0;
 	     List<ClientImportObject> clientList = new ArrayList<ClientImportObject>();
 	     while (rows.hasNext()) 
 		      { 
 			       ClientImportObject client = new ClientImportObject();
 			       Row row = (Row) rows.next();
-			       logger.info("****************"+row.getLastCellNum());
-			
 			       if(fname.contains("contacts")){
-			    	   if(row.getRowNum() > 0){
-			    		   if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
-							   	  client.setClientName(row.getCell(0).toString());
-							    }
-					    	   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
-							   	  client.setFirstName(row.getCell(1).toString());
-							   }
-					    	   if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
-						    	  client.setLastName(row.getCell(2).toString());
-						       }
-					    	   if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
-						    	  client.setEmailid(row.getCell(3).toString());
-						        }
-					    	   if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())){
-							      client.setRole(row.getCell(4).toString());
-							    }
-					    	   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
-					    		   String mobileNumer = getCellValueAsString(row.getCell(5),fname);
-					    		   client.setPhone(mobileNumer);
-					    	   }
-					    	   if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())){
-					    		   client.setOwner(row.getCell(6).toString());   
-					    	   }
-					    	   if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
-					    		   client.setOwner(row.getCell(7).toString()); 
-					    	   }
-					    	   
-					    	   clientList.add(client);   
+			    	   createExcelsheet = setContactExcelHeader(createExcelsheet);
+			    	   if (row.getRowNum() > 0) {
+							isValidated = validateContactsExeclData(row,fname,client);
+						}
+			    	   if(isValidated){
+			    		   if(row.getRowNum() > 0){
+				    		   
+				    		   if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
+								   	  client.setClientName(row.getCell(0).toString());
+								    }
+						    	   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
+								   	  client.setFirstName(row.getCell(1).toString());
+								   }
+						    	   if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
+							    	  client.setLastName(row.getCell(2).toString());
+							       }
+						    	   if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
+							    	  client.setEmailid(row.getCell(3).toString());
+							        }
+						    	   if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())){
+								      client.setRole(row.getCell(4).toString());
+								    }
+						    	   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
+						    		   String mobileNumer = getCellValueAsString(row.getCell(5),fname);
+						    		   client.setPhone(mobileNumer);
+						    	   }
+						    	   if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())){
+						    		   client.setOwner(row.getCell(6).toString());   
+						    	   }
+						    	   if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
+						    		   client.setOwner(row.getCell(7).toString()); 
+						    	   }
+						    	   isUserFound = validateContactPerson(row.getCell(3).toString(),client);
+						    	   if(isUserFound){
+						    		   if (row.getRowNum() > 0) {
+						    			   count++;
+											createContactXlsSheet(row, createExcelsheet,count, fname,client);
+										}
+						    	   }else{
+						    		   JSONObject jsonObj = populateJsonObject(client,isMailCheck);
+						    			try {
+											clientService.storeClient(jsonObj, user, orgLocation,"Client",org);
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+						    	   }
+				    	   }
+			    	   }else{
+			    		   if (row.getRowNum() > 0) {
+			    			   count++;
+								createContactXlsSheet(row, createExcelsheet,count, fname,client);
+							}
 			    	   }
 			         }else{
-			    	   if(row.getRowNum() > 0){
-				    	      if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
-						    	  client.setClientName(row.getCell(0).toString());
-						       }
-							   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
-								   client.setWebSite(row.getCell(1).toString());  
-							   }
-							   if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
-								   client.setCountry(row.getCell(2).toString());
-							   }
-							   if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
-								   client.setState(row.getCell(3).toString());
-							   }
-							   if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())){
-								   client.setCity(row.getCell(4).toString());
-							   }  
-							   clientList.add(client);
-				       }
-				     
-				       
+			        	 createExcelsheet = setClientExcelHeader(createExcelsheet);
+			        	 if (row.getRowNum() > 0) {
+								isValidated = validateClientExeclData(row,fname,client);
+							}
+			        	 if(isValidated){
+			        		   if(row.getRowNum() > 0){
+						    	      if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
+								    	  client.setClientName(row.getCell(0).toString());
+								       }
+									   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
+										   client.setWebSite(row.getCell(1).toString());  
+									   }
+									   if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
+										   client.setCountry(row.getCell(2).toString());
+									   }
+									   if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
+										   client.setState(row.getCell(3).toString());
+									   }
+									   if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())){
+										   client.setCity(row.getCell(4).toString());
+									   }  
+									   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
+										   client.setLevel(row.getCell(5).toString());
+									   }  
+									   isUserFound = validateClient(row.getCell(0).toString(), client,orgLocation);
+									   
+									   if(isUserFound){
+							    		   if (row.getRowNum() > 0) {
+							    			   count++;
+												createClientXlsSheet(row, createExcelsheet,count, fname,client);
+											}
+							    	   }else{
+							    		   JSONObject jsonObj = populateJsonObject(client,isMailCheck);
+							    			try {
+												clientService.storeClient(jsonObj, user, orgLocation,"Client",org);
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+							    	   }
+						       } 
+			        	 }else{
+			        		 if (row.getRowNum() > 0) {
+				    			   count++;
+									createClientXlsSheet(row, createExcelsheet,count, fname,client);
+								}
+			        	 }
 			       }
+			       if (!isValidated || isUserFound) {
+						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+						wb_hssf.write(fos);
+						fos.close();
+					}
+					if(count > 0){
+						isFileCreated = "FailureUsersForCheck.xls";
+					}else{
+						isFileCreated = "failed";
+					}
 		      }
 		  inp.close();
-		  for(ClientImportObject clientObject :clientList){
-			  JSONObject jsonObj = populateJsonObject(clientObject);
-			  try {
-				clientService.storeClient(jsonObj, user, orgLocation,"Client",org);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		  }
-		  logger.info("*********************"+clientList.size());
-		return "success";
+		return isFileCreated;
+	}
+	/**
+	 * check person is duplicate or not 
+	 * @param email
+	 * @param client
+	 * @return boolean
+	 */
+	private boolean validateContactPerson(String email, ClientImportObject client) {
+		User user = userDao.findByEmail(email);
+		if(user != null){
+			client.setReason("duplicate data");
+			return true;
+		}
+		return false;
 	}
 	
+	/**
+	 * check Clinet is duplicate or not 
+	 * @param email
+	 * @param client
+	 * @return boolean
+	 */
+	private boolean validateClient(String clientName, ClientImportObject client,OrgLocations orgLocation) {
+		
+	    boolean isCLientExist = false;
+		try {
+			isCLientExist =  orgService.isClientNameValid(clientName,orgLocation.getId(),"Client");
+			if(isCLientExist){
+				client.setReason("duplicate client");
+				isCLientExist = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 return isCLientExist;
+	}
+	
+/**
+ * Return File extension
+ * @param fname2
+ * @return
+ */
 	private static String GetFileExtension(String fname2)
 	  {
 	      String fileName = fname2;
@@ -168,7 +271,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	      return ext;
 	  }
 
-	  
+	/**
+	 * Returns cell value as String  
+	 * @param cell
+	 * @param fileName
+	 * @return String
+	 */
 	  private String getCellValueAsString(Cell cell, String fileName) {
 			String cellValue = "";
 			if(fileName.toLowerCase().endsWith("xls")){
@@ -196,8 +304,14 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}
 				return cellValue;
 			}
-	  
-	  private JSONObject populateJsonObject(ClientImportObject clientObject) throws JSONException {
+	  /**
+	   * prepares json for client saving
+	   * @param clientObject
+	   * @param isMailSent
+	   * @return
+	   * @throws JSONException
+	   */
+	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent) throws JSONException {
 		  
 		  JSONObject jsonObj = new JSONObject(); 
 		  jsonObj.put("orgName", clientObject.getClientName());
@@ -254,7 +368,335 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			}
 			
 		  }
+		  if(isMailSent != null){
+			  jsonObj.put("isMailSent",isMailSent);
+			 
+		  }
+		  
+		  if(clientObject.getLevel() != null){
+			  jsonObj.put("level",clientObject.getLevel()); 
+		  }
 		  
 		 return jsonObj;
 	}
+	  
+	 /**
+	  * validates the row data  
+	  * @param row
+	  * @param fname
+	  * @param client
+	  * @return boolean
+	  */
+	  private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client) {
+		  boolean isValidated; 
+		  if (row.getRowNum() > 0) { 
+			  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
+					client.setReason("Required fields is not filled");
+					return false;
+				}else if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
+					isValidated = isFnameLnameValid(row.getCell(0).toString());
+					if(isValidated == false){
+						client.setReason("should contain above 2 char");
+						return isValidated;
+					}
+				}
+			  
+			  if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
+					client.setReason("Required fields is not filled");
+					return false;
+				}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
+					isValidated = isFnameLnameValid(row.getCell(1).toString());
+					if(isValidated == false){
+						client.setReason("should contain above 2 char");
+						return isValidated;
+					}
+				}
+			  
+			  if (row.getCell(4) == null || "".equalsIgnoreCase(row.getCell(4).toString())) {
+					client.setReason("Required fields is not filled");
+					return false;
+				}
+			  
+			  
+			  if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
+					client.setReason("Required fields is not filled");
+					return false;
+				}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validateEmail(row.getCell(3).toString())){
+					client.setReason("Invalid Email");
+					return false;
+				}
+			  
+			  if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+					String mobileNumber = getCellValueAsString(row.getCell(5), fname);
+					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
+						isValidated = isMobileNumberValid(mobileNumber);
+						if (isValidated == false) {
+							client.setReason("Invalid MobileNumber");
+							return isValidated;
+						}
+					}
+				}
+			  
+			  if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString()) || !validateEmail(row.getCell(7).toString())) {
+					client.setReason("Required fields is not filled");
+					return false;
+				}else if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString()) && !validateEmail(row.getCell(7).toString())){
+					client.setReason("Invalid Email");
+					return false;
+				}
+			  
+			  
+		  }
+			return true;
+		}
+	  
+	  
+	  private boolean validateClientExeclData(Row row, String fname, ClientImportObject client) {
+		  boolean isValidated; 
+		  if (row.getRowNum() > 0) { 
+			  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
+					client.setReason("Required fields is not filled");
+					return false;
+				}else if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
+					isValidated = isFnameLnameValid(row.getCell(0).toString());
+					if(isValidated == false){
+						client.setReason("should contain above 2 char");
+						return isValidated;
+					}
+				}
+			  
+			  if (row.getCell(1) != null || !"".equalsIgnoreCase(row.getCell(1).toString())) {
+				  isValidated = isValidDomainName(row.getCell(1).toString());
+				  if(isValidated == false){
+						client.setReason("Invalid Domain Website");
+						return isValidated;
+					}
+				}
+			  
+		  }
+			return true;
+		}
+	  
+	  
+	  /**
+	   * checks filed validation including spaces
+	   * @param name
+	   * @return boolean
+	   */
+	  private boolean isFnameLnameValid(String name){
+			boolean flag = false;
+			boolean istabSpace = name.matches("\\s*");
+			if(istabSpace){
+				flag = false;
+			}else{
+				if(name.length() > 2 && name.length() <= 200){
+					flag = true;
+				}
+		}
+			return flag;
+		}
+	  
+	  /**
+	   * validate email
+	   * @param email
+	   * @return boolean
+	   */
+	  	private boolean validateEmail(String email) {
+	  		Pattern pattern = Pattern.compile(
+	  				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+	  		Matcher matcher = pattern.matcher(email);
+	  		return matcher.matches();
+	  	}
+	  	
+	  	/**
+	  	 * Handles Mobile number valid or not
+	  	 * @param mobileNmber
+	  	 * @return
+	  	 */
+	  		private boolean isMobileNumberValid(String mobileNmber){
+	  			String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
+	  			boolean flag;
+	  			if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
+	  				flag = mobileNmber.matches(regex);
+	  			}else{
+	  				flag=false;
+	  			}
+	  			return flag;
+	  		}
+	  		
+	  		/**
+	  		 * prepares Contacts columns (Headers) for excel
+	  		 * @param createExcelsheet
+	  		 * @return
+	  		 */
+		private Sheet setContactExcelHeader(Sheet createExcelsheet) {
+			
+			Row excelHeader = createExcelsheet.createRow(0);
+			excelHeader.createCell(0).setCellValue(Constants.CLIENT_NAME);
+			excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
+			excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
+			excelHeader.createCell(3).setCellValue(Constants.EMAIL);
+			excelHeader.createCell(4).setCellValue(Constants.ROLE);
+			excelHeader.createCell(5).setCellValue(Constants.PHONE);
+			excelHeader.createCell(6).setCellValue(Constants.STATUS);
+			excelHeader.createCell(7).setCellValue(Constants.OWNER);
+			excelHeader.createCell(8).setCellValue(Constants.FAILED_REASON);
+			return createExcelsheet;
+		}
+		
+		
+		
+		
+		/**
+  		 * prepares Client columns (Headers) for excel
+  		 * @param createExcelsheet
+  		 * @return
+  		 */
+	private Sheet setClientExcelHeader(Sheet createExcelsheet) {
+		
+		Row excelHeader = createExcelsheet.createRow(0);
+		excelHeader.createCell(0).setCellValue(Constants.CLIENT_NAME);
+		excelHeader.createCell(1).setCellValue(Constants.WEBSITE);
+		excelHeader.createCell(2).setCellValue(Constants.COUNTRY);
+		excelHeader.createCell(3).setCellValue(Constants.SATATE);
+		excelHeader.createCell(4).setCellValue(Constants.CITY);
+		excelHeader.createCell(5).setCellValue(Constants.LEVEL);
+		excelHeader.createCell(6).setCellValue(Constants.FAILED_REASON);
+		return createExcelsheet;
+	}
+		/**
+		 * prepares contact excel file when record validation failed
+		 * @param row
+		 * @param createExcelsheet
+		 * @param rowIndex
+		 * @param fname
+		 * @param client
+		 */
+		private void createContactXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client) {
+			Row writeRow = createExcelsheet.createRow(rowIndex);
+			
+			if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+		        writeRow.createCell(0).setCellValue(row.getCell(0).toString());
+			} else {
+				writeRow.createCell(0).setCellValue("");
+			}
+			if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+		        writeRow.createCell(1).setCellValue(row.getCell(1).toString());
+			} else {
+				writeRow.createCell(1).setCellValue("");
+			}
+			if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+			    writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+			} else {
+				 writeRow.createCell(2).setCellValue("");
+			}
+			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+				 writeRow.createCell(3).setCellValue(row.getCell(3).toString());
+			} else {
+				 writeRow.createCell(3).setCellValue("");
+			}
+			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_DROPDOWN,4,fname));
+				writeRow.createCell(4).setCellValue(row.getCell(4).toString());
+			} else {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_DROPDOWN,4,fname));
+			    writeRow.createCell(4).setCellValue("");
+			}
+			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+				String mobileNumber = getCellValueAsString(row.getCell(5), fname);
+			      writeRow.createCell(5).setCellValue(mobileNumber);
+			} else {
+			    writeRow.createCell(5).setCellValue("");
+			}
+			if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6,fname));
+				writeRow.createCell(6).setCellValue(row.getCell(6).toString());
+			} else {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6,fname));
+			    writeRow.createCell(6).setCellValue("");
+			}
+			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+				writeRow.createCell(7).setCellValue(row.getCell(7).toString());
+			} else {
+			    writeRow.createCell(7).setCellValue("");
+			}
+			if (client.getReason() !=null) {
+				writeRow.createCell(8).setCellValue(client.getReason());
+			} 
+		}
+		
+		
+		/**
+		 * prepares client excel file when record validation failed
+		 * @param row
+		 * @param createExcelsheet
+		 * @param rowIndex
+		 * @param fname
+		 * @param client
+		 */
+		private void createClientXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client) {
+			Row writeRow = createExcelsheet.createRow(rowIndex);
+			
+			if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+		        writeRow.createCell(0).setCellValue(row.getCell(0).toString());
+			} else {
+				writeRow.createCell(0).setCellValue("");
+			}
+			if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+		        writeRow.createCell(1).setCellValue(row.getCell(1).toString());
+			} else {
+				writeRow.createCell(1).setCellValue("");
+			}
+			if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+			    writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+			} else {
+				 writeRow.createCell(2).setCellValue("");
+			}
+			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+				 writeRow.createCell(3).setCellValue(row.getCell(3).toString());
+			} else {
+				 writeRow.createCell(3).setCellValue("");
+			}
+			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+				writeRow.createCell(4).setCellValue(row.getCell(4).toString());
+			} else {
+			    writeRow.createCell(4).setCellValue("");
+			}
+			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,fname));
+				writeRow.createCell(4).setCellValue(row.getCell(4).toString());
+			} else {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,fname));
+			    writeRow.createCell(5).setCellValue("");
+			}
+			if (client.getReason() !=null) {
+				writeRow.createCell(6).setCellValue(client.getReason());
+			} 
+		}
+		
+/**
+ * Prepares dropdown for Role and status		
+ * @param ratePerList
+ * @param column
+ * @param fileName
+ * @return
+ */
+		private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName) {
+			@SuppressWarnings("deprecation")
+			  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
+			  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(ratePerList);
+			  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
+			  dataValidation.setSuppressDropDownArrow(false);
+			  return dataValidation;
+//			  XSSFDataValidation
+	}
+		
+		
+		private boolean isValidDomainName(String domainName){
+			Pattern pDomainNameOnly = Pattern.compile("^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$");
+			return pDomainNameOnly.matcher(domainName).find();
+		}
+		
+		
+		
 }

@@ -102,7 +102,17 @@ public class ClientUploadController {
 		String fileName = multipartFile.getOriginalFilename();
 		
 		
-		clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org);
+		String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail());
+		
+		if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+			model.addAttribute("errorMessage", "Please download Error file here");
+             model.addAttribute("fileName", "xlsx");
+			return "upload/uploadClientForm";
+		}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+			model.addAttribute("errorMessage", "Please download Error file here");
+            model.addAttribute("fileName", "xls");
+			return "upload/uploadClientForm";
+		}
 		
 		return "redirect:/clientDashboard";
 		

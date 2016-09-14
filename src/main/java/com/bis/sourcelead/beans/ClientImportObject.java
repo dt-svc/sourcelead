@@ -26,6 +26,11 @@ public class ClientImportObject {
 	
 	private String role;
 	
+	private String reason;
+	
+	private String level;
+	
+	
 	public String getClientName() {
 		return clientName;
 	}
@@ -98,5 +103,16 @@ public class ClientImportObject {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
 }

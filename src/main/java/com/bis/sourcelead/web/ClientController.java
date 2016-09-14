@@ -188,6 +188,7 @@ public class ClientController {
 				ModelAndView model = new ModelAndView();
 				model.setViewName("upload/uploadClientForm");
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				sessionData.setNav(Constants.Clients);
 				return model;
 
 			}

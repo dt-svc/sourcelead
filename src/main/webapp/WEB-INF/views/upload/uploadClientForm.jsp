@@ -26,9 +26,9 @@ margin:10px 220px 0;
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Users</h2>
+        <h2>Import Client & Contacts</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; Users Import </div>
+      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
@@ -61,7 +61,7 @@ margin:10px 220px 0;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
@@ -108,7 +108,7 @@ margin:10px 220px 0;
 			  </span>
             </div>
             <div class="panel-body checkbox div-checkbox">
-				  <label><input type="checkbox" checked="checked" value="checked" name="email"></label><span>Send Emails</span>
+				  <label><input type="checkbox" checked="checked" value="checked" name="isMailSent"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">

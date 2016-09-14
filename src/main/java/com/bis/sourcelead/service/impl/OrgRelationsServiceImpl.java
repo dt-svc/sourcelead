@@ -116,6 +116,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			//orgRelations.setLevel(jsonObj.getString("level"));
 			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
 			orgRelations.setResponderLevel("Level-5");
+		}else{
+			orgRelations.setInitiatorLevel("Level-5");
+			orgRelations.setResponderLevel("Level-5");
 		}
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
