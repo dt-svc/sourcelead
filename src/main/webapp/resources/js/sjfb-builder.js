@@ -85,29 +85,38 @@ function addField(fieldType) {
 
     if (hasRequired) {
         includeRequiredHTML = '' +
-            '<label>Required? ' +
+            '<label class="col-md-5"><div class="col-md-3">Required? </div>' +
+            ' <div class="col-md-9"> ' +
             '<input class="toggle-required" type="checkbox">' +
+            ' </div> ' +
             '</label>'
     }
 
     if (hasChoices) {
         includeChoicesHTML = '' +
-            '<div class="choices">' +
-            '<ul></ul>' +
-            '<button type="button" class="add-choice">Add Choice</button>' +
+            '<div class="choices col-md-12">' +
+            '<ul class="clearfix"></ul>' +
+            '<button type="button" class="add-choice btn btn-primary"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Choice</button>' +
             '</div>'
     }
 
     return '' +
         '<div class="field" data-type="' + fieldType + '">' +
-        '<button type="button"  class="delete">Delete Field</button>' +
-        '<h3>' + fieldType + '</h3>' +
-        '<label>Label:' +
-        '<input type="text" data-validation="required" field-name="Label" class="field-label">' +
+        '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>' +
+        ' <div class="clearfix mt mb"> ' + 
+        '<h3 class="btn btn-success">' + '<i class="fa fa-check-circle"></i>&nbsp;'  + fieldType + '</h3>' +
+        ' </div> ' +
+        ' <div class="row"> ' +
+        '<label class="col-md-5"><div class="col-md-2">Label:</div>' +
+        ' <div class="col-md-10"> ' +
+        '<input type="text" data-validation="required" field-name="Label" class="form-control input-sm" >' +
+        ' </div> ' +
         '</label>' +
         includeRequiredHTML +
         includeChoicesHTML +
+        ' </div> ' +
         '</div>'
+        
 }
 
 //Make builder field required
@@ -150,13 +159,23 @@ function selectedChoice($this) {
 function addChoice() {
     return '' +
         '<li>' +
-        '<label>Choice: ' +
-        '<input type="text" data-validation="required" field-name="Choice Label" class="choice-label">' +
+        '<div class="row">' +
+        '<label class="col-md-5 lblClass"> <div class="col-md-2">Choice: </div> ' +
+        '<div class="col-md-10 choiceInput">' +
+        '<input type="text" data-validation="required" field-name="Choice Label" class="form-control input-sm">' +
+        '</div>' +
         '</label>' +
-        '<label>Selected? ' +
+        
+        
+        '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft"> Selected? </div> ' +
+        '<div class="col-md-3 choicePadLeft"> ' +
         '<input class="toggle-selected" type="checkbox">' +
+        '</div>' +
+        
         '</label>' +
-        '<button type="button" class="delete">Delete Choice</button>' +
+        '<button type="button" class="delete pull-left choicebtn-delete"><i class="fa fa-times text-danger"></i></button>' +
+        '</div>' +
+        '</div>' +
         '</li>'
 }
 

@@ -14,6 +14,7 @@
 
 
 
+
 <script type="text/javascript">
 	function addSubmissionTemplateFields(clientLocationId) {
 		
@@ -53,7 +54,7 @@
 			    	
 			    	result = result + '<div class="col-md-2">';
 			        result = result + '<div class="dropdown">';
-			        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown">Add Field &nbsp;&nbsp;';
+			        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
 			        result = result + '<span class="caret"></span></button>';
 			        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
 			        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
@@ -90,6 +91,7 @@
 		  
 	}
 </script>	
+
 
   <script type="text/javascript">
    	$('body').on('submit', '#sjfb', function(e){
@@ -177,4 +179,21 @@
     $('#sjfb').validateOnBlur(false, validationSettings); 
   
   </script>
+  
+  
+  <script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script> 
+  
   
