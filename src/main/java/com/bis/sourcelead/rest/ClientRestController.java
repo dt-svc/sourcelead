@@ -707,8 +707,9 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/saveClientSubmissionTemplate" , method = RequestMethod.POST)
-	   public String saveClientSubmissionTemplate(@RequestParam(value="json", required=false) String json,
-			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId) throws Exception {
+	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId,
+			   @RequestParam(value="jsonStringData", required=false) String jsonStringData) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
@@ -723,6 +724,7 @@ public class ClientRestController {
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
 			   submissionTemplate.setClientLocationId(clientOrgLocation);
 			   submissionTemplate.setOrgLocationId(orgLocations);
+			   submissionTemplate.setJsonString(jsonStringData);
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);

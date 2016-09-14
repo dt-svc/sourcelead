@@ -26,23 +26,39 @@
 		result = result + '<div class="pull-left">';
 		result = result + '<h2>Submission Template</h2>';
 		        result = result + '</div>';
-		      
 		        result = result + '<div id="sjfb-wrap">';
-		        result = result + '<div class="add-wrap">';
-		        result = result + ' <h3>Add Field:</h3>';
-		        result = result + '<ul id="add-field">';
-		        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
-		        result = result + '<li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>';
-		        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
-		        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
-		        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
-		           result = result + '</ul>';
-		           result = result + '</div>';
 
 		           result = result + '<form id="sjfb" novalidate>';
+		           result = result + '<input type="hidden" id="clientLocationId" value="'+clientLocationId+'">';
+		           
+		            result = result  +'	<div class="clearfix mb10">';
+		            result = result  +'<label class="col-md-3">Template Name<span class="text-danger">&nbsp;*</label>';
+			    	result = result  +'	<div class="col-md-12">';
+			    	result = result  +'	<input type="text" class="form-control input-sm" value="" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
+			    	result = result  +'	</div>';
+			    	result = result  +'	</div>';
+			    	
+			    	result = result  +'	<div class="clearfix mb10">';
+			    	 result = result  +'<label class="col-md-3">Description<span class="text-danger">&nbsp;*</label>';
+			    	result = result  +'	  <div class="col-md-12">';
+			    	result = result  +'	     <textarea rows="5" name="description" field-name="Description" data-validation="required" placeholder="Description *" class="form-control"></textarea>';
+			    	result = result  +'	   </div>';
+			    	result = result  +'	</div>';
+			    	
+			    	result = result + '<div class="add-wrap">';
+			        result = result + '<h3>Add Field:</h3>';
+			        result = result + '<ul id="add-field">';
+			        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
+			        result = result + '<li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>';
+			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
+			        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
+			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
+		            result = result + '</ul>';
+			        result = result + '</div>';
+		           
 		           result = result + '<div id="form-fields">';
 		           result = result + '</div>';
-		           result = result + '<button type="submit" class="submit">Save Form</button>';
+		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
 		           result = result + '</form>';
 
 		           result = result + '</div>';
@@ -57,11 +73,14 @@
 	}
 </script>	
 
-  <script>
-  //Saving form
- //Saving form
-    $("#sjfb").submit(function(event) {
-        event.preventDefault();
+  <script type="text/javascript">
+   	$('body').on('submit', '#sjfb', function(e){
+	  if ($(this).validate(false, validationSettings)){
+        e.preventDefault();
+        var frm = $('#sjfb').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        con = con.replace(/[{}]/g, "");
+        var jsonData = encodeURIComponent(con);
 
         //Loop through fields and save field data to array
         var fields = [];
@@ -112,27 +131,32 @@
         });
 
         var frontEndFormHTML = '';
-
+        var clientLocationId = document.getElementById("clientLocationId").value;
+        var sourceleadUrl ='${sourceleadUrl}';
         //Save form to database
         //Demo doesn't actually save. Download project files for save
-        var data = JSON.stringify([{"name":"formFields","value":fields}]);
-        alert("data>>>"+data);
-        $.ajax({
-            method: "POST",
-            url: "sjfb-save.php",
-            data: data,
-            dataType: 'json',
-            success: function (msg) {
-                console.log(msg);
-                $('.alert').removeClass('hide');
-                $("html, body").animate({ scrollTop: 0 }, "fast");
-
-                //Demo only
-                $('.alert textarea').val(JSON.stringify(fields));
-            }
-        });
+        var con2 = JSON.stringify([{"name":"formFields","value":fields}]);
+        con2 = con2.replace(/[{}]/g, "");
+        var jsonStringData = encodeURIComponent(con2);
+        alert(jsonStringData)
+   	    $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	        success: function(result) {
+	        	if((result == 'home')){
+		        		location.replace(sourceleadUrl+"/clientDashboard");  
+		        } 
+	        },
+	    });
+        return true;
+      }
+      else{
+      	return false;	
+         }
     });
-  
+    	
+   	$('#sjfb').showHelpOnFocus();
+    $('#sjfb').validateOnBlur(false, validationSettings); 
   
   </script>
   
