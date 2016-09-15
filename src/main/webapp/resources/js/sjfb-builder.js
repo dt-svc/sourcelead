@@ -132,7 +132,7 @@ function addField(fieldType) {
         ' <div class="row"> ' +
         '<label class="col-md-5"><div class="col-md-2">Label:</div>' +
         ' <div class="col-md-10"> ' +
-        '<input type="text" data-validation="required" field-name="Label" class="form-control input-sm" >' +
+        '<input type="text" data-validation="required validate_Space" field-name="Label" class="form-control input-sm" >' +
         ' </div> ' +
         '</label>' +
         includeRequiredHTML +
@@ -185,7 +185,7 @@ function addChoice() {
         '<div class="row">' +
         '<label class="col-md-5 lblClass"> <div class="col-md-2">Choice: </div> ' +
         '<div class="col-md-10 choiceInput">' +
-        '<input type="text" data-validation="required" field-name="Choice Label" class="form-control input-sm">' +
+        '<input type="text" data-validation="required validate_Space" field-name="Choice Label" class="form-control input-sm">' +
         '</div>' +
         '</label>' +
         
