@@ -27,7 +27,7 @@ public interface OrgDocumentsDao{
 	 * @param orgLocationId
 	 * @return
 	 */
-	List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId) throws Exception;
+	List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long orgLocationId, String sourceType) throws Exception;
 	
 	/**to get org document by Id
 	 * @author Prasad Salina

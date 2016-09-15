@@ -27,8 +27,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -49,10 +52,17 @@ public class OrgDocumentsRestController {
 	@Autowired
 	OrgDocumentsService orgDocumentsService;
 	
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
+	@Autowired
+	private UserService userService;
+	
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "docId", required = false) String docId,
+			@RequestParam(value = "sourceType", required = false) String sourceType,
 			MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -65,7 +75,7 @@ public class OrgDocumentsRestController {
 		}
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user);
+		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user, sourceType);
 		return "success";
 
 	} 	
@@ -79,11 +89,13 @@ public class OrgDocumentsRestController {
 	 */
 	
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
-	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,HttpServletRequest request) throws Exception {
+	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,
+			                                                 HttpServletRequest request) throws Exception {
 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 String resultJson;
-		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId());
+		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), loginOrgLocation.getId(), sourceType);
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
@@ -97,10 +109,25 @@ public class OrgDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getOrgDocument", method = RequestMethod.POST)
-	public @ResponseBody String getOrgDocument(String docId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String getOrgDocument(String docId, Long orgRelationId, HttpServletRequest request) throws Exception {
 		String resultJson = null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
+		
+		//to fetch client contact list
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
+		for (OrgSpoc orgSpoc : orgSpocsList) {
+			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+		}
+		
+		//to fetch Owners list
+		List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		
 		if(orgDocument != null){
+			orgDocument.setOrgSpocsList(orgSpocsList);
+			orgDocument.setOwnersList(ownersList);
 			resultJson = commonUtil.toJSON(orgDocument);
 		}
 		return resultJson;

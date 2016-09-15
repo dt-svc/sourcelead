@@ -217,8 +217,6 @@
 					    
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							alert("tempOwnerId"+tempOwnerId+"   user.id"+user.id);
-							
 							   if(user.id == tempOwnerId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";

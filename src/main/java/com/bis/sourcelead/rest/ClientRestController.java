@@ -624,8 +624,9 @@ public class ClientRestController {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
+	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId());
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser);
 
 		return jsonObj.getString("owner");
 	}

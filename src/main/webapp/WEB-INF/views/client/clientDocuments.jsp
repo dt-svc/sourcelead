@@ -79,7 +79,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId,        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -249,7 +249,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	result = result  +'	                  <div class="col-md-6">';
 	result = result  +'	                      <select class="chosen-select" name="owner" id="owner" field-name="Owner">';
-	result = result  +' 					      <option value="" selected="selected">Owner</option>';
+	result = result  +' 					      <option value="">Owner</option>';
 	result = result  +'	                          <c:forEach var="user" items="${userList}">';
 	result = result  +'	                              <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''}>${user.firstName} ${user.lastName}</option>';
 	result = result  +'	                          </c:forEach>';
@@ -319,6 +319,17 @@ function addDocument(clientLocationId,orgRelationId) {
 	    document.getElementById("uploadBtn").onchange = function () {
 	    document.getElementById("uploadFile").value = this.value;
 	    };
+	    
+	    /* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("uploadBtn");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -381,7 +392,7 @@ function closePopup(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId+"&docId="+docId,
+						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -435,11 +446,14 @@ function getSpocsList(orgRelationId){
 <script>
 function getClientDocument(clientLocationId,orgRelationId,docId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId, 	   
+	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
+		    	var spoc = "";
+		    	var owner = "";
 		    	if( data.indexOf('Sign In') >= 0){
 	    		location.replace(sourceleadUrl);
 	    	 }
@@ -463,13 +477,37 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     				 $('#contractType').trigger("chosen:updated");
     			 }
     			 
-    			 if(json.spocName != null && json.spocName != "undefined" && json.spocName != ""){
-    				 document.getElementById("spoc").value = json.spocName;
+    			 if(json.orgSpocsList != null && json.orgSpocsList != "" && json.orgSpocsList != "undefined" && json.orgSpocsList.length > 0){
+    				 $('#spoc').empty();
+    		         $('#spoc').append('<option value="">Client Contact</option>');
+    		            for(var i=0; i<json.orgSpocsList.length; i++){
+    		            	 spoc = json.orgSpocsList[i];
+	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.spocUser.id){
+	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
+	    		 	    	  }else{
+	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
+	    		 	    	  }
+    		            }
+    				
     				 $('#spoc').trigger("chosen:updated");
     			 }
     			 
-    			 if(json.ownerName != null && json.ownerName != "undefined" && json.ownerName != ""){
-    				 document.getElementById("owner").value = json.ownerName;
+    			 if(json.ownersList != null && json.ownersList != "undefined" && json.ownersList != "" && json.ownersList.length > 0){
+    				 $('#owner').empty();
+    		         $('#owner').append('<option value="">Owner</option>');
+    		            for(var j=0; j<json.ownersList.length; j++){
+    		            	  owner = json.ownersList[j];
+	    		 	    	  if(json.ownerUser != null && json.ownerUser != "" && json.ownerUser != 'undefined' && json.ownerId == owner.id){
+	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    	  }
+	    		 	    	  else if((json.ownerUser == null || json.ownerUser == "" || json.ownerUser == 'undefined') && (owner.id == sourceLeadUserId)){
+	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    	  }
+	    		 	    	  else{
+	    		 	    		 $('#owner').append('<option value="'+owner.id+'">'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    	  }
+    		            }
+    				
     				 $('#owner').trigger("chosen:updated");
     			 }
     			 

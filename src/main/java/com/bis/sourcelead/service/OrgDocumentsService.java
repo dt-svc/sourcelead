@@ -16,7 +16,7 @@ import com.bis.sourcelead.entity.User;
  */
 public interface OrgDocumentsService {
 
-	void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation, User user) throws Exception;
+	void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation, User user, String sourceType) throws Exception;
 
 	/** to get OrgDocumnets list
 	 * @author Prasad Salina
@@ -24,7 +24,7 @@ public interface OrgDocumentsService {
 	 * @param orgLocationId
 	 * @return
 	 */
-	List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId) throws Exception;
+	List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long orgLocationId, String sourceType) throws Exception;
 	
 	/**to get org document by Id
 	 * @author Prasad Salina
