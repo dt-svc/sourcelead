@@ -35,7 +35,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	private OrgDocumentsDao orgDocumentsDao;
 	
 	@Override
-	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user) throws  Exception {
+	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {
 		
 		OrgDocuments orgDocuments = null;
 		
@@ -63,6 +63,8 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
 		String pattern = "yyyy-MM-dd";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
+        
+        orgDocuments.setSourceType(sourceType);
 		
 		if(jsonObj.has("docName")){
 			orgDocuments.setDocName(jsonObj.getString("docName"));
@@ -127,9 +129,9 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	}
 
 	@Override
-	public List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId,
-			Long orgLocationId) throws Exception {
-         List<OrgDocuments> documentsList = orgDocumentsDao.getClientDocumentsListByResponderLocationIdAndOrgLocationID(responderLocationId, orgLocationId);
+	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId,
+			Long orgLocationId, String sourceType) throws Exception {
+         List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, orgLocationId,sourceType);
 		
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){

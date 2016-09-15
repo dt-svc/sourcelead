@@ -79,7 +79,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId,        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -319,6 +319,17 @@ function addDocument(clientLocationId,orgRelationId) {
 	    document.getElementById("uploadBtn").onchange = function () {
 	    document.getElementById("uploadFile").value = this.value;
 	    };
+	    
+	    /* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("uploadBtn");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -381,7 +392,7 @@ function closePopup(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId+"&docId="+docId,
+						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
