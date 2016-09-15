@@ -88,7 +88,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	public List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(
 			Long responderLocationId, Long orgLocationId, Long spocUserId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.spocUser.id =:spocUserId ";  
+		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.spocUser.id =:spocUserId and od.status = 'ACTIVE' ";  
 		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("spocUserId", spocUserId).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return orgDocuments;
 	}

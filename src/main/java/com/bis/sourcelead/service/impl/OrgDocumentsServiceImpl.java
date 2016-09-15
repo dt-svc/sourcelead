@@ -1,13 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgDocumentsService;
 
 
@@ -84,7 +80,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setOwnerUser(null);
 		}
 		String userId="userId";
-		if(jsonObj.getString(userId)!=null){
+		if(jsonObj.has("userId") && jsonObj.getString(userId)!=null){
 			if(jsonObj.has(userId) && StringUtils.isNotBlank(jsonObj.getString(userId)) && StringUtils.isNotEmpty(jsonObj.getString(userId))){
 				User spocUser = new User();
 				spocUser.setId(Long.parseLong(jsonObj.getString(userId)));
@@ -183,12 +179,9 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         }
         if(documents.getEndDate() != null){
            documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
-        }
-        if(documents.getSpocUser() != null){
-            documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
-        }
+        }        
         if(documents.getOwnerUser() != null){
-            documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
+        	documents.setOwnerId(documents.getOwnerUser().getId());
         }
         return documents;
     }
