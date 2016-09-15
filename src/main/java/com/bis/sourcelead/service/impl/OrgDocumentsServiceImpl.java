@@ -181,8 +181,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         }
         if(documents.getEndDate() != null){
            documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
-        }
-        
+        }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
         }
