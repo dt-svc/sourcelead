@@ -74,42 +74,53 @@ function customizeFields(){
 //Add field to builder
 function addField(fieldType) {
 
-    var hasRequired, hasChoices;
+    var hasRequired, hasChoices,hasAutocomplete,fieldName;
     var includeRequiredHTML = '';
     var includeChoicesHTML = '';
+    var includeAutocompleteHTML = '';
+    var includeTextHTML = '';
 
     switch (fieldType) {
         case 'text':
             hasRequired = true;
             hasChoices = false;
+            fieldName = "Text Box";
             break;
         case 'textarea':
             hasRequired = true;
             hasChoices = false;
+            fieldName = "Text Area";
             break;
         case 'select':
             hasRequired = true;
             hasChoices = true;
+            fieldName = "Select Box";
             break;
         case 'radio':
             hasRequired = true;
             hasChoices = true;
+            fieldName = "Radio Button";
             break;
         case 'checkbox':
             hasRequired = false;
             hasChoices = true;
+            fieldName = "Check Box";
             break;
-        case 'agree':
-            //required "agree to terms" checkbox
-            hasRequired = false;
+        case 'autocomplete':
+        	hasAutocomplete = true;
+            hasRequired = true;
             hasChoices = false;
+            fieldName = "Auto Complete";
             break;
+            
     }
 
+   
+    
     if (hasRequired) {
         includeRequiredHTML = '' +
-            '<label class="col-md-5"><div class="col-md-3">Required? </div>' +
-            ' <div class="col-md-9"> ' +
+            '<label class="col-md-5"><div class="col-md-3 lblHeight">Required? </div>' +
+            ' <div class="col-md-9 lblHeight"> ' +
             '<input class="toggle-required" type="checkbox">' +
             ' </div> ' +
             '</label>'
@@ -119,22 +130,39 @@ function addField(fieldType) {
         includeChoicesHTML = '' +
             '<div class="choices col-md-12">' +
             '<ul class="clearfix"></ul>' +
-            '<button type="button" class="add-choice btn btn-primary"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Choice</button>' +
+            '<button type="button" class="add-choice btn btn-primary"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Option</button>' +
             '</div>'
+    }
+    
+    if(hasAutocomplete){
+    	includeAutocompleteHTML = ''+ '<label class="col-md-5"><div class="col-md-2 lblHeight">Type:</div>' +
+        ' <div class="col-md-10"> ' +
+        '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Autocomplete">'+
+        '<option value="country">Country</option>      '+
+        '<option value="countryState">Country-State</option>      '+
+        '<option value="countryStateCity">Country-State-City</option>'+
+        '</select>'+
+        ' </div> ' +
+        '</label>'
+     }
+    else{
+    	 includeTextHTML = ''+
+		   '<label class="col-md-5"><div class="col-md-2 lblHeight">Label:</div>' +
+	       ' <div class="col-md-10"> ' +
+	       '<input type="text" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
+	       ' </div> ' +
+	       '</label>' 
     }
 
     return '' +
         '<div class="field" data-type="' + fieldType + '">' +
         '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>' +
-        ' <div class="clearfix mt mb"> ' + 
-        '<h3 class="btn btn-success">' + '<i class="fa fa-check-circle"></i>&nbsp;'  + fieldType + '</h3>' +
+        ' <div class="clearfix"> ' + 
+        '<h3>' + '<i class="fa fa-check-circle"></i>&nbsp;'  + fieldName + '</h3>' +
         ' </div> ' +
         ' <div class="row"> ' +
-        '<label class="col-md-5"><div class="col-md-2">Label:</div>' +
-        ' <div class="col-md-10"> ' +
-        '<input type="text" data-validation="required validate_Space" field-name="Label" class="form-control input-sm" >' +
-        ' </div> ' +
-        '</label>' +
+        includeAutocompleteHTML+
+        includeTextHTML+
         includeRequiredHTML +
         includeChoicesHTML +
         ' </div> ' +
@@ -183,15 +211,15 @@ function addChoice() {
     return '' +
         '<li>' +
         '<div class="row">' +
-        '<label class="col-md-5 lblClass"> <div class="col-md-2">Choice: </div> ' +
-        '<div class="col-md-10 choiceInput">' +
-        '<input type="text" data-validation="required validate_Space" field-name="Choice Label" class="form-control input-sm">' +
+        '<label class="col-md-5 lblClass"> <div class="col-md-2 lblHeight">Option: </div> ' +
+        '<div class="col-md-10">' +
+        '<input type="text" data-validation="required validate_Space" placeholder="Required *" field-name="Option Label" class="choiceInput choice-label form-control input-sm">' +
         '</div>' +
         '</label>' +
         
         
-        '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft"> Selected? </div> ' +
-        '<div class="col-md-3 choicePadLeft"> ' +
+        '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
+        '<div class="col-md-3 choicePadLeft lblHeight"> ' +
         '<input class="toggle-selected" type="checkbox">' +
         '</div>' +
         

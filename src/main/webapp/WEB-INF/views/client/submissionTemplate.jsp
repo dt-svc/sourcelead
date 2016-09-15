@@ -62,6 +62,7 @@
 			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
 			        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
 			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
+			        result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>';
 		            result = result + '</ul>';
 			        result = result + '</div>';
 			        result = result + '</div>';
@@ -160,7 +161,6 @@
         var con2 = JSON.stringify([{"name":"formFields","value":fields}]);
         con2 = con2.replace(/[{}]/g, "");
         var jsonStringData = encodeURIComponent(con2);
-        alert(jsonStringData)
    	    $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
