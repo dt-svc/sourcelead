@@ -233,7 +233,7 @@ function addDocumentForSpoc(clientLocationId,spocName,userId) {
 	
 	
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="storeClientDocument('+clientLocationId+');" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="storeSpocDocument('+clientLocationId+','+userId+');" />'; 
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
 	result = result  +'                </form>                                                                                                                                ';
@@ -301,7 +301,7 @@ function closePopup(){
 </script>
 
 <script type="text/javascript">
-	function storeClientDocument(clientLocationId){
+	function storeSpocDocument(clientLocationId,userId){
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		        borderColorOnError : '',
@@ -337,7 +337,7 @@ function closePopup(){
 	            		 }
 	            		 else{
 	            			$("#popUpDiv").removeClass("edit-details-active");
-	            			spocDocumentsList(clientLocationId);
+	            			spocDocumentsList(clientLocationId,userId);
 	            		 }
 					},
 				});
