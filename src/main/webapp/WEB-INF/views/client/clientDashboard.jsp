@@ -62,6 +62,7 @@
                 </li> -->
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
 						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
+						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
@@ -107,7 +108,6 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	//getClientDetails();
 	getVendorContactLists();
  };
 </script>
@@ -122,7 +122,7 @@ function getClientDetails(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	if(json.length != null && json.length != ''){
+   	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
    	        	result = result +'	<th>Client name</th>';
@@ -187,7 +187,7 @@ function getClientDetails(){
    				}
    	        	
    	        	result = result +'</tbody>';
-   	        	}else{
+   	        	/* }else{
    	        		result = result +'<div class="row mt">';
    	        		result = result +'<div class="col-lg-12">';
    	        		result = result +'<div class="content-area clearfix">';
@@ -200,7 +200,7 @@ function getClientDetails(){
    	        		result = result +'</div>';
    	        		result = result +'</div>';
    	        		result = result +'</div>';
-   	        	}
+   	        	} */
    	    	    $("#clientList").empty();  
    	    	    $("#clientList").append(result)
    	    	    pagination();
@@ -233,23 +233,31 @@ function pagination(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
+		
+		//for client details tab
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
+		
 		//for client contatcs tab
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
-				
+		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+		
+		//for client documents tab
+		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 				
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
 
+		//for client details tab
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 		
 		//for client contatcs tab
-		result = result + '<div class="clients_wrap_table " id="testDiv">';
-	   	result = result + '<div id="tab-2-addContact"> </div>';
-        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
-        result = result + '</div>';
+        result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>';
+        
+		//for client documents tab
+        result = result + '<div id="tab-3" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -445,31 +453,16 @@ function pagination1(){
 }
 </script>
 
-<script>
-function contactPagination(){ 
-    $('#tab-2').DataTable( {
-        "scrollCollapse": false,
-        "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-        "bLengthChange": false,
-        "bDestroy": true,
-        "ordering": false,
-        "oLanguage": {
-             "sSearch": ""
-         }
-       
-    } );
-}
-</script>
 
-<script>
-function updateSpocStatus(spocId){
+
+<script>xteSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
-	    	//clientContactList(orgRelationID);
+	    	getVendorContactLists(orgRelationID);
 	    }
    });
 }
@@ -493,8 +486,8 @@ function updateSpocStatus(spocId){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>'; */
+		result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -753,6 +746,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	//project side bar tabs
 	$(document).ready(function() {
 		$("#tab-1").show();
+		
 		$(".project-tabs-menu a").click(function(event) {
 			event.preventDefault();
 			$(this).parent().addClass("current");
@@ -814,8 +808,7 @@ function saveReason1(spocId, orgRelationID){
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			    //vendorContactList(orgRelationID);
-   			 getVendorContactLists();
+   			    getVendorContactLists();
 		    }
 	   });
 	}else{
@@ -851,6 +844,7 @@ $(document).ready(function() {
 </script> 
 <jsp:include page="editClientSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
-<jsp:include page="clientContacts.jsp" />	
+<jsp:include page="clientContacts.jsp" />
+<jsp:include page="clientDocuments.jsp" />	
 <jsp:include page="../masterFooter.jsp" />	
 	

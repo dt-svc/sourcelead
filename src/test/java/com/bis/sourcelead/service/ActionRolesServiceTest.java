@@ -34,7 +34,7 @@ public class ActionRolesServiceTest {
 	ModulesService modulesService;
 	private static final Logger logger = LoggerFactory.getLogger(ActionRolesServiceTest.class);
 	
-	@Test
+	//@Test
 	public void addActionRoles() throws Exception{
 		ActionRoles actionRoles = new ActionRoles();
 		actionRoles.setId(1L);
@@ -60,7 +60,7 @@ public class ActionRolesServiceTest {
 		logger.info("addActionRoles"+actionRoles.getId());
 	}
 	
-	@Test
+	//@Test
 	public void getSourceLeadActionRolesListByOrgId() throws Exception{
 		Org org = new Org();
 		org.setId(2L);
@@ -72,7 +72,7 @@ public class ActionRolesServiceTest {
 	}
 	}
 	
-	@Test
+	//@Test
 	public void getOrgActionRolesByRoleAndOrgLocationId() throws Exception{
 		/*OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1L);
@@ -82,5 +82,11 @@ public class ActionRolesServiceTest {
 		if(actionRolesList != null){
 			logger.info("getOrgActionRolesByRoleAndOrgLocationId "+actionRolesList.size());
 		}
+	}
+	
+	@Test
+	public void getActionRolesByActionIdAndRoleIdAndLocationId() throws Exception{
+		ActionRoles actionRoles = actionRolesService.getActionRolesByActionIdAndRoleIdAndLocationId(1L, 1l, 2L);
+		logger.info("Retrieved action roles are... "+actionRoles.getRoles().getDisplayName());
 	}
 }
