@@ -237,11 +237,10 @@
 						result = result  +'	 <div class="clearfix mb10">';
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
-						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						result = result  +'	   <select  class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							alert("user.id"+user.id+"ownerId"+tempOwnerId);
 							   if(user.id == tempOwnerId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
