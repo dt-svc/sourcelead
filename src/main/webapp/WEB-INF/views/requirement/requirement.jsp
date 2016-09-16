@@ -33,11 +33,6 @@
 			$(".cd").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
-			
-			$(".cd1").click(function(){  
-		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
-		    });
-			
 		 };
 </script>
 
@@ -66,15 +61,14 @@
 	          <div style="margin:0 auto" class="input-group col-md-6">
 	            <label class="input-group-btn">
 	            	<span class="btn btn-primary">Select Template
-	              </span> </label>
-	            
-	                 <select class="form-control" id="template"  onChange="setTemplateValues();">
-	                    <c:forEach var="title" items="${jobsTemplateList}">
-	                    <option value="php">Select template</option>
-		                    <option value="${title.id}">${title.jobTitle}</option>
-		                    
-	                     </c:forEach>   
-	                  </select>
+	                </span>
+	            </label>
+                <select class="form-control" id="template"  onChange="setTemplateValues();">
+                    <option>Select template</option>
+                    <c:forEach var="title" items="${jobsTemplateList}">
+	                    <option value="${title.id}">${title.jobTitle}</option>
+                     </c:forEach>   
+                </select>
 	          </div>
 	          <div class="text-center clearfix mt text-muted">
 	          	<div class="clearfix text-center mb">
@@ -268,19 +262,75 @@
                 <label class="col-md-3">Client <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this);">
-                    	<option value=''>-- Select Client --</option>
-	                    <c:forEach var="report" items="${add_clientList}">
-							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
-			                    </c:if>  
-			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
-			                    </c:if>
-						</c:forEach>
+                    <select class="chosen-select form-control select-bg">
+                      <option>Select Client</option>
+                      <option>Client-1</option>
+                      <option>Client-2</option>
+                      <option>Client-3</option>
                     </select>
                     <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i>
-                     
+                     <div id="addClient" class="modal fade">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
+                          <h4 class="modal-title">Add Client Details</h4>
+                        </div>
+                        <div class="modal-body clearfix">
+                          <div class="form-horizontal custom-form clearfix">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                              <div class="form-group">
+                                <label class="col-lg-3">Client Name</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="col-lg-3">Website</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label class="col-lg-3">First Name</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="col-lg-3">Last Name</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                               <div class="form-group">
+                                <label class="col-lg-3">Email</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="col-lg-3">Role</label>
+                                <div class="col-lg-9">
+                                <select class="chosen-select form-control select-bg ">
+                                 <option disabled>-- Select Role --</option>
+                                 <option>Admin</option>
+                                 <option>Account Manager</option>
+                                 <option>Recriting Manager</option>
+                                </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                           <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                           <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                     </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -672,7 +722,9 @@
           </div>
         </div>
       </div>
-      <div class="clearfix">
+      
+      
+      <%-- <div class="clearfix">
         <div class="col-lg-12">
           <h3>Internal Details</h3>
         </div>
@@ -700,7 +752,68 @@
                     </select>
                     Add Level
                     
-                     
+                     <div id="addClient" class="modal fade">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
+                          <h4 class="modal-title">Add Client Details</h4>
+                        </div>
+                        <div class="modal-body clearfix">
+                          <div class="form-horizontal custom-form clearfix">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                              <div class="form-group">
+                                <label class="col-lg-3">Client Name</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="col-lg-3">Website</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label class="col-lg-3">First Name</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="col-lg-3">Last Name</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                               <div class="form-group">
+                                <label class="col-lg-3">Email</label>
+                                <div class="col-lg-9">
+                                  <input type="text" class="form-control" value="">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="col-lg-3">Role</label>
+                                <div class="col-lg-9">
+                                <select class="selectpicker form-control">
+                                 <option disabled>-- Select Role --</option>
+                                 <option>Admin</option>
+                                 <option>Account Manager</option>
+                                 <option>Recriting Manager</option>
+                                </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                     </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -1158,7 +1271,279 @@
             </div>
           </div>
         </div>
+      </div> --%>
+      
+      
+       <!-- Internal Details html -->
+      <div class="clearfix">
+        <div class="col-lg-12">
+          <h3>Internal Details</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12  myForm">
+
+        <!-- Approver Required Check box html -->
+        <div class="clearfix mb">
+                <div class="ml">
+                
+                <div class="pull-left">
+                <input type="checkbox" name="cd" id="apprverReq" onClick="selApprover()" checked>
+                <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
+                </div>
+                
+                <!-- Radio buttons for Sequential or Parallel function -->
+                <div  class="ml pull-left apprverReq" style="display:none;">
+                <label class="rad" id="parallel">
+                <input type="radio" name="Approver" checked="checked">
+                <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
+                </label>
+                <label class="rad" id="sequential">
+                <input type="radio" name="approver" onClick="sequential();">
+                <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
+                </label>
+                
+                 <i data-placement="top" data-toggle="tooltip" class="glyphicon glyphicon-info-sign text-info ml" title="info"></i>
+                </div>
+                <!-- Radio buttons for Sequential or Parallel function -->
+               
+                </div>
+        </div>
+       <!-- Approver Required Check box html ends -->  
+         
+         
+         <div class="form-group parallel" style="display:none;">
+                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
+                <div class="col-md-9">
+                    <select multiple class="chosen-select form-control">
+                      <option disabled>Select Approver</option>
+                      <option>Approver-1</option>
+                      <option>Approver-2</option>
+                      <option>Approver-3</option>
+                    </select>
+                </div>
+         </div>
+         
+         <div class="form-group sequential" id="addLvl" style="display:none;">
+                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
+                <div class="col-md-9">
+                  <div class="form-icon">
+                    <select class="chosen-select form-control">
+                      <option disabled>Select Client</option>
+                      <option>Client-1</option>
+                      <option>Client-2</option>
+                      <option>Client-3</option>
+                    </select>
+                    <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
+                    </div>
+                </div>
+              </div>
+              
+              <div class="clearfix lvlTow" style="display:none;">
+              <div class="form-group">
+              <div class="col-md-3">Approver 2</div>
+              <div class="col-md-9">
+                <select class="chosen-select form-control">
+                      <option disabled>Select Client</option>
+                      <option>Client-1</option>
+                      <option>Client-2</option>
+                      <option>Client-3</option>
+                    </select>
+              </div></div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3">Manager<span class="text-danger">*</span></label>
+            <div class="col-md-9">
+              <select multiple class="chosen-select form-control">
+                <option>Select Manager</option>
+                <option>Manager-1</option>
+                <option>Manager-2</option>
+                <option>Manager-3</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3">Assign To <span class="text-danger">*</span></label>
+            <div class="col-md-9">
+                <div class="form-icon">
+                <span class="icon-inside"> <i class="fa fa-search-plus"></i>
+                  <input type="text" value="Assing Role" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span>
+                  </div>
+                <!-- Modal content Assign To -->
+                <div role="dialog" id="assignTeam" class="modal fade">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 class="modal-title">Assign To</h4>
+                      </div>
+                       <div id="userListDiv"></div>
+                        <!-- <div class="modal-body clearfix"> -->
+                       
+                        <!-- <div class="form-horizontal custom-form">
+                        <div class="row">
+                          <div class="col-xs-12 col-md-8 col-lg-8">
+                            <div class="input-group">
+                              <input type="search" class="form-control" value="">
+                              <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
+                          </div>
+                          <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">
+                             <select class="selectpicker">
+                             <option selected disabled>Select Role</option>
+                              <option value="All">All</option>
+                              <option value="Admin">Admin</option>
+                              <option value="Account Manager">Account Manager</option>
+                              <option value="Recruiting Manager">Recruiting Manager</option>
+                              <option value="Hiring Manager">Hiring Manager</option>
+                              <option value="Teams">Teams</option>
+                             </select>
+                        </div>
+                        </div>
+                        </div> -->
+                        <!-- <div class="modal-body-custom mt clearfix">
+                          <table cols="0" class="table table-bordered table-striped  clearfix">
+                            <tbody>
+                              <tr>
+                              <thead>
+                                <th><input type="checkbox"></th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Active Jobs</th>
+                                </thead>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" name="team"></td>
+                                <td><span class="tbldata-dotdot">Murali Krishna</span></td>
+                                <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>
+                                <td>Account Manager</td>
+                                <td>101</td>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" name="team"></td>
+                                <td>Murali Krishna</td>
+                                <td>murali@businessintelli.com</td>
+                                <td>Account Manager</td>
+                                <td>101</td>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" name="team"></td>
+                                <td>Murali Krishna</td>
+                                <td>murali@businessintelli.com</td>
+                                <td>Account Manager</td>
+                                <td>101</td>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" name="team"></td>
+                                <td>Murali Krishna</td>
+                                <td>murali@businessintelli.com</td>
+                                <td>Account Manager</td>
+                                <td>101</td>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" name="team"></td>
+                                <td>Murali Krishna</td>
+                                <td>murali@businessintelli.com</td>
+                                <td>Account Manager</td>
+                                <td>101</td>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" name="team"></td>
+                                <td>Murali Krishna</td>
+                                <td>murali@businessintelli.com</td>
+                                <td>Account Manager</td>
+                                <td>101</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div> -->
+                        <!-- <div class="clearfix">
+                          <ul class="pagination pull-right pagination-sm" style="margin:0;">
+                            <li><a href="#">1</a></li>
+                            <li class="active"><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                          </ul>
+                          </div> -->
+                     <!--  </div> -->
+                      <!-- <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+                <!-- Assign To modal popup ends -->
+                <!-- Modal content Demo Popup: Need to Update -->
+                <div role="dialog" id="addTeam" class="modal fade">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 class="modal-title">Add Team</h4>
+                      </div>
+                      <div class="modal-body clearfix">
+                        <div class="form-horizontal custom-form clearfix">
+                          <div class="col-xs-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                              <input type="text" class="form-control" value="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                              <input type="text" class="form-control" value="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                              <input type="text" class="form-control" value="">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Modal content Demo Popup: Need to Update ends --> 
+              </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3">Priority<span class="text-danger">*</span></label>
+            <div class="col-md-9">
+              <select class="selectpicker form-control">
+                <option>Select Priority</option>
+                <option>Priority-1</option>
+                <option>Priority-2</option>
+                <option>Priority-3</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
+            <div class="col-md-9">
+                <select class="chosen-select form-control">
+                  <option>Select Client</option>
+                  <option>Client-1</option>
+                  <option>Client-2</option>
+                  <option>Client-3</option>
+                </select>
+          </div>
+        </div>
       </div>
+    </div>
+    <!-- Internal Details html Ends -->
+      
+      
     </div>
     </div>
     </form:form>
@@ -1173,73 +1558,6 @@
   </div>
   
   <!-- Content Area Ends-->
-  <!-- Add Client Details popup-->
-  				<div id="addClient" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Client Details</h4>
-                        </div>
-                        <form:form id="clientDetails_form" name="clientDetails_form" method="GET">
-	                        <div class="modal-body clearfix">
-	                          <div class="form-horizontal custom-form clearfix">
-	                            <div class="col-xs-12 col-md-12 col-lg-12">
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Client Name<span class="text-danger">*</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="orgName" name="orgName" class="form-control" value="" field-name="Client Name" data-validation="required validate_Space validate_length length2-250">
-	                                  <input type="hidden" id="orgLocationId" />
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Website</label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="webSite" name="webSite" class="form-control" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
-	                                </div>
-	                              </div>
-	                              
-	                              <div class="form-group">
-	                                <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="firstName" name="firstName" class="form-control" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Last Name</label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="lastName" name="lastName" class="form-control" value="" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
-	                                </div>
-	                              </div>
-	                               <div class="form-group">
-	                                <label class="col-lg-3">Email<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="email" name="email" class="form-control" value="" field-name="Client Email" data-validation="required validate_Space validate_email">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Role<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                <select class="chosen-select form-control select-bg" id="roleType" name="roleType" field-name="Client Role" data-validation="required">
-	                                  	<option value="">-Select Role-</option>
-										<option value="1">Admin</option>
-										<option value="3">Approver/Project Manager</option>
-										<option value="5">HR Manager</option>
-										<option value="8">Recruiter</option>
-	                                </select>
-	                                </div>
-	                              </div>
-	                            </div>
-	                          </div>
-	                        </div>
-	                        <div class="modal-footer">
-	                        	<input type="button" value="Save" class="btn btn-primary" id="save_client" onclick="saveClient();"> 
-								<input data-dismiss="modal" type="button" value="Cancel" class="btn btn-default">
-	                        </div>
-                         </form:form>
-                      </div>
-                    </div>
-               </div>
   </div>
 </section>
 
@@ -1562,9 +1880,283 @@ $(function(){
 	  })
 });
 getAllCountries();
-
- 
 </script>
+
+
+<script>
+// script for tooltip
+$('[data-toggle="tooltip"]').tooltip();
+///////////////////// Back To Top 
+$(document).ready(function() {
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+});
+
+// Show hide Approver script
+$("#apprverReq").removeAttr("checked");
+$("#sequential input").removeAttr("checked");
+
+function selApprover(){
+  if ($("#apprverReq").prop('checked') ) {
+			$(".parallel, #parallel, .apprverReq").show();
+			$(".sequential").hide();
+			$("#parallel i").addClass("apprverReq-active");
+			$("#sequential i").removeClass("apprverReq-active");
+
+} 
+else {
+	$(".parallel, #parallel, .apprverReq, .sequential").hide();
+}
+};
+
+$("#sequential").click(function(){
+	$(".parallel").hide();
+	$(".sequential").show();
+	$("#parallel i").removeClass("apprverReq-active");
+	$("#sequential i").addClass("apprverReq-active");
+});
+$("#parallel").click(function(){
+	$(".parallel").show();
+	$(".sequential").hide();
+	$("#parallel i").addClass("apprverReq-active");
+	$("#sequential i").removeClass("apprverReq-active");
+});
+function addLvl(){
+	$(".lvlTow").toggle();
+}
+</script> 
+
+
+
+<%-- 
+     @author : sarath kumar.
+     this script is for get candidate list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in requirementListRestController.
+--%>
+
+<script>
+function getUserList(){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/userList?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+			    	     $("#userList").removeAttr("style");
+	                	 $("#userList").empty();
+	                	     alert("one");
+	                	    var result = '';
+	                	    result = result +'<div class="modal-body clearfix">';
+	                		result = result +'<div class="form-horizontal custom-form">';
+	                		result = result +'     <div class="row">';
+	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8">';
+	                		result = result +'         <div class="input-group">';
+	                		result = result +'           <input type="search" class="form-control" value="">';
+	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
+	                		result = result +'       </div>';
+	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+	                		result = result +'          <select class="selectpicker">';
+	                		result = result +'          <option selected disabled>Select Role</option>';
+	                		result = result +'           <option value="All">All</option>';
+	                		result = result +'           <option value="Admin">Admin</option>';
+	                		result = result +'           <option value="Account Manager">Account Manager</option>';
+	                		result = result +'           <option value="Recruiting Manager">Recruiting Manager</option>';
+	                		result = result +'           <option value="Hiring Manager">Hiring Manager</option>';
+	                		result = result +'           <option value="Teams">Teams</option>';
+	                		result = result +'          </select>';
+	                		result = result +'     </div>';
+	                		result = result +'     </div>';
+	                		result = result +'     </div>';
+	                		result = result +'     <div class="modal-body-custom mt clearfix">';
+	                		result = result +'       <table id="userPagination" class="display" cellspacing="0" width="100%" cols="0" class="table table-bordered table-striped  clearfix">';
+	                		result = result +'         <tbody>';
+	                		result = result +'           <thead>';
+	                		result = result +'           <tr>';
+	                		result = result +'             <th><input type="checkbox"></th>';
+	                		result = result +'             <th>Name</th>';
+	                		result = result +'             <th>Email</th>';
+	                		result = result +'             <th>Role</th>';
+	                		result = result +'             <th>Active Jobs</th>';
+	                		result = result +'           </tr>';
+	                		result = result +'           </thead>';
+		                    result = result +"<tbody>"; 
+		                    var json = JSON.parse(data);
+		                    for (var i = 0; i < json.length; i++) { 
+		                    	 var opt = json[i]; 
+		                    	 result = result +'           <tr>';
+		                    	 result = result +'             <td><input type="checkbox" name="team"></td>';
+		                    	 result = result +'             <td>Murali Krishna</td>';
+		                    	 result = result +'             <td>murali@businessintelli.com</td>';
+		                    	 result = result +'             <td>Account Manager</td>';
+		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           <tr>';
+	                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     result = result +'     </div>';
+	                 	 result = result +'     <div class="clearfix">';
+	                 	 result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
+	                 	 result = result +'         <li><a href="#">1</a></li>';
+	                 	 result = result +'         <li class="active"><a href="#">2</a></li>';
+	                 	 result = result +'         <li><a href="#">3</a></li>';
+	                 	 result = result +'         <li><a href="#">4</a></li>';
+	                 	 result = result +'         <li><a href="#">5</a></li>';
+	                 	 result = result +'       </ul>';
+	                 	 result = result +'       </div>';
+	                 	 result = result +'   </div>';
+	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>';
+	                     $("#userList").append(result); 
+	                     pagination(); 
+			    	} 
+                 }else{
+                	 $("#userList").removeAttr("style");
+  	    	         var result ="";
+		    	    
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No UserList Found</p>";
+					 result = result+"			 </div>";
+					
+					$("#userList").empty();
+				    $("#userList").append(result); 
+                }
+          },
+            
+       }); 
+  } 
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for prepare pagination to requirementList.
+     1.usage     : used in candidateList() function.
+--%>
+
+<script>
+function pagination(){ 
+    $('#userPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
+<!-- <script>
+function getUserList(){
+	var result = '';
+    result = result +'<div class="modal-body clearfix">';
+	result = result +'<div class="form-horizontal custom-form">';
+	result = result +'     <div class="row">';
+	result = result +'       <div class="col-xs-12 col-md-8 col-lg-8">';
+	result = result +'         <div class="input-group">';
+	result = result +'           <input type="search" class="form-control" value="">';
+	result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
+	result = result +'       </div>';
+	result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+	result = result +'          <select class="selectpicker">';
+	result = result +'          <option selected disabled>Select Role</option>';
+	result = result +'           <option value="All">All</option>';
+	result = result +'           <option value="Admin">Admin</option>';
+	result = result +'           <option value="Account Manager">Account Manager</option>';
+	result = result +'           <option value="Recruiting Manager">Recruiting Manager</option>';
+	result = result +'           <option value="Hiring Manager">Hiring Manager</option>';
+	result = result +'           <option value="Teams">Teams</option>';
+	result = result +'          </select>';
+	result = result +'     </div>';
+	result = result +'     </div>';
+	result = result +'     </div>';
+	result = result +'     <div class="modal-body-custom mt clearfix">';
+	result = result +'       <table cols="0" class="table table-bordered table-striped  clearfix">';
+	result = result +'         <tbody>';
+	result = result +'           <thead>';
+	result = result +'           <tr>';
+	result = result +'             <th><input type="checkbox"></th>';
+	result = result +'             <th>Name</th>';
+	result = result +'             <th>Email</th>';
+	result = result +'             <th>Role</th>';
+	result = result +'             <th>Active Jobs</th>';
+	result = result +'           </tr>';
+	result = result +'             </thead>';
+	result = result +'           <tr>';
+	result = result +'             <td><input type="checkbox" name="team"></td>';
+	result = result +'             <td><span class="tbldata-dotdot">Murali Krishna</span></td>';
+	result = result +'             <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>';
+	result = result +'             <td>Account Manager</td>';
+	result = result +'             <td>101</td>';
+	result = result +'           </tr>';
+	result = result +'           <tr>';
+	result = result +'             <td><input type="checkbox" name="team"></td>';
+	result = result +'             <td>Murali Krishna</td>';
+	result = result +'             <td>murali@businessintelli.com</td>';
+	result = result +'             <td>Account Manager</td>';
+	result = result +'             <td>101</td>';
+	result = result +'           </tr>';
+	result = result +'           <tr>';
+	result = result +'             <td><input type="checkbox" name="team"></td>';
+	result = result +'             <td>Murali Krishna</td>';
+	result = result +'             <td>murali@businessintelli.com</td>';
+	result = result +'             <td>Account Manager</td>';
+	result = result +'             <td>101</td>';
+	result = result +'           </tr>';
+	result = result +'           <tr>';
+	result = result +'             <td><input type="checkbox" name="team"></td>';
+	result = result +'             <td>Murali Krishna</td>';
+	result = result +'             <td>murali@businessintelli.com</td>';
+	result = result +'             <td>Account Manager</td>';
+	result = result +'             <td>101</td>';
+	result = result +'           </tr>';
+	result = result +'         </tbody>';
+	result = result +'       </table>';
+	result = result +'     </div>';
+	result = result +'     <div class="clearfix">';
+	result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
+	result = result +'         <li><a href="#">1</a></li>';
+	result = result +'         <li class="active"><a href="#">2</a></li>';
+	result = result +'         <li><a href="#">3</a></li>';
+	result = result +'         <li><a href="#">4</a></li>';
+	result = result +'         <li><a href="#">5</a></li>';
+	result = result +'       </ul>';
+	result = result +'       </div>';
+	result = result +'   </div>';
+	result = result +'   <div class="modal-footer">';
+	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>';
+	result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	result = result +'   </div>';
+    
+	$("#userListDiv").empty();
+	$("#userListDiv").append(result);
+	
+}
+</script> -->
 
 
 <jsp:include page="../masterFooter.jsp" />
