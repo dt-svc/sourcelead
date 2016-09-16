@@ -29,14 +29,10 @@
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
+			
 			$(".cd").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
-			
-			$(".cd1").click(function(){  
-		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
-		    });
-			
 		 };
 </script>
 
@@ -61,31 +57,32 @@
           <h3>Add Requirement Details</h3>
         </div>
   <div class="col-md-12 clearfix">
-  <div class="col-md-12">
-          <div style="margin:0 auto" class="input-group col-md-6">
-            <label class="input-group-btn">
-            	<span class="btn btn-primary">Select Template
-              </span> </label>
-            
-                 <select class="selectpicker form-control" id="template" onchange="setTemplateValues();">
-                  <c:forEach var="title" items="${jobsTemplateList}">
-	                    <option value="${title.id}">${title.jobTitle}</option>
-                     </c:forEach>   
-                  </select>
-                  
-                
-          </div>
-          <div class="text-center clearfix mt text-muted">
-          	<div class="clearfix text-center mb">
-          <span class="text-info">
-          	<strong>
-            <b class="hidden-xs">---------------------------------</b><span class="r-circle">OR</span>
-            <b class="hidden-xs">------------------------------</b>
-            </strong>
-            </span>
-          </div>
-          </div>
-</div></div>
+	  <div class="col-md-12">
+	          <div style="margin:0 auto" class="input-group col-md-6">
+	            <label class="input-group-btn">
+	            	<span class="btn btn-primary">Select Template
+	              </span> </label>
+	            
+	                 <select class="form-control" id="template"  onChange="setTemplateValues();">
+	                    <c:forEach var="title" items="${jobsTemplateList}">
+	                    <option value="php">Select template</option>
+		                    <option value="${title.id}">${title.jobTitle}</option>
+		                    
+	                     </c:forEach>   
+	                  </select>
+	          </div>
+	          <div class="text-center clearfix mt text-muted">
+	          	<div class="clearfix text-center mb">
+	          <span class="text-info">
+	          	<strong>
+	            <b class="hidden-xs">---------------------------------</b><span class="r-circle">OR</span>
+	            <b class="hidden-xs">------------------------------</b>
+	            </strong>
+	            </span>
+	          </div>
+	          </div>
+	 </div>
+</div>
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
            <div class="form-group">
@@ -140,10 +137,10 @@
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                   <input type="text" class="form-control" id="minExp" name="minExp" value="${minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2" data-validation-optional="true"  value="">
+                   <input type="text" class="form-control" id="minExp" name="minExp" value="${minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2" data-validation-optional="true"  value="">
+                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -165,7 +162,7 @@
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${rate}" data-validation="validate_Space validate_length length2-10" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
                     <option value="c2c">Per</option>
@@ -732,14 +729,13 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12  myForm">
          <div class="form-group">
-            <label class="col-md-3">Manager<span class="text-danger">*</span></label>
+            <label class="col-md-3">Manager <span class="text-danger">*</span></label>
             <div class="col-md-9">
-            
-              <select multiple class="chosen-select form-control select-bg">
-                <option>Select Manager</option>
-                <option>Manager-1</option>
-                <option>Manager-2</option>
-                <option>Manager-3</option>
+              <select  class="chosen-select form-control select-bg" id="managerUserId" >
+               <option value="php">Select Manager</option>
+	                    <c:forEach var="report" items="${usersList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		                </c:forEach>
               </select>
             </div>
           </div>
@@ -1276,6 +1272,7 @@
         </div>
       </div>
     </div>
+    </div>
     </form:form>
   <div class="form-footer clearfix">
     <div class="col-lg-12">
@@ -1355,6 +1352,7 @@
 
 <script type="text/javascript">
 function getAllCountries(){
+	var countryName = $("#existingCountry").val();
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -1385,6 +1383,10 @@ function getAllCountries(){
 <script>
 function getStates(){
 	var countryName = $("#country").val();
+	
+	//to set existing state value(Auto populate)
+	var stateName = $("#state").val();
+	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -1395,12 +1397,15 @@ function getStates(){
 	        	$('#state').empty();
 	        	$('#state').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(json[i] == stateName){
+	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
 	            }
 	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').trigger("chosen:updated");
+	            getCities();
 	        },
 	        error: function(e){
 	        }
@@ -1423,6 +1428,10 @@ function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	
+	//to set existing city value(Auto populate)
+	var cityName = $("#city").val();
+	//end city Auto populate
+	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
@@ -1433,7 +1442,12 @@ function getCities(){
 	        	$('#city').empty();
 	        	$('#city').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(json[i] == cityName){
+	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
 	            }
 	            $('#city').trigger("chosen:updated");
 	        },
@@ -1508,25 +1522,54 @@ function getTemplateVal(){
 
 <script>
 function setTemplateValues(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
+ var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
-		    	
 		    	$("#jobTitle").val(json.jobTitle);
 		    	$("#jobType").val(json.jobType);
 		    	$("#jobId").val(json.jobId);
 		    	$("#positions").val(json.positions);
-		    	$("#education_chosen").val(json.education);
+		    	$("#education").val(json.education);
+		    	
 		    	$("#minExp").val(json.minExp);
 		    	$("#maxExp").val(json.minExp);
-		    	$("#country").val(json.country);
-		    	$("#state").val(json.state);
-		    	$("#city").val(json.city);
-		    	$("#skills").val(json.skills);
+		    	
+		    	var country = '';
+				 var state = '';
+				 var city = '';
+				
+				 if(json.country != null && json.country !='' && json.country !='undefined'){
+					$("#country").val(json.country);
+				}
+				 
+				if(json.state != null && json.state !='' && json.state !='undefined'){
+					$("#state").val(json.state);
+				}else{
+					$("#state").val('');
+				}
+				
+				$('#city').trigger("chosen:updated");
+				if(json.city != null && json.city !='' && json.city !='undefined'){
+					$("#city").val(json.city);
+				}else{
+					$("#city").val('');
+				}
+				 
+				getAllCountries();
+				
+				$('#skills').trigger("chosen:updated");
+				if(json.skills != null && json.skills !='' && json.skills !='undefined'){
+					$("#skills").val(json.city);
+				}else{
+					$("#skills").val('');
+				}
+		    	
+		    	
 		    	$("#description").val(json.description);
 		    	$("#rate").val(json.rate);
 		    	$("#currencyCode").val(json.currencyCode);
@@ -1538,7 +1581,35 @@ function setTemplateValues(){
      });
 }
 
+$(function(){
+    var config = {
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+		}
+    $("#country").chosen();
+    $("#state").chosen();
+    $("#city").chosen();
+    
+    $("#country").on('change', function (e) {
+ 	   getStates();
+    });
+   
+    $("#state").on('change', function (e) {
+ 	   getCities();
+    });
+   
+    $('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+	  })
+});
+getAllCountries();
 
+ 
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />
