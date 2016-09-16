@@ -67,6 +67,8 @@ function clientDocuments(orgRelationId,clientLocationId){
     $("#tab-1").empty();
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-4-addTemplate").empty();
     $("#tab-3").append(result);  
 	
     clientDocumentsList(clientLocationId,orgRelationId);
