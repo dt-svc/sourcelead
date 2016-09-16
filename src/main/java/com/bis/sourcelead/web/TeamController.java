@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -26,6 +30,8 @@ public class TeamController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	UserService userService;
 	
 	@RequestMapping(value = "/team")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
@@ -35,7 +41,8 @@ public class TeamController {
 		model.setViewName("requirement/team");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        
+		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		model.addObject("usersList", usersList);
 		return model;
 
 	}

@@ -146,98 +146,25 @@ function sideBar(teamId){
 </script>
 
 <script>
-function addTeam(){
-	var outPut = '';
-	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
-	outPut = outPut+ '            <div class="form-horizontal clearfix">';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Team Name *">';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <select class="chosen-select">';
-	outPut = outPut+ '                    <option value="Select Month">Team Leader *</option>';
-	outPut = outPut+ '                    <option value="January">Option 1</option>';
-	outPut = outPut+ '                    <option value="January">Option 2</option>';
-	outPut = outPut+ '                    <option value="January">Option 3</option>';
-	outPut = outPut+ '                    <option value="January">Option 4</option>';
-	outPut = outPut+ '                  </select>';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div> ';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <select class="chosen-select">';
-	outPut = outPut+ '                    <option value="Select Month">Team Members *</option>';
-	outPut = outPut+ '                    <option value="January">Option 1</option>';
-	outPut = outPut+ '                    <option value="January">Option 2</option>';
-	outPut = outPut+ '                    <option value="January">Option 3</option>';
-	outPut = outPut+ '                    <option value="January">Option 4</option>';
-	outPut = outPut+ '                  </select>';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div> ';
-	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '                <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '            </div>';
-	$("#popUpDivTeamParent").empty();
-	$("#popUpDivTeamParent").append(outPut); 
-	
-	$(".edit-details").toggleClass("edit-details-active");
-	$(".close-div").click(function(){
-		$(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	 }); */	
-	
-}
-</script>
-
-<script>
 function addMember(teamId){
 	var outPut = '';
+	outPut = outPut+'          <form role="form"  id="teamMember_form" name="teamMember_form" method="post" > ';
 	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Name *">';
+	outPut = outPut + '<select  class="chosen-select form-control"  id="managerUserId" data-validation="validate_Space" data-validation-optional="true">';
+    <c:forEach var="report" items="${usersList}">
+    outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+     </c:forEach>
+     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Email Id *">';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <select class="chosen-select">';
-	outPut = outPut+ '                    <option value="Select Month">Role *</option>';
-	outPut = outPut+ '                    <option value="January">Option 1</option>';
-	outPut = outPut+ '                    <option value="January">Option 2</option>';
-	outPut = outPut+ '                    <option value="January">Option 3</option>';
-	outPut = outPut+ '                    <option value="January">Option 4</option>';
-	outPut = outPut+ '                  </select>';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div> ';                   
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Requirement *">';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Active Requirement *">';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div> ';                   
 	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '                <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>';
+	outPut = outPut+ '                <button type="button" id="add_teamMember" class="btn btn-sm btn-primary pull-right" onclick="storeTeamMembers();">Add</button>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '            </div>';
+	outPut = outPut+ '            </form>';
 		
 	$("#popUpDivTeam").empty();
 	$("#popUpDivTeam").append(outPut); 
@@ -494,7 +421,7 @@ function TeamMemberpagination(){
               </ul>
             </div>
           </li>
-          <li><a href="#" title="" onclick="addTeam();"><i class="fa fa-plus"></i>Add Team</a></li>
+          <li><a href="add-candidate.html" title=""><i class="fa fa-plus"></i>Add Team</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
@@ -504,93 +431,10 @@ function TeamMemberpagination(){
       </div>
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
       
-                <div id="popUpDivTeamParent" class="edit-details col-md-4"></div>   
       			<div id="teamList"></div>
       			
-                <!-- <table>
-                  <tbody>
-                    <tr>
-                      <th>Team Name</th>
-                      <th>Team Leader</th>
-                      <th>Members</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Business Intelli</span></div></td>
-                      <td><div><span>Vannam Mahesh</span></div></td>
-                      <td><div><span>25</span></div></td>
-                      <td><div><i class="fa fa-pencil proj_show"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                  </tbody>
-                </table> -->
-                
               </div>
-    <!--   <nav>
-        <ul id="paging" class="pagination">
-          <li><a href="#">Previous</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">6</a></li>
-          <li data-page="last"><a href="#">Next</a></li>
-        </ul>
-        <div class="clearfix"></div>
-      </nav> -->
+  
     </div>
     
     <!-- Compnay details -->
@@ -601,164 +445,7 @@ function TeamMemberpagination(){
       <div id="teamSideDiv">
 	  </div>
 
-        <!-- <div class="project_side_wrap_inn_tabs">
-          <div class="project_tabs">
-            
-            
-            <div id="tab-1" class="project_tabs_inn">
-              <div class="project_tabs_inn_head team_search"> <a href="#" class="addUser-org"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> 
-                Popup Div
-                <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
-                  <div class="form-horizontal clearfix">
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Email Id *">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <select class="chosen-select">
-                          <option value="Select Month">Role *</option>
-                          <option value="January">Option 1</option>
-                          <option value="January">Option 2</option>
-                          <option value="January">Option 3</option>
-                          <option value="January">Option 4</option>
-                        </select>
-                      </div>
-                    </div>                    
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Requirement *">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Active Requirement *">
-                      </div>
-                    </div>                    
-                    <div class="clearfix mr">
-                      <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                    </div>
-                  </div>
-                </div>
-                Popup Div 
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email ID</th>
-                      <th>Role</th>
-                      <th>Requirement</th>
-                      <th>Active<br>Requirement</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>Rajashekar</span></div></td>
-                      <td><div><span>rajashekar@bis.com</span></div></td>
-                      <td><div><span>Employee</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><span>Requirement</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingdg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            
-            
-            
-            
-          </div>
-        </div> -->
+      
       </div>
       
  <!-- Edit Details Popup -->      
@@ -781,6 +468,72 @@ function TeamMemberpagination(){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
 <!--   Error Message   --> 
+ 
+ 
+ 
+ <!-- Team Member Store -->
+ 
+ 
+ <script>
+function storeTeamMembers(){
+		
+	
+		  
+			 var frm = $('#teamMember_form').serializeFormJSON();
+			 
+			 var con = JSON.stringify(frm);
+			 con = con.replace(/[{}]/g, "");
+			 alert(con);
+		     var jsonData = encodeURIComponent(con);
+		     alert(jsonData); 
+			 var sourceleadUrl = '${sourceleadUrl}';
+			
+			 $("#teamMember_form").attr("disabled", "disabled");
+			
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/saveOrUpdateTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) {  
+						 
+				      }, 
+		    });
+			return true; 
+		} 
+ 
+$('body').on('blur', '#teamMember_form', function() {
+	$("#teamMember_form").showHelpOnFocus();
+	$("#teamMember_form").validateOnBlur(false, validationSettings);
+});
+
+
+</script>            
+          
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>           
+
+ <!-- Team Memberend -->
+ 
+ 
+ 
  
 <script type="text/javascript">
 
@@ -882,9 +635,9 @@ $(".addUser-org").click(function(){
  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
- /* $('html').click(function(){
+ $('html').click(function(){
 	$(".edit-details").removeClass("edit-details-active");
-   });	 */
+   });	
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
