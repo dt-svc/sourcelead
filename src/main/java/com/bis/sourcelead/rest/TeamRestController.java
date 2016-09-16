@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
@@ -59,6 +60,9 @@ public class TeamRestController {
 	 
 	 @Autowired
 	 TeamMembersService teamMembersService;
+	 
+	 @Autowired
+	 UserService userService;
 	 
 	 /**
 	   * @author sarath kumar
@@ -139,17 +143,12 @@ public class TeamRestController {
 	 }
 	  
 	   @RequestMapping(value = "/storeTeamMembers", method = RequestMethod.POST)
-		public @ResponseBody String saveOrUpdateTeamMembers(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+		public @ResponseBody String storeTeamMembers(@RequestParam(value = "json", required = false) String json,Long teamId,HttpServletRequest request) throws Exception {
 			
-			String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
 			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			TeamMembers teamMembers = new TeamMembers();
-			teamMembers.setStatus(Constants.ACCOUNT_MANAGER);
-			teamMembers = teamMembersService.saveOrUpdateTeamMembers(teamMembers);
+			teamMembersService.saveTeamMembersByJsonData(jsonObj,teamId);
 			return "success";
 		}
 	 

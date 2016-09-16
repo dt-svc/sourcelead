@@ -3,7 +3,24 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
 <script>
  window.onload = function() { 
  	 teamList();
@@ -119,7 +136,7 @@ function sideBar(teamId){
 		outPut = outPut+ '	<div class="project_side_wrap_inn_tabs">';
 		outPut = outPut+ '    <div class="project_tabs">';
 		outPut = outPut+ '      <div id="tab-1" class="project_tabs_inn">';
-		outPut = outPut+ '        <div class="project_tabs_inn_head team_search"> <a href="#" class="addUser-org" onClick="addMember('+teamId+');"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> ';
+		outPut = outPut+ '        <div  class="project_tabs_inn_head team_search"> <a href="#" class="addUser-org" onClick="addMember('+teamId+');"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> ';
 		
 		outPut = outPut  +'     <div id="popUpDivTeam" class="edit-details col-md-4"> ';
 		outPut = outPut  +'     </div>  ';
@@ -153,15 +170,15 @@ function addMember(teamId){
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut + '<select  class="chosen-select form-control"  id="managerUserId" data-validation="validate_Space" data-validation-optional="true">';
-    <c:forEach var="report" items="${usersList}">
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="managerUserId" id="managerUserId" data-validation="validate_Space" data-validation-optional="true">';
+                       <c:forEach var="report" items="${usersList}">
     outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
-     </c:forEach>
+                      </c:forEach>
      outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '                <button type="button" id="add_teamMember" class="btn btn-sm btn-primary pull-right" onclick="storeTeamMembers();">Add</button>';
+	outPut = outPut+ '                <button type="button" id="add_teamMember" class="btn btn-sm btn-primary pull-right" onclick="storeTeamMembers('+teamId+');">Add</button>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '            </div>';
 	outPut = outPut+ '            </form>';
@@ -180,6 +197,25 @@ function addMember(teamId){
 	/*  $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
 	 }); */	
+	 
+	 $( function() {
+		    $( "#edu-startDate, #edu-endDate" ).datepicker();
+		  });
+					var config = {
+					  '.chosen-select'           : {},
+					  '.chosen-select-deselect'  : {allow_single_deselect:true},
+					  '.chosen-select-no-single' : {disable_search_threshold:10},
+					  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+					  '.chosen-select-width'     : {width:"95%"}
+					}
+					for (var selector in config) {
+					  $(selector).chosen(config[selector]);
+					}
+					$('.chosen-select').each(function() {
+						var $this = $(this);
+						$this.next().css({'width': '100%'});
+
+		});
 	
 }
 </script>
@@ -475,15 +511,13 @@ function TeamMemberpagination(){
  
  
  <script>
-function storeTeamMembers(){
+function storeTeamMembers(teamId){
 		
-	
+				var frm = $('#teamMember_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
 		  
-			 var frm = $('#teamMember_form').serializeFormJSON();
-			 
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-			 alert(con);
+			 alert("teamId="+teamId);
 		     var jsonData = encodeURIComponent(con);
 		     alert(jsonData); 
 			 var sourceleadUrl = '${sourceleadUrl}';
@@ -492,9 +526,9 @@ function storeTeamMembers(){
 			
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveOrUpdateTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
-						 
+						location.replace(sourceleadUrl+"/team");
 				      }, 
 		    });
 			return true; 

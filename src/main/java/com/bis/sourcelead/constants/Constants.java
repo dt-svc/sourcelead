@@ -54,8 +54,8 @@ public class Constants {
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
 	/** projectMember  constants**/
-	public static String MEMBER_ACTIVE = "ACTIVE";
-	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
+	public static String MEMBER_ACTIVE = "1";
+	public static String  MEMBER_IN_ACTIVE= "0";
 	
 	public static String CANDIDATE_ALL = "ALL";
 	public static String CANDIDATE_ACTIVE = "1";

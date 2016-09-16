@@ -106,9 +106,6 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		return teamMembers;
 		
 	}
-	
 	 
-	
-
 
 }
