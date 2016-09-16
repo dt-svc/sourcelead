@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -526,9 +527,36 @@ public class UserRestController {
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			public @ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
-					@RequestParam(value = "reason", required = false) String reason) {
-				Integer updatedCount = projectMembersService.updateProjectMemberDeletedReason(projectMemberId, reason);
-				commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
+					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
+				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				   Integer updatedCount =  0;
+				   try {
+				  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				  	  if(projectMembers != null){
+				  		  String status = Constants.MEMBER_IN_ACTIVE;
+					  	  projectMembers.setStatus(status);
+					  	  projectMembers.setTerminateReason(reason);
+					  	  projectMembers.setStatus(Constants.MEMBER_ACTIVE);
+						  projectMembers.setCreatedDate(new Date());
+						  projectMembers.setUpdatedDate(new Date());
+						  projectMembers.setUpdatedBy(user.getUserCode());
+					  	  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>();
+					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+						  if(pmh != null){
+							  pmh.setProjectTerminationDate(new Date());
+							  pmh.setCreatedDate(new Date());
+							  pmh.setUpdatedDate(new Date());
+							  pmh.setUpdatedBy(user.getUserCode());
+							  memberHistoryList.add(pmh);
+							  projectMembers.setMemberHistoryList(memberHistoryList);
+						  }
+						  projectMembersService.saveProjectMember(projectMembers);
+						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId);
+					      updatedCount = 1;
+				  	   }
+					
+				    } catch (Exception e) {
+				   }
 				
 				logger.info("updated records" + updatedCount);
 				return "success";
