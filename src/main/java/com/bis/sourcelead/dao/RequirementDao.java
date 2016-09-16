@@ -9,10 +9,11 @@ public interface RequirementDao {
 	
 	public Requirement storeRequirement(Requirement requirement) throws Exception;
 	
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
+	
 	
 }

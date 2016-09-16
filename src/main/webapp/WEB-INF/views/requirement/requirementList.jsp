@@ -1,12 +1,61 @@
+
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<script src="resources/js/formvalidator.js"></script>
+
 
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
+<%-- 
+     @author : David Raju.
+     this script is to get filter popup
+     1.usage     : onclick on requirementList() ; 
+     
+--%>
+
+<script>
+$(document).ready(function() {
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+}); 
+
+</script>
+
+
+<style>
+ 
+ .clsDatePicker {
+   z-index: 100000 !important;
+}
+.side-bar .side-nav ul li span{
+  display: inline-block;
+  float: none;
+}
+.project_wrap_table span{
+display: inline;
+}
+.require_wrap_table {
+overflow: visible;
+}
+.timesheet_head ul {
+padding: 1px 280px 2px 0;
+}
+ </style>
+ 
+ 
 
 <!-- my scripts -->
 
@@ -33,11 +82,12 @@ function requirementList(){
 	    {
 			status.push($(this).val());
 	    });
-	var clients = [];
+	 var clients = [];
 		$('input:checkbox[name=clientNameById]:checked').each(function() 
 	    {
 			clients.push($(this).val());
 	    });
+	
 	
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
@@ -76,8 +126,17 @@ function requirementList(){
 	                    	 result = result +"<tr>";
 		                     result = result +"<td><div class='proj_show' onclick='sideBar("+opt.id+");'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></td>";
 		                     result = result +"<td><div><span>Client</span></div></td>";
-		                     result = result +"<td><div>"+opt.jobType+"</div></td>";
-		                     result = result +"<td><div><span><span>"+opt.country+" ,"+opt.state+" ,"+opt.city+" </span></span></div></td>";
+		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
+		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>No Data</div></td>";
+		                     }
+		                    
+		                     if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
+			                     result = result +"<td><div><span><span>"+opt.country+" ,"+opt.state+" ,"+opt.city+" </span></span></div></td>";
+		                     }else{
+			                     result = result +"<td><div><span><span>"+opt.country+"</span></span></div></td>";
+		                     }
 		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
 		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
 		                     }else{
@@ -125,16 +184,16 @@ function requirementList(){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
     } );
 }
 </script>
+
+
+
 
 <%-- 
      @author : sarath kumar.
@@ -826,26 +885,6 @@ function requirementPipeline(requirementId){
 
 
 
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to Source Lead :: Recruitment-Add Vendor</title>
-Bootstrap
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/bootstrap-select.min.css">
-<link rel="stylesheet" href="datetimepicker.css">
-<link rel="stylesheet" href="css/chosen.min.css">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
-</head>
-<body> -->
-<!-- <div class="wraper"> -->
-
-<!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -860,42 +899,27 @@ Bootstrap
 		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
-		                <li><input id="c5" type="checkbox" name="requirementStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-									<li><input id="c6" type="checkbox" name="requirementStatus" value ="New"  onclick="filter();"><label for="c6">New</label></li>
-									<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="filter();"><label for="c7">Draft</label></li>
-									<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Waiting for approval"  onclick="filter();"><label for="c8">Waiting for approval</label></li>
-		               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Open"  onclick="filter();"><label for="c8">Open</label></li>
-		               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="On Hold"  onclick="filter();"><label for="c8">On Hold</label></li>
-		               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="filter();"><label for="c8">Cancelled</label></li>
+                		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="New"  onclick="requirementList();"><label for="c6">New</label></li>
+							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft</label></li>
+							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Waiting for approval"  onclick="requirementList();"><label for="c8">Waiting for approval</label></li>
+               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Open"  onclick="requirementList();"><label for="c8">Open</label></li>
+               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="On Hold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
+               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
 		              </ul>
 		            </div>
           </li>
+         
           <li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
-          <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Add Team</a></li>
+          <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        <div class="remove_search">
-          <input type="text" placeholder="search" />
-        </div>
       </div>
       
       <!-- list requirement -->
       <div class="require_wrap_table">
           <div id="requirementList"></div>
       </div>
-     <!--  <nav>
-        <ul id="paging" class="pagination">
-          <li><a href="#">Previous</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">6</a></li>
-          <li data-page="last"><a href="#">Next</a></li>
-        </ul>
-        <div class="clearfix"></div>
-      </nav> -->
     </div>
     <div class="side_mask">
       <div class="proj_close"></div>
@@ -904,660 +928,11 @@ Bootstrap
       <div class="clients_side_wrap_inn">
       				<div id="requirementSideDiv">
 				     </div>  
-			         <!--  <div class="proj_close"></div>
-			        <div class="project_side_wrap_inn_tabs">
-				          <ul class="project-tabs-menu">
-				            <li class="current"><a href="#tab-1">Details</a></li>
-				            <li><a href="#tab-2">Pipeline</a></li>
-				            <div class="clearfix"></div>
-				          </ul>
-			             <div class="project_tabs">
-							            <div id="tab-1" class="project_tabs_inn">
-							              <div class="require_wrap_details">
-							                <h1>Description:</h1>
-							                <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
-							                <h2>Other details:</h2>
-							                <div class="require_one">
-							                  <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>10</span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Education:</b> <span>MBA</span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>file name<i class="glyphicon glyphicon-save"></i></span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="clearfix"></div>
-							                </div>
-							                <h2>Client details:</h2>
-							                <div class="require_one">
-							                  <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> Sudhakar Reddy </span>
-							                    <div class="dropdown pull-left"> <i class="fa fa-edit dropdown-toggle" data-toggle="dropdown"></i>
-							                      <ul class="dropdown-menu dropdown-menu-right">
-							                        <li><a href="#">Client Contact-1</a></li>
-							                        <li><a href="#">Client Contact-2</a></li>
-							                        <li><a href="#">Client Contact-3</a></li>
-							                      </ul>
-							                    </div>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Email:</b> <span>sudhakar@tcs.com</span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Phone No:</b> <span>+91 9000 000 000</span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i>300</span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Genral</span>
-							                    <div class="dropdown pull-left"> <i class="fa fa-edit dropdown-toggle" data-toggle="dropdown"></i>
-							                      <ul class="dropdown-menu dropdown-menu-right">
-							                        <li><a href="#">General Form-1</a></li>
-							                        <li><a href="#">General Form-2</a></li>
-							                        <li><a href="#">General Form-3</a></li>
-							                      </ul>
-							                    </div>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="clearfix"></div>
-							                </div>
-							                <h2>Internal details:</h2>
-							                <div class="require_one">
-							                  <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Sujith S</span>
-							                    <div class="dropdown pull-left dropup"> <i class="fa fa-edit dropdown-toggle" data-toggle="dropdown"></i>
-							                      <ul class="drop-up dropdown-menu dropdown-menu-right">
-							                        <li><a href="#">Manager-1</a></li>
-							                        <li><a href="#">Manager-2</a></li>
-							                        <li><a href="#">Manager-3</a></li>
-							                      </ul>
-							                    </div>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst <i class="fa fa-edit"></i></span>
-							                    <div class="clearfix"></div>
-							                  </div>
-							                  <div class="clearfix"></div>
-							                </div>
-							              </div>
-							            </div>
-						            <div id="tab-2" class="project_tabs_inn">
-						              <div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>
-						              <div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>
-						              <div class="timesheet_head candidateHead recruitmentHead">
-						                <ul>
-						                  <li class="li-vendor">
-						                    <input type="text" class="vendorfild" placeholder="Search">
-						                    <i class="fa fa-search"></i></li>
-						                  <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-						                    <div class="export_pop">
-						                      <ul>
-						                        <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-						                        <li>Excel<i class="fa fa-file-excel-o"></i></li>
-						                        <li>Word<i class="fa fa-file-word-o"></i></li>
-						                      </ul>
-						                    </div>
-						                  </li>
-						                  <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>
-						                  <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>
-						                  <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>
-						                  <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>
-						                  <li><a href="javascript:void(0)" title="" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>
-						                  <li><a href="javascript:void(0)" title="" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>
-						                  <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>
-						                  <div class="clearfix"></div>
-						                  Popup Div -- Add Offer
-						                  <div class="collapseDiv_add collapseDiv_styles col-xs-4 addOffer-Req"> <i class="fa fa-close close-div"></i>
-						                    <div class="form-horizontal clearfix">
-						                      <div class="row">
-						                        <div class="col-md-12 mb10">
-						                          <label>Candiate</label>
-						                          <select class="form-control selectpicker">
-						                            <option>Rameshkumar Korrapati</option>
-						                            <option>Prasanth Korrapati</option>
-						                            <option>Muralimohan Korrapati</option>
-						                            <option>Sarathkumar Korrapati</option>
-						                          </select>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <label>Date of Joining</label>
-						                          <div class="positionRelative">
-						                            <input type="text" value="" class="form-control input-sm">
-						                            <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <label>Rate / Salary</label>
-						                          <div class="row div-padding">
-						                            <div class="col-md-4">
-						                              <select class="form-control selectpicker">
-						                                <option>Rupee</option>
-						                                <option>Dollar</option>
-						                                <option>Rupee</option>
-						                              </select>
-						                            </div>
-						                            <div class="col-md-4">
-						                              <input type="text" value="" class="form-control">
-						                            </div>
-						                            <div class="col-md-4">
-						                              <select class="form-control selectpicker">
-						                                <option>Yearly</option>
-						                                <option>Monthly</option>
-						                              </select>
-						                            </div>
-						                          </div>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <label>Position Type</label>
-						                          <select class="form-control selectpicker">
-						                            <option>Full Type</option>
-						                            <option>C2C</option>
-						                            <option>Parttime</option>
-						                          </select>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <label>Attachment</label>
-						                          <div class="input-group">
-						                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-						                              <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-						                              </span> </label>
-						                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-						                          </div>
-						                        </div>
-						                        <div class="col-md-12 mb10 hidden">
-						                          <button type="button" class="btn btn-danger"><i class="fa fa-pulse"></i>Add</button>
-						                        </div>
-						                      </div>
-						                      <div class="clearfix mt10">
-						                        <div class="pull-right">
-						                          <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>
-						                          <button type="submit" class="btn btn-sm btn-default">Cancel</button>
-						                        </div>
-						                      </div>
-						                    </div>
-						                  </div>
-						                  Popup Div -- Add Offer Ends 
-						                  Popup Div -- Add Interview
-						                  <div class="collapseDiv_add col-xs-4 collapseDiv_styles addInterview-Re"> <i class="fa fa-close close-div"></i>
-						                    <div class="form-horizontal clearfix">
-						                      <div class="row">
-						                        <div class="col-md-12 mb10">
-						                          <label>Candiate</label>
-						                          <select class="form-control selectpicker">
-						                            <option>Rameshkumar Korrapati</option>
-						                            <option>Prasanth Korrapati</option>
-						                            <option>Muralimohan Korrapati</option>
-						                            <option>Sarathkumar Korrapati</option>
-						                          </select>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <div class="positionRelative date" id="datetimepicker3">
-						                            <input type="text" value="" class="form-control input-sm" placeholder="Date of Joining">
-						                            <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <div class="row div-padding">
-						                            <div class="col-md-4">
-						                              <label>Start Time</label>
-						                              <div class="positionRelative">
-						                                <input type="text" value="" class="form-control input-sm">
-						                                <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span> </div>
-						                            </div>
-						                            <div class="col-md-4">
-						                              <label>End Time</label>
-						                              <div class="positionRelative">
-						                                <input type="text" value="" class="form-control input-sm">
-						                                <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span> </div>
-						                            </div>
-						                            <div class="col-md-4">
-						                              <label>Inteview Type</label>
-						                              <select class="form-control selectpicker">
-						                                <option>F2F</option>
-						                                <option>Telephonic</option>
-						                                <option>Skype Call</option>
-						                              </select>
-						                            </div>
-						                          </div>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <input type="text" value="" class="form-control input-sm" placeholder="Location">
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <label>Interviewer</label>
-						                          <select class="form-control selectpicker">
-						                            <option>Hyderabad</option>
-						                            <option>Visakhapatnam</option>
-						                            <option>Pune</option>
-						                          </select>
-						                        </div>
-						                        <div class="col-md-12 mb10">
-						                          <label>
-						                          Set Reminder &nbsp;<i class="fa fa-gear reminder" title="Click here"></i>
-						                          <div class="reminder-div col-sm-7">
-						                          
-						                            <div class="row mb10">
-						                              <div class="col-md-12">
-						                                <input type="text" class="form-control input-sm" value="" placeholder="Remind before">
-						                              </div>
-						                            </div>
-						                            <div class="row mb10">
-						                              <div class="col-md-12">
-						                                <input type="text" class="form-control input-sm" value="" placeholder="Frequency">
-						                              </div>
-						                            </div>
-						                            <div class="row mb10">
-						                              <div class="col-md-12">
-						                                <input type="text" class="form-control input-sm" value="" placeholder="Notify to">
-						                              </div>
-						                            </div>
-						                            <div class="row">
-						                              <div class="pull-right mr">
-						                                <button type="button" class="btn btn-sm btn-success">Set</button>
-						                              </div>
-						                            </div>
-						                          </div>
-						                          </label>
-						                        </div>
-						                        <div class="col-md-12 mb10 hidden">
-						                          <button type="button" class="btn btn-danger"><i class="fa fa-pulse"></i>Add</button>
-						                        </div>
-						                      </div>
-						                      <div class="clearfix mt10">
-						                        <div class="pull-right">
-						                          <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>
-						                          <button type="submit" class="btn btn-sm btn-default">Cancel</button>
-						                        </div>
-						                      </div>
-						                    </div>
-						                  </div>
-						                  Popup Div -- Add Interview
-						                  Popup Div -- add Applicant
-						                  <div class="collapseDiv_add col-xs-4 collapseDiv_styles addApplicant-Re"> <i class="fa fa-close close-div"></i>
-						                    <div class="form-horizontal clearfix">
-						                      <div class="row">
-						                        <div class="col-md-12 mb10">
-						                          <label>Select Candiate</label>
-						                          <select class="form-control selectpicker">
-						                            <option>Rameshkumar Korrapati</option>
-						                            <option>Prasanth Korrapati</option>
-						                            <option>Muralimohan Korrapati</option>
-						                            <option>Sarathkumar Korrapati</option>
-						                          </select>
-						                        </div>
-						                        <div class="clearfix text-center text-info mb10">
-						                      -------------------------------- OR --------------------------------
-						                         </div>
-						                        <div class="col-md-12 mb10">
-												 <input type="text" value="" class="form-control input-sm" placeholder="First Name *">
-						                        </div>
-						                        <div class="col-md-12 mb10">
-												 <input type="text" value="" class="form-control input-sm" placeholder="Last Name">
-						                        </div>
-						                        <div class="col-md-12 mb10">
-												 <input type="text" value="" class="form-control input-sm" placeholder="Email*">
-						                        </div>
-						                        <div class="col-md-12 mb10">
-												 <input type="text" value="" class="form-control input-sm" placeholder="Phone">
-						                        </div>
-						                        <div class="col-md-12 mb10">
-												 <input type="text" value="" class="form-control input-sm" placeholder="Experience">
-						                        </div>
-						                        <div class="col-md-12">
-						                        <div class="panel-border">
-						                        <div class="col-md-12">
-						                          <div class="input-group">
-						                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-						                              <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-						                              </span> </label>
-						                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume *">
-						                          </div>
-						                        </div>
-						                    
-						                  <div class="col-md-12 mt10 mb10 clearfix text-center text-info">
-						                      -------------------------------- OR --------------------------------
-						                  </div>
-						                  <div class="col-md-12">
-						                          <select class="form-control selectpicker">
-						                            <option>Select</option>
-						                            <option>Prasanth Korrapati</option>
-						                            <option>Muralimohan Korrapati</option>
-						                            <option>Sarathkumar Korrapati</option>
-						                          </select>
-						                        </div>
-						                        </div></div>
-						                        <div class="col-md-12 mb10">
-						                          <label>Expected Rate / Salary <span class="text-danger">*</span></label>
-						                          <div class="row div-padding">
-						                            <div class="col-md-4">
-						                              <select class="form-control selectpicker">
-						                                <option>Rupee</option>
-						                                <option>Dollar</option>
-						                                <option>Rupee</option>
-						                              </select>
-						                            </div>
-						                            <div class="col-md-4">
-						                              <input type="text" value="" class="form-control input-sm">
-						                            </div>
-						                            <div class="col-md-4">
-						                              <select class="form-control selectpicker">
-						                                <option>Yearly</option>
-						                                <option>Monthly</option>
-						                              </select>
-						                            </div>
-						                          </div>
-						                        </div>
-						                        
-						                        
-						                      </div>
-						                      <div class="clearfix mt10">
-						                        <div class="pull-right">
-						                          <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>
-						                          <button type="submit" class="btn btn-sm btn-default">Cancel</button>
-						                        </div>
-						                      </div>
-						                    </div>
-						                  </div>
-						                  Popup Div -- add Applicant
-						                  
-						                </ul>
-						                <div class="clearfix"></div>
-						              </div>
-						              <div class="require_wrap_table">
-						                <table>
-						                  <tbody>
-						                  <thead>
-						                    <tr>
-						                      <th><input type="checkbox" id="checkbox1"/></th>
-						                      <th>Name</th>
-						                      <th>Email</th>
-						                      <th>Ph. No</th>
-						                      <th>Resume</th>
-						                      <th>Applied on</th>
-						                      <th>Rate</th>
-						                      <th>Source</th>
-						                      <th>Experince</th>
-						                      <th>Status</th>
-						                    </tr>
-						                  </thead>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>9000 000 000</span></div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div><span>Careers</span></div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>
-						                        <select>
-						                          <option>Interview</option>
-						                          <option>Submit</option>
-						                          <option>Joined</option>
-						                          <option>Screening</option>
-						                          <option>Offer</option>
-						                        </select>
-						                        </span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b>Offer</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b>Offer</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                    <td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>08/08/2016</span></div></td>
-						                    <td><div><span>12345678</span></div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
-						                  </tr>
-						                  <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_active">Joined</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_active">Offer</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Full Time</span></div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>9000 000 000</span></div></td>
-						                    <td><div><span>08/08/2016 07:30 AM</span></div></td>
-						                    <td><div><span>Careers</span></div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b>Screening</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_active">Joined</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                <tr>
-						                	<td><input type="checkbox" id="checkbox1"/></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>Full Time</div></td>
-						                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>                    
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div>9000 000 000</div></td>
-						                    <td><div>08/08/2016 07:30 AM</div></td>
-						                    <td><div>Careers</div></td>
-						                    <td><div>3.4 Years</div></td>
-						                    <td><div><span>Vannam vannam vannam vannam</span></div></td>
-						                    <td><div><span><b class="proj_active">Offer</b><i class=" fa fa-edit"></i></span></div></td>
-						                </tr>
-						                  
-						                  </tbody>
-						                  
-						                </table>
-						              </div>
-						              <nav>
-						                <ul id="paging" class="pagination">
-						                  <li><a href="#">Previous</a></li>
-						                  <li><a href="#">2</a></li>
-						                  <li><a href="#">3</a></li>
-						                  <li class="disabled"><a href="#">6</a></li>
-						                  <li data-page="last"><a href="#">Next</a></li>
-						                </ul>
-						                <div class="clearfix"></div>
-						              </nav>
-						            </div>
-			          </div>
-			        </div> -->
-        
-        
-        
       </div>
     </div>
     <!-- Project --> 
   </div>
 </section>
-<!-- Footer Area -->
-<!-- <footer class="footer-area clearfix">
-  <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-  <div class="powered-by"> Powered by: businessintelli.com </div>
-</footer> -->
-<!-- Footer Area --> 
 
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>
@@ -1565,17 +940,6 @@ Bootstrap
   <p>Delete conformation message....</p>
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-
-<!--   Error Message   --> 
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/moment.min.js"></script>
-<script src="js/bootstrap-datetimepicker.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script>  -->
 
 <script type="text/javascript">
             $(function () {
@@ -1750,35 +1114,6 @@ $(".reminder").click(function(){
 </body>
 </html>
 
-
-
-<script>
-$(document).ready(function() {
-    $("#filter1ApprovePop").click(function(){
-		$("#filter1ApprovedPop").slideToggle(200);
-	});
-    $("html").click(function() {
-        $("#filter1ApprovedPop").slideUp(200);
-    });
-    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    
-    $("#filter2ApprovePop").click(function(){
-		$("#filter2ApprovedPop").slideToggle(200);
-	});
-    $("html").click(function() {
-        $("#filter2ApprovedPop").slideUp(200);
-    });
-    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    
-}); 
-
-</script>
 
 
 

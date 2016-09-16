@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -94,6 +97,10 @@ public class RequirementDaoImpl implements RequirementDao {
 	 *  
 	 * @param orgLocationId This is the first paramter to getRequirementListByOrgLocationID method
 	 * 
+	 * @param status This is the second paramter to getRequirementListByOrgLocationID method
+	 * 
+	 * @param clients This is the third paramter to getRequirementListByOrgLocationID method
+	 * 
 	 * @return Requirement 
 	 * 
 	 * @throws NullPointer
@@ -101,12 +108,47 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
+		String[] stat = status.split(",");
+		ArrayList<Requirement> requirementList = new ArrayList<Requirement>();
+		String[] client = clients.split(",");
+		Integer ra = stat.length; 
+		String subQuery2 = "";
+		
+		if(!Arrays.asList(stat).contains("")){
+		
+			if (Arrays.asList(stat).contains("New")) {
+				subQuery2 = subQuery2 + "requirement.status = 'New' or ";
+			}
+			if (Arrays.asList(stat).contains("Draft")) {
+				subQuery2 = subQuery2 + "requirement.status = 'Draft' or ";
+			}
+			if (Arrays.asList(stat).contains("Waiting for approval")) {
+				subQuery2 = subQuery2 + "requirement.status = 'Waiting for approval ' or ";
+			}
+			if (Arrays.asList(stat).contains("Open")) {
+				subQuery2 = subQuery2 + "requirement.status = 'Open' or  ";
+			}
+			if (Arrays.asList(stat).contains("Cancelled")) { 
+				subQuery2 = subQuery2 + "requirement.status = 'Cancelled' or ";
+			}
+			if (Arrays.asList(stat).contains("On Hold")) {
+				subQuery2 = subQuery2 + "requirement.status = 'On Hold' or ";
+			}
+			
+			// to remove  the last conditional statement if any 
+		    subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			String query = "from Requirement requirement  where  "+subQuery2+" and requirement.orgLocationId =:orgLocationId    ";
+			return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		}else{
+			
+			subQuery2 =  subQuery2 + "  ( requirement.status = 'New' or requirement.status = 'Draft' or requirement.status = 'Waiting for approval' or requirement.status = 'Open' or requirement.status = 'On Hold' or requirement.status = 'Cancelled' )";
+			String query = "from Requirement requirement  where  requirement.orgLocationId =:orgLocationId  and  "+subQuery2+" ";
+			return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		}
 	}
 
 	/**
