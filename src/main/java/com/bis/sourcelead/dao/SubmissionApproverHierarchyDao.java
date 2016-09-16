@@ -18,6 +18,8 @@ public interface SubmissionApproverHierarchyDao {
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployee(Long submissionId);
 	
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyBySubmissionId(Long submissionId);
+	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,Long approverUserId);
 		
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,Long approverUserId,Date startDate);

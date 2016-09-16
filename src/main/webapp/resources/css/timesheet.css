@@ -136,12 +136,13 @@ body {
     }
 .timesheet_table table tr td b {
     font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
-    text-align:center; width:75px;
+    text-align:center; width:75px; margin:1.5px 0px;
     }   
 .timesheet_table table tr td b.proj_active { background-color:#34c244;}
 .timesheet_table table tr td b.proj_closed { background-color:#d94747;}
 .timesheet_table table tr td b.proj_process { background-color:#ff9800;}
 .timesheet_table table tr td b.proj_draft { background-color:#656565;}  
+.timesheet_table table tr td b.proj_withdraw { background-color:#8c1fde;}
  
 .pname {
     border-top:1px solid #ededed; padding:0px 5px !important;
@@ -514,16 +515,34 @@ input.inline_field::-moz-placeholder { color: #333; }-->
     padding:5px 5px 0px; margin:0px 0px; font-size: 14px; font-weight: 500; color:#666; cursor:pointer;
     }   
 .time_newhead_pop {
-    position:absolute; top:62px; left:10px; z-index:100;
+    position:absolute; top:62px; left:10px; z-index:100; display:none;
     }
 .time_newhead_pop ul {
-    position:relative; width:400px; height:300px; background-color:#FFF; box-shadow:0px 0px 10px rgba(0,0,0,0.5);
+    position:relative; width:400px; background-color:#FFF; box-shadow:0px 0px 10px rgba(0,0,0,0.5);
     border-top:3px solid #368ee0;
-    }
+    }   
 .time_newhead_pop ul:after {
     bottom: 100%; left: 15%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; border-color: rgba(136, 183, 213, 0);
     border-bottom-color: #368ee0; border-width: 12px; margin-left: -15px;
-    }               
+    }
+.time_newhead_pop_inn {
+    max-height:360px; overflow:auto;
+    }   
+.time_newhead_pop_inn li {
+    border-bottom:1px dotted #ccc; padding:10px 15px; list-style-type:none;
+    }
+.time_newhead_pop_inn li span {
+    width:40px; height:40px; float:left; margin:0px 15px 0px 0px;
+    }           
+.time_newhead_pop_inn li span img {
+    width:100%; max-width:40px; max-height:40px; border-radius:50%; border:1px solid #368ee0;
+    }
+.time_newhead_pop_inn li p {
+    float:left; width:80%; padding:0px 0px; margin:0px 0px; font-size:14px; font-weight:500; color:#333;
+    }
+.time_newhead_pop_inn li p b {
+    display:block; font-weight:400; color:#666; font-size:12px;
+    }                       
  
      
     /*    Project Css    */
@@ -554,7 +573,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->
     border-bottom:1px solid #368ee0;
     }   
 .project_wrap_table {
-    max-height:450px; overflow:hidden; overflow-y:auto; width:100%;
+    width:100%;
 }   
 .project_wrap_table table {
     width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
@@ -1261,7 +1280,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
      
 .app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:fixed; right:-550px; top:250px;
+    width:300px; background-color:#FFF; border-radius:3px; position:fixed; right:-550px; top:250px; z-index:1000;
     padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0;
     transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
     }
@@ -1501,19 +1520,25 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }   
      
 .require_wrap_details {
-    padding:20px;
+    padding:20px; min-height:450px;
     }
 .require_wrap_details h1, .require_wrap_details h2 {
     margin:0px 0px; padding:0px 0px 6px 0px; font-size:15px; font-weight:500; color:#333;
     }   
 .require_wrap_details h2 {
     padding:15px 0px 6px;
+    }
+.require_wrap_details a {
+    float:right; font-size:13px; color:#454545;
     }   
+.require_wrap_details a i {
+    display:inline-block; padding:0px 0px 0px 6px;
+    }       
 .require_wrap_details textarea  {
     width:100%; padding:10px; background-color:#f8f8f8; border:none; font-size:13px; height:85px;
     }
 .require_wrap_details_cta {
-    width:50%; float:left; padding:7px 0px; position:relative;
+    width:50%; float:left; padding:8px 0px; position:relative;
     }
 .require_wrap_details_cta b {
     display:block; width:150px; float:left; font-size:14px; font-weight:600;
@@ -1522,7 +1547,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     display:block; width:60%; float:left; font-weight:500; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     }
 .require_one {
-    padding:10px; background-color:#f8f8f8;
+    padding:10px; background-color:#f8f8f8; position:relative;
     }
 .require_one .glyphicon-save {
     font-size:15px; display:inline-block; padding:0px 0px 0px 10px; color:#368ee0; cursor:pointer;
@@ -1554,8 +1579,18 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .calendar {
     background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
-    }                   
+    }           
      
+.client_summary_edit {
+    left:0px; height:auto;
+    }           
+     
+.last_td {
+    border-bottom:1px solid #dedede; padding:1px 4px !important; width:105px; text-align:center;
+    }
+.last_td .glyphicon {
+    font-size: 12px; padding: 0px 0px 0px 4px; cursor: pointer; margin: 0px 1px; color: #368ee0; position: relative; top: 3px;
+    }   
      
  
      
@@ -1673,4 +1708,3 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
  
 }
- 

@@ -295,7 +295,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	
 <!--   Timesheet approval popup   -->
 <div class="side_mask" onclick="removeTimesheetPopup();">
-	<!-- <div class="proj_close"></div> -->
+	 <div class="proj_close"></div> 
 </div>
 
 <div class="time_appr_side_wrap">
@@ -606,6 +606,8 @@ function saveMyTimesheet(status){
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status,		
         		      success :function(result) {
         		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+        		    		 $(".side_mask").fadeOut(200); 
+        	        		 $("body").css('overflow-y', 'scrool');
         		    	  approvalList();
         		      }
         	      	  
