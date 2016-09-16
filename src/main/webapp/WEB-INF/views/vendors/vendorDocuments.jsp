@@ -230,7 +230,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	result = result  +'	                   </div>';
 	result = result  +'	                   </div>';
 	
-	result = result+'	                  <div class="clearfix mb10" id="uploadDocumentDiv">';
+	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -241,7 +241,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
 	
-	result = result  +'	                 <div class="clearfix mb10">';
+	result = result  +'	                 <div class="clearfix mb10 mt">';
 	result = result  +'	                   <div class="col-md-6">';
     result = result + '                      <select class="chosen-select form-control" name="spoc" id="spoc" field-name="Client Contact"  >';
 	result = result + '                      </select>';
