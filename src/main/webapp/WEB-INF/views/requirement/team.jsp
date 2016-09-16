@@ -393,7 +393,7 @@ function deleteTeamMember(teamId){
             			 projectMemberList(teamId);
             		 }
                 }
-                 },
+                 }, 
               }); 
 }
 </script>
