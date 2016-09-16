@@ -9,8 +9,10 @@
 
 		var result = "";
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
-		if(window.candidateStatusGlobal != '0'){
-		result = result	+ '   	<a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		if(window.candidateStatusGlobal == '0'){
+		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		}else{
+			result = result	+ '   	<a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';	
 		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
@@ -570,9 +572,14 @@ function closeCertificatePopup(){
 									} else {
 										result = result	+ '<td><div><span>--</span></div></td>';
 									}
-									if(window.candidateStatusGlobal != '0'){
-				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
-
+									if(window.candidateStatusGlobal == '0'){
+				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+									}else{
+										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a>';	
+									}if(window.candidateStatusGlobal == '0'){
+										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+									}else{
+										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
 									}
 									result = result + '</tr>';
 								}

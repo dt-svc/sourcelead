@@ -22,7 +22,9 @@ function candidateEducation(candidateId){
 	
 	var result = "";
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
-	if(window.candidateStatusGlobal != '0'){
+	if(window.candidateStatusGlobal == '0'){
+		result = result  +'    	<a href="javascript:void(0)"  class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
+	}else{
 		result = result  +'    	<a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
@@ -130,9 +132,18 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    	 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a><i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></div></td>';
-
-	                    	 }
+	                    		 if(window.candidateStatusGlobal == '0'){
+	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+	                    		 }
+	                    		 else{
+	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a>';	 
+	                    		 }
+	                    		 if(window.candidateStatusGlobal == '0'){
+									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+	                    		 }else{
+	                    			 result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></div></td>'; 
+	                    		 }
+	                    	}
 	                    	 result  = result + '</tr>';
 	                      } 
 	                     result = result +" </tbody>";

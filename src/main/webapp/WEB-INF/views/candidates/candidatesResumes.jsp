@@ -37,7 +37,9 @@
 function candidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
-	if(window.candidateStatusGlobal != '0'){
+	if(window.candidateStatusGlobal == '0'){
+		result = result+'	    	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+	}else{
 		result = result+'	    	<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 	}
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
@@ -306,7 +308,10 @@ function addResume(candidateId) {
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
-					           		if(window.candidateStatusGlobal != 0){
+					           		if(window.candidateStatusGlobal == 0){
+					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
+					           		}else{
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a>';
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
 					           		}

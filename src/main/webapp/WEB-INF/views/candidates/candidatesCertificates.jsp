@@ -20,9 +20,11 @@ function candidateCertificate(candidateId){
 	 
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
-	if(window.candidateStatusGlobal != '0'){
-	result  = result + '   	<a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
-	}
+	if(window.candidateStatusGlobal == '0'){
+		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+	 }else{
+		 result  = result + '   	<a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+	 }
 	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -220,9 +222,17 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 if(window.candidateStatusGlobal != '0'){
-	                    	 result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a><i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');"></i></div></td>';
-	                    	 }
+	                    	 if(window.candidateStatusGlobal == '0'){
+	                    		 result = result  +'	            <td><div class="tblicons"><a a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
+	                    	}else{
+	                    		result = result  +'	            <td><div class="tblicons"><a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
+	                    	}
+	                    	 
+	                    	 if(window.candidateStatusGlobal == '0'){
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i></div></td>';
+	                    	}else{
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
+	                    	}
 	                    	 result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
