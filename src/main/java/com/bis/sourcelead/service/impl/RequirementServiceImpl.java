@@ -150,7 +150,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setFileContentType(multiFile.getContentType());
 			 }
 			
-			requirement.setState(Constants.REQUIREMENT_STATUS);
+			requirement.setStatus(Constants.REQUIREMENT_STATUS);
 			requirement.setCreatedDate(commonUtil.currentDate());
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
