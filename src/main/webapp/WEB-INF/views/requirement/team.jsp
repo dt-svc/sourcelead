@@ -146,6 +146,59 @@ function sideBar(teamId){
 </script>
 
 <script>
+function addTeam(){
+	var outPut = '';
+	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
+	outPut = outPut+ '            <div class="form-horizontal clearfix">';
+	outPut = outPut+ '              <div class="clearfix mb10">';
+	outPut = outPut+ '                <div class="col-md-12">';
+	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Team Name *">';
+	outPut = outPut+ '                </div>';
+	outPut = outPut+ '              </div>';
+	outPut = outPut+ '              <div class="clearfix mb10">';
+	outPut = outPut+ '                <div class="col-md-12">';
+	outPut = outPut+ '                  <select class="chosen-select">';
+	outPut = outPut+ '                    <option value="Select Month">Team Leader *</option>';
+	outPut = outPut+ '                    <option value="January">Option 1</option>';
+	outPut = outPut+ '                    <option value="January">Option 2</option>';
+	outPut = outPut+ '                    <option value="January">Option 3</option>';
+	outPut = outPut+ '                    <option value="January">Option 4</option>';
+	outPut = outPut+ '                  </select>';
+	outPut = outPut+ '                </div>';
+	outPut = outPut+ '              </div> ';
+	outPut = outPut+ '              <div class="clearfix mb10">';
+	outPut = outPut+ '                <div class="col-md-12">';
+	outPut = outPut+ '                  <select class="chosen-select">';
+	outPut = outPut+ '                    <option value="Select Month">Team Members *</option>';
+	outPut = outPut+ '                    <option value="January">Option 1</option>';
+	outPut = outPut+ '                    <option value="January">Option 2</option>';
+	outPut = outPut+ '                    <option value="January">Option 3</option>';
+	outPut = outPut+ '                    <option value="January">Option 4</option>';
+	outPut = outPut+ '                  </select>';
+	outPut = outPut+ '                </div>';
+	outPut = outPut+ '              </div> ';
+	outPut = outPut+ '              <div class="clearfix mr">';
+	outPut = outPut+ '                <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>';
+	outPut = outPut+ '              </div>';
+	outPut = outPut+ '            </div>';
+	$("#popUpDivTeamParent").empty();
+	$("#popUpDivTeamParent").append(outPut); 
+	
+	$(".edit-details").toggleClass("edit-details-active");
+	$(".close-div").click(function(){
+		$(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		 e.stopPropagation();
+	 });
+	/*  $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	 }); */	
+	
+}
+</script>
+
+<script>
 function addMember(teamId){
 	var outPut = '';
 	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
@@ -441,7 +494,7 @@ function TeamMemberpagination(){
               </ul>
             </div>
           </li>
-          <li><a href="add-candidate.html" title=""><i class="fa fa-plus"></i>Add Team</a></li>
+          <li><a href="#" title="" onclick="addTeam();"><i class="fa fa-plus"></i>Add Team</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
@@ -451,6 +504,7 @@ function TeamMemberpagination(){
       </div>
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
       
+                <div id="popUpDivTeamParent" class="edit-details col-md-4"></div>   
       			<div id="teamList"></div>
       			
                 <!-- <table>
@@ -828,9 +882,9 @@ $(".addUser-org").click(function(){
  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
+ /* $('html').click(function(){
 	$(".edit-details").removeClass("edit-details-active");
-   });	
+   });	 */
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });

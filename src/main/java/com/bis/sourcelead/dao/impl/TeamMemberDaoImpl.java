@@ -69,7 +69,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TeamMembers tm  where tm.teamId =:teamId";
+		String query = "from TeamMembers tm  where tm.teamId =:teamId and tm.status = '1'";
 		return session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
 		
 	}
