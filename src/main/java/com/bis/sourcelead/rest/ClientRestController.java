@@ -403,14 +403,31 @@ public class ClientRestController {
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
 	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
-		     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
-		     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-		     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-		     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
-		     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
-		     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-		     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-		     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     
+		     if(user.getId()==ownerId){
+		    	 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+		    	 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+			     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+			     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		     }
+		     else{
+		    	 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+		    	 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+			     orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
+			     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
+			     orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+		     }
+		     
 		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
@@ -633,8 +650,9 @@ public class ClientRestController {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
+	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId());
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser);
 
 		return jsonObj.getString("owner");
 	}
@@ -661,6 +679,8 @@ public class ClientRestController {
     				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
     				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
     				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 				}
 				//if login user is Owner
 				else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
@@ -668,6 +688,8 @@ public class ClientRestController {
 						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 					}
 					
 				 
@@ -677,18 +699,25 @@ public class ClientRestController {
 					 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+					 
 				 }
 				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
 				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
 				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 				}
 			}
 			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
 				 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 			}
 			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+				 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 			}
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());

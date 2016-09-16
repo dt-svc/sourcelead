@@ -19,7 +19,7 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function clientDetailsbySpocId(spocId,ownerId,spocUserId) {
+	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -33,7 +33,7 @@
 						result = result + '<div class="project_details">';
 						
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 							
 							result = result + '<div class="project_details_cta">';
@@ -119,7 +119,7 @@
 	}
 </script>
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId,spocUserId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
@@ -226,7 +226,7 @@
 						result = result + '</div>'; */
 						
 						
-				 		result = result  +'	 <div class="clearfix mb10">';
+				 		/* result = result  +'	 <div class="clearfix mb10">';
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
@@ -234,6 +234,24 @@
 						result = result  +'	           <option value="${user.id}" ${user.id  == ownerId ? "selected" : ''} > ${user.firstName} ${user.lastName}</option>';
 						result = result  +'	       </c:forEach>';
 					    result = result  +'	  </select>';
+					    result = result  +'	 </div>';
+					    result = result  +'	 </div>';  */
+						result = result  +'	 <div class="clearfix mb10">';
+						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+						result = result  +'	 <div class="col-md-12">';
+						result = result  +'	   <select  class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						
+						for (var j = 0; j < json.userList.length; j++) {
+							var user = json.userList[j];
+							   if(user.id == tempOwnerId){
+								   selected = 'selected';
+								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
+							  }else{
+									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
+			   		 	    	 } 
+						}
+						
+						result = result  +'	  </select>';
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
 						
@@ -318,7 +336,6 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
-	   		    	alert("data"+data);
 	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId);
 	   		    }
 		 }); 

@@ -108,7 +108,31 @@ public class OrgSpoc {
 	@Transient
 	private String userState;
 
+	@Transient
+	private Long userId;
 	
+	@Transient
+	private Long spocLocationId;
+	
+	@Transient
+	private Long tempOwnerId;
+
+	public Long getSpocLocationId() {
+		return spocLocationId;
+	}
+
+	public void setSpocLocationId(Long spocLocationId) {
+		this.spocLocationId = spocLocationId;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public List<User> getUserList() {
 		return userList;
 	}
@@ -315,5 +339,12 @@ public class OrgSpoc {
 	public void setUserState(String userState) {
 		this.userState = userState;
 	}
-	
+
+	public Long getTempOwnerId() {
+		return tempOwnerId;
+	}
+
+	public void setTempOwnerId(Long tempOwnerId) {
+		this.tempOwnerId = tempOwnerId;
+	}
 }
