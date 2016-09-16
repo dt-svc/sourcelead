@@ -102,20 +102,74 @@ function getContactList(local){
 					var opt = json[i];
 					
 					output = output + "<option value='" +opt.id+","+opt.responderLocationId.id+ "'>"
-							+ opt.orgName + "</option>";
+							+opt.spocName+ "</option>";
 				}
-				$("#addClientId").empty();
-				$("#addClientId").append(output);
-				$('#addClientId').trigger("chosen:updated");
+				$("#selectContact").empty();
+				$("#selectContact").append(output);
+				$('#selectContact').trigger("chosen:updated");
 	        }
 		});
 	}
-
 </script>
 
-getOrgSpocsList
 
+<script type="text/javascript">
+	function saveClientContact() {
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#clientContacts_form').validate(false, validationSettings)) {
+			var frm = $('#clientContacts_form').serializeFormJSON();
+			var orgLocationId = document.getElementById("orgLocationId").value;
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#save_clientContact").attr("disabled", "disabled");
+			/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
+	 		$.ajax({
+						type : "GET",
+						url : sourceleadUrl
+								+ "/saveClientFromProject?json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
+						success : function(data) {
+							var json = JSON.parse(data);
+							var output = "";
+							output = output
+									+ "<option value=''>-- Select Client --</option>";
+							for (var i = 0; i < json.length; i++) {
+								var opt = json[i];
+								
+								output = output + "<option value='" +opt.id+","+opt.responderLocationId.id+ "'>"
+										+ opt.orgName + "</option>";
+							}
+							$("#addClientId").empty();
+							$("#addClientId").append(output);
+							$('#addClientId').trigger("chosen:updated");
+							$('#addClient').modal('hide');
+							 
 
+						},
+					});
+	 		$("#orgName").val('');
+	 		$("#webSite").val('');
+	 		$("#firstName").val('');
+	 		$("#lastName").val('');
+	 		$("#email").val('');
+	 		$("#roleType option:selected").removeAttr("selected");
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#clientContacts_form', function() {
+		$("#clientContacts_form").showHelpOnFocus();
+		$("#clientContacts_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 
 </body>
