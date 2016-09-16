@@ -9,4 +9,8 @@ public interface SubmissionTemplateService {
 	public SubmissionTemplate addSubmissionTemplate(SubmissionTemplate submissionTemplate) throws Exception;
 	
 	List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,Long orgLocationId) throws Exception;
+	
+	SubmissionTemplate getSubmissionTemplateById(Long Id) throws Exception;
+	
+	SubmissionTemplate getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,Long orgLocationId) throws Exception;
 }

@@ -197,6 +197,15 @@ display: block;
     float: right;
 }
 
+#sjfb .success {
+    float: right;
+    cursor: none;
+}
+#sjfb .success .glyphicon {
+    cursor: none;
+}
+
+
 #sjfb input {
     font-weight: normal;
     margin: 0 5px;

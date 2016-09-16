@@ -13,11 +13,21 @@
 <script src="resources/js/jquery-ui.min.js" ></script>
 
 
+<script type="text/javascript">
+//On document ready
+$(function(){
+
+    generateForm();
+
+
+});
+</script>
 
 
 <script type="text/javascript">
 	function addSubmissionTemplateFields(clientLocationId) {
 		
+		var sourceleadUrl ='${sourceleadUrl}';
 		var result = "";
 		
 		result = result + '<section class="clearfix createTemplate">';
@@ -62,6 +72,7 @@
 			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
 			        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
 			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
+			        result = result + '<li><a id="calendar" data-type="calendar" href="javascript:void(0)">Calendar</a></li>';
 			        result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>';
 		            result = result + '</ul>';
 			        result = result + '</div>';
@@ -90,7 +101,7 @@
 		           $("#tab-4").empty();  
 		           $("#tab-4-addTemplate").empty();
 		           $("#tab-4").append(result); 
-		           customizeFields();
+		           customizeFields(clientLocationId,sourceleadUrl);
 		  
 	}
 </script>	
@@ -158,8 +169,7 @@
         var sourceleadUrl ='${sourceleadUrl}';
         //Save form to database
         //Demo doesn't actually save. Download project files for save
-        var con2 = JSON.stringify([{"name":"formFields","value":fields}]);
-        con2 = con2.replace(/[{}]/g, "");
+        var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
    	    $.ajax({
 	    	type: "POST",
@@ -197,5 +207,7 @@
         return false;
     });
 </script> 
+
+
   
   
