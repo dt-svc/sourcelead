@@ -47,4 +47,6 @@ public interface OrgDocumentsDao{
 	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
 			Long orgLocationId, Long spocUserId);
 
+	OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId);
+
 }
