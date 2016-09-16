@@ -47,5 +47,7 @@ public interface OrgDocumentsService {
 	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long valueOf, Long id,
 			Long spocUserId);
 
+	OrgDocuments getOrgDocumentsByIdAndSpocId(Long parseLong, Long userId);
+
 
 }

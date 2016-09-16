@@ -127,5 +127,20 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		return orgDocuments;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId) {
+		logger.debug("In getOrgDocumentsByIdAndSpocId");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from OrgDocuments od where od.id = :Id and od.spocUser.id =:userId" ;
+		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", docId).setLong("userId", userId).setCacheable(true).list(); 
+		OrgDocuments orgDocuments = null;
+		if(orgDocumentsList != null && !orgDocumentsList.isEmpty()){
+			orgDocuments = orgDocumentsList.iterator().next();
+		}
+		return orgDocuments;
+	}
+
+	
 
 }

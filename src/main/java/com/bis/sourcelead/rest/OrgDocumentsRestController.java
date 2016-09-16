@@ -134,6 +134,32 @@ public class OrgDocumentsRestController {
 		return resultJson;
 	}
 	
+	
+	@RequestMapping(value = "/getOrgDocumentbySpocId", method = RequestMethod.POST)
+	@ResponseBody String getOrgDocumentbySpocId(String docId, Long orgRelationId, String userId,HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsByIdAndSpocId(Long.parseLong(docId),Long.parseLong(userId));
+		
+		//to fetch client contact list
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
+		for (OrgSpoc orgSpoc : orgSpocsList) {
+			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+		}
+		
+		//to fetch Owners list
+		List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		
+		if(orgDocument != null){
+			orgDocument.setOrgSpocsList(orgSpocsList);
+			orgDocument.setOwnersList(ownersList);
+			resultJson = commonUtil.toJSON(orgDocument);
+		}
+		return resultJson;
+	}
+	
 	/** to download document
 	 * @author Prasad Salina
 	 * @param resumeId
