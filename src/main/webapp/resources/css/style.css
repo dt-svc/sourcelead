@@ -197,12 +197,13 @@ display: block;
     float: right;
 }
 
-#sjfb .success {
+#sjfb .btnDisable {
     float: right;
     cursor: none;
 }
-#sjfb .success .glyphicon {
+#sjfb .btnDisable .glyphicon {
     cursor: none;
+    color: #777
 }
 
 

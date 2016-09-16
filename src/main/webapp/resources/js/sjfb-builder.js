@@ -123,7 +123,7 @@ function addField(fieldType,value) {
     if(value == 'Y'){
     	DeleteButtion = '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>'
     }else{
-    	DeleteButtion = '<button type="button"  class="success btn btn-success"><i class="glyphicon glyphicon-ok"></i></button>'
+    	DeleteButtion = '<button type="button"  class="btnDisable btn btn-default disabled"><i class="glyphicon glyphicon-remove"></i></button>'
     }
    
     
