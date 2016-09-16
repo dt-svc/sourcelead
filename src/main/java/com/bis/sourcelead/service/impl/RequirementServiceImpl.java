@@ -121,9 +121,6 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
 			}
 			
-			if(jsonObj.has("rateType")){
-			requirement.setRateType(jsonObj.getString("rateType"));
-			}
 			
 			if(jsonObj.has("isTemplate")){
 			requirement.setIsTemplate(jsonObj.getString("isTemplate"));
@@ -153,6 +150,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setFileContentType(multiFile.getContentType());
 			 }
 			
+			requirement.setState(Constants.REQUIREMENT_STATUS);
 			requirement.setCreatedDate(commonUtil.currentDate());
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
