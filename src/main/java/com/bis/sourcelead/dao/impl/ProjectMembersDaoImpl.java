@@ -235,7 +235,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId,String reason) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String status = Constants.MEMBER_IN_ACTIVE;
-		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason where pm.id = :projectMemberId ");
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason  where pm.id = :projectMemberId and ");
 		query.setLong("projectMemberId", projectMemberId);
 		query.setString("status", status);
 		query.setString("terminateReason",reason);

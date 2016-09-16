@@ -41,4 +41,10 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.updateEndDateOfProjectMemberId(endDate,projectMemberId);
 	}
 
+	@Override
+	public ProjectMembersHistory getProjectMembersRecentClosedByProjectMemberId(Long projectMemberId) throws Exception {
+		// TODO Auto-generated method stub
+		return projectMembersHistoryDao.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+	}
+
 }

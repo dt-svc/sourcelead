@@ -323,7 +323,12 @@ function firstname(name)
 						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
 						  
 						   result = result + '<td><div id="startDate'+json.id+'">'+startDate+'</div></td>';
-						  result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>';
+						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "IN-ACTIVE"){
+							   result = result + '<td><div id="endDate'+json.id+'">'+endDate+'</div></td>';
+						   }
+						   else{
+							   result = result + ' <td><div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div></td>'; 
+						   }
 						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
 						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
 						   result = result + ' <td><div>'+draftHrs+'</div></td>';
