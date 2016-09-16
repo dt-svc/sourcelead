@@ -842,6 +842,7 @@ Bootstrap
             </div>
           </li>
           <li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
+          <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Add Team</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>

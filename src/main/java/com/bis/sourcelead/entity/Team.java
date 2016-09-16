@@ -1,14 +1,17 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -56,8 +59,10 @@ public class Team {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORG_LOCATION_ID")
+    private OrgLocations orgLocationsId;
 	
-
 	public Long getId() {
 		return id;
 	}
@@ -137,4 +142,14 @@ public class Team {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public OrgLocations getOrgLocationsId() {
+		return orgLocationsId;
+	}
+
+	public void setOrgLocationsId(OrgLocations orgLocationsId) {
+		this.orgLocationsId = orgLocationsId;
+	}
+	
+	
 }
