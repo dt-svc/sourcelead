@@ -62,6 +62,7 @@ public class OrgDocumentsRestController {
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "docId", required = false) String docId,
+			@RequestParam(value = "sourceType", required = false) String sourceType,
 			MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -74,7 +75,7 @@ public class OrgDocumentsRestController {
 		}
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user);
+		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user, sourceType);
 		return "success";
 
 	} 	
@@ -88,11 +89,13 @@ public class OrgDocumentsRestController {
 	 */
 	
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
-	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,HttpServletRequest request) throws Exception {
+	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,
+			                                                 HttpServletRequest request) throws Exception {
 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 String resultJson;
-		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId());
+		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), loginOrgLocation.getId(), sourceType);
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
