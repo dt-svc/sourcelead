@@ -292,4 +292,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getAllUesrPrevoiusWeekTimeSheetSubmissionStatus();
 	}
 
+	@Override
+	public void saveAllProjects(List<Projects> projectsList) throws Exception {
+		// TODO Auto-generated method stub
+		 projectsDao.saveAllProjects(projectsList);
+	}
+
 }

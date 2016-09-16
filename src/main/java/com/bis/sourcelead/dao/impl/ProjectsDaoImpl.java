@@ -625,5 +625,21 @@ public List<User> getAllUesrPrevoiusWeekTimeSheetSubmissionStatus() throws Excep
 	
 	return userList;
 }
+
+@Override
+public void saveAllProjects(List<Projects> projectsList) throws Exception {
+	logger.debug("In Save All Projects  method");
+	Session session = this.sessionFactory.getCurrentSession();
+	if(projectsList != null && projectsList.isEmpty()){
+		for(Projects projects :projectsList){
+			try{
+				session.saveOrUpdate(projects);
+			}catch(Exception exception){
+				 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			}
+		}
+	}
+}
           }
 

@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -161,7 +162,9 @@ public class LoginSessionController {
 					}
 					commonUtil.terminateProjectMemberByProjectMemberId(pojectMember.getId());
 				}
+				project.setStatus(Project_Status.COMPLETED.getValue());
 			}
+			projectsService.saveAllProjects(projectsList);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
