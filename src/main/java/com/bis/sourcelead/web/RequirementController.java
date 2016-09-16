@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +15,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -40,6 +43,9 @@ public class RequirementController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
@@ -66,7 +72,16 @@ public class RequirementController {
 		model.addObject("skillsList", skillsList);
 		
 		List<Requirement> jobsTemplateList = requirementService.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocations.getId());
-		model.addObject("jobsTemplateList", jobsTemplateList);		
+		model.addObject("jobsTemplateList", jobsTemplateList);	
+		
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations ocl :orgClientList){
+			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+		 }
+	    model.addObject("add_clientList", orgClientList);
+	    model.addObject("loginOrgLocId", orgLocations.getId());
+		
 		return model;
 
 	}

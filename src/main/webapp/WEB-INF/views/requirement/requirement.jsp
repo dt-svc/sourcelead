@@ -33,6 +33,11 @@
 			$(".cd").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
+			
+			$(".cd1").click(function(){  
+		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
+		    });
+			
 		 };
 </script>
 
@@ -263,75 +268,19 @@
                 <label class="col-md-3">Client <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control select-bg">
-                      <option>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
+                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this);">
+                    	<option value=''>-- Select Client --</option>
+	                    <c:forEach var="report" items="${add_clientList}">
+							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
+			                    	<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+			                    </c:if>  
+			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
+			                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+			                    </c:if>
+						</c:forEach>
                     </select>
                     <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i>
-                     <div id="addClient" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Client Details</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-                              <div class="form-group">
-                                <label class="col-lg-3">Client Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Website</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              
-                              <div class="form-group">
-                                <label class="col-lg-3">First Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Last Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                               <div class="form-group">
-                                <label class="col-lg-3">Email</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Role</label>
-                                <div class="col-lg-9">
-                                <select class="chosen-select form-control select-bg ">
-                                 <option disabled>-- Select Role --</option>
-                                 <option>Admin</option>
-                                 <option>Account Manager</option>
-                                 <option>Recriting Manager</option>
-                                </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                           <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                           <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                     
                     </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -751,68 +700,7 @@
                     </select>
                     Add Level
                     
-                     <div id="addClient" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Client Details</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-                              <div class="form-group">
-                                <label class="col-lg-3">Client Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Website</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              
-                              <div class="form-group">
-                                <label class="col-lg-3">First Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Last Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                               <div class="form-group">
-                                <label class="col-lg-3">Email</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Role</label>
-                                <div class="col-lg-9">
-                                <select class="selectpicker form-control">
-                                 <option disabled>-- Select Role --</option>
-                                 <option>Admin</option>
-                                 <option>Account Manager</option>
-                                 <option>Recriting Manager</option>
-                                </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                     
                     </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -1285,6 +1173,73 @@
   </div>
   
   <!-- Content Area Ends-->
+  <!-- Add Client Details popup-->
+  				<div id="addClient" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
+                          <h4 class="modal-title">Add Client Details</h4>
+                        </div>
+                        <form:form id="clientDetails_form" name="clientDetails_form" method="GET">
+	                        <div class="modal-body clearfix">
+	                          <div class="form-horizontal custom-form clearfix">
+	                            <div class="col-xs-12 col-md-12 col-lg-12">
+	                              <div class="form-group">
+	                                <label class="col-lg-3">Client Name<span class="text-danger">*</span></label>
+	                                <div class="col-lg-9">
+	                                  <input type="text" id="orgName" name="orgName" class="form-control" value="" field-name="Client Name" data-validation="required validate_Space validate_length length2-250">
+	                                  <input type="hidden" id="orgLocationId" />
+	                                </div>
+	                              </div>
+	                              <div class="form-group">
+	                                <label class="col-lg-3">Website</label>
+	                                <div class="col-lg-9">
+	                                  <input type="text" id="webSite" name="webSite" class="form-control" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+	                                </div>
+	                              </div>
+	                              
+	                              <div class="form-group">
+	                                <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>
+	                                <div class="col-lg-9">
+	                                  <input type="text" id="firstName" name="firstName" class="form-control" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100">
+	                                </div>
+	                              </div>
+	                              <div class="form-group">
+	                                <label class="col-lg-3">Last Name</label>
+	                                <div class="col-lg-9">
+	                                  <input type="text" id="lastName" name="lastName" class="form-control" value="" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
+	                                </div>
+	                              </div>
+	                               <div class="form-group">
+	                                <label class="col-lg-3">Email<span class="text-danger"> *</span></label>
+	                                <div class="col-lg-9">
+	                                  <input type="text" id="email" name="email" class="form-control" value="" field-name="Client Email" data-validation="required validate_Space validate_email">
+	                                </div>
+	                              </div>
+	                              <div class="form-group">
+	                                <label class="col-lg-3">Role<span class="text-danger"> *</span></label>
+	                                <div class="col-lg-9">
+	                                <select class="chosen-select form-control select-bg" id="roleType" name="roleType" field-name="Client Role" data-validation="required">
+	                                  	<option value="">-Select Role-</option>
+										<option value="1">Admin</option>
+										<option value="3">Approver/Project Manager</option>
+										<option value="5">HR Manager</option>
+										<option value="8">Recruiter</option>
+	                                </select>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                        </div>
+	                        <div class="modal-footer">
+	                        	<input type="button" value="Save" class="btn btn-primary" id="save_client" onclick="saveClient();"> 
+								<input data-dismiss="modal" type="button" value="Cancel" class="btn btn-default">
+	                        </div>
+                         </form:form>
+                      </div>
+                    </div>
+               </div>
   </div>
 </section>
 
