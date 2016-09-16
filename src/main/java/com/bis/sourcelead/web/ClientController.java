@@ -125,7 +125,9 @@ public class ClientController {
 			model.addObject("userList", userList);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			model.addObject("loginCountryName", countries.getName());
+			if(countries != null){
+				model.addObject("loginCountryName", countries.getName());
+			}
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			
