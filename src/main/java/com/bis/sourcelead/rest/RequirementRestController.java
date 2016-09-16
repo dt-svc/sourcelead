@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
 import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -19,6 +22,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Requirement service.
@@ -38,6 +43,12 @@ public class RequirementRestController {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	UserService userService;
+	
+	 @Autowired
+	 CommonUtil commonUtil;
 	
 	/**
 	 * @author prasad k
@@ -72,6 +83,34 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
 		return "success";
+	}
+	
+	
+	/**
+	 * @author punnana sarath kumar
+	 * @since  sept 13 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to store/save Requirement in Requirement table.
+	 *  
+	 * @param jsonObj This is the first paramter to storeRequirement method
+	 * @param orgLocations This is the second paramter to storeRequirement method
+	 * @param user This is the third paramter to storeRequirement method
+	 * @param multiFile This is the fourth paramter to storeRequirement method
+	 * 
+	 * @return Candidate 
+	 * 
+	 * @throws NullPointer
+	*/
+	
+	@RequestMapping(value = "/getUserList", method = RequestMethod.POST)
+	public @ResponseBody String getUserList(HttpServletRequest request) throws Exception {
+		
+		String resultJson;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+		resultJson = commonUtil.toJSON(usersList);
+		return resultJson;
 	}
 	
 	 

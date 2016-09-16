@@ -2,7 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -13,12 +17,12 @@
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
+ -->
 <!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<!-- <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> -->
 <!-- end files for autocomplete with tagit -->
 
 <jsp:include page="requirementDetails.jsp"></jsp:include>
@@ -1209,7 +1213,7 @@
                         <button data-dismiss="modal" class="close" type="button">×</button>
                         <h4 class="modal-title">Assign To</h4>
                       </div>
-                       <div id="userListDiv"></div>
+                       <div id="userList"></div>
                         <!-- <div class="modal-body clearfix"> -->
                        
                         <!-- <div class="form-horizontal custom-form">
@@ -1912,7 +1916,7 @@ function getUserList(){
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/userList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -1924,7 +1928,7 @@ function getUserList(){
                		 else{
 			    	     $("#userList").removeAttr("style");
 	                	 $("#userList").empty();
-	                	     alert("one");
+	                	    alert("one");
 	                	    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
 	                		result = result +'<div class="form-horizontal custom-form">';
@@ -1948,8 +1952,7 @@ function getUserList(){
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
 	                		result = result +'     <div class="modal-body-custom mt clearfix">';
-	                		result = result +'       <table id="userPagination" class="display" cellspacing="0" width="100%" cols="0" class="table table-bordered table-striped  clearfix">';
-	                		result = result +'         <tbody>';
+	                		result = result +'       <table id="userPagination" class="display" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
 	                		result = result +'             <th><input type="checkbox"></th>';
@@ -1970,11 +1973,25 @@ function getUserList(){
 		                    	 result = result +'             <td>Account Manager</td>';
 		                    	 result = result +'             <td>101</td>';
 		                    	 result = result +'           <tr>';
+		                    	 result = result +'           <tr>';
+		                    	 result = result +'             <td><input type="checkbox" name="team"></td>';
+		                    	 result = result +'             <td>Murali Krishna</td>';
+		                    	 result = result +'             <td>murali@businessintelli.com</td>';
+		                    	 result = result +'             <td>Account Manager</td>';
+		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           <tr>';
+		                    	 result = result +'           <tr>';
+		                    	 result = result +'             <td><input type="checkbox" name="team"></td>';
+		                    	 result = result +'             <td>Murali Krishna</td>';
+		                    	 result = result +'             <td>murali@businessintelli.com</td>';
+		                    	 result = result +'             <td>Account Manager</td>';
+		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           <tr>';
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>';
-	                 	 result = result +'     <div class="clearfix">';
+	                 	 /* result = result +'     <div class="clearfix">';
 	                 	 result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
 	                 	 result = result +'         <li><a href="#">1</a></li>';
 	                 	 result = result +'         <li class="active"><a href="#">2</a></li>';
@@ -1982,12 +1999,13 @@ function getUserList(){
 	                 	 result = result +'         <li><a href="#">4</a></li>';
 	                 	 result = result +'         <li><a href="#">5</a></li>';
 	                 	 result = result +'       </ul>';
-	                 	 result = result +'       </div>';
+	                 	 result = result +'       </div>'; */
 	                 	 result = result +'   </div>';
 	                 	 result = result +'   <div class="modal-footer">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>';
+	                 	 alert("three"+result);
 	                     $("#userList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -2016,10 +2034,10 @@ function getUserList(){
 --%>
 
 <script>
-function pagination(){ 
-    $('#userPagination').DataTable( { 
+function pagination(){
+    $('html#userPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -2029,95 +2047,6 @@ function pagination(){
     } );
 }
 </script>
-
-
-<!-- <script>
-function getUserList(){
-	var result = '';
-    result = result +'<div class="modal-body clearfix">';
-	result = result +'<div class="form-horizontal custom-form">';
-	result = result +'     <div class="row">';
-	result = result +'       <div class="col-xs-12 col-md-8 col-lg-8">';
-	result = result +'         <div class="input-group">';
-	result = result +'           <input type="search" class="form-control" value="">';
-	result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-	result = result +'       </div>';
-	result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	result = result +'          <select class="selectpicker">';
-	result = result +'          <option selected disabled>Select Role</option>';
-	result = result +'           <option value="All">All</option>';
-	result = result +'           <option value="Admin">Admin</option>';
-	result = result +'           <option value="Account Manager">Account Manager</option>';
-	result = result +'           <option value="Recruiting Manager">Recruiting Manager</option>';
-	result = result +'           <option value="Hiring Manager">Hiring Manager</option>';
-	result = result +'           <option value="Teams">Teams</option>';
-	result = result +'          </select>';
-	result = result +'     </div>';
-	result = result +'     </div>';
-	result = result +'     </div>';
-	result = result +'     <div class="modal-body-custom mt clearfix">';
-	result = result +'       <table cols="0" class="table table-bordered table-striped  clearfix">';
-	result = result +'         <tbody>';
-	result = result +'           <thead>';
-	result = result +'           <tr>';
-	result = result +'             <th><input type="checkbox"></th>';
-	result = result +'             <th>Name</th>';
-	result = result +'             <th>Email</th>';
-	result = result +'             <th>Role</th>';
-	result = result +'             <th>Active Jobs</th>';
-	result = result +'           </tr>';
-	result = result +'             </thead>';
-	result = result +'           <tr>';
-	result = result +'             <td><input type="checkbox" name="team"></td>';
-	result = result +'             <td><span class="tbldata-dotdot">Murali Krishna</span></td>';
-	result = result +'             <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>';
-	result = result +'             <td>Account Manager</td>';
-	result = result +'             <td>101</td>';
-	result = result +'           </tr>';
-	result = result +'           <tr>';
-	result = result +'             <td><input type="checkbox" name="team"></td>';
-	result = result +'             <td>Murali Krishna</td>';
-	result = result +'             <td>murali@businessintelli.com</td>';
-	result = result +'             <td>Account Manager</td>';
-	result = result +'             <td>101</td>';
-	result = result +'           </tr>';
-	result = result +'           <tr>';
-	result = result +'             <td><input type="checkbox" name="team"></td>';
-	result = result +'             <td>Murali Krishna</td>';
-	result = result +'             <td>murali@businessintelli.com</td>';
-	result = result +'             <td>Account Manager</td>';
-	result = result +'             <td>101</td>';
-	result = result +'           </tr>';
-	result = result +'           <tr>';
-	result = result +'             <td><input type="checkbox" name="team"></td>';
-	result = result +'             <td>Murali Krishna</td>';
-	result = result +'             <td>murali@businessintelli.com</td>';
-	result = result +'             <td>Account Manager</td>';
-	result = result +'             <td>101</td>';
-	result = result +'           </tr>';
-	result = result +'         </tbody>';
-	result = result +'       </table>';
-	result = result +'     </div>';
-	result = result +'     <div class="clearfix">';
-	result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
-	result = result +'         <li><a href="#">1</a></li>';
-	result = result +'         <li class="active"><a href="#">2</a></li>';
-	result = result +'         <li><a href="#">3</a></li>';
-	result = result +'         <li><a href="#">4</a></li>';
-	result = result +'         <li><a href="#">5</a></li>';
-	result = result +'       </ul>';
-	result = result +'       </div>';
-	result = result +'   </div>';
-	result = result +'   <div class="modal-footer">';
-	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>';
-	result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
-	result = result +'   </div>';
-    
-	$("#userListDiv").empty();
-	$("#userListDiv").append(result);
-	
-}
-</script> -->
 
 
 <jsp:include page="../masterFooter.jsp" />
