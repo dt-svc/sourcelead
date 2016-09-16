@@ -133,6 +133,10 @@ function clientContacts(orgRelationID,clientLocationId){
 	                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
 	   	        		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptSpocInvitation('+opt.id+','+orgRelationID+','+clientLocationId+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectSpocInvitation('+opt.id+','+orgRelationID+','+clientLocationId+');"></i>';
 	   	        		}
+	                
+		                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
+	                        result = result +' <td><div>---</div></td>';
+	                  	}
 	   	        		
 	   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 	   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+clientLocationId+');">Send</a></b>';
@@ -196,7 +200,26 @@ function clientContacts(orgRelationID,clientLocationId){
 				$("#clientContactList").empty();
 			    $("#clientContactList").append(result); 
        		 }
-    	 
+    		$("#tab-4-addTemplate").empty();
+    		$("#tab-4").empty();  
+    		$("#tab-2-addContact").empty();  
+    	    $("#tab-2-addContact").append(res);
+    		$("#tab-2").empty();  
+    	    $("#tab-2").append(result);  
+    	    $("#testDiv").show();
+    	    
+    	    $(".project-tabs-menu a").click(
+					function(event) {
+						event.preventDefault();
+						$(this).parent().addClass("current");
+						$(this).parent().siblings().removeClass(
+								"current");
+						var tab = $(this).attr("href");
+						$(".project_tabs_inn").not(tab).css(
+								"display", "none");
+						$(tab).fadeIn();
+					});
+    	    contactPagination();
 	        },
 	    });
 	}

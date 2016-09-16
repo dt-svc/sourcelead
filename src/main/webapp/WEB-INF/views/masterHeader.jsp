@@ -14,6 +14,9 @@
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 
+<script src="resources/js/sjfb-builder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/sjfb-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

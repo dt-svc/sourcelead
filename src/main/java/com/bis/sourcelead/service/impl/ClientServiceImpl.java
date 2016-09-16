@@ -555,7 +555,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId) throws Exception {
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -588,12 +588,17 @@ public class ClientServiceImpl implements ClientService{
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
-				if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-					User ownerUser = new User();
-					ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
-					orgSpoc.setOwnerUser(ownerUser);
+				
+				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User ownerUser = new User();
+						ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(ownerUser);
+					}
+					 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 				}
-				orgSpocService.addOrgSpoc(orgSpoc);
+				
+				//orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
