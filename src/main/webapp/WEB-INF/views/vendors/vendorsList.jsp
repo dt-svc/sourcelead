@@ -85,8 +85,8 @@
 <script> 
 $(document).ready(function(){
 	getVendorContactLists();
-	listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact';
+	/* listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact'; */
 });
 </script>
 
@@ -767,7 +767,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		 document.getElementById("contactLevel").style.display="block";
+		 //document.getElementById("contactLevel").style.display="block";
 		 
 		 getVendorLists();
 	 }
@@ -777,7 +777,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
-		 document.getElementById("contactLevel").style.display="none";
+		// document.getElementById("contactLevel").style.display="none";
 		 
 		 getVendorContactLists();
 	 }
