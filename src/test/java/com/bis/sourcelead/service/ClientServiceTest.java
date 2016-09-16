@@ -163,6 +163,10 @@ public class ClientServiceTest {
 	
 	@Test
 	public void updateVendorContactDetails() throws Exception {
+		User user = new User();
+		user.setId(1L);
+		
+		
 		JSONObject jsonObj = new JSONObject();
 		 jsonObj.put("vendorContactFirstName", "rajesh");
 		 jsonObj.put("vendorContactLastName", "khanna");
@@ -173,7 +177,7 @@ public class ClientServiceTest {
 		
 		 Long spocId = 5l;
 		 Long loginOrgId = 2l;
-		clientService.updateVendorContactDetails(jsonObj, spocId, loginOrgId);
+		clientService.updateVendorContactDetails(jsonObj, spocId, loginOrgId,user);
 		logger.info("Vendor details updated sucessfully...");
 	}
 }

@@ -514,10 +514,57 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     			 }
     			 
     			 $("#update_doc").attr("onclick", "storeClientDocument("+vendorLocationId+","+orgRelationId+","+json.id+");");
+    			 
+    			 manageDates();
     		 }
 		    }
      });
 }
+</script>
+
+<script>
+function manageDates() {
+	
+	  if($("#endDate").val() == "" ){
+		     
+			  var selected = $("#startDate").val();
+			  var dt = new Date(selected);
+			  dt.setDate(dt.getDate() + 1);
+			  $("#endDate").datepicker("option", "minDate", dt);
+			  
+		 	  $('#endDate').datepicker({
+		            dateFormat: 'yy-mm-dd',
+		            onSelect: function (selected) {
+			            var dt = new Date(selected);
+			            dt.setDate(dt.getDate() - 1);
+			            $("#startDate").datepicker("option", "maxDate", dt);
+		           }
+	          });
+	  }
+	  else{
+		   var selected = $("#startDate").val();
+		   var dt = new Date(selected);
+           dt.setDate(dt.getDate());
+		   
+		   var actualStartDate = $("#startDate").val();
+		   var startDate = "";
+           if(actualStartDate != null && actualStartDate != "" && actualStartDate != 'undefined'){
+        	   startDate = new Date(actualStartDate);
+        	   startDate.setDate(startDate.getDate() + 1); 
+           }
+           
+           var actualEndDate = $("#endDate").val();
+           var endDate = "";
+           if(actualEndDate != null && actualEndDate != "" && actualEndDate != 'undefined'){
+          	  endDate = new Date(actualEndDate);
+	          endDate.setDate(endDate.getDate() - 1); 
+           }
+           
+ 		   $("#endDate").datepicker("option", "minDate", startDate);
+	       $("#startDate").datepicker("option", "maxDate", endDate);
+		  
+	  }
+  } 
 </script>
 
 <script>
