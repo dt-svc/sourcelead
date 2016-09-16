@@ -92,8 +92,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     private OrgRelations clientId;
 	
 	@ManyToOne
-    @JoinColumn(name="SOPC_ID", nullable=false )        
-    private OrgRelations sopc_Id;
+    @JoinColumn(name="SPOC_ID", nullable=false )        
+    private OrgSpoc spocId;
 	
 	@Column(name = "CLIENT_CURRENCY_CODE")
 	private String clientCurrencyCode;
@@ -330,14 +330,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.clientId = clientId;
 	}
 
-	public OrgRelations getSopc_Id() {
-		return sopc_Id;
+	public OrgSpoc getSpocId() {
+		return spocId;
 	}
 
-	public void setSopc_Id(OrgRelations sopc_Id) {
-		this.sopc_Id = sopc_Id;
+	public void setSpocId(OrgSpoc spocId) {
+		this.spocId = spocId;
 	}
-
 
 	public String getClientRate() {
 		return clientRate;
