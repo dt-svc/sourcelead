@@ -423,12 +423,26 @@ function projectEmployee(projectId,startDateStr,endDateStr){
 	        		result = result + '	 <tr>';
 	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+json[i].empName+' </a></div></td>';
 	                result = result + '	     <td><div>'+json[i].projectAssignedDateStr+'</div></td>';
-	                result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
+	                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+	                }
+	                else{
+	                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
+	                }
+	                
 	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	<td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></div></td>';
+	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "IN-ACTIVE"){
+	                	result = result + '	<td><div><i class="glyphicon glyphicon-trash" onClick="deleteProject('+json[i].id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></div></td>';
+                     }
+                     else{
+                          result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                     }
+	                
+	                
+	                
 	                result = result + '	 </tr>';
 			}
         	result = result + '	     </tbody>';
@@ -464,7 +478,8 @@ function projectEmployee(projectId,startDateStr,endDateStr){
 	   		{
     			 for(var i=0; i<json.length; i++){
 					 var jsonData = json[i];
-					 
+					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == "IN-ACTIVE")
+						   continue;
 					 //Assign date of project member
 					 var selected = jsonData.projectAssignedDateStr;
 					 var dt = new Date(selected);

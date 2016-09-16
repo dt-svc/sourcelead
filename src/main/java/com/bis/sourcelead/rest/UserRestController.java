@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -402,12 +400,13 @@ public class UserRestController {
 					if(pmh == null){
 						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 					}
-				    projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
-					
-					
-					if (pmh.getProjectTerminationDate() != null) {
-						projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
+					if(pmh != null){
+						 projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
+							if (pmh.getProjectTerminationDate() != null) {
+								projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
+							}
 					}
+				    
 					if (projectMembers.getProjects().getEndDate() != null) {
 						projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjects().getEndDate()));
 					}
@@ -581,7 +580,10 @@ public class UserRestController {
 					
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					if (endDate != null && !"".equals(endDate)) {
-						 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+						if(pmh == null){
+							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+						}
 						Date endDate1=sdf.parse(endDate);
 						if(pmh.getProjectTerminationDate()== null){
 							/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/

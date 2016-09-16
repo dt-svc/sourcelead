@@ -58,7 +58,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
 			if(projectMembers != null){
-				session.save(projectMembers);
+				session.saveOrUpdate(projectMembers);
 				logger.debug("Project Member saved successfully..");
 			}
 		}catch(ConstraintViolationException exception)
