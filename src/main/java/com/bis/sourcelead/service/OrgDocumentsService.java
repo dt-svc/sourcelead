@@ -18,13 +18,16 @@ public interface OrgDocumentsService {
 
 	void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation, User user, String sourceType) throws Exception;
 
-	/** to get OrgDocumnets list
+	/**to get OrgDocumnets list
 	 * @author Prasad Salina
 	 * @param responderLocationId
+	 * @param loginUserId
 	 * @param orgLocationId
+	 * @param sourceType
 	 * @return
+	 * @throws Exception
 	 */
-	List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long orgLocationId, String sourceType) throws Exception;
+	List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long loginUserId, Long orgLocationId, String sourceType) throws Exception;
 	
 	/**to get org document by Id
 	 * @author Prasad Salina

@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.UserService;
 
 
 /**
@@ -33,6 +34,9 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 
 	@Autowired
 	private OrgDocumentsDao orgDocumentsDao;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {
@@ -129,9 +133,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	}
 
 	@Override
-	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId,
+	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId,Long loginUserId,
 			Long orgLocationId, String sourceType) throws Exception {
-         List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, orgLocationId,sourceType);
+		
+		 List<Long> managerUserIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		
+         List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, loginUserId, managerUserIds, orgLocationId,sourceType);
 		
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
