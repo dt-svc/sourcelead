@@ -87,10 +87,10 @@ width: 100% !important;
     		 
        		$("#tab-2-addContact").empty();
        		$("#tab-2").empty(); 
-    		$("#tab-3-addTemplate").empty();  
-    	    $("#tab-3-addTemplate").append(res);
-    		$("#tab-3").empty();  
-    	    $("#tab-3").append(result);  
+    		$("#tab-4-addTemplate").empty();  
+    	    $("#tab-4-addTemplate").append(res);
+    		$("#tab-4").empty();  
+    	    $("#tab-4").append(result);  
     	    $("#testTemplateDiv").show();
     	    
     	    $(".project-tabs-menu a").click(
