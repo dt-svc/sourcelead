@@ -271,7 +271,11 @@ public class ClientServiceImpl implements ClientService{
 				orgSpoc.setInitiatorLocationId(orgLocations);
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
-				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if(jsonObj.has("spocStatus")){
+					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				}else{
+					orgSpoc.setSpocStatus(Constants.ACTIVE);
+				}
 				if(jsonObj.has("isMailSent")){
 					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
 				}else{
@@ -298,8 +302,9 @@ public class ClientServiceImpl implements ClientService{
 		private Org populateOrg(JSONObject jsonObj, String loginUserCode) throws JSONException {
 			Org org = new Org();
 		
-			org.setOrgName(jsonObj.getString("orgName"));
-			org.setOrgType("Company");
+			if(jsonObj.has("orgName")){
+				org.setOrgName(jsonObj.getString("orgName"));
+			}
 			
 			if(jsonObj.has("companyWebsite")){
 				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
@@ -307,7 +312,7 @@ public class ClientServiceImpl implements ClientService{
 			if(jsonObj.has("webSite")){
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 			}
-			
+			org.setOrgType("Company");
 			org.setOrgType("Guest");
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());

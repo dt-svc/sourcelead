@@ -42,28 +42,20 @@
 <div class="vendor_wrap">
 	<div class="timesheet_head">
         	<ul>
-				<!-- <li class="li-vendor"><input type="text" class="vendorfild"><i class="fa fa-search"></i>|</li>
-				<li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+				<!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">All</label><b>10</b></li>
-							<li><input type="checkbox" id="c2"><label for="c2">Approved</label><b>10</b></li>
-							<li><input type="checkbox" id="c3"><label for="c3">Draft</label><b>10</b></li>
-							<li><input type="checkbox" id="c4"><label for="c4">Rejected</label><b>10</b></li>
+                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
-                    </div>                 	
-                </li>
-				<li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-                	<div class="export_pop">
-                    	<ul>
-                        	<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                            <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                            <li>Word<i class="fa fa-file-word-o"></i></li>
-                        </ul>
-                    </div>
-                </li>   -->              
+                    </div>                	
+                </li>   -->           
 				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
-                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
+                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>	
+                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -92,8 +84,9 @@
 
 <script> 
 $(document).ready(function(){
-	//getVendorLists();
 	getVendorContactLists();
+	listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact';
 });
 </script>
 
@@ -774,8 +767,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		 /* document.getElementById("vendorContactList_info").style.display="none"; 
-		 document.getElementById("vendorList_paginate").style.display="none"; */
+		 document.getElementById("contactLevel").style.display="block";
 		 
 		 getVendorLists();
 	 }
@@ -785,8 +777,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
-		/*  document.getElementById("vendorList_info").style.display="none"; 
-		 document.getElementById("vendorList_paginate").style.display="none"; */
+		 document.getElementById("contactLevel").style.display="none";
 		 
 		 getVendorContactLists();
 	 }
@@ -809,6 +800,17 @@ $(document).ready(function() {
     $(".approved_pop, #appro-pop").click(function(e) {
         e.stopPropagation();
     });	
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
 });
 
 // Export Popup

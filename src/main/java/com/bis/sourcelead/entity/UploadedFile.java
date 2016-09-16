@@ -1,7 +1,11 @@
 package com.bis.sourcelead.entity;
 
 import org.springframework.web.multipart.MultipartFile;
-
+/**
+ * Upload File Entity
+ * @author Rajashekar
+ *
+ */
 public class UploadedFile {
 
 	private MultipartFile file;
