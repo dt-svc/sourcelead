@@ -4,6 +4,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDocumentsDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.rest.CandidateResumeRestController;
@@ -33,6 +35,9 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
@@ -62,11 +67,21 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long orgLocationId, String sourceType) {
+	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long loginUserId, List<Long> managerUserIds,Long orgLocationId, String sourceType) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.sourceType = :sourceType and od.status = 'ACTIVE' ";  
-		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
-		return orgDocuments;	
+		List<OrgDocuments> orgDocumentsList;
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
+		if (isadmin) {
+			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.sourceType = :sourceType and od.status = 'ACTIVE' ";
+			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
+		}else if(managerUserIds != null && !managerUserIds.isEmpty()){
+			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and (od.ownerUser.id = :loginUserId OR od.ownerUser IN (:managerUserIds)) and od.sourceType = :sourceType and od.status = 'ACTIVE' ";
+			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setParameterList("managerUserIds", managerUserIds).setString("sourceType", sourceType).setCacheable(true).list();
+		}else{
+			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.ownerUser.id = :loginUserId and od.sourceType = :sourceType and od.status = 'ACTIVE' ";
+			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("sourceType", sourceType).setCacheable(true).list();
+		}
+		return orgDocumentsList;	
 	}
 
 	@Override

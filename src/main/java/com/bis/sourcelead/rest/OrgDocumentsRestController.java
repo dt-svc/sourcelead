@@ -94,8 +94,9 @@ public class OrgDocumentsRestController {
 			                                                 HttpServletRequest request) throws Exception {
 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 String resultJson;
-		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), loginOrgLocation.getId(), sourceType);
+		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), user.getId(), loginOrgLocation.getId(), sourceType);
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
