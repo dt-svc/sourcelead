@@ -173,7 +173,8 @@ public class ClientServiceTest {
 		
 		 Long spocId = 5l;
 		 Long loginOrgId = 2l;
-		clientService.updateVendorContactDetails(jsonObj, spocId, loginOrgId);
+		 User user = null;
+		clientService.updateVendorContactDetails(jsonObj, spocId, loginOrgId,user);
 		logger.info("Vendor details updated sucessfully...");
 	}
 }

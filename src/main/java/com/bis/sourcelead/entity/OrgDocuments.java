@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -101,6 +102,9 @@ public class OrgDocuments {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
+	
 	@Transient
     private String startDateStr;
 	
@@ -112,6 +116,15 @@ public class OrgDocuments {
 	
 	@Transient
 	private String ownerName;
+	
+	@Transient
+	private Long ownerId;
+	
+	@Transient
+	private List<OrgSpoc> orgSpocsList;
+	
+	@Transient
+	private List<User> ownersList;
 
 	public Long getId() {
 		return id;
@@ -272,6 +285,14 @@ public class OrgDocuments {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+	
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
+	}
 
 	public String getStartDateStr() {
 		return startDateStr;
@@ -304,5 +325,28 @@ public class OrgDocuments {
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
 	}
-	
+
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
+
+	public List<OrgSpoc> getOrgSpocsList() {
+		return orgSpocsList;
+	}
+
+	public void setOrgSpocsList(List<OrgSpoc> orgSpocsList) {
+		this.orgSpocsList = orgSpocsList;
+	}
+
+	public List<User> getOwnersList() {
+		return ownersList;
+	}
+
+	public void setOwnersList(List<User> ownersList) {
+		this.ownersList = ownersList;
+	}
 }

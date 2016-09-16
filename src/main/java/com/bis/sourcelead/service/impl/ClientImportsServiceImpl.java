@@ -8,9 +8,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
@@ -37,11 +39,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 /**
  * 
@@ -64,14 +69,20 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	@Autowired
 	OrgService orgService;
 	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	@Override
-	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws IOException, JSONException {
+	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
 		
 		  boolean isValidated = false;
 		  boolean isUserFound = false;
 		  
 		  String isFileCreated = "failure";
-		 String fname = multipartFile.getOriginalFilename();
+		  String fname = multipartFile.getOriginalFilename();
+		  if(!fname.contains("clients_contacts_Import") && !fname.contains("vendors_contacts_Import") && !fname.contains("clients_import_template") && !fname.contains("vendors_import_template")){
+			  return "worngFileName";
+		  }
 		  File file = new File(multipartFile.getOriginalFilename());
 		  multipartFile.transferTo(file);
 		  
@@ -83,13 +94,13 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	      
 	 
 			
-	      if (fileExtn.equalsIgnoreCase("xlsx"))
+	      if ("xlsx".equalsIgnoreCase(fileExtn))
 	      {
 		       wb_xssf = new XSSFWorkbook(inp);
 		       logger.info("xlsx="+wb_xssf.getSheetName(0));
 		      sheet = wb_xssf.getSheetAt(0);
 	      }
-	      if (fileExtn.equalsIgnoreCase("xls"))
+	      if ("xls".equalsIgnoreCase(fileExtn))
 	      {
 		  POIFSFileSystem fs = new POIFSFileSystem(inp);
 	    	  wb_hssf = (Workbook) new HSSFWorkbook(fs);
@@ -100,12 +111,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	 			
 	      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
 	      int count = 0;
-	     List<ClientImportObject> clientList = new ArrayList<ClientImportObject>();
 	     while (rows.hasNext()) 
 		      { 
 			       ClientImportObject client = new ClientImportObject();
 			       Row row = (Row) rows.next();
-			       if(fname.contains("contacts")){
+			       if(fname.contains("clients_contacts_Import") || fname.contains("vendors_contacts_Import")){
 			    	   createExcelsheet = setContactExcelHeader(createExcelsheet,responderType);
 			    	   if (row.getRowNum() > 0) {
 							isValidated = validateContactsExeclData(row,fname,client,orgLocation,responderType);
@@ -138,20 +148,36 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						    	   if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
 						    		   client.setOwner(row.getCell(7).toString()); 
 						    	   }
-						    	   isUserFound = validateContactPerson(row.getCell(3).toString(),client);
-						    	   if(isUserFound){
-						    		   if (row.getRowNum() > 0) {
-						    			   count++;
-											createContactXlsSheet(row, createExcelsheet,count, fname,client);
+						    	   
+						    	   
+						    	   String email = row.getCell(7).toString();
+									String emails [] = email.split(",");
+									for(int i=0;i<emails.length;i++){
+										User ownerUser = userDao.findByEmail(emails[i]);
+										Long orgRelationId =0L; 
+										List<Org> orgs =orgService.isSpocExistedTheOwner(row.getCell(0).toString(), orgLocation.getId(), responderType);
+										Org clientName = orgs.get(0);
+									    Set<OrgLocations> orgLocations =  clientName.getOrgLocationsList();
+										for(OrgLocations ol :orgLocations){
+											Set<OrgRelations> orgRelations = ol.getOrgRelationsList();
+											for(OrgRelations or :orgRelations){
+												orgRelationId = or.getId();
+											}
 										}
-						    	   }else{
-						    		   JSONObject jsonObj = populateJsonObject(client,isMailSent);
-						    			try {
-											clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-						    	   }
+										
+										OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(row.getCell(3).toString(), orgRelationId, ownerUser.getId());
+										 if(orgSpoc == null){
+											 if(ownerUser.getId() != null){
+												 client.setOwnerUserId(ownerUser.getId());
+												 JSONObject jsonObj = populateJsonObject(client,isMailSent);
+												 try {
+														clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
+													} catch (Exception e) {
+														logger.error(ExceptionUtils.getFullStackTrace(e)); 
+													}
+											    }
+											}
+									}
 				    	   }
 			    	   }else{
 			    		   if (row.getRowNum() > 0) {
@@ -196,7 +222,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 							    			try {
 												clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 											} catch (Exception e) {
-												e.printStackTrace();
+												logger.error(ExceptionUtils.getFullStackTrace(e)); 
 											}
 							    	   }
 						       } 
@@ -222,21 +248,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		return isFileCreated;
 	}
 	/**
-	 * check person is duplicate or not 
-	 * @param email
-	 * @param client
-	 * @return boolean
-	 */
-	private boolean validateContactPerson(String email, ClientImportObject client) {
-		User user = userDao.findByEmail(email);
-		if(user != null){
-			client.setReason("duplicate data");
-			return true;
-		}
-		return false;
-	}
-	
-	/**
 	 * check Clinet is duplicate or not 
 	 * @param email
 	 * @param client
@@ -253,7 +264,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				isCLientExist = true;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e)); 
 		}
 		 return isCLientExist;
 	}
@@ -266,10 +277,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	private static String GetFileExtension(String fname2)
 	  {
 	      String fileName = fname2;
-	      String ext="";
 	      int mid= fileName.lastIndexOf(".");
-	      ext=fileName.substring(mid+1,fileName.length());
-	      return ext;
+	      return fileName.substring(mid+1,fileName.length());
 	  }
 
 	/**
@@ -309,6 +318,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * prepares json for client saving
 	   * @param clientObject
 	   * @param isMailSent
+	 * @param ownerId 
 	   * @return
 	   * @throws JSONException
 	   */
@@ -340,20 +350,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  if(clientObject.getStatus() != null){
 			  jsonObj.put("spocStatus",clientObject.getStatus()); 
 		  }
-		  if(clientObject.getOwner() != null){
-			  StringBuilder sb = new StringBuilder();
-			  sb.append("[");
-			  String [] array = clientObject.getOwner().split(",");
-				 for(int i=0;i<array.length;i++){
-					 User user = userDao.findByEmail(array[i]);
-					 
-					 sb.append("\"" + user.getId() + "\"");
-					 sb.append(",");
-				 }
-				 sb.append("]");
-				 sb.deleteCharAt(sb.lastIndexOf(","));
-				 jsonObj.put("owner",sb.toString());
-				 logger.info(sb.toString());
+		  if(clientObject.getOwnerUserId() != null){
+			  jsonObj.put("owner",clientObject.getOwnerUserId()); 
 				 
 		  }
 		  if(clientObject.getEmailid() != null){
@@ -365,7 +363,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				Roles role = rolesService.getRolesByDisplayName(clientObject.getRole());
 				  jsonObj.put("roleType",role.getId());  
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
 			}
 			
 		  }
@@ -389,8 +387,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	 * @param responderType 
 	 * @param orgLocation 
 	  * @return boolean
+	 * @throws Exception 
 	  */
-	  private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client, OrgLocations orgLocation, String responderType) {
+	  private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client, OrgLocations orgLocation, String responderType) throws Exception {
 		  boolean isValidated; 
 		  if (row.getRowNum() > 0) { 
 			  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -450,7 +449,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					client.setReason("Required fields is not filled");
 					return false;
 				}else if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
-					boolean isUserFound = false;
 					String email = row.getCell(7).toString();
 					String emails [] = email.split(",");
 					for(int i=0;i<emails.length;i++){
@@ -458,11 +456,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 							client.setReason("Invalid Email");
 							return false;
 						}
-						 isUserFound = validateContactPerson(emails[i],client);
-						 if(isUserFound == false){
-								client.setReason("Owner doesn't exist with email "+emails[i]);
-					            return false;
-							}
+						User user = userDao.findByEmail(emails[i]);
+						if(user == null){
+							client.setReason("Owner doesn't exist with email "+emails[i]);
+				            return false;	
+						}
 				}
 			  
 		  }
@@ -470,7 +468,13 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		return true;
 		}
 	  
-	  
+	  /**
+	   * check each row validations
+	   * @param row
+	   * @param fname
+	   * @param client
+	   * @return
+	   */
 	  private boolean validateClientExeclData(Row row, String fname, ClientImportObject client) {
 		  boolean isValidated; 
 		  if (row.getRowNum() > 0) { 
@@ -720,7 +724,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 //			  XSSFDataValidation
 	}
 		
-		
+		/**
+		 * Checks domain is valid or not
+		 * @param domainName
+		 * @return
+		 */
 		private boolean isValidDomainName(String domainName){
 			Pattern pDomainNameOnly = Pattern.compile("^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$");
 			return pDomainNameOnly.matcher(domainName).find();

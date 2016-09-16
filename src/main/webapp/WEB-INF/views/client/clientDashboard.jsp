@@ -243,6 +243,10 @@ function pagination(){
 		//for client documents tab
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 				
+		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+				
+		result = result + '<li><a href="#tab-4" onclick="submissionTemplateList('+clientLocationId+');">Submission Templates</a></li>';	
+		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -258,6 +262,17 @@ function pagination(){
 		//for client documents tab
         result = result + '<div id="tab-3" class="project_tabs_inn">';
 		result = result + '</div>';
+		result = result + '<div class="clients_wrap_table " id="testDiv">';
+	   	result = result + '<div id="tab-2-addContact"> </div>';
+        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
+        result = result + '</div>';
+        
+    	//for client contatcs tab
+		result = result + '<div class="clients_wrap_table " id="testTemplateDiv">';
+	   	result = result + '<div id="tab-4-addTemplate"> </div>';
+        result = result + '<table id="tab-4" class="display" cellspacing="0" width="100%"> </table>';
+        result = result + '</div>';
+
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -334,7 +349,7 @@ function getVendorContactLists(){
    	        		
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
@@ -354,24 +369,28 @@ function getVendorContactLists(){
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 					
-   	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+   	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
      	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
      	        		}
+   	        		
+	   	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+	                        result = result +' <td><div>---</div></td>';
+	                  	}
      	        		
      	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.orgRelationId+');">Send</a></b></div></td>';
      	        		}
      	        		
-     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
      	        			result = result +' <td><div>---</div></td>';
      	        		}
      	        		
-     	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
      	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
      	        		}
      	        		
      	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.orgRelationId+');">Resend</a></b></div></td>';
      	        		}
      	        		
      	        		if(report.invitationStatus == 'Accepted'){ 
@@ -419,7 +438,7 @@ function getVendorContactLists(){
 </script> 
 
 <!-- This script is for resending the invitation mail -->
-<script type="text/javascript">
+<script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
 function resendClientSpocInvitation(spocUserId,orgRelationId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
@@ -455,7 +474,8 @@ function pagination1(){
 
 
 
-<script>xteSpocStatus(spocId){
+<script>
+function updateSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -471,14 +491,15 @@ function pagination1(){
 
 
 <script>
-	function clientSpocSideBar(spocId,ownerId,spocUserId,spocName) {
+	function clientSpocSideBar(spocId,ownerId,spocUserId,spocName,spocLocationId,orgRelationId,userId,tempOwnerId) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
 		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+');">Details</a></li>';
-		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
-		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
+				+ '<li class="current"><a href="#tab-1" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		result = result
+				+ '<li><a href="#tab-2" onClick="clientSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
+		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -486,8 +507,8 @@ function pagination1(){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>';
+		 result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>'; 
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -502,7 +523,7 @@ function pagination1(){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 
-		clientDetailsbySpocId(spocId,ownerId,spocUserId);
+		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	}
 </script>
 
@@ -746,7 +767,6 @@ function getEndDatePickerById(projectId,localFieldName){
 	//project side bar tabs
 	$(document).ready(function() {
 		$("#tab-1").show();
-		
 		$(".project-tabs-menu a").click(function(event) {
 			event.preventDefault();
 			$(this).parent().addClass("current");
@@ -846,5 +866,7 @@ $(document).ready(function() {
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />
 <jsp:include page="clientDocuments.jsp" />	
+<jsp:include page="clientSpocDocuments.jsp" />	
+<jsp:include page="submissionTemplateList.jsp" />	
 <jsp:include page="../masterFooter.jsp" />	
 	

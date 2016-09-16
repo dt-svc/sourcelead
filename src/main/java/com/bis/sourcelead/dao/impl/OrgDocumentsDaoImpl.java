@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orgDocuments != null) {
-				session.save(orgDocuments);
+				session.saveOrUpdate(orgDocuments);
 			}
 			logger.debug("orgDocuments Stored Successfully");
 		} catch (Exception exception) {
@@ -61,14 +62,55 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgDocuments> getClientDocumentsListByResponderLocationIdAndOrgLocationID(Long responderLocationId, Long orgLocationId) {
+	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long orgLocationId, String sourceType) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId ";  
-		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.sourceType = :sourceType and od.status = 'ACTIVE' ";  
+		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
 		return orgDocuments;	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
+		logger.debug("In getOrgDocumentsById");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from OrgDocuments od where od.id = :Id" ;
+		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).setCacheable(true).list(); 
+		OrgDocuments orgDocuments = null;
+		if(orgDocumentsList != null && !orgDocumentsList.isEmpty()){
+			orgDocuments = orgDocumentsList.iterator().next();
+		}
+		return orgDocuments;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(
+			Long responderLocationId, Long orgLocationId, Long spocUserId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.spocUser.id =:spocUserId and od.status = 'ACTIVE' ";  
+		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("spocUserId", spocUserId).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return orgDocuments;
 	}
 	
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgDocuments updateDocumnet(OrgDocuments orgDocuments) throws Exception {
+		logger.debug("In Terminate OrgDocument Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(orgDocuments != null){
+				session.saveOrUpdate(orgDocuments);
+				logger.info("Record updated successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_DOCUMENTS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return orgDocuments;
+	}
 
 
 }
