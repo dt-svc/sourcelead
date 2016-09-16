@@ -202,7 +202,7 @@ function getOrgDetails()
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -320,40 +320,43 @@ function getOrgDetails()
 
 <script type="text/javascript">
 	function saveClientContact() {
-	var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-		if ($('#client_contact_form').validate(false, validationSettings)) {
-			var frm = $('#client_contact_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
-						success : function(result) {
-							$("#loading").removeAttr("style");
-							if (result == 'vendorsList') {
-								location.replace(sourceleadUrl
-										+ "/clientDashboard");
-							}
-
-						},
-					});
-			return true;
-		} else {
-			return false;
+		var vendorName = document.getElementById("vendorName").value;
+		var orgLocationId = vendorName.split(',');
+		var orgRelationId = orgLocationId[0];
+		alert("orgRelationId"+orgRelationId);
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+			if ($('#client_contact_form').validate(false, validationSettings)) {
+				var frm = $('#client_contact_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+		        var jsonData = encodeURIComponent(con);
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+				$.ajax({
+							type : "POST",
+							url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&responderType=Client",
+							success : function(result) {
+								$("#loading").removeAttr("style");
+								if (result == 'vendorsList') {
+									location.replace(sourceleadUrl
+											+ "/clientDashboard");
+								}
+							},
+						});
+				return true;
+			} else {
+				return false;
+			}
 		}
-	}
-	$('body').on('blur', '#client_contact_form', function() {
-		$("#client_contact_form").showHelpOnFocus();
-		$("#client_contact_form").validateOnBlur(false, validationSettings);
-	}); 
+		$('body').on('blur', '#client_contact_form', function() {
+			$("#client_contact_form").showHelpOnFocus();
+			$("#client_contact_form").validateOnBlur(false, validationSettings);
+		}); 
 	
 	
 </script>

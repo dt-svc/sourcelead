@@ -30,6 +30,8 @@ public class ClientImportObject {
 	
 	private String level;
 	
+	private Long ownerUserId;
+	
 	
 	public String getClientName() {
 		return clientName;
@@ -115,4 +117,11 @@ public class ClientImportObject {
 	public void setLevel(String level) {
 		this.level = level;
 	}
+	public Long getOwnerUserId() {
+		return ownerUserId;
+	}
+	public void setOwnerUserId(Long ownerUserId) {
+		this.ownerUserId = ownerUserId;
+	}
+	
 }

@@ -182,29 +182,39 @@ public class VendorController {
 		 * @param model
 		 * @param request
 		 * @return
+	 * @throws Exception 
 		 */
 		@RequestMapping("/vendorFileUpload")
-		public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws IOException,JSONException {
+		public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
 					
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			MultipartFile multipartFile = uploadedFile.getFile();
-			String fileName = multipartFile.getOriginalFilename();
-			
-			
-			String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
-			
-			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
-				model.addAttribute("errorMessage", "Please download Error file here");
-	             model.addAttribute("fileName", "xlsx");
-				return "upload/uploadVendorForm";
-			}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
-				model.addAttribute("errorMessage", "Please download Error file here");
-	            model.addAttribute("fileName", "xls");
-				return "upload/uploadVendorForm";
+			if(multipartFile != null){
+				String fileName = multipartFile.getOriginalFilename();
+				
+				
+				String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+				
+				if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+					model.addAttribute("errorMessage", "Please download Error file here");
+		             model.addAttribute("fileName", "xlsx");
+					return "upload/uploadVendorForm";
+				}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+					model.addAttribute("errorMessage", "Please download Error file here");
+		            model.addAttribute("fileName", "xls");
+					return "upload/uploadVendorForm";
+				}else if("worngFileName".equalsIgnoreCase(isFileCreated)){
+					model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
+		            model.addAttribute("fileName", "xls");
+					return "upload/uploadClientForm";
+				}
+			}else{
+				return "upload/uploadClientForm";
 			}
+			
 			
 			return "redirect:/vendorsList";
 			
