@@ -69,7 +69,7 @@ public class RequirementListRestController {
 	   */
 	 
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
-	 public String getRequirementListByOrgLocationID(HttpServletRequest request) throws Exception {
+	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");

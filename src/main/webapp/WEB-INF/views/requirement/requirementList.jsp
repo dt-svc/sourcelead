@@ -26,11 +26,23 @@
 
 <script>
 function requirementList(){  
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			clients.push($(this).val());
+	    });
+	
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
+           url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -62,13 +74,21 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><div class='proj_show' onclick='sideBar("+opt.id+");'><span>Vannam vannam vannam vannam</span><i class='fa fa-binoculars'></i></div></td>";
-		                     result = result +"<td><div><span>Vannam vannam vannam vannam</span></div></td>";
-		                     result = result +"<td><div>Full Time</div></td>";
-		                     result = result +"<td><div><span><span>Vannam vannam vannam vannam</span></span></div></td>";
-		                     result = result +"<td><div>2</div></td>";
-		                     result = result +"<td><div>Name here</div></td>";
-		                     result = result +"<td><div><b class='proj_process'>Process</b></div></td>";
+		                     result = result +"<td><div class='proj_show' onclick='sideBar("+opt.id+");'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></td>";
+		                     result = result +"<td><div><span>Client</span></div></td>";
+		                     result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                     result = result +"<td><div><span><span>"+opt.country+" ,"+opt.state+" ,"+opt.city+" </span></span></div></td>";
+		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
+		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>No Data</div></td>";
+		                     }
+		                     if(opt.managerUserId!=null && opt.managerUserId !='' && opt.managerUserId !='undefined'){
+		                    	 result = result +"<td><div>"+opt.managerUserId.id+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>No Data</div></td>";
+		                     }
+		                     result = result +"<td><div><b class='proj_process'>"+opt.status+"</b></div></td>";
 		                     result = result +"<td><div><a href='javascript:void(0)'><i class='fa fa-bullhorn'></i></a></div></td>";
 		                     result = result +"</tr>";
 	                     }
@@ -140,6 +160,7 @@ function sideBar(requirementId){
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
               		 else{
+              			 
               			 var result = '';
 				        result = result+'    <div class="profile_details requirement_details clearfix">';
 				        result = result+'    <div class="col-md-9">';
@@ -185,13 +206,17 @@ function sideBar(requirementId){
 				        result = result+'            <div class="professinal-details">';
 				        result = result+'              <ul class="list-inline list-unstyled">';
 				        var skills = [];
-			            skills = json.skiills.split(",");
-				        result = result+'                <li>'+skills[0]+'</li>';
-				        result = result+'                <li>'+skills[1]+'</li>';
-				        result = result+'                <li>'+skills[2]+'</li>';
-				        result = result+'                <li>'+skills[3]+'</li>';
-				        result = result+'                <li>'+skills[4]+'</li>';
-				        result = result+'              </ul>';
+			           if(skills != null && skills != '' && skills != 'undefined'){
+			        	   skills = json.skiills.split(",");
+					        result = result+'                <li>'+skills[0]+'</li>';
+					        result = result+'                <li>'+skills[1]+'</li>';
+					        result = result+'                <li>'+skills[2]+'</li>';
+					        result = result+'                <li>'+skills[3]+'</li>';
+					        result = result+'                <li>'+skills[4]+'</li>';
+					        result = result+'              </ul>';
+			           }else{
+			        	   result = result+'                <li></li>';
+			           }
 				        result = result+'            </div>';
 				        result = result+'          </div>';
 				        result = result+'        </div>';
@@ -832,14 +857,18 @@ Bootstrap
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
+		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+		            <div id="filter2ApprovedPop" class="approved_pop">
+		              <ul>
+		                <li><input id="c5" type="checkbox" name="requirementStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+									<li><input id="c6" type="checkbox" name="requirementStatus" value ="New"  onclick="filter();"><label for="c6">New</label></li>
+									<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="filter();"><label for="c7">Draft</label></li>
+									<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Waiting for approval"  onclick="filter();"><label for="c8">Waiting for approval</label></li>
+		               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Open"  onclick="filter();"><label for="c8">Open</label></li>
+		               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="On Hold"  onclick="filter();"><label for="c8">On Hold</label></li>
+		               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="filter();"><label for="c8">Cancelled</label></li>
+		              </ul>
+		            </div>
           </li>
           <li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
           <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Add Team</a></li>
@@ -1720,6 +1749,36 @@ $(".reminder").click(function(){
 </div>
 </body>
 </html>
+
+
+
+<script>
+$(document).ready(function() {
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    
+}); 
+
+</script>
 
 
 
