@@ -24,7 +24,7 @@ $(function(){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function addSubmissionTemplateFields(clientLocationId) {
 		
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -191,7 +191,7 @@ $(function(){
     $('#sjfb').validateOnBlur(false, validationSettings); 
   
   </script>
-  
+   -->
   
   <script>
 // Back To Top 
