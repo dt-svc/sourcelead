@@ -103,6 +103,12 @@ public class OrgServiceImpl implements OrgService {
 	public boolean isOrgNameExisted(String orgName) throws Exception {
 		return orgDao.isOrgNameExisted(orgName);
 	}
+
+	@Override
+	public List<Org> isSpocExistedTheOwner(String clientName, Long orgLocationId, String responderType) throws Exception {
+		
+		return orgDao.isSpocExistedTheOwner(clientName, orgLocationId, responderType);
+	}
 	
 	
 }

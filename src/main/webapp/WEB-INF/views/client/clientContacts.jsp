@@ -200,7 +200,26 @@ function clientContacts(orgRelationID,clientLocationId){
 				$("#clientContactList").empty();
 			    $("#clientContactList").append(result); 
        		 }
-    	 
+    		$("#tab-4-addTemplate").empty();
+    		$("#tab-4").empty();  
+    		$("#tab-2-addContact").empty();  
+    	    $("#tab-2-addContact").append(res);
+    		$("#tab-2").empty();  
+    	    $("#tab-2").append(result);  
+    	    $("#testDiv").show();
+    	    
+    	    $(".project-tabs-menu a").click(
+					function(event) {
+						event.preventDefault();
+						$(this).parent().addClass("current");
+						$(this).parent().siblings().removeClass(
+								"current");
+						var tab = $(this).attr("href");
+						$(".project_tabs_inn").not(tab).css(
+								"display", "none");
+						$(tab).fadeIn();
+					});
+    	    contactPagination();
 	        },
 	    });
 	}
