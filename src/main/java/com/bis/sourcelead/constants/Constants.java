@@ -157,5 +157,7 @@ public class Constants {
 	public static String MAIL_RESEND = "Resend";
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
+	
+	public static String REQUIREMENT_STATUS = "Draft";
 
 }
