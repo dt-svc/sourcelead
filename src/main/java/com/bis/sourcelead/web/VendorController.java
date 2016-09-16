@@ -71,7 +71,10 @@ public class VendorController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
-		model.addObject("loginCountryName", countries.getName());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+		}
+		
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
