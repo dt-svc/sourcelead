@@ -615,14 +615,20 @@ public class ClientServiceImpl implements ClientService{
 				
 				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User ownerUser = new User();
-						ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setOwnerUser(ownerUser);
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setSpocUser(spocUser);
 					}
-					 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+				}
+				if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(spocUser);
+					}
 				}
 				
-				//orgSpocService.addOrgSpoc(orgSpoc);
+				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());

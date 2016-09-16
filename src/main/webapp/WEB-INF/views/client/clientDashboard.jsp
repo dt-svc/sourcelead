@@ -247,8 +247,6 @@ function pagination(){
 		//for client documents tab
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 				
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
-				
 		result = result + '<li><a href="#tab-4" onclick="submissionTemplateList('+clientLocationId+');">Submission Templates</a></li>';	
 		
 		result = result + '<div class="clearfix"></div>'
@@ -266,11 +264,7 @@ function pagination(){
 		//for client documents tab
         result = result + '<div id="tab-3" class="project_tabs_inn">';
 		result = result + '</div>';
-		result = result + '<div class="clients_wrap_table " id="testDiv">';
-	   	result = result + '<div id="tab-2-addContact"> </div>';
-        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
-        result = result + '</div>';
-        
+		
     	//for client contatcs tab
 		result = result + '<div class="clients_wrap_table " id="testTemplateDiv">';
 	   	result = result + '<div id="tab-4-addTemplate"> </div>';
