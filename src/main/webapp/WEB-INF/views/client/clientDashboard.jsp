@@ -60,7 +60,6 @@
                         </ul>
                     </div>                	
                 </li> -->
-                         <li><a href="<c:url value='/submissionTemplate'/>"><i class="fa fa-plus"></i>Template Demo</a></li> 
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
 						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
 						<div class="clearfix"></div>
@@ -238,18 +237,15 @@ function pagination(){
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		
 		//for client contatcs tab
-<<<<<<< HEAD
 		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 		
 		//for client documents tab
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 				
-=======
 		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 				
-		result = result + '<li><a href="#tab-3" onclick="submissionTemplateList('+clientLocationId+');">Submission Templates</a></li>';	
+		result = result + '<li><a href="#tab-4" onclick="submissionTemplateList('+clientLocationId+');">Submission Templates</a></li>';	
 		
->>>>>>> remotes/origin/recruiting_submission_template
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -259,14 +255,12 @@ function pagination(){
 		result = result + '</div>';
 		
 		//for client contatcs tab
-<<<<<<< HEAD
         result = result + '<div id="tab-2" class="project_tabs_inn">';
 		result = result + '</div>';
         
 		//for client documents tab
         result = result + '<div id="tab-3" class="project_tabs_inn">';
 		result = result + '</div>';
-=======
 		result = result + '<div class="clients_wrap_table " id="testDiv">';
 	   	result = result + '<div id="tab-2-addContact"> </div>';
         result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
@@ -274,11 +268,10 @@ function pagination(){
         
     	//for client contatcs tab
 		result = result + '<div class="clients_wrap_table " id="testTemplateDiv">';
-	   	result = result + '<div id="tab-3-addTemplate"> </div>';
-        result = result + '<table id="tab-3" class="display" cellspacing="0" width="100%"> </table>';
+	   	result = result + '<div id="tab-4-addTemplate"> </div>';
+        result = result + '<table id="tab-4" class="display" cellspacing="0" width="100%"> </table>';
         result = result + '</div>';
 
->>>>>>> remotes/origin/recruiting_submission_template
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -871,11 +864,8 @@ $(document).ready(function() {
 <jsp:include page="editClientSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />
-<<<<<<< HEAD
 <jsp:include page="clientDocuments.jsp" />	
 <jsp:include page="clientSpocDocuments.jsp" />	
-=======
 <jsp:include page="submissionTemplateList.jsp" />	
->>>>>>> remotes/origin/recruiting_submission_template
 <jsp:include page="../masterFooter.jsp" />	
 	

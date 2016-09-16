@@ -87,9 +87,9 @@
 		           result = result + '<div id="popUp"></div>'; 
 		           
 		           
-		           $("#tab-3").empty();  
-		           $("#tab-3-addTemplate").empty();
-		           $("#tab-3").append(result); 
+		           $("#tab-4").empty();  
+		           $("#tab-4-addTemplate").empty();
+		           $("#tab-4").append(result); 
 		           customizeFields();
 		  
 	}

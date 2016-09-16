@@ -174,34 +174,5 @@ public class ClientController {
 				return model;
 		    }
 		 
-		 
-		 
-		 /**
-			 * Handles to display client jsp
-			 * @return ModelAndView
-			 * @throws Exception
-			 */
-			 @RequestMapping(value = "/submissionTemplate")
-			 public ModelAndView submissionTemplate(HttpServletRequest request) throws Exception {
-				 ModelAndView model = new ModelAndView();
-					try{
-						
-						model.setViewName("client/submissionTemplateDemo");
-						model.addObject("sourceleadUrl", sourceleadUrl);
-						
-						SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-						if(sessionData == null)
-						{
-							sessionData = new SessionMaintainanceData();
-						}
-						sessionData.setNav(Constants.Clients);
-						request.getSession().setAttribute("sessionData",sessionData);
-						
-					}catch(Exception e){
-						logger.error(ExceptionUtils.getFullStackTrace(e));
-					}
-					return model;
-			    }
-		
 		
 }
