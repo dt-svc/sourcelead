@@ -48,7 +48,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
              		 else{
 	                	 $("#spocDocumentsList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='clientSpocDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Name</th>';
@@ -117,7 +117,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#spocDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     spocDocumentpagination(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -141,8 +141,8 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 </script>
 <div id="deleteDocpopUp"></div>
 <script>
-function documentpagination(){  
-    $('#clientDocumentsPagination').DataTable( { 
+function spocDocumentpagination(){  
+    $('#clientSpocDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -175,6 +175,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
+	result = result  +'                    <div class="col-md-12"> ';
 	result = result  +'	                     <select style="width: 100%;" id="contractType" class="chosen-select" name="contractType" id="contractType">';
 	result = result  +' 					   <option value="" selected="selected">Contract Type</option>';
 	result = result  +'	                       <option value="MSA">MSA</option>';
@@ -183,8 +184,9 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result  +'	                       <option value="NSA">NSA</option>';
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
+	result = result  +'	                   </div>';
 	
-	result = result+'	                  <div class="clearfix mb10" id="uploadDocumentDiv">';
+	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -195,7 +197,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
 	
-	result = result  +'	                 <div class="clearfix mb10">';
+	result = result  +'	                 <div class="clearfix mb10 mt">';
 	result = result  +'	                   <div class="col-md-6">';
 	result = result  +'                      <input type="text" name="spocName"  id="spocName" field-name="spocName"  readonly class="form-control input-sm" value="'+spocName+'" >                                          ';
 	result = result + '							<input type="hidden" name="userId" id="userId" value="'+userId+'" >';
@@ -273,6 +275,17 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	    document.getElementById("uploadBtn").onchange = function () {
 	    document.getElementById("uploadFile").value = this.value;
 	    };
+	    
+	    /* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("uploadBtn");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -503,8 +516,55 @@ function getClientSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
     			 }
     			 
     			 $("#update_doc").attr("onclick", 'storeSpocDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+userId+'\',\''+spocName+'\',\''+json.id+'\');');
+    			 
+    			 manageDates();
     		 }
 		    }
      });
 }
+</script>
+
+<script>
+function manageDates() {
+	
+	  if($("#endDate").val() == "" ){
+		     
+			  var selected = $("#startDate").val();
+			  var dt = new Date(selected);
+			  dt.setDate(dt.getDate() + 1);
+			  $("#endDate").datepicker("option", "minDate", dt);
+			  
+		 	  $('#endDate').datepicker({
+		            dateFormat: 'yy-mm-dd',
+		            onSelect: function (selected) {
+			            var dt = new Date(selected);
+			            dt.setDate(dt.getDate() - 1);
+			            $("#startDate").datepicker("option", "maxDate", dt);
+		           }
+	          });
+	  }
+	  else{
+		   var selected = $("#startDate").val();
+		   var dt = new Date(selected);
+           dt.setDate(dt.getDate());
+		   
+		   var actualStartDate = $("#startDate").val();
+		   var startDate = "";
+           if(actualStartDate != null && actualStartDate != "" && actualStartDate != 'undefined'){
+        	   startDate = new Date(actualStartDate);
+        	   startDate.setDate(startDate.getDate() + 1); 
+           }
+           
+           var actualEndDate = $("#endDate").val();
+           var endDate = "";
+           if(actualEndDate != null && actualEndDate != "" && actualEndDate != 'undefined'){
+          	  endDate = new Date(actualEndDate);
+	          endDate.setDate(endDate.getDate() - 1); 
+           }
+           
+ 		   $("#endDate").datepicker("option", "minDate", startDate);
+	       $("#startDate").datepicker("option", "maxDate", endDate);
+		  
+	  }
+  } 
 </script>
