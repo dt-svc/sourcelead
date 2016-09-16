@@ -76,7 +76,7 @@ function storeCertificate(candidateId){
 				 $('#candidateScore').attr("data-validation-optional","true"); 
 			 }
 		 
-		 
+			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
 			var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -262,7 +262,7 @@ function candidateCertificateList(candidateId){
 --%>
 <script>
 function addCertification(candidateId) {	
-	
+		
 	 	var result = '';
 	 	result  = result + '     <!-- Popup Div -->                                                                                         ';
 		result  = result + '         <form id="Candidate_certification_form" name="Candidate_certification_form" method="post">        ';
@@ -330,6 +330,8 @@ function addCertification(candidateId) {
 		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 			 e.stopPropagation();
 		 });
+		 
+		 
 		 /* $('html').click(function(){
 			$(".edit-details").removeClass("edit-details-active");
 		   });	 */
@@ -496,6 +498,7 @@ function addCertification(candidateId) {
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
+								 
 								 
 								 
 								/*  $('html').click(function(){

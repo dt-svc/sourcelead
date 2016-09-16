@@ -81,18 +81,20 @@ public class CandidateEmployersServiceTest {
 			logger.info("getCandidateEmployersDetails added successfully"+canEmp.size());
 		}
 	}
+	
+	@Test
+	public void getCandidateEmployerBycandidateIdandCandidateEmployerID() throws Exception{
+		Long candidateId=1l;
+		Long candidateEmployerId=2l;
+		CandidateEmployers candidateEmployers = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
+		logger.info("getCandidateEmployerBycandidateIdandCandidateEmployerID added successfully"+candidateEmployers.getStatus());
+	}
+	
 	@Test
 	public void removeCandidateEmployerBycandidateIdandCandidateEmployerID() throws Exception{
 		Long candidateId=1l;
 		Long candidateEmployerId=2l;
 		CandidateEmployers candidateEmployers = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
 		logger.info("removeCandidateEmployerBycandidateIdandCandidateEmployerID removed successfully"+candidateEmployers.getStatus());
-	}
-	@Test
-	public void getCandidateEmployerBycandidateIdandCandidateEmployerID() throws Exception{
-		Long candidateId=1l;
-		Long candidateEmployerId=3l;
-		CandidateEmployers candidateEmployers = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
-		logger.info("getCandidateEmployerBycandidateIdandCandidateEmployerID added successfully"+candidateEmployers.getStatus());
 	}
 }

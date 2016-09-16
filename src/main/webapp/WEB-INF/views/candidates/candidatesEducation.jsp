@@ -21,8 +21,10 @@
 function candidateEducation(candidateId){
 	
 	var result = "";
-	result = result  +'    <div class="project_tabs_inn_head addUser-org">                                                                                                    ';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
+	if(window.candidateStatusGlobal != '0'){
 		result = result  +'    	<a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
+	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -128,7 +130,8 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    	 result  = result + ' <td><div><i class="glyphicon glyphicon-eye-open" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></i><i class="glyphicon glyphicon-trash" onClick ="removeEducation('+opt.id+','+candidateId+');"></i></div></td>';
+	                    	 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a><i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></div></td>';
+
 	                    	 }
 	                    	 result  = result + '</tr>';
 	                      } 
@@ -418,15 +421,17 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" name="address" class="form-control input-sm" value="'+ json.address +'" placeholder="Address">                                                 ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
+	result = result  +'     ';
+	
 	result = result  +'                  <div class="clearfix mr"> ';
 	
 	result = result	+ '	                   <input type="hidden"  value="'+candidateEducationId+'" id="candidateEducationId"  name="candidateEduId" >';
 	result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
 	
     result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Add</button>';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                </div>                                                                                                                                 ';
+	result = result  +'                  </div>';
+	
+	result = result  +'                </div>   ';
 	result = result  +'                </form>                                                                                                                                ';
 	$("#popUpDiv").empty();
 	$("#popUpDiv").append(result);

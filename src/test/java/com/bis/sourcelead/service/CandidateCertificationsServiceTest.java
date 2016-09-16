@@ -86,6 +86,7 @@ public class CandidateCertificationsServiceTest {
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
 		candidateCertifications = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(1l,1l);
 		logger.info("getCandidateCertificateBycandidateIdandCertificateId " + candidateCertifications.getProvider());
+		
 	}
 	
 	@Test
@@ -93,5 +94,6 @@ public class CandidateCertificationsServiceTest {
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
 		candidateCertifications = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(1l, 1l);
 		logger.info("removeCandidateCertificateBycandidateIdandcandidateCertificateId " + candidateCertifications.getName());
+		
 	}
 }

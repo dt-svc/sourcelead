@@ -22,6 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -57,8 +58,9 @@ public class CandidateResumesServiceTest {
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("title", "exp");
 			jsonObj.put("description", "hello hi");
+			jsonObj.put("docFile", "input.txt");
 			candidateResumes.setId(1l);
-			candidateResumes.setStatus("CANDIDATE_ACTIVE");
+			candidateResumes.setStatus("Constants.CANDIDATE_ACTIVE");
 			candidate.setOrgLocationId(orgLocationId);
 						
 			MultipartFile multipartFile = getMultiPartFile();
@@ -69,6 +71,7 @@ public class CandidateResumesServiceTest {
 		}
 		private MultipartFile getMultiPartFile() throws IOException {
 			File file = new File("src/test/resources/input.txt");
+			Boolean j = file.exists();
 		    FileInputStream input = new FileInputStream(file);
 		    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
 			return multipartFile;

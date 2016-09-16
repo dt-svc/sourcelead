@@ -39,7 +39,7 @@ public class CandidateSkillsServiceTest {
 		CandidateSkillsService candidateSkillsService ;
 		
 		@Autowired
-		CommonUtil commonUtil  ;
+		CommonUtil commonUtil;
 		
 		
 		private static final Logger logger = LoggerFactory.getLogger(CandidateSkillsServiceTest.class);
@@ -57,9 +57,10 @@ public class CandidateSkillsServiceTest {
 			candidateSkills.setName("Java");
 			candidateSkills.setTotalExperience("5");
 			candidateSkills.setUpdatedBy("Ajith");
-			candidateSkills.setCreatedBy("reddy");
+			candidateSkills.setCreatedBy("Ajith");
 			candidateSkills.setCreatedDate(commonUtil.currentDate());
 			candidateSkills.setUpdatedDate(commonUtil.currentDate());
+			candidateSkills.setStatus("1");
 			candidateSkills.setScale("4");
 			candidateSkills = candidateSkillsService.storeCandidateSkills(candidateSkills);
 			logger.info("storeCandidateSkills successfully " + candidateSkills.getCreatedDate());
@@ -90,7 +91,7 @@ public class CandidateSkillsServiceTest {
 			candidateSkil.setCandidateId(candidate);
 			candidateSkil.setOrgLocationID(orglocations);
 			
-			candidateSkills = candidateSkillsService.getCandidateSkillsDetails(jsonObject,orglocations,candidate,"reddy");
+			candidateSkills = candidateSkillsService.getCandidateSkillsDetails(jsonObject,orglocations,candidate,"Ajith");
 			logger.info("getCandidateSkillsDetails " + candidateSkills.size());
 			
 		}
