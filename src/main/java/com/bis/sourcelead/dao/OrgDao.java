@@ -25,6 +25,7 @@ public interface OrgDao {
 	String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
+	
 	/**
 	 * Handles whether the given client is duplicate or not
 	 * @param orgRelationId 
@@ -37,5 +38,7 @@ public interface OrgDao {
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;
 	
 	public boolean isOrgNameExisted(String orgName) throws Exception;
+	
+	 List<Org> isSpocExistedTheOwner(String clientName,Long orgLocationId,String responderType) throws Exception ;
 	
 }

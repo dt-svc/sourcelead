@@ -107,8 +107,8 @@ window.onload = function () {
 		<div class="form-group" id="cityDiv" style="display: block;">
 			<label class="col-md-3">City</label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  >
-                 </select>
+			     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
+                 
 			</div>
 		</div>
 		

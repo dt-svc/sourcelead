@@ -163,10 +163,7 @@ public class ClientServiceTest {
 	
 	@Test
 	public void updateVendorContactDetails() throws Exception {
-		User user = new User();
-		user.setId(1L);
-		
-		
+				
 		JSONObject jsonObj = new JSONObject();
 		 jsonObj.put("vendorContactFirstName", "rajesh");
 		 jsonObj.put("vendorContactLastName", "khanna");
