@@ -186,7 +186,7 @@ $(function(){
 		           
 		           result = result + '<div class="pull-right mr">';
 		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
-		           result = result + ' <input type="button" value="Cancel" class="btn btn-default" >';
+		           result = result + ' <input type="button" value="Cancel" onclick="submissionTemplateList('+clientLocationId+')" class="btn btn-default" >';
 		           result = result + '</div>';
 
 		           result = result + '</div>';
