@@ -242,6 +242,25 @@ public class OrgDaoImpl implements OrgDao {
 	            return isClientFound;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public  List<Org> isSpocExistedTheOwner(String clientName,Long orgLocationId,String responderType) throws Exception {
+		   boolean isClientFound = false;
+	        Session session = this.sessionFactory.getCurrentSession();
+	        /*String query = "from Org org where org.orgName = :clientName and org.id IN(Select orgRelations.responderLocationId.org.id from OrgRelations orgRelations "
+	        		+ "where orgRelations.locationId.id = :orgLocationId )";*/
+	        
+	     String query ="from Org org where org.orgName = :clientName and (org.id IN(Select orgrelation.responderLocationId.org.id  from OrgRelations orgrelation "
+	    		+"  where orgrelation.locationId.id = :orgLocationId and orgrelation.responderType = :responderType) OR "
+	    		+"org.id IN(Select orl.locationId.org.id from OrgRelations orl"
+	    		+" where orl.responderLocationId.id = :orgLocationId))";
+	        
+	        
+	     return  session.createQuery(query.toString()).setString("clientName", clientName).setString("responderType", responderType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {

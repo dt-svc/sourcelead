@@ -103,9 +103,10 @@ public class OrgSpocServiceTest {
 		
 		String orgRelationId = "";
 		String clientLocationId = "";
+		String responderType = "";
 		
 		
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId);
+		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
 	}
 	
 	//@Test
