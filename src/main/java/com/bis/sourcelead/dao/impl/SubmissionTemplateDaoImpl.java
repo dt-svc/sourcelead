@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -51,6 +52,19 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return submissionTemplate;
+	}
+
+
+	@Override
+	@Transactional
+	public List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId, Long orgLocationId)
+			throws Exception {
+		logger.debug("getSubmissionTemplateByClientLocationIdAndOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId";
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+        return submissionTemplateList;
+        
 	}
 
 }
