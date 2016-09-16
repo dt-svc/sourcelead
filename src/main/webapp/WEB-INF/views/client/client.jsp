@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -500,7 +500,6 @@ function getSpocUserDetails(){
 	        	}
 			 },
 	        error: function(e){
-	            alert('Ajax Error: ' + e.value);
 	        }
 	    });
 	}else{

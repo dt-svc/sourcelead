@@ -21,13 +21,16 @@ public interface OrgDocumentsDao{
 	 */
 	void saveDocuments(OrgDocuments orgDocuments) throws Exception;
 
-	/** to get OrgDocumnets list
+	/**to get OrgDocumnets list
 	 * @author Prasad Salina
 	 * @param responderLocationId
+	 * @param loginUserId
 	 * @param orgLocationId
+	 * @param sourceType
 	 * @return
+	 * @throws Exception
 	 */
-	List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long orgLocationId, String sourceType) throws Exception;
+	List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId, Long loginUserId, List<Long> managerUserIds, Long orgLocationId, String sourceType) throws Exception;
 	
 	/**to get org document by Id
 	 * @author Prasad Salina
@@ -46,5 +49,7 @@ public interface OrgDocumentsDao{
 
 	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
 			Long orgLocationId, Long spocUserId);
+
+	OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId);
 
 }
