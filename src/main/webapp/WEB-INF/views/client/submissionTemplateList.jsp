@@ -77,7 +77,6 @@ $(function(){
 	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
 	                result = result + '<td><div>';
-	                /* result = result + '<a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');">Customize</a>'; */
 	                result = result + '<a href="javascript:void(0)">Customize</a>';
       	            result = result +'</div></td>';
 	                result = result + '	 </tr>';
