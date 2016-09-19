@@ -140,7 +140,7 @@ background-color: #ccc;
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option><a href="#">C2C</a></option>
@@ -161,14 +161,14 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-               <input type="text" class="form-control" id="positions" name="positions" value="${positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
             </div>
           </div>
           
@@ -188,10 +188,10 @@ background-color: #ccc;
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                   <input type="text" class="form-control" id="minExp" name="minExp" value="${minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                   <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -213,7 +213,7 @@ background-color: #ccc;
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
                     <option value="c2c">Per</option>
@@ -284,7 +284,7 @@ background-color: #ccc;
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
             </div>
           </div>
           
@@ -1430,11 +1430,11 @@ background-color: #ccc;
       
     </div>
     </div>
+      <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
     </form:form>
   <div class="form-footer clearfix">
     <div class="col-lg-12">
       <div class="pull-right">
-      	<input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
         <input type="button" value="Release" class="btn btn-danger">
         <input type="button" value="Save" id="store_requirement" onclick="storeRequirement();" class="btn btn-primary">
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
