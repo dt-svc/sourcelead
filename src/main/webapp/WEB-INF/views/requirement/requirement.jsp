@@ -34,13 +34,44 @@
 .modal-bodyCustom {
 margin-bottom: 15px;
 padding-bottom: 15px;
-border-bottom: 1px solid #ccc;
 min-height: 150px;
 }
 .popupFilter #example_filter {
-top:-48px !important;
+top:-63px !important;
+}
+.dataTable thead {
+background: #368ee0;
+color:#fff;
+}
+table.dataTable.no-footer {
+border-bottom:0;
+}
+table.dataTable thead th, table.dataTable thead td {
+border-bottom:0;
+}
+table.dataTable thead th, table.dataTable thead td {
+padding: 10px;
+}
+.dataTables_wrapper .dataTables_paginate {
+padding: 0 !important;
+margin-top: 15px;
+}
+.dataTables_info {
+padding: 0 !important;
+margin-top: 10px;
+}
+.dataTables_wrapper .dataTables_filter input {
+background-color:#fff;
+height: 34px;
+width:400px;
+border: 1px solid rgb(206, 204, 204);
+border-radius:3px;
+}
+.modal-footer {
+background-color: #ccc;
 }
 </style>
+
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -1827,7 +1858,7 @@ function getUserList(){
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select class="">';
+	                		result = result +'          <select class="selectpicker form-control">';
 	                		result = result +'          <option selected disabled>Select Role</option>';
 	                		result = result +'           <option value="All">All</option>';
 	                		result = result +'           <option value="Admin">Admin</option>';
