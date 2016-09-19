@@ -27,7 +27,6 @@ z-index: 9999999999 !important;
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
@@ -35,7 +34,7 @@ z-index: 9999999999 !important;
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
-	cscInit();
+	getAllCountries();
  };
 </script>
 
@@ -198,9 +197,9 @@ function cancel(){
 					<div class="row">
 						<div class="col-md-7">
 							<div class="form-group">
-							<label class="col-md-3">Company</label>
+							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-50"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							<div class="form-group">
@@ -209,37 +208,34 @@ function cancel(){
 							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
 							</div>
 							</div>
-							
+								
 							<div class="form-group">
 								<label class="col-md-3">Country</label>
 								<div class="col-md-9">
-									 <input type="text" class="form-control" id="CountryAutocomplete" name="country" field-name="Client Country" value="${SourceLeadWeb_country}" readonly="readonly"/> 
+								 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" readonly="readonly" >
+				                 </select>
 								</div>
 							</div>
+							 <input type="hidden" id="existingCountry" value="${SourceLeadWeb_country}"/>
 							
+							 <div class="form-group">
+								<label class="col-md-3">State</label>
+								<div class="col-md-9">
+								     <select  class="chosen-select form-control" name="state" id="state" field-name="State"  > </select>
+								</div>
+							 </div>
+							 <input type="hidden" id="existingState" value="${SourceLeadWeb_orgLocations.state}">
 							
-							<div class="form-group">
-							 <label class="col-md-3">State</label>
-							 <div class="col-md-9">
-								<input type="hidden" id="stateAutoComplete" name="state"
-									field-name="Client State" class="form-control" value="${SourceLeadWeb_orgLocations.state}" data-validation="validate_Space" data-validation-optional="true">
-							
-							    <ul id="state"  onkeypress="getStates('${sourceleadUrl}');"></ul>
-						  	 </div>
-						   </div>
-						 
 							<div class="form-group">
 								<label class="col-md-3">City</label>
 								<div class="col-md-9">
-									<input type="hidden" id="cityAutoComplete" name="city" field-name="City" class="form-control" value="${SourceLeadWeb_orgLocations.city}" data-validation="validate_Alphabet validate_Space validate_length length2-50" data-validation-optional="true">
-								    <ul id="city"  onkeypress="getCities('${sourceleadUrl}');"></ul>
+								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
 								</div>
 							</div>
-							
-							
-						</div>
-						<div class="col-md-5">
-						
+							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
+				   </div>
+				
+					<div class="col-md-5">
 						<div class="form-group mt">
 							<label class="col-md-3">Zip</label>
 							<div class="col-md-9">
@@ -262,7 +258,7 @@ function cancel(){
 						<div class="form-group comp-textarea">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
-							   <textarea rows="2" name="aboutCompany" field-name="About" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							   <textarea rows="2" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
 							</div>
 						</div>
 							
@@ -353,78 +349,6 @@ var validationSettings = {
      
 </script> 
 
-
-
-<script type="text/javascript">
-function getAllCountries(sourceleadUrl){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').tagit({
-        		allowSpaces: false,
-        		availableTags: json
-        		
-	       	 	});
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-<script>
-function getStates(sourceleadUrl){
-	var countryName = document.getElementById("CountryAutocomplete").value;
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').tagit({
-	        		allowSpaces: false,
-	        		availableTags: json
-	        		
-		       	 	});
-	        },
-	        error: function(e){
-	        }
-	    });
-	}
-}
-</script> 
-
-
-<script>
-function getCities(sourceleadUrl){
-	var countryName = document.getElementById("CountryAutocomplete").value;
-	var stateName = document.getElementById("stateAutoComplete").value;
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').tagit({
-	        		allowSpaces: false,
-	        		availableTags: json
-	        		
-		       	 	});
-	        },
-	        error: function(e){
-	        }
-	    });
-	}
-}
-</script>
-
-
-
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -446,6 +370,150 @@ function getCities(sourceleadUrl){
 })(jQuery);
 </script>
 
+<script type="text/javascript">
+function getAllCountries(){
+		var countryName = $("#existingCountry").val();
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#country').empty();
+	        	$('#country').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == countryName){
+	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}else{ 
+	            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            	
+	            }
+	            $('#country').attr("disabled", true); 
+	            $('#country').trigger("chosen:updated");
+	            getStates();
+	        },
+	        error: function(e){
+	        }
+	    });
+} 
+</script>
+
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	
+	//to set existing state value(Auto populate)
+	var stateName = $("#state").val();
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = document.getElementById("existingState").value;
+	}
+	//end state Auto populate
+	
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == stateName){
+	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            }
+	            $('#state').trigger("chosen:updated");
+	            getCities();
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	//to set existing city value(Auto populate)
+	var cityName = $("#city").val();
+	if(cityName == null || cityName == 'undefined' || cityName == ''){
+		cityName = document.getElementById("existingCity").value;
+	}
+	//end city Auto populate
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == cityName){
+	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $("#country").chosen();
+	       $("#state").chosen();
+	       $("#city").chosen();
+	       
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>
 
 <jsp:include page="masterFooter.jsp" />
 </html>
