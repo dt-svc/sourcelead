@@ -126,7 +126,6 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   user = userDao.findByEmail(jsonObj.getString("email"));
-	   
 	   if(null == user){
 		    user = getUserDetails(jsonObj,loginuser.getUserCode());
 		 	if(sourceType.equalsIgnoreCase("PROJECTS")){

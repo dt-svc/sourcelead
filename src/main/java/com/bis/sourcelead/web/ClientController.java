@@ -125,7 +125,9 @@ public class ClientController {
 			model.addObject("userList", userList);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			model.addObject("loginCountryName", countries.getName());
+			if(countries != null){
+				model.addObject("loginCountryName", countries.getName());
+			}
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			
@@ -174,5 +176,23 @@ public class ClientController {
 				return model;
 		    }
 		
-		
+//		 /uploadClientForm
+		 @RequestMapping(value = "/uploadClientForm")
+			public ModelAndView uploadClientForm(HttpServletRequest request) {
+			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+				if(sessionData == null)
+				{
+					sessionData = new SessionMaintainanceData();
+				}
+				sessionData.setNav(Constants.Users);
+				
+				request.getSession().setAttribute("sessionData",sessionData);
+				ModelAndView model = new ModelAndView();
+				model.setViewName("upload/uploadClientForm");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				sessionData.setNav(Constants.Clients);
+				return model;
+
+			}
+
 }
