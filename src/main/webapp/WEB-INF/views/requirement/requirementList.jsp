@@ -237,14 +237,14 @@ function sideBar(requirementId){
 				        result = result+'                <ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'&& json.minExp != null && json.minExp != '')
 				        	{
-				       			 result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
+				       	result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
 				        	}
 					    else if(json.minExp != null && json.minExp != '' && json.minExp !='undefined'){
-						      		  result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
+						result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
 	
 					        }
 				        else{
-					      		  result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
+					    result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
 				        
 				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined')
@@ -252,35 +252,36 @@ function sideBar(requirementId){
 				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
 				    	   }
 				       else if(json.currencyCode  == 'USD' && json.currencyCode  == 'AUD'  && json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
-					        result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
-					        result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'GPB' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
-					        result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
   
 				       }
+				       
 				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
 				        	{
 				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
 				        else if(json.state !='' && json.state != 'undefined')
 				        	{
-					        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+'</span></li>';
+					    result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+'</span></li>';
 
 				        	}
 				        else{
-					        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
+					     result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
 
 				        }
 				        result = result+'                </ul>';
 				        result = result+'              </div>';
 				        result = result+'              <div class="col-md-6">';
 				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
+				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.managerUserId+'</span></li>';
 				        result = result+'                  <li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
 				        result = result+'                  <li><i class="fa fa-flag"></i><span>Select Priority</span>';
 				         result = result+'                     </li>';
@@ -398,7 +399,7 @@ function requirementDetails(requirementId){
             		 else if (data.indexOf('exception') >= 0) {
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
-            		 else{   
+            		 else{    
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				            result = result +'   <h1>Description:</h1>';
@@ -430,62 +431,55 @@ function requirementDetails(requirementId){
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
-					            }				            result = result +'       <div class="clearfix"></div>';
+					            }				            
+				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> Sudhakar Reddy </span>';
-				            result = result +'       <div class="dropdown pull-left"> <i class="fa fa-edit dropdown-toggle" data-toggle="dropdown"></i>';
-				            result = result +'         <ul class="dropdown-menu dropdown-menu-right">';
-				            result = result +'           <li><a href="#">Client Contact-1</a></li>';
-				            result = result +'           <li><a href="#">Client Contact-2</a></li>';
-				            result = result +'           <li><a href="#">Client Contact-3</a></li>';
-				            result = result +'         </ul>';
-				            result = result +'       </div>';
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>sudhakar@tcs.com</span>';
-            		 		}
+				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
+				            	
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> '+json.spocName+' </span>';
+				            }
 				            else{
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>--</span>';
+					        result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> -- </span>';
+
+				            }
+				            result = result +'       <div class="clearfix"></div>';
+				            result = result +'     </div>'; 
+				            if(json.spocEmail != '' && json.spocEmail !=null && json.spocEmail != 'undefined'){
+						    result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>'+json.spocEmail+'</span>';
+				            }
+				            else{
+							result = result +'     <div class="require_wrap_details_cta" style="display:none"> <b>Email:</b> <span></span>';
 	
 				            }
 				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span></span>';
+				            result = result +'     </div>'; 
+				            if(json.spocMobilePhone != '' && json.spocMobilePhone !=null && json.spocMobilePhone != 'undefined'){
+					        result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span>'+json.spocMobilePhone+'</span>';
+				            }
+				            else{
+						    result = result +'     <div class="require_wrap_details_cta" style="display:none"> <b>Phone No:</b> <span></span>';
+
+				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i>300</span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Genral</span>';
-				            result = result +'       <div class="dropdown pull-left"> <i class="fa fa-edit dropdown-toggle" data-toggle="dropdown"></i>';
-				            result = result +'         <ul class="dropdown-menu dropdown-menu-right">';
-				            result = result +'           <li><a href="#">General Form-1</a></li>';
-				            result = result +'           <li><a href="#">General Form-2</a></li>';
-				            result = result +'           <li><a href="#">General Form-3</a></li>';
-				            result = result +'         </ul>';
-				            result = result +'       </div>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Submission Form</span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Sujith S</span>';
-				            result = result +'       <div class="dropdown pull-left dropup"> <i class="fa fa-edit dropdown-toggle" data-toggle="dropdown"></i>';
-				            result = result +'         <ul class="drop-up dropdown-menu dropdown-menu-right">';
-				            result = result +'           <li><a href="#">Manager-1</a></li>';
-				            result = result +'           <li><a href="#">Manager-2</a></li>';
-				            result = result +'           <li><a href="#">Manager-3</a></li>';
-				            result = result +'         </ul>';
-				            result = result +'       </div>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst <i class="fa fa-edit"></i></span>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';

@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -98,7 +99,7 @@ import org.hibernate.annotations.FetchMode;
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	
@@ -156,6 +157,15 @@ import org.hibernate.annotations.FetchMode;
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
+	
+	@Transient
+	private String spocName;
+	
+	@Transient
+	private String spocEmail;
+	
+	@Transient
+	private String spocMobilePhone;
 	
 
 	public String getRequirementCreatedDateToString() {
@@ -474,6 +484,30 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setRequirementAssignTo(Set<RequirementAssignTo> requirementAssignTo) {
 		this.requirementAssignTo = requirementAssignTo;
+	}
+
+	public String getSpocName() {
+		return spocName;
+	}
+
+	public void setSpocName(String spocName) {
+		this.spocName = spocName;
+	}
+
+	public String getSpocEmail() {
+		return spocEmail;
+	}
+
+	public void setSpocEmail(String spocEmail) {
+		this.spocEmail = spocEmail;
+	}
+
+	public String getSpocMobilePhone() {
+		return spocMobilePhone;
+	}
+
+	public void setSpocMobilePhone(String spocMobilePhone) {
+		this.spocMobilePhone = spocMobilePhone;
 	}
 	
 }

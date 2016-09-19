@@ -102,6 +102,10 @@ public class RequirementListRestController {
 			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
+			requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+			requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
+			requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+			
 			resultJson = commonUtil.toJSON(requirement);
 			return resultJson;
 			

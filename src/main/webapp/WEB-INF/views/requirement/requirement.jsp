@@ -186,11 +186,11 @@ top:-48px !important;
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
                     <option value="c2c">Per</option>
-                    <option value="w2">1hr</option>
-                    <option value="c2c">2hr</option>
-                    <option value="c2c">3hr</option>
-                    <option value="c2c">4hr</option>
-                    <option value="c2c">Other</option>
+                    <option value="1hr">1hr</option>
+                    <option value="2hr">2hr</option>
+                    <option value="3hr">3hr</option>
+                    <option value="4hr">4hr</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>
