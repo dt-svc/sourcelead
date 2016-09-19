@@ -19,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -46,6 +48,9 @@ public class RequirementRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -112,6 +117,36 @@ public class RequirementRestController {
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
 		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
+	}
+	
+	/**
+	 * Handles Vendor Contacts 
+	 * @param json
+	 * @param request
+	 * @return Json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
+	@ResponseBody
+	public String saveClientContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
+			                        @RequestParam(value="clientLocationId", required=false) String clientLocationId , HttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId);
+		
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(Long.parseLong(orgRelationId), user.getId(),orgLocations.getId());
+		for (OrgSpoc orgSpoc : orgSpocsList) {
+			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+		}
+		return commonUtil.toJSON(orgSpocsList);
 	}
 	
 	 

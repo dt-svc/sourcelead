@@ -294,9 +294,9 @@ top:-48px !important;
 			                    </c:if>
 						</c:forEach>
                     </select>
-                    <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i>
-                     
-                    </div>
+                    <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onClick="addClientPopUp();"></i>
+                    <div id="addClient" class="modal fade" role="dialog"></div>
+                  </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -338,7 +338,9 @@ top:-48px !important;
                     <select class="chosen-select form-control" name="selectContact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
                     </select>
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;"></i> 
+                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" onClick="addClientContactPopUp();"></i> 
+                 	<div id="addContact" class="modal fade" role="dialog">
+                    </div>
                  </div>
                   
                 </div>
@@ -1410,147 +1412,7 @@ top:-48px !important;
   </div>
   
   <!-- Content Area Ends-->
-  <!-- Add Client Details popup-->
-  				<div id="addClient" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Client Details</h4>
-                        </div>
-                        <form:form id="clientDetails_form" name="clientDetails_form" method="GET">
-	                        <div class="modal-body clearfix">
-	                          <div class="form-horizontal custom-form clearfix">
-	                            <div class="col-xs-12 col-md-12 col-lg-12">
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Client Name<span class="text-danger">*</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="orgName" name="orgName" class="form-control" value="" field-name="Client Name" data-validation="required validate_Space validate_length length2-250">
-	                                  <input type="hidden" id="orgLocationId" />
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Website</label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="webSite" name="webSite" class="form-control" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
-	                                </div>
-	                              </div>
-	                              
-	                              <div class="form-group">
-	                                <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="firstName" name="firstName" class="form-control" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Last Name</label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="lastName" name="lastName" class="form-control" value="" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
-	                                </div>
-	                              </div>
-	                               <div class="form-group">
-	                                <label class="col-lg-3">Email<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" id="email" name="email" class="form-control" value="" field-name="Client Email" data-validation="required validate_Space validate_email">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Role<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                <select class="chosen-select form-control select-bg" id="roleType" name="roleType" field-name="Client Role" data-validation="required">
-	                                  	<option value="">-Select Role-</option>
-										<option value="1">Admin</option>
-										<option value="3">Approver/Project Manager</option>
-										<option value="5">HR Manager</option>
-										<option value="8">Recruiter</option>
-	                                </select>
-	                                </div>
-	                              </div>
-	                            </div>
-	                          </div>
-	                        </div>
-	                        <div class="modal-footer">
-	                        	<input type="button" value="Save" class="btn btn-primary" id="save_client" onclick="saveClient();"> 
-								<input data-dismiss="modal" type="button" value="Cancel" class="btn btn-default">
-	                        </div>
-                         </form:form>
-                      </div>
-                    </div>
-               </div>
-               
-               
-               <!-- Add Client Contact Details popup-->
-               <div id="addContact" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Client Contact</h4>
-                        </div>
-                        <form:form id="clientContacts_form" name="clientContacts_form" method="POST">
-	                        <div class="modal-body clearfix">
-	                          <div class="form-horizontal custom-form clearfix">
-	                            <div class="col-xs-12 col-md-12 col-lg-12">
-	                            	<input type="text" class="form-control" id="vendorName" name="vendorName" value="" data-validation-optional="true" style="display: none;">
-	                              <div class="form-group">
-	                                <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" class="form-control" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Last Name</label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" class="form-control" value="" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Email<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                  <input type="text" class="form-control" value="" id="email" name="email" field-name="Email Id" data-validation="required validate_Space validate_email">
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-						              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
-						              <div class="col-md-9">
-						                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
-						                <c:forEach var="user" items="${spocOwnersList}">
-							                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
-						                </c:forEach>
-						                </select>
-						              </div>
-						          </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3">Role<span class="text-danger"> *</span></label>
-	                                <div class="col-lg-9">
-	                                <select class="selectpicker form-control" id="role" name="roleType" field-name="Role" data-validation="required">
-		                                <option value="">-Select Role-</option>
-										<option value="1">Admin</option>
-										<option value="3">Approver/Project Manager</option>
-										<option value="5">HR Manager</option>
-										<option value="8">Recruiter</option>
-	                                </select>
-	                                </div>
-	                              </div>
-	                              <div class="form-group">
-	                                <label class="col-lg-3"></label>
-	                                <div class="col-lg-9">
-	                                <label class="check-box checkBox">
-	                                 <input type="checkbox" value="Y" name="isMailSent" checked="checked"> Send Invitation
-	                                </label>
-	                                </div>
-	                              </div>
-	                            </div>
-	                          </div>
-	                        </div>
-	                        <div class="modal-footer">
-	                        	<input type="button" value="Save" class="btn btn-primary" id="save_clientContact" onclick="saveClientContact();"> 
-								<input data-dismiss="modal" type="button" value="Cancel" class="btn btn-default">
-	                        </div>
-                        </form:form>
-                      </div>
-                    </div>
-                  </div>
+  
   </div>
 </section>
 
