@@ -54,8 +54,8 @@ display: block;
 	background: none;
     border: 0;
     position: relative;
-    top:0px;
-    font-size: 22px;
+    top:7px;
+    font-size: 15px;
 }
 .createTemplate .form-control{
     display: block;
