@@ -21,9 +21,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -48,6 +50,9 @@ public class RequirementRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	TeamService teamService;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -149,5 +154,16 @@ public class RequirementRestController {
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
-	 
+	
+	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
+	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
+		
+		String resultJson;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+		
+		resultJson = commonUtil.toJSON(teamsList);
+		return resultJson;
+	}
+	
 }

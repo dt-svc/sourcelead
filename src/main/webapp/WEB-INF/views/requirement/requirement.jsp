@@ -1883,6 +1883,7 @@ function getUserList(){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
+               			 getTeamsList();
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
@@ -1894,14 +1895,7 @@ function getUserList(){
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select class="selectpicker form-control" style="display:block !important">';
-	                		result = result +'          <option selected disabled>Select Role</option>';
-	                		result = result +'           <option value="All">All</option>';
-	                		result = result +'           <option value="Admin">Admin</option>';
-	                		result = result +'           <option value="Account Manager">Account Manager</option>';
-	                		result = result +'           <option value="Recruiting Manager">Recruiting Manager</option>';
-	                		result = result +'           <option value="Hiring Manager">Hiring Manager</option>';
-	                		result = result +'           <option value="Teams">Teams</option>';
+	                		result = result +'          <select id="rolesDiv" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
@@ -1974,6 +1968,34 @@ function getUserList(){
             
        }); 
   } 
+</script>
+
+<script>
+function getTeamsList(){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+            	var json = JSON.parse(data);
+				var output = "";
+				output = output +'          <option selected disabled>Select Role</option>';
+				output = output +'           <option value="All">All</option>';
+				output = output +'           <option value="Admin">Admin</option>';
+				output = output +'           <option value="Account Manager">Account Manager</option>';
+				output = output +'           <option value="Recruiting Manager">Recruiting Manager</option>';
+				output = output +'           <option value="Hiring Manager">Hiring Manager</option>';
+				
+				for (var i = 0; i < json.length; i++) {
+					var opt = json[i];
+					output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";
+				}
+				$("#rolesDiv").empty();
+			    $("#rolesDiv").append(output);
+            	
+            },
+      }); 
+ } 
 </script>
 
 <%-- 
