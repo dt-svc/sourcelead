@@ -385,3 +385,6 @@ display: block;
     margin: 20px 0 0;
     cursor: pointer;
 }
+.dataTables_wrapper {
+	text-align: left;
+}

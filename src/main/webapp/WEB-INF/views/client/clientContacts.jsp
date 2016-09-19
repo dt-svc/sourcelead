@@ -200,7 +200,6 @@ function clientContacts(orgRelationID,clientLocationId){
 				$("#clientContactList").empty();
 			    $("#clientContactList").append(result); 
        		 }
-    		$("#tab-4-addTemplate").empty();
     		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
     	    $("#tab-2-addContact").append(res);
