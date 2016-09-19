@@ -1209,6 +1209,9 @@ top:-48px !important;
             </div>
           </div>
           <div class="form-group">
+             
+            <div id="assignedToSavingDiv"></div>
+													
             <label class="col-md-3">Assign To <span class="text-danger">*</span></label>
             <div class="col-md-9">
                 <div class="form-icon">
@@ -1988,47 +1991,27 @@ function getUserList(){
 		                    var json = JSON.parse(data);
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input id="1" type="checkbox" name="team" class="myCheckbox" ></td>';
-		                    	 result = result +'             <td>Murali Krishna</td>';
-		                    	 result = result +'             <td>murali@businessintelli.com</td>';
-		                    	 result = result +'             <td>Account Manager</td>';
-		                    	 result = result +'             <td>101</td>';
-		                    	 result = result +'           </tr>';
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input id="2" type="checkbox" name="team" class="myCheckbox"></td>';
-		                    	 result = result +'             <td>Murali Krishna</td>';
-		                    	 result = result +'             <td>murali@businessintelli.com</td>';
-		                    	 result = result +'             <td>Account Manager</td>';
-		                    	 result = result +'             <td>101</td>';
-		                    	 result = result +'           </tr>';
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input id="3" type="checkbox" name="team" class="myCheckbox"></td>';
-		                    	 result = result +'             <td>Murali Krishna</td>';
-		                    	 result = result +'             <td>murali@businessintelli.com</td>';
-		                    	 result = result +'             <td>Account Manager</td>';
-		                    	 result = result +'             <td>101</td>';
-		                    	 result = result +'           </tr>';
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input id="5" type="checkbox" name="team" class="myCheckbox"></td>';
-		                    	 result = result +'             <td>Murali Krishna</td>';
-		                    	 result = result +'             <td>murali@businessintelli.com</td>';
-		                    	 result = result +'             <td>Account Manager</td>';
-		                    	 result = result +'             <td>101</td>';
-		                    	 result = result +'           </tr>';
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input id="4" type="checkbox" name="team" class="myCheckbox"></td>';
-		                    	 result = result +'             <td>Murali Krishna</td>';
-		                    	 result = result +'             <td>murali@businessintelli.com</td>';
-		                    	 result = result +'             <td>Account Manager</td>';
-		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'<tr>';
+		                    	/*  var localCheckedStatus;
+		                    	 $(".defaultCheckBox").each(function() {
+		         							var localId = this.id;
+		         							if(localId == opt.id){
+		         								localCheckedStatus = true;
+		         							} 
+		                    	 });
+		                    	 alert("localCheckedStatus"+localCheckedStatus); */
+		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" class="myCheckbox" ></td>';
+		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
+		                    	 result = result +'             <td>'+opt.email+'</td>';
+		                    	 result = result +'             <td>'+opt.id+'</td>';
+		                    	 result = result +'             <td>'+opt.id+'</td>';
 		                    	 result = result +'           </tr>';
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 
 	                 	 result = result +'     <div class="clearfix">';
-	                 	/*  result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
+	                 	 /*result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
 	                 	 result = result +'         <li><a href="#">1</a></li>';
 	                 	 result = result +'         <li class="active"><a href="#">2</a></li>';
 	                 	 result = result +'         <li><a href="#">3</a></li>';
@@ -2073,7 +2056,7 @@ function getUserList(){
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -2086,47 +2069,19 @@ function pagination(){
 
 <script>
 function assignMembers() {
-	alert("hai");
+	var result = "";
 	var oTable = $('#example').dataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
+	var count = 1;
 	rowcollection.each(function(index,elem){
 	    var checkbox_value = $(elem).val();
-	    alert("checkbox_value"+checkbox_value);
-	    
-	    //Do something with 'checkbox_value'
+	    alert(checkbox_value);
+	    result = result+ "<input type='hidden' class='defaultCheckBox' name='userId"+count+"' id='userId"+count+"' value='"+checkbox_value+"' />";
+	    count++;
 	});
-	
-	 
-	/*  var data = oTable.fnGetData( this );
-	 alert( 'The following data would have been submitted to the server: \n\n'+data); 
-	  */
-	 
-	 
-   
-    
-	/* var result = "";
-	var count = 1;
-	$(".myCheckbox")
-			.each(
-					function() {
-						var localId = this.id;
-						alert("localId"+localId); */
-						/* if ($(this).is(':checked')) {
-							var startDate = $("#startDate" + localId).val();
-							var endDate = $("#endDate" + localId).val();
-							result = result
-									+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
-							result = result
-									+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
-							result = result
-									+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
-							count++;
-						} */
-					/* }); */
-	/* result = result
-			+ "<input type='hidden' name='employeeMaxCount' id='employeeMaxCount' value='"+count+"'/>"; */
-	/* $("#assignTeamSavingDiv").empty();
-	$("#assignTeamSavingDiv").append(result); */
+	result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+	$("#assignedToSavingDiv").empty();
+	$("#assignedToSavingDiv").append(result); 
 }
 </script>
 
