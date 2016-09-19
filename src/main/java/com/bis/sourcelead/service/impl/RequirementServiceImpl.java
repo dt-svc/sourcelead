@@ -1,8 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -61,9 +62,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement storeRequirement(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
 		
-		Requirement requirement = new Requirement();
-		
-		
+		    Requirement requirement = new Requirement();
 	        
 			if(orgLocations != null){
 				requirement.setOrgLocationId(orgLocations);
@@ -155,6 +154,32 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.currentDate());
+			
+			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
+			if (jsonObj.has("assignedToMaxCount")){
+				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
+				if(StringUtils.isNotEmpty(assignedToMaxCount)){
+				int MaxCount = Integer.parseInt(assignedToMaxCount);
+					for (int c = 1; c < MaxCount; c++) {
+						RequirementAssignTo requirementAssignTo = new RequirementAssignTo();
+						
+						User assUser = new User();
+						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+						requirementAssignTo.setAssignUserId(assUser);
+						
+						requirementAssignTo.setRequirementId(requirement);
+						requirementAssignToList.add(requirementAssignTo);
+						
+						requirement.setCreatedDate(commonUtil.currentDate());
+						requirement.setCreatedBy(user.getUserCode());
+						requirement.setUpdatedBy(user.getUserCode());
+						requirement.setUpdatedDate(commonUtil.currentDate());
+						  
+					}
+				}
+			}
+			requirement.setRequirementAssignTo(requirementAssignToList);
+			
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		return savedRequirement;

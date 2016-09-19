@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,11 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
@@ -146,6 +152,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String requirementCreatedDateToString;
 
+	
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -456,6 +467,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public Set<RequirementAssignTo> getRequirementAssignTo() {
+		return requirementAssignTo;
+	}
+
+	public void setRequirementAssignTo(Set<RequirementAssignTo> requirementAssignTo) {
+		this.requirementAssignTo = requirementAssignTo;
+	}
 	
 }

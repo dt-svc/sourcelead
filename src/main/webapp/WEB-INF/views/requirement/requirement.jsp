@@ -2075,8 +2075,7 @@ function assignMembers() {
 	var count = 1;
 	rowcollection.each(function(index,elem){
 	    var checkbox_value = $(elem).val();
-	    alert(checkbox_value);
-	    result = result+ "<input type='hidden' class='defaultCheckBox' name='userId"+count+"' id='userId"+count+"' value='"+checkbox_value+"' />";
+	    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
 	    count++;
 	});
 	result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";

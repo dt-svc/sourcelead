@@ -83,6 +83,7 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
 		return "success";
+		
 	}
 	
 	
