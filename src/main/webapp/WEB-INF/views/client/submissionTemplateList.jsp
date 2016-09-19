@@ -244,6 +244,7 @@ function validateTemplateName(clientLocationId){
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
+	        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
 	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
 					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
