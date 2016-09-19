@@ -175,9 +175,17 @@ background-color: #ccc;
           <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
-	                     <option value="${edu.name}">${edu.name}</option>
+	                     <c:forEach var="existEdu" items="${requirement.educationList}">
+	                     			 <c:if test="${edu.name == existEdu}">  
+			                    	<option selected value="${edu.name}">${edu.name}</option>
+						             </c:if> 
+						             <c:if test="${edu.name != existEdu}"> 
+						                       <option  value="${edu.name}">${edu.name}</option>
+						             </c:if>
+	                     </c:forEach>
+			             
                 </c:forEach>
                 </select>
               </div>

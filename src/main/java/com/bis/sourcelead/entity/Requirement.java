@@ -169,6 +169,9 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String spocMobilePhone;
 	
+	@Transient
+	private String[] educationList;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -518,6 +521,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setRequirementId(Long requirementId) {
 		this.requirementId = requirementId;
+	}
+
+	public String[] getEducationList() {
+		return educationList;
+	}
+
+	public void setEducationList(String[] educationList) {
+		this.educationList = educationList;
 	}
 	
 	

@@ -54,6 +54,10 @@ public class RequirementController {
 		ModelAndView model = new ModelAndView();
 		if(requirementId != null && !requirementId.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+			
+			String[] educationList = requirement.getEducation().split(",");
+			requirement.setEducationList(educationList);
+			
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
 		}else{
