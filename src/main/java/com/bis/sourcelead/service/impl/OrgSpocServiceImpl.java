@@ -107,7 +107,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
 				}
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if(jsonObj.has("spocStatus")){
+					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				}else{
+					orgSpoc.setSpocStatus(Constants.ACTIVE);
+				}
+				
 				orgSpoc.setCreatedDate(CommonUtil.currentDate());
 				orgSpoc.setCreatedBy(user.getUserCode());
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());

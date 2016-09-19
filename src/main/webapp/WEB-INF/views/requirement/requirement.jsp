@@ -324,7 +324,7 @@
                 <div class="col-md-9">
                   <div class="form-icon">
                     <select class="chosen-select form-control" name="selectContact" id="selectContact">
-                      <option value=''>-- Select Client --</option>
+                      <option value=''>-- Select Contact --</option>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;"></i> 
                  </div>
@@ -1475,6 +1475,7 @@
 	                        <div class="modal-body clearfix">
 	                          <div class="form-horizontal custom-form clearfix">
 	                            <div class="col-xs-12 col-md-12 col-lg-12">
+	                            	<input type="text" class="form-control" id="vendorName" name="vendorName" value="" data-validation-optional="true" style="display: none;">
 	                              <div class="form-group">
 	                                <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>
 	                                <div class="col-lg-9">
@@ -1494,6 +1495,16 @@
 	                                </div>
 	                              </div>
 	                              <div class="form-group">
+						              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+						              <div class="col-md-9">
+						                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+						                <c:forEach var="user" items="${spocOwnersList}">
+							                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+						                </c:forEach>
+						                </select>
+						              </div>
+						          </div>
+	                              <div class="form-group">
 	                                <label class="col-lg-3">Role<span class="text-danger"> *</span></label>
 	                                <div class="col-lg-9">
 	                                <select class="selectpicker form-control" id="role" name="roleType" field-name="Role" data-validation="required">
@@ -1509,7 +1520,7 @@
 	                                <label class="col-lg-3"></label>
 	                                <div class="col-lg-9">
 	                                <label class="check-box checkBox">
-	                                 <input type="checkbox" name="Role"> Send Invitation
+	                                 <input type="checkbox" value="Y" name="isMailSent" checked="checked"> Send Invitation
 	                                </label>
 	                                </div>
 	                              </div>

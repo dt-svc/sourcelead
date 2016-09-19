@@ -85,6 +85,7 @@ function getContactList(local){
 		var valueArray = local.value.split(",");
 		if(valueArray[0] != ""){
 			clientContactList(valueArray[0],valueArray[1]);
+			$("#vendorName").attr('value', local.value);
 			$("#addContactPlus").show();
 		}else{
 			$("#addContactPlus").hide();
@@ -138,22 +139,22 @@ function getContactList(local){
 			/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
 	 		$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=1",
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
 							output = output
-									+ "<option value=''>-- Select Client --</option>";
+									+ "<option value=''>-- Select Contact --</option>";
 							for (var i = 0; i < json.length; i++) {
 								var opt = json[i];
 								
 								output = output + "<option value='" +opt.id+","+opt.responderLocationId.id+ "'>"
 										+ opt.orgName + "</option>";
 							}
-							$("#addClientId").empty();
-							$("#addClientId").append(output);
-							$('#addClientId').trigger("chosen:updated");
-							$('#addClient').modal('hide');
+							$("#selectContact").empty();
+							$("#selectContact").append(output);
+							$('#selectContact').trigger("chosen:updated");
+							$('#addContact').modal('hide');
 							 
 
 						},

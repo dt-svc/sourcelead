@@ -81,6 +81,10 @@ public class RequirementController {
 		 }
 	    model.addObject("add_clientList", orgClientList);
 	    model.addObject("loginOrgLocId", orgLocations.getId());
+	    
+	    //for get the owners list for spocs
+		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		model.addObject("spocOwnersList", userList);
 		
 		return model;
 
