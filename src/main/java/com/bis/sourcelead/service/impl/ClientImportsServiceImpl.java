@@ -1,11 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -91,8 +90,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	      Workbook wb_xssf; //Declare XSSF WorkBook
 	      Workbook wb_hssf = null ; //Declare HSSF WorkBook
 	      Sheet sheet = null; // sheet can be used as common for XSSF and HSSF
-	      
-	 
 			
 	      if ("xlsx".equalsIgnoreCase(fileExtn))
 	      {
@@ -102,7 +99,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	      }
 	      if ("xls".equalsIgnoreCase(fileExtn))
 	      {
-		  POIFSFileSystem fs = new POIFSFileSystem(inp);
+		     POIFSFileSystem fs = new POIFSFileSystem(new BufferedInputStream(new FileInputStream(file)));
 	    	  wb_hssf = (Workbook) new HSSFWorkbook(fs);
 	    	  logger.info("xls="+wb_hssf.getSheetName(0));
 	    	  sheet = wb_hssf.getSheetAt(0);
@@ -489,7 +486,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					}
 				}
 			  
-			  if (row.getCell(1) != null || !"".equalsIgnoreCase(row.getCell(1).toString())) {
+			  if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 				  isValidated = isValidDomainName(row.getCell(1).toString());
 				  if(isValidated == false){
 						client.setReason("Invalid Domain Website");
