@@ -96,17 +96,20 @@ public class RequirementListRestController {
 	 
 	 @RequestMapping(value = "/getRequirementById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
-			String resultJson;
+			String resultJson = null;
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			 
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
-			requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
-			requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
-			requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+			if(requirementId !=null && !requirementId.isEmpty()){
+				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
+				if(requirement.getSpocId() !=null){
+				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
+				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+				}
+				resultJson = commonUtil.toJSON(requirement);
+			}
 			
-			resultJson = commonUtil.toJSON(requirement);
 			return resultJson;
 			
      }

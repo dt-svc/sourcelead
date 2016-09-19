@@ -116,7 +116,7 @@ background-color: #ccc;
 	                </span>
 	            </label>
                 <select class="form-control" id="template"  onChange="setTemplateValues();">
-                    <option>Select template</option>
+                   <option value=""  selected>Select template</option>
                     <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
                      </c:forEach>   
@@ -1679,6 +1679,7 @@ function getTemplateVal(){
 </script>
 
 
+
 <script>
 function setTemplateValues(){
 	
@@ -1688,52 +1689,80 @@ function setTemplateValues(){
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	var json = JSON.parse(data);
-		    	$("#jobTitle").val(json.jobTitle);
-		    	$("#jobType").val(json.jobType);
-		    	$("#jobId").val(json.jobId);
-		    	$("#positions").val(json.positions);
-		    	$("#education").val(json.education);
-		    	
-		    	$("#minExp").val(json.minExp);
-		    	$("#maxExp").val(json.minExp);
-		    	
-		    	var country = '';
-				 var state = '';
-				 var city = '';
-				
-				 if(json.country != null && json.country !='' && json.country !='undefined'){
-					$("#country").val(json.country);
-				}
-				 
-				if(json.state != null && json.state !='' && json.state !='undefined'){
-					$("#state").val(json.state);
-				}else{
+		    	if(data != null && data != 'undefined' && data !='' ){
+		    		
+		    		var json = JSON.parse(data);
+			    	$("#jobTitle").val(json.jobTitle);
+			    	$("#jobType").val(json.jobType);
+			    	$("#jobId").val(json.jobId);
+			    	$("#positions").val(json.positions);
+			    	
+			    	$("#minExp").val(json.minExp);
+			    	$("#maxExp").val(json.minExp);
+			    	
+			    	var country = '';
+					 var state = '';
+					 var city = '';
+					
+					getAllCountries(); 
+					if(json.country != null && json.country !='' && json.country !='undefined'){
+						$("#country").val(json.country);
+					}
+					 
+					getStates();
+					if(json.state != null && json.state !='' && json.state !='undefined'){
+						$("#state").val(json.state);
+					}else{
+						$("#state").val('');
+					}
+					
+					getCities();
+					/* $('#city').trigger("chosen:updated"); */
+					if(json.city != null && json.city !='' && json.city !='undefined'){
+						$("#city").val(json.city);
+					}else{
+						$("#city").val('');
+					}
+					 
+					var skills = [];
+		            skills = json.skills.split(",");
+		            $("#skills").val(skills);
+		            $('#skills').trigger("chosen:updated");
+		            
+		            var educations = [];
+		            educations = json.education.split(",");
+		            $("#education").val(educations);
+		            $('#education').trigger("chosen:updated");
+					
+					 
+			    	
+			    	$("#description").val(json.description);
+			    	$("#rate").val(json.rate);
+			    	$("#currencyCode").val(json.currencyCode);
+			    	$("#rateType").val(json.rateType);
+			    	$("#fileName").val(json.fileName);
+		    	}else{
+		    		
+		    		$("#jobTitle").val('');
+			    	$("#jobType").val('');
+			    	$("#jobId").val('');
+			    	$("#positions").val('');
+			    	$("#minExp").val('');
+			    	$("#maxExp").val('');
+					$("#country").val('');
 					$("#state").val('');
-				}
-				
-				$('#city').trigger("chosen:updated");
-				if(json.city != null && json.city !='' && json.city !='undefined'){
-					$("#city").val(json.city);
-				}else{
 					$("#city").val('');
-				}
-				 
-				getAllCountries();
-				
-				$('#skills').trigger("chosen:updated");
-				if(json.skills != null && json.skills !='' && json.skills !='undefined'){
-					$("#skills").val(json.city);
-				}else{
-					$("#skills").val('');
-				}
+		            $("#skills").val('');
+		            $("#education").val('');
+			    	$("#description").val('');
+			    	$("#rate").val('');
+			    	$("#currencyCode").val('');
+			    	$("#rateType").val('');
+			    	$("#fileName").val('');
+		    	}
 		    	
 		    	
-		    	$("#description").val(json.description);
-		    	$("#rate").val(json.rate);
-		    	$("#currencyCode").val(json.currencyCode);
-		    	$("#rateType").val(json.rateType);
-		    	$("#fileName").val(json.fileName);
+		    	
 		    	
 		    	
 		    }
@@ -1765,7 +1794,6 @@ $(function(){
 			$this.next().css({'width': '100%'});
 	  })
 });
-getAllCountries();
 </script>
 
 
