@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -141,6 +142,18 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String requirementCreatedDateToString;
+
+
+	public String getRequirementCreatedDateToString() {
+		return requirementCreatedDateToString;
+	}
+
+	public void setRequirementCreatedDateToString(String requirementCreatedDateToString) {
+		this.requirementCreatedDateToString = requirementCreatedDateToString;
+	}
 
 	public Long getId() {
 		return id;

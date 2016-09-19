@@ -235,28 +235,55 @@ function sideBar(requirementId){
 				        result = result+'            <div class="row">';
 				        result = result+'              <div class="col-md-6">';
 				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience - '+json.maxExp+' years</span></li>';
-				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+' '+json.rateType+'</span></li>';
-				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+','+json.state+','+json.city+'</span></li>';
+				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'&& json.minExp != null && json.minExp != '')
+				        	{
+				       			 result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
+				        	}
+					    else if(json.minExp != null && json.minExp != '' && json.minExp !='undefined'){
+						      		  result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
+	
+					        }
+				        else{
+					      		  result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
+				        }
+				        
+				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined')
+				    	   {
+				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+				    	   }
+				       else if(json.currencyCode  == 'USD' && json.currencyCode  == 'AUD'  && json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
+					        result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+   
+				       }
+				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
+					        result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+   
+				       }
+				       else if(json.currencyCode  == 'GPB' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
+					        result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+  
+				       }
+				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
+				        	{
+				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+', '+json.city+'</span></li>';
+				        	}
+				        else if(json.state !='' && json.state != 'undefined')
+				        	{
+					        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+'</span></li>';
+
+				        	}
+				        else{
+					        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
+
+				        }
 				        result = result+'                </ul>';
 				        result = result+'              </div>';
 				        result = result+'              <div class="col-md-6">';
 				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">SampathKumar Reddy Nakkapalli</span> <b class="dropdown"> <span class="caret dropdown-toggle caret-top" data-toggle="dropdown"></span>';
-				        result = result+'                    <ul class="dropdown-menu dropdown-menu-right" id="canName-ch">';
-				        result = result+'                      <li><a href="#">Muralimanohar Reddy</a></li>';
-				        result = result+'                      <li><a href="#">Krishnamanohar Surampalli</a></li>';
-				        result = result+'                      <li><a href="#">Prasadraj Mamidipayy</a></li>';
-				        result = result+'                    </ul>';
-				        result = result+'                    </b> </li>';
-				        result = result+'                  <li><i class="fa fa-clock-o"></i><span>30/08/2005</span></li>';
-				        result = result+'                  <li><i class="fa fa-flag"></i><span id="pri-val">Select Priority</span> <b class="dropdown"> <span class="caret dropdown-toggle caret-top" data-toggle="dropdown"></span>';
-				        result = result+'                    <ul class="dropdown-menu dropdown-menu-right" id="pri-ch">';
-				        result = result+'                      <li id="h"><a href="#">High</a></li>';
-				        result = result+'                      <li id="m"><a href="#">Medium</a></li>';
-				        result = result+'                      <li id="l"><a href="#">Low</a></li>';
-				        result = result+'                    </ul>';
-				        result = result+'                    </b> </li>';
+				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
+				        result = result+'                  <li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
+				        result = result+'                  <li><i class="fa fa-flag"></i><span>Select Priority</span>';
+				         result = result+'                     </li>';
 				        result = result+'                </ul>';
 				        result = result+'              </div>';
 				        result = result+'            </div>';
@@ -273,8 +300,6 @@ function sideBar(requirementId){
 					        result = result+'                <li>'+skills[3]+'</li>';
 					        result = result+'                <li>'+skills[4]+'</li>';
 					        result = result+'              </ul>';
-			           }else{
-			        	   result = result+'                <li></li>';
 			           }
 				        result = result+'            </div>';
 				        result = result+'          </div>';
@@ -377,17 +402,35 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				            result = result +'   <h1>Description:</h1>';
-				            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
+				            if(json.description != null && json.description != '' && json.description != 'undefined'){
+					            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
+					            }
+					            else{
+					            result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
+					            }
 				            result = result +'   <h2>Other details:</h2>';
 				            result = result +'   <div class="require_one">';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>10</span>';
+				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
+				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
+				            }
+				            else{
+				            result = result +'<div class="require_wrap_details_cta"> <b>No. of positions:</b> <span> -- </span>';	
+				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Education:</b> <span>MBA</span>';
+				            if(json.education != null && json.education != '' && json.education != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Education:</b> <span>'+json.education+'</span>';
+					            }else{
+					           	result = result +'<div class="require_wrap_details_cta"> <b>Education:</b> <span> -- </span>';
+					            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>file name<i class="glyphicon glyphicon-save"></i></span>';
-				            result = result +'       <div class="clearfix"></div>';
+				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'<i class="glyphicon glyphicon-save"></i></span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
+					            }				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
@@ -403,10 +446,16 @@ function requirementDetails(requirementId){
 				            result = result +'       </div>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>sudhakar@tcs.com</span>';
+            		 		}
+				            else{
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>--</span>';
+	
+				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span>+91 9000 000 000</span>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span></span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i>300</span>';

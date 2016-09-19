@@ -170,7 +170,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement where requirement.id =:requirementId";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).list();
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())

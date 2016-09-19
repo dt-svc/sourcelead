@@ -202,7 +202,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
-		return requirementDao.getRequirementByRequirementId(requirementId);
+		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
+		requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
+		return requirement;
 	}
 	
 	
