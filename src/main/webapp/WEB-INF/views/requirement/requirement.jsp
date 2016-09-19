@@ -1886,7 +1886,7 @@ function getUserList(){
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select class="selectpicker form-control">';
+	                		result = result +'          <select class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          <option selected disabled>Select Role</option>';
 	                		result = result +'           <option value="All">All</option>';
 	                		result = result +'           <option value="Admin">Admin</option>';
