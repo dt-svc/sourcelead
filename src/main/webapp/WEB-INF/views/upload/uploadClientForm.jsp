@@ -118,7 +118,7 @@ margin:10px 220px 0;
 		  <p class="text-danger"><strong>Error File Dowload</strong></p>
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
-				  <a href="<c:url value='/download/${fileName}'/>" onclick="errorMsgAppend();"> 
+				  <a href="<c:url value='/downloadErrorFile/${fileName}'/>" onclick="errorMsgAppend();"> 
 					<label class="btn btn-block">
 					<i class="fa fa-download" aria-hidden="true"></i> <br>
 		               ${errorMessage}
