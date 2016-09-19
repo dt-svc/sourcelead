@@ -58,8 +58,8 @@ public class Constants {
 	public static String  MEMBER_IN_ACTIVE= "0";
 	
 	public static String CANDIDATE_ALL = "ALL";
-	public static String CANDIDATE_ACTIVE = "1";
-	public static String  CANDIDATE_IN_ACTIVE= "0";
+	public static int CANDIDATE_ACTIVE = 1;
+	public static int  CANDIDATE_IN_ACTIVE= 0;
 	
 	/** Candidate Skill  constants**/
 	public static String CANDIDATE_SKILL_ACTIVE = "1";
@@ -160,5 +160,8 @@ public class Constants {
 	public static String MAIL_REJECTED = "Rejected";
 	
 	public static String REQUIREMENT_STATUS = "Draft";
+	
+	public static String TEAM_ACTIVE = "1";
+	public static String TEAM_IN_ACTIVE = "0";
 
 }

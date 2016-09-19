@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -130,7 +131,7 @@ public class TeamRestController {
 			TeamMembers teamMembers = teamMembersService.getTeamMemberByIdAndLocationId(Long.valueOf(teamMemberId),loginOrgLocation.getId());
 			if(teamMembers != null){
 				
-					teamMembers.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					teamMembers.setStatus(Constants.TEAM_IN_ACTIVE);
 					if(StringUtils.isNotEmpty(reason)){
 						/*teamMembers.setTerminateReason(reason);*/
 					}
@@ -151,5 +152,45 @@ public class TeamRestController {
 			teamMembersService.saveTeamMembersByJsonData(jsonObj,teamId);
 			return "success";
 		}
+	   
+	   /**
+		 * @author prasad k
+		 * @since  sep 19 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is used to store/save team in team table.
+		 * 1.internalley store/save in teamMember in teamMember table .
+		 * 
+		 * @param jsonObj This is the first paramter to storeTeam method
+		 * @param orgLocations This is the second paramter to storeTeam method
+		 * 
+		 * @return Team 
+		 * 
+		 * @throws NullPointer
+		*/
+	   
+	   @RequestMapping(value = "/storeTeam", method = RequestMethod.POST)
+		public @ResponseBody String storeTeam(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String json1 = "{" + json + "}";
+			
+			JSONObject jsonObj = new JSONObject(json1);
+			teamService.storeTeam(jsonObj,orgLocations);
+			
+			return "success";
+		}
+	   
+	   /**
+		  * This method for delete team by id
+		  * @param id
+		  * @return
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/deleteTeam/{id}", method = RequestMethod.POST,headers="Accept=application/json")
+		 public Boolean deleteTeam(@PathVariable Long id) throws Exception { 
+		  Team	team= teamService.getTeamByTeamId(id);
+			Boolean isDeleted = teamService.deleteTeamById(team.getId());
+			return isDeleted;
+		  }
 	 
 }

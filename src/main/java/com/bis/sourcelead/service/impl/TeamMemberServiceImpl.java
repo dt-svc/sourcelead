@@ -75,13 +75,13 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
 		
 		TeamMembers teamMembers = new TeamMembers();
-		User memberUser = userService.getUserById(Long.parseLong(jSONObject.getString("managerUserId")));
+		User memberUser = userService.getUserById(Long.parseLong(jSONObject.getString("memberUserId")));
 		
 		Team team = new Team();
 		team.setId(teamId);
 		teamMembers.setTeamId(team);
 	
-		if(jSONObject.has("managerUserId")){
+		if(jSONObject.has("memberUserId")){
 			teamMembers.setMemberUserId(memberUser);
 		}
 		teamMembers.setStatus(Constants.MEMBER_ACTIVE);

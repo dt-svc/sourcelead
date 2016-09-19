@@ -72,7 +72,7 @@ function teamList(){
 				             result = result +"<td><div><span>Business Intelli</span></div></td>";
 				             result = result +"<td><div><span>Vannam Mahesh</span></div></td>";
 				             result = result +"<td><div><span>25</span></div></td>";
-				             result = result +"<td><div><i class='fa fa-pencil proj_show' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash'></i></div></td>";
+				             result = result +"<td><div><i class='fa fa-pencil proj_show' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
@@ -165,49 +165,42 @@ function sideBar(teamId){
 <script>
 function addTeam(){ 
 	var outPut = '';
+	outPut = outPut+'<form role="form"  id="team_form" name="team_form" method="post" > ';
 	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Team Name *">';
+	outPut = outPut+ '                <label>Team Name<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <select class="chosen-select">';
-	outPut = outPut+ '                    <option value="Select Month">Team Leader *</option>';
-	outPut = outPut+ '                    <option value="January">Option 1</option>';
-	outPut = outPut+ '                    <option value="January">Option 2</option>';
-	outPut = outPut+ '                    <option value="January">Option 3</option>';
-	outPut = outPut+ '                    <option value="January">Option 4</option>';
-	outPut = outPut+ '                  </select>';
+	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '                </div>';
+	outPut = outPut+ '                <div class="col-md-12">';
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead">';
+	            <c:forEach var="report" items="${usersList}">
+			         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+			   </c:forEach>
+    outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <select class="chosen-select">';
-	outPut = outPut+ '                    <option value="Select Month">Team Members *</option>';
-	outPut = outPut+ '                    <option value="January">Option 1</option>';
-	outPut = outPut+ '                    <option value="January">Option 2</option>';
-	outPut = outPut+ '                    <option value="January">Option 3</option>';
-	outPut = outPut+ '                    <option value="January">Option 4</option>';
-	outPut = outPut+ '                  </select>';
+	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">';
+    <c:forEach var="report" items="${usersList}">
+         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+   </c:forEach>
+    outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Requirement *">';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                  <input type="text" class="form-control input-sm" value="" placeholder="Active Requirement *">';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div> ';                   
 	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '                <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>';
+	outPut = outPut+ '<button type="button" id="add_team" class="btn btn-sm btn-primary pull-right" onclick="storeTeam();">Add</button>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '            </div>';
+	outPut = outPut+ '</form>';
 	$("#popUpDivTeamParent").empty();
 	$("#popUpDivTeamParent").append(outPut); 
 	
@@ -218,9 +211,22 @@ function addTeam(){
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	 }); */	
+	 
+	 var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+});
 	
 }
 </script>
@@ -233,7 +239,7 @@ function addMember(teamId){
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut + '<select multiple class="chosen-select form-control" name="managerUserId" id="managerUserId" data-validation="validate_Space" data-validation-optional="true">';
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" data-validation="required validate_Space" field-name="Team Member">';
                        <c:forEach var="report" items="${usersList}">
     outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
                       </c:forEach>
@@ -241,10 +247,10 @@ function addMember(teamId){
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '                <button type="button" id="add_teamMember" class="btn btn-sm btn-primary pull-right" onclick="storeTeamMembers('+teamId+');">Add</button>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '            </div>';
-	outPut = outPut+ '            </form>';
+	outPut = outPut+ '<button type="button" id="add_teamMember" class="btn btn-sm btn-primary pull-right" onclick="storeTeamMembers('+teamId+');">Add</button>';
+	outPut = outPut+ '</div>';
+	outPut = outPut+ '</div>';
+	outPut = outPut+ '</form>';
 		
 	$("#popUpDivTeam").empty();
 	$("#popUpDivTeam").append(outPut); 
@@ -568,14 +574,78 @@ function TeamMemberpagination(){
 
 <!--   Error Message   --> 
  
+ <script>
+function storeTeam(){
+	
+	   var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         };
+	   if ($('#team_form').validate(false, validationSettings)){ 
+			var frm = $('#team_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+		  
+		     var jsonData = encodeURIComponent(con);
+		     alert(jsonData); 
+			 var sourceleadUrl = '${sourceleadUrl}';
+			
+			 $("#team_form").attr("disabled", "disabled");
+			
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) {  
+						location.replace(sourceleadUrl+"/team");
+				      }, 
+		    });
+			return true; 
+	   }else{ 
+			return false;
+	        } 
+		} 
  
+		$('body').on('blur', '#team_form', function() {
+			$("#team_form").showHelpOnFocus();
+			$("#team_form").validateOnBlur(false, validationSettings);
+		});
+
+
+</script>   
+
+
+<script>
+function deleteTeam(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to delete the team");
+	if (message == true) {
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/deleteTeam?${_csrf.parameterName}=${_csrf.token}&id="+id, 	   
+   		    success: function(data) {
+   		    	alert(deletes);
+   		    }
+	     });
+	}
+}
+</script>         
  
  <!-- Team Member Store -->
  
  
  <script>
 function storeTeamMembers(teamId){
+	
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		        borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         };
 		
+	   if ($('#teamMember_form').validate(false, validationSettings)){ 
 				var frm = $('#teamMember_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
@@ -595,7 +665,10 @@ function storeTeamMembers(teamId){
 				      }, 
 		    });
 			return true; 
-		} 
+	   }else{ 
+			return false;
+	        } 
+		}  
  
 $('body').on('blur', '#teamMember_form', function() {
 	$("#teamMember_form").showHelpOnFocus();
