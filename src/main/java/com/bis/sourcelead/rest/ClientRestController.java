@@ -764,6 +764,33 @@ public class ClientRestController {
 			   return "home";
 	    
 	   }
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/loadSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSubmissionTemplate(@RequestParam(value="clientLocationId", required=false) Long clientLocationId) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
+	
+	
+	@RequestMapping(value = "/loadSavedSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSavedSubmissionTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(templateId);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
 	/**
 	 * check given string empty or null
 	 * @param str
