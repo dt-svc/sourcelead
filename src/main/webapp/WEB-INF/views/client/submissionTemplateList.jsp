@@ -77,7 +77,7 @@ $(function(){
 	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
 	                result = result + '<td><div>';
-	                result = result + '<a href="javascript:void(0)">Customize</a>';
+	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>';
       	            result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
@@ -204,6 +204,34 @@ $(function(){
 		  
 	}
 </script>	
+
+
+<script type="text/javascript">
+	function viewSubmissionTemplate(clientLocationId,templateId,templateName) {
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		generateForm(sourceleadUrl,templateId);
+		
+		var result = "";
+		result = result + '<div class="clearfix templateName">';
+		result = result + '<h2>'+templateName+'</h2>';
+        result = result + '</div>';
+
+        result = result + '<div id="sjfb-fields" class="viewTemplate">';
+        
+        result = result + '</div>';
+        result = result + '<div class="form-footer clearfix">';
+        result = result + '<div class="pull-right mr">';
+        result = result + ' <input type="button" value="Cancel" onclick="submissionTemplateList('+clientLocationId+')" class="btn btn-default" >';
+        result = result + '</div>';
+        result = result + '</div>';
+        
+        $("#tab-4").empty();  
+        $("#tab-4-addTemplate").empty();
+        $("#tab-4").append(result); 
+        
+	}
+</script>
 
 
   <script type="text/javascript">

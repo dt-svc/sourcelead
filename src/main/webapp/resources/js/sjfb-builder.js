@@ -156,9 +156,7 @@ function addField(fieldType,value,labelValue) {
     	includeAutocompleteHTML = ''+ '<label class="col-md-5"><div class="col-md-2 lblHeight">Type:</div>' +
         ' <div class="col-md-10"> ' +
         '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Autocomplete">'+
-        '<option value="country">Country</option>      '+
-        '<option value="countryState">Country-State</option>      '+
-        '<option value="countryStateCity">Country-State-City</option>'+
+        '<option value="location">Location</option>      '+
         '</select>'+
         ' </div> ' +
         '</label>'
