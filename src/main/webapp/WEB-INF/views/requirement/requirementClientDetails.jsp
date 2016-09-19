@@ -83,7 +83,12 @@
 <script type="text/javascript">
 function getContactList(local){
 		var valueArray = local.value.split(",");
-        clientContactList(valueArray[0],valueArray[1]);
+		if(valueArray[0] != ""){
+			clientContactList(valueArray[0],valueArray[1]);
+			$("#addContactPlus").show();
+		}else{
+			$("#addContactPlus").hide();
+		}
 }
 </script>
 ​
@@ -101,7 +106,7 @@ function getContactList(local){
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
 					
-					output = output + "<option value='" +opt.id+","+opt.responderLocationId.id+ "'>"
+					output = output + "<option value='"+opt.id+"'>"
 							+opt.spocName+ "</option>";
 				}
 				$("#selectContact").empty();
@@ -132,9 +137,8 @@ function getContactList(local){
 			$("#save_clientContact").attr("disabled", "disabled");
 			/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
 	 		$.ajax({
-						type : "GET",
-						url : sourceleadUrl
-								+ "/saveClientFromProject?json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
+						type : "POST",
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=1",
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";

@@ -326,7 +326,7 @@
                     <select class="chosen-select form-control" name="selectContact" id="selectContact">
                       <option value=''>-- Select Client --</option>
                     </select>
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> 
+                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;"></i> 
                  </div>
                   
                 </div>
@@ -1471,36 +1471,37 @@
                           <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
                           <h4 class="modal-title">Add Client Contact</h4>
                         </div>
-                        <form:form id="clientContacts_form" name="clientContacts_form" method="GET">
+                        <form:form id="clientContacts_form" name="clientContacts_form" method="POST">
 	                        <div class="modal-body clearfix">
 	                          <div class="form-horizontal custom-form clearfix">
 	                            <div class="col-xs-12 col-md-12 col-lg-12">
 	                              <div class="form-group">
-	                                <label class="col-lg-3">First Name</label>
+	                                <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>
 	                                <div class="col-lg-9">
-	                                  <input type="text" class="form-control" value="">
+	                                  <input type="text" class="form-control" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100">
 	                                </div>
 	                              </div>
 	                              <div class="form-group">
 	                                <label class="col-lg-3">Last Name</label>
 	                                <div class="col-lg-9">
-	                                  <input type="text" class="form-control" value="">
+	                                  <input type="text" class="form-control" value="" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
 	                                </div>
 	                              </div>
 	                              <div class="form-group">
-	                                <label class="col-lg-3">Email</label>
+	                                <label class="col-lg-3">Email<span class="text-danger"> *</span></label>
 	                                <div class="col-lg-9">
-	                                  <input type="text" class="form-control" value="">
+	                                  <input type="text" class="form-control" value="" id="email" name="email" field-name="Email Id" data-validation="required validate_Space validate_email">
 	                                </div>
 	                              </div>
 	                              <div class="form-group">
-	                                <label class="col-lg-3">Role</label>
+	                                <label class="col-lg-3">Role<span class="text-danger"> *</span></label>
 	                                <div class="col-lg-9">
-	                                <select class="selectpicker form-control">
-	                                 <option disabled>-- Select Role --</option>
-	                                 <option>Admin</option>
-	                                 <option>Account Manager</option>
-	                                 <option>Recriting Manager</option>
+	                                <select class="selectpicker form-control" id="role" name="roleType" field-name="Role" data-validation="required">
+		                                <option value="">-Select Role-</option>
+										<option value="1">Admin</option>
+										<option value="3">Approver/Project Manager</option>
+										<option value="5">HR Manager</option>
+										<option value="8">Recruiter</option>
 	                                </select>
 	                                </div>
 	                              </div>
