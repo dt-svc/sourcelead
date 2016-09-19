@@ -5,14 +5,13 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(){
-	
+function customizeFields(clientLocationId,sourceleadUrl){
 
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
     $("#add-field a").click(function(e) {
         e.preventDefault();
-        $(addField($(this).data('type'))).appendTo('#form-fields').hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y')).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
 
@@ -67,18 +66,19 @@ function customizeFields(){
     
 
     //load saved form
-    loadForm(formID);
+    loadForm(clientLocationId,sourceleadUrl);
 
 };
 
 //Add field to builder
-function addField(fieldType) {
+function addField(fieldType,value) {
 
     var hasRequired, hasChoices,hasAutocomplete,fieldName;
     var includeRequiredHTML = '';
     var includeChoicesHTML = '';
     var includeAutocompleteHTML = '';
     var includeTextHTML = '';
+    var DeleteButtion = '';
 
     switch (fieldType) {
         case 'text':
@@ -106,6 +106,11 @@ function addField(fieldType) {
             hasChoices = true;
             fieldName = "Check Box";
             break;
+        case 'calendar':
+            hasRequired = true;
+            hasChoices = false;
+            fieldName = "Calendar";
+            break;
         case 'autocomplete':
         	hasAutocomplete = true;
             hasRequired = true;
@@ -115,6 +120,11 @@ function addField(fieldType) {
             
     }
 
+    if(value == 'Y'){
+    	DeleteButtion = '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>'
+    }else{
+    	DeleteButtion = '<button type="button"  class="btnDisable btn btn-default disabled"><i class="glyphicon glyphicon-remove"></i></button>'
+    }
    
     
     if (hasRequired) {
@@ -156,7 +166,7 @@ function addField(fieldType) {
 
     return '' +
         '<div class="field" data-type="' + fieldType + '">' +
-        '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>' +
+        DeleteButtion +
         ' <div class="clearfix"> ' + 
         '<h3>' + '<i class="fa fa-check-circle"></i>&nbsp;'  + fieldName + '</h3>' +
         ' </div> ' +
@@ -231,43 +241,50 @@ function addChoice() {
 }
 
 //Loads a saved form from your database into the builder
-function loadForm(formID) {
-    $.getJSON('sjfb-load.php?form_id=' + formID, function(data) {
-        if (data) {
-            //go through each saved field object and render the builder
-            $.each( data, function( k, v ) {
-                //Add the field
-                $(addField(v['type'])).appendTo('#form-fields').hide().slideDown('fast');
-                var $currentField = $('#form-fields .field').last();
+function loadForm(clientLocationId,sourceleadUrl) {
+        $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/loadSubmissionTemplate?clientLocationId="+clientLocationId, 
+	        success: function(data) {
+	        	 var data = eval(data);
+	        	 if (data) {
+	                 //go through each saved field object and render the builder
+	                 $.each( data, function( k, v ) {
+	                     //Add the field
+	                     $(addField(v['type'],v['isRemoved'])).appendTo('#form-fields').hide().slideDown('fast');
+	                     var $currentField = $('#form-fields .field').last();
 
-                //Add the label
-                $currentField.find('.field-label').val(v['label']);
+	                     //Add the label
+	                     $currentField.find('.field-label').val(v['label']);
 
-                //Is it required?
-                if (v['req']) {
-                    requiredField($currentField.find('.toggle-required'));
-                }
+	                     //Is it required?
+	                     if (v['req']) {
+	                         requiredField($currentField.find('.toggle-required'));
+	                     }
 
-                //Any choices?
-                if (v['choices']) {
-                    $.each( v['choices'], function( k, v ) {
-                        //add the choices
-                        $currentField.find('.choices ul').append(addChoice());
+	                     //Any choices?
+	                     if (v['choices']) {
+	                         $.each( v['choices'], function( k, v ) {
+	                             //add the choices
+	                             $currentField.find('.choices ul').append(addChoice());
 
-                        //Add the label
-                        $currentField.find('.choice-label').last().val(v['label']);
+	                             //Add the label
+	                             $currentField.find('.choice-label').last().val(v['label']);
 
-                        //Is it selected?
-                        if (v['sel']) {
-                            selectedChoice($currentField.find('.toggle-selected').last());
-                        }
-                    });
-                }
+	                             //Is it selected?
+	                             if (v['sel']) {
+	                                 selectedChoice($currentField.find('.toggle-selected').last());
+	                             }
+	                         });
+	                     }
 
-            });
+	                 });
 
-            $('#form-fields').sortable();
-            $('.choices ul').sortable();
-        }
-    });
+	                 $('#form-fields').sortable();
+	                 $('.choices ul').sortable();
+	             }
+	        },
+	    });
+        
+       
 }

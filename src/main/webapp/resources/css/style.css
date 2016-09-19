@@ -197,6 +197,16 @@ display: block;
     float: right;
 }
 
+#sjfb .btnDisable {
+    float: right;
+    cursor: none;
+}
+#sjfb .btnDisable .glyphicon {
+    cursor: none;
+    color: #777
+}
+
+
 #sjfb input {
     font-weight: normal;
     margin: 0 5px;

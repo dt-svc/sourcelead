@@ -50,16 +50,19 @@
 				<div class="timesheet_head">
 					<ul>
 
-						<!--  <li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">All</label></li>
-							<li><input type="checkbox" id="c2"><label for="c2">Approved</label></li>
-							<li><input type="checkbox" id="c3"><label for="c3">Draft</label></li>
-							<li><input type="checkbox" id="c4"><label for="c4">Rejected</label></li>
-                        </ul>
-                    </div>                	
-                </li> -->
+		                  <!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		                	<div id="filter2ApprovedPop" class="approved_pop">
+		                    	<ul>
+		                        	<li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="filter();"><label for="c6">Level-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="filter();"><label for="c7">Level-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="filter();"><label for="c8">Level-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="filter();"><label for="c8">Level-4</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="filter();"><label for="c8">Level-5</label></li>
+		                        </ul>
+		                    </div>                	
+		                </li> -->
+                
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
 						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
@@ -109,6 +112,8 @@
 <script type="text/javascript">
 window.onload = function () {
 	getVendorContactLists();
+	/* listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact'; */
  };
 </script>
 
@@ -530,6 +535,8 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
+		// document.getElementById("contactLevel").style.display="block";
+		 
 		 
 		 getClientDetails();
 	 }
@@ -539,6 +546,8 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="none";
 		 document.getElementById("clientList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
+		 //document.getElementById("contactLevel").style.display="none";
+		 
 		 
 		 getVendorContactLists();
 	 }
@@ -734,6 +743,7 @@ function getEndDatePickerById(projectId,localFieldName){
 <script>
 	// Approved Popup
 	$(document).ready(function() {
+		//$("#listOfVendors").show('#contactLevel');
 		$("#appro-pop").click(function() {
 			$(".approved_pop").slideToggle(200);
 		});
@@ -743,6 +753,16 @@ function getEndDatePickerById(projectId,localFieldName){
 		$(".approved_pop, #appro-pop").click(function(e) {
 			e.stopPropagation();
 		});
+		
+		$("#filter2ApprovePop").click(function(){
+			$("#filter2ApprovedPop").slideToggle(200);
+		});
+	    $("html").click(function() {
+	        $("#filter2ApprovedPop").slideUp(200);
+	    });
+	    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+	        e.stopPropagation();
+	    });	
 	});
 	// project side bar
 	$(document).ready(function() {
