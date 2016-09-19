@@ -26,7 +26,7 @@
                <div class="modal-content">
                  <div class="modal-header">
                    <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                   <h4 class="modal-title">Select Client</h4>
+                   <h4 class="modal-title">Select Vendor</h4>
                  </div>
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
@@ -34,7 +34,7 @@
                       <div class="form-group" id="org_dialog">
                          <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="vendorNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
                            <input type="hidden" id="orgLocationId" />
                          </div>
                        </div>
@@ -47,7 +47,7 @@
                        <div class="form-group">
                          <label class="col-lg-3">Website</label>
                          <div class="col-lg-9">
-                           <input type="text" placeholder="client website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                           <input type="text" placeholder="vendor website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
                        </div>
                       <!--  <div class="form-group">

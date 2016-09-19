@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,6 @@ public class WebgeocitiesServiceTest {
 	@Test
 	public void getAllCitiesByStateAndCountry() throws Exception {
 		List<Webgeocities> list= webgeocitiesService.getAllCitiesByStateAndCountry("Telangana", "India");
-		logger.info("Cities List Size"+list.size());
+		assertNotNull(list);
 	}
 }

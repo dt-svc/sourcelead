@@ -61,7 +61,7 @@ margin:10px 220px 0;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/vendorsList'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
