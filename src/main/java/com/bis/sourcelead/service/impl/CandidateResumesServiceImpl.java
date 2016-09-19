@@ -160,7 +160,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 	}
 	

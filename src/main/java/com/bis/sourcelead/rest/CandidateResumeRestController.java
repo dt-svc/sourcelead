@@ -124,7 +124,7 @@ public class CandidateResumeRestController {
 	public @ResponseBody String candidateResumesListByCandidateId(String candidateId) throws Exception {
 
 		String resultJson = null;
-		String status = Constants.CANDIDATE_ACTIVE;
+		Integer status = Constants.CANDIDATE_ACTIVE;
 		if(candidateId != null){
 			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			for(CandidateResumes candidateResume : candidateResumesList){

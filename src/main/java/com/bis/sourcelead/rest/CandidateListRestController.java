@@ -92,7 +92,7 @@ public class CandidateListRestController {
 	   */
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
-	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,HttpServletRequest request) throws Exception {
+	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,HttpServletRequest request) throws Exception {
 
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");

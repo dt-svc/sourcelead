@@ -57,13 +57,13 @@ public class Constants {
 	public static String MEMBER_ACTIVE = "1";
 	public static String  MEMBER_IN_ACTIVE= "0";
 	
-	public static String CANDIDATE_ALL = "ALL";
+	public static int CANDIDATE_ALL = 2;
 	public static int CANDIDATE_ACTIVE = 1;
 	public static int  CANDIDATE_IN_ACTIVE= 0;
 	
 	/** Candidate Skill  constants**/
-	public static String CANDIDATE_SKILL_ACTIVE = "1";
-	public static String CANDIDATE_SKILL_IN_ACTIVE= "0";
+	public static int CANDIDATE_SKILL_ACTIVE = 1;
+	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
 	public static String ACTIVE = "Active";
 

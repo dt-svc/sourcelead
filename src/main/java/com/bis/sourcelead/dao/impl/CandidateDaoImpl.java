@@ -109,7 +109,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState, String updatedDateRange ) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange ) throws Exception {
 
 		
 		String subQuery = null;
@@ -128,12 +128,12 @@ public class CandidateDaoImpl implements CandidateDao {
 		//Checking for Candidate Status 
 		Session session = this.sessionFactory.getCurrentSession();
 		String  dateLimit = "";
-		if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_IN_ACTIVE)){
-			  subQuery ="cnadidate.status = '0'";
-		}else if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_ALL)){
-			  subQuery ="cnadidate.status = '1' or cnadidate.status = '0'";
+		if(candidateState.equals(Constants.CANDIDATE_ACTIVE)){
+			  subQuery ="cnadidate.status = 1";
+		}else if(candidateState.equals(Constants.CANDIDATE_ALL)){
+			  subQuery ="cnadidate.status = 1 or cnadidate.status = 0";
 		}else{
-			 subQuery ="cnadidate.status = '1'";
+			 subQuery ="cnadidate.status = 0";
 		}
     	
 			

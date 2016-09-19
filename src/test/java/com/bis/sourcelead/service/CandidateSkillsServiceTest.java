@@ -16,6 +16,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -60,7 +61,7 @@ public class CandidateSkillsServiceTest {
 			candidateSkills.setCreatedBy("Ajith");
 			candidateSkills.setCreatedDate(commonUtil.currentDate());
 			candidateSkills.setUpdatedDate(commonUtil.currentDate());
-			candidateSkills.setStatus("1");
+			candidateSkills.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 			candidateSkills.setScale("4");
 			candidateSkills = candidateSkillsService.storeCandidateSkills(candidateSkills);
 			logger.info("storeCandidateSkills successfully " + candidateSkills.getCreatedDate());

@@ -82,7 +82,7 @@ public class CandidateCertifications {
 	private String updatedBy;
 	
 	@Column(name = " STATUS")
-	private String status;
+	private Integer status;
 	
 
 	public Long getId() {
@@ -213,13 +213,15 @@ public class CandidateCertifications {
 		this.updatedBy = updatedBy;
 	}
 
-	public String getStatus() {
+	
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
 	public Long getCandidatecertificateID() {
 		return candidatecertificateID;
 	}

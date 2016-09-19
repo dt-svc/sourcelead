@@ -22,6 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -120,7 +121,7 @@ public class CandidateServiceTest {
 		public void getCandidatesListByOrgLocationID() throws Exception{
 			
 			List<Candidate> candidateList = new ArrayList<>();
-			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,"Active","");
+			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,Constants.CANDIDATE_ACTIVE,"");
 			logger.info("getCandidatesListByOrgLocationID " + candidateList.size());
 
 			
@@ -155,7 +156,7 @@ public class CandidateServiceTest {
 			candidate.setCountry("usa");
 			candidate.setState("telangana");
 			candidate.setCity("waragal");
-			candidate.setStatus("1");
+			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidate = candidateService.addCandidate(candidate);

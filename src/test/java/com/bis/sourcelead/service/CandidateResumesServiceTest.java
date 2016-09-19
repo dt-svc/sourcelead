@@ -60,7 +60,7 @@ public class CandidateResumesServiceTest {
 			jsonObj.put("description", "hello hi");
 			jsonObj.put("docFile", "input.txt");
 			candidateResumes.setId(1l);
-			candidateResumes.setStatus("Constants.CANDIDATE_ACTIVE");
+			candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidate.setOrgLocationId(orgLocationId);
 						
 			MultipartFile multipartFile = getMultiPartFile();
@@ -100,7 +100,7 @@ public class CandidateResumesServiceTest {
 		public void getCandidateResumesListByCandidateIdAndStatus() throws Exception{
 			
 			List<CandidateResumes> candidateResumesList = new ArrayList<CandidateResumes>();
-			candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(1l,"ACTIVE");
+			candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(1l,Constants.CANDIDATE_ACTIVE);
 			logger.info("getCandidateResumesListByCandidateIdAndStatus " + candidateResumesList.size());
 		}
 		

@@ -48,7 +48,7 @@ public interface CandidateResumesService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception;
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception;
 	
 	/**
 	 * @param candidateResumes
