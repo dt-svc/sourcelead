@@ -140,10 +140,10 @@ $(function(){
 		           result = result + '<input type="hidden" id="clientLocationId" value="'+clientLocationId+'">';
 		           
 		           result = result  +'	<div class="row mb">';
-		            result = result  +'	<div class="col-xs-12 col-md-6">';
+		            result = result  +'	<div class="col-xs-12 col-md-6" id="templateNameDiv">';
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
-			    	result = result  +'	<input type="text" class="form-control input-sm" value="" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
+			    	result = result  +'	<input type="text" class="form-control input-sm" value="" onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	result = result  +'	</div>';
 			    	result = result  +'	</div>';
 			    	
@@ -231,6 +231,33 @@ $(function(){
         $("#tab-4").append(result); 
         
 	}
+</script>
+
+<script type="text/javascript">
+function validateTemplateName(clientLocationId){
+	var templateName = document.getElementById("templateName").value; 
+	if(templateName){
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName, 
+	        success: function(result) {
+	        	if (result == 'invalid') {
+	        		$("#save_button").attr("disabled", "disabled");
+	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+	        	}else{
+	        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#templateName').attr('class','valid form-control');
+					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+					
+	        		$("#save_button").removeAttr("disabled")
+	        	}
+	        }
+		 });
+	}
+}
 </script>
 
 

@@ -13,4 +13,6 @@ public interface SubmissionTemplateDao {
 	SubmissionTemplate getSubmissionTemplateById(Long Id) throws Exception;
 	
 	SubmissionTemplate getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,Long orgLocationId) throws Exception;
+	
+	SubmissionTemplate getSubmissionTemplateByTemplateName(Long clientLocationId,Long orgLocationId,String templateName) throws Exception;
 }
