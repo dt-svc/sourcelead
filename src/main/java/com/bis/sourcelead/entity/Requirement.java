@@ -153,6 +153,8 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String requirementCreatedDateToString;
 
+	@Transient
+	private  Long  requirementId;
 	
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -509,5 +511,14 @@ import org.hibernate.annotations.FetchMode;
 	public void setSpocMobilePhone(String spocMobilePhone) {
 		this.spocMobilePhone = spocMobilePhone;
 	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+	
 	
 }

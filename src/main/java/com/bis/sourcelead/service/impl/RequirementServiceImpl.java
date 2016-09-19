@@ -64,6 +64,10 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		    Requirement requirement = new Requirement();
 	        
+		    if (jsonObj.has("id") && !(jsonObj.getString("id").isEmpty())){
+				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
+			}
+		    
 			if(orgLocations != null){
 				requirement.setOrgLocationId(orgLocations);
 			}

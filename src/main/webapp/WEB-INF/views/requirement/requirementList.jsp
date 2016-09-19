@@ -122,7 +122,6 @@ function requirementList(){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
-	                    	 
 	                    	 result = result +"<tr>";
 		                     result = result +"<td><div class='proj_show' onclick='sideBar("+opt.id+");'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></td>";
 		                     result = result +"<td><div><span>Client</span></div></td>";
@@ -402,6 +401,7 @@ function requirementDetails(requirementId){
             		 else{    
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
+				            result = result +' <button  class="btn btn-primary pull-right" type="button"><a href="<c:url value="/requirement?requirementId='+requirementId+'"/>">Edit</a></button>';
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
 					            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';

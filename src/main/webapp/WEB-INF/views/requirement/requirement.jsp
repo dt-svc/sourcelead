@@ -1401,6 +1401,7 @@ top:-48px !important;
   <div class="form-footer clearfix">
     <div class="col-lg-12">
       <div class="pull-right">
+      	<input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
         <input type="button" value="Release" class="btn btn-danger">
         <input type="button" value="Save" id="store_requirement" onclick="storeRequirement();" class="btn btn-primary">
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">

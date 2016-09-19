@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -48,9 +49,16 @@ public class RequirementController {
 	OrgRelationsService orgRelationsService;
 	
 	@RequestMapping(value = "/requirement")
-	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
-		
+	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
+		Requirement requirement ;
 		ModelAndView model = new ModelAndView();
+		if(requirementId != null && !requirementId.isEmpty()){
+			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+			model.addObject("requirement",requirement);
+			model.addObject("requirementId",requirementId);
+		}else{
+			requirement = new Requirement();
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
