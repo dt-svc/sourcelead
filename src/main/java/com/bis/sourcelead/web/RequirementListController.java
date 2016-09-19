@@ -41,6 +41,32 @@ public class RequirementListController {
 	}
 	
 	
+	@RequestMapping(value = "/releaseRequirement")
+	public ModelAndView releaseRequirement(HttpServletRequest request) {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/releaseRequirement");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Requirement);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		
+		return model;
+
+	}
+	
+	
+	
+	
+	
+	
 	
 	 
 }
