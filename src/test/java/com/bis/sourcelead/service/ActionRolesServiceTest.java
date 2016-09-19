@@ -1,8 +1,10 @@
 package com.bis.sourcelead.service;
 
 import java.util.Date;
+import static org.junit.Assert.*;
 import java.util.List;
 
+import javax.validation.constraints.AssertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +36,7 @@ public class ActionRolesServiceTest {
 	ModulesService modulesService;
 	private static final Logger logger = LoggerFactory.getLogger(ActionRolesServiceTest.class);
 	
-	//@Test
+	@Test
 	public void addActionRoles() throws Exception{
 		ActionRoles actionRoles = new ActionRoles();
 		actionRoles.setId(1L);
@@ -55,9 +57,8 @@ public class ActionRolesServiceTest {
 		actionRoles.setCreatedBy("Sourcelead");
 		actionRoles.setUpdatedDate(new Date());
 		actionRoles.setUpdatedBy("Sourcelead");
-		
 		actionRolesService.addActionRoles(actionRoles);
-		logger.info("addActionRoles"+actionRoles.getId());
+		assertSame(1L, actionRoles.getId());
 	}
 	
 	//@Test
