@@ -779,6 +779,18 @@ public class ClientRestController {
 	    
 	   }
 	
+	
+	
+	@RequestMapping(value = "/loadSavedSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSavedSubmissionTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(templateId);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
 	/**
 	 * check given string empty or null
 	 * @param str
