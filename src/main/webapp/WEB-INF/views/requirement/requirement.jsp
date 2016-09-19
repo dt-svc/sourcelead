@@ -30,6 +30,18 @@
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 
 
+<style type="text/css">
+.modal-bodyCustom {
+margin-bottom: 15px;
+padding-bottom: 15px;
+border-bottom: 1px solid #ccc;
+min-height: 150px;
+}
+.popupFilter #example_filter {
+top:-48px !important;
+}
+</style>
+
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
@@ -1940,16 +1952,16 @@ function getUserList(){
                		 else{
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
-	                	    /* result = result +'<div class="modal-body clearfix">';
+	                	    result = result +'<div class="modal-body clearfix">';
 	                		result = result +'<div class="form-horizontal custom-form">';
 	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8">';
+	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
 	                		result = result +'         <div class="input-group">';
 	                		result = result +'           <input type="search" class="form-control" value="">';
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select class="selectpicker">';
+	                		result = result +'          <select class="">';
 	                		result = result +'          <option selected disabled>Select Role</option>';
 	                		result = result +'           <option value="All">All</option>';
 	                		result = result +'           <option value="Admin">Admin</option>';
@@ -1961,7 +1973,7 @@ function getUserList(){
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-body-custom mt clearfix">'; */
+	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
 	                		result = result +'       <table id="example" class="display" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -1977,44 +1989,58 @@ function getUserList(){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input type="checkbox" name="team"></td>';
+		                    	 result = result +'             <td><input id="1" type="checkbox" name="team" class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>Murali Krishna</td>';
 		                    	 result = result +'             <td>murali@businessintelli.com</td>';
 		                    	 result = result +'             <td>Account Manager</td>';
 		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           </tr>';
 		                    	 result = result +'           <tr>';
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input type="checkbox" name="team"></td>';
+		                    	 result = result +'             <td><input id="2" type="checkbox" name="team" class="myCheckbox"></td>';
 		                    	 result = result +'             <td>Murali Krishna</td>';
 		                    	 result = result +'             <td>murali@businessintelli.com</td>';
 		                    	 result = result +'             <td>Account Manager</td>';
 		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           </tr>';
 		                    	 result = result +'           <tr>';
-		                    	 result = result +'           <tr>';
-		                    	 result = result +'             <td><input type="checkbox" name="team"></td>';
+		                    	 result = result +'             <td><input id="3" type="checkbox" name="team" class="myCheckbox"></td>';
 		                    	 result = result +'             <td>Murali Krishna</td>';
 		                    	 result = result +'             <td>murali@businessintelli.com</td>';
 		                    	 result = result +'             <td>Account Manager</td>';
 		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           </tr>';
 		                    	 result = result +'           <tr>';
+		                    	 result = result +'             <td><input id="5" type="checkbox" name="team" class="myCheckbox"></td>';
+		                    	 result = result +'             <td>Murali Krishna</td>';
+		                    	 result = result +'             <td>murali@businessintelli.com</td>';
+		                    	 result = result +'             <td>Account Manager</td>';
+		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           </tr>';
+		                    	 result = result +'           <tr>';
+		                    	 result = result +'             <td><input id="4" type="checkbox" name="team" class="myCheckbox"></td>';
+		                    	 result = result +'             <td>Murali Krishna</td>';
+		                    	 result = result +'             <td>murali@businessintelli.com</td>';
+		                    	 result = result +'             <td>Account Manager</td>';
+		                    	 result = result +'             <td>101</td>';
+		                    	 result = result +'           </tr>';
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
-	                    /*  result = result +'     </div>'; */
-	                 	 /* result = result +'     <div class="clearfix">';
-	                 	 result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
+	                     result = result +'     </div>'; 
+	                 	 result = result +'     <div class="clearfix">';
+	                 	/*  result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
 	                 	 result = result +'         <li><a href="#">1</a></li>';
 	                 	 result = result +'         <li class="active"><a href="#">2</a></li>';
 	                 	 result = result +'         <li><a href="#">3</a></li>';
 	                 	 result = result +'         <li><a href="#">4</a></li>';
 	                 	 result = result +'         <li><a href="#">5</a></li>';
-	                 	 result = result +'       </ul>';
-	                 	 result = result +'       </div>'; */
-	                 	 /* result = result +'   </div>'; */
-	                 	 /* result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>';
+	                 	 result = result +'       </ul>'; */
+	                 	 result = result +'       </div>'; 
+	                 	 result = result +'   </div>'; 
+	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="assignMembers();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
-	                 	 result = result +'   </div>'; */
+	                 	 result = result +'   </div>'; 
 	                 	 $("#userList").empty(); 
 	                     $("#userList").append(result); 
 	                     pagination(); 
@@ -2044,10 +2070,10 @@ function getUserList(){
 --%>
 
 <script>
-function pagination(){  alert("pagination");
-    $("html#example").DataTable( { 
+function pagination(){
+    $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -2057,6 +2083,53 @@ function pagination(){  alert("pagination");
     } );
 }
 </script>
+
+<script>
+function assignMembers() {
+	alert("hai");
+	var oTable = $('#example').dataTable();
+	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
+	rowcollection.each(function(index,elem){
+	    var checkbox_value = $(elem).val();
+	    alert("checkbox_value"+checkbox_value);
+	    
+	    //Do something with 'checkbox_value'
+	});
+	
+	 
+	/*  var data = oTable.fnGetData( this );
+	 alert( 'The following data would have been submitted to the server: \n\n'+data); 
+	  */
+	 
+	 
+   
+    
+	/* var result = "";
+	var count = 1;
+	$(".myCheckbox")
+			.each(
+					function() {
+						var localId = this.id;
+						alert("localId"+localId); */
+						/* if ($(this).is(':checked')) {
+							var startDate = $("#startDate" + localId).val();
+							var endDate = $("#endDate" + localId).val();
+							result = result
+									+ "<input type='hidden'  name='employeeId"+count+"' id='employeeId"+count+"' value='"+localId+"' />";
+							result = result
+									+ "<input type='hidden'  name='employeestartDate"+count+"' id='employeestartDate"+count+"' value='"+startDate+"' />";
+							result = result
+									+ "<input type='hidden'  name='employeeendDate"+count+"' id='employeeendDate"+count+"' value='"+endDate+"' />";
+							count++;
+						} */
+					/* }); */
+	/* result = result
+			+ "<input type='hidden' name='employeeMaxCount' id='employeeMaxCount' value='"+count+"'/>"; */
+	/* $("#assignTeamSavingDiv").empty();
+	$("#assignTeamSavingDiv").append(result); */
+}
+</script>
+
 
 
 <jsp:include page="../masterFooter.jsp" />
