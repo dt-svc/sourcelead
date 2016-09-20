@@ -257,14 +257,9 @@ public class VendorRestController {
 			    //get user by userId
 			    User user = userService.getUserById(Long.parseLong(spocUserId));
 			    
-			    //generate random password
-			    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			    String password = null;
 		 		if(null != user  && null != orgRelations){
-		 			user.setPassword(sourceleadPasswordEncoder.encode(password));
-		 			user.setIsMailSent(Status.Y);
-		 			userService.addUser(user);
-		 			
-		 			//to update spoc invitation status
+		 		    //to update spoc invitation status
 		 			OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);
