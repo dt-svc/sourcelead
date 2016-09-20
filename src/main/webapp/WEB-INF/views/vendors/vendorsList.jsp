@@ -266,7 +266,7 @@ function getVendorContactLists(){
    	        	result = result +'  <th>Email</th>';
    	        	result = result +'  <th>Ph. No</th>';
    	        	result = result +' <th>Owner</th>';
-   	        	result = result +'  <th>Client</th>';
+   	        	result = result +'  <th>Vendor</th>';
    	        	result = result +' <th>Status</th>';
    	        	result = result +' <th>Invitation</th>';
    	        	result = result +'<th>Action</th>';
