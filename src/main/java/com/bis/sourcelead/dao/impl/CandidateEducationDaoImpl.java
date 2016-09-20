@@ -95,7 +95,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEducation ce where ce.orglocationId =:orgLocationId and ce.candidateId.id =:candidateId and ce.status ='1'";  
-		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return candidateEducation;	
 		
 	}

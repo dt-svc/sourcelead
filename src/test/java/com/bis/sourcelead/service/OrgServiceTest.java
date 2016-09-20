@@ -56,7 +56,7 @@ public class OrgServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgServiceTest.class);
 
-	//@Test
+	@Test
 	public void addOrganiztion() throws Exception {
 		Org organization = new Org();
 		organization.setId(1l);
@@ -77,7 +77,7 @@ public class OrgServiceTest {
 		logger.info("addOrganiztion" + organization.getWebSite());
 	}
 
-	//@Test
+	@Test
 	public void updateOrg() throws Exception {
 		Org organization = new Org();
 		User user = new User();
@@ -98,7 +98,7 @@ public class OrgServiceTest {
 		logger.info("updateOrg " +organization.getId());
 	}
 
-	//@Test
+	@Test
 	public void findOrgById() throws Exception {
 		
 		 Org organization = new Org();
@@ -109,14 +109,14 @@ public class OrgServiceTest {
 
 	
 
-	//@Test
+	@Test
 	public void getOrgs() throws Exception {
 		 List<Org> organization = new ArrayList<Org>();
 		 organization = orgService.getOrgs();
 		logger.info("getOrgs "+ organization.size());
 	}
 	
-	//@Test
+	@Test
 	public void websiteValidation() throws Exception{
 		
 		
@@ -124,7 +124,7 @@ public class OrgServiceTest {
 		logger.info("websiteValidation "+abc);
 	}
 	
-	//@Test
+	@Test
 	public void saveOrgSettings() throws Exception{
 		
 		Org organization = new Org();
@@ -145,7 +145,7 @@ public class OrgServiceTest {
 		return multipartFile;
 	}
 	
-	//@Test
+	@Test
 	public void getOrgByOrgCode() throws Exception{
 		
 		Org organization = new Org();
@@ -161,7 +161,7 @@ public class OrgServiceTest {
 		logger.info("isClientNameValid "+flag);
 	}
 	
-	//@Test
+	@Test
 	public void getEnrolledOrgs() throws Exception{
 		List<Org> organization = new ArrayList<>();
 		organization = orgService.getEnrolledOrgs(2l, "Active", "srinivas");

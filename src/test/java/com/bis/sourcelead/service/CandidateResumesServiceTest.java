@@ -14,8 +14,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,11 +22,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.impl.CandidateResumesServiceImpl;
 
 
 
@@ -48,7 +46,7 @@ public class CandidateResumesServiceTest {
 		CandidateResumesService candidateResumesService ;
 		private static final Logger logger = LoggerFactory.getLogger(CandidateResumesServiceTest.class);
 		
-		//@Test
+		@Test
 		public void storeCandidateResume() throws Exception{
 			CandidateResumes candidateResumes = new CandidateResumes();
 			Candidate candidate = new Candidate();
@@ -60,24 +58,26 @@ public class CandidateResumesServiceTest {
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("title", "exp");
 			jsonObj.put("description", "hello hi");
+			jsonObj.put("docFile", "input.txt");
 			candidateResumes.setId(1l);
-			candidateResumes.setStatus("CANDIDATE_ACTIVE");
+			candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidate.setOrgLocationId(orgLocationId);
 						
 			MultipartFile multipartFile = getMultiPartFile();
 						
-			candidateResumes = candidateResumesService.storeCandidateResume(jsonObj,user,candidate,orgLocationId,multipartFile);
+			candidateResumes = candidateResumesService.storeCandidateResume(jsonObj,user,candidate,"1",orgLocationId,multipartFile);
 			logger.info("success fully store " +candidateResumes.getStatus());
 			
 		}
 		private MultipartFile getMultiPartFile() throws IOException {
 			File file = new File("src/test/resources/input.txt");
+			Boolean j = file.exists();
 		    FileInputStream input = new FileInputStream(file);
 		    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
 			return multipartFile;
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateResumesDetails() throws Exception{
 			HashSet<CandidateResumes> candidateResumes = new HashSet<>();
 			OrgLocations orglocations = new OrgLocations();
@@ -96,15 +96,15 @@ public class CandidateResumesServiceTest {
 			return multipartFile;
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateResumesListByCandidateIdAndStatus() throws Exception{
 			
 			List<CandidateResumes> candidateResumesList = new ArrayList<CandidateResumes>();
-			candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(1l,"ACTIVE");
+			candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(1l,Constants.CANDIDATE_ACTIVE);
 			logger.info("getCandidateResumesListByCandidateIdAndStatus " + candidateResumesList.size());
 		}
 		
-		//@Test
+		@Test
 		public void updateCandidateResume() throws Exception{
 			CandidateResumes candidateResumes = new CandidateResumes();
 			OrgLocations orgLocations = new OrgLocations();
@@ -120,7 +120,7 @@ public class CandidateResumesServiceTest {
 			logger.info("candidateResumes " + candidateResumes.getCandidateId());
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateResumeByResumeId() throws Exception{
 			CandidateResumes candidateResumes = new CandidateResumes();
 			candidateResumes = candidateResumesService.getCandidateResumeByResumeId(2l);

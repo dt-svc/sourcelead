@@ -107,7 +107,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
 				}
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if(jsonObj.has("spocStatus")){
+					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				}else{
+					orgSpoc.setSpocStatus(Constants.ACTIVE);
+				}
+				
 				orgSpoc.setCreatedDate(CommonUtil.currentDate());
 				orgSpoc.setCreatedBy(user.getUserCode());
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
@@ -152,5 +157,25 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		logger.debug("In OrgSpocService class...");
 		return orgSpocDao.getSpocUserByUserId(spocUserId);
 	}
+	
+	@Override
+	public List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId, Long userId,String relationType) throws Exception {
+		
+		List<OrgSpoc>  contactsList = orgSpocDao.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocationId,userId,relationType);
+		
+		if(contactsList!=null){
+			for(OrgSpoc orgspoc :contactsList){
+				
+				orgspoc.setSpocName(orgspoc.getSpocUser().getFirstName() +""+orgspoc.getSpocUser().getLastName());
+				orgspoc.setSpocEmail(orgspoc.getSpocUser().getEmail());
+				orgspoc.setSpocMobilePhone(orgspoc.getSpocUser().getMobilePhone());
+				orgspoc.setOrgName(orgspoc.getResponderLocationId().getOrg().getOrgName());
+				orgspoc.setStatus(orgspoc.getStatus());
+				
+			}
+		}
+		return  contactsList;
+	}
+
 	
 }
