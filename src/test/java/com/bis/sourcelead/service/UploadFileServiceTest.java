@@ -115,6 +115,4 @@ public class UploadFileServiceTest {
 	  	uploadFileService.uploadFile(multipartFile, orgLocations, user, isMailChecked);
 	}
 	
-	
-	
 }
