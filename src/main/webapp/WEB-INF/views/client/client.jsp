@@ -366,8 +366,8 @@ function getOrgDetails()
    	        }
    	    });
    	 
-   	validateEmail(); 
-	getSpocUserDetails();
+   validateEmail(); 
+   getSpocUserDetails();
 	
 	}
 	
@@ -466,10 +466,7 @@ function validateEmail(){
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
-					});
+					
 				}
 			},
 
