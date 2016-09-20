@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -186,11 +185,11 @@ public class TeamRestController {
 		  * @return
 		  * @throws Exception
 		  */
-		 @RequestMapping(value = "/deleteTeam/{id}", method = RequestMethod.POST,headers="Accept=application/json")
-		 public Boolean deleteTeam(@PathVariable Long id) throws Exception { 
-		  Team	team= teamService.getTeamByTeamId(id);
-			Boolean isDeleted = teamService.deleteTeamById(team.getId());
-			return isDeleted;
+		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
+		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
+			 Team team = teamService.deleteTeamById(teamId);
+			 return "success";
+
 		  }
 	 
 }

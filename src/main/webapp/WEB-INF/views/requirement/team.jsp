@@ -40,7 +40,7 @@ function teamList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
-           type : "POST",
+		  type : "POST",
             url: sourceleadUrl+"/getTeamListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -69,11 +69,11 @@ function teamList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-				             result = result +"<td><div><span>Business Intelli</span></div></td>";
-				             result = result +"<td><div><span>Vannam Mahesh</span></div></td>";
-				             result = result +"<td><div><span>25</span></div></td>";
-				             result = result +"<td><div><i class='fa fa-pencil proj_show' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
-		                     result = result +"</tr>";
+				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				             result = result +"<td><div><span>V"+opt.ownerUserId.firstName+"</span></div></td>";
+				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				             result = result +"<td><div class='tblicons'><i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
+				             result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
@@ -589,7 +589,6 @@ function storeTeam(){
 			con = con.replace(/[{}]/g, "");
 		  
 		     var jsonData = encodeURIComponent(con);
-		     alert(jsonData); 
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
 			 $("#team_form").attr("disabled", "disabled");
@@ -617,15 +616,25 @@ function storeTeam(){
 
 
 <script>
-function deleteTeam(id){
+function deleteTeam(teamId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var message = confirm("You are choosing to delete the team");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/deleteTeam?${_csrf.parameterName}=${_csrf.token}&id="+id, 	   
+		    url: sourceleadUrl+"/deleteTeamById?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId, 
    		    success: function(data) {
-   		    	alert(deletes);
+   		    	
+   		    	if(data != null && data != 'undefined' && data != ""){
+             		if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	}
+             		else if (data.indexOf('exception') >= 0) {
+             			 location.replace(sourceleadUrl+"/errorPage");
+             		}else{
+             			teamList();
+             		}
+   		    	}
    		    }
 	     });
 	}
@@ -650,9 +659,7 @@ function storeTeamMembers(teamId){
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
 		  
-			 alert("teamId="+teamId);
 		     var jsonData = encodeURIComponent(con);
-		     alert(jsonData); 
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
 			 $("#teamMember_form").attr("disabled", "disabled");
