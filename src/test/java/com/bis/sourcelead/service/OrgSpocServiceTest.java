@@ -48,7 +48,7 @@ public class OrgSpocServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSpocServiceTest.class);
 	
 	
-	//@Test
+	@Test
 	public void addOrgSpoc() throws Exception{
 		OrgSpoc orgSpoc = new OrgSpoc();
 		orgSpoc.setOrgRelationId(3l);
@@ -109,37 +109,37 @@ public class OrgSpocServiceTest {
 		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
 	}
 	
-	//@Test
+	@Test
 	public void getAllSpocsByOrgRelationId() throws Exception{
 		List<OrgSpoc> list = orgSpocService.getAllSpocsByOrgRelationId(3l, 3l, 3l);
 		logger.info("retrieved sucessfully...."+list.size());
 	}
 	
-	//@Test
+	@Test
 	public void getOrgSpocById() throws Exception{
 		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(6l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
 	}
 	
-	//@Test
+	@Test
 	public void validateSpacEmailIdByOwnerUserIdAndOrgRelationId() throws Exception{
 		OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId("info@acer123.com", 1l, 3l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
 	}
 	
-	//@Test
+	@Test
 	public void getSpocAndOwnerDetailsById() throws Exception{
 		OrgSpoc orgSpoc = orgSpocService.getSpocAndOwnerDetailsById(4l, 3l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
 	}
 	
-	//@Test
+	@Test
 	public void getOwnerIdbySpocId() throws Exception{
 		List<Long> list = orgSpocService.getOwnerIdbySpocId(6l, 3l);
 		logger.info("retrieved sucessfully...."+list.size());
 	}
 	
-	//@Test
+	@Test
 	public void getSpocUserByUserId() throws Exception{
 		OrgSpoc orgSpoc = orgSpocService.getSpocUserByUserId(4l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());

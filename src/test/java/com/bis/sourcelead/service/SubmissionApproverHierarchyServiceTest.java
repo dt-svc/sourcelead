@@ -82,7 +82,7 @@ public class SubmissionApproverHierarchyServiceTest {
 		logger.info("getSubmissionApproverHierarchy added successfully"+ Hierarchy);
 	}
 	
-	//@Test
+	@Test
 	public void getAllSubmissionApproverHierarchies() throws Exception{
 		List<SubmissionApproverHierarchy> getAllSubmissionApprover = submissionApproverHierarchyService.getAllSubmissionApproverHierarchies();
 		logger.info("getAllSubmissionApproverHierarchies added successfully"+getAllSubmissionApprover.size());

@@ -61,7 +61,7 @@ public class ActionRolesServiceTest {
 		assertSame(1L, actionRoles.getId());
 	}
 	
-	//@Test
+	@Test
 	public void getSourceLeadActionRolesListByOrgId() throws Exception{
 		Org org = new Org();
 		org.setId(2L);
@@ -73,7 +73,7 @@ public class ActionRolesServiceTest {
 	}
 	}
 	
-	//@Test
+	@Test
 	public void getOrgActionRolesByRoleAndOrgLocationId() throws Exception{
 		/*OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1L);

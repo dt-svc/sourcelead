@@ -29,7 +29,7 @@ public class NotificationServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(NotificationServiceTest.class);
 
 	
-	//@Test
+	@Test
 	public void saveNotification() throws Exception{
 		Notifications notifications = new Notifications();
 		EmailScenario emailScenario = new EmailScenario();
@@ -53,7 +53,7 @@ public class NotificationServiceTest {
 		logger.info("saveNotification " + notifications.getId());
 	}
 	
-	//@Test
+	@Test
 	public void getNotificationsCountByUserId() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("hangonn");
@@ -65,7 +65,7 @@ public class NotificationServiceTest {
 		logger.info("getNotificationsCountByUserId " + notificationscount);
 	}
 	
-	//@Test
+	@Test
 	public void getNotificationsListByUserId() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("QAeD");
@@ -79,7 +79,7 @@ public class NotificationServiceTest {
 		logger.info("getNotificationsListByUserId " + list.size());
 	}
 	
-	//@Test
+	@Test
 	public void updateNotificationStatusAsRead() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("QAeD");
@@ -92,7 +92,7 @@ public class NotificationServiceTest {
 		logger.info("updateNotificationStatusAsRead " + notificationscount);
 	}
 	
-	//@Test
+	@Test
 	public void updateNotificationDeleteStatus() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("hangonn");
@@ -107,7 +107,7 @@ public class NotificationServiceTest {
 		logger.info("updateNotificationDeleteStatus " + notificationscount);
 	}
 	
-	//@Test
+	@Test
 	public void getAllNotificationsListByUserId() throws Exception{
 		Notifications notifications = new Notifications();
 		notifications.setOrgCode("QAeD");

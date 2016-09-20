@@ -79,8 +79,8 @@ public class CandidateController {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
         model.addObject("loginCountryName", countries.getName());
 		
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE);
-		model.addObject("candidatesList", candidatesList);
+	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
+		model.addObject("candidatesList", candidatesList);*/
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
