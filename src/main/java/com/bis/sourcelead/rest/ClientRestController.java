@@ -198,6 +198,21 @@ public class ClientRestController {
 				
 			} 
 		
+		
+		
+		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 if(!email.equalsIgnoreCase(user.getEmail())){
+				 return "Valid Email";
+			 }else{
+				 return "Invalid Email";
+			 }
+			 
+		 }
+		 
+		
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
 		    public @ResponseBody String getSpocUserDetails(@RequestParam(value="email", required=false) String email,
 		    		@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
