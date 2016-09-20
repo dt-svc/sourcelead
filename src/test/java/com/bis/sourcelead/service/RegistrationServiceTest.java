@@ -134,7 +134,7 @@ public class RegistrationServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void deletePasswordResets() throws Exception{
 			//PasswordResets passwordResets = new PasswordResets();
 			//passwordResets.setId((long)1l);

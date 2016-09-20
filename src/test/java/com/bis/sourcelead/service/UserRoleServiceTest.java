@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +20,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -54,7 +55,7 @@ public class UserRoleServiceTest {
 		/*@Autowired
 		OrgLocationService locationService;*/
 		
-		//@Test
+		@Test
 		public void addUserRole() throws Exception{
 			UserRole userRole = new UserRole();
 			User user = new User();
@@ -70,56 +71,44 @@ public class UserRoleServiceTest {
 			userRole.setIsPrimary(1);
 			userRole.setCreatedDate(new Date());
 			userRole.setCreatedBy(user.getUserCode());
-			userRoleService.addUserRole(userRole);
-			
-			userRoleService.addUserRole(userRole);
-			logger.info("addUserRole successfully updated"+userRole.getRoles()); 
+			assertEquals(userRole,userRoleService.addUserRole(userRole));
 		}
 		
 		
-		//@Test
+		@Test
 		public void getLoginUserPrimaryRole() throws Exception{
-			
 			UserRole userRole = userRoleService.getLoginUserPrimaryRole(1L);
-			logger.info("userRole"+userRole.getUser());
-			
+			assertEquals(new Long(3) ,userRole.getId());
 		}
 		
-		//@Test
-		
+		@Test
 		public void getUsersListByLocationId() throws Exception{
-			
 			Long locationId = 1l;
 			String userState = "INACTIVE";
 			Long userId = 2l;
-			
 			List<UserRole> userslist = userRoleService.getUsersListByLocationId(locationId,userState,userId);
-			logger.info("getUsersListByLocationId successfully updated"+userslist);
-			
-			
+			assertFalse(userslist.isEmpty());
 		}
-		//@Test
+		@Test
 		public void getUsersListByRoleAndLocationId() throws Exception{
 			
-			List<UserRole> userRole = new ArrayList<>();
-			userRole = userRoleService.getUsersListByRoleAndLocationId(1l,2l,"EMPLOYEE",2l);
-			logger.info("getUsersListByRoleAndLocationId "+userRole.size());
+			List<UserRole> userRole = userRoleService.getUsersListByRoleAndLocationId(1l,2l,"EMPLOYEE",2l);
+			assertFalse(userRole.isEmpty());
 		}
 
 		
-		//@Test
+		@Test
 		public void getUsersListByUserNameAndLocationId() throws Exception{
 			
 			String userName = "ajith";
 			Long locationId = 2l;
 			String userState = "INACTIVE";
 			Long userId = 1l;
-			
 			List<UserRole> userslist = userRoleService.getUsersListByUserNameAndLocationId(userName,locationId,userState,userId);
-			logger.info("getUsersListByUserNameAndLocationId successfully updated"+userslist);
+			assertFalse(userslist.isEmpty());
 		}
 		
-		//@Test
+		@Test
 		public void getUsersListByRoleAndNameAndLocationId() throws Exception{
 			
 			UserRole userRole = new UserRole();
@@ -129,57 +118,48 @@ public class UserRoleServiceTest {
 			Long locationId = 1l;
 			String userState = "ACTIVE";
 			Long userId = 3l;
-			
 			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId);
-			logger.info("getUsersListByRoleAndNameAndLocationId"+userslist.size());
+			assertNotNull(userslist);
 		}
 		
-		//@Test
+		@Test
 		public void getUsersListByUserStateAndLocationId() throws Exception{
 			
 			String userState = "ACTIVE"; 
 			Long locationId = 1l;
 			Long userId = 1l;
-			
 			List<UserRole> userslist = userRoleService.getUsersListByUserStateAndLocationId(userState,locationId,userId);
-			logger.info("getUsersListByUserStateAndLocationId"+userslist.size());
-			
+			assertNotNull(userslist);
 		}
 		
-		//@Test
+		@Test
 		public void getUsersBasedOnUserRoles() throws Exception{
-			
 			List<UserRole> userRole = userRoleService.getUsersBasedOnUserRoles( );
-		
-			logger.info("getUsersBasedOnUserRoles"+userRole.size());
-			
+			assertNotNull(userRole);			
 		}
 		
-		//@Test
+		@Test
 		public void getApproverAssignedUsers() throws Exception{
 			
 			String userState = "ACTIVE"; 
 			String searchByName = "ROLE_APPROVER";
 			List<Long> projectIds = projectsService.getApprovarAssignedProjects(1l, 1l);
-			
-			//List<UserRole> userrole  = userRoleService.getApproverAssignedUsers(projectIds, userState, searchByName);
-			
 			List<UserRole> userRole = userRoleService.getApproverAssignedUsers(projectIds,userState,searchByName );
-			logger.info("getApproverAssignedUsers"+userRole.size());
+			assertNotNull(userRole);	
 		}
 		
-		//@Test
+		@Test
 		public void getUserDetailsByEmailAndLocationId() throws Exception{
 			String email = "info@hangonn.com";
 			Long locationId = 3l;
 			UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, locationId);
-			logger.info("getUserDetailsByEmailAndLocationId"+userRole.getStatus());
+			assertNotNull(userRole);
 		}
 		
 		@Test
 		public void getUserSpocsListByUserId() throws Exception{
 			List<UserRole> userRole = userRoleService.getUserSpocsListByUserId(3l);
-			logger.info("getUserSpocsListByUserId: "+userRole.size());
+			assertNotNull(userRole);
 		}
 
 	}

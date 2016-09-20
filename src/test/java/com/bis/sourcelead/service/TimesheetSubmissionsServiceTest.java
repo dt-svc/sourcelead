@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -68,8 +70,7 @@ public class TimesheetSubmissionsServiceTest {
 		user.setId(3l);
 		timesheetSubmissions.setUserId("3");
 		timesheetSubmissions.setApproverUserId(user);
-		timesheetSubmissions=timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
-		logger.info(" addTimesheetSubmissions successfully updated "+timesheetSubmissions);
+		assertEquals(timesheetSubmissions,timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions));
 	}
 	
 	 
@@ -93,22 +94,14 @@ public class TimesheetSubmissionsServiceTest {
 		user.setId(3l);
 		timesheetSubmissions.setUserId("1");
 		timesheetSubmissions.setApproverUserId(user);
-
-		timesheetSubmissions = timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-		logger.info(" updateTimesheetSubmissions successfully updated "+timesheetSubmissions.getRejectedReason());
+		assertEquals(timesheetSubmissions,timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions));
 	}
 	
 	@Test
 	public void getTimesheetSubmissions() throws Exception{
-		
-		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		
 		String id = "1";
-				
-		/*TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
-		System.out.println("Successfully retrived!!!!"+timesheetSubmissions.getStatus());*/
-		timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
-		logger.info(" getTimesheetSubmissions successfully updated "+timesheetSubmissions);
+		TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(id);
+		assertEquals(timesheetSubmissions,timesheetSubmissionsService.getTimesheetSubmissions(id));
 	}
 	 
 	
@@ -126,8 +119,6 @@ public class TimesheetSubmissionsServiceTest {
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-		logger.info(" saveAllTimesheetSubmissions successfully updated "+timesheetSubmissionsList.size());
-		
 		}
 		
 	
@@ -296,7 +287,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}*/
 	
-	//@Test
+	@Test
 	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
 		User user = new User();

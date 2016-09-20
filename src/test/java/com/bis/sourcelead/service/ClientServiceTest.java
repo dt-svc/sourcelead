@@ -45,7 +45,7 @@ public class ClientServiceTest {
 	 * @throws Exception
 	 */
 
-	//@Test
+	@Test
 	public void saveClient() throws Exception {
 		
 		 logger.info("Entered Into saveClient() method");
@@ -91,13 +91,13 @@ public class ClientServiceTest {
 	 * test case for client List
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void getAllClientsByOrgLocationId() throws Exception{
 		List<OrgRelations> clientsList= orgRelationsService.getAllClientsByOrgLocationId(1L);
 		System.out.println("Successfully Retrieved..."+clientsList.size());
 	} 
 	
-	//@Test
+	@Test
 	public void storeClient() throws Exception{
 		 JSONObject jsonObj = new JSONObject();
 		 jsonObj.put("firstName", "Demo_final13");
@@ -142,7 +142,7 @@ public class ClientServiceTest {
 		logger.info("Client details Stored Successfully....");
 	}
 	
-	//@Test
+	@Test
 	public void updateVendorDetails() throws Exception {
 		
 		 JSONObject jsonObj = new JSONObject();

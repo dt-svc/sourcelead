@@ -107,7 +107,7 @@ public class Candidate {
 	private String invitationstatus;
 	
 	@Column(name="STATUS")
-	private String status;
+	private Integer status;
 	
 	@Column(name="TERMINATE_REASON")
 	private String terminateReason;
@@ -401,12 +401,12 @@ public class Candidate {
 	}
 
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
