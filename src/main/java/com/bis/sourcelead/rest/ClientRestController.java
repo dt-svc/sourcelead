@@ -296,17 +296,63 @@ public class ClientRestController {
 	 */
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+				//if login user is spoc
+				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+				}
+				//if login user is Owner
+				else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+					}
+				 
+			}else{
+				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+					 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+					 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+				 }
+				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+				}
+			}
+			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+				orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+			}
+			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+				orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+			}
+			
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
