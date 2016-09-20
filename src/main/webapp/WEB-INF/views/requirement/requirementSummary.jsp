@@ -2292,39 +2292,9 @@ function requirementDetails(requirementId){
 				            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
 							result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
-					        result = result +'     <h2>Assigned Members</h2> ';
-					        result = result +'     <div class="heightScroll mt10 mb">';
-					        result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-					        result = result +'         <thead>';
-					        result = result +'         <tr>';
-					        result = result +'         <th>Name</th>';
-					        result = result +'         <th>Role</th>';
-					        result = result +'         <th>Team</th>';
-					        result = result +'         <th>No. of Applicants</th>';
-					        result = result +'         </tr>';
-					        result = result +'         </thead>';
-					        result = result +'         <tbody>';
-					        result = result +'         <tr>';
-					        result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
-					        result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
-					        result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
-					        result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
-					        result = result +'         </tr>';
-					        result = result +'         <tr>';
-					        result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
-					        result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
-					        result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
-					        result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
-					        result = result +'         </tr>';
-					        result = result +'         </tbody>';
-					        result = result +'         </table>';
-					        result = result +'     </div>';
-					        result = result +'     </div>';
-					        result = result +' </div> ';
-		                
-				            
-				            
-				            
+					        
+					        result = result + '<div id="assignedMemberList"></div>';
+					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
 					            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
@@ -2411,7 +2381,8 @@ function requirementDetails(requirementId){
 							$("#tab-1").empty();
 							$("#tab-2").empty(); 
 							$("#tab-1").append(result); 
-							    
+							
+							assignedMemberList();
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -2847,4 +2818,45 @@ function requirementPipeline(requirementId){
                  
             }); 
 }
+</script>
+
+<script>
+
+function assignedMemberList(){
+	var result = '';
+	result = result +'     <h2>Assigned Members</h2> ';
+    result = result +'     <div class="heightScroll mt10 mb">';
+    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
+    result = result +'         <thead>';
+    result = result +'         <tr>';
+    result = result +'         <th>Name</th>';
+    result = result +'         <th>Role</th>';
+    result = result +'         <th>Team</th>';
+    result = result +'         <th>No. of Applicants</th>';
+    result = result +'         </tr>';
+    result = result +'         </thead>';
+    result = result +'         <tbody>';
+    result = result +'         <tr>';
+    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
+    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
+    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
+    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
+    result = result +'         </tr>';
+    result = result +'         <tr>';
+    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
+    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
+    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
+    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
+    result = result +'         </tr>';
+    result = result +'         </tbody>';
+    result = result +'         </table>';
+    result = result +'     </div>';
+    result = result +'     </div>';
+    result = result +' </div> ';
+    
+    $("#assignedMemberList").empty();
+    $("#assignedMemberList").append(result);
+	
+}
+
 </script>
