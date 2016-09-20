@@ -50,18 +50,50 @@
 				<div class="timesheet_head">
 					<ul>
 
-		                  <!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
-		                	<div id="filter2ApprovedPop" class="approved_pop">
+		                  <li id="clientsList" ><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
-		                        	<li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="filter();"><label for="c6">Level-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="filter();"><label for="c7">Level-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="filter();"><label for="c8">Level-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="filter();"><label for="c8">Level-4</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="filter();"><label for="c8">Level-5</label></li>
+		                    	  <c:forEach var="report" items="${clientsList}">  
+		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
+								  </c:forEach>
 		                        </ul>
 		                    </div>                	
-		                </li> -->
+		                </li>
+	               
+		                <li id="clientSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+	                	<div id="filter3ApprovedPop" class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label for="c5">Active</label></li>
+								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label for="c6">In-Active</label></li>
+								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label for="c7">New</label></li>
+								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label for="c8">Negotiation</label></li>
+	               				<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label for="c8">Contracted</label></li>
+	                        </ul>
+	                      </div>                	
+	                  </li>
+	                  <li id="clientInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+	                	<div id="filter4ApprovedPop" class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label for="c5">Resend</label></li>
+								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label for="c6">Send</label></li>
+								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label for="c7">Accepted</label></li>
+								<li><input id="c8" type="checkbox"  name="clientInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label for="c8">Rejected</label></li>
+	                        </ul>
+	                      </div>                	
+	                  </li>
+	                  
+		                  <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		                	<div id="filter2ApprovedPop" class="approved_pop">
+		                    	<ul>
+									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getClientDetails();"><label for="c6">Level-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getClientDetails();"><label for="c7">Level-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getClientDetails();"><label for="c8">Level-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getClientDetails();"><label for="c8">Level-4</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getClientDetails();"><label for="c8">Level-5</label></li>
+		                        </ul>
+		                    </div>                	
+		                </li>
                 
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
 						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
@@ -112,18 +144,24 @@
 <script type="text/javascript">
 window.onload = function () {
 	getVendorContactLists();
-	/* listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact'; */
+	 listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact';
  };
 </script>
 
 <script>
 function getClientDetails(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}", 	   
+		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
@@ -290,11 +328,29 @@ function pagination(){
 
 <script>
 function getVendorContactLists(){
+	var clientIds = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+    {
+		clientIds.push($(this).val());
+    });
+	var status = [];
+	$('input:checkbox[name=clientStatus]:checked').each(function() 
+    {
+		status.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}", 	   
+		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
@@ -533,7 +589,10 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		// document.getElementById("contactLevel").style.display="block";
+		document.getElementById("contactLevel").style.display="block";
+		document.getElementById("clientsList").style.display="none";
+		 document.getElementById("clientSatatus").style.display="none";
+		 document.getElementById("clientInvitation").style.display="none";
 		 
 		 
 		 getClientDetails();
@@ -544,7 +603,10 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="none";
 		 document.getElementById("clientList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
-		 //document.getElementById("contactLevel").style.display="none";
+		 document.getElementById("contactLevel").style.display="none";
+		 document.getElementById("clientsList").style.display="block";
+		 document.getElementById("clientSatatus").style.display="block";
+		 document.getElementById("clientInvitation").style.display="block";
 		 
 		 
 		 getVendorContactLists();
@@ -752,6 +814,16 @@ function getEndDatePickerById(projectId,localFieldName){
 			e.stopPropagation();
 		});
 		
+		$("#filter1ApprovePop").click(function(){
+			$("#filter1ApprovedPop").slideToggle(200);
+		});
+	    $("html").click(function() {
+	        $("#filter1ApprovedPop").slideUp(200);
+	    });
+	    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+	        e.stopPropagation();
+	    });	
+		
 		$("#filter2ApprovePop").click(function(){
 			$("#filter2ApprovedPop").slideToggle(200);
 		});
@@ -761,6 +833,27 @@ function getEndDatePickerById(projectId,localFieldName){
 	    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
 	        e.stopPropagation();
 	    });	
+	    
+	    $("#filter3ApprovePop").click(function(){
+			$("#filter3ApprovedPop").slideToggle(200);
+		});
+	    $("html").click(function() {
+	        $("#filter3ApprovedPop").slideUp(200);
+	    });
+	    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
+	        e.stopPropagation();
+	    });	
+	    
+	    $("#filter4ApprovePop").click(function(){
+			$("#filter4ApprovedPop").slideToggle(200);
+		});
+	    $("html").click(function() {
+	        $("#filter4ApprovedPop").slideUp(200);
+	    });
+	    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
+	        e.stopPropagation();
+	    });	
+	    
 	});
 	// project side bar
 	$(document).ready(function() {

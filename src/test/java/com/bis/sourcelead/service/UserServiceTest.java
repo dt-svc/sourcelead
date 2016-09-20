@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
+import static org.hamcrest.CoreMatchers.is;
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.core.IsEqual;
 import org.json.JSONObject;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -166,8 +167,7 @@ public class UserServiceTest {
 		String website = "www.bis.com";
 		String email = "info@businessintelli.com"; 
 		String sourceleadBLockedwebsites = "www.facebook.com";
-		
-		userService.validateEmailandCandidate(website,email,sourceleadBLockedwebsites);
+		assertEquals(" ",userService.validateEmailandCandidate(website,email,sourceleadBLockedwebsites));
 		logger.info(" success fully validate email "+email);
 	}
 	
@@ -175,28 +175,26 @@ public class UserServiceTest {
 	public void  getUserById() throws Exception{
 		
 		Long Id=3l;
+		User user2 = new User();
 		User user = userService.getUserById(Id);
-		user = userService.getUserById(Id);
-		logger.info(" success fully getUserById " + user.getEmail());
-		
-		
+		assertNotNull(user);
+		user2.setId(2l);
+		assertEquals(user2.getId(), user.getId());
 	}
 	
 	@Test
    public void findByEmail() throws Exception{
 		User user = new User();
 		String email = "demomail123@gmail.com";
-		
 		user = userService.findByEmail(email);
-		logger.info(" success fully findByEmail "+user.getFirstName());
+		assertNotNull(user);
 	}
 	
 	@Test
 	public void getUsers() throws Exception{
-		
 		//User user = new User();
 		Collection<User> user  = userService.getUsers();
-		logger.info(" getUsers successfully updated "+user.size());
+		assertNotNull(user);
 	}
 	
 	@Test
@@ -238,8 +236,7 @@ public class UserServiceTest {
 		userProfile.setMobilePhone("54789562123");
 		userProfile.setPassword("Bis@123");
 		
-	//	userService.saveUserProfile(userProfile,request,user);
-		logger.info("saveUserProfile"+multipartFile.getSize());
+		assertSame(user, userService.saveUserProfile(userProfile,multipartFile,user));
 	}
 
 	private MultipartFile getMultiPartFile() throws IOException {
@@ -252,35 +249,31 @@ public class UserServiceTest {
 	@Test
 	public void getUsersByUserRoles() throws Exception{
 		Collection<User> user = userService.getUsersByUserRoles(2l);
-		logger.info("getUsersByUserRoles " + user.size());
+		assertNotNull(user);
 	}
 	
 	@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
-		List<User> user = new ArrayList<User>();
-		user = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(1l,2l);
-		logger.info("getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser " + user.size());
+		List<User>  user = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(1l,2l);
+		assertNotNull(user);
 	}
 	
 	@Test
 	public void getUsersByUserRolesAndOrgLocationId() throws Exception{
-		List<User> user = new ArrayList<User>();
-		user = userService.getUsersByUserRolesAndOrgLocationId(1l);
-		logger.info("getUsersByUserRolesAndOrgLocationId " + user.size());
+		List<User>  user = userService.getUsersByUserRolesAndOrgLocationId(1l);
+		assertNotNull(user);
 	}
 	
 	@Test
 	public void getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser() throws Exception{
-		List<User> user = new ArrayList<User>();
-		user = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(1l,2l,1l);
-		logger.info("getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser " + user.size());
+		 List<User> user  = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(1l,2l,1l);
+		 assertNotNull(user);
 	}
 	
 	@Test
 	public void getAllUserOrgCodeAndLocationCodeTimeSheetNotification() throws Exception{
-		List<Employees> employee = new ArrayList<Employees>();
-		employee = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(1l);
-		logger.info("getAllUserOrgCodeAndLocationCodeTimeSheetNotification " + employee.size());
+		 List<Employees> employee = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(1l);
+		 assertNotNull(employee);
 	}
 	
 	@Test
@@ -294,7 +287,6 @@ public class UserServiceTest {
 		user.setLastName("Krishna");
 		user.setEmail("pavan.jampana@businessintelli.com");
 		userService.sendEmailToClientOrVendor(user, loginUser, "Pwd123", "Client", loginOrg,null,null);
-		logger.info(" success fully sent email to client/Vendor");
 	}
 	
 	@Test
@@ -303,8 +295,7 @@ public class UserServiceTest {
 		user.setId(3L);
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
-		userService.getUserByIdAndOrgLocationsId(user.getId(), orgLocations.getId());
-		logger.info("Retrieved user details are.."+user.getFirstName());
+		assertEquals(user.getId(), userService.getUserByIdAndOrgLocationsId(user.getId(), orgLocations.getId()));
 	}
 	
 	@Test
@@ -337,8 +328,7 @@ public class UserServiceTest {
 		 Org loginOrg = new Org();
 		 loginOrg.setOrgName("SourceLead");
 		 
-		userService.storeUser(jsonObj, users, orgLocations, sourceType, responderType, loginOrg);
-		logger.info("User details Stored Successfully....");
+		 assertEquals(users.getId(), userService.storeUser(jsonObj, users, orgLocations, sourceType, responderType, loginOrg));
 	}
 	
 	@Test
@@ -346,7 +336,7 @@ public class UserServiceTest {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
 		List<User> list = userService.getOwnersByOrgLocationId(orgLocations.getId());
-		logger.info("Owner details retrieved Successfully...."+list.size());
+		assertFalse(list.isEmpty());
 	}
 	
 	@Test
@@ -354,7 +344,7 @@ public class UserServiceTest {
 		String roleType = "2";
 		Long orgLocationsId = 3l;
 		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
-		logger.info("Manager details retrieved Successfully...."+list.size());
+		assertFalse(list.isEmpty());
 	}
 	
 	@Test
@@ -363,27 +353,27 @@ public class UserServiceTest {
 		String roleType = "2";
 		Long orgLocationsId = 3l;
 		List<User> list = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userId,roleType,orgLocationsId);
-		logger.info("Manager details retrieved Successfully...."+list.size());
+		assertFalse(list.isEmpty());
 	}
 	
 	@Test
 	public void getUserDetailsByUserCode() throws Exception{
 		User user = new User();
 		user.setUserCode("0mkBMphb");
-		user =userService.getUserDetailsByUserCode(user.getUserCode());
-		logger.info("User details retrieved Successfully...."+user.getFirstName());
+		User user1 =userService.getUserDetailsByUserCode(user.getUserCode());
+		assertEquals(user.getUserCode(), user1.getUserCode());
 	}
 	
 	@Test
 	public void getOwnersByOrgLocationIdAndNotExistedOwnerId() throws Exception{
 		List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(5l,3l);
 		List<User> list = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(3l, 3l, ownerListOfSpoc);
-		logger.info("getOwners By Org LocationId And Not Existed OwnerId...."+list.size());
+		assertFalse(list.isEmpty());
 	}
 	
 	@Test
 	public void getAllUserIdsByReportingManagerId() throws Exception{
 		List<Long> list = userService.getAllUserIdsByReportingManagerId(3l);
-		logger.info("getAllUserIdsByReportingManagerId...."+list.size());
+		assertFalse(list.isEmpty());
 	}
 }

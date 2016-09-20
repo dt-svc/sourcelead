@@ -42,17 +42,51 @@
 <div class="vendor_wrap">
 	<div class="timesheet_head">
         	<ul>
-				<!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
-                        </ul>
-                    </div>                	
-                </li>   -->           
+        	
+        	<li id="vendorsList" ><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+		                	<div id="filter1ApprovedPop" class="approved_pop">
+		                    	<ul>
+		                    	  <c:forEach var="report" items="${vendor_list}">  
+		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label for="vendorName${report.id}">${report.clientName}</label></li>
+								  </c:forEach>
+		                        </ul>
+		                    </div>                	
+		                </li>
+	               
+		                <li id="vendorSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+	                	<div id="filter3ApprovedPop" class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label for="c5">Active</label></li>
+								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label for="c6">In-Active</label></li>
+								<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label for="c7">New</label></li>
+								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label for="c8">Negotiation</label></li>
+	               				<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label for="c8">Contracted</label></li>
+	                        </ul>
+	                      </div>                	
+	                  </li>
+	                  <li id="vendorInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+	                	<div id="filter4ApprovedPop" class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label for="c5">Resend</label></li>
+								<li><input id="c6" type="checkbox"  name="vendorInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label for="c6">Send</label></li>
+								<li><input id="c7" type="checkbox"  name="vendorInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label for="c7">Accepted</label></li>
+								<li><input id="c8" type="checkbox"  name="vendorInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label for="c8">Rejected</label></li>
+	                        </ul>
+	                      </div>                	
+	                  </li>
+                  
+	                
+						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		                	<div id="filter2ApprovedPop" class="approved_pop">
+		                    	<ul>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label for="c6">Level-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label for="c7">Level-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label for="c8">Level-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label for="c8">Level-4</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label for="c8">Level-5</label></li>
+		                        </ul>
+		                    </div>                	
+		                </li>          
 				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>	
                        <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
@@ -85,18 +119,23 @@
 <script> 
 $(document).ready(function(){
 	getVendorContactLists();
-	/* listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact'; */
+    listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact';
 });
 </script>
 
 <script>
 function getVendorLists(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorLists?${_csrf.parameterName}=${_csrf.token}", 	   
+		    url: sourceleadUrl+"/getVendorLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
@@ -195,11 +234,28 @@ function pagination1(){
 
 <script>
 function getVendorContactLists(){
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}", 	   
+		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
@@ -766,7 +822,10 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		 //document.getElementById("contactLevel").style.display="block";
+		 document.getElementById("contactLevel").style.display="block";
+		 document.getElementById("vendorsList").style.display="none";
+		 document.getElementById("vendorSatatus").style.display="none";
+		 document.getElementById("vendorInvitation").style.display="none";
 		 
 		 getVendorLists();
 	 }
@@ -776,7 +835,10 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
-		// document.getElementById("contactLevel").style.display="none";
+		 document.getElementById("contactLevel").style.display="none";
+		 document.getElementById("vendorsList").style.display="block";
+		 document.getElementById("vendorSatatus").style.display="block";
+		 document.getElementById("vendorInvitation").style.display="block";
 		 
 		 getVendorContactLists();
 	 }
@@ -800,6 +862,16 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
     
+    $("#filter1ApprovePop").click(function(){
+		$("#filter1ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter1ApprovedPop").slideUp(200);
+    });
+    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
 	});
@@ -807,6 +879,26 @@ $(document).ready(function() {
         $("#filter2ApprovedPop").slideUp(200);
     });
     $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    $("#filter3ApprovePop").click(function(){
+		$("#filter3ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter3ApprovedPop").slideUp(200);
+    });
+    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
+    $("#filter4ApprovePop").click(function(){
+		$("#filter4ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter4ApprovedPop").slideUp(200);
+    });
+    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
     
