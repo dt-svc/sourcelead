@@ -88,7 +88,12 @@ public class VendorController {
 		if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
 		}
-		
+		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+		for(OrgRelations orgRelation :vendorsList){
+			orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+		}
+		model.addObject("vendor_list", vendorsList);
+        model.addObject(vendorsList);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
