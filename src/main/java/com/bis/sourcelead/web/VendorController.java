@@ -1,25 +1,31 @@
 package com.bis.sourcelead.web;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
@@ -221,5 +227,34 @@ public class VendorController {
 			
 			return "redirect:/vendorsList";
 			
+		}
+		/**
+		 * to download error generated file for Vendor
+		 * @param fileName
+		 * @param response
+		 * @throws IOException
+		 */
+		@RequestMapping(value = "/downloadVendorErrorFile/{fileName}", method = RequestMethod.GET)
+		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
+			
+				File file;
+				if("xlsx".equalsIgnoreCase(fileName)){
+					file = new File("FailureUsersForCheck.xlsx");
+				}else{
+					 file = new File("FailureUsersForCheck.xls");
+				}
+				
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
 		}
 }
