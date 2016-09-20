@@ -1,0 +1,2 @@
+UPDATE `sourcelead`.`ACTION_ROLES` SET `IS_NOTIFY`='Y' WHERE `ID`='41';
+

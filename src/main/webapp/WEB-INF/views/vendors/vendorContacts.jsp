@@ -140,7 +140,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				   	        		}
 				                
 					                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
-				                        result = result +' <td><div>---</div></td>';
+				                        result = result +' ---';
 				                  	}
 				   	        		
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
@@ -169,7 +169,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                
 				                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 				                result = result + '	    <td><div>';
-				                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateSpoc('+json[i].id+'\,\''+orgRelationID+'\','+vendorLocationId+')";></i>';
+				                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc('+json[i].id+'\,\''+orgRelationID+'\','+vendorLocationId+')";></i>';
 				                	                    result = result +'</div></td>';
 			                     }
 			                     else{
@@ -222,14 +222,14 @@ function changeSpocStatus(spocId,vendorLocationId){
 }
 </script>
 <script>
-function terminateSpoc(spocId, orgRelationID,vendorLocationId){
+function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+spocId+","+orgRelationID+","+vendorLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -238,7 +238,7 @@ function terminateSpoc(spocId, orgRelationID,vendorLocationId){
 </script>
 
 <script>
-function saveReason(spocId, orgRelationID,vendorLocationId){
+function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason){

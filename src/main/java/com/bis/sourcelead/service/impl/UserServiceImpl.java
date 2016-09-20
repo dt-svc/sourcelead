@@ -620,6 +620,7 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
+				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
@@ -648,6 +649,7 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
+				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
