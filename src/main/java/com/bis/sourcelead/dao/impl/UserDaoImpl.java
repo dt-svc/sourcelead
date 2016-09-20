@@ -384,6 +384,26 @@ public class UserDaoImpl implements UserDao {
 	     return userRoleList;
 	     
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+	     List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return userRoleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId) {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :teamOwnerUserId  ";
+	     List<User> userRoleList = session.createQuery(query.toString()).setLong( "teamOwnerUserId", teamOwnerUserId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return userRoleList;
+	}
 	
 
 }

@@ -179,7 +179,7 @@ function addTeam(){
 	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut + '<select multiple class="chosen-select form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead">';
+	outPut = outPut + '<select   class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
 	            <c:forEach var="report" items="${usersList}">
 			         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
 			   </c:forEach>
@@ -614,6 +614,51 @@ function storeTeam(){
 
 </script>   
 
+
+<script type="text/javascript">
+function getTeamMembers(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
+	 
+	 if(teamOwnerUserId != null && teamOwnerUserId != ''  && teamOwnerUserId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	
+		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#memberUserId").empty();
+			        $("#memberUserId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+	 $(function(){
+		    var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+		    
+		   
+		    $('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+			  })
+		});
+} 
+</script>
 
 <script>
 function deleteTeam(teamId){

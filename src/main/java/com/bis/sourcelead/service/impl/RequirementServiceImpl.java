@@ -128,6 +128,10 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			
+			if(jsonObj.has("priority")){
+				requirement.setPriority(jsonObj.getString("priority"));
+			}
+			
 			if(jsonObj.has("isTemplate")){
 			requirement.setIsTemplate(jsonObj.getString("isTemplate"));
 			}

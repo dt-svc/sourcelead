@@ -1361,13 +1361,23 @@ background-color: #ccc;
                             <div class="form-group">
                             <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
-                              <input type="text" class="form-control" value="">
+                             <select class="form-control"  name="selectOwner" id="teamOwnerId"  onchange="getTeamMembers();">
+			                    	<option value=''>-- Select Owner Id --</option>
+				                    <c:forEach var="report" items="${all_users_List}">
+						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+									</c:forEach>
+			                  </select>
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
-                              <input type="text" class="form-control" value="">
+                             <select multiple class="chosen-select form-control select-bg" name="selectTeam" id="teamMembersId">
+			                    		<option value=''>-- Select Team --</option>
+					                    <c:forEach var="report" items="${all_users_List}">
+							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+								       </c:forEach>
+		                       </select>
                               </div>
                             </div>
                           </div>
@@ -2008,6 +2018,51 @@ function assignMembers() {
 	$("#assignedToSavingDiv").empty();
 	$("#assignedToSavingDiv").append(result); 
 }
+</script>
+
+
+
+<script type="text/javascript">
+function getTeamMembers(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var teamOwnerUserId = document.getElementById("teamOwnerId").value;
+	 if(teamOwnerUserId != null && teamOwnerUserId != ''  && teamOwnerUserId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#teamMembersId").empty();
+			        $("#teamMembersId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+	 $(function(){
+		    var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+		   
+		    $('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+			  })
+		});
+} 
 </script>
 
 

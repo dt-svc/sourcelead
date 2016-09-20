@@ -85,6 +85,9 @@ public class RequirementController {
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("usersList", usersList);
 		
+		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("all_users_List", allusersList);
+		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		

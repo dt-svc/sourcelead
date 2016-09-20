@@ -191,5 +191,32 @@ public class TeamRestController {
 			 return "success";
 
 		  }
+		 
+		 /**
+		   * @author David Raju
+		   * @since  sep 14 2016
+		   * @version 0.0.1
+		   * 
+		   * This method is used get All Users By OrgLocationCode ExceptTeamOwner 
+		   * 
+		   * @param teamOwnerUserId This is the first paramter to getAllUsersByOrgLocationCodeExceptTeamOwner
+		   
+		   * @return string 
+		   * 
+		   * @throws NullPointer
+		   */
+		 
+		  @RequestMapping(value = "/getAllUsersByOrgLocationCodeExceptTeamOwner")
+		  public String getAllUsersByOrgLocationCodeExceptTeamOwner(@RequestParam(value="teamOwnerUserId", required=false) Long  teamOwnerUserId,HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId());
+			resultJson = commonUtil.toJSON(freshUserList);
+			return resultJson;
+		 } 
+
 	 
 }

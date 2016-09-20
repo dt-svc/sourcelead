@@ -41,8 +41,9 @@ public class TeamController {
 		model.setViewName("requirement/team");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
-		model.addObject("usersList", usersList);
+		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		
+		model.addObject("usersList", allusersList);
 		return model;
 
 	}

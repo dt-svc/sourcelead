@@ -148,7 +148,9 @@ function requirementList(){
 		                    	 result = result +"<td><div>No Data</div></td>";
 		                     }
 		                     result = result +"<td><div><b class='proj_process'>"+opt.status+"</b></div></td>";
-		                     result = result +"<td><div><a href='javascript:void(0)'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                     result = result +"<td><div><a href='#'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                     //<c:url value='/releaseRequirementToClientOrVendors/"+opt.id+"'/>'
+		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
