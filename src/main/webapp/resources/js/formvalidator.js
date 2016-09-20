@@ -133,7 +133,8 @@
 
                 if(validation === true) {
                 	 $element.addClass('valid');
-					$element.unbind('keyup');
+                	 //commented for chosen select search on(19/09/2016)
+					 //$element.unbind('keyup');
                 } else {
                     $element.addClass(config.errorElementClass);
                     // if element has custom err msg container, use it

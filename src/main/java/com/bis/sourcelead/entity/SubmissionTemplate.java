@@ -60,6 +60,9 @@ public class SubmissionTemplate {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "IS_DEFAULT")
+	private String isDefault;
+	
 	
 
 	public Long getId() {
@@ -148,5 +151,13 @@ public class SubmissionTemplate {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(String isDefault) {
+		this.isDefault = isDefault;
 	}
 }

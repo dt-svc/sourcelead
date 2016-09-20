@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_DOCUMENTS','TERMINATE_REASON','TEXT NULL AFTER `END_DATE`');

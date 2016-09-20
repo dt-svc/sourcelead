@@ -23,10 +23,21 @@ public class Constants {
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
 	public static final String DATEOFJOIN = "Date of Join (mm/dd/yyyy)";
-	public static final String ROLE = "Role";
+	public static final String ROLE = "Role*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
+	public static final String EMAIL = "Email*";
+	public static final String CLIENT_NAME = "Client Name*";
+	public static final String PHONE = "Phone";
+	public static final String STATUS = "Status";
+	public static final String OWNER = "Owner";
+	public static final String WEBSITE = "Website";
+	public static final String COUNTRY = "Country";
+	public static final String SATATE = "State";
+	public static final String CITY = "City";
+	public static final String LEVEL = "Level";
+	public static final String VENDOR_NAME = "Vendor Name*";
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
@@ -164,4 +175,10 @@ public class Constants {
 	public static String TEAM_ACTIVE = "1";
 	public static String TEAM_IN_ACTIVE = "0";
 
+	public static String ACTIVE = "Active";
+	
+	
+	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
+	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
+	public static String[] LEVEL_DROPDOWN = {"Level-1","Level-2","Level-3","Level-4","Level-5"};
 }

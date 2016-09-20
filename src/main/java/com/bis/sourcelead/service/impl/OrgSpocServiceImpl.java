@@ -59,12 +59,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId) throws Exception {
+	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType) throws Exception {
 		
 		
 		OrgRelations orgRelation = null;
 		OrgLocations respondingOrgLocation = null;
-		if(orgRelationId != null && !"".equals(orgRelationId) && !"''".equals(orgRelationId)){
+		if(orgRelationId != null && !"".equals(orgRelationId) && !"''".equals(orgRelationId) && clientLocationId != null && !"".equals(clientLocationId)){
 			 orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(orgRelationId));
 			 respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(clientLocationId));
 		}else{
@@ -74,7 +74,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
-		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER","",new Org());
+		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,new Org());
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");

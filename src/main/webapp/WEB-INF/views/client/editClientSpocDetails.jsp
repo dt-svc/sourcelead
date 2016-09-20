@@ -19,7 +19,7 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function clientDetailsbySpocId(spocId,ownerId,spocUserId) {
+	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -33,7 +33,7 @@
 						result = result + '<div class="project_details">';
 						
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 							
 							result = result + '<div class="project_details_cta">';
@@ -97,6 +97,8 @@
 						result = result + '</div>';
 						result = result + '</div>';
 						
+						$("#tab-3-addTemplate").empty();
+						$("#tab-3").empty();
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
@@ -117,7 +119,7 @@
 	}
 </script>
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId,spocUserId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
@@ -237,12 +239,11 @@
 						result = result  +'	 <div class="clearfix mb10">';
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
-						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						result = result  +'	   <select  class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							alert("user.id"+json.userId+"ownerId"+ownerId);
-							   if(json.userId == ownerId){
+							   if(user.id == tempOwnerId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
 							  }else{

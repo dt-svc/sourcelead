@@ -68,15 +68,30 @@ public class VendorRestController {
 	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
-			                        @RequestParam(value="clientLocationId", required=false) String clientLocationId , HttpServletRequest request) throws Exception {
+			                        @RequestParam(value="clientLocationId", required=false) String clientLocationId ,
+			                        @RequestParam(value="responderType", required=false) String responderType,
+			                        HttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId);
-		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
-		return "vendorsList";
+		
+		if(jsonObj.has("owner")){
+			String ownersId = jsonObj.getString("owner");
+			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
+			String[] owners = ownersId.split(",");
+			for(int i=0 ;i<owners.length;i++ ){
+				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
+			     if(orgSpoc == null){
+			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
+					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
+			    }
+			} 
+		}
+		
+			return "vendorsList";
 	}
 
 	
@@ -175,6 +190,9 @@ public class VendorRestController {
 	    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 	    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
 	    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+	    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+	    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 					//if login user is Owner
 					else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
@@ -182,6 +200,9 @@ public class VendorRestController {
 							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 							 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+							 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+							 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+							 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 						}
 						
 					 
@@ -191,18 +212,24 @@ public class VendorRestController {
 						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 					 }
 					if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
 					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 					 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
 					 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 				}
 				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
-					 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+					orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 				}
 				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+					orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 				}
 				

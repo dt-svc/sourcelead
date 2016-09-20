@@ -19,8 +19,8 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId) {
-		alert("spocid"+spocId+"ownerId"+ownerId+"spocUserId"+spocUserId);
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId)
+	{
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -35,7 +35,7 @@
 						result = result + '<div class="project_details">';
 						
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 							
 							
@@ -120,9 +120,7 @@
 	}
 </script>
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId,spocUserId) {
-		alert("ownerId"+ownerId+"spocId"+spocId);
-		
+	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
@@ -134,8 +132,7 @@
 						var selected2 = '';
 						var selected3 = '';
 						var selected4 = '';
-						var selected5 = '';
-						
+						var selected5 = '';				
 					
 						
 						if(json.spocStatus == 'Active'){
@@ -215,14 +212,12 @@
 				 		result = result  +'	 <div class="clearfix mb10">';
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
-						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+						result = result  +'	   <select class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
 					    
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							
-							alert("user.id"+json.userId);
-							   if(json.userId == ownerId){
+							   if(user.id == tempOwnerId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
 							  }else{
@@ -236,7 +231,7 @@
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+','+spocUserId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -303,7 +298,7 @@
             };
 </script>
  <script type="text/javascript">
-	function storeVendorContactDetails(spocId,ownerId,spocUserId) {
+	function storeVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
     		 var frm = $('#editVendorContact_form').serializeFormJSON();
              var con = JSON.stringify(frm);
@@ -316,7 +311,7 @@
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
 	   		    	var ownerId = data;
-	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId);
+	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	   		    }
 		 }); 
 	     	return true;

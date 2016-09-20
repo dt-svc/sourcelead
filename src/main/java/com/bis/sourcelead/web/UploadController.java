@@ -71,11 +71,11 @@ public class UploadController {
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
 			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
-				model.addAttribute("errorMessage", "Please download Error file here  â€¦");
+				model.addAttribute("errorMessage", "Please download Error file here");
                  model.addAttribute("fileName", "xlsx");
 				return "upload/uploadForm";
 			}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
-				model.addAttribute("errorMessage", "Please download Error file here  â€¦");
+				model.addAttribute("errorMessage", "Please download Error file here");
                 model.addAttribute("fileName", "xls");
 				return "upload/uploadForm";
 			}

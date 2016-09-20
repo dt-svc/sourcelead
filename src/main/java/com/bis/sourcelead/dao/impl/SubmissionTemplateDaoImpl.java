@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -52,5 +55,73 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		}
 		return submissionTemplate;
 	}
+
+
+	@Override
+	@Transactional
+	public List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId, Long orgLocationId)
+			throws Exception {
+		logger.debug("getSubmissionTemplateByClientLocationIdAndOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId";
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+        return submissionTemplateList;
+        
+	}
+
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getSubmissionTemplateById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateById start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		logger.debug("getSubmissionTemplateById end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
+
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,
+			Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.isDefault = 'Y' " ).setLong( "clientLocationId", clientLocationId)
+				.setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		logger.debug("getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
+
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getSubmissionTemplateByTemplateName(Long clientLocationId, Long orgLocationId,
+			String templateName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateByTemplateName start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.templateName = :templateName " ).setLong( "clientLocationId", clientLocationId)
+				.setLong( "orgLocationId", orgLocationId ).setString("templateName", templateName).setCacheable(true).list();
+		logger.debug("getSubmissionTemplateByTemplateName end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 }

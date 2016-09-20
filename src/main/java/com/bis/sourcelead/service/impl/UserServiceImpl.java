@@ -126,7 +126,6 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   user = userDao.findByEmail(jsonObj.getString("email"));
-	   
 	   if(null == user){
 		    user = getUserDetails(jsonObj,loginuser.getUserCode());
 		 	if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -428,7 +427,12 @@ public class UserServiceImpl implements UserService {
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		 globalVarsMap.put("userEmailId",user.getEmail());
-		 globalVarsMap.put("password",password);
+		 if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			 globalVarsMap.put("password",password);
+		 }else{
+			 globalVarsMap.put("password","Note : You have already registered. Login with your registered password");
+		 }
+		 
 		
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -621,7 +625,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Your Registred Password");
+				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
 			 } 
 			 
 			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+" ";

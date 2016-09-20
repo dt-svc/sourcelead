@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -94,9 +94,8 @@ public class UserServiceTest {
 		user.setUserState(Status.ACTIVE);
 		user.setUserType("employee");
 		user.setWorkPhone("1233467890");
-		
-		userService.addUser(user);
-		logger.info("add user details success fully inserted "+ user.getEmail());
+		assertEquals(user, userService.addUser(user));
+		//logger.info("add user details success fully inserted "+ user.getEmail());
 	}
 	
 	@Test
@@ -119,22 +118,15 @@ public class UserServiceTest {
 		
 		 Long orgLocationsId = 3l;
 		 User user = new User();
-		
 		userService.createUser(jsonObj,user,orgLocationsId);
-		logger.info(" success fully inserted");
-
-		
 	}
 	
 	@Test
 	public void findByUserName() {	
 
 		String username = "demomail123@gmail.com";
-		
 		User user = userService.findByUserName(username);
-		logger.debug("In UserServiceTest class... " +user.getEmail() );
-
-		
+		assertSame(username, user.getUserName());
 	}
 	
 	@Test
@@ -166,9 +158,7 @@ public class UserServiceTest {
 		User loginUser =new User();
 		//loginUser.setId(12l);
 		String password="bis12334";
-		
 		userService.sendEmail(user,loginUser,password);
-		logger.info(" success fully send email "+user.getStatus());
 	}
 
 	@Test

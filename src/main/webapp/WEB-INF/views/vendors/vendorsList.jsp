@@ -42,28 +42,20 @@
 <div class="vendor_wrap">
 	<div class="timesheet_head">
         	<ul>
-				<!-- <li class="li-vendor"><input type="text" class="vendorfild"><i class="fa fa-search"></i>|</li>
-				<li><i class="fa fa-filter"></i><span>Approved<b>30</b></span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
+				<!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input type="checkbox" value="None" id="c1"><label for="c1">All</label><b>10</b></li>
-							<li><input type="checkbox" id="c2"><label for="c2">Approved</label><b>10</b></li>
-							<li><input type="checkbox" id="c3"><label for="c3">Draft</label><b>10</b></li>
-							<li><input type="checkbox" id="c4"><label for="c4">Rejected</label><b>10</b></li>
+                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
-                    </div>                 	
-                </li>
-				<li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-                	<div class="export_pop">
-                    	<ul>
-                        	<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                            <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                            <li>Word<i class="fa fa-file-word-o"></i></li>
-                        </ul>
-                    </div>
-                </li>   -->              
+                    </div>                	
+                </li>   -->           
 				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
-                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>		
+                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>	
+                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -92,8 +84,9 @@
 
 <script> 
 $(document).ready(function(){
-	//getVendorLists();
 	getVendorContactLists();
+	/* listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact'; */
 });
 </script>
 
@@ -256,7 +249,7 @@ function getVendorContactLists(){
 					} 
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
@@ -277,24 +270,28 @@ function getVendorContactLists(){
 					result = result + ' </select>';
 					result = result + ' </div></td>';
                			
-   	        		if(report.spocUser.id == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+   	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
    	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
    	        		}
    	        		
+   	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+                        result = result +' <td><div>---</div></td>';
+                  	}
+   	        		
    	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.orgRelationId+');">Send</a></b></div></td>';
    	        		}
    	        		
-   	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+   	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
    	        			result = result +' <td><div>---</div></td>';
    	        		}
    	        		
-   	        		if(report.spocUser.id != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+   	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
    	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
    	        		}
    	        		
    	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUser.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.orgRelationId+');">Resend</a></b></div></td>';
    	        		}
    	        		
    	        		if(report.invitationStatus == 'Accepted'){ 
@@ -567,14 +564,13 @@ function pagination1(){
 }
 </script>
 <script>
-	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName) {
+	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName,tempOwnerId,spocLocationId,orgRelationId,userId) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+');">Details</a></li>';
-		result = result + '<li><a href="#tab-2">Documents</a></li>'; 
-		result = result + '<li><a href="#tab-3">Activity</a></li>'; 
+		result = result	+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>'; 
+		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -582,8 +578,8 @@ function pagination1(){
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		/* result = result + '<div id="tab-2" class="project_tabs_inn">';
-		result = result + '</div>'; */
+		result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -597,7 +593,7 @@ function pagination1(){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 
-		vendorDetailsbySpocId(spocId,ownerId,spocUserId);
+		vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	}
 </script>
 
@@ -612,20 +608,24 @@ function pagination1(){
 		result = result
 				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
 				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
-		result = result + '<li><a href="#tab-2" onclick="vendorContactList('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
-		result = result + '<li><a href="#tab-3">Documents</a></li>'; 
-		result = result + '<li><a href="#tab-4">Activity</a></li>'; 
+		result = result + '<li><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
+		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
+		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
 
+		//for vendor details tab
 		result = result + '<div id="tab-1" class="project_tabs_inn">';
 		result = result + '</div>';
 
-		result = result + '<div class="clients_wrap_table project_tabs_inn" >';
-	   	result = result + '<div id="tab-2-addContact"> </div>';
-        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
-        result = result + '</div>';
+		//for vendor contacts tab
+		result = result + '<div id="tab-2" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor documents tab
+		result = result + '<div id="tab-3" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -643,22 +643,6 @@ function pagination1(){
 	}
 </script>
 
-
-<script>
-function contactPagination(){  
-    $('#tab-2').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-		
-    } );
-}
-</script>
 <script type="text/javascript">
 	function vendorDetailsbyLocationId(vendorLocationId,orgRelationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -782,8 +766,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		 /* document.getElementById("vendorContactList_info").style.display="none"; 
-		 document.getElementById("vendorList_paginate").style.display="none"; */
+		 //document.getElementById("contactLevel").style.display="block";
 		 
 		 getVendorLists();
 	 }
@@ -793,8 +776,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
-		/*  document.getElementById("vendorList_info").style.display="none"; 
-		 document.getElementById("vendorList_paginate").style.display="none"; */
+		// document.getElementById("contactLevel").style.display="none";
 		 
 		 getVendorContactLists();
 	 }
@@ -817,6 +799,17 @@ $(document).ready(function() {
     $(".approved_pop, #appro-pop").click(function(e) {
         e.stopPropagation();
     });	
+    
+    $("#filter2ApprovePop").click(function(){
+		$("#filter2ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter2ApprovedPop").slideUp(200);
+    });
+    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
 });
 
 // Export Popup
@@ -897,7 +890,8 @@ $(".addcon-pop").click(function(){
 <jsp:include page="editVendor.jsp" />
 <jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
-
+<jsp:include page="vendorDocuments.jsp" />
+<jsp:include page="vendorSpocDocuments.jsp" />
 
 
 

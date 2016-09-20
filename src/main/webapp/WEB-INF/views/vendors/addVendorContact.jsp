@@ -26,7 +26,7 @@
                <div class="modal-content">
                  <div class="modal-header">
                    <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                   <h4 class="modal-title">Select Client</h4>
+                   <h4 class="modal-title">Select Vendor</h4>
                  </div>
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
@@ -34,7 +34,7 @@
                       <div class="form-group" id="org_dialog">
                          <label class="col-lg-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
                          <div class="col-lg-9" id="vendorNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
                            <input type="hidden" id="orgLocationId" />
                          </div>
                        </div>
@@ -47,7 +47,7 @@
                        <div class="form-group">
                          <label class="col-lg-3">Website</label>
                          <div class="col-lg-9">
-                           <input type="text" placeholder="client website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
+                           <input type="text" placeholder="vendor website" id="webSite"  name="webSite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
                          </div>
                        </div>
                       <!--  <div class="form-group">
@@ -106,7 +106,7 @@
                     <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -120,7 +120,7 @@
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_email" onblur="getSpocUserDetails();">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -346,6 +346,10 @@ function getOrgDetails()
 
 <script type="text/javascript">
 	function saveVendorContact() {
+		var vendorName = document.getElementById("vendorName").value;
+		var orgLocationId = vendorName.split(',');
+		var orgRelationId = orgLocationId[0];
+		
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -361,7 +365,7 @@ function getOrgDetails()
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&responderType=Vendor",
 						success : function(result) {
 							$("#loading").removeAttr("style");
 							if (result == 'vendorsList') {
