@@ -244,7 +244,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		logger.info(" saveAllTimesheetSubmissions successfully updated "+timesheetSubmissionsList.size());
 	}
-	@Test
+	//@Test
 	public void getNextMondayByProjectMemberId() throws Exception{
 		 Date Date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
 		 logger.info(" getNextMondayByProjectMemberId successfully updated "+ Date);
@@ -296,7 +296,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}*/
 	
-	//@Test
+	@Test
 	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
 		User user = new User();
@@ -336,6 +336,13 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(3l);
 		logger.info(" getSubmissionApproverHierarchyForEmployeeList "+timesheetSubmissions.size());
 		
+	}
+	
+	@Test 
+	public void getWeekFrequencyTest(){
+		List<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(5l);
+		for(TimesheetSubmissions t:tms){
+		}
 	}
 	
 }
