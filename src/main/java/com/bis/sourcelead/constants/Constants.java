@@ -175,7 +175,7 @@ public class Constants {
 	public static String TEAM_ACTIVE = "1";
 	public static String TEAM_IN_ACTIVE = "0";
 
-	public static String ACTIVE = "Active";
+	//public static String ACTIVE = "Active";
 	
 	
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
