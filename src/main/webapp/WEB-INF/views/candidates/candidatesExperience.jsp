@@ -8,8 +8,12 @@
 	function candidateExperience(candidateId) {
 
 		var result = "";
-		result = result	+ '    <div class="project_tabs_inn_head addUser-org">                                                                                                    ';
-		result = result	+ '   	<a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		if(window.candidateStatusGlobal == '0'){
+		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		}else{
+			result = result	+ '   	<a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';	
+		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
 		result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -118,7 +122,7 @@ function closeCertificatePopup(){
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
-		result = result + '	                 <div class="col-md-12 checkbox">';
+		result = result + '	                 <div class="clearfix checkbox">';
 		result = result + '	                   <label>';
 		result = result	+ '	                  <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="iscurrentPosition();"name="isCurrentPosition"> Is Current Position</label>';
 		result = result + '	                 </div>';
@@ -157,7 +161,7 @@ function closeCertificatePopup(){
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
-		result = result + '	                 <div class="clearfix mb10 endDate >';
+		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
 		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth">';
@@ -568,7 +572,15 @@ function closeCertificatePopup(){
 									} else {
 										result = result	+ '<td><div><span>--</span></div></td>';
 									}
-									result = result	+ '<td><div><i class="glyphicon glyphicon-eye-open" onClick ="editEmployer('+ opt.id+ ','+ candidateId+ ');"></i><i class="glyphicon glyphicon-trash"  onClick ="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+									if(window.candidateStatusGlobal == '0'){
+				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+									}else{
+										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a>';	
+									}if(window.candidateStatusGlobal == '0'){
+										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+									}else{
+										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+									}
 									result = result + '</tr>';
 								}
 								result = result + " </tbody>";

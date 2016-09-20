@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -117,15 +119,42 @@ public class CandidateEducationRestController {
 	 */
 	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
 	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
-
 		String resultJson;
-		
 		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
 		 resultJson = commonUtil.toJSON(candidateEducation);
 		 return resultJson;
 	}
 
 
+	@RequestMapping(value = "/getCandidateEducationBycandidateIdandEducationId")
+	public String getCandidateEducationBycandidateIdandEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
+		String resultJson;
+		 CandidateEducation  candidatesEducationList = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+		
+		 if(candidatesEducationList.getStartDate() != null){
+			 candidatesEducationList.setStartDateStr(Constants.DF_DMY.format(candidatesEducationList.getStartDate())); 
+			 }
+			 if(candidatesEducationList.getEndDate() != null){
+				 candidatesEducationList.setEndDateStr(Constants.DF_DMY.format(candidatesEducationList.getEndDate())); 
+			 }
+			 
+		 resultJson = commonUtil.toJSON(candidatesEducationList);
+		 return resultJson;
+	}
 	
+	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId")
+	public String upDateCandidateEducationByCandidateIdAndCandidateEducationId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			CandidateEducation candidateEdu;
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
+			
+			return "success";
+	}
 	
 }
+

@@ -68,7 +68,7 @@ public class UserServiceTest {
 
 	
 	
-	//@Test
+	@Test
 	public void addUser() throws Exception{
 		User user = new User();
 
@@ -99,7 +99,7 @@ public class UserServiceTest {
 		//logger.info("add user details success fully inserted "+ user.getEmail());
 	}
 	
-	//@Test
+	@Test
 	public void createUser() throws Exception{
 	
 		 JSONObject jsonObj = new JSONObject();
@@ -122,7 +122,7 @@ public class UserServiceTest {
 		userService.createUser(jsonObj,user,orgLocationsId);
 	}
 	
-	//@Test
+	@Test
 	public void findByUserName() {	
 
 		String username = "demomail123@gmail.com";
@@ -130,7 +130,7 @@ public class UserServiceTest {
 		assertSame(username, user.getUserName());
 	}
 	
-	//@Test
+	@Test
 	public void sendEmail() throws Exception{
 		User user = new User();
 		user.setId(1l);
@@ -162,7 +162,7 @@ public class UserServiceTest {
 		userService.sendEmail(user,loginUser,password);
 	}
 
-	//@Test
+	@Test
 	public void validateEmailandCandidate() throws Exception{
 		String website = "www.bis.com";
 		String email = "info@businessintelli.com"; 
@@ -171,7 +171,7 @@ public class UserServiceTest {
 		logger.info(" success fully validate email "+email);
 	}
 	
-	//@Test
+	@Test
 	public void  getUserById() throws Exception{
 		
 		Long Id=3l;
@@ -182,7 +182,7 @@ public class UserServiceTest {
 		assertEquals(user2.getId(), user.getId());
 	}
 	
-	//@Test
+	@Test
    public void findByEmail() throws Exception{
 		User user = new User();
 		String email = "demomail123@gmail.com";
@@ -190,14 +190,14 @@ public class UserServiceTest {
 		assertNotNull(user);
 	}
 	
-	//@Test
+	@Test
 	public void getUsers() throws Exception{
 		//User user = new User();
 		Collection<User> user  = userService.getUsers();
 		assertNotNull(user);
 	}
 	
-	//@Test
+	@Test
 	public void saveUserProfile() throws Exception{
 		User user = new User();
 //		user.setId(10l);
@@ -246,37 +246,37 @@ public class UserServiceTest {
 		return multipartFile;
 	}
 	
-	//@Test
+	@Test
 	public void getUsersByUserRoles() throws Exception{
 		Collection<User> user = userService.getUsersByUserRoles(2l);
 		assertNotNull(user);
 	}
 	
-	//@Test
+	@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
 		List<User>  user = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(1l,2l);
 		assertNotNull(user);
 	}
 	
-	//@Test
+	@Test
 	public void getUsersByUserRolesAndOrgLocationId() throws Exception{
 		List<User>  user = userService.getUsersByUserRolesAndOrgLocationId(1l);
 		assertNotNull(user);
 	}
 	
-	//@Test
+	@Test
 	public void getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser() throws Exception{
 		 List<User> user  = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(1l,2l,1l);
 		 assertNotNull(user);
 	}
 	
-	//@Test
+	@Test
 	public void getAllUserOrgCodeAndLocationCodeTimeSheetNotification() throws Exception{
 		 List<Employees> employee = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(1l);
 		 assertNotNull(employee);
 	}
 	
-	//@Test
+	@Test
 	public void sendEmailToClientOrVendor() throws Exception{
 		Org loginOrg = new Org();
 		loginOrg.setOrgName("Source Lead");
@@ -289,7 +289,7 @@ public class UserServiceTest {
 		userService.sendEmailToClientOrVendor(user, loginUser, "Pwd123", "Client", loginOrg,null,null);
 	}
 	
-	//@Test
+	@Test
 	public void getUserByIdAndOrgLocationsId() throws Exception{
 		User user = new User();
 		user.setId(3L);
@@ -298,7 +298,7 @@ public class UserServiceTest {
 		assertEquals(user.getId(), userService.getUserByIdAndOrgLocationsId(user.getId(), orgLocations.getId()));
 	}
 	
-	//@Test
+	@Test
 	public void storeUser() throws Exception{
 		 JSONObject jsonObj = new JSONObject();
 		 jsonObj.put("firstName", "Demo_final13");
@@ -331,7 +331,7 @@ public class UserServiceTest {
 		 assertEquals(users.getId(), userService.storeUser(jsonObj, users, orgLocations, sourceType, responderType, loginOrg));
 	}
 	
-	//@Test
+	@Test
 	public void getOwnersByOrgLocationId() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
@@ -339,7 +339,7 @@ public class UserServiceTest {
 		assertFalse(list.isEmpty());
 	}
 	
-	//@Test
+	@Test
 	public void getManagersByUserRolesAndOrgLocationId() throws Exception{
 		String roleType = "2";
 		Long orgLocationsId = 3l;
@@ -347,7 +347,7 @@ public class UserServiceTest {
 		assertFalse(list.isEmpty());
 	}
 	
-	//@Test
+	@Test
 	public void getManagersByUserIdAndUserRolesAndOrgLocationId() throws Exception{
 		Long userId = 3l;
 		String roleType = "2";
@@ -356,7 +356,7 @@ public class UserServiceTest {
 		assertFalse(list.isEmpty());
 	}
 	
-	//@Test
+	@Test
 	public void getUserDetailsByUserCode() throws Exception{
 		User user = new User();
 		user.setUserCode("0mkBMphb");
@@ -364,7 +364,7 @@ public class UserServiceTest {
 		assertEquals(user.getUserCode(), user1.getUserCode());
 	}
 	
-	//@Test
+	@Test
 	public void getOwnersByOrgLocationIdAndNotExistedOwnerId() throws Exception{
 		List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(5l,3l);
 		List<User> list = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(3l, 3l, ownerListOfSpoc);

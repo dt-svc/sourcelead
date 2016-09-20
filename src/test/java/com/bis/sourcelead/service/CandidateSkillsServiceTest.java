@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,12 +40,12 @@ public class CandidateSkillsServiceTest {
 		CandidateSkillsService candidateSkillsService ;
 		
 		@Autowired
-		CommonUtil commonUtil  ;
+		CommonUtil commonUtil;
 		
 		
 		private static final Logger logger = LoggerFactory.getLogger(CandidateSkillsServiceTest.class);
 		
-		//@Test
+		@Test
 		public void storeCandidateSkills( ) throws Exception{
 			CandidateSkills candidateSkills = new CandidateSkills();
 			OrgLocations orgLocations = new OrgLocations();
@@ -56,9 +58,10 @@ public class CandidateSkillsServiceTest {
 			candidateSkills.setName("Java");
 			candidateSkills.setTotalExperience("5");
 			candidateSkills.setUpdatedBy("Ajith");
-			candidateSkills.setCreatedBy("reddy");
+			candidateSkills.setCreatedBy("Ajith");
 			candidateSkills.setCreatedDate(commonUtil.currentDate());
 			candidateSkills.setUpdatedDate(commonUtil.currentDate());
+			candidateSkills.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 			candidateSkills.setScale("4");
 			candidateSkills = candidateSkillsService.storeCandidateSkills(candidateSkills);
 			logger.info("storeCandidateSkills successfully " + candidateSkills.getCreatedDate());
@@ -66,7 +69,7 @@ public class CandidateSkillsServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateSkillsByCandidateId() throws Exception{
 			List<CandidateSkills> candidateSkillsList = new ArrayList<>();
 			candidateSkillsList = candidateSkillsService.getCandidateSkillsByCandidateId("1l");
@@ -74,7 +77,7 @@ public class CandidateSkillsServiceTest {
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateSkillsDetails() throws Exception{
 			
 			HashSet<CandidateSkills> candidateSkills = new HashSet<>();
@@ -89,9 +92,16 @@ public class CandidateSkillsServiceTest {
 			candidateSkil.setCandidateId(candidate);
 			candidateSkil.setOrgLocationID(orglocations);
 			
-			candidateSkills = candidateSkillsService.getCandidateSkillsDetails(jsonObject,orglocations,candidate,"reddy");
+			candidateSkills = candidateSkillsService.getCandidateSkillsDetails(jsonObject,orglocations,candidate,"Ajith");
 			logger.info("getCandidateSkillsDetails " + candidateSkills.size());
 			
+		}
+		
+		@Test
+		public void getCandidateSkillBySkillId() throws Exception{
+			CandidateSkills candidateSkills = new CandidateSkills();
+			candidateSkills = candidateSkillsService.getCandidateSkillBySkillId(1l);
+			logger.info("getCandidateSkillBySkillId " + candidateSkills.getName());
 		}
 		
 		

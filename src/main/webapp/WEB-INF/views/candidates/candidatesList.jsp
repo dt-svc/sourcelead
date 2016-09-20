@@ -162,6 +162,7 @@ function pagination(){
 --%>
 
 <script>
+var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -177,6 +178,7 @@ function clientSideBar(candidateId){
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
               		 else{
+              			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skillsList = json.skillsList;
 			             var skills = [];
@@ -644,12 +646,25 @@ function cancel(candidateId){
            <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-                      	<li><input id="candidateAll" type="radio" name="candidateStatus" value ="ALL" onclick="candidateList();"  ><label for="c5">All</label></li>
-					<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
-					<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
-                      </ul>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" value ="ALL" onclick="candidateList();"  ><label for="c5">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
+						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
+                    </ul>
                   </div>                	
           </li>
+          
+            <li><i class="fa fa-filter"></i><span id="candidateUpdiv"> UpDated Candidates </span><i class="glyphicon glyphicon-play" id="filter1ApprovedPop"></i>|
+              	<div id="filter1ApprovedPop" class="approved_pop">
+                  	<ul>
+	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="DayAgo" checked onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3DayAgo"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
+						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="1WeekAgo"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="3WeekAgo"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="MonthAgo"  onclick="candidateList();"><label for="c7">Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="3Months"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+                    </ul>
+                  </div>                	
+          </li>  
           
           <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
           <div class="clearfix"></div>

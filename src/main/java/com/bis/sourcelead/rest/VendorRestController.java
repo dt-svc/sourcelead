@@ -54,6 +54,7 @@ public class VendorRestController {
 	@Autowired
 	UserService userService;
 	
+	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
@@ -112,7 +113,9 @@ public class VendorRestController {
 	    String resultJson;
 	    
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+ 
 			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
@@ -123,6 +126,9 @@ public class VendorRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					//orgRelation.setNoOfContatcs(noOfContatcs); 
+					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}
@@ -139,6 +145,8 @@ public class VendorRestController {
 					orgRelation.setState(orgRelation.getLocationId().getState());
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getResponderLevel()!=null){
 						orgRelation.setLevel(orgRelation.getResponderLevel());
 					}

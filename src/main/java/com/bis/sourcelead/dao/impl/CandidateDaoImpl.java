@@ -1,9 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,6 +21,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -31,6 +36,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -101,22 +109,62 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, String candidateState) throws Exception {
-		 // TODO Auto-generated method stub
-		String subQuery = null;
-		//String status = Constants.CANDIDATE_ACTIVE;
-		Session session = this.sessionFactory.getCurrentSession();
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange ) throws Exception {
+
 		
-		if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_IN_ACTIVE)){
-			 subQuery ="cnadidate.status = '0'";
-		}else if(candidateState.equalsIgnoreCase(Constants.CANDIDATE_ALL)){
-			 subQuery ="cnadidate.status = '1' or cnadidate.status = '0'";
+		String subQuery = null;
+		Integer dateRange ;
+		String updatedDate  ="";
+		Date currentDate =  commonUtil.currentDate();
+		List<Candidate> candidateList ;
+		java.sql.Date sqlCurrentDate = null;
+		
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		
+		
+		//Checking for Candidate Status 
+		Session session = this.sessionFactory.getCurrentSession();
+		String  dateLimit = "";
+		if(candidateState.equals(Constants.CANDIDATE_ACTIVE)){
+			  subQuery ="cnadidate.status = 1";
+		}else if(candidateState.equals(Constants.CANDIDATE_ALL)){
+			  subQuery ="cnadidate.status = 1 or cnadidate.status = 0";
 		}else{
-			subQuery ="cnadidate.status = '1'";
+			 subQuery ="cnadidate.status = 0";
+		}
+    	
+			
+		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
+			
+			// This Code is for  getting the sql enddate based on range
+		     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+	    	 Calendar c = Calendar.getInstance();
+		     c.setTime(new Date()); // Now use today date.
+		     dateRange = Integer.parseInt(updatedDateRange);
+	         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+	         updatedDate     = dateFormat.format(c.getTime());
+	         Date parsed = dateFormat.parse(updatedDate);
+	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+			
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and  cnadidate.updatedDate  between :endDate  and  :sqlCurrentDate";  
+		     candidateList = session.createQuery(query)
+				                    .setDate("sqlCurrentDate", sqlCurrentDate)
+				                    .setDate("endDate", endDate)
+				                    .setLong("orgLocationId", orgLocationId)
+				                    .setLong("orgId", orgId)
+				                    .setCacheable(true)
+				                    .list();
+		}else{
+			
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
+		    candidateList = session.createQuery(query)
+					               .setLong("orgLocationId", orgLocationId)
+					               .setLong("orgId", orgId).setCacheable(true).list();
 		}
 		
-		String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
 		return candidateList;
 	}
 	
@@ -136,7 +184,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.id =:candidateId";
-		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty())
@@ -162,7 +210,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty()){
 			candidate = candidateList.iterator().next();

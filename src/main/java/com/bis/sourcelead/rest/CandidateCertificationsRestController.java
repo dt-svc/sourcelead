@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -38,6 +39,8 @@ public class CandidateCertificationsRestController {
 	
 	/**
 	 * Handles CandidateCartifications  store
+	 * 
+	 * @author Ajith Matta
 	 * 
 	 * @param json
 	 * 
@@ -104,5 +107,60 @@ public class CandidateCertificationsRestController {
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
 			 return resultJson;
 		}
+	   
+	   /**
+		   * This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
+		   * @author Sammeta David Raju
+		   * 
+		   * @param candidateemployersId
+		   * @param candidateId
+		   * @param request
+		   * 
+		   * @return String
+		   * 
+		   * @throws Exception
+		   */
+	   
+	   @RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
+		public String getCandidateCertificateBycandidateIdandCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
+
+			String resultJson;
+
+			CandidateCertifications  candidateCertificationsList = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
+			
+			if(candidateCertificationsList.getValidFrom() != null){
+				candidateCertificationsList.setCandidatevalidFromDateToString(Constants.DF_YMD.format(candidateCertificationsList.getValidFrom())); 
+			 }
+			 if(candidateCertificationsList.getValidTo() != null){
+				 candidateCertificationsList.setCandidatevalidToDateToString(Constants.DF_YMD.format(candidateCertificationsList.getValidTo())); 
+			 }
+			resultJson = commonUtil.toJSON(candidateCertificationsList);
+			 return resultJson;
+		}
+	   
+	   /**
+		 * Handles CandidateCartifications  update
+		 * 
+		 * @author Ajith Matta
+		 * 
+		 * @param json
+		 * 
+		 * @param request
+		 * 
+		 * @return ResponseBody
+		 * 
+		 * @throws Exception
+		 */
+		 @RequestMapping(value = "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId", method = RequestMethod.POST)
+	     public @ResponseBody String updateCandidateCertificationsBycandidateIdandcandidateCertificateId(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			String json1 = "{"+json+"}";
+			JSONObject jsonObject = new JSONObject(json1);
+			candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
+			return json;
+		 }
 
 }

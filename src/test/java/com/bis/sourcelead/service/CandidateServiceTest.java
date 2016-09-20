@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +22,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * @author Ajith Matta
@@ -40,8 +43,10 @@ public class CandidateServiceTest {
 		CandidateService candidateService ;
 		private static final Logger logger = LoggerFactory.getLogger(CandidateServiceTest.class);
 		
+		@Autowired
+		CommonUtil commonUtil;
 		
-		//@Test
+		@Test
 		public void storeCandidate() throws Exception{
 			
 			Candidate candidate = new Candidate();
@@ -51,13 +56,13 @@ public class CandidateServiceTest {
 			user.setId(1l);
 			candidate.setId(1l);
 			JSONObject jsonObj = new JSONObject();
-			jsonObj.put("firstName", "ramya");
+			jsonObj.put("firstName", "sudeep");
 			jsonObj.put("lastName", "reddy");
 			jsonObj.put("country", "india");
 			jsonObj.put("state", "telnagana");
-			jsonObj.put("city", "wgl");
+			jsonObj.put("city", "nezamabad");
 			jsonObj.put("phone", "24578965");
-			jsonObj.put("email", "ajith@gmail.com");
+			jsonObj.put("email", "sudeep@gmail.com");
 			jsonObj.put("currentRate", "12");
 			jsonObj.put("currentRateCurrency", "INR");
 			jsonObj.put("designation", "develpoer");
@@ -68,6 +73,10 @@ public class CandidateServiceTest {
 			jsonObj.put("experienceYears", "3");
 			jsonObj.put("experienceMonths", "4");
 			jsonObj.put("address", "wgl");
+			jsonObj.put("status","1");
+			jsonObj.put("createdBy", "srinivas");
+			jsonObj.put("updatedBy", "srinivas");
+			jsonObj.put("createdDate", "commonUtil.currentDate()");
 						
 			MultipartFile multipartFile = getMultiPartFile();
 						
@@ -82,12 +91,12 @@ public class CandidateServiceTest {
 			return multipartFile;
 		}
 		
-		/*@Test
+		@Test
 		public void addCandidate() throws Exception{
 			Candidate candidate = new Candidate();
 			OrgLocations orglocations = new OrgLocations();
 			orglocations.setId(2l);
-			candidate.setId(2l);
+			candidate.setId(1l);
 			candidate.setFirstName("david");
 			candidate.setLastName("raju");
 			candidate.setEmail("raju@gmail.com");
@@ -99,39 +108,39 @@ public class CandidateServiceTest {
 			candidate.setCity("waragal");
 			candidate = candidateService.addCandidate(candidate);
 			logger.info("addCandidate successfully " +candidate.getLastName());
-		}*/
+		}
 		
-		//@Test
+		@Test
 		public void getCandidateByCandidateId() throws Exception{
 			Candidate candidate = new Candidate();
 			candidate = candidateService.getCandidateByCandidateId(1l);
 			logger.info("getCandidateByCandidateId " + candidate.getFirstName());
 		}
 		
-		//@Test
+		@Test
 		public void getCandidatesListByOrgLocationID() throws Exception{
 			
 			List<Candidate> candidateList = new ArrayList<>();
-			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,"Active");
+			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,Constants.CANDIDATE_ACTIVE,"");
 			logger.info("getCandidatesListByOrgLocationID " + candidateList.size());
 
 			
 		}
 		
-		//@Test
+		@Test
 		public void getCandidateByCandidateIdAndOrgLocationId() throws Exception{
 			Candidate candidate = new Candidate();
 			candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(1l,1l);
 			logger.info("getCandidateByCandidateIdAndOrgLocationId " + candidate.getEmail());
 			
 		}
-		//@Test
+		@Test
 		public void findByCandidateEmail() throws Exception{
 		Candidate candidate = new Candidate();
 		candidate = candidateService.findByCandidateEmail("ajith@gmail.com",1l);
 		logger.info("findByCandidateEmail "+ candidate.getId());
 				}
-		//@Test
+		@Test
 		public void saveOrUpdateCandidate() throws Exception{
 			
 			Candidate candidate = new Candidate();
@@ -147,6 +156,9 @@ public class CandidateServiceTest {
 			candidate.setCountry("usa");
 			candidate.setState("telangana");
 			candidate.setCity("waragal");
+			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidate = candidateService.addCandidate(candidate);
 			logger.info("saveOrUpdateCandidate successfully " +candidate.getLastName());
 			
