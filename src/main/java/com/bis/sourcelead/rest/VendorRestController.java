@@ -105,13 +105,14 @@ public class VendorRestController {
 	 * @throws Exception
 	 */
 	 
-	   @RequestMapping(value = "/getVendorLists")
-		public @ResponseBody String getVendorLists(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getVendorLists")
+	public @ResponseBody String getVendorLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    String resultJson;
-		    
-		    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    String resultJson;
+	    
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
@@ -164,15 +165,17 @@ public class VendorRestController {
 	    * @throws Exception
 	    */
 	   
-	   @RequestMapping(value = "/getVendorContactLists")
+	@RequestMapping(value = "/getVendorContactLists")
 	   @ResponseBody
-		public  String getVendorContactLists(HttpServletRequest request) throws Exception {
+		public  String getVendorContactLists(@RequestParam(value="vendorStatus", required=false) String status,@RequestParam(value="vendorId", required=false) String vendorIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		    String resultJson;
+		   
+		    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Client",status,vendorIds,invitationStatus);
 		    
-		    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Client");
+		    //List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Client");
 		
 			
 			for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
