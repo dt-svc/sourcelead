@@ -77,7 +77,7 @@ background-color: #ccc;
 		window.onload = function () {
 			getAllCountries();
 			
-			$(".cd").click(function(){  
+			$(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
 			
@@ -308,7 +308,7 @@ background-color: #ccc;
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	      <div class="ml">
-            <input type="checkbox" name="cd" class="cd">
+            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal();">
             <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
             &nbsp;&nbsp;
             <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
@@ -386,77 +386,42 @@ background-color: #ccc;
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
-                <div class="hidden">
-                <div class="col-md-9">
-                  <div class="input-group">
-                    <div class="input-group-btn selp-custom-med">
-                      <select class="selectpicker">
-                        <option value="c2c">INR</option>
-                        <option value="w2">200</option>
-                        <option value="c2c">300</option>
-                        <option value="c2c">350</option>
-                        <option value="c2c">400</option>
-                        <option value="c2c">Other</option>
-                      </select>
-                    </div>
-                    <div class="input-group-btn selp-custom-med">
-                      <select class="selectpicker">
-                        <option value="c2c">Per</option>
-                        <option value="w2">1hr</option>
-                        <option value="c2c">2hr</option>
-                        <option value="c2c">3hr</option>
-                        <option value="c2c">4hr</option>
-                        <option value="c2c">Other</option>
-                      </select>
-                    </div>
-                    <div class="input-group-btn selp-custom-med">
-                      <select class="selectpicker">
-                        <option value="c2c">Per</option>
-                        <option value="w2">1hr</option>
-                        <option value="c2c">2hr</option>
-                        <option value="c2c">3hr</option>
-                        <option value="c2c">4hr</option>
-                        <option value="c2c">Other</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div class="col-md-9">
-              <div class="input-group">
-                <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker">
-                    <option value="c2c">INR</option>
-                    <option value="w2">200</option>
-                    <option value="c2c">300</option>
-                    <option value="c2c">350</option>
-                    <option value="c2c">400</option>
-                    <option value="c2c">Other</option>
-                  </select>
-                </div>
-                <input type="text" class="form-control" value="">
-                <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker">
-                    <option value="c2c">Per</option>
-                    <option value="w2">1hr</option>
-                    <option value="c2c">2hr</option>
-                    <option value="c2c">3hr</option>
-                    <option value="c2c">4hr</option>
-                    <option value="c2c">Other</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+	              <div class="input-group">
+	                <div class="input-group-btn selp-custom-min">
+	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
+		                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+		                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+		                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+		                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+		                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+		                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+	                </select>
+	                
+	                </div>
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+	                <div class="input-group-btn selp-custom-min">
+	                  <select class="selectpicker" id="clientRateType" name="clientRateType">
+	                    <option value="">Per</option>
+	                    <option value="1hr">1hr</option>
+	                    <option value="2hr">2hr</option>
+	                    <option value="3hr">3hr</option>
+	                    <option value="4hr">4hr</option>
+	                    <option value="Other">Other</option>
+	                  </select>
+	                </div>
+	              </div>
+           		</div>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control">
-                      <option>Select Submission Form</option>
-                      <option>Submission Form-1</option>
-                      <option>Submission Form-2</option>
-                      <option>Submission Form-3</option>
+                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm">
+                      <option value="">-- Select Submission Form --</option>
+                      <option value="1">Submission Form-1</option>
+                      <option value="2">Submission Form-2</option>
+                      <option value="3">Submission Form-3</option>
                     </select>
                     <i data-target="#addSubmissonForm" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
                   <div id="addSubmissonForm" class="modal fade">
