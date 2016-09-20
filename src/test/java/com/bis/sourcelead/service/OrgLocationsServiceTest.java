@@ -3,7 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
+import static org.junit.Assert.*;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,8 +87,7 @@ public class OrgLocationsServiceTest {
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setUpdatedBy("Prasanna");
 		orgLocations.setUpdatedDate(new Date());
-		orgLocationService.addOrgLocations(orgLocations);
-		logger.info("addOrgLocation successfully " + orgLocations.getState());
+		assertEquals(orgLocations, orgLocationService.addOrgLocations(orgLocations));
 	}
 
 	//@Test
