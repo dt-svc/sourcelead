@@ -68,7 +68,6 @@ function clientDocuments(orgRelationId,clientLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
-    $("#tab-4-addTemplate").empty();
     $("#tab-3").append(result);  
 	
     clientDocumentsList(clientLocationId,orgRelationId);
@@ -190,7 +189,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,

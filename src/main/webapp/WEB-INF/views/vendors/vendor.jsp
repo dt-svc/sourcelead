@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -366,10 +366,45 @@ function getOrgDetails()
    	        }
    	    });
    	 
+   	validateEmail();
 	getSpocUserDetails();
 	
 	}
 	
+}
+</script>
+
+
+
+<script type="text/javascript">
+function validateEmail(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email != null){
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			success : function(data) {
+				var result = data;
+				if(result == 'Invalid Email') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your login email</span>");
+					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your login email");
+					
+				}else if(result == 'Valid Email') {
+					$('input#email').removeAttr("class record-exist record-exist-errormsg");
+					$('input#email').attr('class','valid form-control');
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						if ($(this).validate(false, validationSettings)) {
+						}
+					});
+				}
+			},
+
+		});
+	}
 }
 </script>
 
@@ -563,37 +598,6 @@ function validateClientName(){
 </script>   
 
 
-<!-- <script type="text/javascript">
- function validateClientEmail() {
-	 var EmailId = document.getElementById("EmailId").value; 
-	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmailId != null && EmailId != ""){
-		/*$("#save_client").attr("disabled", "disabled");
-         $("#save_client" ).addClass('button').val('Processing..'); */
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
-						  document.getElementById("EmailId").setAttribute('record-exist','yes');
-						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_client" ).addClass('button').val('Save');
-                         $("#save_client").removeAttr("disabled");
-		        	}
-		        },
-		    });
-	 }
- }
- </script>     
- -->
- 
  
  <script type="text/javascript">
 	function validateWebsite() {

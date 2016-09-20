@@ -198,6 +198,21 @@ public class ClientRestController {
 				
 			} 
 		
+		
+		
+		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 if(!email.equalsIgnoreCase(user.getEmail())){
+				 return "Valid Email";
+			 }else{
+				 return "Invalid Email";
+			 }
+			 
+		 }
+		 
+		
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
 		    public @ResponseBody String getSpocUserDetails(@RequestParam(value="email", required=false) String email,
 		    		@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -304,6 +319,22 @@ public class ClientRestController {
 		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocations.getId());
 		
 		return commonUtil.toJSON(submissiontTemplateList);
+	}
+	
+	
+	
+	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
+	@ResponseBody String validateTemplateName(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId,
+			@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+		if(null != submissiontTemplate){
+			return "invalid";
+		}else{
+			return "valid";
+		}
+		
 	}
 	
 	
@@ -764,6 +795,33 @@ public class ClientRestController {
 			   return "home";
 	    
 	   }
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/loadSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSubmissionTemplate(@RequestParam(value="clientLocationId", required=false) Long clientLocationId) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
+	
+	
+	@RequestMapping(value = "/loadSavedSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSavedSubmissionTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(templateId);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
 	/**
 	 * check given string empty or null
 	 * @param str

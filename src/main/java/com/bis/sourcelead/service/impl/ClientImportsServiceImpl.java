@@ -3,9 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +22,12 @@ import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,24 +91,26 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  
 		  InputStream inp = new FileInputStream(file);
 	      String fileExtn = GetFileExtension(fname);
-	      Workbook wb_xssf; //Declare XSSF WorkBook
+	      Workbook workbook; //Declare XSSF WorkBook
 	      Workbook wb_hssf = null ; //Declare HSSF WorkBook
 	      Sheet sheet = null; // sheet can be used as common for XSSF and HSSF
-	      
-	 
 			
 	      if ("xlsx".equalsIgnoreCase(fileExtn))
 	      {
-		       wb_xssf = new XSSFWorkbook(inp);
-		       logger.info("xlsx="+wb_xssf.getSheetName(0));
-		      sheet = wb_xssf.getSheetAt(0);
+//		       wb_xssf = new XSSFWorkbook(inp);
+	    	  workbook = WorkbookFactory.create(inp);
+	    	  wb_hssf = new XSSFWorkbook();
+		       logger.info("xlsx="+workbook.getSheetName(0));
+		      sheet = workbook.getSheetAt(0);
 	      }
 	      if ("xls".equalsIgnoreCase(fileExtn))
 	      {
-		  POIFSFileSystem fs = new POIFSFileSystem(inp);
-	    	  wb_hssf = (Workbook) new HSSFWorkbook(fs);
-	    	  logger.info("xls="+wb_hssf.getSheetName(0));
-	    	  sheet = wb_hssf.getSheetAt(0);
+		     POIFSFileSystem fs = new POIFSFileSystem(inp);
+//	    	  wb_hssf = (Workbook) new HSSFWorkbook(fs);
+		     workbook = WorkbookFactory.create(fs);
+		     wb_hssf = (Workbook) new HSSFWorkbook();
+//	    	  logger.info("xls="+workbook.getSheetName(0));
+	    	  sheet = workbook.getSheetAt(0);
 	      }
 	      Sheet createExcelsheet = wb_hssf.createSheet("createContact");
 	 			
@@ -234,12 +239,22 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			        	 }
 			       }
 			       if (!isValidated || isUserFound) {
-						FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+			    	   FileOutputStream fos = null;
+			    	   if(!fname.endsWith("xlsx")){
+			    		   fos = new FileOutputStream("FailureUsersForCheck.xls");
+			    	   }else{
+			    		   fos = new FileOutputStream("FailureUsersForCheck.xlsx");
+			    	   }
 						wb_hssf.write(fos);
 						fos.close();
 					}
 					if(count > 0){
-						isFileCreated = "FailureUsersForCheck.xls";
+						if(!fname.endsWith("xlsx")){
+							isFileCreated = "FailureUsersForCheck.xls";
+						}else{
+							isFileCreated = "FailureUsersForCheck.xlsx";
+						}
+						
 					}else{
 						isFileCreated = "failed";
 					}
@@ -489,7 +504,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					}
 				}
 			  
-			  if (row.getCell(1) != null || !"".equalsIgnoreCase(row.getCell(1).toString())) {
+			  if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 				  isValidated = isValidDomainName(row.getCell(1).toString());
 				  if(isValidated == false){
 						client.setReason("Invalid Domain Website");
@@ -629,10 +644,18 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				 writeRow.createCell(3).setCellValue("");
 			}
 			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_DROPDOWN,4,fname));
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_DROPDOWN,4));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_DROPDOWN,4,createExcelsheet));
+				}
 				writeRow.createCell(4).setCellValue(row.getCell(4).toString());
 			} else {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_DROPDOWN,4,fname));
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_DROPDOWN,4));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_DROPDOWN,4,createExcelsheet));
+				}
 			    writeRow.createCell(4).setCellValue("");
 			}
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
@@ -642,10 +665,19 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			    writeRow.createCell(5).setCellValue("");
 			}
 			if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6,fname));
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN,6,createExcelsheet));
+				}
+			
 				writeRow.createCell(6).setCellValue(row.getCell(6).toString());
 			} else {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6,fname));
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN,6,createExcelsheet));
+				}
 			    writeRow.createCell(6).setCellValue("");
 			}
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
@@ -696,10 +728,18 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			    writeRow.createCell(4).setCellValue("");
 			}
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,fname));
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5));	
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.LEVEL_DROPDOWN,5,createExcelsheet));
+				}
 				writeRow.createCell(4).setCellValue(row.getCell(4).toString());
 			} else {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,fname));
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5));	
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.LEVEL_DROPDOWN,5,createExcelsheet));
+				}
 			    writeRow.createCell(5).setCellValue("");
 			}
 			if (client.getReason() !=null) {
@@ -714,16 +754,24 @@ public class ClientImportsServiceImpl implements ClientImportsService{
  * @param fileName
  * @return
  */
-		private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName) {
+		private DataValidation getDropDownListForCell(String[] dropDownList, int column) {
 			@SuppressWarnings("deprecation")
 			  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
-			  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(ratePerList);
+			  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(dropDownList);
 			  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
 			  dataValidation.setSuppressDropDownArrow(false);
 			  return dataValidation;
-//			  XSSFDataValidation
 	}
 		
+		
+		private XSSFDataValidation getXssfDropDownlist(String[] dropDownList, int column, Sheet sheet){
+			    XSSFDataValidationHelper dvHelper=new XSSFDataValidationHelper((XSSFSheet) sheet);
+			    XSSFDataValidationConstraint dvConstraint=(XSSFDataValidationConstraint)dvHelper.createExplicitListConstraint(dropDownList);
+			   CellRangeAddressList addressList=new CellRangeAddressList(1,500,column,column);
+			   XSSFDataValidation validation=(XSSFDataValidation)dvHelper.createValidation(dvConstraint,addressList);
+			   validation.setShowErrorBox(true);
+			   return validation;
+			}
 		/**
 		 * Checks domain is valid or not
 		 * @param domainName

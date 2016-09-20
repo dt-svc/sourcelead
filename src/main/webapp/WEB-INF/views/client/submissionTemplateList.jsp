@@ -11,6 +11,11 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 	
+<script src="resources/js/jquery-ui.min.js" ></script>
+
+<link rel="stylesheet" href="resources/css/style.css" />
+
+
 <style type="text/css">
 .collapse-div-adduser select{
 width: 100% !important;
@@ -19,11 +24,51 @@ width: 100% !important;
     border:1px solid #ccc !important
 }
 </style>
+
+<script type="text/javascript">
+//On document ready
+$(function(){
+    generateForm();
+});
+</script>
+
+
+
+<script>
+function clientSubmissionTemplate(clientLocationId){
+	
+	
+	var result = "";
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+	    result = result + '<ul>';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Template</a>                                                            ';
+		result = result  +'     <div id="popUpDivContact" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="clientSubmissionTemplateList" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-4").append(result);  
+	
+    submissionTemplateList(clientLocationId);
+    
+}
+</script>
 				
 
 <!-- client details View starts-->
 <script type="text/javascript">
 	function submissionTemplateList(clientLocationId) {
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
@@ -32,21 +77,15 @@ width: 100% !important;
 	        	
 	        var json = JSON.parse(data);
 	        
-    		var res = "";
-			res = res + '<div class="timesheet_head">';
-			res = res + '<ul>';
-			res = res + '<li><a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');" class="addcon-pop">';
-			res = res + '<i class="glyphicon glyphicon-plus"></i>Add Template</a>';
-			res = res + '<div class="clearfix"></div>';
-			res = res + '</ul>';
-			res = res + '<div id="popUpDivContact"> ';
-			res = res + '</div>  ';
-			res = res + '</div>'; 
+    	
 			var result = "";
 	      
     		 if(json.length != null && json.length != ''){
     	   		
+    			$("#clientSubmissionTemplateList").empty();
 				var result = "";
+				
+				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Template Name</th>';
@@ -65,14 +104,14 @@ width: 100% !important;
 	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
 	                result = result + '<td><div>';
-	                /* result = result + '<a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');">Customize</a>'; */
-	                result = result + '<a href="javascript:void(0)">Customize</a>';
+	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>';
       	            result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
 	        		
 	        	
 	        	result = result +'</tbody>';
+	        	result = result +"</table>";
 	        	
     		}else{
       			 result = result + '<div class="table_nodata">';
@@ -85,129 +124,261 @@ width: 100% !important;
        			 result = result + '</div>';
        		 } 
     		 
-       		$("#tab-2-addContact").empty();
-       		$("#tab-2").empty(); 
-    		$("#tab-4-addTemplate").empty();  
-    	    $("#tab-4-addTemplate").append(res);
-    		$("#tab-4").empty();  
-    	    $("#tab-4").append(result);  
-    	    $("#testTemplateDiv").show();
-    	    
-    	    $(".project-tabs-menu a").click(
-					function(event) {
-						event.preventDefault();
-						$(this).parent().addClass("current");
-						$(this).parent().siblings().removeClass(
-								"current");
-						var tab = $(this).attr("href");
-						$(".project_tabs_inn").not(tab).css(
-								"display", "none");
-						$(tab).fadeIn();
-					});
-    	    contactPagination();
+       		
+    	    $("#clientSubmissionTemplateList").append(result); 
+    	    templatepagination(); 
+    	  
 	        },
 	    });
 	}
 </script>
 
 
- <!-- This Script is For Popup Div Starts--> 
-<!-- <script>
-function addSubmissionTemplate(clientLocationId) {	  
-	var result = "";
-	result = result  +'	<form id="clinetSubmissionTemplate_form" name="clinetSubmissionTemplate_form" method="post">';
-	result = result  +'	<div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>';
-	result = result  +'	<div class="form-horizontal clearfix">';
-                              
-	
+<script>
+function templatepagination(){  
+    $('#templatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
+
+<script type="text/javascript">
+	function addSubmissionTemplateFields(clientLocationId) {
 		
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	<input type="text" class="form-control input-sm" value="" id="templateName" name="templateName" field-name="Template name" placeholder="Template name *" data-validation="required validate_Space validate_length length2-100">';
-	result = result  +'	</div>';
-	result = result  +'	</div>';
-	
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	     <textarea rows="5" name="description" field-name="Description" data-validation="required" placeholder="Description *" class="form-control"></textarea>';
-	result = result  +'	   </div>';
-	result = result  +'	 </div>';
-	
-	result = result  +'	  <div class="clearfix mr">';
-	result = result  +'	   <input type="button" id ="addSubmissionTemplate" value="Add" onclick="saveTemplate('+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
-	result = result  +'	  </div>';
-	
-	
-	
-	result = result  +'	 </div>';
-	result = result  +'	 </div>';
-	result = result  +'	        </form> ';
-	$("#popUpDivContact").empty();
-	$("#popUpDivContact").append(result);
-	
-	var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-	/* $(".addcon-pop").click(function(){
-		 $(".collapse-div-adduser").toggleClass("show-div");
-		 $(".collapse-div").removeClass("show-div");
-	 }); */
-	 
-	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){
-		 $(this).closest('.edit-details').removeClass("edit-details-active");
+		var sourceleadUrl ='${sourceleadUrl}';
+		var result = "";
+		
+		result = result + '<section class="clearfix createTemplate">';
+		
+		result = result + '<div class="clearfix">';
+		result = result + '<h2>Template Details</h2>';
+		        result = result + '</div>';
+		        result = result + '<div id="sjfb-wrap">';
+
+		           result = result + '<form id="sjfb" novalidate>';
+		           result = result + '<input type="hidden" id="clientLocationId" value="'+clientLocationId+'">';
+		           
+		           result = result  +'	<div class="row mb">';
+		            result = result  +'	<div class="col-xs-12 col-md-6" id="templateNameDiv">';
+		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
+			    	result = result  +'	<div class="mt10">';
+			    	result = result  +'	<input type="text" class="form-control input-sm" value="" onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
+			    	result = result  +'	</div>';
+			    	result = result  +'	</div>';
+			    	
+			    	result = result  +'	<div class="col-xs-12 col-md-6">';
+			    	 result = result  +'<label>Description<span class="text-danger">&nbsp;*</label>';
+			    	result = result  +'	  <div class="mt10">';
+			    	result = result  +'	     <textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>';
+			    	result = result  +'	   </div>';
+			    	result = result  +'	</div>';
+			    	result = result  +'	</div>';
+			    	
+			    	result = result + '<div class="clearfix mb row">';
+			    	
+			    	result = result + '<div class="col-md-10">';
+			    	result = result + '<h2>Template Fields</h2>';
+			    	result = result + '</div>';
+			    	
+			    	result = result + '<div class="col-md-2">';
+			        result = result + '<div class="dropdown">';
+			        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
+			        result = result + '<span class="caret"></span></button>';
+			        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
+			        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
+			        result = result + '<li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>';
+			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
+			        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
+			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
+			        result = result + '<li><a id="calendar" data-type="calendar" href="javascript:void(0)">Calendar</a></li>';
+			        result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>';
+		            result = result + '</ul>';
+			        result = result + '</div>';
+			        result = result + '</div>';
+			        
+			        result = result + '</div>';
+		           
+		           result = result + '<div id="form-fields">';
+		           result = result + '</div>';
+		           result = result + '<div class="form-footer clearfix row mt">';
+		           
+		           result = result + '<div class="pull-right mr">';
+		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
+		           result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
+		           result = result + '</div>';
+
+		           result = result + '</div>';
+		           result = result + '</form>';
+
+		      
+		           result = result + '</section>';
+		           
+		           result = result + '<div id="popUp"></div>'; 
+		           
+		           
+		           $("#tab-4").empty();  
+		           $("#tab-4-addTemplate").empty();
+		           $("#tab-4").append(result); 
+		           customizeFields(clientLocationId,sourceleadUrl);
+		  
+	}
+</script>	
+
+
+<script type="text/javascript">
+	function viewSubmissionTemplate(clientLocationId,templateId,templateName) {
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		generateForm(sourceleadUrl,templateId);
+		
+		var result = "";
+		result = result + '<div class="clearfix templateName">';
+		result = result + '<h2>'+templateName+'</h2>';
+        result = result + '</div>';
+
+        result = result + '<div id="sjfb-fields" class="viewTemplate">';
+        
+        result = result + '</div>';
+        result = result + '<div class="form-footer clearfix">';
+        result = result + '<div class="pull-right mr">';
+        result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
+        result = result + '</div>';
+        result = result + '</div>';
+        
+        $("#tab-4").empty();  
+        $("#tab-4-addTemplate").empty();
+        $("#tab-4").append(result); 
+        
+	}
+</script>
+
+<script type="text/javascript">
+function validateTemplateName(clientLocationId){
+	var templateName = document.getElementById("templateName").value; 
+	if(templateName){
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName, 
+	        success: function(result) {
+	        	if (result == 'invalid') {
+	        		$("#save_button").attr("disabled", "disabled");
+	        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+	        	}else{
+	        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#templateName').attr('class','valid form-control');
+					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+					
+	        		$("#save_button").removeAttr("disabled")
+	        	}
+	        }
 		 });
-	 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
-	 
-	};
-</script> -->
+	}
+}
+</script>
+
+
+  <script type="text/javascript">
+   	$('body').on('submit', '#sjfb', function(e){
+	  if ($(this).validate(false, validationSettings)){
+        e.preventDefault();
+        var frm = $('#sjfb').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        con = con.replace(/[{}]/g, "");
+        var jsonData = encodeURIComponent(con);
+
+        //Loop through fields and save field data to array
+        var fields = [];
+
+        $('.field').each(function() {
+
+            var $this = $(this);
+
+            //field type
+            var fieldType = $this.data('type');
+
+            //field label
+            var fieldLabel = $this.find('.field-label').val();
+
+            //field required
+            var fieldReq = $this.hasClass('required') ? 1 : 0;
+
+            //check if this field has choices
+            if($this.find('.choices li').length >= 1) {
+
+                var choices = [];
+
+                $this.find('.choices li').each(function() {
+
+                    var $thisChoice = $(this);
+
+                    //choice label
+                    var choiceLabel = $thisChoice.find('.choice-label').val();
+
+                    //choice selected
+                    var choiceSel = $thisChoice.hasClass('selected') ? 1 : 0;
+
+                    choices.push({
+                        label: choiceLabel,
+                        sel: choiceSel
+                    });
+
+                });
+            }
+
+            fields.push({
+                type: fieldType,
+                label: fieldLabel,
+                req: fieldReq,
+                choices: choices
+            });
+
+        });
+
+        var frontEndFormHTML = '';
+        var clientLocationId = document.getElementById("clientLocationId").value;
+        var sourceleadUrl ='${sourceleadUrl}';
+        //Save form to database
+        //Demo doesn't actually save. Download project files for save
+        var con2 = JSON.stringify(fields);
+        var jsonStringData = encodeURIComponent(con2);
+        $( "#save_button" ).addClass('button').val('Processing..');
+   	    $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	        success: function(result) {
+	        	if((result == 'home')){
+	        		clientSubmissionTemplate(clientLocationId);  
+		        } 
+	        },
+	    });
+        return true;
+      }
+      else{
+      	return false;	
+         }
+    });
+    	
+   	$('#sjfb').showHelpOnFocus();
+    $('#sjfb').validateOnBlur(false, validationSettings); 
+  
+  </script>
+  
+
 
  
-
-
-
- <!-- <script type="text/javascript">
-	function saveTemplate(clientLocationId) {
-		if ($('#clinetSubmissionTemplate_form').validate(false, validationSettings)) {
-			var frm = $('#clinetSubmissionTemplate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#addSubmissionTemplate").attr("disabled", "disabled");
-			$("#addSubmissionTemplate").addClass('button').val('Processing..');
-			
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&clientLocationId="+clientLocationId,
-						success : function(result) {
-							submissionTemplateList(clientLocationId);
-						},
-			});
-			return true;
-		} else {
-			return false;
-		}
-	}
-	$('body').on('blur', '#clinetSubmissionTemplate_form', function() {
-		$("#clinetSubmissionTemplate_form").showHelpOnFocus();
-		$("#clinetSubmissionTemplate_form").validateOnBlur(false, validationSettings);
-	}); 
-</script> -->
-
  
  <script type="text/javascript">
         var validationSettings = {

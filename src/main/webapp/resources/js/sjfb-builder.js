@@ -5,14 +5,13 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(){
-	
+function customizeFields(clientLocationId,sourceleadUrl){
 
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
     $("#add-field a").click(function(e) {
         e.preventDefault();
-        $(addField($(this).data('type'))).appendTo('#form-fields').hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y','Y')).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
 
@@ -60,26 +59,30 @@ function customizeFields(){
 
     //Adds new choice to field with animation
     $("#sjfb").on("click", ".add-choice", function() {
-        $(addChoice()).appendTo($(this).prev()).hide().slideDown('fast');
+        $(addChoice('Y')).appendTo($(this).prev()).hide().slideDown('fast');
         $('.choices ul').sortable();
     });
 
     
 
     //load saved form
-    loadForm(formID);
+    loadForm(clientLocationId,sourceleadUrl);
 
 };
 
+
 //Add field to builder
-function addField(fieldType) {
+function addField(fieldType,value,labelValue) {
 
     var hasRequired, hasChoices,hasAutocomplete,fieldName;
     var includeRequiredHTML = '';
     var includeChoicesHTML = '';
     var includeAutocompleteHTML = '';
     var includeTextHTML = '';
-
+    var DeleteButtion = '';
+    var readOnly = '';
+    var checkbox = '';
+    
     switch (fieldType) {
         case 'text':
             hasRequired = true;
@@ -106,6 +109,11 @@ function addField(fieldType) {
             hasChoices = true;
             fieldName = "Check Box";
             break;
+        case 'calendar':
+            hasRequired = true;
+            hasChoices = false;
+            fieldName = "Calendar";
+            break;
         case 'autocomplete':
         	hasAutocomplete = true;
             hasRequired = true;
@@ -115,13 +123,23 @@ function addField(fieldType) {
             
     }
 
+    if(value == 'Y' || value == 'undefined' || null == value || value == ''){
+    	DeleteButtion = '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>'
+    }else{
+    	DeleteButtion = '<button type="button"  class="btnDisable btn btn-default disabled"><i class="glyphicon glyphicon-remove"></i></button>'
+    	checkbox = 'disabled="disabled"'
+    }
+    
+    if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
+    	readOnly = 'readonly="readonly"'
+    }
    
     
     if (hasRequired) {
         includeRequiredHTML = '' +
             '<label class="col-md-5"><div class="col-md-3 lblHeight">Required? </div>' +
             ' <div class="col-md-9 lblHeight"> ' +
-            '<input class="toggle-required" type="checkbox">' +
+            '<input class="toggle-required" '+checkbox+' type="checkbox">' +
             ' </div> ' +
             '</label>'
     }
@@ -138,9 +156,7 @@ function addField(fieldType) {
     	includeAutocompleteHTML = ''+ '<label class="col-md-5"><div class="col-md-2 lblHeight">Type:</div>' +
         ' <div class="col-md-10"> ' +
         '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Autocomplete">'+
-        '<option value="country">Country</option>      '+
-        '<option value="countryState">Country-State</option>      '+
-        '<option value="countryStateCity">Country-State-City</option>'+
+        '<option value="location">Location</option>      '+
         '</select>'+
         ' </div> ' +
         '</label>'
@@ -149,14 +165,14 @@ function addField(fieldType) {
     	 includeTextHTML = ''+
 		   '<label class="col-md-5"><div class="col-md-2 lblHeight">Label:</div>' +
 	       ' <div class="col-md-10"> ' +
-	       '<input type="text" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
+	       '<input type="text" '+readOnly+' data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
 	       ' </div> ' +
 	       '</label>' 
     }
 
     return '' +
         '<div class="field" data-type="' + fieldType + '">' +
-        '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>' +
+        DeleteButtion +
         ' <div class="clearfix"> ' + 
         '<h3>' + '<i class="fa fa-check-circle"></i>&nbsp;'  + fieldName + '</h3>' +
         ' </div> ' +
@@ -207,13 +223,18 @@ function selectedChoice($this) {
 }
 
 //Builder HTML for select, radio, and checkbox choices
-function addChoice() {
+function addChoice(labelValue) {
+	var readOnly = '';
+	  if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
+	    	readOnly = 'readonly="readonly"'
+	    }
+	  
     return '' +
         '<li>' +
         '<div class="row">' +
         '<label class="col-md-5 lblClass"> <div class="col-md-2 lblHeight">Option: </div> ' +
         '<div class="col-md-10">' +
-        '<input type="text" data-validation="required validate_Space" placeholder="Required *" field-name="Option Label" class="choiceInput choice-label form-control input-sm">' +
+        '<input type="text" '+readOnly+' data-validation="required validate_Space" placeholder="Required *" field-name="Option Label" class="choiceInput choice-label form-control input-sm">' +
         '</div>' +
         '</label>' +
         
@@ -231,43 +252,50 @@ function addChoice() {
 }
 
 //Loads a saved form from your database into the builder
-function loadForm(formID) {
-    $.getJSON('sjfb-load.php?form_id=' + formID, function(data) {
-        if (data) {
-            //go through each saved field object and render the builder
-            $.each( data, function( k, v ) {
-                //Add the field
-                $(addField(v['type'])).appendTo('#form-fields').hide().slideDown('fast');
-                var $currentField = $('#form-fields .field').last();
+function loadForm(clientLocationId,sourceleadUrl) {
+        $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/loadSubmissionTemplate?clientLocationId="+clientLocationId, 
+	        success: function(data) {
+	        	 var data = eval(data);
+	        	 if (data) {
+	                 //go through each saved field object and render the builder
+	                 $.each( data, function( k, v ) {
+	                     //Add the field
+	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'])).appendTo('#form-fields').hide().slideDown('fast');
+	                     var $currentField = $('#form-fields .field').last();
 
-                //Add the label
-                $currentField.find('.field-label').val(v['label']);
+	                     //Add the label
+	                     $currentField.find('.field-label').val(v['label']);
 
-                //Is it required?
-                if (v['req']) {
-                    requiredField($currentField.find('.toggle-required'));
-                }
+	                     //Is it required?
+	                     if (v['req']) {
+	                         requiredField($currentField.find('.toggle-required'));
+	                     }
 
-                //Any choices?
-                if (v['choices']) {
-                    $.each( v['choices'], function( k, v ) {
-                        //add the choices
-                        $currentField.find('.choices ul').append(addChoice());
+	                     //Any choices?
+	                     if (v['choices']) {
+	                         $.each( v['choices'], function( k, v ) {
+	                             //add the choices
+	                             $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
 
-                        //Add the label
-                        $currentField.find('.choice-label').last().val(v['label']);
+	                             //Add the label
+	                             $currentField.find('.choice-label').last().val(v['label']);
 
-                        //Is it selected?
-                        if (v['sel']) {
-                            selectedChoice($currentField.find('.toggle-selected').last());
-                        }
-                    });
-                }
+	                             //Is it selected?
+	                             if (v['sel']) {
+	                                 selectedChoice($currentField.find('.toggle-selected').last());
+	                             }
+	                         });
+	                     }
 
-            });
+	                 });
 
-            $('#form-fields').sortable();
-            $('.choices ul').sortable();
-        }
-    });
+	                 $('#form-fields').sortable();
+	                 $('.choices ul').sortable();
+	             }
+	        },
+	    });
+       
 }
+

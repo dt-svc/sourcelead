@@ -6,114 +6,175 @@
  */
 
 //generates the form HTML
-function generateForm() {
+function generateForm(sourceleadUrl,templateId) {
 
     //empty out the preview area
     $("#sjfb-fields").empty();
+    
+    
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
+        success: function(data) {
+        	 var data = eval(data);
+        	 
+        	 if (data) {
+                 //go through each saved field object and render the form HTML
+                 $.each( data, function( k, v ) {
 
-    $.getJSON('sjfb-load.php?', function(data) {
-        if (data) {
-            //go through each saved field object and render the form HTML
-            $.each( data, function( k, v ) {
+                     var fieldType = v['type'];
 
-                var fieldType = v['type'];
+                     //Add the field
+                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label']));
+                     var $currentField = $('#sjfb-fields .sjfb-field').last();
+                     
+                     var reqSymbol = '';
+                	 if(v['req'] == '1'){
+                		reqSymbol = " *";
+                	 }
+                     
+                     //Add the label
+                     if(v['label'] != 'location' ){
+                    	 $currentField.find('label').text(v['label']+reqSymbol);
+                     }
+                     
+                     
+                     //Any choices?
+                     if (v['choices']) {
 
-                //Add the field
-                $('#sjfb-fields').append(addFieldHTML(fieldType));
-                var $currentField = $('#sjfb-fields .sjfb-field').last();
+                         var uniqueID = Math.floor(Math.random()*999999)+1;
 
-                //Add the label
-                $currentField.find('label').text(v['label']);
+                         $.each( v['choices'], function( k, v ) {
 
-                //Any choices?
-                if (v['choices']) {
+                             if (fieldType == 'select') {
+                                 var selected = v['sel'] ? ' selected' : '';
+                                 var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
+                                 $currentField.find(".choices").append(choiceHTML);
+                             }
 
-                    var uniqueID = Math.floor(Math.random()*999999)+1;
+                             else if (fieldType == 'radio') {
+                                 var selected = v['sel'] ? ' checked' : '';
+                                 var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 $currentField.find(".choices").append(choiceHTML);
+                             }
 
-                    $.each( v['choices'], function( k, v ) {
+                             else if (fieldType == 'checkbox') {
+                                 var selected = v['sel'] ? ' checked' : '';
+                                 var choiceHTML = '<label><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 $currentField.find(".choices").append(choiceHTML);
+                             }
 
-                        if (fieldType == 'select') {
-                            var selected = v['sel'] ? ' selected' : '';
-                            var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
-                            $currentField.find(".choices").append(choiceHTML);
-                        }
+                         });
+                     }
 
-                        else if (fieldType == 'radio') {
-                            var selected = v['sel'] ? ' checked' : '';
-                            var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
-                            $currentField.find(".choices").append(choiceHTML);
-                        }
+                     //Is it required?
+                     if (v['req']) {
+                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'calendar') { $currentField.find("calandar").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+                         $currentField.addClass('required-field');
+                     }
 
-                        else if (fieldType == 'checkbox') {
-                            var selected = v['sel'] ? ' checked' : '';
-                            var choiceHTML = '<label><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
-                            $currentField.find(".choices").append(choiceHTML);
-                        }
+                 });
+             }
+        	 
+        	 
+        	 
+        	  //HTML templates for rendering frontend form fields
+             function addFieldHTML(fieldType,required,label) {
+            	 
+            	 if(label == 'location'){
+            		 var reqSymbol = ''
+            		 if(required == 1){
+            			 reqSymbol = '<span>&nbsp;*</span>'
+            		 }
+            		 var countryUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var stateUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var cityUniqueID = Math.floor(Math.random()*999999)+1;
+            	 }
+            	 else{
+            		 var uniqueID = Math.floor(Math.random()*999999)+1;
+            	 }
+                
 
-                    });
-                }
+                 switch (fieldType) {
 
-                //Is it required?
-                if (v['req']) {
-                    if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
-                    else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
-                    else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
-                    else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
-                    $currentField.addClass('required-field');
-                }
+                     case 'text':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label for="text-' + uniqueID + '"></label>' +
+                             '<input type="text" id="text-' + uniqueID + '">' +
+                             '</div>';
 
-            });
-        }
+                     case 'textarea':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
+                             '<label for="textarea-' + uniqueID + '"></label>' +
+                             '<textarea rows="3" id="textarea-' + uniqueID + '"></textarea>' +
+                             '</div>';
 
-        //HTML templates for rendering frontend form fields
-        function addFieldHTML(fieldType) {
+                     case 'select':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
+                             '<label for="select-' + uniqueID + '"></label>' +
+                             '<select id="select-' + uniqueID + '" class="choices choices-select"></select>' +
+                             '</div>';
 
-            var uniqueID = Math.floor(Math.random()*999999)+1;
+                     case 'radio':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
+                             '<label></label>' +
+                             '<div class="choices choices-radio"></div>' +
+                             '</div>';
 
-            switch (fieldType) {
+                     case 'checkbox':
+                         return '' +
+                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
+                             '<label class="sjfb-label"></label>' +
+                             '<div class="choices choices-checkbox"></div>' +
+                             '</div>';
+                         
 
-                case 'text':
-                    return '' +
-                        '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                        '<label for="text-' + uniqueID + '"></label>' +
-                        '<input type="text" id="text-' + uniqueID + '">' +
-                        '</div>';
+                     case 'calendar':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label for="calandar-' + uniqueID + '"></label>' +
+                             '<input type="text" id="text-' + uniqueID + '">' +
+                             '</div>';
+                         
+                     case 'autocomplete':
+                    	 if(label == 'location'){
+                    		 return '' +
+                             '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label>Country'+reqSymbol+'</label>' +
+                             '<input type="text" id="text-' + countryUniqueID + '">' +
+                             '</div>'+
+                             '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label>State'+reqSymbol+'</label>' +
+                             '<input type="text" id="text-' + stateUniqueID + '">' +
+                             '</div>'+
+                             '<div id="sjfb-' + cityUniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label>City'+reqSymbol+'</label>' +
+                             '<input type="text" id="text-' + cityUniqueID + '">' +
+                             '</div>';
+                    	 }
+                    	 else{
+                    		 return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label for="autocomplete-' + uniqueID + '"></label>' +
+                             '<input type="text" id="text-' + uniqueID + '">' +
+                             '</div>';
+                    	 }	 
+                    		 
+                        
 
-                case 'textarea':
-                    return '' +
-                        '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
-                        '<label for="textarea-' + uniqueID + '"></label>' +
-                        '<textarea id="textarea-' + uniqueID + '"></textarea>' +
-                        '</div>';
-
-                case 'select':
-                    return '' +
-                        '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
-                        '<label for="select-' + uniqueID + '"></label>' +
-                        '<select id="select-' + uniqueID + '" class="choices choices-select"></select>' +
-                        '</div>';
-
-                case 'radio':
-                    return '' +
-                        '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
-                        '<label></label>' +
-                        '<div class="choices choices-radio"></div>' +
-                        '</div>';
-
-                case 'checkbox':
-                    return '' +
-                        '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
-                        '<label class="sjfb-label"></label>' +
-                        '<div class="choices choices-checkbox"></div>' +
-                        '</div>';
-
-                case 'agree':
-                    return '' +
-                        '<div id="sjfb-agree-' + uniqueID + '" class="sjfb-field sjfb-agree required-field">' +
-                        '<input type="checkbox" required>' +
-                        '<label></label>' +
-                        '</div>'
-            }
-        }
+                 }
+             }
+        },
     });
+    
+    
 }
