@@ -106,5 +106,18 @@ public class RequirementController {
 		return model;
 
 	}
+	
+	@RequestMapping(value = "/requirementSummary")
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
+		 
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/requirementSummary");
+		
+		model.addObject("requirementId",requirementId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
 
 }
