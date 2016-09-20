@@ -165,7 +165,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 	                result = result + '	    <td><div>';
-	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\')";></i>';
+	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\')";></i>';
 	                	                    result = result +'</div></td>';
                      }
                      else{
@@ -274,14 +274,14 @@ $(document).ready(function() {
 
 
 <script>
-function terminateSpoc(spocId, orgRelationID,clientLocationId){
+function terminateClientSpoc(spocId, orgRelationID,clientLocationId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+spocId+","+orgRelationID+","+clientLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -290,7 +290,7 @@ function terminateSpoc(spocId, orgRelationID,clientLocationId){
 </script>
 
 <script>
-function saveReason(spocId, orgRelationID,clientLocationId){
+function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason){
