@@ -156,29 +156,29 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setFileContentType(multiFile.getContentType());
 			 }
 			 
-			if(jsonObj.has("isClient")){
+			if(jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
 			}
-			if(jsonObj.has("selectClient")){
+			if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient"))){
 				OrgRelations orgRelations = new OrgRelations();
 				orgRelations.setId(Long.parseLong(jsonObj.getString("selectClient").split(",")[0]));
 				requirement.setClientId(orgRelations);
 			}
-			if(jsonObj.has("selectContact")){
+			if(jsonObj.has("selectContact") && StringUtils.isNotEmpty(jsonObj.getString("selectContact"))){
 				OrgSpoc orgSpoc = new OrgSpoc();
 				orgSpoc.setId(Long.parseLong(jsonObj.getString("selectContact")));
 				requirement.setSpocId(orgSpoc);
 			}
-			if(jsonObj.has("clientCurrencyCode")){
+			if(jsonObj.has("clientCurrencyCode") && StringUtils.isNotEmpty(jsonObj.getString("clientCurrencyCode"))){
 				requirement.setClientCurrencyCode(jsonObj.getString("clientCurrencyCode"));
 			}
-		 	if(jsonObj.has("clientRate")){
+		 	if(jsonObj.has("clientRate") && StringUtils.isNotEmpty(jsonObj.getString("clientRate"))){
 		 		requirement.setClientRate(jsonObj.getString("clientRate"));
 			}
-			if(jsonObj.has("clientRateType")){
+			if(jsonObj.has("clientRateType") && StringUtils.isNotEmpty(jsonObj.getString("clientRateType"))){
 				requirement.setClientRateType(jsonObj.getString("clientRateType"));
 			} 
-			if(jsonObj.has("clientSubmissionForm")){
+			if(jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
 				SubmissionTemplate submissionTemplate = new SubmissionTemplate();
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				requirement.setClientSubmissionTemplateId(submissionTemplate);

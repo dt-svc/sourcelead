@@ -331,7 +331,7 @@ background-color: #ccc;
                 <label class="col-md-3">Client <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this);">
+                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this);">
                     	<option value=''>-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  

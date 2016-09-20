@@ -155,8 +155,6 @@ function addClientContactPopUp() {
 
 
 
-
-
 <script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {
@@ -196,14 +194,9 @@ function addClientContactPopUp() {
 							$('#addClient').modal('hide');
 							$("#selectContact").empty();
 							$("#addContactPlus").hide();
+							$("#clientSubmissionForm").empty();
 						},
 					});
-	 		$("#orgName").val('');
-	 		$("#webSite").val('');
-	 		$("#firstName").val('');
-	 		$("#lastName").val('');
-	 		$("#email").val('');
-	 		$("#roleType option:selected").removeAttr("selected");
 			return true;
 		} else {
 			return false;
@@ -227,7 +220,36 @@ function getContactList(local){
 		}
 }
 </script>
-​
+
+<script type="text/javascript">
+function getClientSubmissionTemplates(local){
+		var valueArray = local.value.split(",");
+		if("" != valueArray[0] && "" != valueArray[1]){
+			var clientLocationId = valueArray[1];
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getSubmissionTemplatesList?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+					var output = "";
+					output = output
+							+ "<option value=''>-- Select Submission Form --</option>";
+					for (var i = 0; i < json.length; i++) {
+						var opt = json[i];
+						
+						output = output + "<option value='"+opt.id+"'>"
+								+opt.templateName+ "</option>";
+					}
+					$("#clientSubmissionForm").empty();
+					$("#clientSubmissionForm").append(output);
+					$('#clientSubmissionForm').trigger("chosen:updated");
+		        }
+			});
+		}
+	}
+</script>
+
 <script type="text/javascript">
 	function clientContactList(orgRelationID,clientLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -238,7 +260,7 @@ function getContactList(local){
 	        	var json = JSON.parse(data);
 				var output = "";
 				output = output
-						+ "<option value=''>-- Select Client --</option>";
+						+ "<option value=''>-- Select Contact --</option>";
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
 					
@@ -294,12 +316,6 @@ function getContactList(local){
 
 						},
 					});
-	 		$("#orgName").val('');
-	 		$("#webSite").val('');
-	 		$("#firstName").val('');
-	 		$("#lastName").val('');
-	 		$("#email").val('');
-	 		$("#roleType option:selected").removeAttr("selected");
 			return true;
 		} else {
 			return false;
