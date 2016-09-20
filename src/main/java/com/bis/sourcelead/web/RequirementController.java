@@ -57,7 +57,11 @@ public class RequirementController {
 			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 			if(requirement.getEducation() != null){
 					String[] educationList = requirement.getEducation().split(",");
-					requirement.setEducationList(educationList);
+					requirement.setReqEducationList(educationList);
+			}
+			if(requirement.getSkills() != null){		
+					String[] skillsList = requirement.getSkills().split(",");
+					requirement.setReqSkillsList(skillsList);
 			}
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);

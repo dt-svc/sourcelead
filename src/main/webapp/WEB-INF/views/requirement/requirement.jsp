@@ -177,14 +177,15 @@ background-color: #ccc;
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
-	                     <c:forEach var="existEdu" items="${requirement.educationList}">
+                		<option  value="${edu.name}">${edu.name}</option>
+	                      <c:forEach var="existEdu" items="${requirement.reqEducationList}">
 	                     			 <c:if test="${edu.name == existEdu}">  
-			                    	<option selected value="${edu.name}">${edu.name}</option>
+			                    			<option selected value="${edu.name}">${edu.name}</option>
 						             </c:if> 
 						             <c:if test="${edu.name != existEdu}"> 
-						                       <option  value="${edu.name}">${edu.name}</option>
+						           			 <option  value="${edu.name}">${edu.name}</option>
 						             </c:if>
-	                     </c:forEach>
+	                     </c:forEach> 
 			             
                 </c:forEach>
                 </select>
@@ -267,8 +268,16 @@ background-color: #ccc;
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation="validate_Space" data-validation-optional="true">
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
+               <c:forEach var="skill" items="${skillsList}">
+                <option  value="${skill.name}">${skill.name}</option>
+	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
+	                     			 <c:if test="${skill.name == skillExist}">  
+			                    	<option selected value="${skill.name}">${skill.name}</option>
+						             </c:if> 
+						             <c:if test="${skill.name != skillExist}"> 
+						                       <option  value="${skill.name}">${skill.name}</option>
+						             </c:if>
+	                     </c:forEach>
                 </c:forEach>
                 </select>
               </div>
