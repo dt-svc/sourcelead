@@ -54,8 +54,8 @@ display: block;
 	background: none;
     border: 0;
     position: relative;
-    top:0px;
-    font-size: 22px;
+    top:7px;
+    font-size: 15px;
 }
 .createTemplate .form-control{
     display: block;
@@ -197,6 +197,16 @@ display: block;
     float: right;
 }
 
+#sjfb .btnDisable {
+    float: right;
+    cursor: none;
+}
+#sjfb .btnDisable .glyphicon {
+    cursor: none;
+    color: #777
+}
+
+
 #sjfb input {
     font-weight: normal;
     margin: 0 5px;
@@ -273,7 +283,92 @@ display: block;
 #sjfb-sample .sjfb-field {
     margin-bottom: 20px;
 }
-
+.viewTemplate {
+	clear:both;
+	display: inline-block;
+    padding:15px;
+}
+.viewTemplate .sjfb-field {
+	display: inline-block;
+    width: 49%;
+    margin: 0;
+    margin-bottom: 10px;
+    position: relative;
+}
+.viewTemplate .required-field .text-danger {
+	    position: absolute; left: 21%;
+	}
+.viewTemplate .sjfb-field:nth-child(2n+2){
+	margin-left: 15px;
+}
+.viewTemplate .sjfb-field label {
+   width:25%;
+   float:left;
+}
+.viewTemplate .sjfb-field input[type="text"] {
+	display: inline-block;
+    width: 75%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.viewTemplate .sjfb-field textarea {
+	display: inline-block;
+    width: 75%;
+    min-height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.viewTemplate .sjfb-field select{
+	width: 75% !important;
+	display: inline-block;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    background: url("../images/arrow-d-g.png") no-repeat 98% center;
+    background-size: 10px;
+}
+.viewTemplate .sjfb-field input[type="text"]:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+.templateName h2 {
+	font-size: 18px;
+	margin-left: 15px;
+}
 #sjfb-sample .sjfb-agree label,
 #sjfb-sample .sjfb-agree input {
     float: left;
@@ -289,4 +384,7 @@ display: block;
 #sjfb-sample .submit {
     margin: 20px 0 0;
     cursor: pointer;
+}
+.dataTables_wrapper {
+	text-align: left;
 }

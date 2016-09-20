@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -73,6 +75,9 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	SubmissionTemplateService  submissionTemplateService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -173,6 +178,8 @@ public class ClientServiceImpl implements ClientService{
 			Set<OrgRelations> orgRelationsList = null;
 			Org org = null;
 			User spocUser = null;
+			SubmissionTemplate submissionTemplate = null;
+			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
 				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
 				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
@@ -217,7 +224,24 @@ public class ClientServiceImpl implements ClientService{
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
 			}
-
+			
+			if("Client".equals(responderType)){
+				submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(clientOrgLocations.getId(), orgLocations.getId());
+				if(submissionTemplate == null){
+					submissionTemplate = new SubmissionTemplate();
+					sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+					submissionTemplate.setTemplateName("Default Template");
+					submissionTemplate.setDescription("Default Template Description");
+					submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+					submissionTemplate.setIsDefault("Y");
+					submissionTemplate.setClientLocationId(clientOrgLocations);
+					submissionTemplate.setOrgLocationId(orgLocations);
+					submissionTemplate.setCreatedBy(user.getUserCode());
+					submissionTemplate.setCreatedDate(new Date());
+					submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				}
+			}
+			
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
 				if(!isNullOrEmpty(jsonObj.getString("roleType")) 
@@ -591,14 +615,20 @@ public class ClientServiceImpl implements ClientService{
 				
 				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User ownerUser = new User();
-						ownerUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setOwnerUser(ownerUser);
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setSpocUser(spocUser);
 					}
-					 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+				}
+				if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(spocUser);
+					}
 				}
 				
-				//orgSpocService.addOrgSpoc(orgSpoc);
+				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());

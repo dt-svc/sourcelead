@@ -26,4 +26,21 @@ public class SubmissionTemplateServiceImpl implements SubmissionTemplateService 
 		return submissionTemplateDao.getSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocationId);
 	}
 
+	@Override
+	public SubmissionTemplate getSubmissionTemplateById(Long Id) throws Exception {
+		return submissionTemplateDao.getSubmissionTemplateById(Id);
+	}
+
+	@Override
+	public SubmissionTemplate getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,
+			Long orgLocationId) throws Exception {
+		return submissionTemplateDao.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocationId);
+	}
+
+	@Override
+	public SubmissionTemplate getSubmissionTemplateByTemplateName(Long clientLocationId, Long orgLocationId,
+			String templateName) throws Exception {
+		return submissionTemplateDao.getSubmissionTemplateByTemplateName(clientLocationId, orgLocationId, templateName);
+	}
+
 }

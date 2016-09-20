@@ -50,17 +50,18 @@
 				<div class="timesheet_head">
 					<ul>
 
-                  <!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
-                        </ul>
-                    </div>                	
-                </li> -->
+		                  <!-- <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		                	<div id="filter2ApprovedPop" class="approved_pop">
+		                    	<ul>
+		                        	<li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="filter();"><label for="c6">Level-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="filter();"><label for="c7">Level-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="filter();"><label for="c8">Level-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="filter();"><label for="c8">Level-4</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="filter();"><label for="c8">Level-5</label></li>
+		                        </ul>
+		                    </div>                	
+		                </li> -->
                 
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
 						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
@@ -111,8 +112,8 @@
 <script type="text/javascript">
 window.onload = function () {
 	getVendorContactLists();
-	listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact';
+	/* listChange("listbyContact");
+	document.getElementById('listOfVendors').value = 'listbyContact'; */
  };
 </script>
 
@@ -247,9 +248,7 @@ function pagination(){
 		//for client documents tab
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 				
-		result = result + '<li><a href="#tab-2" onclick="clientContactList('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
-				
-		result = result + '<li><a href="#tab-4" onclick="submissionTemplateList('+clientLocationId+');">Submission Templates</a></li>';	
+		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -266,16 +265,10 @@ function pagination(){
 		//for client documents tab
         result = result + '<div id="tab-3" class="project_tabs_inn">';
 		result = result + '</div>';
-		result = result + '<div class="clients_wrap_table " id="testDiv">';
-	   	result = result + '<div id="tab-2-addContact"> </div>';
-        result = result + '<table id="tab-2" class="display" cellspacing="0" width="100%"> </table>';
-        result = result + '</div>';
-        
-    	//for client contatcs tab
-		result = result + '<div class="clients_wrap_table " id="testTemplateDiv">';
-	   	result = result + '<div id="tab-4-addTemplate"> </div>';
-        result = result + '<table id="tab-4" class="display" cellspacing="0" width="100%"> </table>';
-        result = result + '</div>';
+		
+    	//for client submission template tab
+	   result = result + '<div id="tab-4" class="project_tabs_inn">';
+		result = result + '</div>';
 
 
 		result = result + '</div>';
@@ -540,19 +533,18 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		 document.getElementById("contactLevel").style.display="block";
+		// document.getElementById("contactLevel").style.display="block";
 		 
 		 
 		 getClientDetails();
 	 }
 	 if(sel.value=="listbyContact"){
-		 alert("hi");
 		 document.getElementById("vendorContactList").style.display="block";
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("clientList").style.display="none";
 		 document.getElementById("clientList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
-		 document.getElementById("contactLevel").style.display="none";
+		 //document.getElementById("contactLevel").style.display="none";
 		 
 		 
 		 getVendorContactLists();
