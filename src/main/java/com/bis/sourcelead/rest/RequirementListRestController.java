@@ -106,6 +106,7 @@ public class RequirementListRestController {
 				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+				requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());
 				}
 				resultJson = commonUtil.toJSON(requirement);
 			}

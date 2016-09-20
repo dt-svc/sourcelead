@@ -172,6 +172,9 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String[] educationList;
 	
+	@Transient
+	private String manager;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -529,6 +532,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setEducationList(String[] educationList) {
 		this.educationList = educationList;
+	}
+
+	public String getManager() {
+		return manager;
+	}
+
+	public void setManager(String manager) {
+		this.manager = manager;
 	}
 	
 	

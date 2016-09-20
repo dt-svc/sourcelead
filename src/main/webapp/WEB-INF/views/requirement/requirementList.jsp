@@ -281,7 +281,7 @@ function sideBar(requirementId){
 				        result = result+'              </div>';
 				        result = result+'              <div class="col-md-6">';
 				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.managerUserId+'</span></li>';
+				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
 				        result = result+'                  <li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
 				        result = result+'                  <li><i class="fa fa-flag"></i><span>Select Priority</span>';
 				         result = result+'                     </li>';
