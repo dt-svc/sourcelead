@@ -39,7 +39,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -347,12 +350,22 @@ public class UploadFileServiceImpl implements UploadFileService {
 					}
 				}
 				if (!isValidated || isUserFound) {
-					FileOutputStream fos = new FileOutputStream("FailureUsersForCheck.xls");
+					FileOutputStream fos = null;
+					if(!fileName.endsWith("xlsx")){
+						fos = new FileOutputStream("FailureUsersForCheck.xls");
+					}else{
+						 fos = new FileOutputStream("FailureUsersForCheck.xlsx");
+					}
+					
 					createExcelworkbook.write(fos);
 					fos.close();
 				}
 				if(count > 0){
+					if(!fileName.endsWith("xlsx")){
 					isFileCreated = "FailureUsersForCheck.xls";
+					}else{
+						isFileCreated = "FailureUsersForCheck.xlsx";
+					}
 				}else{
 					isFileCreated = "failed";
 				}
@@ -512,11 +525,19 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			  writeRow.createCell(5).setCellValue("");
 			}
 		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.RATEPER_LIST,6,createExcelsheet));
+			}
 			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
 		    writeRow.createCell(6).setCellValue(row.getCell(6).toString());
 		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.RATEPER_LIST,6,createExcelsheet));
+			}
 			 writeRow.createCell(6).setCellValue("");
 		}
 		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
@@ -534,19 +555,33 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			writeRow.createCell(7).setCellValue("");
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_LIST,8,createExcelsheet));
+			}
 	        writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_LIST,8,createExcelsheet));
+			}
 			writeRow.createCell(8).setCellValue("");
 		}
 		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-			
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.INVOICE_FREQUENCY_LIST,9,createExcelsheet));
+			}
 			writeRow.createCell(9).setCellValue(row.getCell(9).toString());
 		} else {
-			createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.INVOICE_FREQUENCY_LIST,9,createExcelsheet));
+			}
 		     writeRow.createCell(9).setCellValue("");
 		}
 			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
@@ -949,6 +984,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
 		  dataValidation.setSuppressDropDownArrow(false);
 		  return dataValidation;
-//		  XSSFDataValidation
 }
+	
+	private XSSFDataValidation getXssfDropDownlist(String[] dropDownList, int column, Sheet sheet){
+	    XSSFDataValidationHelper dvHelper=new XSSFDataValidationHelper((XSSFSheet) sheet);
+	    XSSFDataValidationConstraint dvConstraint=(XSSFDataValidationConstraint)dvHelper.createExplicitListConstraint(dropDownList);
+	   CellRangeAddressList addressList=new CellRangeAddressList(1,500,column,column);
+	   XSSFDataValidation validation=(XSSFDataValidation)dvHelper.createValidation(dvConstraint,addressList);
+	   validation.setShowErrorBox(true);
+	   return validation;
+	}
 }
