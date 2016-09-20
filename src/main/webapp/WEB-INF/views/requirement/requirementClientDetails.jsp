@@ -26,7 +26,6 @@ function addClientPopUp() {
 	result = result+'                <input type="text" id="webSite" name="webSite" class="form-control" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">';
 	result = result+'              </div>';
 	result = result+'            </div>';
-                
 	result = result+'            <div class="form-group">';
 	result = result+'              <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>';
 	result = result+'              <div class="col-lg-9">';
@@ -45,6 +44,16 @@ function addClientPopUp() {
 	result = result+'                <input type="text" id="email" name="email" class="form-control" value="" field-name="Client Email" data-validation="required validate_Space validate_email" onKeyUp="validateUserEmail("client");">';
 	result = result+'              </div>';
 	result = result+'            </div>';
+	result = result+'			<div class="form-group">';
+	result = result+'				<label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>';
+	result = result+'					<div class="col-md-9">';
+	result = result+'						<select multiple  class="chosen-select form-control"   name="owner" id="c1owner" field-name="Owner"  data-validation="required">';
+											<c:forEach var="user" items="${spocOwnersList}">
+														result = result+'  <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ""} >${user.firstName} ${user.lastName}</option>';
+											</c:forEach>
+	result = result+' 						</select>';
+	result = result+' 					</div>';
+	result = result+'			</div>';
 	result = result+'            <div class="form-group">';
 	result = result+'              <label class="col-lg-3">Role<span class="text-danger"> *</span></label>';
 	result = result+'              <div class="col-lg-9">';
@@ -53,6 +62,7 @@ function addClientPopUp() {
 	result = result+'					<option value="1">Admin</option>';
 	result = result+'					<option value="3">Approver/Project Manager</option>';
 	result = result+'					<option value="5">HR Manager</option>';
+	result = result+'					<option value="7">Sales Manager</option>';
 	result = result+'					<option value="8">Recruiter</option>';
 	result = result+'              </select>';
 	result = result+'              </div>';
@@ -69,7 +79,23 @@ function addClientPopUp() {
 	result = result+'</div>';
 	$("#addClient").empty();
 	$("#addClient").append(result);
-};
+	
+	$("#c1owner").trigger("chosen:updated");
+	$(function(){
+	    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	    $("#c1owner").chosen();
+	    $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+	});
+}
 </script>
 
 
@@ -108,7 +134,7 @@ function addClientContactPopUp() {
 	result = result+'     <div class="form-group">';
 	result = result+'        <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>';
 	result = result+'       <div class="col-md-9">';
-	result = result+'        <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">';
+	result = result+'        <select multiple class="chosen-select form-control" name="owner" id="c2owner" field-name="Owner"  data-validation="required">';
 							  <c:forEach var="user" items="${spocOwnersList}"> 
 						      			result = result +'<option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ""} >${user.firstName} ${user.lastName}</option>';
 						      </c:forEach> 
@@ -123,6 +149,7 @@ function addClientContactPopUp() {
 	result = result+'			<option value="1">Admin</option>';
 	result = result+'			<option value="3">Approver/Project Manager</option>';
 	result = result+'			<option value="5">HR Manager</option>';
+	result = result+'			<option value="7">Sales Manager</option>';
 	result = result+'			<option value="8">Recruiter</option>';
 	result = result+'       </select>';
 	result = result+'      </div>';
@@ -147,7 +174,23 @@ function addClientContactPopUp() {
 	result = result+'</div>';
 	$("#addContact").empty();
 	$("#addContact").append(result);
-};
+	
+	$("#c2owner").trigger("chosen:updated");
+	$(function(){
+	    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	    $("#c2owner").chosen();
+	    $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+	});
+}
 </script>
 
 
@@ -193,8 +236,12 @@ function addClientContactPopUp() {
 							$('#addClientId').trigger("chosen:updated");
 							$('#addClient').modal('hide');
 							$("#selectContact").empty();
+							$("#selectContact").append("<option value=''>-- Select Contact --</option>");
+							$('#selectContact').trigger("chosen:updated");
 							$("#addContactPlus").hide();
 							$("#clientSubmissionForm").empty();
+							$("#clientSubmissionForm").append("<option value=''>-- Select Submission Form --</option>");
+							$('#clientSubmissionForm').trigger("chosen:updated");
 						},
 					});
 			return true;
@@ -217,14 +264,20 @@ function getContactList(local){
 			$("#addContactPlus").show();
 		}else{
 			$("#addContactPlus").hide();
+			$("#selectContact").empty();
+			$("#selectContact").append("<option value=''>-- Select Contact --</option>");
+			$('#selectContact').trigger("chosen:updated");
+			$("#clientSubmissionForm").empty();
+			$("#clientSubmissionForm").append("<option value=''>-- Select Submission Form --</option>");
+			$('#clientSubmissionForm').trigger("chosen:updated");
 		}
 }
 </script>
 
 <script type="text/javascript">
 function getClientSubmissionTemplates(local){
-		var valueArray = local.value.split(",");
-		if("" != valueArray[0] && "" != valueArray[1]){
+		if("" != local.value){
+			var valueArray = local.value.split(",");
 			var clientLocationId = valueArray[1];
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
@@ -286,7 +339,6 @@ function getClientSubmissionTemplates(local){
 		};
 		if ($('#clientContacts_form').validate(false, validationSettings)) {
 			var frm = $('#clientContacts_form').serializeFormJSON();
-			var orgLocationId = document.getElementById("orgLocationId").value;
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
@@ -389,4 +441,6 @@ function getIsClientVal(){
         $("#isClientJob").val('N');
     }
 }
+
+
 </script>

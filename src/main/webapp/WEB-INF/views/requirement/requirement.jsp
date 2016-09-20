@@ -332,7 +332,7 @@ background-color: #ccc;
                 <div class="col-md-9">
                   <div class="form-icon">
                     <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this);">
-                    	<option value=''>-- Select Client --</option>
+                    	<option value="">-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
 			                    	<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
@@ -428,216 +428,9 @@ background-color: #ccc;
                   <div class="form-icon">
                     <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm">
                       <option value="">-- Select Submission Form --</option>
-                      <option value="1">Submission Form-1</option>
-                      <option value="2">Submission Form-2</option>
-                      <option value="3">Submission Form-3</option>
                     </select>
-                    <i data-target="#addSubmissonForm" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
-                  <div id="addSubmissonForm" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Submission Form</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                          <div class="row">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-								<div class="clearfix">
-                    <div class="form-horizontal clearfix custom-fields">
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">Title</label>
-                            <div class="col-md-8">
-                              <input type="text" class="form-control input-sm" value="" placeholder="Title">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <input type="button" class="btn btn-primary btn-sm" value="Add Field">
-                        </div>
-                      </div>
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">
-								<input type="text" placeholder="Field Name" class="form-control input-sm">
-                            </label>
-                            <div class="col-md-8">
-                              <select class="form-control">
-                                <option>Option Value-1</option>
-                                <option>Option Value-2</option>
-                                <option>Option Value-3</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                                                    <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                      </div>
-                      <div class="form-custom">
-                      <div class="form-header clearfix mb col-md-12">
-                      <div class="col-sm-3">
-                       <label>Field</label>
-                      </div>
-                      <div class="col-sm-5">
-                        <label>Type</label>
-                      </div>
-                      <div class="col-sm-4">
-                         <label>Is Mandator</label>
-                      </div>
-                      </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Text Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Text Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Number Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Number Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Select Field</label>
-                              <div class="col-md-8">
-                                <select class="form-control">
-                                  <option>Select Value-1</option>
-                                  <option>Select Value-2</option>
-                                  <option>Select Value-3</option>
-                                  <option>Select Value-4</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Browse File</label>
-                              <div class="col-md-8">
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-                                            <div class="input-group">
-                                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                                            <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-                                            </span> </label>
-                                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-                                        </div>
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Radio btn</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox" checked>
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Checkbox</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox">
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Textarea</label>
-                              <div class="col-md-8">
-                                <textarea rows="1" class="form-control" placeholder="Textarea"></textarea>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                            </div>
-                          </div> </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -1772,6 +1565,7 @@ $(function(){
     $("#country").chosen();
     $("#state").chosen();
     $("#city").chosen();
+    $("#owner").chosen();
     
     $("#country").on('change', function (e) {
  	   getStates();
