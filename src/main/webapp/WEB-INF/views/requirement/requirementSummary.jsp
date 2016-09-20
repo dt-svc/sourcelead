@@ -2382,7 +2382,7 @@ function requirementDetails(requirementId){
 							$("#tab-2").empty(); 
 							$("#tab-1").append(result); 
 							
-							assignedMemberList();
+							assignedMemberList(requirementId);
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -2820,43 +2820,83 @@ function requirementPipeline(requirementId){
 }
 </script>
 
-<script>
-
-function assignedMemberList(){
-	var result = '';
-	result = result +'     <h2>Assigned Members</h2> ';
-    result = result +'     <div class="heightScroll mt10 mb">';
-    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-    result = result +'         <thead>';
-    result = result +'         <tr>';
-    result = result +'         <th>Name</th>';
-    result = result +'         <th>Role</th>';
-    result = result +'         <th>Team</th>';
-    result = result +'         <th>No. of Applicants</th>';
-    result = result +'         </tr>';
-    result = result +'         </thead>';
-    result = result +'         <tbody>';
-    result = result +'         <tr>';
-    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
-    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
-    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
-    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
-    result = result +'         </tr>';
-    result = result +'         <tr>';
-    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
-    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
-    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
-    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
-    result = result +'         </tr>';
-    result = result +'         </tbody>';
-    result = result +'         </table>';
-    result = result +'     </div>';
-    result = result +'     </div>';
-    result = result +' </div> ';
-    
-    $("#assignedMemberList").empty();
-    $("#assignedMemberList").append(result);
-	
+<%-- 
+     @author : sarath kumar.
+     this script is for edit Candidate.
+     1.usage     :  used in candidateList.jsp.
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+<script>  
+function assignedMemberList(requirementId){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         success :function(data) {  
+              if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{ 
+							var result = '';
+							result = result +'     <h2>Assigned Members</h2> ';
+						    result = result +'     <div class="heightScroll mt10 mb">';
+						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
+						    result = result +'         <thead>';
+						    result = result +'         <tr>';
+						    result = result +'         <th>Name</th>';
+						    result = result +'         <th>Role</th>';
+						    result = result +'         <th>Team</th>';
+						    result = result +'         <th>No. of Applicants</th>';
+						    result = result +'         </tr>';
+						    result = result +'         </thead>';
+						    result = result +'         <tbody>';
+						    result = result +'         <tr>';
+						    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
+						    result = result +'         </tr>';
+						    result = result +'         <tr>';
+						    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
+						    result = result +'         </tr>';
+						    result = result +'         </tbody>';
+						    result = result +'         </table>';
+						    result = result +'     </div>';
+						    result = result +'     </div>';
+						    result = result +' </div> ';
+						    
+						    $("#assignedMemberList").empty();
+						    $("#assignedMemberList").append(result);
+							
+            		 }
+              }else{
+                     	 $("#assignedMemberList").removeAttr("style");
+       	    	         var result ="";
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No AssignedMember Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#assignedMemberList").empty();
+      				    $("#assignedMemberList").append(result); 
+                      }
+               },
+                 
+            }); 
 }
-
 </script>
+

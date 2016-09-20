@@ -203,12 +203,15 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignTo.setAssignUserId(assUser);
 						
 						requirementAssignTo.setRequirementId(requirement);
+						
+						requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+						requirementAssignTo.setCreatedBy(user.getUserCode());
+						requirementAssignTo.setUpdatedBy(user.getUserCode());
+						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+						
 						requirementAssignToList.add(requirementAssignTo);
 						
-						requirement.setCreatedDate(commonUtil.currentDate());
-						requirement.setCreatedBy(user.getUserCode());
-						requirement.setUpdatedBy(user.getUserCode());
-						requirement.setUpdatedDate(commonUtil.currentDate());
+						
 						  
 					}
 				}
