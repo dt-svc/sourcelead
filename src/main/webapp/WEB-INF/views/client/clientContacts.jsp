@@ -135,7 +135,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	   	        		}
 	                
 		                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
-	                        result = result +' <td><div>---</div></td>';
+	                        result = result +' ---';
 	                  	}
 	   	        		
 	   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
