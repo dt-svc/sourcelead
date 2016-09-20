@@ -24,8 +24,8 @@
             <h2>Vendors list
             	<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
-                  		 <option value="listbyVendor">Search by list</option>
-                        <option value="listbyContact" selected="selected">Search by Contact</option> 
+                  		 <option value="listbyVendor">List by vendor</option>
+                        <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
                 </span>            	
             </h2>
@@ -87,8 +87,8 @@
 		                        </ul>
 		                    </div>                	
 		                </li>          
-				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>	
-                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Add Vendor</a></li>	
+				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>	
+                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
             </ul>
             <div class="clearfix"></div>

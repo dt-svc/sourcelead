@@ -323,7 +323,6 @@ function getOrgDetails()
 		var vendorName = document.getElementById("vendorName").value;
 		var orgLocationId = vendorName.split(',');
 		var orgRelationId = orgLocationId[0];
-		alert("orgRelationId"+orgRelationId);
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
