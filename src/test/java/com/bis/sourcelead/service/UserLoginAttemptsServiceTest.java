@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 
 import org.junit.Test;
@@ -38,12 +40,13 @@ public class UserLoginAttemptsServiceTest {
 		User user = new User();
 		user.setId(3l);
 		userLoginAttempts.setUser(user);
-		userLoginAttemptsService.addUserLoginAttempts(userLoginAttempts);
+		assertEquals(userLoginAttempts,userLoginAttemptsService.addUserLoginAttempts(userLoginAttempts));
+		
 	}
 	@Test
 	public void getUserLoginAttemptsByUserId() throws Exception{
 		UserLoginAttempts UserLoginAttemptsByUserId = userLoginAttemptsService.getUserLoginAttemptsByUserId(3l);
-		logger.info("UserLoginAttemptsByUserId added successfully"+UserLoginAttemptsByUserId.getId());
+		assertEquals(new Long(3),UserLoginAttemptsByUserId.getId());
 	}
 	@Test
 	public void deleteUserLoginAttempts() throws Exception{
@@ -53,6 +56,6 @@ public class UserLoginAttemptsServiceTest {
 		user.setId(3l);
 		userLoginAttempts.setUser(user);
 		UserLoginAttempts deleteUserLogin = userLoginAttemptsService.deleteUserLoginAttempts(userLoginAttempts);
-		logger.info("deleteUserLoginAttempts added successfully"+deleteUserLogin.getId());
+		assertEquals(new Long(1),deleteUserLogin.getId());
 	}
 }

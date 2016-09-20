@@ -198,6 +198,21 @@ public class ClientRestController {
 				
 			} 
 		
+		
+		
+		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 if(!email.equalsIgnoreCase(user.getEmail())){
+				 return "Valid Email";
+			 }else{
+				 return "Invalid Email";
+			 }
+			 
+		 }
+		 
+		
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
 		    public @ResponseBody String getSpocUserDetails(@RequestParam(value="email", required=false) String email,
 		    		@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -577,13 +592,16 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	 
-	@RequestMapping(value = "/getClientDetails")
-	   @ResponseBody String getClientDetails(HttpServletRequest request) throws Exception {
+	   @RequestMapping(value = "/getClientDetails")
+	   @ResponseBody String getClientDetails(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    String resultJson;
-		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+		    
+		    
+		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsFilterByOrgLocationId(orgLocations.getId(),status);
+		    //List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			
 			for (OrgRelations orgRelation : clientsList) {
 				 //to fetch user details by usercode 
@@ -676,13 +694,15 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/getClientContactLists")
-	public @ResponseBody String getClientContactLists(HttpServletRequest request) throws Exception {
+	public @ResponseBody String getClientContactLists(@RequestParam(value="status", required=false) String status,@RequestParam(value="clientIds", required=false) String clientIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 	    String resultJson;
 	    
-	    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId(),"Vendor");
+	    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
+	    
+	   // List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId(),"Vendor");
 	
 		
 		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {

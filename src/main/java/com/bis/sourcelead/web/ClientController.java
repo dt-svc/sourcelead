@@ -104,6 +104,8 @@ public class ClientController {
 			
 			
 			for (OrgRelations orgRelation : clientsList) {
+				orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+				
 				 //to fetch user details by usercode 
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
 

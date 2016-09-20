@@ -255,10 +255,7 @@ function uploadSave() {
 </script> 
 
   <!-- Footer Area -->
-  <footer class="footer-area clearfix">
-    <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
-  </footer>
+  <jsp:include page="../masterFooter.jsp" />
   <!-- Footer Area -->
 
    
