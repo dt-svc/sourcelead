@@ -14,8 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -152,6 +155,34 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setFileName(multiFile.getOriginalFilename());
 				 requirement.setFileContentType(multiFile.getContentType());
 			 }
+			 
+			if(jsonObj.has("isClient")){
+					requirement.setIsClientJob(jsonObj.getString("isClient"));
+			}
+			if(jsonObj.has("selectClient")){
+				OrgRelations orgRelations = new OrgRelations();
+				orgRelations.setId(Long.parseLong(jsonObj.getString("selectClient").split(",")[0]));
+				requirement.setClientId(orgRelations);
+			}
+			if(jsonObj.has("selectContact")){
+				OrgSpoc orgSpoc = new OrgSpoc();
+				orgSpoc.setId(Long.parseLong(jsonObj.getString("selectContact")));
+				requirement.setSpocId(orgSpoc);
+			}
+			if(jsonObj.has("clientCurrencyCode")){
+				requirement.setClientCurrencyCode(jsonObj.getString("clientCurrencyCode"));
+			}
+		 	if(jsonObj.has("clientRate")){
+		 		requirement.setClientRate(jsonObj.getString("clientRate"));
+			}
+			if(jsonObj.has("clientRateType")){
+				requirement.setClientRateType(jsonObj.getString("clientRateType"));
+			} 
+			if(jsonObj.has("clientSubmissionForm")){
+				SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
+				requirement.setClientSubmissionTemplateId(submissionTemplate);
+			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
 			requirement.setCreatedDate(commonUtil.currentDate());
