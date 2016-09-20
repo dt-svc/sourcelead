@@ -364,3 +364,13 @@ function getContactList(local){
 	 }
  }
  </script>
+ 
+<script>
+function getIsClientVal(){
+    if(document.getElementById('isClientJob').checked) {
+        $("#isClientJob").val('Y');
+    }else{
+        $("#isClientJob").val('N');
+    }
+}
+</script>
