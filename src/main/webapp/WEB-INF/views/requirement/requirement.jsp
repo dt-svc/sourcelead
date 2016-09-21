@@ -1189,11 +1189,12 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control">
-                <option>Select Priority</option>
-                <option>Priority-1</option>
-                <option>Priority-2</option>
-                <option>Priority-3</option>
+              <select class="selectpicker form-control" id="priority" name="priority">
+                <option value="">Select Priority</option>
+                <option value="Urgent">Urgent</option>
+                <option value="High">High</option>
+                <option value="Medioum">Medioum</option>
+                <option value="Low">Low</option>
               </select>
             </div>
           </div>
