@@ -21,8 +21,7 @@
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Vendors list
-            	<span class="select-fild">
+            <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
                   		 <option value="listbyVendor">List by vendor</option>
                         <option value="listbyContact" selected="selected">List by contact</option> 
@@ -40,7 +39,7 @@
 <div class="timesheet_out">
 
 <div class="vendor_wrap">
-	<div class="timesheet_head">
+	<div class="timesheet_head datatbl-filters">
         	<ul>
         	
         	<li id="vendorsList" ><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
