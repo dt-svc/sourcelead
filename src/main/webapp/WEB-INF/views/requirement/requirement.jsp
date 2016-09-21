@@ -386,7 +386,7 @@ background-color: #ccc;
                     <select class="chosen-select form-control" name="selectContact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
                     </select>
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" onClick="addClientContactPopUp();"></i> 
+                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
                  	<div id="addContact" class="modal fade" role="dialog">
                     </div>
                  </div>

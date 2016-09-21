@@ -100,7 +100,7 @@ function addClientPopUp() {
 
 
 <script>
-function addClientContactPopUp() {
+function addClientContactPopUp(a,b) {
 	var result = "";
 	result = result+'<div class="modal-dialog">';
 	result = result+'<div class="modal-content">';
@@ -112,7 +112,7 @@ function addClientContactPopUp() {
 	result = result+'    <div class="modal-body clearfix">';
 	result = result+'      <div class="form-horizontal custom-form clearfix">';
 	result = result+'        <div class="col-xs-12 col-md-12 col-lg-12">';
-	result = result+'        	<input type="text" class="form-control" id="vendorName" name="vendorName" data-validation-optional="true" style="display: none;">';
+	result = result+'        	<input type="text" class="form-control" value="'+a+','+b+'" id="vendorName" name="vendorName" data-validation-optional="true" style="display: none;">';
 	result = result+'         <div class="form-group">';
 	result = result+'           <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>';
 	result = result+'          <div class="col-lg-9">';
@@ -260,8 +260,9 @@ function getContactList(local){
 		var valueArray = local.value.split(",");
 		if(valueArray[0] != ""){
 			clientContactList(valueArray[0],valueArray[1]);
-			$("#vendorName").attr('value', local.value);
 			$("#addContactPlus").show();
+			$("#addContactPlus").attr("onclick", "addClientContactPopUp("+valueArray[0]+","+valueArray[1]+");");
+			//   $("#vendorName").attr('value', local.value);
 		}else{
 			$("#addContactPlus").hide();
 			$("#selectContact").empty();
