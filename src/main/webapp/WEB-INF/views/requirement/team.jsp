@@ -166,7 +166,7 @@ function sideBar(teamId){
 function addTeam(){ 
 	var outPut = '';
 	outPut = outPut+'<form role="form"  id="team_form" name="team_form" method="post" > ';
-	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
+	outPut = outPut+ '<i class="fa fa-close close-div"  onClick="closeTeamPopup();"></i>';
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
@@ -231,11 +231,25 @@ function addTeam(){
 }
 </script>
 
+
+<%-- 
+     @author : prasad K.
+     1.usage     : called at closeTeamPopup() function.
+     3.close Create.
+--%>
+
+<script>
+function closeTeamPopup(){
+	
+	 $("#popUpDivTeamParent").removeClass("edit-details-active");
+}
+</script>
+
 <script>
 function addMember(teamId){
 	var outPut = '';
 	outPut = outPut+'          <form role="form"  id="teamMember_form" name="teamMember_form" method="post" > ';
-	outPut = outPut+ '<i class="fa fa-close close-div"></i>';
+	outPut = outPut+ '<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
@@ -255,11 +269,11 @@ function addMember(teamId){
 	$("#popUpDivTeam").empty();
 	$("#popUpDivTeam").append(outPut); 
 	
-	$(".edit-details").toggleClass("edit-details-active");
+	/* $(".edit-details").toggleClass("edit-details-active"); */
 	
-	$(".close-div").click(function(){
+	/* $(".close-div").click(function(){
 		$(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
+		 }); */
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
