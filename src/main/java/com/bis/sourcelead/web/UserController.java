@@ -63,10 +63,12 @@ public class UserController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
 		
+		    Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
 		    
-		    List<Roles> rolesList = rolesService.getMoudleRoles(org.getId());
+		    List<Roles> rolesList = rolesService.getMoudleRoles(org.getId(),userRoleId);
 		    model.addObject("rolesList", rolesList);
 		    
 		    commonUtil.highLightMenu(Constants.Users, request);

@@ -24,7 +24,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -124,7 +124,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -133,14 +133,12 @@
 						var selected3 = '';
 						var selected4 = '';
 						var selected5 = '';				
-						var spocMobilePhone = "";
-						
+					    var spocMobilePhone='';
 						if(json.spocMobilePhone != null && json.spocMobilePhone != '' && json.spocMobilePhone != 'undefined'){
 							spocMobilePhone = json.spocMobilePhone;
 						}else{
 							spocMobilePhone = "";
 						}
-						
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
