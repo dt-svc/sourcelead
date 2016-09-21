@@ -288,7 +288,6 @@ function getOrgName(){
              })
         },
         error: function(e){
-           alert('Ajax Error: ' + e.value);
         }
     });
 }
@@ -317,7 +316,6 @@ function getOrgDetails()
    	        	}
    			 },
    	        error: function(e){
-   	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
    	 
@@ -640,7 +638,6 @@ function getSpocUserDetails(){
 	        	}
 			 },
 	        error: function(e){
-	            alert('Ajax Error: ' + e.value);
 	        }
 	    });
 	}else{
