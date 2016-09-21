@@ -143,11 +143,11 @@ background-color: #ccc;
 	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
-	                 <option><a href="#">C2C</a></option>
-	                 <option><a href="#">W-2</a></option>
-	                 <option><a href="#">Part Time</a></option>
-	                 <option><a href="#">Full Time</a></option>
-	                 <option><a href="#">Other</a></option>
+	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
+	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}><a href="#">W-2</a></option>
+	                 <option  ${requirement.jobType  == 'Part Time' ? 'selected' : ''}><a href="#">Part Time</a></option>
+	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}><a href="#">Full Time</a></option>
+	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}><a href="#">Other</a></option>
 	             </select>
 	             </div>
 	           </div>
@@ -209,28 +209,28 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
-              <div class="input-group">
+             <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
                   
                   <select class="selectpicker" id="currencyCode" name="currencyCode">
-	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                 </select>
                 
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
-                    <option value="c2c">Per</option>
-                    <option value="1hr">1hr</option>
-                    <option value="2hr">2hr</option>
-                    <option value="3hr">3hr</option>
-                    <option value="4hr">4hr</option>
-                    <option value="Other">Other</option>
+                    <option ${requirement.rateType  == 'c2c' ? 'selected' : ''}>Per</option>
+                    <option ${requirement.rateType  == '1hr' ? 'selected' : ''}>1hr</option>
+                    <option ${requirement.rateType  == '2hr' ? 'selected' : ''}>2hr</option>
+                    <option ${requirement.rateType  == '3hr' ? 'selected' : ''}>3hr</option>
+                    <option ${requirement.rateType  == '4hr' ? 'selected' : ''}>4hr</option>
+                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Other</option>
                   </select>
                 </div>
               </div>
@@ -301,7 +301,7 @@ background-color: #ccc;
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
