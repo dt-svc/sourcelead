@@ -51,7 +51,7 @@ public class RoleServicesTest {
 	
 	@Test
 	public void getMoudleRoles()throws Exception{
-		List<Roles> roles = roleservice.getMoudleRoles(3l);
+		List<Roles> roles = roleservice.getMoudleRoles(3l,1l);
 		logger.info("getMoudleRoles"+roles.size());
 	}
 }

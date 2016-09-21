@@ -752,5 +752,23 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		  return rightNavStartDate;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TimesheetSubmissions getWeekFrequency(Long userId) {
+		
+		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
+		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
+		
+		Date previousWeekStartDate = CalendarUtil.getPreviousWeekDay("MON");
+		java.sql.Date  previousWeekStartDayDate = new java.sql.Date(previousWeekStartDate.getTime());
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate >= :frmDate and tss.endDate < :endsDate";
+		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
+		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userID",userId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list();
+		TimesheetSubmissions tms = timeSheetSubmissions.get(0);
+		return tms;
+	}
+
 
 }

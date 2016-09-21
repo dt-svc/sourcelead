@@ -8,9 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 
 /**
 *
@@ -44,6 +47,9 @@ public class EMailJobScheduler {
 	@Autowired
 	ProjectsService projectsService;
 	
+	@Autowired
+	TimesheetSubmissionsService timesheetSubmissionsService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 /**
  * Fires at 7:00 PM Every Day	
@@ -56,7 +62,8 @@ public class EMailJobScheduler {
 		try {
 			List<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 			for(User user : usrList){
-				projectsService.userEmailNotificationForTimeShhetSubmission(user);
+				TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
 			logger.info("########## COMPLETED the E-Mail Job Scheduler with status as : "+emailJobSchedulerStatus+" ##########");
@@ -80,7 +87,8 @@ public class EMailJobScheduler {
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
 			List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 			for(User user : usrList){
-				projectsService.userEmailNotificationForTimeShhetSubmission(user);
+				TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			
 		} catch (Exception e) {

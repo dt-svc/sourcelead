@@ -24,7 +24,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -124,7 +124,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -133,8 +133,12 @@
 						var selected3 = '';
 						var selected4 = '';
 						var selected5 = '';				
-					
-						
+					    var spocMobilePhone='';
+						if(json.spocMobilePhone != null && json.spocMobilePhone != '' && json.spocMobilePhone != 'undefined'){
+							spocMobilePhone = json.spocMobilePhone;
+						}else{
+							spocMobilePhone = "";
+						}
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
@@ -189,7 +193,7 @@
 						}
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+json.spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';

@@ -17,8 +17,6 @@
 <!-- end files for autocomplete with tagit -->
 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
 <body>
  <div id="loading"></div>
 	<!-- Content Area -->
@@ -30,8 +28,7 @@
 			</div>
 	     </c:if>
 			<div class="pull-left">
-				<h2>Clients
-				<span class="select-fild">
+				<h2>Clients<span class="select-fild">
 				    <select id="listOfVendors" onchange="listChange(this);">
                   		 <option value="listbyVendor">List by client</option>
                         <option value="listbyContact" selected="selected">List by contact</option> 
@@ -47,7 +44,7 @@
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="clients_wrap">
-				<div class="timesheet_head">
+				<div class="timesheet_head datatbl-filters">
 					<ul>
 
 		                  <li id="clientsList" ><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
@@ -82,7 +79,7 @@
 	                      </div>                	
 	                  </li>
 	                  
-		                  <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		                  <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
