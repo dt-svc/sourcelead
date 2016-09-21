@@ -219,6 +219,7 @@ function uploadSave() {
  function checkFile()
     {
      var fsize = $('#uploadBtn')[0].files[0].size;
+     alert("*****fsize " +fsize);
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
@@ -234,11 +235,11 @@ function uploadSave() {
                     return false;
                   return false;
                 }
-                	if (fsize > 5120000)
+                	if (fsize < 51200 || fsize > 5120000)
                     {
                    	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
+               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should between above 50kb & below 500 KB");
                         return false;
                     }  
                 
