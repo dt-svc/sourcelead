@@ -46,7 +46,7 @@
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
-		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label for="vendorName${report.id}">${report.clientName}</label></li>
+		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label>${report.clientName}</label></li>
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
@@ -55,21 +55,21 @@
 		                <li id="vendorSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label for="c5">Active</label></li>
-								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label for="c6">In-Active</label></li>
-								<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label for="c7">New</label></li>
-								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label for="c8">Negotiation</label></li>
-	               				<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label for="c8">Contracted</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
+								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
+								<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
+								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
+	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label>Contracted</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
 	                  <li id="vendorInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label for="c5">Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="vendorInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label for="c6">Send</label></li>
-								<li><input id="c7" type="checkbox"  name="vendorInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label for="c7">Accepted</label></li>
-								<li><input id="c8" type="checkbox"  name="vendorInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label for="c8">Rejected</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
+								<li><input id="c6" type="checkbox"  name="vendorInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label>Send</label></li>
+								<li><input id="c7" type="checkbox"  name="vendorInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label>Accepted</label></li>
+								<li><input id="c8" type="checkbox"  name="vendorInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label>Rejected</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -78,11 +78,11 @@
 						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label for="c6">Level-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label for="c7">Level-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label for="c8">Level-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label for="c8">Level-4</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label for="c8">Level-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label>Level-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label>Level-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label>Level-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>          
