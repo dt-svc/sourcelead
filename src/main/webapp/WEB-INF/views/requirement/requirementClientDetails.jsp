@@ -1,5 +1,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for add client popup window
+     1.usage     : onclick
+--%>
 <script>
 function addClientPopUp() {
 	var result = "";
@@ -99,8 +104,14 @@ function addClientPopUp() {
 </script>
 
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for add client contact popup
+     1.usage     : onclick
+     2.parameters : orgRelationID,clientLocationId.
+--%>
 <script>
-function addClientContactPopUp(a,b) {
+function addClientContactPopUp(orgRelationID,clientLocationId) {
 	var result = "";
 	result = result+'<div class="modal-dialog">';
 	result = result+'<div class="modal-content">';
@@ -112,7 +123,7 @@ function addClientContactPopUp(a,b) {
 	result = result+'    <div class="modal-body clearfix">';
 	result = result+'      <div class="form-horizontal custom-form clearfix">';
 	result = result+'        <div class="col-xs-12 col-md-12 col-lg-12">';
-	result = result+'        	<input type="text" class="form-control" value="'+a+','+b+'" id="vendorName" name="vendorName" data-validation-optional="true" style="display: none;">';
+	result = result+'        	<input type="text" class="form-control" value="'+orgRelationID+','+clientLocationId+'" id="vendorName" name="vendorName" data-validation-optional="true" style="display: none;">';
 	result = result+'         <div class="form-group">';
 	result = result+'           <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>';
 	result = result+'          <div class="col-lg-9">';
@@ -194,10 +205,12 @@ function addClientContactPopUp(a,b) {
 </script>
 
 
-
-
-
-
+<%-- 
+     @author : Venkat Kesav
+     this script is for save Client
+     1.usage     : onclick
+     2.ajax url implementation in OrgRelationsRestController.
+--%>
 <script type="text/javascript">
 	function saveClient() {
 		var validationSettings = {
@@ -255,6 +268,12 @@ function addClientContactPopUp(a,b) {
 	});
 </script>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for Contact List
+     1.usage     : onclick
+     2.parameters :local
+--%>
 <script type="text/javascript">
 function getContactList(local){
 		var valueArray = local.value.split(",");
@@ -272,9 +291,16 @@ function getContactList(local){
 			$("#clientSubmissionForm").append("<option value=''>-- Select Submission Form --</option>");
 			$('#clientSubmissionForm').trigger("chosen:updated");
 		}
-}
+	}
 </script>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for Client Submission Templates
+     1.usage     : onclick
+     2.parameters :local
+     3.ajax url implementation in ClientRestController.
+--%>
 <script type="text/javascript">
 function getClientSubmissionTemplates(local){
 		if("" != local.value){
@@ -304,6 +330,13 @@ function getClientSubmissionTemplates(local){
 	}
 </script>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for clientContactList
+     1.usage     : onclick
+     2.parameters :orgRelationID, clientLocationId
+     3.ajax url implementation in ClientRestController.
+--%>
 <script type="text/javascript">
 	function clientContactList(orgRelationID,clientLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -329,7 +362,12 @@ function getClientSubmissionTemplates(local){
 	}
 </script>
 
-
+<%-- 
+     @author : Venkat Kesav
+     this script is for save Client Contact
+     1.usage     : onclick
+     2.ajax url implementation in RequirementRestController.
+--%>
 <script type="text/javascript">
 	function saveClientContact() {
 		var validationSettings = {
@@ -380,9 +418,15 @@ function getClientSubmissionTemplates(local){
 	});
 </script>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for validate User Email
+     1.usage     : onclick
+     2.parameters : emailType
+     3.ajax url implementation in UserRestController.
+--%>
 <script type="text/javascript">
  function validateUserEmail(emailType) {
-	 alert(emailType);
 	 var EmailId = document.getElementById("email").value; 
 	 if(emailType == "client"){
 		 $('#clientEmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -434,6 +478,11 @@ function getClientSubmissionTemplates(local){
  }
  </script>
  
+<%-- 
+     @author : Venkat Kesav
+     this script is for getIsClientVal
+     1.usage     : onclick
+--%>
 <script>
 function getIsClientVal(){
     if(document.getElementById('isClientJob').checked) {
