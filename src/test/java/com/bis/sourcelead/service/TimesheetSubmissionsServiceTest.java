@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
+
+import gherkin.lexer.Is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -133,8 +136,6 @@ public class TimesheetSubmissionsServiceTest {
 	@Test
 	public void getAllEmployeeTimesheetSubmissions() throws Exception{
 		
-		List<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-		
 		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
 		Employees employees = new Employees();
 		timesheetSubmissions.setEmployeeId("1");
@@ -143,9 +144,8 @@ public class TimesheetSubmissionsServiceTest {
 		Date endDate = new Date();  
 		Long  userId = 2l;
 		
-		timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(startDate,endDate,userId);
-		logger.info(" getAllEmployeeTimesheetSubmissions successfully updated "+timesheetSubmissionsList);
-		
+		List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(startDate,endDate,userId);
+		assertNotNull(timesheetSubmissionsList);
 	}
 	
 	@Test
@@ -164,8 +164,7 @@ public class TimesheetSubmissionsServiceTest {
 		ProjectMembers projectMembers = new ProjectMembers();
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
-		TimesheetSubmissions  timesheetSubmission = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissions(startDate,endDate,userId);
-		logger.info(" getAllApprovalEmployeeTimesheetSubmissions successfully updated "+timesheetSubmission);
+		assertEquals(timesheetSubmissions,timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissions(startDate,endDate,userId));
 	}
 	
 	
@@ -183,8 +182,7 @@ public class TimesheetSubmissionsServiceTest {
 		Long employeeId = (long) 2;
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		
-		timesheetSubmissions = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(startDate,endDate,userId,memberUserId,employeeId);
-		logger.info(" getAllApprovalEmployeeTimesheetSubmissionsByProjectMemberId"+timesheetSubmissions);
+		assertEquals(timesheetSubmissions,timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(startDate,endDate,userId,memberUserId,employeeId));
 	}
 	
 	@Test
@@ -194,29 +192,23 @@ public class TimesheetSubmissionsServiceTest {
 		Long userId = (long) 4;
 		
 		minAndMaxTimesheetSubmissionDatesForEmployee = timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId);
-		logger.info(" getMinAndMaxTimesheetSubmissionDatesForEmployee  " +minAndMaxTimesheetSubmissionDatesForEmployee);
+		assertNotNull(minAndMaxTimesheetSubmissionDatesForEmployee);
 	}
 	
 	@Test
 	public void getApprovalTimesheetSubmissions() throws Exception{
-		
-	
 		Long userId = 3l;
-		
 		Collection<TimesheetSubmissions> timesheetSubmissionslist = timesheetSubmissionsService.getApprovalTimesheetSubmissions(userId);
-		logger.info(" getApprovalTimesheetSubmissions"+timesheetSubmissionslist);
-		
+		assertNotNull(timesheetSubmissionslist);		
 	}
 	
 	@Test
 	public void getTimesheetSubmissionsByAproverId() throws Exception{
-		
 		Long projectMemberId = (long) 4;
 		Long userId = 3l;
 		Date startDate = new Date();
-		
 		Collection<TimesheetSubmissions> timesheetSubmissionslist=timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(projectMemberId,userId,startDate);
-		logger.info(" getTimesheetSubmissionsByAproverId "+timesheetSubmissionslist);
+		assertNotNull(timesheetSubmissionslist);
 	}
 	
 	@Test
@@ -233,12 +225,10 @@ public class TimesheetSubmissionsServiceTest {
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-		logger.info(" saveAllTimesheetSubmissions successfully updated "+timesheetSubmissionsList.size());
 	}
 	@Test
 	public void getNextMondayByProjectMemberId() throws Exception{
-		 Date Date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
-		 logger.info(" getNextMondayByProjectMemberId successfully updated "+ Date);
+		 Date date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
 	}
 	/*@Test
 	public void	getTimeSheetSubmissionsCountBasedOnStatus() throws Exception{
@@ -261,10 +251,8 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test
 	public void getTimeSheetSubmissionsCountByUserId() throws Exception{
-		TimesheetSubmissions timesheetSubmissioncount = new TimesheetSubmissions();
-		
-		 timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(3l);
-		 logger.info(" getTimeSheetSubmissionsCountByUserId "+timesheetSubmissioncount.getStatus());
+		TimeSheetSubmissionCount timesheetSubmissioncount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(3l);
+	    assertNotNull(timesheetSubmissioncount);
 	}
 	
 	/*@Test
@@ -289,15 +277,9 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test
 	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
-		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions(); 
-		User user = new User();
-		user.setId(1l);
-		ProjectMembers projectMembers = new ProjectMembers();
-		projectMembers.setId(2l);
-		timesheetSubmissions.setProjectMembers(projectMembers );
-		timesheetSubmissions.setApproverUserId(user);
+	
 		Collection<TimesheetSubmissions> timesheetSubmission = timesheetSubmissionsService.getProjectsBasedOnUserIdAndStatusAndClientForFilters(2l,"1","All");
-		logger.info(" getTotalDraftAndSubmittedHoursByuserId "+timesheetSubmission);
+		assertFalse(timesheetSubmission.isEmpty());
 	}
 	
 	/*@Test
@@ -312,21 +294,14 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
-		
-		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = new TimeSheetSubmissionCount(); 
-		
-		getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l);
-		logger.info(" getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover "+getTimeSheetSubmissionsCount.getSubmittedTimesheetsSubmissionsHoursCount());
-		
+		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l);
+		assertNotNull(getTimeSheetSubmissionsCount);
 	}
 	
 	@Test
 	public void getSubmissionApproverHierarchyForEmployeeList() throws Exception{
-		
-		List<TimesheetSubmissions> timesheetSubmissions = new ArrayList<>();
-		timesheetSubmissions = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(3l);
-		logger.info(" getSubmissionApproverHierarchyForEmployeeList "+timesheetSubmissions.size());
-		
+		List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(3l);
+		assertNotNull(timesheetSubmissions);
 	}
 	
 }
