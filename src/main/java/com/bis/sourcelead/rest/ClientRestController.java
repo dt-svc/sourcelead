@@ -478,22 +478,14 @@ public class ClientRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
-	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "tempOwnerId", required = false) Long spocUserId,@RequestParam(value = "spocUserId", required = false) Long tempOwnerId ) throws Exception{
+	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId ) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     
-		     if(user.getId()==ownerId){
-		    	 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-		    	 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
-			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-			     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
-			     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
-			     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		     if(user.getId()==ownerId ){
+		    	orgSpoc =  getOrgSpocDetails(orgSpoc);
 		     }
-		     else{
+		     else if(user.getId()==spocUserId){
 		    	 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 		    	 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
 			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
@@ -504,7 +496,9 @@ public class ClientRestController {
 			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
 		     }
-		     
+		     else {
+		    	 orgSpoc =  getOrgSpocDetails(orgSpoc);
+		     }
 		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
@@ -514,6 +508,20 @@ public class ClientRestController {
 		}
 
 	
+	private OrgSpoc getOrgSpocDetails(OrgSpoc orgSpoc) {
+		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+    	 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+	     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+	     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+	     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+	     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+	     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+	     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+	     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		return orgSpoc;
+	}
+
+
 	/**
 	 * Handles project inline editing
 	 * @param orgRelationId
@@ -726,13 +734,14 @@ public class ClientRestController {
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
 	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "spocId", required = false) Long spocId) throws Exception {
+			@RequestParam(value = "spocId", required = false) Long spocId,
+			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser);
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId);
 
 		return jsonObj.getString("owner");
 	}
