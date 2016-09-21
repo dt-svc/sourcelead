@@ -36,8 +36,8 @@ public class RolesServiceImpl implements RolesService{
 
 
 	@Override
-	public List<Roles> getMoudleRoles(Long orgId) throws Exception {
-		return rolesDao.getMoudleRoles(orgId);
+	public List<Roles> getMoudleRoles(Long orgId,Long userRoleId) throws Exception {
+		return rolesDao.getMoudleRoles(orgId,userRoleId);
 	}
 
 
