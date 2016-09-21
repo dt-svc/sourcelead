@@ -20,7 +20,7 @@ public interface ClientService {
 	public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId, Long loginOrgId) throws JSONException, Exception;
 
 
-	public void updateVendorContactDetails(JSONObject jsonObj, Long spocId, Long id, User loginUser) throws Exception;
+	public void updateVendorContactDetails(JSONObject jsonObj, Long spocId, Long id, User loginUser, Long ownerId, Long spocUserId) throws Exception;
 
 
 }
