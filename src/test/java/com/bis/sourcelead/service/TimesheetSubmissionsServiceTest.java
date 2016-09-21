@@ -226,7 +226,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setProjectMembers(projectMembers);
 		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 	}
-	@Test
+	//@Test
 	public void getNextMondayByProjectMemberId() throws Exception{
 		 Date date = timesheetSubmissionsService.getNextMondayByProjectMemberId(1l);
 	}
@@ -275,7 +275,7 @@ public class TimesheetSubmissionsServiceTest {
 		
 	}*/
 	
-	//@Test
+	@Test
 	public void getProjectsBasedOnUserIdAndStatusAndClientForFilters() throws Exception{
 	
 		Collection<TimesheetSubmissions> timesheetSubmission = timesheetSubmissionsService.getProjectsBasedOnUserIdAndStatusAndClientForFilters(2l,"1","All");
@@ -302,6 +302,13 @@ public class TimesheetSubmissionsServiceTest {
 	public void getSubmissionApproverHierarchyForEmployeeList() throws Exception{
 		List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(3l);
 		assertNotNull(timesheetSubmissions);
+	}
+	
+	@Test 
+	public void getWeekFrequencyTest(){
+		List<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(5l);
+		for(TimesheetSubmissions t:tms){
+		}
 	}
 	
 }

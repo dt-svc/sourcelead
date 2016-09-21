@@ -152,7 +152,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+vendorLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+vendorLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument('+vendorLocationId+','+orgRelationId+','+opt.id+');"></i>';
+					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteVendorDocument('+vendorLocationId+','+orgRelationId+','+opt.id+');"></i>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 result  = result + '</tr>';
@@ -188,7 +188,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -576,14 +576,14 @@ function removeResumeNameDiv(){
 </script>
 
 <script>
-function deleteDocument(vendorLocationId,orgRelationId,docId){
+function deleteVendorDocument(vendorLocationId,orgRelationId,docId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+vendorLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -599,7 +599,7 @@ $(".project_inn_mask").fadeOut(200);
 </script>
 
 <script>
-function saveReason(vendorLocationId,orgRelationId,docId){
+function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if (terminateReason) {

@@ -427,7 +427,12 @@ public class UserServiceImpl implements UserService {
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		 globalVarsMap.put("userEmailId",user.getEmail());
-		 globalVarsMap.put("password",password);
+		 if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			 globalVarsMap.put("password",password);
+		 }else{
+			 globalVarsMap.put("password","Note : You have already registered. Login with your registered password");
+		 }
+		 
 		
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -605,8 +610,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorlastName",loginUser.getLastName());
 			 globalVarsMap.put("clientFirstName", user.getFirstName());
 			 globalVarsMap.put("clientlastName",user.getLastName());
-			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
+			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
+			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
 			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
 			 
 		     if(null != password){
@@ -615,12 +620,13 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
+				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Your Registred Password");
+				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
 			 } 
 			 
 			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+" ";
@@ -633,8 +639,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorLastName",user.getLastName());
 			 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
 			 globalVarsMap.put("clientLastName",loginUser.getLastName());
-			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
+			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
+			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
 			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
 			
 			 if(null != password){
@@ -643,6 +649,7 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
+				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);

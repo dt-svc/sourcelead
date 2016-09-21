@@ -150,4 +150,22 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public OrgRelations getRespondingPartyDetailsById(Long id) throws Exception {
 		return orgRelationsDao.getRespondingPartyDetailsById(id);
 	}
+
+	@Override
+	public List<OrgRelations> getAllClientsFilterByOrgLocationId(Long orgLocationId,String status) throws Exception {
+		List<OrgRelations> filterClientList= orgRelationsDao.getAllClientsFilterByOrgLocationId(orgLocationId, status);	
+		return filterClientList;
+	}
+
+	@Override
+	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception{
+		return orgRelationsDao.getAllVendorsFilterByOrgLocationId(orgLocationId,status);
+	}
+
+	@Override
+	public List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId,Long orgLocationId, String relationType,String status,String vendorIds, String invitationStatus) throws Exception {
+		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		return orgRelationsDao.getAllVendorsContactFilterListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus);
+	}
+	
 }

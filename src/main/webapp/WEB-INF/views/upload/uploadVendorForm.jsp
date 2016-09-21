@@ -61,7 +61,7 @@ margin:10px 220px 0;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/vendorsList'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
@@ -117,7 +117,7 @@ margin:10px 220px 0;
 		  <p class="text-danger"><strong>Error File Dowload</strong></p>
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
-				  <a href="<c:url value='/download/${fileName}'/>" onclick="errorMsgAppend();"> 
+				  <a href="<c:url value='/downloadVendorErrorFile/${fileName}'/>" onclick="errorMsgAppend();"> 
 					<label class="btn btn-block">
 					<i class="fa fa-download" aria-hidden="true"></i> <br>
 		               ${errorMessage}

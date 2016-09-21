@@ -54,7 +54,7 @@ public class CountriesDaoImpl implements CountriesDao{
 	public List<Countries> getAllCountries() {
 		logger.debug("In Countries getAllCountries method");
         Session session = this.sessionFactory.getCurrentSession();
-        List<Countries> countriesList= session.createQuery("from Countries c where c.name = order by c.name ASC " ).setCacheable(true).list();
+        List<Countries> countriesList= session.createQuery("from Countries c order by c.name ASC " ).setCacheable(true).list();
         return countriesList;
 	}
 	

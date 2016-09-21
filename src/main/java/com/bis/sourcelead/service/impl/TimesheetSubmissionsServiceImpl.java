@@ -1058,6 +1058,16 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			return list;
 		}
 
+/**
+ * Read week frequency for time sheet submissions those who are not send
+ * @author Rajashekar
+ * 
+ */
+		@Override
+		public List<TimesheetSubmissions> getWeekFrequency(Long userId) {
+			return timesheetSubmissionsDao.getWeekFrequency(userId);
+		}
+
 
 		
 }

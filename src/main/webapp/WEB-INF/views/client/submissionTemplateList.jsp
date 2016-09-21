@@ -31,11 +31,44 @@ $(function(){
     generateForm();
 });
 </script>
+
+
+
+<script>
+function clientSubmissionTemplate(clientLocationId){
+	
+	
+	var result = "";
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+	    result = result + '<ul>';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Template</a>                                                            ';
+		result = result  +'     <div id="popUpDivContact" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="clientSubmissionTemplateList" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-4").append(result);  
+	
+    submissionTemplateList(clientLocationId);
+    
+}
+</script>
 				
 
 <!-- client details View starts-->
 <script type="text/javascript">
 	function submissionTemplateList(clientLocationId) {
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
@@ -44,21 +77,15 @@ $(function(){
 	        	
 	        var json = JSON.parse(data);
 	        
-    		var res = "";
-			res = res + '<div class="timesheet_head">';
-			res = res + '<ul>';
-			res = res + '<li><a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');" class="addcon-pop">';
-			res = res + '<i class="glyphicon glyphicon-plus"></i>Add Template</a>';
-			res = res + '<div class="clearfix"></div>';
-			res = res + '</ul>';
-			res = res + '<div id="popUpDivContact"> ';
-			res = res + '</div>  ';
-			res = res + '</div>'; 
+    	
 			var result = "";
 	      
     		 if(json.length != null && json.length != ''){
     	   		
+    			$("#clientSubmissionTemplateList").empty();
 				var result = "";
+				
+				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Template Name</th>';
@@ -77,14 +104,14 @@ $(function(){
 	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
 	                result = result + '<td><div>';
-	                /* result = result + '<a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');">Customize</a>'; */
-	                result = result + '<a href="javascript:void(0)">Customize</a>';
+	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>';
       	            result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
 	        		
 	        	
 	        	result = result +'</tbody>';
+	        	result = result +"</table>";
 	        	
     		}else{
       			 result = result + '<div class="table_nodata">';
@@ -97,30 +124,30 @@ $(function(){
        			 result = result + '</div>';
        		 } 
     		 
-       		$("#tab-2-addContact").empty();
-       		$("#tab-2").empty(); 
-    		$("#tab-4-addTemplate").empty();  
-    	    $("#tab-4-addTemplate").append(res);
-    		$("#tab-4").empty();  
-    	    $("#tab-4").append(result);  
-    	    $("#testTemplateDiv").show();
-    	    
-    	    $(".project-tabs-menu a").click(
-					function(event) {
-						event.preventDefault();
-						$(this).parent().addClass("current");
-						$(this).parent().siblings().removeClass(
-								"current");
-						var tab = $(this).attr("href");
-						$(".project_tabs_inn").not(tab).css(
-								"display", "none");
-						$(tab).fadeIn();
-					});
+       		
+    	    $("#clientSubmissionTemplateList").append(result); 
+    	    templatepagination(); 
+    	  
 	        },
 	    });
 	}
 </script>
 
+
+<script>
+function templatepagination(){  
+    $('#templatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
 
 
 
@@ -141,10 +168,10 @@ $(function(){
 		           result = result + '<input type="hidden" id="clientLocationId" value="'+clientLocationId+'">';
 		           
 		           result = result  +'	<div class="row mb">';
-		            result = result  +'	<div class="col-xs-12 col-md-6">';
+		            result = result  +'	<div class="col-xs-12 col-md-6" id="templateNameDiv">';
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
-			    	result = result  +'	<input type="text" class="form-control input-sm" value="" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
+			    	result = result  +'	<input type="text" class="form-control input-sm" value="" onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	result = result  +'	</div>';
 			    	result = result  +'	</div>';
 			    	
@@ -186,7 +213,7 @@ $(function(){
 		           
 		           result = result + '<div class="pull-right mr">';
 		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
-		           result = result + ' <input type="button" value="Cancel" onclick="submissionTemplateList('+clientLocationId+')" class="btn btn-default" >';
+		           result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
 		           result = result + '</div>';
 
 		           result = result + '</div>';
@@ -205,6 +232,62 @@ $(function(){
 		  
 	}
 </script>	
+
+
+<script type="text/javascript">
+	function viewSubmissionTemplate(clientLocationId,templateId,templateName) {
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		generateForm(sourceleadUrl,templateId);
+		
+		var result = "";
+		result = result + '<div class="clearfix templateName">';
+		result = result + '<h2>'+templateName+'</h2>';
+        result = result + '</div>';
+
+        result = result + '<div id="sjfb-fields" class="viewTemplate">';
+        
+        result = result + '</div>';
+        result = result + '<div class="form-footer clearfix">';
+        result = result + '<div class="pull-right mr">';
+        result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
+        result = result + '</div>';
+        result = result + '</div>';
+        
+        $("#tab-4").empty();  
+        $("#tab-4-addTemplate").empty();
+        $("#tab-4").append(result); 
+        
+	}
+</script>
+
+<script type="text/javascript">
+function validateTemplateName(clientLocationId){
+	var templateName = document.getElementById("templateName").value; 
+	if(templateName){
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName, 
+	        success: function(result) {
+	        	if (result == 'invalid') {
+	        		$("#save_button").attr("disabled", "disabled");
+	        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+	        	}else{
+	        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#templateName').attr('class','valid form-control');
+					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+					
+	        		$("#save_button").removeAttr("disabled")
+	        	}
+	        }
+		 });
+	}
+}
+</script>
 
 
   <script type="text/javascript">
@@ -271,12 +354,13 @@ $(function(){
         //Demo doesn't actually save. Download project files for save
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
+        $( "#save_button" ).addClass('button').val('Processing..');
    	    $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
 	        success: function(result) {
 	        	if((result == 'home')){
-	        		submissionTemplateList(clientLocationId);  
+	        		clientSubmissionTemplate(clientLocationId);  
 		        } 
 	        },
 	    });

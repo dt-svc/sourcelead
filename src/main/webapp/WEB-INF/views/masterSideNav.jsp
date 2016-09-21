@@ -38,9 +38,9 @@
 		                 </c:if>
 	                </c:if> 
 	                
-	                <c:if test="${userTabs.tabName == 'Requirement'}">
-	                   <li class="${sessionData.nav == 'Jobs' ? 'side-nav-active' : ''}"><a href="<c:url value='/jobsList'/>" title="Jobs"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
-	                </c:if>
+	                <c:if test="${userTabs.tabName == 'Requirement'}"> 
+	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
+	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 		                <c:if test="${userTabs.tabName == 'Candidates'}">

@@ -105,4 +105,23 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		}
    	}
 
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getSubmissionTemplateByTemplateName(Long clientLocationId, Long orgLocationId,
+			String templateName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateByTemplateName start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.templateName = :templateName " ).setLong( "clientLocationId", clientLocationId)
+				.setLong( "orgLocationId", orgLocationId ).setString("templateName", templateName).setCacheable(true).list();
+		logger.debug("getSubmissionTemplateByTemplateName end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
+
 }

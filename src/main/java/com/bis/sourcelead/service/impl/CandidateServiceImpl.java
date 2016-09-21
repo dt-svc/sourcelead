@@ -3,7 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.util.HashSet;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,8 +187,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,String candidateStatus) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
 			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));

@@ -67,13 +67,13 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		List<OrgSpoc> spocsList;
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
 		if (isadmin) {
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' ");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 		}else if(ids != null && !ids.isEmpty()){
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> 'INACTIVE' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
 		}else{
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and (spoc.ownerUser.id = :userId OR spoc.spocUser.id = :userId) and spoc.status <> 'INACTIVE' ");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.orgRelations.id = :orgRelationId and (spoc.ownerUser.id = :userId OR spoc.spocUser.id = :userId) and spoc.status <> '0' ");
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
 		}
 		
@@ -151,5 +151,22 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return null;
 		}
    	}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId, Long loginUserId,String relationType) throws Exception {
+			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgLocationIdAndUserIdForRequirement method");
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
+			if (isadmin){
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.responderLocationId responderLocationId  left join fetch responderLocationId.org  left join fetch spoc.orgRelations orgrelation where spoc.status <> 'INACTIVE' and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType ))");
+				spocsList = query.setString("relationType", relationType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			}else{
+	            Query query= session.createQuery("from OrgSpoc spoc   left join fetch spoc.responderLocationId responderLocationId  left join fetch responderLocationId.org left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> 'INACTIVE' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).setCacheable(true).list();
+	        }
+			return spocsList;
+		}
 
 }

@@ -135,7 +135,7 @@
 				                   </div>
 				                   <div class="pull-left">
 				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
 				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
 				                   </div>
 				                </div>

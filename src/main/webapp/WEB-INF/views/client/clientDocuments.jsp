@@ -68,7 +68,6 @@ function clientDocuments(orgRelationId,clientLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
-    $("#tab-4-addTemplate").empty();
     $("#tab-3").append(result);  
 	
     clientDocumentsList(clientLocationId,orgRelationId);
@@ -154,7 +153,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
+					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 result  = result + '</tr>';
@@ -190,7 +189,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -590,14 +589,14 @@ function removeResumeNameDiv(){
 </script>
 
 <script>
-function deleteDocument(clientLocationId,orgRelationId,docId){
+function deleteClientDocument(clientLocationId,orgRelationId,docId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason("+clientLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -613,7 +612,7 @@ $(".project_inn_mask").fadeOut(200);
 </script>
 
 <script>
-function saveReason(clientLocationId,orgRelationId,docId){
+function saveReasonForDoc(clientLocationId,orgRelationId,docId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if (terminateReason) {

@@ -139,7 +139,7 @@ public class TimesheetEntriesServiceTest {
 	}
 
 
-	//@Test
+	@Test
 	public void deleteTimesheetEntries() throws Exception{
 		String id = "1";  
 		Boolean deleteTimesheet = timesheetEntriesService.deleteTimesheetEntries(id);

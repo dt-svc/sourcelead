@@ -74,7 +74,7 @@ public class PasswordResetsServiceTest {
 	}}*/
 	
 		
-	//@Test
+	@Test
 	public void deletePasswordResets() throws Exception {
 		PasswordResets passwordResets = new PasswordResets();
 		passwordResets.setId(2L);

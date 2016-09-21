@@ -50,7 +50,7 @@ public class CandidateSkills {
 	private String scale ;
 	
 	@Column(name = "STATUS")
-	private String status ;
+	private Integer status ;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -112,11 +112,13 @@ public class CandidateSkills {
 		this.scale = scale;
 	}
 
-	public String getStatus() {
+	
+
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

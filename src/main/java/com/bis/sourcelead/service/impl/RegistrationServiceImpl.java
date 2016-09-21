@@ -137,6 +137,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user = userService.findByEmail(registration.getEmail());
 		if(user == null){
 			 user = getUserDetails(registration,password);
+		}else if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
 		try {
 			userService.addUser(user);

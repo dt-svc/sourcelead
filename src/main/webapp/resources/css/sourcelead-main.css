@@ -398,7 +398,7 @@ textarea {
 .qlinks-area ul li:last-child, .spoclinks-area ul li:last-child {
 	border-bottom: 0;
 }
-.qlinks-area ul li:hover, .spoclinks-area ul li:hover, .spoclinksMore ul li:hover  {
+.qlinks-area ul li:hover, .spoclinks-area ul li:hover {
 	background: #ddd none repeat scroll 0 0 !important;
 }
 .qlinks-area ul li a, .spoclinks-area ul li a {
@@ -439,9 +439,11 @@ textarea {
     display:block !important;
     padding:0px !important;
 }
+
 /* spoclinks more that 5 */
 .spoclinksMore {
 	min-width: 955px; padding: 0 0 0 10px;
+	height: 280px; overflow-y:scroll; 
 }
 .spoclinksMore ul li {
 	border-bottom: 1px solid #d2d2d2; line-height: normal !important; height: auto !important; padding: 10px !important;
@@ -451,8 +453,8 @@ textarea {
 margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 }
 /* spoclinks more that 5 ends */
-   
-   .imageParent.org-imagelink{
+
+.imageParent.org-imagelink{
    height:55px;
    }
 /* Quick Links Styels Ends */
@@ -2086,8 +2088,8 @@ input[type="text"].mybtn:after {
 	line-height: 28px;
 }
 .chosen-container-single .chosen-single {
-	height: 34px;
-	line-height: 34px;
+	height: 34px !important;
+	line-height: 34px !important;
 }
 .chosen-container-single .chosen-single div b {
 	background: rgba(0, 0, 0, 0) url("../images/chosen-sprite.png") no-repeat scroll 0 8px;
@@ -2185,6 +2187,7 @@ ul.tree-checkbox::before {
 	color: #fff;
 	font-weight: normal;
 	text-shadow: none;
+	height:34px;
 }
 .selp-custom-min > .bootstrap-select .btn-default.focus, .selp-custom-min > .bootstrap-select .btn-default:focus {
 	background: #337ab7;
@@ -2525,7 +2528,7 @@ ul.sl-jobboard li img {
 	color: #909090;
 }
 ul.can-perdt li {
-	line-height: 20px;/*	display:block;
+	line-height: 20px; padding:2px 0px;/*	display:block;
     max-width:200px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2580,7 +2583,6 @@ ul.can-perdt li a {
 	width: 100%;
 	margin-bottom: 20px;
 	padding-top: 15px;
-	padding-bottom: 10px;
 }
 .canDetails {
 	line-height: 22px;
@@ -2751,6 +2753,7 @@ input:checked + .slider:before {
 	font-size: 18px;
 	margin-bottom: 15px;
 	margin-right: 15px;
+	border-radius:5px;
 }
 .myForm .custom-form .form-group {
 	width: 100%;
@@ -2947,6 +2950,18 @@ input:checked + .slider:before {
 	margin: 0 auto;
 	position: relative;
 }
+.divskill.divsAssigned {
+	margin:0;
+}
+.divskill.divsAssigned table tr td {
+	height:34px;
+	line-height:34px;
+}
+div.heightScroll {
+	height:300px;
+	overflow-y:scroll;
+	border-bottom:1px solid #ccc;
+}
 .divskill table {
 	border-collapse: collapse;
 	width: 100%;
@@ -3060,8 +3075,94 @@ a.btn-addskills:hover {
 	padding: 10px 15px;
 }
 
-/* For Edit model Popup Ends */
+/*hide show div */
+.infoContent {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 3px;
+    bottom: 30px;
+    box-shadow: 0 8px 6px -8px #505050;
+    color: #323232;
+    font-weight: normal;
+    padding: 10px;
+    position: absolute;
+    right: 5px;
+    text-align: left;
+    width: 500px;
+    z-index: 1;
+    border: 1px solid #ccc;
+    display: none;
+    -webkit-transition:all 0.5s ease-in-out 0s;
+  -moz-transition:all 0.5s ease-in-out 0s;
+  -o-transition:all 0.5s ease-in-out 0s;
+  transition: all 0.5s ease-in-out 0s;
+}
+.showInfo:hover .infoContent{
+display: block;
+}
+/* hide show div ends */
 
+.selectpicker100 .bootstrap-select {
+	width:100% !important;
+}
+.modal-body-custom thead{
+	background-color:#375d81;
+	color:#fff;
+}
+.backtotop {
+    width:30px; position:fixed; bottom:20px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
+}
+.backtotop img { width:100%;}
+.pad-left{
+	padding-left:6px;
+}
+approver-block {
+	display:none;
+}
+
+/* CUSTOM RADIO & CHECKBOXES */
+.rad {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.rad input { 
+  visibility: hidden;
+  position: absolute;
+}
+/* RADIO STYLES */
+.rad i {
+  vertical-align: middle;
+  width:35px;
+  height: 25px;
+  font-size:20px;
+  transition: 0.2s;
+ /* box-shadow: inset 0 0 0 8px #fff;
+ border-radius:3px;
+ */
+  border: 1px solid #2e6da4;
+  line-height:25px;
+  text-align:center;
+  margin-right:-4px;
+  
+}
+.rad:hover > i{
+/*  box-shadow: inset 0 0 0 3px #2B2B2B;*/
+  color: #fff;
+  background:#204d74;
+}
+.apprverReq-active{
+  /*box-shadow: inset 0 0 0 3px #337ab7;*/
+  color: #fff;
+  background:#337ab7;
+}
+.custom-selectpicker .btn-default{
+	background-image:none;
+	border:0;
+	background-color:#2ae0c8;
+	text-shadow:none;
+	font-size:15px;
+}
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;

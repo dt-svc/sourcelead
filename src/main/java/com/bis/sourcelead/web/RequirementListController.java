@@ -11,7 +11,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
-public class JobsController {
+public class RequirementListController {
 	
 	
 	@Value("${sourceleadUrl}")
@@ -19,19 +19,19 @@ public class JobsController {
 	
 	
 	
-	@RequestMapping(value = "/jobsList")
-	public ModelAndView usersList(HttpServletRequest request) {
+	@RequestMapping(value = "/requirementList")
+	public ModelAndView requirementList(HttpServletRequest request) {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("jobs/jobsList");
+		model.setViewName("requirement/requirementList");
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Jobs);
+		sessionData.setNav(Constants.Requirement);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
@@ -39,5 +39,34 @@ public class JobsController {
 		return model;
 
 	}
+	
+	
+	@RequestMapping(value = "/releaseRequirement")
+	public ModelAndView releaseRequirement(HttpServletRequest request) {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/releaseRequirement");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Requirement);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		
+		return model;
 
+	}
+	
+	
+	
+	
+	
+	
+	
+	 
 }
