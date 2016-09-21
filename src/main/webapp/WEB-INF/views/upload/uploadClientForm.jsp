@@ -239,7 +239,7 @@ function uploadSave() {
                     {
                    	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should between above 50kb & below 500 KB");
+               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"File size should between above 50kb & below 500 KB");
                         return false;
                     }  
                 
