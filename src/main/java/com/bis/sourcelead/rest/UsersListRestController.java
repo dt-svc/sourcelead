@@ -91,23 +91,22 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 		
-	if(!isNullOrEmpty(loginUserRole) && (loginUserRole.equalsIgnoreCase("ROLE_ADMIN") || loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN"))){
 		try {
 			
 			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId());
+				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId(),loginUserRole,user.getUserCode());
 			}
 			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState,user.getId());
+				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndLocationId(Long.parseLong(userRole), orgLocations.getId(),userState,user.getId());
+				rolesList = userRoleService.getUsersListByRoleAndLocationId(Long.parseLong(userRole), orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
 			}
 			else if((!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)) || ("All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId());
+				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
 			}
 			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId());
+				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
 			}
 		
 			if(null != rolesList){
@@ -119,7 +118,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	 }
 	
 	/*else if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
 		List<Long> projectIdsList  = null;

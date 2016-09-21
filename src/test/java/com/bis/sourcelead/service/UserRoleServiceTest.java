@@ -86,13 +86,13 @@ public class UserRoleServiceTest {
 			Long locationId = 1l;
 			String userState = "INACTIVE";
 			Long userId = 2l;
-			List<UserRole> userslist = userRoleService.getUsersListByLocationId(locationId,userState,userId);
+			List<UserRole> userslist = userRoleService.getUsersListByLocationId(locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin");
 			assertFalse(userslist.isEmpty());
 		}
 		@Test
 		public void getUsersListByRoleAndLocationId() throws Exception{
 			
-			List<UserRole> userRole = userRoleService.getUsersListByRoleAndLocationId(1l,2l,"EMPLOYEE",2l);
+			List<UserRole> userRole = userRoleService.getUsersListByRoleAndLocationId(1l,2l,"EMPLOYEE",2l,"SOURCELEAD_ADMIN","sladmin");
 			assertFalse(userRole.isEmpty());
 		}
 
@@ -104,7 +104,7 @@ public class UserRoleServiceTest {
 			Long locationId = 2l;
 			String userState = "INACTIVE";
 			Long userId = 1l;
-			List<UserRole> userslist = userRoleService.getUsersListByUserNameAndLocationId(userName,locationId,userState,userId);
+			List<UserRole> userslist = userRoleService.getUsersListByUserNameAndLocationId(userName,locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin");
 			assertFalse(userslist.isEmpty());
 		}
 		
@@ -118,7 +118,7 @@ public class UserRoleServiceTest {
 			Long locationId = 1l;
 			String userState = "ACTIVE";
 			Long userId = 3l;
-			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId);
+			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin");
 			assertNotNull(userslist);
 		}
 		
@@ -128,7 +128,7 @@ public class UserRoleServiceTest {
 			String userState = "ACTIVE"; 
 			Long locationId = 1l;
 			Long userId = 1l;
-			List<UserRole> userslist = userRoleService.getUsersListByUserStateAndLocationId(userState,locationId,userId);
+			List<UserRole> userslist = userRoleService.getUsersListByUserStateAndLocationId(userState,locationId,userId,"SOURCELEAD_ADMIN","sladmin");
 			assertNotNull(userslist);
 		}
 		
