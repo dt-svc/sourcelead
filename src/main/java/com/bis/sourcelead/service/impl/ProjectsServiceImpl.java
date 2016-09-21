@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
@@ -432,7 +433,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public void userEmailNotificationForTimeShhetSubmission(User user) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,TimesheetSubmissions timesheetSubmissions) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -502,7 +503,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 			String actionLink = "";
 			OrgLocations loginOrgLocation = new OrgLocations();
-		loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
+		   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
+		   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
 			emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);		
 	}
 
