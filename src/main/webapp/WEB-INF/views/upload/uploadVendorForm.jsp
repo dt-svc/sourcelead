@@ -233,7 +233,7 @@ function uploadSave() {
                     return false;
                   return false;
                 }
-                	if (fsize < 51200 || fsize > 5120000)
+                	if (fsize < 5120 || fsize > 5120000)
                     {
                    	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
