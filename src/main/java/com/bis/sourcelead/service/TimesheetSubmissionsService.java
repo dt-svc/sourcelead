@@ -76,5 +76,5 @@ public interface TimesheetSubmissionsService {
 	
 	public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception ;
 	
-	List<TimesheetSubmissions> getWeekFrequency(Long userId);
+	TimesheetSubmissions getWeekFrequency(Long userId);
 }
