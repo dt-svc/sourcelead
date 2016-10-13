@@ -1695,14 +1695,13 @@ function getUserList(){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	/*  var localCheckedStatus;
+		                    	 var localCheckedStatus = "no";
 		                    	 $(".defaultCheckBox").each(function() {
-		         							var localId = this.id;
+		         							var localValue = this.value;
 		         							if(localId == opt.id){
-		         								localCheckedStatus = true;
-		         							} 
+		         								localCheckedStatus = "yes";
+		         							}  
 		                    	 });
-		                    	 alert("localCheckedStatus"+localCheckedStatus); */
 		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
