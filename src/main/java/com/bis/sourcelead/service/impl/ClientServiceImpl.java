@@ -579,7 +579,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser) throws Exception {
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -613,7 +613,7 @@ public class ClientServiceImpl implements ClientService{
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
-				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+				/*if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -626,8 +626,29 @@ public class ClientServiceImpl implements ClientService{
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
 						orgSpoc.setOwnerUser(spocUser);
 					}
+				}*/
+				if(user.getId() == spocUserId){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setSpocUser(spocUser);
+					}
 				}
 				
+				else if(user.getId() == ownerId){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(spocUser);
+					}
+				}
+				else{
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(spocUser);
+					}
+				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
