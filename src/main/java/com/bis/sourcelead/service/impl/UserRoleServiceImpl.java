@@ -31,35 +31,35 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Override
 
-	public List<UserRole> getUsersListByLocationId(Long locationId,String userState,Long userId) throws Exception {
+	public List<UserRole> getUsersListByLocationId(Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByLocationId(locationId,userState,userId);
+		return userRoleDao.getUsersListByLocationId(locationId,userState,userId,loginUserRole,userCode);
 	}
 
 	@Override
-	public List<UserRole> getUsersListByRoleAndLocationId(Long roleId,Long locationId,String userState,Long userId) throws Exception {
+	public List<UserRole> getUsersListByRoleAndLocationId(Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndLocationId(roleId, locationId,userState,userId);
+		return userRoleDao.getUsersListByRoleAndLocationId(roleId, locationId,userState,userId,loginUserRole,userCode);
 	}
 
 	@Override
-	public List<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId,String userState,Long userId) throws Exception {
+	public List<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByUserNameAndLocationId(userName, locationId,userState,userId);
+		return userRoleDao.getUsersListByUserNameAndLocationId(userName, locationId,userState,userId,loginUserRole,userCode);
 	}
 
 	@Override
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName,
-			Long locationId,String userState,Long userId) throws Exception {
+			Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId);
+		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode);
 	}
 
 	@Override
-	public List<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId,Long userId)
+	public List<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId,Long userId,String loginUserRole,String userCode)
 			throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByUserStateAndLocationId(userState, locationId,userId);
+		return userRoleDao.getUsersListByUserStateAndLocationId(userState, locationId,userId,loginUserRole,userCode);
 	}
 	
 	public List<UserRole> getUsersBasedOnUserRoles() throws Exception {

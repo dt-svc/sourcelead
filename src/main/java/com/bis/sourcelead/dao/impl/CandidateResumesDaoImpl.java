@@ -93,11 +93,11 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, String status) throws Exception {
+	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		logger.debug("In get Resumes list by candidateid and status method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateResumes candidateResumes where candidateResumes.candidateId =:candidateId and candidateResumes.status = :status";  
-		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setString("status", status).setCacheable(true).list();
+		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
 		return candidateResumesList;
 		
 	}

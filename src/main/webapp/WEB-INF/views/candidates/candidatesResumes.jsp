@@ -12,13 +12,36 @@
 	left:0;
 	bottom:-16px;
 	}
+	.tblicons a{
+	font-size:13px;
+	}
+	.tblicons a:first-child{
+	margin-left: 0;
+	}
+	.tblicons .glyphicon-trash{
+	margin-left: 5px;
+	}
+	.tblicons a{
+	margin:0px 8px;
+	padding: 0 !important;
+	} 
+	.vendor_wrap_inn_table table tr th:last-child{
+	width:100px;
+	}
+	.removeIcon{
+	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
+	}
 </style>
 
 <script>
 function candidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	if(window.candidateStatusGlobal == '0'){
+		result = result+'	    	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+	}else{
 		result = result+'	    	<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+	}
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -85,7 +108,7 @@ function addResume(candidateId) {
 	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_Space validate_Description validate_length length2-250" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
-	result = result+'	                  <div class="clearfix mb10">';
+	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -94,9 +117,28 @@ function addResume(candidateId) {
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Resume" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
-	result = result+'	                  </div>   ';                         
-	result = result+'	                  <div class="clearfix mr mt">';
-	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+');">Add</button>';
+	result = result+'	                  </div>   ';  
+	
+	
+	
+	result = result+'	                  <div class="clearfix mb10" id="resumeNameDiv" style="display: none;">';
+	result = result+'	                    <div class="col-md-12 mt">';
+	result = result+'	                      <label id="resumeName" name="resumeName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                    </div>';
+	result = result+'	                  </div>';
+	
+	result = result+'	                  <div class="clearfix mr mt" id="resumeUpdateButton" style="display: none;">';
+	result = result+'	                    <button type="button" id="update_resume" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result+'	                  </div>';
+	
+	
+	
+	
+	
+	
+	
+	result = result+'	                  <div class="clearfix mr mt" id="resumeAddButton">';
+	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+',null);">Add</button>';
 	result = result+'	                  </div>';
 	result = result+'	                </div>';
 	result = result+'	                </form>';
@@ -141,7 +183,7 @@ function addResume(candidateId) {
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script type="text/javascript">
-	function storeCandidateResume(candidateId){
+	function storeCandidateResume(candidateId,resumeId){
 			var validationSettings = {
 			        errorMessagePosition : 'element',
 			        borderColorOnError : '',
@@ -156,6 +198,8 @@ function addResume(candidateId) {
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#candidateResume_form").attr("disabled", "disabled");
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -164,7 +208,7 @@ function addResume(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -263,7 +307,15 @@ function addResume(candidateId) {
 					           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
-					           		result = result+'	            <td><div><a class="glyphicon glyphicon-eye-open" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></div></td>';
+					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
+					           		if(window.candidateStatusGlobal == 0){
+					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
+					           		}else{
+					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a>';
+						           		result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
+					           		}
+					           		result = result+'	            </div></td>';
 					           		result = result+'	          </tr>';
 				             }
 				            result = result+'	          </tbody>';
@@ -311,6 +363,62 @@ function deleteResume(candidateId, resumeId){
    		    }
 	     });
 	}
+}
+</script>
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for get resume details in edit mode
+     1.usage     : onclick
+     2.parameter : candidateId, resumeId
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script>
+function getResume(candidateId, resumeId){
+	var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   		    	if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (data.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+        			 $("#uploadResumeDiv").hide();
+        			 $("#resumeAddButton").hide();
+        			 $("#uploadFile").removeAttr("data-validation");
+        			 $("#resumeNameDiv").show();
+        			 $("#resumeName").append(json.fileName);
+        			 $("#resumeUpdateButton").show();
+        			 
+        			 if(json.title != null && json.title != "undefined" && json.title != ""){
+        				 document.getElementById("title").value = json.title;
+        			 }
+        			 if(json.description != null && json.description != "undefined" && json.description != ""){
+        				 document.getElementById("description").value = json.description;
+        			 }
+        			 
+        			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+        		 }
+   		    }
+	     });
+}
+
+
+<%-- 
+@author : Venkat Kesav
+this script is for remove Resume in edit mode to upload new resume
+1.usage     : onclick
+--%>
+function removeResumeNameDiv(){
+	$("#resumeNameDiv").hide();
+	$("#uploadResumeDiv").show();
+	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
 }
 </script>
 

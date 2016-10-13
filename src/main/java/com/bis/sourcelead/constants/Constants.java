@@ -65,17 +65,18 @@ public class Constants {
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
 	/** projectMember  constants**/
-	public static String MEMBER_ACTIVE = "ACTIVE";
-	public static String  MEMBER_IN_ACTIVE= "INACTIVE";
+	public static String MEMBER_ACTIVE = "1";
+	public static String  MEMBER_IN_ACTIVE= "0";
 	
-	public static String CANDIDATE_ALL = "ALL";
-	public static String CANDIDATE_ACTIVE = "1";
-	public static String  CANDIDATE_IN_ACTIVE= "0";
+	public static int CANDIDATE_ALL = 2;
+	public static int CANDIDATE_ACTIVE = 1;
+	public static int  CANDIDATE_IN_ACTIVE= 0;
 	
 	/** Candidate Skill  constants**/
-	public static String CANDIDATE_SKILL_ACTIVE = "1";
-	public static String CANDIDATE_SKILL_IN_ACTIVE= "0";
+	public static int CANDIDATE_SKILL_ACTIVE = 1;
+	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
+	public static String ACTIVE = "Active";
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -109,7 +110,7 @@ public class Constants {
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	public static  String OrgSettings = "OrgSettings";
 	
-	public static  String Jobs = "Jobs";
+	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";
 	public static  String Candidates = "Candidates";
 	
@@ -168,7 +169,13 @@ public class Constants {
 	public static String MAIL_RESEND = "Resend";
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
-	public static String ACTIVE = "Active";
+	
+	public static String REQUIREMENT_STATUS = "Draft";
+	
+	public static String TEAM_ACTIVE = "1";
+	public static String TEAM_IN_ACTIVE = "0";
+
+	//public static String ACTIVE = "Active";
 	
 	
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};

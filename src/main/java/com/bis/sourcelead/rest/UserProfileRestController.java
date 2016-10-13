@@ -102,6 +102,19 @@ public class UserProfileRestController {
 	   }
 	   
 	   
+	   
+	   @RequestMapping(value = "/validateCurrentPassword",  method = RequestMethod.POST)
+			public  String validateCurrentPassword(@RequestParam(value="currentPassword", required=false) String currentPassword,HttpServletRequest request) throws Exception {
+			
+		         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 if(sourceleadPasswordEncoder.matches(currentPassword, user.getPassword())){
+					 return "valid";
+				 }else{
+					 return "invalid";
+				 }
+		}
+	   
+	   
 	   @RequestMapping(value = "/deleteProfileImage" , method = RequestMethod.GET)
 	   public String deleteProfileImage(HttpServletRequest request) throws Exception {
 		   

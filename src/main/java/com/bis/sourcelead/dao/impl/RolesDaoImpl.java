@@ -65,15 +65,44 @@ public class RolesDaoImpl implements RolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Roles> getMoudleRoles(Long orgId) throws Exception {
+	public List<Roles> getMoudleRoles(Long orgId,Long userRoleId) throws Exception {
 		
 		String subQuery = "";
+		
 		if(orgId == 1l){
 			subQuery = "and actionRoles.roles.id <> '4' ";
 		}
+		
+		String subQuery1 = "";
+		if(userRoleId != 1l || userRoleId != 4l){
+			
+			if(userRoleId == 5l){
+				subQuery1 = "and actionRoles.roles.id <> '1' ";
+			}
+			
+			else if(userRoleId == 3l){
+				subQuery1 = "and actionRoles.roles.id <> '1'  and actionRoles.roles.id <> '5' ";
+			}
+			
+			else if(userRoleId == 6l){
+				subQuery1 = "and actionRoles.roles.id <> '1'  and actionRoles.roles.id <> '5' and actionRoles.roles.id <> '3' ";
+			}
+			
+			else if(userRoleId == 7l){
+				subQuery1 = "and actionRoles.roles.id <> '1'  and actionRoles.roles.id <> '5' and actionRoles.roles.id <> '3' and actionRoles.roles.id <> '6' ";
+			}
+			
+			else if(userRoleId == 8l){
+				subQuery1 = "and actionRoles.roles.id <> '1'  and actionRoles.roles.id <> '5' "
+						+ "and actionRoles.roles.id <> '3' and actionRoles.roles.id <> '6' and actionRoles.roles.id <> '7' ";
+			}
+			
+		}
+		
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
-				+ "where actionRoles.org.id = :orgId "+subQuery+") ")
+				+ "where actionRoles.org.id = :orgId "+subQuery+" "+subQuery1+") ")
 				.setLong("orgId", orgId).setCacheable(true).list();
 	}
 

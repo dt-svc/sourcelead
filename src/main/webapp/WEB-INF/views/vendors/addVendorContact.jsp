@@ -99,7 +99,7 @@
             <label class="col-md-3">Select Vendor <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="getSpocUserDetails();">
+                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
@@ -120,7 +120,7 @@
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -168,12 +168,13 @@
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
-		                        <option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="3">Approver/Project Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
-			              </select>
+	                            <option value="">-Select Role-</option>
+								<option value="1">Admin</option>
+								<option value="6">Account Manager</option>
+								<option value="7">Sales Manager</option>
+								<option value="5">HR Manager</option>
+								<option value="8">Recruiter</option>
+			             </select>
                   </div>
                 </div>
                 
@@ -287,7 +288,6 @@ function getOrgName(){
              })
         },
         error: function(e){
-           alert('Ajax Error: ' + e.value);
         }
     });
 }
@@ -316,7 +316,6 @@ function getOrgDetails()
    	        	}
    			 },
    	        error: function(e){
-   	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
    	 
@@ -550,6 +549,37 @@ function validateClientName(){
 	});
 </script>
 
+
+
+<script type="text/javascript">
+function validateEmail(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email != null){
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			success : function(data) {
+				var result = data;
+				if(result == 'Invalid Email') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your login email</span>");
+					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your login email");
+					
+				}else if(result == 'Valid Email') {
+					$('input#email').removeAttr("class record-exist record-exist-errormsg");
+					$('input#email').attr('class','valid form-control');
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
+}
+</script>
+
 <script type="text/javascript">
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
@@ -608,7 +638,6 @@ function getSpocUserDetails(){
 	        	}
 			 },
 	        error: function(e){
-	            alert('Ajax Error: ' + e.value);
 	        }
 	    });
 	}else{

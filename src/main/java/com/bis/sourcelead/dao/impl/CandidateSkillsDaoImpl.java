@@ -49,10 +49,10 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String status = Constants.CANDIDATE_SKILL_ACTIVE;
+		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
 		List<CandidateSkills> candidateSkillsList = null;
 		Query citiesListQuery= session.createQuery("from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)");
-		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setString( "status", status ).setCacheable(true).list();
+		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
 		return candidateSkillsList;
 	}
 

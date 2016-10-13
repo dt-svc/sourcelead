@@ -47,4 +47,12 @@ public interface OrgSpocDao {
 	 */
 	OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception;
 	
+	/**To get Spoc user Contact List for requirement
+	 * @author David Raju
+	 * @param orgLocationId,UserId,relationType
+	 * @return List<OrgSpoc>
+	 */
+	List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId,Long UserId,String relationType) throws Exception;
+	
+	
 }
