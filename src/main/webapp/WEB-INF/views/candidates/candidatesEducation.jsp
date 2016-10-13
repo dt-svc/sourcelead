@@ -358,11 +358,16 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + '<select  class="chosen-select form-control" name="name" id="name" data-validation="validate_Space" data-validation-optional="true">';
-	                <c:forEach var="edu" items="${educationsList}">
-	result = result + ' <option value="${edu.name}">${edu.name}</option>';
-	                 </c:forEach>
-    result = result + '</select>';
+	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true'>";
+	                 for (var j = 0; j < json.educationList.length; j++) {
+							var education = json.educationList[j];
+							   if(education.name == json.name){
+								   result = result+'<option value=\"'+education.name+'\" selected >'+education.name+'</option>';
+							  }else{
+								   result = result+'<option value=\"'+education.name+'\" >'+education.name+'</option>';
+			   		 	      } 
+						}
+    result = result + "</select>";
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';

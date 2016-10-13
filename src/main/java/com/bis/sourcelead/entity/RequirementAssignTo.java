@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -53,6 +54,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String assignedUserName;
+	
+	@Transient
+	private String assignedUserRole;
 
 	public Long getId() {
 		return id;
@@ -90,6 +97,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		return assignUserId;
 	}
 
+	public String getAssignedUserRole() {
+		return assignedUserRole;
+	}
+
+	public void setAssignedUserRole(String assignedUserRole) {
+		this.assignedUserRole = assignedUserRole;
+	}
+
 	public void setAssignUserId(User assignUserId) {
 		this.assignUserId = assignUserId;
 	}
@@ -125,5 +140,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public String getAssignedUserName() {
+		return assignedUserName;
+	}
+
+	public void setAssignedUserName(String assignedUserName) {
+		this.assignedUserName = assignedUserName;
+	}
 }

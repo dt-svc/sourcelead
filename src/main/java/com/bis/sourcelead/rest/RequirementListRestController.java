@@ -112,7 +112,11 @@ public class RequirementListRestController {
 				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
-				requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());
+				if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
+					requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
+				}
+				
+				
 				}
 				resultJson = commonUtil.toJSON(requirement);
 				 
@@ -140,8 +144,15 @@ public class RequirementListRestController {
 		 @RequestMapping(value = "/getRequirementAssignedListByRequirementId" , method = RequestMethod.POST)
 		 public @ResponseBody  String getRequirementAssignedListByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 				String resultJson = null;
+				List<RequirementAssignTo> requirementAssignToList = null;
 				if(requirementId !=null && !requirementId.isEmpty()){
-					List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+			       requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
+			           for (RequirementAssignTo assing : requirementAssignToList) {
+					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
+					       assing.setAssignedUserRole(assing.getAssignedUserRole());
+				      }
+			       }
 					resultJson = commonUtil.toJSON(requirementAssignToList);
 				}else{
 					resultJson = "failure";
