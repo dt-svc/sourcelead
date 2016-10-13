@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.RolesService;
@@ -41,6 +42,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	public ModelAndView usersList(HttpServletRequest request) {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		Collection<Roles> rolesList = null;
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
@@ -56,7 +59,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		try {
-			rolesList = rolesService.getRoles(orgLocations.getId());
+			rolesList = rolesService.getMoudleRoles(org.getId(), loginUserRoleId);
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}

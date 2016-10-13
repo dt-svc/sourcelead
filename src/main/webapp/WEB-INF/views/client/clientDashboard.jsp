@@ -17,8 +17,6 @@
 <!-- end files for autocomplete with tagit -->
 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
 <body>
  <div id="loading"></div>
 	<!-- Content Area -->
@@ -30,11 +28,10 @@
 			</div>
 	     </c:if>
 			<div class="pull-left">
-				<h2>Clients
-				<span class="select-fild">
+				<h2>Clients<span class="select-fild">
 				    <select id="listOfVendors" onchange="listChange(this);">
-                  		 <option value="listbyVendor">Search by list</option>
-                        <option value="listbyContact" selected="selected">Search by Contact</option> 
+                  		 <option value="listbyVendor">List by client</option>
+                        <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
 				</span>
 				</h2>
@@ -47,14 +44,14 @@
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="clients_wrap">
-				<div class="timesheet_head">
+				<div class="timesheet_head datatbl-filters">
 					<ul>
 
 		                  <li id="clientsList" ><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${clientsList}">  
-		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
+		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label>${report.clientName}</label></li>
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
@@ -63,40 +60,40 @@
 		                <li id="clientSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label for="c5">Active</label></li>
-								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label for="c6">In-Active</label></li>
-								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label for="c7">New</label></li>
-								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label for="c8">Negotiation</label></li>
-	               				<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label for="c8">Contracted</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
+								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
+								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
+								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
+	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label>Contracted</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
 	                  <li id="clientInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label for="c5">Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label for="c6">Send</label></li>
-								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label for="c7">Accepted</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
+								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label>Send</label></li>
+								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label>Accepted</label></li>
 								<li><input id="c8" type="checkbox"  name="clientInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label for="c8">Rejected</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
 	                  
-		                  <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		                  <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getClientDetails();"><label for="c6">Level-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getClientDetails();"><label for="c7">Level-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getClientDetails();"><label for="c8">Level-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getClientDetails();"><label for="c8">Level-4</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getClientDetails();"><label for="c8">Level-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getClientDetails();"><label>Level-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getClientDetails();"><label>Level-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getClientDetails();"><label>Level-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getClientDetails();"><label>Level-4</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getClientDetails();"><label>Level-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>
                 
-                        <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Add contact</a></li>
-						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Add client</a></li>
+                        <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
+						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
 						<div class="clearfix"></div>
 					</ul>

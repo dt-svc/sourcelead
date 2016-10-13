@@ -164,7 +164,7 @@
 						<div class="form-group">
 						<label class="col-md-4">Current Password</label>
 						<div class="col-md-6">
-						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password" value="${currentPassword}"  class="form-control"  data-validation="required" />
+						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password" value="${currentPassword}"  class="form-control"  onblur="validateCurrentPassword();" data-validation="required" />
 						</div>
 						</div>
 						<div class="form-group">
@@ -206,6 +206,45 @@
   <!-- Content Area Ends--> 
 
 <jsp:include page="masterFooter.jsp" />
+
+
+<script type="text/javascript">
+	 function validateCurrentPassword() {   
+		var currentPassword = $('input#currentPassword').val();
+		if(currentPassword != null  && currentPassword != '' && currentPassword != 'undefined'){
+			var sourceleadUrl ='${sourceleadUrl}';
+			
+		     $.ajax({
+			    	type: "POST",
+			    	 url: sourceleadUrl+"/validateCurrentPassword?${_csrf.parameterName}=${_csrf.token}&currentPassword="+currentPassword, 
+			        success: function(result) {
+			         	 if(result == 'valid'){
+				    		$("#save_button").removeAttr("disabled");
+				    		$('input#currentPassword').removeAttr( "class record-exist record-exist-errormsg");
+							$('#passwordDiv').find('p.jquery_form_error_message').remove();
+							$('input#currentPassword').attr('class','valid form-control');
+							$( "#save_button" ).removeAttr("style");
+							$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
+							$( "#save_button" ).click(function() {
+							});
+							
+				    	}
+				    	else if(result == 'invalid'){
+			    		$("#save_button").attr("disabled", "disabled");
+				    		$('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+				    		$('input#currentPassword').attr('class','error form-control');
+				    		$("input#currentPassword").after("<p class='jquery_form_error_message'>Wrong Password Entered</p>");
+							$('input#currentPassword').attr('record-exist','yes');
+							$('input#currentPassword').attr('record-exist-errorMsg',' Wrong Password Entered'); 
+							$("#save_button" ).addClass('btn btn-primary mr').val('Save');
+				    	} 
+			        },
+			    }); 
+				
+		}
+		
+	 }
+ </script>
 
 
 

@@ -14,6 +14,6 @@ public interface RolesService {
 	
 	public Roles getRolesByDisplayName(String displayName) throws Exception;
 	
-	List<Roles> getMoudleRoles(Long orgId) throws Exception;
+	List<Roles> getMoudleRoles(Long orgId,Long userRoleId) throws Exception;
 
 }

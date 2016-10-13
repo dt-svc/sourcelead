@@ -72,13 +72,13 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		List<OrgDocuments> orgDocumentsList;
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
 		if (isadmin) {
-			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.sourceType = :sourceType and od.status = 'ACTIVE' ";
+			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.sourceType = :sourceType and od.status = '1' ";
 			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
 		}else if(managerUserIds != null && !managerUserIds.isEmpty()){
-			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and (od.ownerUser.id = :loginUserId OR od.ownerUser IN (:managerUserIds)) and od.sourceType = :sourceType and od.status = 'ACTIVE' ";
+			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and (od.ownerUser.id = :loginUserId OR od.ownerUser IN (:managerUserIds)) and od.sourceType = :sourceType and od.status = '1' ";
 			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setParameterList("managerUserIds", managerUserIds).setString("sourceType", sourceType).setCacheable(true).list();
 		}else{
-			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.ownerUser.id = :loginUserId and od.sourceType = :sourceType and od.status = 'ACTIVE' ";
+			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.ownerUser.id = :loginUserId and od.sourceType = :sourceType and od.status = '1' ";
 			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("sourceType", sourceType).setCacheable(true).list();
 		}
 		return orgDocumentsList;	

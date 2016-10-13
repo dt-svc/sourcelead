@@ -68,7 +68,6 @@ function getOrgName(){
              })
         },
         error: function(e){
-           alert('Ajax Error: ' + e.value);
         }
     });
 }
@@ -103,7 +102,6 @@ function getOrgDetails()
    	        	}
    			 },
    	        error: function(e){
-   	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
  	getSpocUserDetails();
@@ -323,7 +321,6 @@ function getOrgDetails()
 		var vendorName = document.getElementById("vendorName").value;
 		var orgLocationId = vendorName.split(',');
 		var orgRelationId = orgLocationId[0];
-		alert("orgRelationId"+orgRelationId);
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -382,10 +379,7 @@ function validateEmail(){
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
-					});
+					
 				}
 			},
 
@@ -608,7 +602,6 @@ function getSpocUserDetails(){
 	        	}
 			 },
 	        error: function(e){
-	            alert('Ajax Error: ' + e.value);
 	        }
 	    });
 	}else{

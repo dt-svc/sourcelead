@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 
 public interface ProjectsService {
@@ -58,7 +59,7 @@ public interface ProjectsService {
 		
 		List<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeShhetSubmission(User user) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user, TimesheetSubmissions timesheetSubmissions) throws Exception;
 		
 		List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 		
@@ -72,5 +73,7 @@ public interface ProjectsService {
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
-		String  storeProject(JSONObject jsonObj) throws Exception ;
+		String  storeProject(JSONObject jsonObj) throws Exception;
+		
+		
 }

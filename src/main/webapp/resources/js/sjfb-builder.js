@@ -5,13 +5,13 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(clientLocationId,sourceleadUrl){
+function customizeFields(clientLocationId,templateId,sourceleadUrl){
 
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
     $("#add-field a").click(function(e) {
         e.preventDefault();
-        $(addField($(this).data('type'),'Y','Y')).appendTo('#form-fields').hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateId,'Y')).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
 
@@ -66,13 +66,18 @@ function customizeFields(clientLocationId,sourceleadUrl){
     
 
     //load saved form
-    loadForm(clientLocationId,sourceleadUrl);
+    if(null != templateId && templateId != undefined){
+    	 loadSavedForm(templateId,sourceleadUrl);
+    }else{
+    	 loadForm(clientLocationId,sourceleadUrl,templateId);
+    }
+   
 
 };
 
 
 //Add field to builder
-function addField(fieldType,value,labelValue) {
+function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValidationCheck) {
 
     var hasRequired, hasChoices,hasAutocomplete,fieldName;
     var includeRequiredHTML = '';
@@ -82,6 +87,16 @@ function addField(fieldType,value,labelValue) {
     var DeleteButtion = '';
     var readOnly = '';
     var checkbox = '';
+    
+    if(templateId == undefined){
+    	templateId = 1;
+    }
+    
+    if(addField.i == undefined){
+    	 addField.i = 1;
+    }else{
+    	addField.i++;
+    }
     
     switch (fieldType) {
         case 'text':
@@ -164,8 +179,8 @@ function addField(fieldType,value,labelValue) {
     else{
     	 includeTextHTML = ''+
 		   '<label class="col-md-5"><div class="col-md-2 lblHeight">Label:</div>' +
-	       ' <div class="col-md-10"> ' +
-	       '<input type="text" '+readOnly+' data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
+	       ' <div class="col-md-10" id="label'+addField.i+'"> ' +
+	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+','+templateId+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
 	       ' </div> ' +
 	       '</label>' 
     }
@@ -252,7 +267,7 @@ function addChoice(labelValue) {
 }
 
 //Loads a saved form from your database into the builder
-function loadForm(clientLocationId,sourceleadUrl) {
+function loadForm(clientLocationId,sourceleadUrl,templateId) {
         $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/loadSubmissionTemplate?clientLocationId="+clientLocationId, 
@@ -262,7 +277,7 @@ function loadForm(clientLocationId,sourceleadUrl) {
 	                 //go through each saved field object and render the builder
 	                 $.each( data, function( k, v ) {
 	                     //Add the field
-	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'])).appendTo('#form-fields').hide().slideDown('fast');
+	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
 	                     var $currentField = $('#form-fields .field').last();
 
 	                     //Add the label
@@ -297,5 +312,89 @@ function loadForm(clientLocationId,sourceleadUrl) {
 	        },
 	    });
        
+}
+
+
+
+
+function loadSavedForm(templateId,sourceleadUrl) {
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
+        success: function(data) {
+        	 var data = eval(data);
+        	 if (data) {
+                 //go through each saved field object and render the builder
+                 $.each( data, function( k, v ) {
+                     //Add the field
+                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                     var $currentField = $('#form-fields .field').last();
+
+                     //Add the label
+                     $currentField.find('.field-label').val(v['label']);
+
+                     //Is it required?
+                     if (v['req']) {
+                         requiredField($currentField.find('.toggle-required'));
+                     }
+
+                     //Any choices?
+                     if (v['choices']) {
+                         $.each( v['choices'], function( k, v ) {
+                             //add the choices
+                             $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
+
+                             //Add the label
+                             $currentField.find('.choice-label').last().val(v['label']);
+
+                             //Is it selected?
+                             if (v['sel']) {
+                                 selectedChoice($currentField.find('.toggle-selected').last());
+                             }
+                         });
+                     }
+
+                 });
+
+                 $('#form-fields').sortable();
+                 $('.choices ul').sortable();
+             }
+        },
+    });
+   
+}
+
+
+
+function validateLabelName(i,templateId,sourceleadUrl,labelValidationCheck){
+	var labelName = $("#textLabel"+i).val();
+	if(labelName && labelValidationCheck == 'Y'){
+		$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/validateSubmissionTemplateLabelName?templateId="+templateId+"&labelName="+labelName, 
+	        success: function(result) {
+	       	 if(result == 'Success'){
+		    		$("#save_button").removeAttr("disabled");
+		    		$('input#textLabel'+i).removeAttr( "class record-exist record-exist-errormsg");
+					$('#label'+i).find('p.jquery_form_error_message').remove();
+					$('input#textLabel'+i).attr('class','field-label valid form-control');
+					$( "#save_button" ).removeAttr("style");
+					$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
+					$( "#save_button" ).click(function() {
+					});
+					
+		    	}
+		    	else if(result == 'Existed'){
+	 		        $("#save_button").attr("disabled", "disabled");
+		    		$('#label'+i).find('p.jquery_form_error_message').remove(); 
+		    		$('input#textLabel'+i).attr('class','field-label error form-control');
+		    		$('input#textLabel'+i).after("<p class='jquery_form_error_message'>Duplicate Field Name</p>");
+		    		$('input#textLabel'+i).attr('record-exist','yes');
+		    		$('input#textLabel'+i).attr('record-exist-errorMsg',' Duplicate Field Name'); 
+					$("#save_button" ).addClass('btn btn-primary mr').val('Save');
+		    	} 
+	        },
+	    });
+	}
 }
 

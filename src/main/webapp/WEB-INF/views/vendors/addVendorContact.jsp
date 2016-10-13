@@ -168,12 +168,13 @@
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
-		                        <option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="3">Approver/Project Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
-			              </select>
+	                            <option value="">-Select Role-</option>
+								<option value="1">Admin</option>
+								<option value="6">Account Manager</option>
+								<option value="7">Sales Manager</option>
+								<option value="5">HR Manager</option>
+								<option value="8">Recruiter</option>
+			             </select>
                   </div>
                 </div>
                 
@@ -287,7 +288,6 @@ function getOrgName(){
              })
         },
         error: function(e){
-           alert('Ajax Error: ' + e.value);
         }
     });
 }
@@ -316,7 +316,6 @@ function getOrgDetails()
    	        	}
    			 },
    	        error: function(e){
-   	            alert('Ajax Error: ' + e.value);
    	        }
    	    });
    	 
@@ -572,10 +571,7 @@ function validateEmail(){
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
-					});
+					
 				}
 			},
 
@@ -642,7 +638,6 @@ function getSpocUserDetails(){
 	        	}
 			 },
 	        error: function(e){
-	            alert('Ajax Error: ' + e.value);
 	        }
 	    });
 	}else{

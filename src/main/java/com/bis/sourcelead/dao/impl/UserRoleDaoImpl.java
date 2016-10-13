@@ -79,7 +79,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 
-	public List<UserRole> getUsersListByLocationId(Long locationId, String userState, Long userId)
+	public List<UserRole> getUsersListByLocationId(Long locationId, String userState, Long userId,String loginUserRole,String userCode)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
@@ -87,75 +87,101 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		if (!isNullOrEmpty(userState)) {
 			subQuery = "and userRole.user.userState = '" + userState + "'";
 		}
+		
+		String subQuery1 = "";
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
+		}
 
 		return session.createQuery(
 				"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId "
-						+ subQuery + " ")
+						+ subQuery + " "+subQuery1+" ")
 				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUsersListByRoleAndLocationId(Long roleId, Long locationId, String userState,
-			Long userId) throws Exception {
+			Long userId,String loginUserRole,String userCode) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
 			subQuery = "and userRole.user.userState = '" + userState + "'";
 		}
+		
+		String subQuery1 = "";
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
+		}
 
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId "
-						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "")
+						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " "+subQuery1+" ")
 				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUsersListByUserNameAndLocationId(String userName, Long locationId, String userState,
-			Long userId) throws Exception {
+			Long userId,String loginUserRole,String userCode) throws Exception {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
 			subQuery = "and userRole.user.userState = '" + userState + "'";
 		}
+		
+		String subQuery1 = "";
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
+		}
 
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("Select userRole from UserRole userRole where " + "((userRole.user.firstName LIKE '"
 				+ userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
-				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " ")
+				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " " + subQuery1 + " ")
 				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName, Long locationId,
-			String userState, Long userId) throws Exception {
+			String userState, Long userId,String loginUserRole,String userCode) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
 			subQuery = "and userRole.user.userState = '" + userState + "'";
 		}
+		
+		String subQuery1 = "";
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
+		}
 
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId and "
 						+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"
 						+ userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
-						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "")
+						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " " + subQuery1 + "")
 				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId, Long userId)
+	public List<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId, Long userId,String loginUserRole,String userCode)
 			throws Exception {
+		
+		String subQuery = "";
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+			subQuery = "and userRole.createdBy = '" + userCode + "' ";
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		return session
 				.createQuery(
 						"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and "
-								+ "userRole.user.userState = :userState")
+								+ "userRole.user.userState = :userState "+subQuery+" ")
 				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).setCacheable(true).list();
 	}
 

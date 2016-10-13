@@ -207,8 +207,10 @@ window.onload = function () {
 									<option value="">-Select Role-</option>
 									<option value="1">Admin</option>
 									<option value="6">Account Manager</option>
+									<option value="7">Sales Manager</option>
 									<option value="5">HR Manager</option>
 									<option value="8">Recruiter</option>
+									
 			              </select>
                   </div>
                 </div>
@@ -396,10 +398,6 @@ function validateEmail(){
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
-					});
 				}
 			},
 

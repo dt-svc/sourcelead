@@ -374,12 +374,12 @@ public class UserDaoImpl implements UserDao {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<User> userRoleList;	     
 	     if(ownerListOfSpoc!=null && !ownerListOfSpoc.isEmpty()){
-			 String query = "from User user where user.id NOT IN (:ids) and user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
-		      userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setParameterList("ids", ownerListOfSpoc).setCacheable(true).list();
+			 String query = "from User user where user.id !=:ownerId and user.id NOT IN (:ids) and user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+		      userRoleList = session.createQuery(query).setLong( "ownerId", ownerId).setLong( "orgLocationsId", orgLocationsId).setParameterList("ids", ownerListOfSpoc).setCacheable(true).list();
 		 }
 		 else{
-			 String query = "from User user where  user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
-		      userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+			 String query = "from User user where user.id !=:ownerId and user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+		      userRoleList = session.createQuery(query).setLong( "ownerId", ownerId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 		 }
 	     return userRoleList;
 	     
