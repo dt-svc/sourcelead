@@ -96,10 +96,10 @@ background-color: #ccc;
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
-     <div class="pull-left">
+    <div class="pull-left">
       <h2>Requirement Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
+    <div class="pull-right brud-crum">Home &raquo; Requirement &raquo; Requirement Details</div>
   </section>
   <div class="content-area content-new clearfix">
    <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
@@ -1134,56 +1134,6 @@ background-color: #ccc;
                   </div>
                 </div>
                 <!-- Assign To modal popup ends -->
-                <!-- Modal content Demo Popup: Need to Update -->
-                <div role="dialog" id="addTeam" class="modal fade">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h4 class="modal-title">Add Team</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                            <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
-                             <select class="form-control"  name="selectOwner" id="teamOwnerId"  onchange="getTeamMembers();">
-			                    	<option value=''>-- Select Owner Id --</option>
-				                    <c:forEach var="report" items="${all_users_List}">
-						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-									</c:forEach>
-			                  </select>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
-                             <select multiple class="chosen-select form-control select-bg" name="selectTeam" id="teamMembersId">
-			                    		<option value=''>-- Select Team --</option>
-					                    <c:forEach var="report" items="${all_users_List}">
-							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-								       </c:forEach>
-		                       </select>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Modal content Demo Popup: Need to Update ends --> 
               </div>
           </div>
           <div class="form-group">
@@ -1218,6 +1168,60 @@ background-color: #ccc;
     </div>
       <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
     </form:form>
+    
+      <!-- Modal content Demo Popup: Need to Update -->
+                <div role="dialog" id="addTeam" class="modal fade">
+                  <div class="modal-dialog">
+                    <form role="form"  id="team_form" name="team_form" method="post" >
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 class="modal-title">Add Team</h4>
+                      </div>
+                      <div class="modal-body clearfix">
+                        <div class="form-horizontal custom-form clearfix">
+                          <div class="col-xs-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                              <!-- <input type="text" class="form-control" value=""> -->
+                              <input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                             <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
+			                    	<option value=''>-- Select Owner Id --</option>
+				                    <c:forEach var="report" items="${all_users_List}">
+						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+									</c:forEach>
+			                  </select>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                             <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
+			                    		<option value=''>-- Select Team --</option>
+					                    <c:forEach var="report" items="${all_users_List}">
+							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+								       </c:forEach>
+		                       </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                      </div>
+                    </div>
+                    </form>
+                  </div>
+                </div>
+                <!-- Modal content Demo Popup: Need to Update ends --> 
   <div class="form-footer clearfix">
     <div class="col-lg-12">
       <div class="pull-right">
@@ -1271,6 +1275,45 @@ background-color: #ccc;
 		 }  
 	} 
 </script>
+
+ <script>
+function storeTeam(){
+	
+	   var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         };
+	   if ($('#team_form').validate(false, validationSettings)){ 
+			var frm = $('#team_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			
+		     var jsonData = encodeURIComponent(con);
+			 var sourceleadUrl = '${sourceleadUrl}';
+			
+			 $("#team_form").attr("disabled", "disabled");
+			
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) {  
+						location.replace(sourceleadUrl+"/team");
+				      }, 
+		    }); 
+			return true; 
+	   }else{ 
+			return false;
+	        } 
+		} 
+ 
+		$('body').on('blur', '#team_form', function() {
+			$("#team_form").showHelpOnFocus();
+			$("#team_form").validateOnBlur(false, validationSettings);
+		});
+</script>   
+
 
 <script type="text/javascript">
 	(function($) {
