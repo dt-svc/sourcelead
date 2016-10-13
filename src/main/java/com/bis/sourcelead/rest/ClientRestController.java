@@ -829,6 +829,7 @@ public class ClientRestController {
 	@RequestMapping(value = "/saveClientSubmissionTemplate" , method = RequestMethod.POST)
 	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId,
+			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -837,8 +838,15 @@ public class ClientRestController {
 		    String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			
+			
 		   try {
-			   SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			   SubmissionTemplate submissionTemplate = null;
+			   if(!isNullOrEmpty(templateId)){
+				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+				}else{
+					submissionTemplate = new SubmissionTemplate();
+				}
+			   
 			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
@@ -881,6 +889,22 @@ public class ClientRestController {
 			return submissionTemplate.getJsonString();
 	    
 	   }
+	
+	@RequestMapping(value = "/validateSubmissionTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateSubmissionTemplateLabelName(@RequestParam(value="templateId", required=false) Long templateId,
+			   @RequestParam(value="labelName", required=false) String labelName) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);
+		   
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
 	
 	/**
 	 * check given string empty or null
