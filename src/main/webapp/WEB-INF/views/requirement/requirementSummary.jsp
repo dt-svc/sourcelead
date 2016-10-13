@@ -19,9 +19,9 @@ $(document).ready(function() {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Requirement Summary</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Requirement Details</div>
   </section>
   <div class="timesheet_out">
     

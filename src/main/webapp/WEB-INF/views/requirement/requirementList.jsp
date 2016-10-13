@@ -934,9 +934,9 @@ function requirementPipeline(requirementId){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Requirement List</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
