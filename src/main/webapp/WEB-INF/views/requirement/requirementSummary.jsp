@@ -2106,29 +2106,29 @@ function sideBar(requirementId){
 				        result = result+'<div class="hide-row">';
 				        
 				       /*  result = result+'    <div class="profile_details requirement_details clearfix">'; */
-				        result = result+'    <div class="col-md-9">';
-				        result = result+'      <div class="row">';
-				        result = result+'        <div class="col-md-3">';
-				        result = result+'          <div class="company-logo">';
-				        result = result+'            <div class="imageParent"> <img onerror="predefineOrgImage(this);" src="${sourceleadUrl}/displayOrgImage/'+json.orgLocationId.org.orgCode+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
-				        result = result+'            <span class="hidden"> TATA Consulting Private Limited, Hyderebad. </span> </div>';
-				        result = result+'        </div>';
-				        result = result+'        <div class="col-md-9">';
-				        result = result+'          <div class="canDetails clearfix">';
-				        result = result+'            <h4>SL 201 - Business Analyst - Full Time</h4>';
-				        result = result+'            <div class="row">';
-				        result = result+'              <div class="col-md-6">';
-				        result = result+'                <ul class="list-unstyled can-perdt">';
+				        result = result+'<div class="col-md-9">';
+				        result = result+'<div class="row">';
+				        result = result+'<div class="col-md-3">';
+				        result = result+'<div class="company-logo">';
+				        result = result+'<div class="imageParent"> <img onerror="predefineOrgImage(this);" src="${sourceleadUrl}/displayOrgImage/'+json.orgLocationId.org.orgCode+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				        result = result+'<span class="hidden"> TATA Consulting Private Limited, Hyderebad. </span> </div>';
+				        result = result+'</div>';
+				        result = result+'<div class="col-md-9">';
+				        result = result+'<div class="canDetails clearfix">';
+				        result = result+'<h4>SL 201 - Business Analyst - Full Time</h4>';
+				        result = result+'<div class="row">';
+				        result = result+'<div class="col-md-6">';
+				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'&& json.minExp != null && json.minExp != '')
 				        	{
-				       	result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
 				        	}
 					    else if(json.minExp != null && json.minExp != '' && json.minExp !='undefined'){
-						result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
+						result = result+' <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
 	
 					        }
 				        else{
-					    result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
+					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
 				        
 				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined')
@@ -2158,24 +2158,29 @@ function sideBar(requirementId){
 
 				        	}
 				        else{
-					     result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
+					     result = result+' <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
 
 				        }
 				        result = result+'                </ul>';
 				        result = result+'              </div>';
 				        result = result+'              <div class="col-md-6">';
 				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
-				        result = result+'                  <li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
-				        result = result+'                  <li><i class="fa fa-flag"></i><span>Select Priority</span>';
-				         result = result+'                     </li>';
-				        result = result+'                </ul>';
-				        result = result+'              </div>';
-				        result = result+'            </div>';
-				        result = result+'          </div>';
-				        result = result+'          <div class="pro-detials">';
-				        result = result+'            <div class="professinal-details">';
-				        result = result+'              <ul class="list-inline list-unstyled">';
+				        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
+				        result = result+'<li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
+				        }
+				        
+				        if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString != 'undefined'){
+				        result = result+'<li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
+				        }
+				        result = result+'<li><i class="fa fa-flag"></i><span>Select Priority</span>';
+				         result = result+'</li>';
+				        result = result+'</ul>';
+				        result = result+'</div>';
+				        result = result+'</div>';
+				        result = result+'</div>';
+				        result = result+'<div class="pro-detials">';
+				        result = result+'<div class="professinal-details">';
+				        result = result+'<ul class="list-inline list-unstyled">';
 				        var skills = [];
 			           if(skills != null && skills != '' && skills != 'undefined'){
 			        	   skills = json.skiills.split(",");
