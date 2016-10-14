@@ -228,4 +228,56 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		return flag;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<Employees> getAllEmployeesByOrgLocationIdAndSearchByName(Long orgLocationId, Long level1Manager,
+			Long level2Manager, String searchByName) throws Exception {
+		logger.debug("In Employees getAllClientsByOrgLocationId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        String search = "";
+        if (searchByName != null && searchByName != "") {
+        	search = "and (emp.user.firstName LIKE '" + searchByName + "%') OR (emp.user.lastName LIKE '" +searchByName + "%') OR (emp.user.email LIKE '" + searchByName + "')";
+        }else{
+        	search ="";
+        }
+        
+        
+        List<Employees> employeeList = null;
+        if(level1Manager!=null && level2Manager!=null){
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE' "+search+"");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
+        }else if(level1Manager!=null){
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE' "+search+"");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
+        }else{
+        	
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and user.userType <>'Admin' and user.userState <> 'INACTIVE' "+search+"");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
+        }
+		return employeeList;
+	}
+
+	private boolean isNullOrEmpty(String searchByName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Employees> getEmployeesExcludeTeamMembersBySearchByName(Long projectId, Long orgLocationsId,
+			String searchByName) throws Exception {
+		   logger.debug("In Employee getEmployeesExcludeTeamMembers method");
+		  String search = "";
+	        if (searchByName != null && searchByName != "") {
+	        	search = "and (emp.user.firstName LIKE '" + searchByName + "%') OR (emp.user.lastName LIKE '" +searchByName + "%') OR (emp.user.email LIKE '" + searchByName + "')";
+	        }
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Employees> addItemsList = null;
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' and usr.userType <>'Admin' "+search+"");
+		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
+		return addItemsList;
+	}
+
 }

@@ -272,12 +272,12 @@ public class ProjectsDashboardRestController {
 	 */
 
 	@RequestMapping(value = "/getTeamMembersList",  method = RequestMethod.POST)
-		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
+		public @ResponseBody  String getTeamMembersList(@RequestParam(value="ProjectId", required=false) Long projectId,@RequestParam(value="searchByName", required=false) String searchByName, HttpServletRequest request) throws Exception {
 		 	String resultJson;
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			
-			 List<Employees>  employeList = employeesService.getEmployeesExcludeTeamMembers(projectId, loginOrgLocations.getId());
+			 List<Employees>  employeList = employeesService.getEmployeesExcludeTeamMembersBySearchByName(projectId, loginOrgLocations.getId(), searchByName);
 			 
 			 resultJson = commonUtil.toJSON(employeList);
 			 return resultJson;
