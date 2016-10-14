@@ -82,11 +82,14 @@ public class CandidateServiceImpl implements CandidateService {
 	@Override
 	public Candidate storeCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
 		
-		Candidate candidate = new Candidate();
 		
-        if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") !=null ){
-			
-			candidate.setId(Long.valueOf(jsonObj.getString("candidateId")));
+        
+        Candidate candidate = null;
+		
+		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
+		}else{
+			candidate = new Candidate();
 		}
         
 		if(orgLocations != null){

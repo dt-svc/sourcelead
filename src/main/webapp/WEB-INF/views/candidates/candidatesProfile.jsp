@@ -86,7 +86,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
-							result = result + 'name="country" field-name="Country" value="'+json.loginCountryName+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
+							result = result + 'name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
 							result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
 							result = result + '</div>';
 							result = result + '		          <div class="col-md-6 custom-fields select-arrow">';
