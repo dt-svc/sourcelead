@@ -92,57 +92,57 @@ public class CandidateServiceImpl implements CandidateService {
 		if(orgLocations != null){
 		candidate.setOrgLocationId(orgLocations);
 		}
-		if(jsonObj.has("firstName")){
+		if(jsonObj.has("firstName") && jsonObj.getString("firstName") !=null){
 		candidate.setFirstName(jsonObj.getString("firstName"));
 		}
 		
-		if(jsonObj.has("lastName")){
-		candidate.setLastName(jsonObj.getString("lastName"));
+		if(jsonObj.has("lastName") && jsonObj.getString("lastName") !=null){
+		candidate.setLastName(jsonObj.getString("lastName") );
 		}
 		
-		if(jsonObj.has("country")){
+		if(jsonObj.has("country") && jsonObj.getString("country") != null && jsonObj.getString("country") !="" && jsonObj.getString("country")!="undefined"){
 		candidate.setCountry(jsonObj.getString("country"));
 		}
-		if(jsonObj.has("state")){
+		if(jsonObj.has("state") && jsonObj.getString("state") !=null){
 		candidate.setState(jsonObj.getString("state"));
 		}
-		if(jsonObj.has("city")){
+		if(jsonObj.has("city") && jsonObj.getString("city") !=null){
 		candidate.setCity(jsonObj.getString("city"));
 		}
-		if(jsonObj.has("phone")){
-		candidate.setMobilePhone(jsonObj.getString("phone"));
+		if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
+		candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 		}
-		if(jsonObj.has("email")){
+		if(jsonObj.has("email") && jsonObj.getString("email") !=null){
 		candidate.setEmail(jsonObj.getString("email"));
 		}
-		if(jsonObj.has("currentRate")){
+		if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
 		candidate.setCurrentRate(jsonObj.getString("currentRate"));
 		}
-		if(jsonObj.has("currentRateCurrency")){
+		if(jsonObj.has("currentRateCurrency") && jsonObj.getString("currentRateCurrency") !=null){
 		candidate.setCurrentRateCurrency(jsonObj.getString("currentRateCurrency"));
 		}
-		if(jsonObj.has("designation")){
+		if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
 		candidate.setDesignation(jsonObj.getString("designation"));
 		}
-		if(jsonObj.has("expectedRate")){
+		if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
 		candidate.setExpectedRate(jsonObj.getString("expectedRate"));
 		}
-		if(jsonObj.has("expectedRateCurrencey")){
+		if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
 			candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
 		}
-		if(jsonObj.has("summary")){
+		if(jsonObj.has("summary") && jsonObj.getString("summary") !=null){
 		candidate.setSummary(jsonObj.getString("summary"));
 		}
-		if(jsonObj.has("designationType")){
+		if(jsonObj.has("designationType") && jsonObj.getString("designationType") !=null){
 		candidate.setDesignationType(jsonObj.getString("designationType"));
 		}
-		if(jsonObj.has("experienceYears")){
+		if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
 		candidate.setExperienceYears(jsonObj.getString("experienceYears"));
 		}
-		if(jsonObj.has("experienceMonths")){
+		if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
 		candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
 		}
-		if(jsonObj.has("address")){
+		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
 		}
 		

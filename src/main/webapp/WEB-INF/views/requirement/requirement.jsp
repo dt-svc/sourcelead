@@ -96,10 +96,10 @@ background-color: #ccc;
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left">
+     <div class="pull-left">
       <h2>Requirement Details</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Requirement &raquo; Requirement Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
   <div class="content-area content-new clearfix">
    <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
