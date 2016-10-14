@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.management.Notification;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,49 +63,35 @@ public class RegistrationController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @PreAuthorize("hasRole('ROLE_SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 		 
 		    commonUtil.highLightMenu(Constants.OrgSettings, request);
 		    
 			ModelAndView model = new ModelAndView();
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
-			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
-			if(authorities.contains(authority)){
-				
-				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
-				if(!isNullOrEmpty(msg)){
-					model.addObject("msg", msg);
-					SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
-				}
-				model.setViewName("registration/enrolledOrgsList");
-				model.addObject("sourceleadUrl", sourceleadUrl);
-			}else{
-				model.setViewName("registration/persmissionDenied");
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCreateMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "orgCreateMsg");
 			}
+			model.setViewName("registration/enrolledOrgsList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			
 			return model;
 
 	 }
 	 
-	 
+	 @PreAuthorize("hasRole('ROLE_SOURCELEAD_ADMIN')")
 	 @RequestMapping(value = "/enrollOrg")
 		public ModelAndView registration() {
 			ModelAndView model = new ModelAndView();
 			
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			Collection<GrantedAuthority> authorities =  (Collection<GrantedAuthority>) auth.getAuthorities();
-			GrantedAuthority authority= new SimpleGrantedAuthority("SOURCELEAD_ADMIN");
-			if(authorities.contains(authority)){
-				model.setViewName("registration/enrollOrg");
+			model.setViewName("registration/enrollOrg");
 
-				model.addObject("sourceleadUrl", sourceleadUrl);
-				model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
-			}else{
-				model.setViewName("registration/persmissionDenied");
-			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 			
 			return model;
 
