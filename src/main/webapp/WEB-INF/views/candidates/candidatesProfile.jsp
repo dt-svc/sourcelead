@@ -68,9 +68,11 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email">';
 							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
-							result = result + '		          </div>';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
+							result = result + '</div>';
+							
 							result = result + '		        </div>';
 							
 						    /* 	  
@@ -81,12 +83,12 @@ function editCandidate(candidateId){
 							result = result + '  </div>'; */
 					        
 					        
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6 custom-fields">';
-								result = result + '    <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
-								result = result + '				name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
-								result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
-							result = result + '		          </div>';
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
+							result = result + 'name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
+							result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
+							result = result + '</div>';
 							result = result + '		          <div class="col-md-6 custom-fields select-arrow">';
 								result = result + '	<input type="hidden" id="stateAutoComplete" name="state"';
 								result = result + '	field-name="State" class="form-control" value="'+json.state+'" data-validation="validate_Space" data-validation-optional="true">';
