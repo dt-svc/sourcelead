@@ -123,8 +123,8 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 
-	                    	 result = result +"<tr>";
-		                     result = result +"<td><div class='proj_show' onclick='sideBar("+opt.id+");'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		                     result = result +"<td><div><span>Client</span></div></td>";
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
@@ -148,7 +148,9 @@ function requirementList(){
 		                    	 result = result +"<td><div>No Data</div></td>";
 		                     }
 		                     result = result +"<td><div><b class='proj_process'>"+opt.status+"</b></div></td>";
-		                     result = result +"<td><div><a href='javascript:void(0)'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                     result = result +"<td><div><a href='#'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                     //<c:url value='/releaseRequirementToClientOrVendors/"+opt.id+"'/>'
+		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
@@ -932,9 +934,9 @@ function requirementPipeline(requirementId){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Requirement List</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

@@ -589,6 +589,32 @@ public class UserServiceImpl implements UserService {
 	
 	
 	
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code
+	 * @param orgLocationsId
+	 * @return List<User> 
+	 */
+	@Override
+	public List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) throws Exception {
+		return userDao.getAllUsersByOrgLocationCode(orgLocationsId);
+	}
+
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code Except TeamOwner
+	 * @param orgLocationsId,teamOwnerUserId
+	 * @return List<User> 
+	 */
+	
+	@Override
+	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId)
+			throws Exception {
+		return userDao.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId,orgLocationsId);
+	}
+
+	
+	
 	@Override
 	public void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
 		 
