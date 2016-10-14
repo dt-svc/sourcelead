@@ -313,9 +313,9 @@ function addEducation(candidateId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
+	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
-	   });	
+	   });	 */
 	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
@@ -485,9 +485,9 @@ function EditEducation(candidateId,candidateEducationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
+	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
-	   });	
+	   });	 */
 	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
