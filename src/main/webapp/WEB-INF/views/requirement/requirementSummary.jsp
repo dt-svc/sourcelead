@@ -2131,20 +2131,31 @@ function sideBar(requirementId){
 					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
 				        
-				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined')
+				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
 				    	   {
 				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
 				    	   }
-				       else if(json.currencyCode  == 'USD' && json.currencyCode  == 'AUD'  && json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
+				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
 					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
+				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
+					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+				       }
+				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+   
+				       }
+				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
 					   result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'GPB' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
+				       else if(json.currencyCode  == 'GPB' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
 					   result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+  
+				       }
+				       else{
+					   result = result+'                  <li><i class="fa fa-money"></i><span> --- </span></li>';
   
 				       }
 				       
@@ -2168,11 +2179,16 @@ function sideBar(requirementId){
 				        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
 				        result = result+'<li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
 				        }
-				        
-				        if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString != 'undefined'){
-				        result = result+'<li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
+				        else{
+				        	 result = result+'<li> <i class="fa fa-user"></i><span id="canName"> --- </span></li>';	
 				        }
-				        result = result+'<li><i class="fa fa-flag"></i><span>Select Priority</span>';
+				        result = result+'<li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
+				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
+				        result = result+'<li><i class="fa fa-flag"></i><span>'+json.priority+' Priority</span>';
+				        }
+				        else{
+					    result = result+'<li><i class="fa fa-flag"></i><span> --- </span>';
+				        }
 				         result = result+'</li>';
 				        result = result+'</ul>';
 				        result = result+'</div>';
@@ -2350,7 +2366,7 @@ function requirementDetails(requirementId){
 						    result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>'+json.spocEmail+'</span>';
 				            }
 				            else{
-							result = result +'     <div class="require_wrap_details_cta" style="display:none"> <b>Email:</b> <span></span>';
+							result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span> --- </span>';
 	
 				            }
 				            result = result +'       <div class="clearfix"></div>';
@@ -2359,12 +2375,37 @@ function requirementDetails(requirementId){
 					        result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span>'+json.spocMobilePhone+'</span>';
 				            }
 				            else{
-						    result = result +'     <div class="require_wrap_details_cta" style="display:none"> <b>Phone No:</b> <span></span>';
+						    result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span> --- </span>';
 
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i>300</span>';
+				            if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'</span>';
+						        }
+						        else if(json.clientCurrencyCode == 'EUR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ' +json.clientRate+'</span>';
+							        }
+						        else if(json.clientCurrencyCode == 'GPB' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+
+							    result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ' +json.clientRate+'</span>';
+								        }
+						        else if(json.clientCurrencyCode  == 'USD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
+								       }
+						        else if(json.clientCurrencyCode  == 'AUD'  && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
+	
+						        }
+						        else if(json.clientCurrencyCode  == 'SGD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
+	
+						        }
+						        else{
+								result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span> <i class="fa fa-money"></i> --- </span>';
+						        }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Submission Form</span>';
@@ -2861,18 +2902,16 @@ function assignedMemberList(requirementId){
 						    result = result +'         </tr>';
 						    result = result +'         </thead>';
 						    result = result +'         <tbody>';
+						    for (var i=0; i<json.length; i++)
+			   				{
+						    var report = json[i];
 						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-me">'+report.assignedUserName+'</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
 						    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
-						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot-me">Murali Krishna Manohar</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">Admin</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
-						    result = result +'         </tr>';
+			   				}
 						    result = result +'         </tbody>';
 						    result = result +'         </table>';
 						    result = result +'     </div>';
