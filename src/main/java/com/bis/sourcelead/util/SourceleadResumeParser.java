@@ -1,8 +1,8 @@
 package com.bis.sourcelead.util;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -17,20 +17,40 @@ import org.xml.sax.SAXException;
 
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 public class SourceleadResumeParser {
 	
-   private static String parseToTextFileUsingApacheTikka(String file)
+@SuppressWarnings("unused")
+/**@param
+ *  Sourcelead Resume Parser
+ *  Using this we can able to get candidate details from upload resume
+ *   
+ *  @author: Naresh Bolisetty
+ *  @date: 17-October-2016
+ */
+private  String getCandidateDetailsFromResume(byte[] source)
 				throws IOException, SAXException, TikaException {
 				
     	    BodyContentHandler htmlHandler = new BodyContentHandler();
-			InputStream stream = new FileInputStream(file);
+    	    ByteArrayInputStream stream = new ByteArrayInputStream(source);
 			AutoDetectParser parser = new AutoDetectParser();
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
-		    return htmlHandler.toString();
+			String parsedString = htmlHandler.toString();
+			ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+			jsonUtil.setName(nameFinderFromParsedTextFile(parsedString));
+			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
+			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString));
+		    return toJSON(jsonUtil);
    }
-   
-   private static String nameFinderFromParsedTextFile(String parsedString){
+    /**
+	 * Name finder from parsed text file
+	 * Here we used java regular expression logic for resolving name from text file 
+	 */  
+   private  String nameFinderFromParsedTextFile(String parsedString){
 	   
 		String[] totalLines = parsedString.split(System.getProperty("line.separator"));
 		String firstTenLines = "";
@@ -90,8 +110,11 @@ public class SourceleadResumeParser {
 		}
 		return name;
    }
-
-   private static String emailFinderFromParsedTextFile(String parsedString){
+   /**
+ 	 * Email finder from parsed text file
+ 	 * Here we used java regular expression logic for resolving email from text file 
+ 	 */
+   private  String emailFinderFromParsedTextFile(String parsedString){
 	   String email = null;
 	   Pattern p = Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b",Pattern.CASE_INSENSITIVE);
 		Matcher matcher = p.matcher(parsedString);
@@ -108,7 +131,12 @@ public class SourceleadResumeParser {
 		return email;
    }
   
-   private static HashSet<String> phoneNumberFinderFromParsedTextFile(String parsedString){
+    /**
+  	 * phone number finder from parsed text file
+  	 * Here we used libphonenumber class for resolving phone numbers from text file 
+  	 * (source:com.googlecode.libphonenumber.libphonenumber7.7.jar)
+  	 */
+   private  HashSet<String> phoneNumberFinderFromParsedTextFile(String parsedString){
         HashSet<String> phoneNumbers = new HashSet<String>();
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 		Iterator<PhoneNumberMatch> usMatches = phoneUtil.findNumbers(parsedString, "US").iterator();
@@ -128,16 +156,18 @@ public class SourceleadResumeParser {
    }
 
 	
-	public static void main(String[] args) {
-		try {
-			String parsedString = parseToTextFileUsingApacheTikka("/home/Resumes/NareshBolisetty_Java_5yr_Exp_CV.doc");
-            System.out.println(nameFinderFromParsedTextFile(parsedString));
-            System.out.println(emailFinderFromParsedTextFile(parsedString));
-            System.out.println(phoneNumberFinderFromParsedTextFile(parsedString));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	 /**
+	 * this method converts list to Json String
+	 * @param obj
+	 * @return
+	 */
+		public String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
 	
 }
