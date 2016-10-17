@@ -450,7 +450,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 globalVarsMap.put("administratorLastName",user.getLastName());
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("userEmailId",user.getEmail()); //
-		 //globalVarsMap.put("weekFrequency",timesheetSubmissions.getStartDateStr());
+		// globalVarsMap.put("weekFrequency",Constants.DMY.format(timesheetSubmissions.getStartDate()));
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();

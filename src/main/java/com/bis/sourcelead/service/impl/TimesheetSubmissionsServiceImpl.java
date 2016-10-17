@@ -1060,7 +1060,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 
 /**
  * Read week frequency for time sheet submissions those who are not send
- * @author Rajashekar
  * 
  */
 		@Override
