@@ -192,6 +192,21 @@ public class TeamRestController {
 
 		  }
 		 
+		 
+		 /**
+		  * This method for delete team by id
+		  * @param teamMemberId
+		  * @return
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/deleteTeamMemberByCandidateId", method = RequestMethod.POST,headers="Accept=application/json")
+		 public String deleteTeamMemberByCandidateId(@RequestParam( value = "teamMemberId", required = false) Long teamMemberId) throws Exception { 
+			
+			 TeamMembers  teamMembers = teamMembersService.deleteTeamMemberById(teamMemberId);
+			 return "success";
+		  }
+		 
+		 
 		 /**
 		   * @author David Raju
 		   * @since  sep 14 2016

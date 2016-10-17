@@ -140,6 +140,7 @@ function sideBar(teamId){
 		
 		outPut = outPut  +'     <div id="popUpDivTeam" class="edit-details col-md-4"> ';
 		outPut = outPut  +'     </div>  ';
+		outPut = outPut  +'     </div>  ';
 				
 		outPut = outPut+ ' <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		outPut = outPut+ ' <div id="projectMemberList"></div>';
@@ -246,6 +247,12 @@ function closeTeamPopup(){
 </script>
 
 <script>
+function closePopup(){
+	 $("#popUpDivTeam").removeClass("edit-details-active");
+}
+</script>
+
+<script>
 function addMember(teamId){
 	var outPut = '';
 	outPut = outPut+'          <form role="form"  id="teamMember_form" name="teamMember_form" method="post" > ';
@@ -268,6 +275,7 @@ function addMember(teamId){
 		
 	$("#popUpDivTeam").empty();
 	$("#popUpDivTeam").append(outPut); 
+	$("#popUpDivTeam").addClass("edit-details-active"); 
 	
 	/* $(".edit-details").toggleClass("edit-details-active"); */
 	
@@ -307,7 +315,7 @@ function addMember(teamId){
 function projectMemberList(teamId){
 	    
 	    var sourceleadUrl ='${sourceleadUrl}';
-		  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		  $.ajax({
 	           type : "POST",
 	            url: sourceleadUrl+"/getTeamMembersListByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,       
@@ -320,8 +328,8 @@ function projectMemberList(teamId){
 	               			 location.replace(sourceleadUrl+"/errorPage");
 	               		 }
 	               		 else{
-				    	     $("#teamList").removeAttr("style");
-		                	 $("#teamList").empty();
+				    	     $("#projectMemberList").removeAttr("style");
+		                	 $("#projectMemberList").empty();
 		                	 var result = "";
 		                	 result = result +"<table id='teamMemberPagination' class='display' cellspacing='0' width='100%' >"; 
 		                     result = result +"<thead>"; 
@@ -445,7 +453,7 @@ function removeProjectMemberAlertMessage(teamId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -474,7 +482,7 @@ function cancelAlert(){
 --%>
 
 <script>
-function deleteTeamMember(teamId){
+function deleteTeamMember(teamMemberId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
 	  $.ajax({
@@ -489,7 +497,9 @@ function deleteTeamMember(teamId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{
-            			 projectMemberList(teamId);
+            			 projectMemberList(teamMemberId);
+            			 $("#removeCandidateAlert").empty();
+            			 $(".project_inn_mask").fadeOut(200);
             		 }
                 }
                  }, 

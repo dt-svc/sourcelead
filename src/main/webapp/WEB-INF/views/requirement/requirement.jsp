@@ -1298,8 +1298,8 @@ function storeTeam(){
 			$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
-					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+					success :function(data) { 
+						  /* location.replace(sourceleadUrl+"/team"); */
 				      }, 
 		    }); 
 			return true; 

@@ -38,6 +38,15 @@ text-align:left;
 function editCandidate(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginCountryName = '${loginCountryName}';
+	  
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+ if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -58,7 +67,7 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name">';
@@ -66,7 +75,7 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
 							result = result + '		          </div>';
 							
 							result = result + '<div class="col-md-6">';
@@ -160,7 +169,7 @@ function editCandidate(candidateId){
 							       ,placeholderText:""
 							  });
 							 
-							  
+            		 
             		 }
                 }else{
          	    	         var result ="";
@@ -180,6 +189,7 @@ function editCandidate(candidateId){
                  },
                    
               }); 
+		 }
 }
 </script> 
 

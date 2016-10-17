@@ -12,4 +12,6 @@ public interface TeamMemberDao {
 	
 	public TeamMembers saveOrUpdateTeamMembers(TeamMembers teamMembers) throws Exception;
 	
+	public TeamMembers getTeamMemberByTeamMemberId(Long teamMemberId)throws Exception;
+	
 }
