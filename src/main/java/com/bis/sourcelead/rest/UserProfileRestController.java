@@ -93,7 +93,7 @@ public class UserProfileRestController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			   
+			   SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg", "Your password has changed successfully");  
 			   return "home";
 		   }else{
 			   return "Invalid Password";

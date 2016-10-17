@@ -85,6 +85,11 @@ public class LoginSessionController {
 		setLoginSession(request, authentication,user,userRole);
 		
 		ModelAndView model = new ModelAndView();
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
+		if(null != msg && !msg.isEmpty()){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 	    return model;
