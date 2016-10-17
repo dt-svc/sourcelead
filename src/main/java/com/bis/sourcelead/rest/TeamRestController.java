@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -186,11 +185,53 @@ public class TeamRestController {
 		  * @return
 		  * @throws Exception
 		  */
-		 @RequestMapping(value = "/deleteTeam/{id}", method = RequestMethod.POST,headers="Accept=application/json")
-		 public Boolean deleteTeam(@PathVariable Long id) throws Exception { 
-		  Team	team= teamService.getTeamByTeamId(id);
-			Boolean isDeleted = teamService.deleteTeamById(team.getId());
-			return isDeleted;
+		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
+		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
+			 Team team = teamService.deleteTeamById(teamId);
+			 return "success";
+
 		  }
+		 
+		 
+		 /**
+		  * This method for delete team by id
+		  * @param teamMemberId
+		  * @return
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/deleteTeamMemberByCandidateId", method = RequestMethod.POST,headers="Accept=application/json")
+		 public String deleteTeamMemberByCandidateId(@RequestParam( value = "teamMemberId", required = false) Long teamMemberId) throws Exception { 
+			
+			 TeamMembers  teamMembers = teamMembersService.deleteTeamMemberById(teamMemberId);
+			 return "success";
+		  }
+		 
+		 
+		 /**
+		   * @author David Raju
+		   * @since  sep 14 2016
+		   * @version 0.0.1
+		   * 
+		   * This method is used get All Users By OrgLocationCode ExceptTeamOwner 
+		   * 
+		   * @param teamOwnerUserId This is the first paramter to getAllUsersByOrgLocationCodeExceptTeamOwner
+		   
+		   * @return string 
+		   * 
+		   * @throws NullPointer
+		   */
+		 
+		  @RequestMapping(value = "/getAllUsersByOrgLocationCodeExceptTeamOwner")
+		  public String getAllUsersByOrgLocationCodeExceptTeamOwner(@RequestParam(value="teamOwnerUserId", required=false) Long  teamOwnerUserId,HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId());
+			resultJson = commonUtil.toJSON(freshUserList);
+			return resultJson;
+		 } 
+
 	 
 }

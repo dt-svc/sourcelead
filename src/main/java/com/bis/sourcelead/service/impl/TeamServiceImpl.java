@@ -106,10 +106,11 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public Boolean deleteTeamById(Long id) throws Exception {
-		logger.debug("In TeamServiceImpl class deleteTeamById method...");
-		Boolean isDeleted = teamDao.deleteTeamById(id);
-		return isDeleted;
+	public Team deleteTeamById(Long teamId) throws Exception {
+		
+		Team team = teamDao.getTeamByTeamId(teamId);
+		team.setStatus(Constants.TEAM_IN_ACTIVE);
+		return teamDao.storeTeam(team);
 	}
 	
 }

@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -41,12 +43,14 @@ public class RequirementListController {
 	}
 	
 	
-	@RequestMapping(value = "/releaseRequirement")
-	public ModelAndView releaseRequirement(HttpServletRequest request) {
+	@RequestMapping(value = "/releaseRequirementToClientOrVendors/{requirementId}" , method = RequestMethod.GET)
+	public ModelAndView releaseRequirementToClientOrVendors(@PathVariable Long userId,HttpServletRequest request) {
+		
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/releaseRequirement");
+		
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
@@ -56,8 +60,6 @@ public class RequirementListController {
 		sessionData.setNav(Constants.Requirement);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
-		
-		
 		return model;
 
 	}

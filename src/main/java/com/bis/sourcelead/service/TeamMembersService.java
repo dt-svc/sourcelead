@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 
 /**
@@ -19,5 +20,7 @@ public interface TeamMembersService {
 	public TeamMembers saveOrUpdateTeamMembers(TeamMembers teamMembers) throws Exception;
 	
 	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception;
+	
+	public TeamMembers deleteTeamMemberById(Long teamId) throws Exception;
 	
 }
