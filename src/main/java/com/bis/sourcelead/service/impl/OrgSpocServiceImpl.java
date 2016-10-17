@@ -125,8 +125,66 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId,Long orgLocationId) throws Exception {
 		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(userId);
+		List<OrgSpoc> orgSpocsList  = orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId);
 		
-		return orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId);
+		if(orgSpocsList != null && !orgSpocsList.isEmpty()){
+			for (OrgSpoc orgSpoc : orgSpocsList) {
+					if(orgSpoc.getSpocUser().getId() == userId || orgSpoc.getOwnerUser().getId() == userId){
+						//if login user is spoc
+						if(orgSpoc.getSpocUser().getId() == userId){
+		    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+		    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+		    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+		    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+		    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+		    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+		    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+						}
+						//if login user is Owner
+						else if(orgSpoc.getOwnerUser().getId() == userId){
+								 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+								 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+								 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+								 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+								 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+								 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+								 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+							}
+						 
+					}else{
+						if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
+							 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+							 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+							 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+							 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+						 }
+						if(orgSpoc.getResponderLocationId().getId() == orgLocationId){
+						 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+						 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+						 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+						 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+						}
+					}
+					if(orgSpoc.getResponderLocationId().getId() == orgLocationId){
+						orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+						orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
+					if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
+						orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+						orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
+					
+					orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+					orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+				}
+	     }
+		return orgSpocsList;
+		
 	}
 	
 	
@@ -139,6 +197,74 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId) {
 		return orgSpocDao.getSpocAndOwnerDetailsById(spocId,ownerId);
+	}
+	
+	@Override
+	public OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId) {
+		 OrgSpoc orgSpoc =  orgSpocDao.getSpocAndOwnerDetailsById(spocId,ownerId);
+		 if(orgSpoc != null){
+		       if(loginUserId==ownerId ){
+		    	orgSpoc =  getOrgSpocDetails(orgSpoc);
+		       }
+		       else if(loginUserId==spocUserId){
+		    	 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+		    	 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+			     orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			     orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
+			     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
+			     orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+			     //prasad salina
+			     orgSpoc.setTempSpocId(orgSpoc.getOwnerUser().getId());
+			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+		      }
+		     else {
+		    	 if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
+		    		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+				     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+				     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+					//prasad salina
+				     orgSpoc.setTempSpocId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+					 
+				 }
+				if(orgSpoc.getResponderLocationId().getId() == orgLocationId){
+					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+					 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+					 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
+				     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+					 orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+					//prasad salina
+				     orgSpoc.setTempSpocId(orgSpoc.getOwnerUser().getId());
+				}
+		     }
+		 }
+		 return orgSpoc;
+	}
+	
+	private OrgSpoc getOrgSpocDetails(OrgSpoc orgSpoc) {
+		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+   	     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
+	     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+	     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+	     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+	     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+	     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+	     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+	     //prasad salina
+	     orgSpoc.setTempSpocId(orgSpoc.getSpocUser().getId());
+	     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+		return orgSpoc;
 	}
 	
 	@Override
