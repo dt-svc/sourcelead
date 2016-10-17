@@ -2322,7 +2322,7 @@ function requirementDetails(requirementId){
 					            }
 					            else{
 					            result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
-					            }
+				    	            }
 				            result = result +'   <h2>Other details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){

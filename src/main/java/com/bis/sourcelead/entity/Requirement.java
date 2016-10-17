@@ -98,7 +98,7 @@ import org.hibernate.annotations.FetchMode;
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
-	
+	    
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
