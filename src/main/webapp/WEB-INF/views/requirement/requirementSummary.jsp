@@ -2412,7 +2412,7 @@ function requirementDetails(requirementId){
 	
 						    }
 						    else{
-							result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span> <i class="fa fa-money"></i> --- </span>';
+							result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span> --- </span>';
 						    }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
@@ -2423,7 +2423,7 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
+				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
@@ -2916,7 +2916,7 @@ function assignedMemberList(requirementId){
 						    result = result +'         <tr>';
 						    result = result +'         <td><div class="tbldata-dotdot-me">'+report.assignedUserName+'</div></td>';
 						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.teamName+'</div></td>';
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}
