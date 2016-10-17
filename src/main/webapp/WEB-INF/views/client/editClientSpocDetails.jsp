@@ -23,7 +23,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -123,7 +123,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -193,6 +193,10 @@
 							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
 							result = result + '</div>';
 					   }
+						
+				     	//to diffentiate temp spoc user
+						result = result + '<input type="hidden"  id="existingSpocUserId" name="existingSpocUserId" value="'+json.tempSpocId+'">';
+						
 						/* result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 						result = result + '<label>First Name:<span class="text-danger">*</span></label>';
 						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
@@ -262,7 +266,7 @@
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -329,7 +333,7 @@
             };
 </script>
  <script type="text/javascript">
-	function storeClientContactDetails(spocId,ownerId,spocUserId) {
+	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
     		 var frm = $('#editVendorContact_form').serializeFormJSON();
              var con = JSON.stringify(frm);
@@ -341,7 +345,8 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
-	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId);
+	   		        var ownerId = data;
+	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	   		    }
 		 }); 
 	     	return true;
