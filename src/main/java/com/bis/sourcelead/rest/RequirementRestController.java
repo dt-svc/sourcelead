@@ -155,7 +155,18 @@ public class RequirementRestController {
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
-	
+	/**
+	 * @author Venkat Kesav
+	 * @since  sept 21 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to getTeamsList.
+	 *  
+	 * @param request
+	 * @return resultJson 
+	 * 
+	 * @throws NullPointer
+	*/
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
 	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
 		

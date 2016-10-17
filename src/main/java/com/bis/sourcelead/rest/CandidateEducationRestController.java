@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -47,6 +49,9 @@ public class CandidateEducationRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 
 
 	 /**
@@ -132,14 +137,15 @@ public class CandidateEducationRestController {
 		 CandidateEducation  candidatesEducationList = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		
 		 if(candidatesEducationList.getStartDate() != null){
-			 candidatesEducationList.setStartDateStr(Constants.DF_DMY.format(candidatesEducationList.getStartDate())); 
+			 candidatesEducationList.setStartDateStr(Constants.DF_YMD.format(candidatesEducationList.getStartDate())); 
 			 }
 			 if(candidatesEducationList.getEndDate() != null){
-				 candidatesEducationList.setEndDateStr(Constants.DF_DMY.format(candidatesEducationList.getEndDate())); 
+				 candidatesEducationList.setEndDateStr(Constants.DF_YMD.format(candidatesEducationList.getEndDate())); 
 			 }
-			 
-		 resultJson = commonUtil.toJSON(candidatesEducationList);
-		 return resultJson;
+			 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
+			 candidatesEducationList.setEducationList(educationsList);
+		     resultJson = commonUtil.toJSON(candidatesEducationList);
+		     return resultJson;
 	}
 	
 	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId")

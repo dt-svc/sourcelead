@@ -23,8 +23,8 @@
                    <div class="form-horizontal row custom-form">
                      <div class="col-xs-12 col-md-12 col-lg-12">
                        <div class="input-group">
-                         <input type="search" class="form-control" value="">
-                         <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
+                         <input type="search" class="form-control" placeholder="Name / Email" id="searchByName" >
+                         <span class="input-group-addon bt-primary" onclick="getTeamMembers();"><i class="fa fa-search"></i></span> </div>
                      </div>
                    </div>
                    <div class="modal-body-custom mt clearfix" id="employeesList">
@@ -130,6 +130,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	var projectStatus =  json.status;
         	
         	var result = "";
+        	result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
+        	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
         	result = result + '    	<div class="project_tabs_inn_head">';
     		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
@@ -328,12 +330,17 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 <!-- this script is for TeamMembers List functionality at Projects screen -->
 <script type="text/javascript">
 function getTeamMembers(projectId,startDateStr,endDateStr) {
+	if(projectId == null || projectId == '' || projectId == 'undefined'){
+		projectId  = document.getElementById("projectId").value;
+		startDateStr  = document.getElementById("startDateStr").value;
+	}
 	var sourceleadUrl ='${sourceleadUrl}';
 	var startDateStr = startDateStr;
 	var endDateStr = endDateStr;
-    $.ajax({
+	var searchByName = $("#searchByName").val();
+	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
+        url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";

@@ -534,7 +534,7 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	margin-left: 55px;
 	position: absolute;
 	z-index: 999;
-	top: 218px;
+	top: 410px;
 	border-radius: 0 5px 5px 0;
 	-webkit-transition: all 0.5s ease-in-out 0s;
 	-ms-transition: all 0.5s ease-in-out 0s;
@@ -3162,6 +3162,9 @@ approver-block {
 	background-color:#2ae0c8;
 	text-shadow:none;
 	font-size:15px;
+}
+.input-group-addon .fa-search{
+	cursor: pointer;
 }
 @media (max-width: 320px) {
 .hidden-xs {

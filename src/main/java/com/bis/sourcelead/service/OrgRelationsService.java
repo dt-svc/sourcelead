@@ -35,13 +35,15 @@ public interface OrgRelationsService {
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
+	OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId);
+	
 	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
 
 	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long id, Long orgLocationId, String relationType) throws Exception;
 	
 	OrgRelations getRespondingPartyDetailsById(Long id) throws Exception;
 	
-	List<OrgRelations> getAllClientsFilterByOrgLocationId(Long orgLocationId,String status) throws Exception;
+	List<OrgRelations> getAllClientsFilterByOrgLocationId(Long orgLocationId,String status, Long loginUserId) throws Exception;
 	
 	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status) throws Exception;
 

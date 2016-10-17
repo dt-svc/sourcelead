@@ -89,7 +89,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String subQuery1 = "";
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
 		}
 
@@ -111,7 +111,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String subQuery1 = "";
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
 		}
 
@@ -132,7 +132,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String subQuery1 = "";
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
 		}
 
@@ -155,7 +155,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String subQuery1 = "";
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
 		}
 
@@ -173,7 +173,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			throws Exception {
 		
 		String subQuery = "";
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("SOURCELEAD_ADMIN")){
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery = "and userRole.createdBy = '" + userCode + "' ";
 		}
 		
@@ -232,7 +232,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("isUserAdmin By UserId start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'SOURCELEAD_ADMIN') and userRole.user =:userId")
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'ROLE_SOURCELEAD_ADMIN') and userRole.user =:userId")
 						   .setLong("userId", userId)
 						   .setCacheable(true).list();
 		
@@ -252,7 +252,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("isUserAdmin By UserId start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'SOURCELEAD_ADMIN') and userRole.user =:userId and userRole.orgLocations.id = :orgLocationId")
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'ROLE_SOURCELEAD_ADMIN') and userRole.user =:userId and userRole.orgLocations.id = :orgLocationId")
 						   .setLong("userId", userId)
 						   .setLong("orgLocationId", orgLocationId) .setCacheable(true).list();
 		

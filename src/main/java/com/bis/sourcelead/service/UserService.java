@@ -92,6 +92,26 @@ public interface UserService  {
 	
 	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
 
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code
+	 * @param orgLocationsId
+	 * @return List<User> 
+	 */
+	List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) throws Exception;
+	
+	
+	
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code Except TeamOwner
+	 * @param orgLocationsId,teamOwnerUserId
+	 * @return List<User> 
+	 */
+	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
+	
+	
+	
 }	
 		
 	
