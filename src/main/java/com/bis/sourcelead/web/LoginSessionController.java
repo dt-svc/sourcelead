@@ -134,7 +134,7 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			
-			if("SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
+			if("ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
 				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
 			}
 			

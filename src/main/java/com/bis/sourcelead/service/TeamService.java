@@ -19,6 +19,6 @@ public interface TeamService {
 	
 	public Team getTeamByTeamId(Long teamId)throws Exception;
 	
-	Boolean deleteTeamById(Long id) throws Exception;
+	public Team deleteTeamById(Long teamId) throws Exception;
 	
 }

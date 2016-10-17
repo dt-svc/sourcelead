@@ -12,6 +12,5 @@ public interface TeamDao {
 	
 	public Team getTeamByTeamId(Long teamId)throws Exception;
 	
-	public Boolean deleteTeamById(Long id) throws Exception;
 	
 }
