@@ -218,7 +218,7 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" name="name" id="name" data-validation="validate_Space" data-validation-optional="true">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -704,12 +704,12 @@ function clearSearchKey() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		var validationSettings = {
+		/* var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
-		};
+		}; */
 		
 		
 		if ($('#education_form').validate(false,
