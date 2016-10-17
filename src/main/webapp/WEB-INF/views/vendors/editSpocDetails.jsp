@@ -317,9 +317,9 @@
              var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId, 	   
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
-	   		    	//var ownerId = data;
+	   		    	var ownerId = data;
 	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	   		    }
 		 }); 
