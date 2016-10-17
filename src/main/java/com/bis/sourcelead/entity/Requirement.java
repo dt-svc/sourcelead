@@ -161,6 +161,9 @@ import org.hibernate.annotations.FetchMode;
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
 	@Transient
+	private String clientName;
+	
+	@Transient
 	private String spocName;
 	
 	@Transient
@@ -277,6 +280,14 @@ import org.hibernate.annotations.FetchMode;
 	}
 
 
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
 
 	public String getRate() {
 		return rate;

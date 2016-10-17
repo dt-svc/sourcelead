@@ -108,7 +108,9 @@ public class RequirementListRestController {
 			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
+				
 				if(requirement.getSpocId() !=null){
+				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
