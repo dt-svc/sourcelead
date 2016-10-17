@@ -481,7 +481,7 @@ public class ClientRestController {
 	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId ) throws Exception{
 		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		     
+		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     if(user.getId()==ownerId ){
 		    	orgSpoc =  getOrgSpocDetails(orgSpoc);
 		     }
@@ -494,12 +494,40 @@ public class ClientRestController {
 			     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
 			     orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
 			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+			     //prasad salina
+			     orgSpoc.setTempSpocId(orgSpoc.getOwnerUser().getId());
 			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
 		     }
 		     else {
-		    	 orgSpoc =  getOrgSpocDetails(orgSpoc);
+		    	 if(orgSpoc.getInitiatorLocationId().getId() == orgLoc.getId() ){
+		    		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
+				     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
+				     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+					//prasad salina
+				     orgSpoc.setTempSpocId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+					 
+				 }
+				if(orgSpoc.getResponderLocationId().getId() == orgLoc.getId()){
+					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+					 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+					 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
+				     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+					 orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+					//prasad salina
+				     orgSpoc.setTempSpocId(orgSpoc.getOwnerUser().getId());
+				}
 		     }
-		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
 		     
@@ -517,6 +545,8 @@ public class ClientRestController {
 	     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
 	     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 	     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+	     //prasad salina
+	     orgSpoc.setTempSpocId(orgSpoc.getSpocUser().getId());
 	     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
 		return orgSpoc;
 	}
@@ -829,6 +859,7 @@ public class ClientRestController {
 	@RequestMapping(value = "/saveClientSubmissionTemplate" , method = RequestMethod.POST)
 	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId,
+			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -837,8 +868,15 @@ public class ClientRestController {
 		    String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			
+			
 		   try {
-			   SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			   SubmissionTemplate submissionTemplate = null;
+			   if(!isNullOrEmpty(templateId)){
+				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+				}else{
+					submissionTemplate = new SubmissionTemplate();
+				}
+			   
 			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
@@ -881,6 +919,22 @@ public class ClientRestController {
 			return submissionTemplate.getJsonString();
 	    
 	   }
+	
+	@RequestMapping(value = "/validateSubmissionTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateSubmissionTemplateLabelName(@RequestParam(value="templateId", required=false) Long templateId,
+			   @RequestParam(value="labelName", required=false) String labelName) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);
+		   
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
 	
 	/**
 	 * check given string empty or null
