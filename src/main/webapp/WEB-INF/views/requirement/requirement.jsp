@@ -966,7 +966,7 @@ background-color: #ccc;
        <!-- Approver Required Check box html ends -->  
          
          
-         <div class="form-group parallel" style="display:none;">
+        <!--  <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                     <select multiple class="chosen-select form-control">
@@ -976,18 +976,37 @@ background-color: #ccc;
                       <option>Approver-3</option>
                     </select>
                 </div>
+         </div> -->
+         
+         <div class="form-group parallel" style="display:none;">
+                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
+                <div class="col-md-9">
+                    <select multiple class="chosen-select form-control">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                </div>
          </div>
+          
          
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control">
+                    <select multiple class="chosen-select form-control">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                   <!--  <select class="chosen-select form-control">
                       <option disabled>Select Client</option>
                       <option>Client-1</option>
                       <option>Client-2</option>
                       <option>Client-3</option>
-                    </select>
+                    </select> -->
                     <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
                     </div>
                 </div>
@@ -997,22 +1016,34 @@ background-color: #ccc;
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
-                <select class="chosen-select form-control">
+              		<select multiple class="chosen-select form-control">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                <!-- <select class="chosen-select form-control">
                       <option disabled>Select Client</option>
                       <option>Client-1</option>
                       <option>Client-2</option>
                       <option>Client-3</option>
-                    </select>
+                    </select> -->
               </div></div>
           </div>
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select multiple class="chosen-select form-control">
+             <!--  <select multiple class="chosen-select form-control">
                 <option>Select Manager</option>
                 <option>Manager-1</option>
                 <option>Manager-2</option>
                 <option>Manager-3</option>
+              </select> -->
+              <select multiple class="chosen-select form-control">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
               </select>
             </div>
           </div>
@@ -1151,12 +1182,18 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
-                <select class="chosen-select form-control">
+                <!-- <select class="chosen-select form-control">
                   <option>Select Client</option>
                   <option>Client-1</option>
                   <option>Client-2</option>
                   <option>Client-3</option>
-                </select>
+                </select> -->
+                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId">
+                    	<option value="">-- Select Client --</option>
+		                <c:forEach var="report" items="${add_clientList}">
+					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+						</c:forEach>
+               </select>						
           </div>
         </div>
       </div>
