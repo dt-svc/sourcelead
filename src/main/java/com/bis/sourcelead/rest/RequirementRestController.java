@@ -178,4 +178,14 @@ public class RequirementRestController {
 		return resultJson;
 	}
 	
+	
+	 @RequestMapping(value = "/getRequirmentOrgSubmissionTemplate" , method = RequestMethod.GET)
+	   public String getRequirmentOrgSubmissionTemplate(@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
+			
+		    Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		    
+			return requirement.getSubmissionTemplateJsonString();
+	    
+	   }
+	
 }

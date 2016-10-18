@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
- 
+<link rel="stylesheet" href="resources/css/style.css" />
  
  
 <script>
@@ -2486,6 +2486,16 @@ function requirementPipeline(requirementId){
             		 else{ 
 							var result ="";
 							
+							//For Add Applicant div
+							result = result +'<div class="side_mask"><div class="addApplicant_close"></div></div>';
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -2506,7 +2516,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
 				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
 				            result = result +'    <div class="clearfix"></div>';
@@ -2943,4 +2953,180 @@ function assignedMemberList(requirementId){
             }); 
 }
 </script>
+
+
+<!-- For add New Applicant -->
+<script>
+function getAddApplicant(requirementId){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	generateOrgSubmissionForm(sourceleadUrl,requirementId)
+	
+	var result = "";
+
+	result = result + '<form id="addApplicant_form" >';
+	result = result + '<div class="form-horizontal clearfix">';
+	result = result + '<div class="row">';
+	result = result + '<div class="col-md-12 mb10">';
+	result = result + '<label>Select Candiate</label>';
+	result = result + '<select class="form-control  block">';
+	result = result + '<option>Rameshkumar Korrapati</option>';
+	result = result + '<option>Prasanth Korrapati</option>';
+	result = result + '<option>Muralimohan Korrapati</option>';
+	result = result + '<option>Sarathkumar Korrapati</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '<div class="clearfix text-center text-info mb10">';
+	result = result + '-------------------------------- OR --------------------------------';
+	result = result + '</div>';
+	
+	result = result + '<div id="sjfb-fields" class="viewTemplate">';
+	
+	
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="col-md-12">';
+	result = result + '<div class="panel-border">';
+	result = result + '<div class="col-md-12">';
+	result = result + '<div class="input-group">';
+	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">';
+	result = result + '</span> </label>';
+	result = result + '<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume *">';
+	result = result + '</div>';
+	result = result + '</div>';
+                    
+	result = result + '<div class="col-md-12 mt10 mb10 clearfix text-center text-info">';
+	result = result + '-------------------------------- OR --------------------------------';
+	result = result + '</div>';
+	result = result + '<div class="col-md-12">';
+	result = result + '<select class="form-control block">';
+	result = result + '<option>Select</option>';
+	result = result + '<option>Prasanth Korrapati</option>';
+	result = result + '<option>Muralimohan Korrapati</option>';
+	result = result + '<option>Sarathkumar Korrapati</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div></div>';
+	result = result + '<div class="col-md-12 mb10">';
+	result = result + '<label>Expected Rate / Salary <span class="text-danger">*</span></label>';
+	result = result + '<div class="row div-padding">';
+	result = result + '<div class="col-md-4">';
+	result = result + '<select class="form-control block">';
+	result = result + '<option>Rupee</option>';
+	result = result + '<option>Dollar</option>';
+	result = result + '<option>Rupee</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '<div class="col-md-4">';
+	result = result + '<input type="text" value="" class="form-control input-sm">';
+	result = result + '</div>';
+	result = result + '<div class="col-md-4">';
+	result = result + '<select class="form-control block">';
+	result = result + '<option>Yearly</option>';
+	result = result + '<option>Monthly</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+                        
+                        
+	result = result + '</div>';
+	result = result + '<div class="clearfix mt10">';
+	result = result + '<div class="pull-right">';
+	result = result + '<button type="submit" id="save_button" class="btn btn-sm btn-primary mr">Submit</button>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';  
+	result = result + '</form>';
+	 
+    
+	
+	$("#addApplicantDiv").empty();
+	$("#addApplicantDiv").append(result);
+	
+	$(".new_side_wrap").addClass("new_side_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
+	
+}
+</script>
+
+
+<!-- For add New Applicant -->
+<script>
+    $(".addApplicant_close, .side_mask").click(function() {
+    	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+</script>
+
+
+<!-- For add New Applicant -->
+<script type="text/javascript">
+   	$('body').on('submit', '#addApplicant_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+        e.preventDefault();
+        var frm = $('#addApplicant_form').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        con = con.replace(/[{}]/g, "");
+        var jsonData = encodeURIComponent(con);
+        var sourceleadUrl ='${sourceleadUrl}';
+        
+        $( "#save_button" ).addClass('button').val('Processing..');
+  /*  	    $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	        success: function(result) {
+	        	if((result == 'home')){
+	        		clientSubmissionTemplate(clientLocationId);  
+		        } 
+	        },
+	    }); */
+        return true;
+      }
+      else{
+      	return false;	
+         }
+    });
+    	
+   	$('#addApplicant_form').showHelpOnFocus();
+    $('#addApplicant_form').validateOnBlur(false, validationSettings); 
+  
+  </script>
+  
+  
+  <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+
 
