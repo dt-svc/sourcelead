@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -115,8 +118,45 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
 		
-		String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId and  ( requirement.createdBy =:loginUserCode  or requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:userId) )";
+				
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		String from = "from Requirement requirement"; 
+		
+		String subQuery1 = "requirement.createdBy =:loginUserCode";
+		params.put("loginUserCode",user.getUserCode());
+		
+		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:userId and rah.level = '1' )";
+		params.put("userId",userId);
+		
+		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:approverUserId and rah.level = '2' and (rah.approverUserId =:approverUserId and rah.level = '1' and rah.requirementApproverStatus = 'approved') )";
+		params.put("approverUserId",userId);
+		
+		
+		String subQuery = "";
+		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != ""){
+			subQuery = "where requirement.orgLocationId =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") )";
+			params.put("orgLocationId",orgLocationId);
+		}
+		String whereCondition = subQuery;
+		
+		Query query = session.createQuery(from+" "+whereCondition);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId")){
+				query.setLong(str, (long) params.get( str ));
+			}else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		return query.list();
+		
+		
+		/*String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId and  ( requirement.createdBy =:loginUserCode  or  )";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("loginUserCode", user.getUserCode()).setInteger("userId", userId.intValue()).list();
+		*/
+		
 		
 		/*String[] stat = status.split(",");
 		ArrayList<Requirement> requirementList = new ArrayList<Requirement>();
