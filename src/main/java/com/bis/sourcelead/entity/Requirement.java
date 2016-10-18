@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
@@ -131,6 +135,10 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Column(name="STATUS")
 	private String status;
+	
+	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
+	@Enumerated(EnumType.STRING)
+	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
 	
 	@Column(name="PARENT_REQUIREMENT_ID")
 	private Long parent_requirement_id;
@@ -454,7 +462,13 @@ import org.hibernate.annotations.FetchMode;
 		this.status = status;
 	}
 
-	
+	public REQUIREMENT_SUBMISSION_STATUS getRequirementSubmissionStatus() {
+		return requirementSubmissionStatus;
+	}
+
+	public void setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus) {
+		this.requirementSubmissionStatus = requirementSubmissionStatus;
+	}
 
 	public Long getParent_requirement_id() {
 		return parent_requirement_id;

@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -195,6 +196,8 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.currentDate());
 			
+			//requirement status 
+			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
 			
 			//approval mechnism
 			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
