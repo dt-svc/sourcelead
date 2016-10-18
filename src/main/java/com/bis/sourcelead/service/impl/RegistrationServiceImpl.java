@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -113,6 +115,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	private ModulesService modulesService;
+	
+	@Autowired
+	private SubmissionTemplateService  submissionTemplateService;
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -189,9 +194,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 		}
 		
+		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		
 		saveActionRoles(org,orgLocations,user,modules);
-		
 		
 		userService.sendEmail(user, loginUser, password);
 		
@@ -374,6 +379,23 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }
 		 
 		 
+		 
+	 }
+	 
+	 
+	 public void  saveDefaultSubmissionTemplate(Org org,OrgLocations orgLocations,User user) throws Exception {
+		 SubmissionTemplate sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+		 
+		 
+		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+		 submissionTemplate.setTemplateName(org.getOrgName()+" Default Template");
+		 submissionTemplate.setDescription(org.getOrgName()+" Default Template");
+		 submissionTemplate.setOrgLocationId(orgLocations);
+		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+		 submissionTemplate.setStatus("1");
+		 submissionTemplate.setCreatedBy(user.getUserCode());
+		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
 	

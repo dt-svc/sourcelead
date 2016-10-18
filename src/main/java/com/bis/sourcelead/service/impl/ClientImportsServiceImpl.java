@@ -676,7 +676,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				if(!fname.endsWith("xlsx")){
 					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,6));
 				}else{
-					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN,6,createExcelsheet));
+//					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN,6,createExcelsheet));
 				}
 			    writeRow.createCell(6).setCellValue("");
 			}

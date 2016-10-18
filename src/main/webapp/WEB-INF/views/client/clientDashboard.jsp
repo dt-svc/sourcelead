@@ -813,6 +813,7 @@ function getEndDatePickerById(projectId,localFieldName){
 		
 		$("#filter1ApprovePop").click(function(){
 			$("#filter1ApprovedPop").slideToggle(200);
+			$("#filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter1ApprovedPop").slideUp(200);
@@ -823,6 +824,7 @@ function getEndDatePickerById(projectId,localFieldName){
 		
 		$("#filter2ApprovePop").click(function(){
 			$("#filter2ApprovedPop").slideToggle(200);
+			$("#filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter2ApprovedPop").slideUp(200);
@@ -833,6 +835,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	    
 	    $("#filter3ApprovePop").click(function(){
 			$("#filter3ApprovedPop").slideToggle(200);
+			$("#filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter3ApprovedPop").slideUp(200);
@@ -843,6 +846,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	    
 	    $("#filter4ApprovePop").click(function(){
 			$("#filter4ApprovedPop").slideToggle(200);
+			$("#filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter4ApprovedPop").slideUp(200);

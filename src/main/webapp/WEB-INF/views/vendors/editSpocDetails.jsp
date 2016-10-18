@@ -198,7 +198,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
@@ -329,8 +329,8 @@
            }
 		
     }
-	$('body').on('blur', '#editClient_form', function() {
-        $("#editClient_form").showHelpOnFocus();
-        $("#editClient_form").validateOnBlur(false, validationSettings);  
+	$('body').on('blur', '#editVendorContact_form', function() {
+        $("#editVendorContact_form").showHelpOnFocus();
+        $("#editVendorContact_form").validateOnBlur(false, validationSettings);  
     });
 </script>    
