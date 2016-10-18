@@ -2310,8 +2310,12 @@ function requirementDetails(requirementId){
             		 else{    
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
+				           
 				            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-							result = result +'     <div class="clearfix row">';
+				            result = result +' <a href="<c:url value="/requirementAccept?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Accept</button></a>';
+				            result = result +' <a href="<c:url value="/requirementReject?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Reject</button></a>';
+							
+				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';

@@ -994,7 +994,7 @@ background-color: #ccc;
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select multiple class="chosen-select form-control">
+                    <select multiple class="chosen-select form-control" name="sequentialApprover1">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1009,7 +1009,7 @@ background-color: #ccc;
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
-              		<select multiple class="chosen-select form-control">
+              		<select multiple class="chosen-select form-control" name="sequentialApprover2">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>

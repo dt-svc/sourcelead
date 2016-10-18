@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -195,26 +196,80 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.currentDate());
 			
+			//requirement status 
+			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
 			
-			//approval mechanisum....
+			//approval mechnism
 			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
+			//approval saving for sequential
 			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
-				  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
 				  
-				  User approverUserId = new User();
-				  approverUserId.setId(Long.parseLong(jsonObj.getString("parallelApprover")));
-				  rah.setApproverUserId(approverUserId);
+				  String approverNames = jsonObj.getString("parallelApprover");
+				  String[] approvers = approverNames.split(",");
+				  for(String approver : approvers){
+					    
+					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+						
+						User approverUserId = new User();
+						approverUserId.setId(Long.parseLong(approver));
+						rah.setApproverUserId(approverUserId);
+						  
+						rah.setRequirementId(requirement);
+						
+						rah.setLevel("1");
+						  
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+						  
+						requirementApproverHierarchyList.add(rah);
+				  }
+				 
+			} 
+			//approval saving for parallel
+			if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 				  
-				  rah.setRequirementId(requirement);
+				  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  User approverUserId = new User();
+					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover1")));
+					  rah.setApproverUserId(approverUserId);
+					  rah.setRequirementId(requirement);
+					  
+					  rah.setLevel("1");
+					  
+					  rah.setCreatedDate(commonUtil.currentDate());
+					  rah.setCreatedBy(user.getUserCode());
+					  rah.setUpdatedBy(user.getUserCode());
+					  rah.setUpdatedDate(commonUtil.currentDate());
+					  
+					  requirementApproverHierarchyList.add(rah);
+				  }
 				  
-				  rah.setCreatedDate(commonUtil.currentDate());
-				  rah.setCreatedBy(user.getUserCode());
-				  rah.setUpdatedBy(user.getUserCode());
-				  rah.setUpdatedDate(commonUtil.currentDate());
-				  
-				  requirementApproverHierarchyList.add(rah);
+				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  User approverUserId = new User();
+					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
+					  rah.setApproverUserId(approverUserId);
+					  
+					  rah.setRequirementId(requirement);
+					  
+					  rah.setLevel("2");
+					  
+					  rah.setCreatedDate(commonUtil.currentDate());
+					  rah.setCreatedBy(user.getUserCode());
+					  rah.setUpdatedBy(user.getUserCode());
+					  rah.setUpdatedDate(commonUtil.currentDate());
+					  
+					  requirementApproverHierarchyList.add(rah);
+				  }
+				 
 			} 
 			requirement.setRequirementApprover(requirementApproverHierarchyList);
+			
 			
 			if(jsonObj.has("manager") && StringUtils.isNotEmpty(jsonObj.getString("manager"))){
 				    User managerUserId = new User();
@@ -283,8 +338,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
 	}
 
 	

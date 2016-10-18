@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
@@ -92,6 +93,42 @@ public class RequirementRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
+		return "success";
+		
+	}
+	
+	/**
+	 * @author sarath kumaar
+	 * @since  oct 18 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to accept/Reject Requirement in Requirement table.
+	 *  
+	 * @param jsonObj This is the first paramter to storeRequirement method
+	 * @param orgLocations This is the second paramter to storeRequirement method
+	 * @param user This is the third paramter to storeRequirement method
+	 * @param multiFile This is the fourth paramter to storeRequirement method
+	 * 
+	 * @return success msg  
+	 * 
+	 * @throws NullPointer
+	*/
+	
+	@RequestMapping(value = "/requirementAcceptOrReject", method = RequestMethod.POST)
+	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false) String status,HttpServletRequest request) throws Exception {
+		
+	 
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if(status.equalsIgnoreCase("approved")){
+			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+		}
+		if(status.equalsIgnoreCase("rejected")){
+			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+		}
+		requirementService.addRequirement(requirement);
 		return "success";
 		
 	}
