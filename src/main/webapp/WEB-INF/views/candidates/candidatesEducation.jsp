@@ -446,7 +446,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result	+ '	                   <input type="hidden"  value="'+candidateEducationId+'" id="candidateEducationId"  name="candidateEduId" >';
 	result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
 	
-    result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Add</button>';
+    result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
 	result = result  +'                  </div>';
 	
 	result = result  +'                </div>   ';

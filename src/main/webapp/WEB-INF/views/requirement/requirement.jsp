@@ -140,7 +140,7 @@ background-color: #ccc;
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -317,7 +317,7 @@ background-color: #ccc;
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal();">
+            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal(this);">
             <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
             &nbsp;&nbsp;
             <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
@@ -331,7 +331,7 @@ background-color: #ccc;
                 <label class="col-md-3">Client <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this);">
+                    <select class="chosen-select form-control select-bg" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this); ">
                     	<option value="">-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
@@ -383,7 +383,7 @@ background-color: #ccc;
                 <label class="col-md-3">Client Contact <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control" name="selectContact" id="selectContact">
+                    <select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
@@ -426,7 +426,7 @@ background-color: #ccc;
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm">
+                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
                       <option value="">-- Select Submission Form --</option>
                     </select>
                   </div>
@@ -1039,7 +1039,7 @@ background-color: #ccc;
                 <option>Manager-2</option>
                 <option>Manager-3</option>
               </select> -->
-              <select multiple class="chosen-select form-control">
+              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1055,12 +1055,12 @@ background-color: #ccc;
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam" class="modal fade">
+                <div role="dialog" id="assignTeam"   class="modal fade">
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -1170,7 +1170,7 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority">
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority">
                 <option value="">Select Priority</option>
                 <option value="Urgent">Urgent</option>
                 <option value="High">High</option>
@@ -1188,7 +1188,7 @@ background-color: #ccc;
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId">
+                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId" data-validation = "required" field-name = "Application Form">
                     	<option value="">-- Select Client --</option>
 		                <c:forEach var="report" items="${add_clientList}">
 					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
@@ -1687,6 +1687,7 @@ $("#apprverReq").removeAttr("checked");
 $("#sequential input").removeAttr("checked");
 
 function selApprover(){
+	
   if ($("#apprverReq").prop('checked') ) {
 			$(".parallel, #parallel, .apprverReq").show();
 			$(".sequential").hide();
@@ -1714,6 +1715,7 @@ $("#parallel").click(function(){
 function addLvl(){
 	$(".lvlTow").toggle();
 }
+
 </script> 
 
 
@@ -1939,6 +1941,29 @@ function getTeamMembers(){
 } 
 </script>
 
+<script>
+function getIsClientVal(){
+	 if (document.getElementById('isClientJob').checked) {
+       $('#addClientId').removeAttr('data-validation-optional');
+	   $('#addClientId').attr("data-validation","required"); 
+	   
+	   $('#selectContact').removeAttr('data-validation-optional');
+	   $('#selectContact').attr("data-validation","required"); 
+	   
+	   $('#clientSubmissionForm').removeAttr('data-validation-optional');
+	   $('#clientSubmissionForm').attr("data-validation","required"); 
+	 } else {
+		 $('#addClientId').removeAttr('data-validation');
+		 $('#addClientId').attr("data-validation-optional","true"); 
+		 
+		 $('#selectContact').removeAttr('data-validation');
+		 $('#selectContact').attr("data-validation-optional","true"); 
+		 
+		 $('#clientSubmissionForm').removeAttr('data-validation');
+		 $('#clientSubmissionForm').attr("data-validation-optional","true"); 
+	 }
+}
 
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
