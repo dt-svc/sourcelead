@@ -160,6 +160,11 @@ import org.hibernate.annotations.FetchMode;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
+	
+	
 	@Transient
 	private String clientName;
 	
@@ -505,6 +510,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setRequirementAssignTo(Set<RequirementAssignTo> requirementAssignTo) {
 		this.requirementAssignTo = requirementAssignTo;
+	}
+	
+	public Set<RequirementApproverHierarchy> getRequirementApprover() {
+		return requirementApprover;
+	}
+
+	public void setRequirementApprover(Set<RequirementApproverHierarchy> requirementApprover) {
+		this.requirementApprover = requirementApprover;
 	}
 
 	public String getSpocName() {

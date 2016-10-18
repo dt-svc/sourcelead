@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -193,6 +194,30 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.currentDate());
+			
+			
+			//approval mechanisum....
+			/*HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
+			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
+				  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+				  rah.setId(Long.parseLong(jsonObj.getString("parallelApprover")));
+				  rah.setRequirementId(requirement);
+				  requirementApproverHierarchyList.add(rah);
+			} 
+			requirement.setRequirementApprover(requirementApproverHierarchyList);*/
+			
+			if(jsonObj.has("manager") && StringUtils.isNotEmpty(jsonObj.getString("manager"))){
+				    User managerUserId = new User();
+				    managerUserId.setId(Long.parseLong(jsonObj.getString("manager")));
+				    requirement.setManagerUserId(managerUserId);
+			} 
+			if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
+				  requirement.setPriority(jsonObj.getString("priority"));
+			} 
+			/*if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
+				  jsonObj.getString("applicationFrom");
+			} */
+			
 			
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
