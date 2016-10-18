@@ -62,7 +62,9 @@ public class EMailJobScheduler {
 		try {
 			List<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 			for(User user : usrList){
-				TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				if("Admin".equalsIgnoreCase(user.getUserType()))
+					continue;
+				List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
@@ -87,7 +89,9 @@ public class EMailJobScheduler {
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
 			List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 			for(User user : usrList){
-				TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				if("Admin".equalsIgnoreCase(user.getUserType()))
+					continue;
+				List<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			

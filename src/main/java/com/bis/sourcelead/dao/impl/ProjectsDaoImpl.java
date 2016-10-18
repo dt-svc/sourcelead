@@ -536,8 +536,13 @@ public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Excep
 	Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 	cal.setLenient(false);
 	cal.setTime(new Date());
-	Date previousDate = CalendarUtil.getCurrentWeekDay("MON");
+	
+	Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+	
+	Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+	Date previousDate = previousMonday.getTime();
 	java.sql.Date  previousDayDate = new java.sql.Date(previousDate.getTime());
+	
 	String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate < :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
 
 	List<User> userList  = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 

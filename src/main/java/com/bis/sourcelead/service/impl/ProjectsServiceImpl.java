@@ -6,10 +6,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -433,7 +435,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,TimesheetSubmissions timesheetSubmissions) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,List<TimesheetSubmissions> timesheetSubmissions) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -450,7 +452,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 globalVarsMap.put("administratorLastName",user.getLastName());
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("userEmailId",user.getEmail()); //
-		 globalVarsMap.put("weekFrequency",Constants.DMY.format(timesheetSubmissions.getStartDate())+"-"+Constants.DMY.format(timesheetSubmissions.getEndDate()));
+		 LinkedList<String> frequency = new LinkedList<>();
+		 if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+			 for(TimesheetSubmissions ts :timesheetSubmissions){
+				 frequency.add("<b>"+Constants.DMY.format(ts.getStartDate())+" To "+Constants.DMY.format(ts.getEndDate())+"<b>");
+			 }
+		 }
+		 if(frequency != null && !frequency.isEmpty()){
+			 globalVarsMap.put("weekFrequency","<br/>"+frequency.stream().collect(Collectors.joining("<br/>"))+"<br/>");
+		 }
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();

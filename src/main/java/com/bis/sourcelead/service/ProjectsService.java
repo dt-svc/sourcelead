@@ -59,7 +59,7 @@ public interface ProjectsService {
 		
 		List<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user, TimesheetSubmissions timesheetSubmissions) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user, List<TimesheetSubmissions> timesheetSubmissions) throws Exception;
 		
 		List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 		
