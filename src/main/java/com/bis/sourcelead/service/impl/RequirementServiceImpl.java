@@ -197,7 +197,19 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedDate(commonUtil.currentDate());
 			
 			//requirement status 
-			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+			if(jsonObj.has("saveType")){
+				
+				if(jsonObj.getString("saveType").equalsIgnoreCase("Draft")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+				}
+				if(jsonObj.getString("saveType").equalsIgnoreCase("Save")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+				}
+				if(jsonObj.getString("saveType").equalsIgnoreCase("SubmitForApproval")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+				}
+				
+			}
 			
 			//approval mechnism
 			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();

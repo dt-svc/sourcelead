@@ -79,14 +79,14 @@ public class RequirementRestController {
 	*/
 	
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,@RequestParam(value = "saveType", required = false) String saveType) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
-	    
+		json = json + ", saveType : "+saveType;
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
 		
